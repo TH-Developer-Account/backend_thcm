@@ -1,4 +1,4 @@
-const { createLogger, format, transports } = require('winston');
+import {createLogger, format, transports} from 'winston';
 
 const logger = createLogger({
   level: 'info',
@@ -12,4 +12,5 @@ const logger = createLogger({
   ],
 });
 
-module.exports = logger;
+
+export default logger;
