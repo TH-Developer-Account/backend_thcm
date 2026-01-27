@@ -42,3 +42,8 @@ export { Prisma }
  * 
  */
 export type users = Prisma.usersModel
+/**
+ * Model user_otps
+ * 
+ */
+export type user_otps = Prisma.user_otpsModel

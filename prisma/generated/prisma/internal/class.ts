@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.3.0",
   "engineVersion": "9d6ad21cbbceab97458517b147a6a09ff43aa735",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"./generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel users {\n  id           Int      @id @default(autoincrement())\n  first_name   String   @db.VarChar(50)\n  last_name    String   @db.VarChar(50)\n  email        String   @unique @db.VarChar(100)\n  phone_number String   @db.VarChar(15)\n  password     String   @db.VarChar(255)\n  is_active    Boolean  @default(true)\n  created_at   DateTime @default(now()) @db.Timestamp(6)\n  updated_at   DateTime @default(now()) @db.Timestamp(6)\n}\n",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"./generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel users {\n  id           Int      @id @default(autoincrement())\n  first_name   String   @db.VarChar(50)\n  last_name    String   @db.VarChar(50)\n  email        String   @unique @db.VarChar(100)\n  phone_number String   @db.VarChar(15)\n  password     String   @db.VarChar(255)\n  is_active    Boolean  @default(true)\n  created_at   DateTime @default(now()) @db.Timestamp(6)\n  updated_at   DateTime @default(now()) @db.Timestamp(6)\n}\n\nmodel user_otps {\n  id         Int      @id @default(autoincrement())\n  phone      String\n  otp_hash   String\n  expires_at DateTime\n  is_used    Boolean  @default(false)\n  created_at DateTime @default(now())\n\n  @@index([phone])\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"users\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"first_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"users\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"first_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"user_otps\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"otp_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"is_used\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -185,6 +185,16 @@ export interface PrismaClient<
     * ```
     */
   get users(): Prisma.usersDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.user_otps`: Exposes CRUD operations for the **user_otps** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more User_otps
+    * const user_otps = await prisma.user_otps.findMany()
+    * ```
+    */
+  get user_otps(): Prisma.user_otpsDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

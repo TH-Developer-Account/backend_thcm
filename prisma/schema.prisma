@@ -18,3 +18,15 @@ model users {
   created_at    DateTime @default(now()) @db.Timestamp(6)
   updated_at    DateTime @default(now()) @db.Timestamp(6)
 }
+
+model user_otps {
+  id          Int      @id @default(autoincrement())
+  phone       String
+  otp_hash    String
+  expires_at  DateTime
+  is_used     Boolean  @default(false)
+  created_at  DateTime @default(now())
+
+  @@index([phone])
+}
+
