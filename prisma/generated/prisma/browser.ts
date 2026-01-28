@@ -27,3 +27,8 @@ export type users = Prisma.usersModel
  * 
  */
 export type user_otps = Prisma.user_otpsModel
+/**
+ * Model refresh_token
+ * 
+ */
+export type refresh_token = Prisma.refresh_tokenModel

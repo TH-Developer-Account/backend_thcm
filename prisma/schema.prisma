@@ -8,19 +8,20 @@ datasource db {
 }
 
 model users {
-  id            Int       @id @default(autoincrement())
+  id            String       @id @default(uuid())
   first_name    String   @db.VarChar(50)
   last_name     String   @db.VarChar(50)
   email         String    @unique @db.VarChar(100)
-  phone_number  String   @db.VarChar(15)
+  phone_number  String  @unique @db.VarChar(15)
   password      String    @db.VarChar(255)
   is_active     Boolean  @default(true)
+  refresh_tokens     refresh_token[]
   created_at    DateTime @default(now()) @db.Timestamp(6)
   updated_at    DateTime @default(now()) @db.Timestamp(6)
 }
 
 model user_otps {
-  id          Int      @id @default(autoincrement())
+  id          String      @id @default(uuid())
   phone       String
   otp_hash    String
   expires_at  DateTime
@@ -29,4 +30,19 @@ model user_otps {
 
   @@index([phone])
 }
+
+model refresh_token {
+  id        String   @id @default(uuid())
+  token_id      String   @unique @db.VarChar(36) // UUID
+  token_hash    String   @db.VarChar(255)
+  token     String   @unique
+  user_id    String
+  user      users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_agent    String?
+  ip_address    String?
+  revoked       Boolean  @default(false)
+  expires_at    DateTime
+  created_at    DateTime @default(now())
+}
+
 

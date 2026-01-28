@@ -52,7 +52,8 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   users: 'users',
-  user_otps: 'user_otps'
+  user_otps: 'user_otps',
+  refresh_token: 'refresh_token'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -98,6 +99,22 @@ export const User_otpsScalarFieldEnum = {
 export type User_otpsScalarFieldEnum = (typeof User_otpsScalarFieldEnum)[keyof typeof User_otpsScalarFieldEnum]
 
 
+export const Refresh_tokenScalarFieldEnum = {
+  id: 'id',
+  token_id: 'token_id',
+  token_hash: 'token_hash',
+  token: 'token',
+  user_id: 'user_id',
+  user_agent: 'user_agent',
+  ip_address: 'ip_address',
+  revoked: 'revoked',
+  expires_at: 'expires_at',
+  created_at: 'created_at'
+} as const
+
+export type Refresh_tokenScalarFieldEnum = (typeof Refresh_tokenScalarFieldEnum)[keyof typeof Refresh_tokenScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -112,4 +129,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

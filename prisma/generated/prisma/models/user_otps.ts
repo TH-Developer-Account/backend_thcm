@@ -20,22 +20,12 @@ export type user_otpsModel = runtime.Types.Result.DefaultSelection<Prisma.$user_
 
 export type AggregateUser_otps = {
   _count: User_otpsCountAggregateOutputType | null
-  _avg: User_otpsAvgAggregateOutputType | null
-  _sum: User_otpsSumAggregateOutputType | null
   _min: User_otpsMinAggregateOutputType | null
   _max: User_otpsMaxAggregateOutputType | null
 }
 
-export type User_otpsAvgAggregateOutputType = {
-  id: number | null
-}
-
-export type User_otpsSumAggregateOutputType = {
-  id: number | null
-}
-
 export type User_otpsMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   phone: string | null
   otp_hash: string | null
   expires_at: Date | null
@@ -44,7 +34,7 @@ export type User_otpsMinAggregateOutputType = {
 }
 
 export type User_otpsMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   phone: string | null
   otp_hash: string | null
   expires_at: Date | null
@@ -62,14 +52,6 @@ export type User_otpsCountAggregateOutputType = {
   _all: number
 }
 
-
-export type User_otpsAvgAggregateInputType = {
-  id?: true
-}
-
-export type User_otpsSumAggregateInputType = {
-  id?: true
-}
 
 export type User_otpsMinAggregateInputType = {
   id?: true
@@ -137,18 +119,6 @@ export type User_otpsAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inte
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: User_otpsAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: User_otpsSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: User_otpsMinAggregateInputType
@@ -179,22 +149,18 @@ export type user_otpsGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   _count?: User_otpsCountAggregateInputType | true
-  _avg?: User_otpsAvgAggregateInputType
-  _sum?: User_otpsSumAggregateInputType
   _min?: User_otpsMinAggregateInputType
   _max?: User_otpsMaxAggregateInputType
 }
 
 export type User_otpsGroupByOutputType = {
-  id: number
+  id: string
   phone: string
   otp_hash: string
   expires_at: Date
   is_used: boolean
   created_at: Date
   _count: User_otpsCountAggregateOutputType | null
-  _avg: User_otpsAvgAggregateOutputType | null
-  _sum: User_otpsSumAggregateOutputType | null
   _min: User_otpsMinAggregateOutputType | null
   _max: User_otpsMaxAggregateOutputType | null
 }
@@ -218,7 +184,7 @@ export type user_otpsWhereInput = {
   AND?: Prisma.user_otpsWhereInput | Prisma.user_otpsWhereInput[]
   OR?: Prisma.user_otpsWhereInput[]
   NOT?: Prisma.user_otpsWhereInput | Prisma.user_otpsWhereInput[]
-  id?: Prisma.IntFilter<"user_otps"> | number
+  id?: Prisma.StringFilter<"user_otps"> | string
   phone?: Prisma.StringFilter<"user_otps"> | string
   otp_hash?: Prisma.StringFilter<"user_otps"> | string
   expires_at?: Prisma.DateTimeFilter<"user_otps"> | Date | string
@@ -236,7 +202,7 @@ export type user_otpsOrderByWithRelationInput = {
 }
 
 export type user_otpsWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   AND?: Prisma.user_otpsWhereInput | Prisma.user_otpsWhereInput[]
   OR?: Prisma.user_otpsWhereInput[]
   NOT?: Prisma.user_otpsWhereInput | Prisma.user_otpsWhereInput[]
@@ -255,17 +221,15 @@ export type user_otpsOrderByWithAggregationInput = {
   is_used?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   _count?: Prisma.user_otpsCountOrderByAggregateInput
-  _avg?: Prisma.user_otpsAvgOrderByAggregateInput
   _max?: Prisma.user_otpsMaxOrderByAggregateInput
   _min?: Prisma.user_otpsMinOrderByAggregateInput
-  _sum?: Prisma.user_otpsSumOrderByAggregateInput
 }
 
 export type user_otpsScalarWhereWithAggregatesInput = {
   AND?: Prisma.user_otpsScalarWhereWithAggregatesInput | Prisma.user_otpsScalarWhereWithAggregatesInput[]
   OR?: Prisma.user_otpsScalarWhereWithAggregatesInput[]
   NOT?: Prisma.user_otpsScalarWhereWithAggregatesInput | Prisma.user_otpsScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"user_otps"> | number
+  id?: Prisma.StringWithAggregatesFilter<"user_otps"> | string
   phone?: Prisma.StringWithAggregatesFilter<"user_otps"> | string
   otp_hash?: Prisma.StringWithAggregatesFilter<"user_otps"> | string
   expires_at?: Prisma.DateTimeWithAggregatesFilter<"user_otps"> | Date | string
@@ -274,6 +238,7 @@ export type user_otpsScalarWhereWithAggregatesInput = {
 }
 
 export type user_otpsCreateInput = {
+  id?: string
   phone: string
   otp_hash: string
   expires_at: Date | string
@@ -282,7 +247,7 @@ export type user_otpsCreateInput = {
 }
 
 export type user_otpsUncheckedCreateInput = {
-  id?: number
+  id?: string
   phone: string
   otp_hash: string
   expires_at: Date | string
@@ -291,6 +256,7 @@ export type user_otpsUncheckedCreateInput = {
 }
 
 export type user_otpsUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   otp_hash?: Prisma.StringFieldUpdateOperationsInput | string
   expires_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -299,7 +265,7 @@ export type user_otpsUpdateInput = {
 }
 
 export type user_otpsUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   otp_hash?: Prisma.StringFieldUpdateOperationsInput | string
   expires_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -308,7 +274,7 @@ export type user_otpsUncheckedUpdateInput = {
 }
 
 export type user_otpsCreateManyInput = {
-  id?: number
+  id?: string
   phone: string
   otp_hash: string
   expires_at: Date | string
@@ -317,6 +283,7 @@ export type user_otpsCreateManyInput = {
 }
 
 export type user_otpsUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   otp_hash?: Prisma.StringFieldUpdateOperationsInput | string
   expires_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -325,7 +292,7 @@ export type user_otpsUpdateManyMutationInput = {
 }
 
 export type user_otpsUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   otp_hash?: Prisma.StringFieldUpdateOperationsInput | string
   expires_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -340,10 +307,6 @@ export type user_otpsCountOrderByAggregateInput = {
   expires_at?: Prisma.SortOrder
   is_used?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
-}
-
-export type user_otpsAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
 }
 
 export type user_otpsMaxOrderByAggregateInput = {
@@ -362,10 +325,6 @@ export type user_otpsMinOrderByAggregateInput = {
   expires_at?: Prisma.SortOrder
   is_used?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
-}
-
-export type user_otpsSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
 }
 
 
@@ -412,7 +371,7 @@ export type $user_otpsPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   name: "user_otps"
   objects: {}
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     phone: string
     otp_hash: string
     expires_at: Date
@@ -841,7 +800,7 @@ export interface Prisma__user_otpsClient<T, Null = never, ExtArgs extends runtim
  * Fields of the user_otps model
  */
 export interface user_otpsFieldRefs {
-  readonly id: Prisma.FieldRef<"user_otps", 'Int'>
+  readonly id: Prisma.FieldRef<"user_otps", 'String'>
   readonly phone: Prisma.FieldRef<"user_otps", 'String'>
   readonly otp_hash: Prisma.FieldRef<"user_otps", 'String'>
   readonly expires_at: Prisma.FieldRef<"user_otps", 'DateTime'>

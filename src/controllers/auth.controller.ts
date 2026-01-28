@@ -10,6 +10,7 @@ import {
   LOCK_TIME_SECONDS,
   OTP_EXPIRY_MINUTES,
 } from "../utils/contants";
+import { signAccessToken, createRefreshToken } from "../services/auth.services";
 
 export const registerUser = async (
   req: Request,
@@ -17,8 +18,7 @@ export const registerUser = async (
   next: NextFunction,
 ) => {
   try {
-    const { first_name, last_name, password, email, phone_number, user_type } =
-      req.body;
+    const { first_name, last_name, password, email, phone_number } = req.body;
 
     if (!email || !password) {
       throw new ApiError(400, "Email and password are required");
@@ -63,13 +63,13 @@ export const registerUser = async (
   }
 };
 
-export const loginUser = async (
+export const loginWithPassword = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { password, email, phone_number } = req.body;
+    const { password, email } = req.body;
 
     if (!email || !password) {
       throw new ApiError(400, "Email and password are required");
@@ -95,11 +95,31 @@ export const loginUser = async (
     }
 
     // JWT logic for the user
+    const accessToken = signAccessToken(existingUser);
 
-    // Respond
-    res.status(201).json({
-      message: "User Logged in successfully",
-      user: existingUser,
+    const refreshToken = await createRefreshToken({
+      userId: existingUser.id,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      path: "/auth/refresh",
+    });
+
+    // Response
+    res.status(200).json({
+      accessToken,
+      user: {
+        id: existingUser.id,
+        email: existingUser.email,
+        first_name: existingUser.first_name,
+        last_name: existingUser.last_name,
+        phone_number: existingUser.phone_number,
+      },
     });
   } catch (error) {
     next(error);
@@ -214,4 +234,130 @@ export const verifyOtp = async (
   } catch (error) {
     next(error);
   }
+};
+
+export const refreshAccessToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const token = req.cookies.refreshToken;
+    if (!token) return res.sendStatus(401);
+
+    const [tokenId, rawToken] = token.split(".");
+    if (!tokenId || !rawToken) return res.sendStatus(401);
+
+    const stored = await prisma.refresh_token.findUnique({
+      where: { token_id: tokenId },
+      include: { user: true },
+    });
+
+    // Reuse / stolen token detection
+    if (!stored || stored.revoked || stored.expires_at < new Date()) {
+      if (stored) {
+        await prisma.refresh_token.updateMany({
+          where: { user_id: stored.user_id },
+          data: { revoked: true },
+        });
+      }
+      return res.sendStatus(403);
+    }
+
+    const valid = await bcrypt.compare(rawToken, stored.token_hash);
+    if (!valid) return res.sendStatus(403);
+
+    // 🔁 ROTATION
+    await prisma.refresh_token.update({
+      where: { token_id: tokenId },
+      data: { revoked: true },
+    });
+
+    const newRefreshToken = await createRefreshToken({
+      userId: stored.user.id,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+    });
+
+    const accessToken = signAccessToken(stored.user);
+
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      path: "/auth/refresh",
+    });
+
+    res.json({ accessToken });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const token = req.cookies.refreshToken;
+    if (!token) {
+      res.sendStatus(204);
+      return;
+    }
+
+    const [tokenId] = token.split(".");
+
+    await prisma.refresh_token.updateMany({
+      where: { token_id: tokenId },
+      data: { revoked: true },
+    });
+
+    res.clearCookie("refreshToken", { path: "/auth/refresh" });
+    res.status(204).json({
+      message: "User Logged out successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const verifyOtpLogin = async (req, res) => {
+  const { phone, otp } = req.body;
+
+  const otpRecord = await prisma.user_otps.findFirst({
+    where: {
+      phone,
+      is_used: false,
+      expires_at: { gt: new Date() },
+    },
+    orderBy: { created_at: "desc" },
+  });
+
+  if (!otpRecord) return res.sendStatus(401);
+
+  const valid = await bcrypt.compare(otp, otpRecord.otp_hash);
+  if (!valid) return res.sendStatus(401);
+
+  await prisma.user_otps.update({
+    where: { id: otpRecord.id },
+    data: { is_used: true },
+  });
+
+  const user = await prisma.users.findUnique({
+    where: { phone_number: phone },
+  });
+  if (!user) return res.sendStatus(404);
+
+  const accessToken = signAccessToken(user);
+  const refreshToken = await createRefreshToken({
+    userId: user.id,
+    userAgent: req.headers["user-agent"],
+    ipAddress: req.ip,
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    path: "/auth/refresh",
+  });
+
+  res.json({ accessToken });
 };

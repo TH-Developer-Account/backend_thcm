@@ -1,11 +1,12 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
 import errorHandler from "./middleware/error.middleware";
 import ApiError from "./utils/apiError";
 
 const app = express();
-
+app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/users", userRoutes);
