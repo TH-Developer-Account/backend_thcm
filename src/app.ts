@@ -1,16 +1,25 @@
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
 import errorHandler from "./middleware/error.middleware";
 import ApiError from "./utils/apiError";
 
+const corsOptions = {
+  origin: process.env.FRONTEND_URL, // frontend URL
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, // allow cookies / auth headers
+};
+
 const app = express();
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
-app.use("/api/users", userRoutes);
-app.use("/api/auth", authRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/auth", authRoutes);
 
 /* 404 */
 app.use((req, res, next) => {
