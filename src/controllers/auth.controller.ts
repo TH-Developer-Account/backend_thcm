@@ -119,6 +119,9 @@ export const loginWithPassword = async (
         first_name: existingUser.first_name,
         last_name: existingUser.last_name,
         phone_number: existingUser.phone_number,
+        is_active: existingUser.is_active,
+        created_at: existingUser.created_at,
+        updated_at: existingUser.updated_at,
       },
     });
   } catch (error) {
