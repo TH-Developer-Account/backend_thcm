@@ -243,27 +243,37 @@ export const refreshAccessToken = async (
 ) => {
   try {
     const token = req.cookies.refreshToken;
-    if (!token) return res.sendStatus(401);
+    if (!token)
+      return res.status(401).json({ message: "No refresh token provided" });
 
     const [tokenId, rawToken] = token.split(".");
-    if (!tokenId || !rawToken) return res.sendStatus(401);
+    if (!tokenId || !rawToken)
+      return res.status(401).json({ message: "Invalid token format" });
 
     const stored = await prisma.refresh_token.findUnique({
       where: { token_id: tokenId },
       include: { user: true },
     });
 
-    // Reuse / stolen token detection
-    if (!stored || stored.revoked || stored.expires_at < new Date()) {
-      if (stored) {
-        await prisma.refresh_token.updateMany({
-          where: { user_id: stored.user_id },
-          data: { revoked: true },
-        });
-      }
-      return res.sendStatus(403);
+    // Token reuse/theft detection
+    if (!stored) {
+      return res.status(403).json({ message: "Token not found" });
     }
 
+    if (stored.revoked) {
+      // Possible token reuse - revoke all user's tokens
+      await prisma.refresh_token.updateMany({
+        where: { user_id: stored.user_id },
+        data: { revoked: true },
+      });
+      return res
+        .status(403)
+        .json({ message: "Token reuse detected. All sessions revoked." });
+    }
+
+    if (stored.expires_at < new Date()) {
+      return res.status(403).json({ message: "Refresh token expired" });
+    }
     const valid = await bcrypt.compare(rawToken, stored.token_hash);
     if (!valid) return res.sendStatus(403);
 
@@ -283,7 +293,10 @@ export const refreshAccessToken = async (
 
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
       path: "/auth/refresh",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
     res.json({ accessToken });
