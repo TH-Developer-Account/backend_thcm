@@ -9,6 +9,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/users'
+export type * from './models/password_reset_token'
 export type * from './models/user_otps'
 export type * from './models/refresh_token'
 export type * from './commonInputTypes'

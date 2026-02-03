@@ -32,6 +32,7 @@ export type UsersMinAggregateOutputType = {
   phone_number: string | null
   password: string | null
   is_active: boolean | null
+  is_default_login: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -44,6 +45,7 @@ export type UsersMaxAggregateOutputType = {
   phone_number: string | null
   password: string | null
   is_active: boolean | null
+  is_default_login: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -56,6 +58,7 @@ export type UsersCountAggregateOutputType = {
   phone_number: number
   password: number
   is_active: number
+  is_default_login: number
   created_at: number
   updated_at: number
   _all: number
@@ -70,6 +73,7 @@ export type UsersMinAggregateInputType = {
   phone_number?: true
   password?: true
   is_active?: true
+  is_default_login?: true
   created_at?: true
   updated_at?: true
 }
@@ -82,6 +86,7 @@ export type UsersMaxAggregateInputType = {
   phone_number?: true
   password?: true
   is_active?: true
+  is_default_login?: true
   created_at?: true
   updated_at?: true
 }
@@ -94,6 +99,7 @@ export type UsersCountAggregateInputType = {
   phone_number?: true
   password?: true
   is_active?: true
+  is_default_login?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -179,6 +185,7 @@ export type UsersGroupByOutputType = {
   phone_number: string
   password: string
   is_active: boolean
+  is_default_login: boolean
   created_at: Date
   updated_at: Date
   _count: UsersCountAggregateOutputType | null
@@ -212,9 +219,11 @@ export type usersWhereInput = {
   phone_number?: Prisma.StringFilter<"users"> | string
   password?: Prisma.StringFilter<"users"> | string
   is_active?: Prisma.BoolFilter<"users"> | boolean
+  is_default_login?: Prisma.BoolFilter<"users"> | boolean
   created_at?: Prisma.DateTimeFilter<"users"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"users"> | Date | string
   refresh_tokens?: Prisma.Refresh_tokenListRelationFilter
+  password_reset_tokens?: Prisma.Password_reset_tokenListRelationFilter
 }
 
 export type usersOrderByWithRelationInput = {
@@ -225,9 +234,11 @@ export type usersOrderByWithRelationInput = {
   phone_number?: Prisma.SortOrder
   password?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  is_default_login?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   refresh_tokens?: Prisma.refresh_tokenOrderByRelationAggregateInput
+  password_reset_tokens?: Prisma.password_reset_tokenOrderByRelationAggregateInput
 }
 
 export type usersWhereUniqueInput = Prisma.AtLeast<{
@@ -241,9 +252,11 @@ export type usersWhereUniqueInput = Prisma.AtLeast<{
   last_name?: Prisma.StringFilter<"users"> | string
   password?: Prisma.StringFilter<"users"> | string
   is_active?: Prisma.BoolFilter<"users"> | boolean
+  is_default_login?: Prisma.BoolFilter<"users"> | boolean
   created_at?: Prisma.DateTimeFilter<"users"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"users"> | Date | string
   refresh_tokens?: Prisma.Refresh_tokenListRelationFilter
+  password_reset_tokens?: Prisma.Password_reset_tokenListRelationFilter
 }, "id" | "email" | "phone_number">
 
 export type usersOrderByWithAggregationInput = {
@@ -254,6 +267,7 @@ export type usersOrderByWithAggregationInput = {
   phone_number?: Prisma.SortOrder
   password?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  is_default_login?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.usersCountOrderByAggregateInput
@@ -272,6 +286,7 @@ export type usersScalarWhereWithAggregatesInput = {
   phone_number?: Prisma.StringWithAggregatesFilter<"users"> | string
   password?: Prisma.StringWithAggregatesFilter<"users"> | string
   is_active?: Prisma.BoolWithAggregatesFilter<"users"> | boolean
+  is_default_login?: Prisma.BoolWithAggregatesFilter<"users"> | boolean
   created_at?: Prisma.DateTimeWithAggregatesFilter<"users"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"users"> | Date | string
 }
@@ -284,9 +299,11 @@ export type usersCreateInput = {
   phone_number: string
   password: string
   is_active?: boolean
+  is_default_login?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.refresh_tokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.password_reset_tokenCreateNestedManyWithoutUserInput
 }
 
 export type usersUncheckedCreateInput = {
@@ -297,9 +314,11 @@ export type usersUncheckedCreateInput = {
   phone_number: string
   password: string
   is_active?: boolean
+  is_default_login?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.refresh_tokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.password_reset_tokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type usersUpdateInput = {
@@ -310,9 +329,11 @@ export type usersUpdateInput = {
   phone_number?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.refresh_tokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.password_reset_tokenUpdateManyWithoutUserNestedInput
 }
 
 export type usersUncheckedUpdateInput = {
@@ -323,9 +344,11 @@ export type usersUncheckedUpdateInput = {
   phone_number?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.refresh_tokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.password_reset_tokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type usersCreateManyInput = {
@@ -336,6 +359,7 @@ export type usersCreateManyInput = {
   phone_number: string
   password: string
   is_active?: boolean
+  is_default_login?: boolean
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -348,6 +372,7 @@ export type usersUpdateManyMutationInput = {
   phone_number?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -360,6 +385,7 @@ export type usersUncheckedUpdateManyInput = {
   phone_number?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -372,6 +398,7 @@ export type usersCountOrderByAggregateInput = {
   phone_number?: Prisma.SortOrder
   password?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  is_default_login?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -384,6 +411,7 @@ export type usersMaxOrderByAggregateInput = {
   phone_number?: Prisma.SortOrder
   password?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  is_default_login?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -396,6 +424,7 @@ export type usersMinOrderByAggregateInput = {
   phone_number?: Prisma.SortOrder
   password?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  is_default_login?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -417,6 +446,20 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
+export type usersCreateNestedOneWithoutPassword_reset_tokensInput = {
+  create?: Prisma.XOR<Prisma.usersCreateWithoutPassword_reset_tokensInput, Prisma.usersUncheckedCreateWithoutPassword_reset_tokensInput>
+  connectOrCreate?: Prisma.usersCreateOrConnectWithoutPassword_reset_tokensInput
+  connect?: Prisma.usersWhereUniqueInput
+}
+
+export type usersUpdateOneRequiredWithoutPassword_reset_tokensNestedInput = {
+  create?: Prisma.XOR<Prisma.usersCreateWithoutPassword_reset_tokensInput, Prisma.usersUncheckedCreateWithoutPassword_reset_tokensInput>
+  connectOrCreate?: Prisma.usersCreateOrConnectWithoutPassword_reset_tokensInput
+  upsert?: Prisma.usersUpsertWithoutPassword_reset_tokensInput
+  connect?: Prisma.usersWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.usersUpdateToOneWithWhereWithoutPassword_reset_tokensInput, Prisma.usersUpdateWithoutPassword_reset_tokensInput>, Prisma.usersUncheckedUpdateWithoutPassword_reset_tokensInput>
+}
+
 export type usersCreateNestedOneWithoutRefresh_tokensInput = {
   create?: Prisma.XOR<Prisma.usersCreateWithoutRefresh_tokensInput, Prisma.usersUncheckedCreateWithoutRefresh_tokensInput>
   connectOrCreate?: Prisma.usersCreateOrConnectWithoutRefresh_tokensInput
@@ -431,6 +474,78 @@ export type usersUpdateOneRequiredWithoutRefresh_tokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.usersUpdateToOneWithWhereWithoutRefresh_tokensInput, Prisma.usersUpdateWithoutRefresh_tokensInput>, Prisma.usersUncheckedUpdateWithoutRefresh_tokensInput>
 }
 
+export type usersCreateWithoutPassword_reset_tokensInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.refresh_tokenCreateNestedManyWithoutUserInput
+}
+
+export type usersUncheckedCreateWithoutPassword_reset_tokensInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.refresh_tokenUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type usersCreateOrConnectWithoutPassword_reset_tokensInput = {
+  where: Prisma.usersWhereUniqueInput
+  create: Prisma.XOR<Prisma.usersCreateWithoutPassword_reset_tokensInput, Prisma.usersUncheckedCreateWithoutPassword_reset_tokensInput>
+}
+
+export type usersUpsertWithoutPassword_reset_tokensInput = {
+  update: Prisma.XOR<Prisma.usersUpdateWithoutPassword_reset_tokensInput, Prisma.usersUncheckedUpdateWithoutPassword_reset_tokensInput>
+  create: Prisma.XOR<Prisma.usersCreateWithoutPassword_reset_tokensInput, Prisma.usersUncheckedCreateWithoutPassword_reset_tokensInput>
+  where?: Prisma.usersWhereInput
+}
+
+export type usersUpdateToOneWithWhereWithoutPassword_reset_tokensInput = {
+  where?: Prisma.usersWhereInput
+  data: Prisma.XOR<Prisma.usersUpdateWithoutPassword_reset_tokensInput, Prisma.usersUncheckedUpdateWithoutPassword_reset_tokensInput>
+}
+
+export type usersUpdateWithoutPassword_reset_tokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.refresh_tokenUpdateManyWithoutUserNestedInput
+}
+
+export type usersUncheckedUpdateWithoutPassword_reset_tokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.refresh_tokenUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type usersCreateWithoutRefresh_tokensInput = {
   id?: string
   first_name: string
@@ -439,8 +554,10 @@ export type usersCreateWithoutRefresh_tokensInput = {
   phone_number: string
   password: string
   is_active?: boolean
+  is_default_login?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  password_reset_tokens?: Prisma.password_reset_tokenCreateNestedManyWithoutUserInput
 }
 
 export type usersUncheckedCreateWithoutRefresh_tokensInput = {
@@ -451,8 +568,10 @@ export type usersUncheckedCreateWithoutRefresh_tokensInput = {
   phone_number: string
   password: string
   is_active?: boolean
+  is_default_login?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  password_reset_tokens?: Prisma.password_reset_tokenUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type usersCreateOrConnectWithoutRefresh_tokensInput = {
@@ -479,8 +598,10 @@ export type usersUpdateWithoutRefresh_tokensInput = {
   phone_number?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  password_reset_tokens?: Prisma.password_reset_tokenUpdateManyWithoutUserNestedInput
 }
 
 export type usersUncheckedUpdateWithoutRefresh_tokensInput = {
@@ -491,8 +612,10 @@ export type usersUncheckedUpdateWithoutRefresh_tokensInput = {
   phone_number?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  password_reset_tokens?: Prisma.password_reset_tokenUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -502,10 +625,12 @@ export type usersUncheckedUpdateWithoutRefresh_tokensInput = {
 
 export type UsersCountOutputType = {
   refresh_tokens: number
+  password_reset_tokens: number
 }
 
 export type UsersCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   refresh_tokens?: boolean | UsersCountOutputTypeCountRefresh_tokensArgs
+  password_reset_tokens?: boolean | UsersCountOutputTypeCountPassword_reset_tokensArgs
 }
 
 /**
@@ -525,6 +650,13 @@ export type UsersCountOutputTypeCountRefresh_tokensArgs<ExtArgs extends runtime.
   where?: Prisma.refresh_tokenWhereInput
 }
 
+/**
+ * UsersCountOutputType without action
+ */
+export type UsersCountOutputTypeCountPassword_reset_tokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.password_reset_tokenWhereInput
+}
+
 
 export type usersSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -534,9 +666,11 @@ export type usersSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   phone_number?: boolean
   password?: boolean
   is_active?: boolean
+  is_default_login?: boolean
   created_at?: boolean
   updated_at?: boolean
   refresh_tokens?: boolean | Prisma.users$refresh_tokensArgs<ExtArgs>
+  password_reset_tokens?: boolean | Prisma.users$password_reset_tokensArgs<ExtArgs>
   _count?: boolean | Prisma.UsersCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["users"]>
 
@@ -548,6 +682,7 @@ export type usersSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   phone_number?: boolean
   password?: boolean
   is_active?: boolean
+  is_default_login?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["users"]>
@@ -560,6 +695,7 @@ export type usersSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   phone_number?: boolean
   password?: boolean
   is_active?: boolean
+  is_default_login?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["users"]>
@@ -572,13 +708,15 @@ export type usersSelectScalar = {
   phone_number?: boolean
   password?: boolean
   is_active?: boolean
+  is_default_login?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type usersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "first_name" | "last_name" | "email" | "phone_number" | "password" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["users"]>
+export type usersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "first_name" | "last_name" | "email" | "phone_number" | "password" | "is_active" | "is_default_login" | "created_at" | "updated_at", ExtArgs["result"]["users"]>
 export type usersInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   refresh_tokens?: boolean | Prisma.users$refresh_tokensArgs<ExtArgs>
+  password_reset_tokens?: boolean | Prisma.users$password_reset_tokensArgs<ExtArgs>
   _count?: boolean | Prisma.UsersCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type usersIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -588,6 +726,7 @@ export type $usersPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "users"
   objects: {
     refresh_tokens: Prisma.$refresh_tokenPayload<ExtArgs>[]
+    password_reset_tokens: Prisma.$password_reset_tokenPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -597,6 +736,7 @@ export type $usersPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     phone_number: string
     password: string
     is_active: boolean
+    is_default_login: boolean
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["users"]>
@@ -994,6 +1134,7 @@ readonly fields: usersFieldRefs;
 export interface Prisma__usersClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   refresh_tokens<T extends Prisma.users$refresh_tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.users$refresh_tokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$refresh_tokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  password_reset_tokens<T extends Prisma.users$password_reset_tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.users$password_reset_tokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$password_reset_tokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1030,6 +1171,7 @@ export interface usersFieldRefs {
   readonly phone_number: Prisma.FieldRef<"users", 'String'>
   readonly password: Prisma.FieldRef<"users", 'String'>
   readonly is_active: Prisma.FieldRef<"users", 'Boolean'>
+  readonly is_default_login: Prisma.FieldRef<"users", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"users", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"users", 'DateTime'>
 }
@@ -1441,6 +1583,30 @@ export type users$refresh_tokensArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.Refresh_tokenScalarFieldEnum | Prisma.Refresh_tokenScalarFieldEnum[]
+}
+
+/**
+ * users.password_reset_tokens
+ */
+export type users$password_reset_tokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the password_reset_token
+   */
+  select?: Prisma.password_reset_tokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the password_reset_token
+   */
+  omit?: Prisma.password_reset_tokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.password_reset_tokenInclude<ExtArgs> | null
+  where?: Prisma.password_reset_tokenWhereInput
+  orderBy?: Prisma.password_reset_tokenOrderByWithRelationInput | Prisma.password_reset_tokenOrderByWithRelationInput[]
+  cursor?: Prisma.password_reset_tokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Password_reset_tokenScalarFieldEnum | Prisma.Password_reset_tokenScalarFieldEnum[]
 }
 
 /**

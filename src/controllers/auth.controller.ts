@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from "express";
+import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { prisma } from "../config/prisma";
 import redis from "../config/redis";
 import { otpSendLimiter } from "../utils/otpRateLimiter";
 import ApiError from "../utils/apiError";
+// import { sendPasswordResetEmail } from "../utils/sendEmail";
 import {
   SALT_ROUNDS,
   MAX_OTP_ATTEMPTS,
@@ -84,46 +86,75 @@ export const loginWithPassword = async (
       throw new ApiError(409, "User does not exist, Please register");
     }
 
-    // check password
-    const isValidPassword = await bcrypt.compare(
-      password,
-      existingUser.password,
-    );
+    // ✅ NEW: Check if user needs to reset default password
+    if (existingUser.is_default_login) {
+      // Verify the default password is correct
+      const isValidPassword = await bcrypt.compare(
+        password,
+        existingUser.password,
+      );
 
-    if (!isValidPassword) {
-      throw new ApiError(401, "Invalid credentials");
+      if (!isValidPassword) {
+        throw new ApiError(401, "Invalid credentials");
+      }
+
+      // Return special response indicating password reset required
+      res.status(200).json({
+        requiresPasswordReset: true,
+        user: {
+          id: existingUser.id,
+          email: existingUser.email,
+          first_name: existingUser.first_name,
+          last_name: existingUser.last_name,
+          phone_number: existingUser.phone_number,
+          is_active: existingUser.is_active,
+          created_at: existingUser.created_at,
+          updated_at: existingUser.updated_at,
+        },
+        message: "Please reset your password to continue",
+      });
+    } else {
+      // check password
+      const isValidPassword = await bcrypt.compare(
+        password,
+        existingUser.password,
+      );
+
+      if (!isValidPassword) {
+        throw new ApiError(401, "Invalid credentials");
+      }
+
+      // JWT logic for the user
+      const accessToken = signAccessToken(existingUser);
+
+      const refreshToken = await createRefreshToken({
+        userId: existingUser.id,
+        userAgent: req.headers["user-agent"],
+        ipAddress: req.ip,
+      });
+
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+        path: "/auth/refresh",
+      });
+
+      // Response
+      res.status(200).json({
+        accessToken,
+        user: {
+          id: existingUser.id,
+          email: existingUser.email,
+          first_name: existingUser.first_name,
+          last_name: existingUser.last_name,
+          phone_number: existingUser.phone_number,
+          is_active: existingUser.is_active,
+          created_at: existingUser.created_at,
+          updated_at: existingUser.updated_at,
+        },
+      });
     }
-
-    // JWT logic for the user
-    const accessToken = signAccessToken(existingUser);
-
-    const refreshToken = await createRefreshToken({
-      userId: existingUser.id,
-      userAgent: req.headers["user-agent"],
-      ipAddress: req.ip,
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
-      path: "/auth/refresh",
-    });
-
-    // Response
-    res.status(200).json({
-      accessToken,
-      user: {
-        id: existingUser.id,
-        email: existingUser.email,
-        first_name: existingUser.first_name,
-        last_name: existingUser.last_name,
-        phone_number: existingUser.phone_number,
-        is_active: existingUser.is_active,
-        created_at: existingUser.created_at,
-        updated_at: existingUser.updated_at,
-      },
-    });
   } catch (error) {
     next(error);
   }
@@ -376,4 +407,237 @@ export const verifyOtpLogin = async (req, res) => {
   });
 
   res.json({ accessToken });
+};
+
+// controllers/authController.ts
+export const resetDefaultPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { email, currentPassword, newPassword } = req.body;
+
+    if (!email || !currentPassword || !newPassword) {
+      throw new ApiError(400, "All fields are required");
+    }
+
+    // Find user
+    const user = await prisma.users.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+
+    // Verify current password
+    const isValidPassword = await bcrypt.compare(
+      currentPassword,
+      user.password,
+    );
+
+    if (!isValidPassword) {
+      throw new ApiError(401, "Current password is incorrect");
+    }
+
+    // Check if user is in default login state
+    if (!user.is_default_login) {
+      throw new ApiError(400, "Password already reset");
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password and set is_default_login to false
+    await prisma.users.update({
+      where: { email },
+      data: {
+        password: hashedPassword,
+        is_default_login: false, // ✅ Mark as password reset
+        updated_at: new Date(),
+      },
+    });
+
+    res.status(200).json({
+      message:
+        "Password reset successfully. Please login with your new password.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Request password reset
+export const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      throw new ApiError(400, "Email is required");
+    }
+
+    // Find user
+    const user = await prisma.users.findUnique({
+      where: { email },
+    });
+
+    // ⚠️ Always return success to prevent email enumeration
+    if (!user) {
+      return res.status(200).json({
+        message:
+          "If an account exists with this email, you will receive a password reset link.",
+      });
+    }
+
+    // Generate reset token (random 32-byte hex string)
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    // Hash token before storing (security best practice)
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    // Invalidate any existing tokens for this user
+    await prisma.password_reset_token.updateMany({
+      where: {
+        user_id: user.id,
+        used: false,
+      },
+      data: { used: true },
+    });
+
+    // Create new reset token (expires in 1 hour)
+    await prisma.password_reset_token.create({
+      data: {
+        user_id: user.id,
+        token: hashedToken,
+        expires_at: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+      },
+    });
+
+    // Send email with original (unhashed) token
+    // await sendPasswordResetEmail(user.email, resetToken);
+
+    res.status(200).json({
+      message:
+        "If an account exists with this email, you will receive a password reset link.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Verify reset token (optional - for checking token validity)
+export const verifyResetToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { token } = req.params;
+
+    // ✅ Type guard - ensure token is a string
+    if (!token || typeof token !== "string") {
+      throw new ApiError(400, "Token is required");
+    }
+
+    // Hash the token from URL
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    // Find valid token
+    const resetToken = await prisma.password_reset_token.findFirst({
+      where: {
+        token: hashedToken,
+        used: false,
+        expires_at: { gt: new Date() },
+      },
+      include: { user: true },
+    });
+
+    if (!resetToken) {
+      throw new ApiError(400, "Invalid or expired reset token");
+    }
+
+    res.status(200).json({
+      valid: true,
+      email: resetToken.user.email, // Return email to show on form
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Reset password with token
+export const resetPasswordWithToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    // ✅ Type guard - ensure token is a string
+    if (!token || typeof token !== "string") {
+      throw new ApiError(400, "Token is required");
+    }
+
+    if (!newPassword) {
+      throw new ApiError(400, "New password is required");
+    }
+
+    // Hash the token from URL
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    // Find valid token
+    const resetToken = await prisma.password_reset_token.findFirst({
+      where: {
+        token: hashedToken,
+        used: false,
+        expires_at: { gt: new Date() },
+      },
+      include: { user: true },
+    });
+
+    if (!resetToken) {
+      throw new ApiError(400, "Invalid or expired reset token");
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password and mark token as used
+    await prisma.$transaction([
+      prisma.users.update({
+        where: { id: resetToken.user_id },
+        data: {
+          password: hashedPassword,
+          is_default_login: false, // User has set their own password
+          updated_at: new Date(),
+        },
+      }),
+      prisma.password_reset_token.update({
+        where: { id: resetToken.id },
+        data: { used: true },
+      }),
+      // Revoke all refresh tokens (logout from all devices)
+      prisma.refresh_token.updateMany({
+        where: { user_id: resetToken.user_id },
+        data: { revoked: true },
+      }),
+    ]);
+
+    res.status(200).json({
+      message:
+        "Password reset successfully. Please login with your new password.",
+    });
+  } catch (error) {
+    next(error);
+  }
 };

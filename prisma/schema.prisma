@@ -15,9 +15,21 @@ model users {
   phone_number  String  @unique @db.VarChar(15)
   password      String    @db.VarChar(255)
   is_active     Boolean  @default(true)
+  is_default_login  Boolean         @default(true) 
   refresh_tokens     refresh_token[]
+  password_reset_tokens  password_reset_token[] 
   created_at    DateTime @default(now()) @db.Timestamp(6)
   updated_at    DateTime @default(now()) @db.Timestamp(6)
+}
+
+model password_reset_token {
+  id         String   @id @default(uuid())
+  user_id    String
+  user       users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  token      String   @unique @db.VarChar(255)
+  expires_at DateTime
+  used       Boolean  @default(false)
+  created_at DateTime @default(now())
 }
 
 model user_otps {

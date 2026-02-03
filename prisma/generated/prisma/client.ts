@@ -43,6 +43,11 @@ export { Prisma }
  */
 export type users = Prisma.usersModel
 /**
+ * Model password_reset_token
+ * 
+ */
+export type password_reset_token = Prisma.password_reset_tokenModel
+/**
  * Model user_otps
  * 
  */
