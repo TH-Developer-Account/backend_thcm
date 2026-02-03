@@ -367,46 +367,54 @@ export const logout = async (
   }
 };
 
-export const verifyOtpLogin = async (req, res) => {
-  const { phone, otp } = req.body;
+export const verifyOtpLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { phone, otp } = req.body;
 
-  const otpRecord = await prisma.user_otps.findFirst({
-    where: {
-      phone,
-      is_used: false,
-      expires_at: { gt: new Date() },
-    },
-    orderBy: { created_at: "desc" },
-  });
+    const otpRecord = await prisma.user_otps.findFirst({
+      where: {
+        phone,
+        is_used: false,
+        expires_at: { gt: new Date() },
+      },
+      orderBy: { created_at: "desc" },
+    });
 
-  if (!otpRecord) return res.sendStatus(401);
+    if (!otpRecord) return res.sendStatus(401);
 
-  const valid = await bcrypt.compare(otp, otpRecord.otp_hash);
-  if (!valid) return res.sendStatus(401);
+    const valid = await bcrypt.compare(otp, otpRecord.otp_hash);
+    if (!valid) return res.sendStatus(401);
 
-  await prisma.user_otps.update({
-    where: { id: otpRecord.id },
-    data: { is_used: true },
-  });
+    await prisma.user_otps.update({
+      where: { id: otpRecord.id },
+      data: { is_used: true },
+    });
 
-  const user = await prisma.users.findUnique({
-    where: { phone_number: phone },
-  });
-  if (!user) return res.sendStatus(404);
+    const user = await prisma.users.findUnique({
+      where: { phone_number: phone },
+    });
+    if (!user) return res.sendStatus(404);
 
-  const accessToken = signAccessToken(user);
-  const refreshToken = await createRefreshToken({
-    userId: user.id,
-    userAgent: req.headers["user-agent"],
-    ipAddress: req.ip,
-  });
+    const accessToken = signAccessToken(user);
+    const refreshToken = await createRefreshToken({
+      userId: user.id,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+    });
 
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    path: "/auth/refresh",
-  });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      path: "/auth/refresh",
+    });
 
-  res.json({ accessToken });
+    res.json({ accessToken });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // controllers/authController.ts
