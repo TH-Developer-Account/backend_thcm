@@ -1,6 +1,8 @@
-const app = require('./app');
-const logger = require('./config/logger');
+import dotenv from 'dotenv';
+import app from './app';
+import logger from './config/logger';
 
+dotenv.config();
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
