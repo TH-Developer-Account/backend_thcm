@@ -412,7 +412,6 @@ export const logout = async (
   }
 };
 
-// controllers/authController.ts
 export const resetDefaultPassword = async (
   req: Request,
   res: Response,
@@ -465,7 +464,6 @@ export const resetDefaultPassword = async (
   }
 };
 
-// Request password reset
 export const forgotPassword = async (
   req: Request,
   res: Response,
@@ -574,7 +572,6 @@ export const verifyResetToken = async (
   }
 };
 
-// Reset password with token
 export const resetPasswordWithToken = async (
   req: Request,
   res: Response,
