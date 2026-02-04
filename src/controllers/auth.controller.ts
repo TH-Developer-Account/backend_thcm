@@ -88,13 +88,7 @@ export const loginWithPassword = async (
 
     // ✅ NEW: Check if user needs to reset default password
     if (existingUser.is_default_login) {
-      // Verify the default password is correct
-      const isValidPassword = await bcrypt.compare(
-        password,
-        existingUser.password,
-      );
-
-      if (!isValidPassword) {
+      if (password !== existingUser.password) {
         throw new ApiError(401, "Invalid credentials");
       }
 
@@ -213,7 +207,11 @@ export const verifyOtp = async (
   try {
     const { phone_number, otp } = req.body;
 
-    // Check lock
+    if (!phone_number || !otp) {
+      throw new ApiError(400, "Phone number and OTP are required");
+    }
+
+    // Check if account is locked
     const isLocked = await redis.get(`otp_lock:${phone_number}`);
     if (isLocked) {
       throw new ApiError(423, "Account locked. Try again later.");
@@ -237,12 +235,15 @@ export const verifyOtp = async (
     const isValid = await bcrypt.compare(otp, otpRecord.otp_hash);
 
     if (!isValid) {
+      // Increment failed attempts
       const attempts = await redis.incr(`otp_fail:${phone_number}`);
 
+      // Set expiry on first attempt
       if (attempts === 1) {
         await redis.expire(`otp_fail:${phone_number}`, LOCK_TIME_SECONDS);
       }
 
+      // Lock account after max attempts
       if (attempts >= MAX_OTP_ATTEMPTS) {
         await redis.set(
           `otp_lock:${phone_number}`,
@@ -250,21 +251,69 @@ export const verifyOtp = async (
           "EX",
           LOCK_TIME_SECONDS,
         );
+        throw new ApiError(
+          423,
+          `Too many failed attempts. Account locked for ${LOCK_TIME_SECONDS / 60} minutes.`,
+        );
       }
 
-      throw new ApiError(401, "Invalid OTP");
+      throw new ApiError(
+        401,
+        `Invalid OTP. ${MAX_OTP_ATTEMPTS - attempts} attempts remaining.`,
+      );
     }
 
-    // OTP success → cleanup
-    await redis.del(`otp_fail:${phone_number}`);
-    await redis.del(`otp_lock:${phone_number}`);
+    // ✅ OTP is valid - cleanup redis and mark OTP as used
+    await Promise.all([
+      redis.del(`otp_fail:${phone_number}`),
+      redis.del(`otp_lock:${phone_number}`),
+      prisma.user_otps.update({
+        where: { id: otpRecord.id },
+        data: { is_used: true },
+      }),
+    ]);
 
-    await prisma.user_otps.update({
-      where: { id: otpRecord.id },
-      data: { is_used: true },
+    // Login flow - generate tokens
+    const user = await prisma.users.findUnique({
+      where: { phone_number },
     });
 
-    res.json({ message: "OTP verified successfully" });
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+
+    if (!user.is_active) {
+      throw new ApiError(403, "Account is inactive");
+    }
+
+    // Generate tokens
+    const accessToken = signAccessToken(user);
+    const refreshToken = await createRefreshToken({
+      userId: user.id,
+      userAgent: req.headers["user-agent"],
+      ipAddress: Array.isArray(req.ip) ? req.ip[0] : req.ip,
+    });
+
+    // Set refresh token cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
+      path: "/auth/refresh",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.status(200).json({
+      message: "Login successful",
+      accessToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        phone_number: user.phone_number,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -277,12 +326,10 @@ export const refreshAccessToken = async (
 ) => {
   try {
     const token = req.cookies.refreshToken;
-    if (!token)
-      return res.status(401).json({ message: "No refresh token provided" });
+    if (!token) throw new ApiError(401, "No refresh token provided");
 
     const [tokenId, rawToken] = token.split(".");
-    if (!tokenId || !rawToken)
-      return res.status(401).json({ message: "Invalid token format" });
+    if (!tokenId || !rawToken) throw new ApiError(401, "Invalid token format");
 
     const stored = await prisma.refresh_token.findUnique({
       where: { token_id: tokenId },
@@ -291,7 +338,7 @@ export const refreshAccessToken = async (
 
     // Token reuse/theft detection
     if (!stored) {
-      return res.status(403).json({ message: "Token not found" });
+      throw new ApiError(403, "Token not found");
     }
 
     if (stored.revoked) {
@@ -300,16 +347,14 @@ export const refreshAccessToken = async (
         where: { user_id: stored.user_id },
         data: { revoked: true },
       });
-      return res
-        .status(403)
-        .json({ message: "Token reuse detected. All sessions revoked." });
+      throw new ApiError(403, "Token reuse detected. All sessions revoked.");
     }
 
     if (stored.expires_at < new Date()) {
-      return res.status(403).json({ message: "Refresh token expired" });
+      throw new ApiError(403, "Refresh token expired");
     }
     const valid = await bcrypt.compare(rawToken, stored.token_hash);
-    if (!valid) return res.sendStatus(403);
+    if (!valid) throw new ApiError(403, "Token not valid.");
 
     // 🔁 ROTATION
     await prisma.refresh_token.update({
@@ -367,56 +412,6 @@ export const logout = async (
   }
 };
 
-export const verifyOtpLogin = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { phone, otp } = req.body;
-
-    const otpRecord = await prisma.user_otps.findFirst({
-      where: {
-        phone,
-        is_used: false,
-        expires_at: { gt: new Date() },
-      },
-      orderBy: { created_at: "desc" },
-    });
-
-    if (!otpRecord) return res.sendStatus(401);
-
-    const valid = await bcrypt.compare(otp, otpRecord.otp_hash);
-    if (!valid) return res.sendStatus(401);
-
-    await prisma.user_otps.update({
-      where: { id: otpRecord.id },
-      data: { is_used: true },
-    });
-
-    const user = await prisma.users.findUnique({
-      where: { phone_number: phone },
-    });
-    if (!user) return res.sendStatus(404);
-
-    const accessToken = signAccessToken(user);
-    const refreshToken = await createRefreshToken({
-      userId: user.id,
-      userAgent: req.headers["user-agent"],
-      ipAddress: req.ip,
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      path: "/auth/refresh",
-    });
-
-    res.json({ accessToken });
-  } catch (error) {
-    next(error);
-  }
-};
-
 // controllers/authController.ts
 export const resetDefaultPassword = async (
   req: Request,
@@ -439,13 +434,7 @@ export const resetDefaultPassword = async (
       throw new ApiError(404, "User not found");
     }
 
-    // Verify current password
-    const isValidPassword = await bcrypt.compare(
-      currentPassword,
-      user.password,
-    );
-
-    if (!isValidPassword) {
+    if (currentPassword !== user.password) {
       throw new ApiError(401, "Current password is incorrect");
     }
 
@@ -531,6 +520,10 @@ export const forgotPassword = async (
 
     // Send email with original (unhashed) token
     // await sendPasswordResetEmail(user.email, resetToken);
+    console.log(
+      "Forgot password link==========>",
+      `${process.env.FRONTEND_URL}/reset-password/${resetToken}`,
+    );
 
     res.status(200).json({
       message:
