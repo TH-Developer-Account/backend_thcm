@@ -2,7 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2020",
-    "rootDir": ".",
+    "rootDir": "./src",
     "outDir": "./dist",
     "esModuleInterop": true,
     "skipLibCheck": true
