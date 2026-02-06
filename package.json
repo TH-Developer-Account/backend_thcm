@@ -29,6 +29,7 @@
     "express": "^5.2.1",
     "ioredis": "^5.9.2",
     "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^8.0.0",
     "pg": "^8.17.2",
     "rate-limiter-flexible": "^9.0.1",
     "winston": "^3.19.0"
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^25.0.10",
+    "@types/nodemailer": "^7.0.9",
     "@types/pg": "^8.16.0",
     "nodemon": "^3.1.11",
     "prisma": "^7.3.0",
