@@ -32,17 +32,6 @@ model password_reset_token {
   created_at DateTime @default(now())
 }
 
-model user_otps {
-  id          String      @id @default(uuid())
-  phone       String
-  otp_hash    String
-  expires_at  DateTime
-  is_used     Boolean  @default(false)
-  created_at  DateTime @default(now())
-
-  @@index([phone])
-}
-
 model refresh_token {
   id        String   @id @default(uuid())
   token_id      String   @unique @db.VarChar(36) // UUID

@@ -386,9 +386,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   users: 'users',
   password_reset_token: 'password_reset_token',
-  user_otps: 'user_otps',
-  refresh_token: 'refresh_token',
-  daily_visitors: 'daily_visitors'
+  refresh_token: 'refresh_token'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,7 +402,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "users" | "password_reset_token" | "user_otps" | "refresh_token" | "daily_visitors"
+    modelProps: "users" | "password_reset_token" | "refresh_token"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -553,80 +551,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.password_reset_tokenCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.Password_reset_tokenCountAggregateOutputType> | number
-        }
-      }
-    }
-    user_otps: {
-      payload: Prisma.$user_otpsPayload<ExtArgs>
-      fields: Prisma.user_otpsFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.user_otpsFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.user_otpsFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>
-        }
-        findFirst: {
-          args: Prisma.user_otpsFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.user_otpsFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>
-        }
-        findMany: {
-          args: Prisma.user_otpsFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>[]
-        }
-        create: {
-          args: Prisma.user_otpsCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>
-        }
-        createMany: {
-          args: Prisma.user_otpsCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.user_otpsCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>[]
-        }
-        delete: {
-          args: Prisma.user_otpsDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>
-        }
-        update: {
-          args: Prisma.user_otpsUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>
-        }
-        deleteMany: {
-          args: Prisma.user_otpsDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.user_otpsUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.user_otpsUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>[]
-        }
-        upsert: {
-          args: Prisma.user_otpsUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>
-        }
-        aggregate: {
-          args: Prisma.User_otpsAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateUser_otps>
-        }
-        groupBy: {
-          args: Prisma.user_otpsGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.User_otpsGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.user_otpsCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.User_otpsCountAggregateOutputType> | number
         }
       }
     }
@@ -845,18 +769,6 @@ export const Password_reset_tokenScalarFieldEnum = {
 export type Password_reset_tokenScalarFieldEnum = (typeof Password_reset_tokenScalarFieldEnum)[keyof typeof Password_reset_tokenScalarFieldEnum]
 
 
-export const User_otpsScalarFieldEnum = {
-  id: 'id',
-  phone: 'phone',
-  otp_hash: 'otp_hash',
-  expires_at: 'expires_at',
-  is_used: 'is_used',
-  created_at: 'created_at'
-} as const
-
-export type User_otpsScalarFieldEnum = (typeof User_otpsScalarFieldEnum)[keyof typeof User_otpsScalarFieldEnum]
-
-
 export const Refresh_tokenScalarFieldEnum = {
   id: 'id',
   token_id: 'token_id',
@@ -1072,7 +984,6 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   users?: Prisma.usersOmit
   password_reset_token?: Prisma.password_reset_tokenOmit
-  user_otps?: Prisma.user_otpsOmit
   refresh_token?: Prisma.refresh_tokenOmit
   daily_visitors?: Prisma.daily_visitorsOmit
 }
