@@ -5,12 +5,10 @@ const MSG91_BASE_URL = "https://control.msg91.com/api/v5/otp";
 export class OtpService {
   private authKey: string;
   private templateId: string;
-  //   private senderId: string;
 
   constructor() {
     this.authKey = process.env.MSG91_AUTH_KEY!;
     this.templateId = process.env.MSG91_TEMPLATE_ID!;
-    // this.senderId = process.env.MSG91_SENDER_ID!;
   }
 
   private get headers() {
@@ -28,7 +26,6 @@ export class OtpService {
         template_id: this.templateId,
         Lang: "en",
         curr: "INR",
-        // sender: this.senderId,
         otp_length: 6,
         otp_expiry: 5,
       },
