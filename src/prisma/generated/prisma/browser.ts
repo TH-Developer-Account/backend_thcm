@@ -32,3 +32,8 @@ export type password_reset_token = Prisma.password_reset_tokenModel
  * 
  */
 export type refresh_token = Prisma.refresh_tokenModel
+/**
+ * Model daily_visitors
+ * 
+ */
+export type daily_visitors = Prisma.daily_visitorsModel

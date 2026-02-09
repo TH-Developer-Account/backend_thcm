@@ -628,6 +628,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    daily_visitors: {
+      payload: Prisma.$daily_visitorsPayload<ExtArgs>
+      fields: Prisma.daily_visitorsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.daily_visitorsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.daily_visitorsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>
+        }
+        findFirst: {
+          args: Prisma.daily_visitorsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.daily_visitorsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>
+        }
+        findMany: {
+          args: Prisma.daily_visitorsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>[]
+        }
+        create: {
+          args: Prisma.daily_visitorsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>
+        }
+        createMany: {
+          args: Prisma.daily_visitorsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.daily_visitorsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>[]
+        }
+        delete: {
+          args: Prisma.daily_visitorsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>
+        }
+        update: {
+          args: Prisma.daily_visitorsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>
+        }
+        deleteMany: {
+          args: Prisma.daily_visitorsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.daily_visitorsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.daily_visitorsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>[]
+        }
+        upsert: {
+          args: Prisma.daily_visitorsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>
+        }
+        aggregate: {
+          args: Prisma.Daily_visitorsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDaily_visitors>
+        }
+        groupBy: {
+          args: Prisma.daily_visitorsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Daily_visitorsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.daily_visitorsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Daily_visitorsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -711,6 +785,16 @@ export const Refresh_tokenScalarFieldEnum = {
 export type Refresh_tokenScalarFieldEnum = (typeof Refresh_tokenScalarFieldEnum)[keyof typeof Refresh_tokenScalarFieldEnum]
 
 
+export const Daily_visitorsScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  total_visits: 'total_visits',
+  created_at: 'created_at'
+} as const
+
+export type Daily_visitorsScalarFieldEnum = (typeof Daily_visitorsScalarFieldEnum)[keyof typeof Daily_visitorsScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -787,6 +871,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -887,6 +985,7 @@ export type GlobalOmitConfig = {
   users?: Prisma.usersOmit
   password_reset_token?: Prisma.password_reset_tokenOmit
   refresh_token?: Prisma.refresh_tokenOmit
+  daily_visitors?: Prisma.daily_visitorsOmit
 }
 
 /* Types for Logging */

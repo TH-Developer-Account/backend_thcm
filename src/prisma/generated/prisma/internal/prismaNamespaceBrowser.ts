@@ -116,6 +116,16 @@ export const Refresh_tokenScalarFieldEnum = {
 export type Refresh_tokenScalarFieldEnum = (typeof Refresh_tokenScalarFieldEnum)[keyof typeof Refresh_tokenScalarFieldEnum]
 
 
+export const Daily_visitorsScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  total_visits: 'total_visits',
+  created_at: 'created_at'
+} as const
+
+export type Daily_visitorsScalarFieldEnum = (typeof Daily_visitorsScalarFieldEnum)[keyof typeof Daily_visitorsScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'

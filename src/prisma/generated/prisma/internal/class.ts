@@ -205,6 +205,16 @@ export interface PrismaClient<
     * ```
     */
   get refresh_token(): Prisma.refresh_tokenDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.daily_visitors`: Exposes CRUD operations for the **daily_visitors** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Daily_visitors
+    * const daily_visitors = await prisma.daily_visitors.findMany()
+    * ```
+    */
+  get daily_visitors(): Prisma.daily_visitorsDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

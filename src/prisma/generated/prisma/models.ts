@@ -11,4 +11,5 @@
 export type * from './models/users'
 export type * from './models/password_reset_token'
 export type * from './models/refresh_token'
+export type * from './models/daily_visitors'
 export type * from './commonInputTypes'

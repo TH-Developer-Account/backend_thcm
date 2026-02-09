@@ -30,6 +30,7 @@
     "express": "^5.2.1",
     "ioredis": "^5.9.2",
     "jsonwebtoken": "^9.0.3",
+    "node-cron": "^4.2.1",
     "pg": "^8.17.2",
     "rate-limiter-flexible": "^9.0.1",
     "winston": "^3.19.0"
@@ -40,6 +41,7 @@
     "@types/pg": "^8.16.0",
     "nodemon": "^3.1.11",
     "prisma": "^7.3.0",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
   }

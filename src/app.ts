@@ -5,6 +5,7 @@ import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
 import errorHandler from "./middleware/error.middleware";
 import ApiError from "./utils/apiError";
+import { startJobs } from "./jobs/scheduler";
 
 const corsOptions = {
   origin: process.env.FRONTEND_URL, // frontend URL
@@ -14,12 +15,17 @@ const corsOptions = {
 };
 
 const app = express();
+
+//Middlewares
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
+
+// Scheduler
+startJobs();
 
 /* 404 */
 app.use((req, res, next) => {
