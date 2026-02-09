@@ -54,7 +54,8 @@ export const ModelName = {
   users: 'users',
   password_reset_token: 'password_reset_token',
   user_otps: 'user_otps',
-  refresh_token: 'refresh_token'
+  refresh_token: 'refresh_token',
+  daily_visitors: 'daily_visitors'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -127,6 +128,16 @@ export const Refresh_tokenScalarFieldEnum = {
 } as const
 
 export type Refresh_tokenScalarFieldEnum = (typeof Refresh_tokenScalarFieldEnum)[keyof typeof Refresh_tokenScalarFieldEnum]
+
+
+export const Daily_visitorsScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  total_visits: 'total_visits',
+  created_at: 'created_at'
+} as const
+
+export type Daily_visitorsScalarFieldEnum = (typeof Daily_visitorsScalarFieldEnum)[keyof typeof Daily_visitorsScalarFieldEnum]
 
 
 export const SortOrder = {
