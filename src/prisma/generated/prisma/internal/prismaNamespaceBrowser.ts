@@ -53,7 +53,6 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   users: 'users',
   password_reset_token: 'password_reset_token',
-  user_otps: 'user_otps',
   refresh_token: 'refresh_token'
 } as const
 
@@ -99,18 +98,6 @@ export const Password_reset_tokenScalarFieldEnum = {
 } as const
 
 export type Password_reset_tokenScalarFieldEnum = (typeof Password_reset_tokenScalarFieldEnum)[keyof typeof Password_reset_tokenScalarFieldEnum]
-
-
-export const User_otpsScalarFieldEnum = {
-  id: 'id',
-  phone: 'phone',
-  otp_hash: 'otp_hash',
-  expires_at: 'expires_at',
-  is_used: 'is_used',
-  created_at: 'created_at'
-} as const
-
-export type User_otpsScalarFieldEnum = (typeof User_otpsScalarFieldEnum)[keyof typeof User_otpsScalarFieldEnum]
 
 
 export const Refresh_tokenScalarFieldEnum = {
