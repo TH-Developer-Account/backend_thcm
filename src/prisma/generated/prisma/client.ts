@@ -48,11 +48,6 @@ export type users = Prisma.usersModel
  */
 export type password_reset_token = Prisma.password_reset_tokenModel
 /**
- * Model user_otps
- * 
- */
-export type user_otps = Prisma.user_otpsModel
-/**
  * Model refresh_token
  * 
  */
