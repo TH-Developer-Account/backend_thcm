@@ -6,12 +6,7 @@ import redis from "../config/redis";
 import { checkOtpLimit, updateOtpLimit } from "../utils/otpRateLimiter";
 import ApiError from "../utils/apiError";
 // import { sendPasswordResetEmail } from "../utils/sendEmail";
-import {
-  SALT_ROUNDS,
-  MAX_OTP_ATTEMPTS,
-  LOCK_TIME_SECONDS,
-  OTP_EXPIRY_MINUTES,
-} from "../utils/contants";
+import { SALT_ROUNDS } from "../utils/contants";
 import { signAccessToken, createRefreshToken } from "../services/auth.services";
 import { OtpService } from "../services/otp.services";
 

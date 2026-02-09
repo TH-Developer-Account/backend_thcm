@@ -1,8 +1,5 @@
 import redis from "../config/redis";
-
-const COOLDOWN_SECONDS = 60; // 1 OTP per 60s
-const MAX_ATTEMPTS = 5; // max 5 OTPs
-const WINDOW_SECONDS = 15 * 60; // in 15 minutes
+import { COOLDOWN_SECONDS, MAX_ATTEMPTS, WINDOW_SECONDS } from "./contants";
 
 export const checkOtpLimit = async (mobile: string) => {
   const cooldownKey = `otp:cooldown:${mobile}`;
