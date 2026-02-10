@@ -1,7 +1,12 @@
 import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
 import ApiError from "../utils/apiError";
 
-export const requireAuth = (req, res, next) => {
+export const requireAuth = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {

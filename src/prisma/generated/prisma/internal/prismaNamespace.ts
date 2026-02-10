@@ -386,7 +386,6 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   users: 'users',
   password_reset_token: 'password_reset_token',
-  user_otps: 'user_otps',
   refresh_token: 'refresh_token'
 } as const
 
@@ -403,7 +402,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "users" | "password_reset_token" | "user_otps" | "refresh_token"
+    modelProps: "users" | "password_reset_token" | "refresh_token"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -555,80 +554,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    user_otps: {
-      payload: Prisma.$user_otpsPayload<ExtArgs>
-      fields: Prisma.user_otpsFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.user_otpsFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.user_otpsFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>
-        }
-        findFirst: {
-          args: Prisma.user_otpsFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.user_otpsFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>
-        }
-        findMany: {
-          args: Prisma.user_otpsFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>[]
-        }
-        create: {
-          args: Prisma.user_otpsCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>
-        }
-        createMany: {
-          args: Prisma.user_otpsCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.user_otpsCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>[]
-        }
-        delete: {
-          args: Prisma.user_otpsDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>
-        }
-        update: {
-          args: Prisma.user_otpsUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>
-        }
-        deleteMany: {
-          args: Prisma.user_otpsDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.user_otpsUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.user_otpsUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>[]
-        }
-        upsert: {
-          args: Prisma.user_otpsUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$user_otpsPayload>
-        }
-        aggregate: {
-          args: Prisma.User_otpsAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateUser_otps>
-        }
-        groupBy: {
-          args: Prisma.user_otpsGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.User_otpsGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.user_otpsCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.User_otpsCountAggregateOutputType> | number
-        }
-      }
-    }
     refresh_token: {
       payload: Prisma.$refresh_tokenPayload<ExtArgs>
       fields: Prisma.refresh_tokenFieldRefs
@@ -703,6 +628,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    daily_visitors: {
+      payload: Prisma.$daily_visitorsPayload<ExtArgs>
+      fields: Prisma.daily_visitorsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.daily_visitorsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.daily_visitorsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>
+        }
+        findFirst: {
+          args: Prisma.daily_visitorsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.daily_visitorsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>
+        }
+        findMany: {
+          args: Prisma.daily_visitorsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>[]
+        }
+        create: {
+          args: Prisma.daily_visitorsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>
+        }
+        createMany: {
+          args: Prisma.daily_visitorsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.daily_visitorsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>[]
+        }
+        delete: {
+          args: Prisma.daily_visitorsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>
+        }
+        update: {
+          args: Prisma.daily_visitorsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>
+        }
+        deleteMany: {
+          args: Prisma.daily_visitorsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.daily_visitorsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.daily_visitorsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>[]
+        }
+        upsert: {
+          args: Prisma.daily_visitorsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$daily_visitorsPayload>
+        }
+        aggregate: {
+          args: Prisma.Daily_visitorsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDaily_visitors>
+        }
+        groupBy: {
+          args: Prisma.daily_visitorsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Daily_visitorsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.daily_visitorsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.Daily_visitorsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -770,18 +769,6 @@ export const Password_reset_tokenScalarFieldEnum = {
 export type Password_reset_tokenScalarFieldEnum = (typeof Password_reset_tokenScalarFieldEnum)[keyof typeof Password_reset_tokenScalarFieldEnum]
 
 
-export const User_otpsScalarFieldEnum = {
-  id: 'id',
-  phone: 'phone',
-  otp_hash: 'otp_hash',
-  expires_at: 'expires_at',
-  is_used: 'is_used',
-  created_at: 'created_at'
-} as const
-
-export type User_otpsScalarFieldEnum = (typeof User_otpsScalarFieldEnum)[keyof typeof User_otpsScalarFieldEnum]
-
-
 export const Refresh_tokenScalarFieldEnum = {
   id: 'id',
   token_id: 'token_id',
@@ -796,6 +783,16 @@ export const Refresh_tokenScalarFieldEnum = {
 } as const
 
 export type Refresh_tokenScalarFieldEnum = (typeof Refresh_tokenScalarFieldEnum)[keyof typeof Refresh_tokenScalarFieldEnum]
+
+
+export const Daily_visitorsScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  total_visits: 'total_visits',
+  created_at: 'created_at'
+} as const
+
+export type Daily_visitorsScalarFieldEnum = (typeof Daily_visitorsScalarFieldEnum)[keyof typeof Daily_visitorsScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -874,6 +871,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
@@ -973,8 +984,8 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   users?: Prisma.usersOmit
   password_reset_token?: Prisma.password_reset_tokenOmit
-  user_otps?: Prisma.user_otpsOmit
   refresh_token?: Prisma.refresh_tokenOmit
+  daily_visitors?: Prisma.daily_visitorsOmit
 }
 
 /* Types for Logging */

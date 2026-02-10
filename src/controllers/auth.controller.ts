@@ -3,16 +3,14 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { prisma } from "../config/prisma";
 import redis from "../config/redis";
-import { otpSendLimiter } from "../utils/otpRateLimiter";
+import { checkOtpLimit, updateOtpLimit } from "../utils/otpRateLimiter";
 import ApiError from "../utils/apiError";
 // import { sendPasswordResetEmail } from "../utils/sendEmail";
-import {
-  SALT_ROUNDS,
-  MAX_OTP_ATTEMPTS,
-  LOCK_TIME_SECONDS,
-  OTP_EXPIRY_MINUTES,
-} from "../utils/contants";
+import { SALT_ROUNDS } from "../utils/contants";
 import { signAccessToken, createRefreshToken } from "../services/auth.services";
+import { OtpService } from "../services/otp.services";
+
+const otpService = new OtpService();
 
 export const registerUser = async (
   req: Request,
@@ -166,32 +164,34 @@ export const sendOtp = async (
       throw new ApiError(400, "Phone number is required");
     }
 
-    // 1️⃣ RATE LIMIT OTP REQUESTS
-    try {
-      await otpSendLimiter.consume(phone_number);
-    } catch (rateLimitError) {
-      throw new ApiError(429, "Too many OTP requests. Try again later.");
-    }
-
-    // 2️⃣ Generate OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // 3️⃣ Hash OTP
-    const otpHash = await bcrypt.hash(otp, 10);
-
-    // 4️⃣ Store OTP in DB
-    await prisma.user_otps.create({
-      data: {
-        phone: phone_number,
-        otp_hash: otpHash,
-        expires_at: new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000),
-      },
+    const user = await prisma.users.findUnique({
+      where: { phone_number },
     });
 
-    // 5️⃣ Send OTP (SMS)
-    console.log(`OTP for ${phone_number}: ${otp}`);
+    if (!user) {
+      throw new ApiError(404, "User not found");
+    }
+
+    if (!user.is_active) {
+      throw new ApiError(403, "Account is inactive");
+    }
+
+    // 🔒 Redis rate-limit check
+    const limit = await checkOtpLimit(phone_number);
+    if (!limit.allowed) {
+      throw new ApiError(429, limit.message || "Failed to send OTP");
+    }
+
+    const data = await otpService.sendOtp(phone_number);
+
+    if (data.type === "error") {
+      throw new ApiError(401, data.message || "Failed to send OTP");
+    }
+
+    await updateOtpLimit(phone_number);
 
     res.status(200).json({
+      success: true,
       message: "OTP sent successfully",
     });
   } catch (error) {
@@ -211,69 +211,14 @@ export const verifyOtp = async (
       throw new ApiError(400, "Phone number and OTP are required");
     }
 
-    // Check if account is locked
-    const isLocked = await redis.get(`otp_lock:${phone_number}`);
-    if (isLocked) {
-      throw new ApiError(423, "Account locked. Try again later.");
+    // 1️⃣ Verify OTP
+    const otpResult = await otpService.verifyOtp(phone_number, otp);
+
+    if (otpResult.type !== "success") {
+      throw new ApiError(400, otpResult.message || "Invalid or expired OTP");
     }
 
-    // Fetch OTP from DB
-    const otpRecord = await prisma.user_otps.findFirst({
-      where: {
-        phone: phone_number,
-        is_used: false,
-        expires_at: { gt: new Date() },
-      },
-      orderBy: { created_at: "desc" },
-    });
-
-    if (!otpRecord) {
-      throw new ApiError(401, "Invalid or expired OTP");
-    }
-
-    // Compare OTP
-    const isValid = await bcrypt.compare(otp, otpRecord.otp_hash);
-
-    if (!isValid) {
-      // Increment failed attempts
-      const attempts = await redis.incr(`otp_fail:${phone_number}`);
-
-      // Set expiry on first attempt
-      if (attempts === 1) {
-        await redis.expire(`otp_fail:${phone_number}`, LOCK_TIME_SECONDS);
-      }
-
-      // Lock account after max attempts
-      if (attempts >= MAX_OTP_ATTEMPTS) {
-        await redis.set(
-          `otp_lock:${phone_number}`,
-          "locked",
-          "EX",
-          LOCK_TIME_SECONDS,
-        );
-        throw new ApiError(
-          423,
-          `Too many failed attempts. Account locked for ${LOCK_TIME_SECONDS / 60} minutes.`,
-        );
-      }
-
-      throw new ApiError(
-        401,
-        `Invalid OTP. ${MAX_OTP_ATTEMPTS - attempts} attempts remaining.`,
-      );
-    }
-
-    // ✅ OTP is valid - cleanup redis and mark OTP as used
-    await Promise.all([
-      redis.del(`otp_fail:${phone_number}`),
-      redis.del(`otp_lock:${phone_number}`),
-      prisma.user_otps.update({
-        where: { id: otpRecord.id },
-        data: { is_used: true },
-      }),
-    ]);
-
-    // Login flow - generate tokens
+    // 2️⃣ Fetch user
     const user = await prisma.users.findUnique({
       where: { phone_number },
     });
@@ -286,24 +231,27 @@ export const verifyOtp = async (
       throw new ApiError(403, "Account is inactive");
     }
 
-    // Generate tokens
+    // 3️⃣ Generate tokens
     const accessToken = signAccessToken(user);
+
     const refreshToken = await createRefreshToken({
       userId: user.id,
       userAgent: req.headers["user-agent"],
       ipAddress: Array.isArray(req.ip) ? req.ip[0] : req.ip,
     });
 
-    // Set refresh token cookie
+    // 4️⃣ Set refresh token cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       sameSite: "strict",
       secure: process.env.NODE_ENV === "production",
       path: "/auth/refresh",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
+    // 5️⃣ Success response
     res.status(200).json({
+      success: true,
       message: "Login successful",
       accessToken,
       user: {
