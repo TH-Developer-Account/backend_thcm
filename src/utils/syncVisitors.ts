@@ -19,7 +19,7 @@ export const syncDailyVisitors = async () => {
   try {
     const count = await redis.scard(redisKey);
 
-    await prisma.daily_visitors.upsert({
+    await prisma.dailyVisitors.upsert({
       where: { date: new Date(today) },
       update: { total_visits: count },
       create: {

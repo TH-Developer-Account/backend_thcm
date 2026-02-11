@@ -18,22 +18,57 @@ export { Prisma }
 export * as $Enums from './enums'
 export * from './enums';
 /**
- * Model users
+ * Model User
  * 
  */
-export type users = Prisma.usersModel
+export type User = Prisma.UserModel
 /**
- * Model password_reset_token
+ * Model PasswordResetToken
  * 
  */
-export type password_reset_token = Prisma.password_reset_tokenModel
+export type PasswordResetToken = Prisma.PasswordResetTokenModel
 /**
- * Model refresh_token
+ * Model RefreshToken
  * 
  */
-export type refresh_token = Prisma.refresh_tokenModel
+export type RefreshToken = Prisma.RefreshTokenModel
 /**
- * Model daily_visitors
+ * Model DailyVisitors
  * 
  */
-export type daily_visitors = Prisma.daily_visitorsModel
+export type DailyVisitors = Prisma.DailyVisitorsModel
+/**
+ * Model EventProposal
+ * 
+ */
+export type EventProposal = Prisma.EventProposalModel
+/**
+ * Model Department
+ * 
+ */
+export type Department = Prisma.DepartmentModel
+/**
+ * Model Region
+ * 
+ */
+export type Region = Prisma.RegionModel
+/**
+ * Model Branch
+ * 
+ */
+export type Branch = Prisma.BranchModel
+/**
+ * Model EventScale
+ * 
+ */
+export type EventScale = Prisma.EventScaleModel
+/**
+ * Model BudgetMaster
+ * 
+ */
+export type BudgetMaster = Prisma.BudgetMasterModel
+/**
+ * Model EventName
+ * 
+ */
+export type EventName = Prisma.EventNameModel

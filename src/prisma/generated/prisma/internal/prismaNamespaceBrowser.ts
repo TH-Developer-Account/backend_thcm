@@ -51,9 +51,17 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  users: 'users',
-  password_reset_token: 'password_reset_token',
-  refresh_token: 'refresh_token'
+  User: 'User',
+  PasswordResetToken: 'PasswordResetToken',
+  RefreshToken: 'RefreshToken',
+  DailyVisitors: 'DailyVisitors',
+  EventProposal: 'EventProposal',
+  Department: 'Department',
+  Region: 'Region',
+  Branch: 'Branch',
+  EventScale: 'EventScale',
+  BudgetMaster: 'BudgetMaster',
+  EventName: 'EventName'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -72,7 +80,7 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const UsersScalarFieldEnum = {
+export const UserScalarFieldEnum = {
   id: 'id',
   first_name: 'first_name',
   last_name: 'last_name',
@@ -85,10 +93,10 @@ export const UsersScalarFieldEnum = {
   updated_at: 'updated_at'
 } as const
 
-export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const Password_reset_tokenScalarFieldEnum = {
+export const PasswordResetTokenScalarFieldEnum = {
   id: 'id',
   user_id: 'user_id',
   token: 'token',
@@ -97,10 +105,10 @@ export const Password_reset_tokenScalarFieldEnum = {
   created_at: 'created_at'
 } as const
 
-export type Password_reset_tokenScalarFieldEnum = (typeof Password_reset_tokenScalarFieldEnum)[keyof typeof Password_reset_tokenScalarFieldEnum]
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
 
 
-export const Refresh_tokenScalarFieldEnum = {
+export const RefreshTokenScalarFieldEnum = {
   id: 'id',
   token_id: 'token_id',
   token_hash: 'token_hash',
@@ -113,17 +121,107 @@ export const Refresh_tokenScalarFieldEnum = {
   created_at: 'created_at'
 } as const
 
-export type Refresh_tokenScalarFieldEnum = (typeof Refresh_tokenScalarFieldEnum)[keyof typeof Refresh_tokenScalarFieldEnum]
+export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
 
 
-export const Daily_visitorsScalarFieldEnum = {
+export const DailyVisitorsScalarFieldEnum = {
   id: 'id',
   date: 'date',
   total_visits: 'total_visits',
   created_at: 'created_at'
 } as const
 
-export type Daily_visitorsScalarFieldEnum = (typeof Daily_visitorsScalarFieldEnum)[keyof typeof Daily_visitorsScalarFieldEnum]
+export type DailyVisitorsScalarFieldEnum = (typeof DailyVisitorsScalarFieldEnum)[keyof typeof DailyVisitorsScalarFieldEnum]
+
+
+export const EventProposalScalarFieldEnum = {
+  id: 'id',
+  proposal_number: 'proposal_number',
+  event_from_date: 'event_from_date',
+  event_to_date: 'event_to_date',
+  event_description: 'event_description',
+  location: 'location',
+  event_objective: 'event_objective',
+  status: 'status',
+  created_by: 'created_by',
+  updated_by: 'updated_by',
+  department_id: 'department_id',
+  region_id: 'region_id',
+  branch_id: 'branch_id',
+  event_scale_id: 'event_scale_id',
+  budget_master_id: 'budget_master_id',
+  event_name_id: 'event_name_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type EventProposalScalarFieldEnum = (typeof EventProposalScalarFieldEnum)[keyof typeof EventProposalScalarFieldEnum]
+
+
+export const DepartmentScalarFieldEnum = {
+  id: 'id',
+  department_code: 'department_code',
+  department_name: 'department_name',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type DepartmentScalarFieldEnum = (typeof DepartmentScalarFieldEnum)[keyof typeof DepartmentScalarFieldEnum]
+
+
+export const RegionScalarFieldEnum = {
+  id: 'id',
+  region_code: 'region_code',
+  region_name: 'region_name',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type RegionScalarFieldEnum = (typeof RegionScalarFieldEnum)[keyof typeof RegionScalarFieldEnum]
+
+
+export const BranchScalarFieldEnum = {
+  id: 'id',
+  branch_code: 'branch_code',
+  branch_name: 'branch_name',
+  region_id: 'region_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type BranchScalarFieldEnum = (typeof BranchScalarFieldEnum)[keyof typeof BranchScalarFieldEnum]
+
+
+export const EventScaleScalarFieldEnum = {
+  id: 'id',
+  scale_code: 'scale_code',
+  scale_name: 'scale_name',
+  max_budget: 'max_budget',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type EventScaleScalarFieldEnum = (typeof EventScaleScalarFieldEnum)[keyof typeof EventScaleScalarFieldEnum]
+
+
+export const BudgetMasterScalarFieldEnum = {
+  id: 'id',
+  financial_year: 'financial_year',
+  total_budget: 'total_budget',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type BudgetMasterScalarFieldEnum = (typeof BudgetMasterScalarFieldEnum)[keyof typeof BudgetMasterScalarFieldEnum]
+
+
+export const EventNameScalarFieldEnum = {
+  id: 'id',
+  event_code: 'event_code',
+  description: 'description'
+} as const
+
+export type EventNameScalarFieldEnum = (typeof EventNameScalarFieldEnum)[keyof typeof EventNameScalarFieldEnum]
 
 
 export const SortOrder = {

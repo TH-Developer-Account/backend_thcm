@@ -12,7 +12,7 @@ declare module "express-serve-static-core" {
 }
 
 export const getUsers = async (req: Request, res: Response) => {
-  const users = await prisma.users.findMany();
+  const users = await prisma.user.findMany();
   res.status(200).json(users);
 };
 
@@ -29,7 +29,7 @@ export const getCurrentUser = async (
     }
 
     // Fetch user from database
-    const user = await prisma.users.findUnique({
+    const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,

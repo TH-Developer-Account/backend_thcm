@@ -7,7 +7,7 @@ datasource db {
   provider = "postgresql"
 }
 
-model users {
+model User {
   id            String       @id @default(uuid())
   first_name    String   @db.VarChar(50)
   last_name     String   @db.VarChar(50)
@@ -16,29 +16,29 @@ model users {
   password      String    @db.VarChar(255)
   is_active     Boolean  @default(true)
   is_default_login  Boolean         @default(true) 
-  refresh_tokens     refresh_token[]
-  password_reset_tokens  password_reset_token[] 
+  refresh_tokens     RefreshToken[]
+  password_reset_tokens  PasswordResetToken[] 
   created_at    DateTime @default(now()) @db.Timestamp(6)
   updated_at    DateTime @default(now()) @db.Timestamp(6)
 }
 
-model password_reset_token {
+model PasswordResetToken {
   id         String   @id @default(uuid())
   user_id    String
-  user       users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   token      String   @unique @db.VarChar(255)
   expires_at DateTime
   used       Boolean  @default(false)
   created_at DateTime @default(now())
 }
 
-model refresh_token {
+model RefreshToken {
   id        String   @id @default(uuid())
   token_id      String   @unique @db.VarChar(36) // UUID
   token_hash    String   @db.VarChar(255)
   token     String   @unique
   user_id    String
-  user      users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_agent    String?
   ip_address    String?
   revoked       Boolean  @default(false)
@@ -48,7 +48,7 @@ model refresh_token {
 
 // prisma/schema.prisma
 
-model daily_visitors {
+model DailyVisitors {
   id          String   @id @default(uuid())
   date        DateTime @unique @db.Date
   total_visits Int     @default(0)
@@ -56,5 +56,105 @@ model daily_visitors {
   
   @@index([date])
 }
+
+model EventProposal {
+  id               Int      @id @default(autoincrement())
+  proposal_number  String   @unique
+  event_from_date       DateTime
+  event_to_date       DateTime
+  event_description String
+  location String
+  event_objective String
+  status           String   @default("DRAFT")
+  created_by String
+  updated_by String
+
+  department_id    Int
+  region_id        Int
+  branch_id        Int
+  event_scale_id   Int
+  budget_master_id Int
+  event_name_id    Int
+
+  department  Department  @relation(fields: [department_id], references: [id])
+  region      Region      @relation(fields: [region_id], references: [id])
+  branch      Branch      @relation(fields: [branch_id], references: [id])
+  event_scale  EventScale  @relation(fields: [event_scale_id], references: [id])
+  budget_master BudgetMaster @relation(fields: [budget_master_id], references: [id])
+  event_name EventName @relation(fields: [event_name_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+}
+
+
+model Department {
+  id              Int      @id @default(autoincrement())
+  department_code String   @unique
+  department_name String
+  event_proposals EventProposal[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+}
+
+
+model Region {
+  id           Int     @id @default(autoincrement())
+  region_code  String  @unique
+  region_name  String
+  event_proposals EventProposal[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+}
+
+
+model Branch {
+  id            Int     @id @default(autoincrement())
+  branch_code   String  @unique
+  branch_name   String
+  region_id     Int
+  event_proposals EventProposal[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+}
+
+
+model EventScale {
+  id              Int     @id @default(autoincrement())
+  scale_code      String  @unique
+  scale_name      String
+  max_budget      Decimal
+  event_proposals EventProposal[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+}
+
+
+model BudgetMaster {
+  id             Int      @id @default(autoincrement())
+  financial_year String
+  total_budget   Decimal
+  event_proposals EventProposal[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+}
+
+
+model EventName {
+  id          Int    @id @default(autoincrement())
+  event_code  String @unique
+  description String
+  events      EventProposal[]
+
+}
+
+
+
 
 

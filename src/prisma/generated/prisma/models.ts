@@ -8,8 +8,15 @@
  *
  * 🟢 You can import this file directly.
  */
-export type * from './models/users'
-export type * from './models/password_reset_token'
-export type * from './models/refresh_token'
-export type * from './models/daily_visitors'
+export type * from './models/User'
+export type * from './models/PasswordResetToken'
+export type * from './models/RefreshToken'
+export type * from './models/DailyVisitors'
+export type * from './models/EventProposal'
+export type * from './models/Department'
+export type * from './models/Region'
+export type * from './models/Branch'
+export type * from './models/EventScale'
+export type * from './models/BudgetMaster'
+export type * from './models/EventName'
 export type * from './commonInputTypes'
