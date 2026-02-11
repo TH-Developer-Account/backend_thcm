@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
 
-export const requireAuth = (
+export const requireAuth = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -20,9 +21,20 @@ export const requireAuth = (
       sub: string;
     };
 
-    // Attach user ID to request
-    req.user = { id: decoded.sub };
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.sub },
+      select: {
+        id: true,
+        email: true,
+        is_active: true,
+      },
+    });
 
+    if (!user || !user.is_active) {
+      throw new ApiError(401, "User not authorized");
+    }
+
+    req.user = user;
     next();
   } catch {
     res.sendStatus(401);

@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.3.0",
   "engineVersion": "9d6ad21cbbceab97458517b147a6a09ff43aa735",
   "activeProvider": "postgresql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/prisma/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel users {\n  id                    String                 @id @default(uuid())\n  first_name            String                 @db.VarChar(50)\n  last_name             String                 @db.VarChar(50)\n  email                 String                 @unique @db.VarChar(100)\n  phone_number          String                 @unique @db.VarChar(15)\n  password              String                 @db.VarChar(255)\n  is_active             Boolean                @default(true)\n  is_default_login      Boolean                @default(true)\n  refresh_tokens        refresh_token[]\n  password_reset_tokens password_reset_token[]\n  created_at            DateTime               @default(now()) @db.Timestamp(6)\n  updated_at            DateTime               @default(now()) @db.Timestamp(6)\n}\n\nmodel password_reset_token {\n  id         String   @id @default(uuid())\n  user_id    String\n  user       users    @relation(fields: [user_id], references: [id], onDelete: Cascade)\n  token      String   @unique @db.VarChar(255)\n  expires_at DateTime\n  used       Boolean  @default(false)\n  created_at DateTime @default(now())\n}\n\nmodel refresh_token {\n  id         String   @id @default(uuid())\n  token_id   String   @unique @db.VarChar(36) // UUID\n  token_hash String   @db.VarChar(255)\n  token      String   @unique\n  user_id    String\n  user       users    @relation(fields: [user_id], references: [id], onDelete: Cascade)\n  user_agent String?\n  ip_address String?\n  revoked    Boolean  @default(false)\n  expires_at DateTime\n  created_at DateTime @default(now())\n}\n",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../src/prisma/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id                    String               @id @default(uuid())\n  first_name            String               @db.VarChar(50)\n  last_name             String               @db.VarChar(50)\n  email                 String               @unique @db.VarChar(100)\n  phone_number          String               @unique @db.VarChar(15)\n  password              String               @db.VarChar(255)\n  is_active             Boolean              @default(true)\n  is_default_login      Boolean              @default(true)\n  refresh_tokens        RefreshToken[]\n  password_reset_tokens PasswordResetToken[]\n  created_at            DateTime             @default(now()) @db.Timestamp(6)\n  updated_at            DateTime             @default(now()) @db.Timestamp(6)\n}\n\nmodel PasswordResetToken {\n  id         String   @id @default(uuid())\n  user_id    String\n  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)\n  token      String   @unique @db.VarChar(255)\n  expires_at DateTime\n  used       Boolean  @default(false)\n  created_at DateTime @default(now())\n}\n\nmodel RefreshToken {\n  id         String   @id @default(uuid())\n  token_id   String   @unique @db.VarChar(36) // UUID\n  token_hash String   @db.VarChar(255)\n  token      String   @unique\n  user_id    String\n  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)\n  user_agent String?\n  ip_address String?\n  revoked    Boolean  @default(false)\n  expires_at DateTime\n  created_at DateTime @default(now())\n}\n\n// prisma/schema.prisma\n\nmodel DailyVisitors {\n  id           String   @id @default(uuid())\n  date         DateTime @unique @db.Date\n  total_visits Int      @default(0)\n  created_at   DateTime @default(now())\n\n  @@index([date])\n}\n\nmodel EventProposal {\n  id                Int      @id @default(autoincrement())\n  proposal_number   String   @unique\n  event_from_date   DateTime\n  event_to_date     DateTime\n  event_description String\n  location          String\n  event_objective   String\n  status            String   @default(\"DRAFT\")\n  created_by        String\n  updated_by        String\n\n  department_id    Int\n  region_id        Int\n  branch_id        Int\n  event_scale_id   Int\n  budget_master_id Int\n  event_name_id    Int\n\n  department    Department   @relation(fields: [department_id], references: [id])\n  region        Region       @relation(fields: [region_id], references: [id])\n  branch        Branch       @relation(fields: [branch_id], references: [id])\n  event_scale   EventScale   @relation(fields: [event_scale_id], references: [id])\n  budget_master BudgetMaster @relation(fields: [budget_master_id], references: [id])\n  event_name    EventName    @relation(fields: [event_name_id], references: [id])\n\n  created_at DateTime @default(now())\n  updated_at DateTime @updatedAt\n}\n\nmodel Department {\n  id              Int             @id @default(autoincrement())\n  department_code String          @unique\n  department_name String\n  event_proposals EventProposal[]\n  created_at      DateTime        @default(now())\n  updated_at      DateTime        @updatedAt\n}\n\nmodel Region {\n  id              Int             @id @default(autoincrement())\n  region_code     String          @unique\n  region_name     String\n  event_proposals EventProposal[]\n  created_at      DateTime        @default(now())\n  updated_at      DateTime        @updatedAt\n}\n\nmodel Branch {\n  id              Int             @id @default(autoincrement())\n  branch_code     String          @unique\n  branch_name     String\n  region_id       Int\n  event_proposals EventProposal[]\n  created_at      DateTime        @default(now())\n  updated_at      DateTime        @updatedAt\n}\n\nmodel EventScale {\n  id              Int             @id @default(autoincrement())\n  scale_code      String          @unique\n  scale_name      String\n  max_budget      Decimal\n  event_proposals EventProposal[]\n  created_at      DateTime        @default(now())\n  updated_at      DateTime        @updatedAt\n}\n\nmodel BudgetMaster {\n  id              Int             @id @default(autoincrement())\n  financial_year  String\n  total_budget    Decimal\n  event_proposals EventProposal[]\n  created_at      DateTime        @default(now())\n  updated_at      DateTime        @updatedAt\n}\n\nmodel EventName {\n  id          Int             @id @default(autoincrement())\n  event_code  String          @unique\n  description String\n  events      EventProposal[]\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -28,7 +28,7 @@ const config: runtime.GetPrismaClientConfig = {
   }
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"users\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"first_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"is_default_login\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"refresh_tokens\",\"kind\":\"object\",\"type\":\"refresh_token\",\"relationName\":\"refresh_tokenTousers\"},{\"name\":\"password_reset_tokens\",\"kind\":\"object\",\"type\":\"password_reset_token\",\"relationName\":\"password_reset_tokenTousers\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"password_reset_token\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"users\",\"relationName\":\"password_reset_tokenTousers\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"used\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"refresh_token\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"users\",\"relationName\":\"refresh_tokenTousers\"},{\"name\":\"user_agent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ip_address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"revoked\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"expires_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"first_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"is_default_login\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"refresh_tokens\",\"kind\":\"object\",\"type\":\"RefreshToken\",\"relationName\":\"RefreshTokenToUser\"},{\"name\":\"password_reset_tokens\",\"kind\":\"object\",\"type\":\"PasswordResetToken\",\"relationName\":\"PasswordResetTokenToUser\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"PasswordResetToken\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"PasswordResetTokenToUser\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expires_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"used\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"RefreshToken\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"RefreshTokenToUser\"},{\"name\":\"user_agent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ip_address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"revoked\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"expires_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"DailyVisitors\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"total_visits\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"EventProposal\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"proposal_number\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"event_from_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"event_to_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"event_description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"location\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"event_objective\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_by\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"updated_by\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"department_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"region_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"branch_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"event_scale_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"budget_master_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"event_name_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"department\",\"kind\":\"object\",\"type\":\"Department\",\"relationName\":\"DepartmentToEventProposal\"},{\"name\":\"region\",\"kind\":\"object\",\"type\":\"Region\",\"relationName\":\"EventProposalToRegion\"},{\"name\":\"branch\",\"kind\":\"object\",\"type\":\"Branch\",\"relationName\":\"BranchToEventProposal\"},{\"name\":\"event_scale\",\"kind\":\"object\",\"type\":\"EventScale\",\"relationName\":\"EventProposalToEventScale\"},{\"name\":\"budget_master\",\"kind\":\"object\",\"type\":\"BudgetMaster\",\"relationName\":\"BudgetMasterToEventProposal\"},{\"name\":\"event_name\",\"kind\":\"object\",\"type\":\"EventName\",\"relationName\":\"EventNameToEventProposal\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Department\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"department_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"department_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"event_proposals\",\"kind\":\"object\",\"type\":\"EventProposal\",\"relationName\":\"DepartmentToEventProposal\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Region\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"region_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"region_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"event_proposals\",\"kind\":\"object\",\"type\":\"EventProposal\",\"relationName\":\"EventProposalToRegion\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Branch\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"branch_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"branch_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"region_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"event_proposals\",\"kind\":\"object\",\"type\":\"EventProposal\",\"relationName\":\"BranchToEventProposal\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"EventScale\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"scale_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"scale_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"max_budget\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"event_proposals\",\"kind\":\"object\",\"type\":\"EventProposal\",\"relationName\":\"EventProposalToEventScale\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"BudgetMaster\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"financial_year\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"total_budget\",\"kind\":\"scalar\",\"type\":\"Decimal\"},{\"name\":\"event_proposals\",\"kind\":\"object\",\"type\":\"EventProposal\",\"relationName\":\"BudgetMasterToEventProposal\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"EventName\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"event_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"events\",\"kind\":\"object\",\"type\":\"EventProposal\",\"relationName\":\"EventNameToEventProposal\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 
 async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Module> {
   const { Buffer } = await import('node:buffer')
@@ -61,7 +61,7 @@ export interface PrismaClientConstructor {
    * ```
    * const prisma = new PrismaClient()
    * // Fetch zero or more Users
-   * const users = await prisma.users.findMany()
+   * const users = await prisma.user.findMany()
    * ```
    * 
    * Read more in our [docs](https://pris.ly/d/client).
@@ -83,7 +83,7 @@ export interface PrismaClientConstructor {
  * ```
  * const prisma = new PrismaClient()
  * // Fetch zero or more Users
- * const users = await prisma.users.findMany()
+ * const users = await prisma.user.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -177,44 +177,114 @@ export interface PrismaClient<
   }>>
 
       /**
-   * `prisma.users`: Exposes CRUD operations for the **users** model.
+   * `prisma.user`: Exposes CRUD operations for the **User** model.
     * Example usage:
     * ```ts
     * // Fetch zero or more Users
-    * const users = await prisma.users.findMany()
+    * const users = await prisma.user.findMany()
     * ```
     */
-  get users(): Prisma.usersDelegate<ExtArgs, { omit: OmitOpts }>;
+  get user(): Prisma.UserDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
-   * `prisma.password_reset_token`: Exposes CRUD operations for the **password_reset_token** model.
+   * `prisma.passwordResetToken`: Exposes CRUD operations for the **PasswordResetToken** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Password_reset_tokens
-    * const password_reset_tokens = await prisma.password_reset_token.findMany()
+    * // Fetch zero or more PasswordResetTokens
+    * const passwordResetTokens = await prisma.passwordResetToken.findMany()
     * ```
     */
-  get password_reset_token(): Prisma.password_reset_tokenDelegate<ExtArgs, { omit: OmitOpts }>;
+  get passwordResetToken(): Prisma.PasswordResetTokenDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
-   * `prisma.refresh_token`: Exposes CRUD operations for the **refresh_token** model.
+   * `prisma.refreshToken`: Exposes CRUD operations for the **RefreshToken** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Refresh_tokens
-    * const refresh_tokens = await prisma.refresh_token.findMany()
+    * // Fetch zero or more RefreshTokens
+    * const refreshTokens = await prisma.refreshToken.findMany()
     * ```
     */
-  get refresh_token(): Prisma.refresh_tokenDelegate<ExtArgs, { omit: OmitOpts }>;
+  get refreshToken(): Prisma.RefreshTokenDelegate<ExtArgs, { omit: OmitOpts }>;
 
   /**
-   * `prisma.daily_visitors`: Exposes CRUD operations for the **daily_visitors** model.
+   * `prisma.dailyVisitors`: Exposes CRUD operations for the **DailyVisitors** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more Daily_visitors
-    * const daily_visitors = await prisma.daily_visitors.findMany()
+    * // Fetch zero or more DailyVisitors
+    * const dailyVisitors = await prisma.dailyVisitors.findMany()
     * ```
     */
-  get daily_visitors(): Prisma.daily_visitorsDelegate<ExtArgs, { omit: OmitOpts }>;
+  get dailyVisitors(): Prisma.DailyVisitorsDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.eventProposal`: Exposes CRUD operations for the **EventProposal** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EventProposals
+    * const eventProposals = await prisma.eventProposal.findMany()
+    * ```
+    */
+  get eventProposal(): Prisma.EventProposalDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.department`: Exposes CRUD operations for the **Department** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Departments
+    * const departments = await prisma.department.findMany()
+    * ```
+    */
+  get department(): Prisma.DepartmentDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.region`: Exposes CRUD operations for the **Region** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Regions
+    * const regions = await prisma.region.findMany()
+    * ```
+    */
+  get region(): Prisma.RegionDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.branch`: Exposes CRUD operations for the **Branch** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Branches
+    * const branches = await prisma.branch.findMany()
+    * ```
+    */
+  get branch(): Prisma.BranchDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.eventScale`: Exposes CRUD operations for the **EventScale** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EventScales
+    * const eventScales = await prisma.eventScale.findMany()
+    * ```
+    */
+  get eventScale(): Prisma.EventScaleDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.budgetMaster`: Exposes CRUD operations for the **BudgetMaster** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more BudgetMasters
+    * const budgetMasters = await prisma.budgetMaster.findMany()
+    * ```
+    */
+  get budgetMaster(): Prisma.BudgetMasterDelegate<ExtArgs, { omit: OmitOpts }>;
+
+  /**
+   * `prisma.eventName`: Exposes CRUD operations for the **EventName** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more EventNames
+    * const eventNames = await prisma.eventName.findMany()
+    * ```
+    */
+  get eventName(): Prisma.EventNameDelegate<ExtArgs, { omit: OmitOpts }>;
 }
 
 export function getPrismaClientClass(): PrismaClientConstructor {

@@ -1,0 +1,278 @@
+// src/controllers/eventProposal.controller.ts
+import { Request, Response, NextFunction } from "express";
+import { prisma } from "../config/prisma";
+import ApiError from "../utils/apiError";
+
+export const createEventProposal = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const {
+      proposal_number,
+      event_name_id,
+      event_from_date,
+      event_to_date,
+      event_description,
+      location,
+      event_objective,
+      department_id,
+      region_id,
+      branch_id,
+      event_scale_id,
+      budget_master_id,
+    } = req.body;
+
+    if (
+      !proposal_number ||
+      !event_name_id ||
+      !event_from_date ||
+      !event_to_date ||
+      !department_id ||
+      !region_id ||
+      !branch_id ||
+      !event_scale_id ||
+      !budget_master_id
+    ) {
+      throw new ApiError(400, "Missing required fields");
+    }
+
+    if (new Date(event_from_date) > new Date(event_to_date)) {
+      throw new ApiError(400, "event_from_date cannot be after event_to_date");
+    }
+
+    // Check if the user has the permission to create EPC
+
+    const proposal = await prisma.eventProposal.create({
+      data: {
+        proposal_number,
+        event_name_id,
+        event_from_date: new Date(event_from_date),
+        event_to_date: new Date(event_to_date),
+        event_description,
+        location,
+        event_objective,
+        department_id,
+        region_id,
+        branch_id,
+        event_scale_id,
+        budget_master_id,
+        created_by: req.user.id,
+        updated_by: req.user.id,
+      },
+    });
+
+    res.status(201).json(proposal);
+  } catch (error: any) {
+    if (error.code === "P2002") {
+      throw new ApiError(409, "Proposal number already exists");
+    }
+    next(error);
+  }
+};
+
+export const getAllEventProposals = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const {
+      page = "1",
+      pageSize = "10",
+      search = "",
+      sortBy = "created_at",
+      sortOrder = "desc",
+      status,
+    } = req.query;
+
+    const pageNumber = Number(page);
+    const take = Number(pageSize);
+    const skip = (pageNumber - 1) * take;
+
+    /* ---------------- WHERE (FILTERING) ---------------- */
+    const where: any = {};
+
+    if (search) {
+      where.OR = [
+        {
+          company: {
+            contains: String(search),
+            mode: "insensitive",
+          },
+        },
+        {
+          email: {
+            contains: String(search),
+            mode: "insensitive",
+          },
+        },
+      ];
+    }
+
+    if (status) {
+      where.status = status;
+    }
+
+    /* ---------------- SORTING ---------------- */
+    const orderBy: any = {
+      [String(sortBy)]: sortOrder === "asc" ? "asc" : "desc",
+    };
+
+    /* ---------------- DATA QUERY ---------------- */
+    const [proposals, total] = await Promise.all([
+      prisma.eventProposal.findMany({
+        where,
+        skip,
+        take,
+        orderBy,
+        select: {
+          id: true,
+          proposal_number: true,
+          event_from_date: true,
+          event_to_date: true,
+          event_description: true,
+          location: true,
+          event_objective: true,
+          status: true,
+          created_by: true,
+          created_at: true,
+
+          department: {
+            select: {
+              department_name: true,
+            },
+          },
+
+          region: {
+            select: {
+              region_name: true,
+            },
+          },
+
+          branch: {
+            select: {
+              branch_name: true,
+            },
+          },
+
+          event_scale: {
+            select: {
+              scale_name: true,
+              max_budget: true,
+            },
+          },
+
+          budget_master: {
+            select: {
+              financial_year: true,
+              total_budget: true,
+            },
+          },
+
+          event_name: {
+            select: {
+              description: true,
+            },
+          },
+        },
+      }),
+      prisma.eventProposal.count({ where }),
+    ]);
+
+    /* ---------------- RESPONSE ---------------- */
+    res.status(200).json({
+      data: proposals,
+      pagination: {
+        total,
+        page: pageNumber,
+        pageSize: take,
+        totalPages: Math.ceil(total / take),
+      },
+    });
+  } catch (error) {
+    console.log("error===========>", JSON.stringify(error, null, 2));
+    next(error);
+  }
+};
+
+export const getEventProposalById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = Number(req.params.id);
+    if (isNaN(id)) {
+      throw new ApiError(404, "Invalid ID");
+    }
+
+    const proposal = await prisma.eventProposal.findUnique({
+      where: { id },
+    });
+
+    if (!proposal) {
+      throw new ApiError(404, "Event Proposal not found");
+    }
+    res.status(200).json(proposal);
+  } catch (error: any) {
+    next(error);
+  }
+};
+
+export const updateEventProposal = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = Number(req.params.id);
+    const { ...data } = req.body;
+
+    if (isNaN(id)) {
+      throw new ApiError(404, "Invalid ID");
+    }
+
+    const updated = await prisma.eventProposal.update({
+      where: { id },
+      data: {
+        ...data,
+        updated_by: req.user.id,
+      },
+    });
+
+    res.status(200).json(updated);
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      throw new ApiError(404, "Event Proposal not found");
+    }
+    next(error);
+  }
+};
+
+export const deleteEventProposal = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (isNaN(id)) {
+      throw new ApiError(400, "Invalid ID");
+    }
+
+    const updated = await prisma.eventProposal.update({
+      where: { id },
+      data: {
+        status: "DELETED",
+        updated_by: req.user.id,
+      },
+    });
+
+    res.status(200).json({ message: "Event Proposal deleted successfully" });
+  } catch (error: any) {
+    next(error);
+  }
+};

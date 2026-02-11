@@ -25,7 +25,7 @@ export const registerUser = async (
     }
 
     // Check if user exists
-    const existingUser = await prisma.users.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { email },
     });
 
@@ -37,7 +37,7 @@ export const registerUser = async (
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
     // Save user
-    const user = await prisma.users.create({
+    const user = await prisma.user.create({
       data: {
         first_name,
         last_name,
@@ -76,7 +76,7 @@ export const loginWithPassword = async (
     }
 
     // Check if user exists
-    const existingUser = await prisma.users.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { email },
     });
 
@@ -164,7 +164,7 @@ export const sendOtp = async (
       throw new ApiError(400, "Phone number is required");
     }
 
-    const user = await prisma.users.findUnique({
+    const user = await prisma.user.findUnique({
       where: { phone_number },
     });
 
@@ -219,7 +219,7 @@ export const verifyOtp = async (
     }
 
     // 2️⃣ Fetch user
-    const user = await prisma.users.findUnique({
+    const user = await prisma.user.findUnique({
       where: { phone_number },
     });
 
@@ -279,7 +279,7 @@ export const refreshAccessToken = async (
     const [tokenId, rawToken] = token.split(".");
     if (!tokenId || !rawToken) throw new ApiError(401, "Invalid token format");
 
-    const stored = await prisma.refresh_token.findUnique({
+    const stored = await prisma.refreshToken.findUnique({
       where: { token_id: tokenId },
       include: { user: true },
     });
@@ -291,7 +291,7 @@ export const refreshAccessToken = async (
 
     if (stored.revoked) {
       // Possible token reuse - revoke all user's tokens
-      await prisma.refresh_token.updateMany({
+      await prisma.refreshToken.updateMany({
         where: { user_id: stored.user_id },
         data: { revoked: true },
       });
@@ -305,7 +305,7 @@ export const refreshAccessToken = async (
     if (!valid) throw new ApiError(403, "Token not valid.");
 
     // 🔁 ROTATION
-    await prisma.refresh_token.update({
+    await prisma.refreshToken.update({
       where: { token_id: tokenId },
       data: { revoked: true },
     });
@@ -346,7 +346,7 @@ export const logout = async (
 
     const [tokenId] = token.split(".");
 
-    await prisma.refresh_token.updateMany({
+    await prisma.refreshToken.updateMany({
       where: { token_id: tokenId },
       data: { revoked: true },
     });
@@ -373,7 +373,7 @@ export const resetDefaultPassword = async (
     }
 
     // Find user
-    const user = await prisma.users.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email },
     });
 
@@ -394,7 +394,7 @@ export const resetDefaultPassword = async (
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Update password and set is_default_login to false
-    await prisma.users.update({
+    await prisma.user.update({
       where: { email },
       data: {
         password: hashedPassword,
@@ -425,7 +425,7 @@ export const forgotPassword = async (
     }
 
     // Find user
-    const user = await prisma.users.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email },
     });
 
@@ -447,7 +447,7 @@ export const forgotPassword = async (
       .digest("hex");
 
     // Invalidate any existing tokens for this user
-    await prisma.password_reset_token.updateMany({
+    await prisma.passwordResetToken.updateMany({
       where: {
         user_id: user.id,
         used: false,
@@ -456,7 +456,7 @@ export const forgotPassword = async (
     });
 
     // Create new reset token (expires in 1 hour)
-    await prisma.password_reset_token.create({
+    await prisma.passwordResetToken.create({
       data: {
         user_id: user.id,
         token: hashedToken,
@@ -498,7 +498,7 @@ export const verifyResetToken = async (
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     // Find valid token
-    const resetToken = await prisma.password_reset_token.findFirst({
+    const resetToken = await prisma.passwordResetToken.findFirst({
       where: {
         token: hashedToken,
         used: false,
@@ -542,7 +542,7 @@ export const resetPasswordWithToken = async (
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     // Find valid token
-    const resetToken = await prisma.password_reset_token.findFirst({
+    const resetToken = await prisma.passwordResetToken.findFirst({
       where: {
         token: hashedToken,
         used: false,
@@ -560,7 +560,7 @@ export const resetPasswordWithToken = async (
 
     // Update password and mark token as used
     await prisma.$transaction([
-      prisma.users.update({
+      prisma.user.update({
         where: { id: resetToken.user_id },
         data: {
           password: hashedPassword,
@@ -568,12 +568,12 @@ export const resetPasswordWithToken = async (
           updated_at: new Date(),
         },
       }),
-      prisma.password_reset_token.update({
+      prisma.passwordResetToken.update({
         where: { id: resetToken.id },
         data: { used: true },
       }),
       // Revoke all refresh tokens (logout from all devices)
-      prisma.refresh_token.updateMany({
+      prisma.refreshToken.updateMany({
         where: { user_id: resetToken.user_id },
         data: { revoked: true },
       }),

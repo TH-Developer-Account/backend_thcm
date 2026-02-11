@@ -23,7 +23,7 @@ export const createRefreshToken = async ({
 
   const tokenHash = await bcrypt.hash(rawToken, 10);
 
-  await prisma.refresh_token.create({
+  await prisma.refreshToken.create({
     data: {
       token_id: tokenId,
       token_hash: tokenHash,
