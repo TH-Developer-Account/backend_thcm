@@ -91,17 +91,21 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
     ep.location,
     ep.event_objective,
     ep.status,
-    ep.created_by,
+    ep.created_by_id,
     ep.created_at,
     ep.department_id,
     ep.event_name_id,
     en.description AS event_name,
+    us.first_name AS first_name,
+    us.last_name AS last_name,
       ${ranking} AS rank
     FROM "EventProposal" ep
      LEFT JOIN "EventName" en 
         ON ep.event_name_id = en.id
      LEFT JOIN "Department" d  
         ON ep.department_id = d.id
+     LEFT JOIN "User" us  
+        ON ep.created_by_id = us.id
     ${whereClause}
     ${orderByClause}
     LIMIT ${pageSize}

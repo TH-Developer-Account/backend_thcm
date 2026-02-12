@@ -59,8 +59,8 @@ export const createEventProposal = async (
         branch_id,
         event_scale_id,
         budget_master_id,
-        created_by: req.user.id,
-        updated_by: req.user.id,
+        created_by_id: req.user.id,
+        updated_by_id: req.user.id,
       },
     });
 
@@ -127,8 +127,8 @@ export const getEventProposalById = async (
   next: NextFunction,
 ) => {
   try {
-    const id = Number(req.params.id);
-    if (isNaN(id)) {
+    const id = String(req.params.id);
+    if (!id) {
       throw new ApiError(404, "Invalid ID");
     }
 
@@ -151,10 +151,10 @@ export const updateEventProposal = async (
   next: NextFunction,
 ) => {
   try {
-    const id = Number(req.params.id);
+    const id = String(req.params.id);
     const { ...data } = req.body;
 
-    if (isNaN(id)) {
+    if (id) {
       throw new ApiError(404, "Invalid ID");
     }
 
@@ -181,9 +181,9 @@ export const deleteEventProposal = async (
   next: NextFunction,
 ) => {
   try {
-    const id = Number(req.params.id);
+    const id = String(req.params.id);
 
-    if (isNaN(id)) {
+    if (id) {
       throw new ApiError(400, "Invalid ID");
     }
 
@@ -191,7 +191,7 @@ export const deleteEventProposal = async (
       where: { id },
       data: {
         status: "DELETED",
-        updated_by: req.user.id,
+        updated_by_id: req.user.id,
       },
     });
 

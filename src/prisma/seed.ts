@@ -14,58 +14,6 @@ async function main() {
   await prisma.budgetMaster.deleteMany();
   await prisma.eventName.deleteMany();
 
-  /* -------------------- USERS -------------------- */
-
-  const users = await Promise.all(
-    [
-      {
-        first_name: "Amit",
-        last_name: "Sharma",
-        email: "amit.sharma@company.com",
-        phone_number: "9876543210",
-      },
-      {
-        first_name: "Neha",
-        last_name: "Verma",
-        email: "neha.verma@company.com",
-        phone_number: "9812345678",
-      },
-      {
-        first_name: "Rahul",
-        last_name: "Mehta",
-        email: "rahul.mehta@company.com",
-        phone_number: "9898989898",
-      },
-      {
-        first_name: "Priya",
-        last_name: "Iyer",
-        email: "priya.iyer@company.com",
-        phone_number: "9823456789",
-      },
-      {
-        first_name: "Sandeep",
-        last_name: "Kumar",
-        email: "sandeep.kumar@company.com",
-        phone_number: "9765432109",
-      },
-      {
-        first_name: "Ananya",
-        last_name: "Gupta",
-        email: "ananya.gupta@company.com",
-        phone_number: "9753124680",
-      },
-    ].map((user) =>
-      prisma.user.create({
-        data: {
-          ...user,
-          password: "Password@123",
-          is_active: true,
-          is_default_login: true,
-        },
-      }),
-    ),
-  );
-
   /* -------------------- DEPARTMENTS -------------------- */
   const departments = await Promise.all(
     ["Marketing", "HR", "Finance", "Operations", "Sales"].map((name) =>
@@ -155,6 +103,25 @@ async function main() {
     ),
   );
 
+  /* -------------------- RANDOM USERS -------------------- */
+
+  const RANDOM_USERS = 10;
+
+  const randomUsers = await Promise.all(
+    Array.from({ length: RANDOM_USERS }).map(() =>
+      prisma.user.create({
+        data: {
+          first_name: faker.person.firstName(),
+          last_name: faker.person.lastName(),
+          email: faker.internet.email().toLowerCase(),
+          phone_number: `9${faker.string.numeric(9)}`,
+          password: "Password@123",
+          is_active: true,
+          is_default_login: true,
+        },
+      }),
+    ),
+  );
   /* -------------------- EVENT PROPOSALS -------------------- */
   const TOTAL_EVENTS = 50; // 🔥 Change this number anytime
 
@@ -167,6 +134,7 @@ async function main() {
     const scale = faker.helpers.arrayElement(eventScales);
     const budget = faker.helpers.arrayElement(budgetMasters);
     const eventName = faker.helpers.arrayElement(eventNames);
+    const user = faker.helpers.arrayElement(randomUsers);
 
     const startDate = faker.date.future();
     const endDate = faker.date.soon({ days: 2, refDate: startDate });
@@ -179,31 +147,24 @@ async function main() {
         event_description: faker.lorem.sentences(2),
         location: faker.location.city(),
         event_objective: faker.company.catchPhrase(),
-        status: faker.helpers.arrayElement(["DRAFT", "SUBMITTED", "APPROVED"]),
-        created_by: faker.internet.email(),
-        updated_by: faker.internet.email(),
+        status: faker.helpers.arrayElement([
+          "RECOMMENDED",
+          "PENDING",
+          "SENT_BACK",
+          "REPORT_SUBMITTED",
+          "APPROVED",
+          "SUBMITTED",
+          "CANCELLED",
+          "COMPLETED",
+        ]),
+        created_by_id: user.id,
+        updated_by_id: user.id,
         department_id: department.id,
         region_id: region.id,
         branch_id: branch.id,
         event_scale_id: scale.id,
         budget_master_id: budget.id,
         event_name_id: eventName.id,
-      },
-    });
-  }
-
-  const RANDOM_USERS = 10;
-
-  for (let i = 0; i < RANDOM_USERS; i++) {
-    await prisma.user.create({
-      data: {
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email().toLowerCase(),
-        phone_number: `9${faker.string.numeric(9)}`,
-        password: "Password@123",
-        is_active: true,
-        is_default_login: true,
       },
     });
   }

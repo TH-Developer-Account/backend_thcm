@@ -20,22 +20,12 @@ export type RegionModel = runtime.Types.Result.DefaultSelection<Prisma.$RegionPa
 
 export type AggregateRegion = {
   _count: RegionCountAggregateOutputType | null
-  _avg: RegionAvgAggregateOutputType | null
-  _sum: RegionSumAggregateOutputType | null
   _min: RegionMinAggregateOutputType | null
   _max: RegionMaxAggregateOutputType | null
 }
 
-export type RegionAvgAggregateOutputType = {
-  id: number | null
-}
-
-export type RegionSumAggregateOutputType = {
-  id: number | null
-}
-
 export type RegionMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   region_code: string | null
   region_name: string | null
   created_at: Date | null
@@ -43,7 +33,7 @@ export type RegionMinAggregateOutputType = {
 }
 
 export type RegionMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   region_code: string | null
   region_name: string | null
   created_at: Date | null
@@ -59,14 +49,6 @@ export type RegionCountAggregateOutputType = {
   _all: number
 }
 
-
-export type RegionAvgAggregateInputType = {
-  id?: true
-}
-
-export type RegionSumAggregateInputType = {
-  id?: true
-}
 
 export type RegionMinAggregateInputType = {
   id?: true
@@ -131,18 +113,6 @@ export type RegionAggregateArgs<ExtArgs extends runtime.Types.Extensions.Interna
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: RegionAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: RegionSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: RegionMinAggregateInputType
@@ -173,21 +143,17 @@ export type RegionGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   _count?: RegionCountAggregateInputType | true
-  _avg?: RegionAvgAggregateInputType
-  _sum?: RegionSumAggregateInputType
   _min?: RegionMinAggregateInputType
   _max?: RegionMaxAggregateInputType
 }
 
 export type RegionGroupByOutputType = {
-  id: number
+  id: string
   region_code: string
   region_name: string
   created_at: Date
   updated_at: Date
   _count: RegionCountAggregateOutputType | null
-  _avg: RegionAvgAggregateOutputType | null
-  _sum: RegionSumAggregateOutputType | null
   _min: RegionMinAggregateOutputType | null
   _max: RegionMaxAggregateOutputType | null
 }
@@ -211,12 +177,13 @@ export type RegionWhereInput = {
   AND?: Prisma.RegionWhereInput | Prisma.RegionWhereInput[]
   OR?: Prisma.RegionWhereInput[]
   NOT?: Prisma.RegionWhereInput | Prisma.RegionWhereInput[]
-  id?: Prisma.IntFilter<"Region"> | number
+  id?: Prisma.StringFilter<"Region"> | string
   region_code?: Prisma.StringFilter<"Region"> | string
   region_name?: Prisma.StringFilter<"Region"> | string
   created_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
+  branch?: Prisma.BranchListRelationFilter
 }
 
 export type RegionOrderByWithRelationInput = {
@@ -226,10 +193,11 @@ export type RegionOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
+  branch?: Prisma.BranchOrderByRelationAggregateInput
 }
 
 export type RegionWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   region_code?: string
   AND?: Prisma.RegionWhereInput | Prisma.RegionWhereInput[]
   OR?: Prisma.RegionWhereInput[]
@@ -238,6 +206,7 @@ export type RegionWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
+  branch?: Prisma.BranchListRelationFilter
 }, "id" | "region_code">
 
 export type RegionOrderByWithAggregationInput = {
@@ -247,17 +216,15 @@ export type RegionOrderByWithAggregationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.RegionCountOrderByAggregateInput
-  _avg?: Prisma.RegionAvgOrderByAggregateInput
   _max?: Prisma.RegionMaxOrderByAggregateInput
   _min?: Prisma.RegionMinOrderByAggregateInput
-  _sum?: Prisma.RegionSumOrderByAggregateInput
 }
 
 export type RegionScalarWhereWithAggregatesInput = {
   AND?: Prisma.RegionScalarWhereWithAggregatesInput | Prisma.RegionScalarWhereWithAggregatesInput[]
   OR?: Prisma.RegionScalarWhereWithAggregatesInput[]
   NOT?: Prisma.RegionScalarWhereWithAggregatesInput | Prisma.RegionScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Region"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Region"> | string
   region_code?: Prisma.StringWithAggregatesFilter<"Region"> | string
   region_name?: Prisma.StringWithAggregatesFilter<"Region"> | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Region"> | Date | string
@@ -265,41 +232,47 @@ export type RegionScalarWhereWithAggregatesInput = {
 }
 
 export type RegionCreateInput = {
+  id?: string
   region_code: string
   region_name: string
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalCreateNestedManyWithoutRegionInput
+  branch?: Prisma.BranchCreateNestedManyWithoutRegionInput
 }
 
 export type RegionUncheckedCreateInput = {
-  id?: number
+  id?: string
   region_code: string
   region_name: string
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutRegionInput
+  branch?: Prisma.BranchUncheckedCreateNestedManyWithoutRegionInput
 }
 
 export type RegionUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   region_code?: Prisma.StringFieldUpdateOperationsInput | string
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUpdateManyWithoutRegionNestedInput
+  branch?: Prisma.BranchUpdateManyWithoutRegionNestedInput
 }
 
 export type RegionUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   region_code?: Prisma.StringFieldUpdateOperationsInput | string
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutRegionNestedInput
+  branch?: Prisma.BranchUncheckedUpdateManyWithoutRegionNestedInput
 }
 
 export type RegionCreateManyInput = {
-  id?: number
+  id?: string
   region_code: string
   region_name: string
   created_at?: Date | string
@@ -307,6 +280,7 @@ export type RegionCreateManyInput = {
 }
 
 export type RegionUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   region_code?: Prisma.StringFieldUpdateOperationsInput | string
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -314,7 +288,7 @@ export type RegionUpdateManyMutationInput = {
 }
 
 export type RegionUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   region_code?: Prisma.StringFieldUpdateOperationsInput | string
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -334,10 +308,6 @@ export type RegionCountOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
-export type RegionAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-}
-
 export type RegionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   region_code?: Prisma.SortOrder
@@ -354,10 +324,6 @@ export type RegionMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
-export type RegionSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-}
-
 export type RegionCreateNestedOneWithoutEvent_proposalsInput = {
   create?: Prisma.XOR<Prisma.RegionCreateWithoutEvent_proposalsInput, Prisma.RegionUncheckedCreateWithoutEvent_proposalsInput>
   connectOrCreate?: Prisma.RegionCreateOrConnectWithoutEvent_proposalsInput
@@ -372,19 +338,36 @@ export type RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RegionUpdateToOneWithWhereWithoutEvent_proposalsInput, Prisma.RegionUpdateWithoutEvent_proposalsInput>, Prisma.RegionUncheckedUpdateWithoutEvent_proposalsInput>
 }
 
+export type RegionCreateNestedOneWithoutBranchInput = {
+  create?: Prisma.XOR<Prisma.RegionCreateWithoutBranchInput, Prisma.RegionUncheckedCreateWithoutBranchInput>
+  connectOrCreate?: Prisma.RegionCreateOrConnectWithoutBranchInput
+  connect?: Prisma.RegionWhereUniqueInput
+}
+
+export type RegionUpdateOneRequiredWithoutBranchNestedInput = {
+  create?: Prisma.XOR<Prisma.RegionCreateWithoutBranchInput, Prisma.RegionUncheckedCreateWithoutBranchInput>
+  connectOrCreate?: Prisma.RegionCreateOrConnectWithoutBranchInput
+  upsert?: Prisma.RegionUpsertWithoutBranchInput
+  connect?: Prisma.RegionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RegionUpdateToOneWithWhereWithoutBranchInput, Prisma.RegionUpdateWithoutBranchInput>, Prisma.RegionUncheckedUpdateWithoutBranchInput>
+}
+
 export type RegionCreateWithoutEvent_proposalsInput = {
+  id?: string
   region_code: string
   region_name: string
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedManyWithoutRegionInput
 }
 
 export type RegionUncheckedCreateWithoutEvent_proposalsInput = {
-  id?: number
+  id?: string
   region_code: string
   region_name: string
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchUncheckedCreateNestedManyWithoutRegionInput
 }
 
 export type RegionCreateOrConnectWithoutEvent_proposalsInput = {
@@ -404,18 +387,73 @@ export type RegionUpdateToOneWithWhereWithoutEvent_proposalsInput = {
 }
 
 export type RegionUpdateWithoutEvent_proposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   region_code?: Prisma.StringFieldUpdateOperationsInput | string
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateManyWithoutRegionNestedInput
 }
 
 export type RegionUncheckedUpdateWithoutEvent_proposalsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   region_code?: Prisma.StringFieldUpdateOperationsInput | string
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUncheckedUpdateManyWithoutRegionNestedInput
+}
+
+export type RegionCreateWithoutBranchInput = {
+  id?: string
+  region_code: string
+  region_name: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  event_proposals?: Prisma.EventProposalCreateNestedManyWithoutRegionInput
+}
+
+export type RegionUncheckedCreateWithoutBranchInput = {
+  id?: string
+  region_code: string
+  region_name: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutRegionInput
+}
+
+export type RegionCreateOrConnectWithoutBranchInput = {
+  where: Prisma.RegionWhereUniqueInput
+  create: Prisma.XOR<Prisma.RegionCreateWithoutBranchInput, Prisma.RegionUncheckedCreateWithoutBranchInput>
+}
+
+export type RegionUpsertWithoutBranchInput = {
+  update: Prisma.XOR<Prisma.RegionUpdateWithoutBranchInput, Prisma.RegionUncheckedUpdateWithoutBranchInput>
+  create: Prisma.XOR<Prisma.RegionCreateWithoutBranchInput, Prisma.RegionUncheckedCreateWithoutBranchInput>
+  where?: Prisma.RegionWhereInput
+}
+
+export type RegionUpdateToOneWithWhereWithoutBranchInput = {
+  where?: Prisma.RegionWhereInput
+  data: Prisma.XOR<Prisma.RegionUpdateWithoutBranchInput, Prisma.RegionUncheckedUpdateWithoutBranchInput>
+}
+
+export type RegionUpdateWithoutBranchInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_code?: Prisma.StringFieldUpdateOperationsInput | string
+  region_name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_proposals?: Prisma.EventProposalUpdateManyWithoutRegionNestedInput
+}
+
+export type RegionUncheckedUpdateWithoutBranchInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_code?: Prisma.StringFieldUpdateOperationsInput | string
+  region_name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutRegionNestedInput
 }
 
 
@@ -425,10 +463,12 @@ export type RegionUncheckedUpdateWithoutEvent_proposalsInput = {
 
 export type RegionCountOutputType = {
   event_proposals: number
+  branch: number
 }
 
 export type RegionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event_proposals?: boolean | RegionCountOutputTypeCountEvent_proposalsArgs
+  branch?: boolean | RegionCountOutputTypeCountBranchArgs
 }
 
 /**
@@ -448,6 +488,13 @@ export type RegionCountOutputTypeCountEvent_proposalsArgs<ExtArgs extends runtim
   where?: Prisma.EventProposalWhereInput
 }
 
+/**
+ * RegionCountOutputType without action
+ */
+export type RegionCountOutputTypeCountBranchArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BranchWhereInput
+}
+
 
 export type RegionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -456,6 +503,7 @@ export type RegionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   created_at?: boolean
   updated_at?: boolean
   event_proposals?: boolean | Prisma.Region$event_proposalsArgs<ExtArgs>
+  branch?: boolean | Prisma.Region$branchArgs<ExtArgs>
   _count?: boolean | Prisma.RegionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["region"]>
 
@@ -486,6 +534,7 @@ export type RegionSelectScalar = {
 export type RegionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "region_code" | "region_name" | "created_at" | "updated_at", ExtArgs["result"]["region"]>
 export type RegionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event_proposals?: boolean | Prisma.Region$event_proposalsArgs<ExtArgs>
+  branch?: boolean | Prisma.Region$branchArgs<ExtArgs>
   _count?: boolean | Prisma.RegionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RegionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -495,9 +544,10 @@ export type $RegionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Region"
   objects: {
     event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
+    branch: Prisma.$BranchPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     region_code: string
     region_name: string
     created_at: Date
@@ -897,6 +947,7 @@ readonly fields: RegionFieldRefs;
 export interface Prisma__RegionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   event_proposals<T extends Prisma.Region$event_proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Region$event_proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  branch<T extends Prisma.Region$branchArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Region$branchArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -926,7 +977,7 @@ export interface Prisma__RegionClient<T, Null = never, ExtArgs extends runtime.T
  * Fields of the Region model
  */
 export interface RegionFieldRefs {
-  readonly id: Prisma.FieldRef<"Region", 'Int'>
+  readonly id: Prisma.FieldRef<"Region", 'String'>
   readonly region_code: Prisma.FieldRef<"Region", 'String'>
   readonly region_name: Prisma.FieldRef<"Region", 'String'>
   readonly created_at: Prisma.FieldRef<"Region", 'DateTime'>
@@ -1340,6 +1391,30 @@ export type Region$event_proposalsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.EventProposalScalarFieldEnum | Prisma.EventProposalScalarFieldEnum[]
+}
+
+/**
+ * Region.branch
+ */
+export type Region$branchArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Branch
+   */
+  select?: Prisma.BranchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Branch
+   */
+  omit?: Prisma.BranchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BranchInclude<ExtArgs> | null
+  where?: Prisma.BranchWhereInput
+  orderBy?: Prisma.BranchOrderByWithRelationInput | Prisma.BranchOrderByWithRelationInput[]
+  cursor?: Prisma.BranchWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BranchScalarFieldEnum | Prisma.BranchScalarFieldEnum[]
 }
 
 /**

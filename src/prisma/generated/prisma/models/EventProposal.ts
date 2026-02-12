@@ -20,34 +20,12 @@ export type EventProposalModel = runtime.Types.Result.DefaultSelection<Prisma.$E
 
 export type AggregateEventProposal = {
   _count: EventProposalCountAggregateOutputType | null
-  _avg: EventProposalAvgAggregateOutputType | null
-  _sum: EventProposalSumAggregateOutputType | null
   _min: EventProposalMinAggregateOutputType | null
   _max: EventProposalMaxAggregateOutputType | null
 }
 
-export type EventProposalAvgAggregateOutputType = {
-  id: number | null
-  department_id: number | null
-  region_id: number | null
-  branch_id: number | null
-  event_scale_id: number | null
-  budget_master_id: number | null
-  event_name_id: number | null
-}
-
-export type EventProposalSumAggregateOutputType = {
-  id: number | null
-  department_id: number | null
-  region_id: number | null
-  branch_id: number | null
-  event_scale_id: number | null
-  budget_master_id: number | null
-  event_name_id: number | null
-}
-
 export type EventProposalMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   proposal_number: string | null
   event_from_date: Date | null
   event_to_date: Date | null
@@ -55,20 +33,20 @@ export type EventProposalMinAggregateOutputType = {
   location: string | null
   event_objective: string | null
   status: string | null
-  created_by: string | null
-  updated_by: string | null
-  department_id: number | null
-  region_id: number | null
-  branch_id: number | null
-  event_scale_id: number | null
-  budget_master_id: number | null
-  event_name_id: number | null
+  created_by_id: string | null
+  updated_by_id: string | null
+  department_id: string | null
+  region_id: string | null
+  branch_id: string | null
+  event_scale_id: string | null
+  budget_master_id: string | null
+  event_name_id: string | null
   created_at: Date | null
   updated_at: Date | null
 }
 
 export type EventProposalMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   proposal_number: string | null
   event_from_date: Date | null
   event_to_date: Date | null
@@ -76,14 +54,14 @@ export type EventProposalMaxAggregateOutputType = {
   location: string | null
   event_objective: string | null
   status: string | null
-  created_by: string | null
-  updated_by: string | null
-  department_id: number | null
-  region_id: number | null
-  branch_id: number | null
-  event_scale_id: number | null
-  budget_master_id: number | null
-  event_name_id: number | null
+  created_by_id: string | null
+  updated_by_id: string | null
+  department_id: string | null
+  region_id: string | null
+  branch_id: string | null
+  event_scale_id: string | null
+  budget_master_id: string | null
+  event_name_id: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -97,8 +75,8 @@ export type EventProposalCountAggregateOutputType = {
   location: number
   event_objective: number
   status: number
-  created_by: number
-  updated_by: number
+  created_by_id: number
+  updated_by_id: number
   department_id: number
   region_id: number
   branch_id: number
@@ -111,26 +89,6 @@ export type EventProposalCountAggregateOutputType = {
 }
 
 
-export type EventProposalAvgAggregateInputType = {
-  id?: true
-  department_id?: true
-  region_id?: true
-  branch_id?: true
-  event_scale_id?: true
-  budget_master_id?: true
-  event_name_id?: true
-}
-
-export type EventProposalSumAggregateInputType = {
-  id?: true
-  department_id?: true
-  region_id?: true
-  branch_id?: true
-  event_scale_id?: true
-  budget_master_id?: true
-  event_name_id?: true
-}
-
 export type EventProposalMinAggregateInputType = {
   id?: true
   proposal_number?: true
@@ -140,8 +98,8 @@ export type EventProposalMinAggregateInputType = {
   location?: true
   event_objective?: true
   status?: true
-  created_by?: true
-  updated_by?: true
+  created_by_id?: true
+  updated_by_id?: true
   department_id?: true
   region_id?: true
   branch_id?: true
@@ -161,8 +119,8 @@ export type EventProposalMaxAggregateInputType = {
   location?: true
   event_objective?: true
   status?: true
-  created_by?: true
-  updated_by?: true
+  created_by_id?: true
+  updated_by_id?: true
   department_id?: true
   region_id?: true
   branch_id?: true
@@ -182,8 +140,8 @@ export type EventProposalCountAggregateInputType = {
   location?: true
   event_objective?: true
   status?: true
-  created_by?: true
-  updated_by?: true
+  created_by_id?: true
+  updated_by_id?: true
   department_id?: true
   region_id?: true
   branch_id?: true
@@ -233,18 +191,6 @@ export type EventProposalAggregateArgs<ExtArgs extends runtime.Types.Extensions.
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: EventProposalAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: EventProposalSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: EventProposalMinAggregateInputType
@@ -275,14 +221,12 @@ export type EventProposalGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   _count?: EventProposalCountAggregateInputType | true
-  _avg?: EventProposalAvgAggregateInputType
-  _sum?: EventProposalSumAggregateInputType
   _min?: EventProposalMinAggregateInputType
   _max?: EventProposalMaxAggregateInputType
 }
 
 export type EventProposalGroupByOutputType = {
-  id: number
+  id: string
   proposal_number: string
   event_from_date: Date
   event_to_date: Date
@@ -290,19 +234,17 @@ export type EventProposalGroupByOutputType = {
   location: string
   event_objective: string
   status: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  region_id: number
-  branch_id: number
-  event_scale_id: number
-  budget_master_id: number
-  event_name_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
   created_at: Date
   updated_at: Date
   _count: EventProposalCountAggregateOutputType | null
-  _avg: EventProposalAvgAggregateOutputType | null
-  _sum: EventProposalSumAggregateOutputType | null
   _min: EventProposalMinAggregateOutputType | null
   _max: EventProposalMaxAggregateOutputType | null
 }
@@ -326,7 +268,7 @@ export type EventProposalWhereInput = {
   AND?: Prisma.EventProposalWhereInput | Prisma.EventProposalWhereInput[]
   OR?: Prisma.EventProposalWhereInput[]
   NOT?: Prisma.EventProposalWhereInput | Prisma.EventProposalWhereInput[]
-  id?: Prisma.IntFilter<"EventProposal"> | number
+  id?: Prisma.StringFilter<"EventProposal"> | string
   proposal_number?: Prisma.StringFilter<"EventProposal"> | string
   event_from_date?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
   event_to_date?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
@@ -334,14 +276,14 @@ export type EventProposalWhereInput = {
   location?: Prisma.StringFilter<"EventProposal"> | string
   event_objective?: Prisma.StringFilter<"EventProposal"> | string
   status?: Prisma.StringFilter<"EventProposal"> | string
-  created_by?: Prisma.StringFilter<"EventProposal"> | string
-  updated_by?: Prisma.StringFilter<"EventProposal"> | string
-  department_id?: Prisma.IntFilter<"EventProposal"> | number
-  region_id?: Prisma.IntFilter<"EventProposal"> | number
-  branch_id?: Prisma.IntFilter<"EventProposal"> | number
-  event_scale_id?: Prisma.IntFilter<"EventProposal"> | number
-  budget_master_id?: Prisma.IntFilter<"EventProposal"> | number
-  event_name_id?: Prisma.IntFilter<"EventProposal"> | number
+  created_by_id?: Prisma.StringFilter<"EventProposal"> | string
+  updated_by_id?: Prisma.StringFilter<"EventProposal"> | string
+  department_id?: Prisma.StringFilter<"EventProposal"> | string
+  region_id?: Prisma.StringFilter<"EventProposal"> | string
+  branch_id?: Prisma.StringFilter<"EventProposal"> | string
+  event_scale_id?: Prisma.StringFilter<"EventProposal"> | string
+  budget_master_id?: Prisma.StringFilter<"EventProposal"> | string
+  event_name_id?: Prisma.StringFilter<"EventProposal"> | string
   created_at?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
@@ -350,6 +292,8 @@ export type EventProposalWhereInput = {
   event_scale?: Prisma.XOR<Prisma.EventScaleScalarRelationFilter, Prisma.EventScaleWhereInput>
   budget_master?: Prisma.XOR<Prisma.BudgetMasterScalarRelationFilter, Prisma.BudgetMasterWhereInput>
   event_name?: Prisma.XOR<Prisma.EventNameScalarRelationFilter, Prisma.EventNameWhereInput>
+  created_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  updated_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type EventProposalOrderByWithRelationInput = {
@@ -361,8 +305,8 @@ export type EventProposalOrderByWithRelationInput = {
   location?: Prisma.SortOrder
   event_objective?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  created_by?: Prisma.SortOrder
-  updated_by?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   department_id?: Prisma.SortOrder
   region_id?: Prisma.SortOrder
   branch_id?: Prisma.SortOrder
@@ -377,10 +321,12 @@ export type EventProposalOrderByWithRelationInput = {
   event_scale?: Prisma.EventScaleOrderByWithRelationInput
   budget_master?: Prisma.BudgetMasterOrderByWithRelationInput
   event_name?: Prisma.EventNameOrderByWithRelationInput
+  created_by?: Prisma.UserOrderByWithRelationInput
+  updated_by?: Prisma.UserOrderByWithRelationInput
 }
 
 export type EventProposalWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   proposal_number?: string
   AND?: Prisma.EventProposalWhereInput | Prisma.EventProposalWhereInput[]
   OR?: Prisma.EventProposalWhereInput[]
@@ -391,14 +337,14 @@ export type EventProposalWhereUniqueInput = Prisma.AtLeast<{
   location?: Prisma.StringFilter<"EventProposal"> | string
   event_objective?: Prisma.StringFilter<"EventProposal"> | string
   status?: Prisma.StringFilter<"EventProposal"> | string
-  created_by?: Prisma.StringFilter<"EventProposal"> | string
-  updated_by?: Prisma.StringFilter<"EventProposal"> | string
-  department_id?: Prisma.IntFilter<"EventProposal"> | number
-  region_id?: Prisma.IntFilter<"EventProposal"> | number
-  branch_id?: Prisma.IntFilter<"EventProposal"> | number
-  event_scale_id?: Prisma.IntFilter<"EventProposal"> | number
-  budget_master_id?: Prisma.IntFilter<"EventProposal"> | number
-  event_name_id?: Prisma.IntFilter<"EventProposal"> | number
+  created_by_id?: Prisma.StringFilter<"EventProposal"> | string
+  updated_by_id?: Prisma.StringFilter<"EventProposal"> | string
+  department_id?: Prisma.StringFilter<"EventProposal"> | string
+  region_id?: Prisma.StringFilter<"EventProposal"> | string
+  branch_id?: Prisma.StringFilter<"EventProposal"> | string
+  event_scale_id?: Prisma.StringFilter<"EventProposal"> | string
+  budget_master_id?: Prisma.StringFilter<"EventProposal"> | string
+  event_name_id?: Prisma.StringFilter<"EventProposal"> | string
   created_at?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
@@ -407,6 +353,8 @@ export type EventProposalWhereUniqueInput = Prisma.AtLeast<{
   event_scale?: Prisma.XOR<Prisma.EventScaleScalarRelationFilter, Prisma.EventScaleWhereInput>
   budget_master?: Prisma.XOR<Prisma.BudgetMasterScalarRelationFilter, Prisma.BudgetMasterWhereInput>
   event_name?: Prisma.XOR<Prisma.EventNameScalarRelationFilter, Prisma.EventNameWhereInput>
+  created_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  updated_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "proposal_number">
 
 export type EventProposalOrderByWithAggregationInput = {
@@ -418,8 +366,8 @@ export type EventProposalOrderByWithAggregationInput = {
   location?: Prisma.SortOrder
   event_objective?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  created_by?: Prisma.SortOrder
-  updated_by?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   department_id?: Prisma.SortOrder
   region_id?: Prisma.SortOrder
   branch_id?: Prisma.SortOrder
@@ -429,17 +377,15 @@ export type EventProposalOrderByWithAggregationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.EventProposalCountOrderByAggregateInput
-  _avg?: Prisma.EventProposalAvgOrderByAggregateInput
   _max?: Prisma.EventProposalMaxOrderByAggregateInput
   _min?: Prisma.EventProposalMinOrderByAggregateInput
-  _sum?: Prisma.EventProposalSumOrderByAggregateInput
 }
 
 export type EventProposalScalarWhereWithAggregatesInput = {
   AND?: Prisma.EventProposalScalarWhereWithAggregatesInput | Prisma.EventProposalScalarWhereWithAggregatesInput[]
   OR?: Prisma.EventProposalScalarWhereWithAggregatesInput[]
   NOT?: Prisma.EventProposalScalarWhereWithAggregatesInput | Prisma.EventProposalScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"EventProposal"> | number
+  id?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
   proposal_number?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
   event_from_date?: Prisma.DateTimeWithAggregatesFilter<"EventProposal"> | Date | string
   event_to_date?: Prisma.DateTimeWithAggregatesFilter<"EventProposal"> | Date | string
@@ -447,19 +393,20 @@ export type EventProposalScalarWhereWithAggregatesInput = {
   location?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
   event_objective?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
   status?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
-  created_by?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
-  updated_by?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
-  department_id?: Prisma.IntWithAggregatesFilter<"EventProposal"> | number
-  region_id?: Prisma.IntWithAggregatesFilter<"EventProposal"> | number
-  branch_id?: Prisma.IntWithAggregatesFilter<"EventProposal"> | number
-  event_scale_id?: Prisma.IntWithAggregatesFilter<"EventProposal"> | number
-  budget_master_id?: Prisma.IntWithAggregatesFilter<"EventProposal"> | number
-  event_name_id?: Prisma.IntWithAggregatesFilter<"EventProposal"> | number
+  created_by_id?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
+  updated_by_id?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
+  department_id?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
+  region_id?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
+  branch_id?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
+  event_scale_id?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
+  budget_master_id?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
+  event_name_id?: Prisma.StringWithAggregatesFilter<"EventProposal"> | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"EventProposal"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"EventProposal"> | Date | string
 }
 
 export type EventProposalCreateInput = {
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -467,8 +414,6 @@ export type EventProposalCreateInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
   created_at?: Date | string
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
@@ -477,10 +422,12 @@ export type EventProposalCreateInput = {
   event_scale: Prisma.EventScaleCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
 }
 
 export type EventProposalUncheckedCreateInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -488,19 +435,20 @@ export type EventProposalUncheckedCreateInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  region_id: number
-  branch_id: number
-  event_scale_id: number
-  budget_master_id: number
-  event_name_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type EventProposalUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -508,8 +456,6 @@ export type EventProposalUpdateInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
@@ -518,10 +464,12 @@ export type EventProposalUpdateInput = {
   event_scale?: Prisma.EventScaleUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
 }
 
 export type EventProposalUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -529,20 +477,20 @@ export type EventProposalUncheckedUpdateInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  department_id?: Prisma.IntFieldUpdateOperationsInput | number
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
-  branch_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_scale_id?: Prisma.IntFieldUpdateOperationsInput | number
-  budget_master_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_name_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalCreateManyInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -550,19 +498,20 @@ export type EventProposalCreateManyInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  region_id: number
-  branch_id: number
-  event_scale_id: number
-  budget_master_id: number
-  event_name_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type EventProposalUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -570,14 +519,12 @@ export type EventProposalUpdateManyMutationInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -585,16 +532,26 @@ export type EventProposalUncheckedUpdateManyInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  department_id?: Prisma.IntFieldUpdateOperationsInput | number
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
-  branch_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_scale_id?: Prisma.IntFieldUpdateOperationsInput | number
-  budget_master_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_name_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EventProposalListRelationFilter = {
+  every?: Prisma.EventProposalWhereInput
+  some?: Prisma.EventProposalWhereInput
+  none?: Prisma.EventProposalWhereInput
+}
+
+export type EventProposalOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type EventProposalCountOrderByAggregateInput = {
@@ -606,8 +563,8 @@ export type EventProposalCountOrderByAggregateInput = {
   location?: Prisma.SortOrder
   event_objective?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  created_by?: Prisma.SortOrder
-  updated_by?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   department_id?: Prisma.SortOrder
   region_id?: Prisma.SortOrder
   branch_id?: Prisma.SortOrder
@@ -616,16 +573,6 @@ export type EventProposalCountOrderByAggregateInput = {
   event_name_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
-}
-
-export type EventProposalAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  department_id?: Prisma.SortOrder
-  region_id?: Prisma.SortOrder
-  branch_id?: Prisma.SortOrder
-  event_scale_id?: Prisma.SortOrder
-  budget_master_id?: Prisma.SortOrder
-  event_name_id?: Prisma.SortOrder
 }
 
 export type EventProposalMaxOrderByAggregateInput = {
@@ -637,8 +584,8 @@ export type EventProposalMaxOrderByAggregateInput = {
   location?: Prisma.SortOrder
   event_objective?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  created_by?: Prisma.SortOrder
-  updated_by?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   department_id?: Prisma.SortOrder
   region_id?: Prisma.SortOrder
   branch_id?: Prisma.SortOrder
@@ -658,8 +605,8 @@ export type EventProposalMinOrderByAggregateInput = {
   location?: Prisma.SortOrder
   event_objective?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  created_by?: Prisma.SortOrder
-  updated_by?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   department_id?: Prisma.SortOrder
   region_id?: Prisma.SortOrder
   branch_id?: Prisma.SortOrder
@@ -670,24 +617,88 @@ export type EventProposalMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
-export type EventProposalSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  department_id?: Prisma.SortOrder
-  region_id?: Prisma.SortOrder
-  branch_id?: Prisma.SortOrder
-  event_scale_id?: Prisma.SortOrder
-  budget_master_id?: Prisma.SortOrder
-  event_name_id?: Prisma.SortOrder
+export type EventProposalCreateNestedManyWithoutCreated_byInput = {
+  create?: Prisma.XOR<Prisma.EventProposalCreateWithoutCreated_byInput, Prisma.EventProposalUncheckedCreateWithoutCreated_byInput> | Prisma.EventProposalCreateWithoutCreated_byInput[] | Prisma.EventProposalUncheckedCreateWithoutCreated_byInput[]
+  connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutCreated_byInput | Prisma.EventProposalCreateOrConnectWithoutCreated_byInput[]
+  createMany?: Prisma.EventProposalCreateManyCreated_byInputEnvelope
+  connect?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
 }
 
-export type EventProposalListRelationFilter = {
-  every?: Prisma.EventProposalWhereInput
-  some?: Prisma.EventProposalWhereInput
-  none?: Prisma.EventProposalWhereInput
+export type EventProposalCreateNestedManyWithoutUpdated_byInput = {
+  create?: Prisma.XOR<Prisma.EventProposalCreateWithoutUpdated_byInput, Prisma.EventProposalUncheckedCreateWithoutUpdated_byInput> | Prisma.EventProposalCreateWithoutUpdated_byInput[] | Prisma.EventProposalUncheckedCreateWithoutUpdated_byInput[]
+  connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutUpdated_byInput | Prisma.EventProposalCreateOrConnectWithoutUpdated_byInput[]
+  createMany?: Prisma.EventProposalCreateManyUpdated_byInputEnvelope
+  connect?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
 }
 
-export type EventProposalOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
+export type EventProposalUncheckedCreateNestedManyWithoutCreated_byInput = {
+  create?: Prisma.XOR<Prisma.EventProposalCreateWithoutCreated_byInput, Prisma.EventProposalUncheckedCreateWithoutCreated_byInput> | Prisma.EventProposalCreateWithoutCreated_byInput[] | Prisma.EventProposalUncheckedCreateWithoutCreated_byInput[]
+  connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutCreated_byInput | Prisma.EventProposalCreateOrConnectWithoutCreated_byInput[]
+  createMany?: Prisma.EventProposalCreateManyCreated_byInputEnvelope
+  connect?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+}
+
+export type EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput = {
+  create?: Prisma.XOR<Prisma.EventProposalCreateWithoutUpdated_byInput, Prisma.EventProposalUncheckedCreateWithoutUpdated_byInput> | Prisma.EventProposalCreateWithoutUpdated_byInput[] | Prisma.EventProposalUncheckedCreateWithoutUpdated_byInput[]
+  connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutUpdated_byInput | Prisma.EventProposalCreateOrConnectWithoutUpdated_byInput[]
+  createMany?: Prisma.EventProposalCreateManyUpdated_byInputEnvelope
+  connect?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+}
+
+export type EventProposalUpdateManyWithoutCreated_byNestedInput = {
+  create?: Prisma.XOR<Prisma.EventProposalCreateWithoutCreated_byInput, Prisma.EventProposalUncheckedCreateWithoutCreated_byInput> | Prisma.EventProposalCreateWithoutCreated_byInput[] | Prisma.EventProposalUncheckedCreateWithoutCreated_byInput[]
+  connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutCreated_byInput | Prisma.EventProposalCreateOrConnectWithoutCreated_byInput[]
+  upsert?: Prisma.EventProposalUpsertWithWhereUniqueWithoutCreated_byInput | Prisma.EventProposalUpsertWithWhereUniqueWithoutCreated_byInput[]
+  createMany?: Prisma.EventProposalCreateManyCreated_byInputEnvelope
+  set?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  disconnect?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  delete?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  connect?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  update?: Prisma.EventProposalUpdateWithWhereUniqueWithoutCreated_byInput | Prisma.EventProposalUpdateWithWhereUniqueWithoutCreated_byInput[]
+  updateMany?: Prisma.EventProposalUpdateManyWithWhereWithoutCreated_byInput | Prisma.EventProposalUpdateManyWithWhereWithoutCreated_byInput[]
+  deleteMany?: Prisma.EventProposalScalarWhereInput | Prisma.EventProposalScalarWhereInput[]
+}
+
+export type EventProposalUpdateManyWithoutUpdated_byNestedInput = {
+  create?: Prisma.XOR<Prisma.EventProposalCreateWithoutUpdated_byInput, Prisma.EventProposalUncheckedCreateWithoutUpdated_byInput> | Prisma.EventProposalCreateWithoutUpdated_byInput[] | Prisma.EventProposalUncheckedCreateWithoutUpdated_byInput[]
+  connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutUpdated_byInput | Prisma.EventProposalCreateOrConnectWithoutUpdated_byInput[]
+  upsert?: Prisma.EventProposalUpsertWithWhereUniqueWithoutUpdated_byInput | Prisma.EventProposalUpsertWithWhereUniqueWithoutUpdated_byInput[]
+  createMany?: Prisma.EventProposalCreateManyUpdated_byInputEnvelope
+  set?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  disconnect?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  delete?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  connect?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  update?: Prisma.EventProposalUpdateWithWhereUniqueWithoutUpdated_byInput | Prisma.EventProposalUpdateWithWhereUniqueWithoutUpdated_byInput[]
+  updateMany?: Prisma.EventProposalUpdateManyWithWhereWithoutUpdated_byInput | Prisma.EventProposalUpdateManyWithWhereWithoutUpdated_byInput[]
+  deleteMany?: Prisma.EventProposalScalarWhereInput | Prisma.EventProposalScalarWhereInput[]
+}
+
+export type EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput = {
+  create?: Prisma.XOR<Prisma.EventProposalCreateWithoutCreated_byInput, Prisma.EventProposalUncheckedCreateWithoutCreated_byInput> | Prisma.EventProposalCreateWithoutCreated_byInput[] | Prisma.EventProposalUncheckedCreateWithoutCreated_byInput[]
+  connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutCreated_byInput | Prisma.EventProposalCreateOrConnectWithoutCreated_byInput[]
+  upsert?: Prisma.EventProposalUpsertWithWhereUniqueWithoutCreated_byInput | Prisma.EventProposalUpsertWithWhereUniqueWithoutCreated_byInput[]
+  createMany?: Prisma.EventProposalCreateManyCreated_byInputEnvelope
+  set?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  disconnect?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  delete?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  connect?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  update?: Prisma.EventProposalUpdateWithWhereUniqueWithoutCreated_byInput | Prisma.EventProposalUpdateWithWhereUniqueWithoutCreated_byInput[]
+  updateMany?: Prisma.EventProposalUpdateManyWithWhereWithoutCreated_byInput | Prisma.EventProposalUpdateManyWithWhereWithoutCreated_byInput[]
+  deleteMany?: Prisma.EventProposalScalarWhereInput | Prisma.EventProposalScalarWhereInput[]
+}
+
+export type EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput = {
+  create?: Prisma.XOR<Prisma.EventProposalCreateWithoutUpdated_byInput, Prisma.EventProposalUncheckedCreateWithoutUpdated_byInput> | Prisma.EventProposalCreateWithoutUpdated_byInput[] | Prisma.EventProposalUncheckedCreateWithoutUpdated_byInput[]
+  connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutUpdated_byInput | Prisma.EventProposalCreateOrConnectWithoutUpdated_byInput[]
+  upsert?: Prisma.EventProposalUpsertWithWhereUniqueWithoutUpdated_byInput | Prisma.EventProposalUpsertWithWhereUniqueWithoutUpdated_byInput[]
+  createMany?: Prisma.EventProposalCreateManyUpdated_byInputEnvelope
+  set?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  disconnect?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  delete?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  connect?: Prisma.EventProposalWhereUniqueInput | Prisma.EventProposalWhereUniqueInput[]
+  update?: Prisma.EventProposalUpdateWithWhereUniqueWithoutUpdated_byInput | Prisma.EventProposalUpdateWithWhereUniqueWithoutUpdated_byInput[]
+  updateMany?: Prisma.EventProposalUpdateManyWithWhereWithoutUpdated_byInput | Prisma.EventProposalUpdateManyWithWhereWithoutUpdated_byInput[]
+  deleteMany?: Prisma.EventProposalScalarWhereInput | Prisma.EventProposalScalarWhereInput[]
 }
 
 export type EventProposalCreateNestedManyWithoutDepartmentInput = {
@@ -942,7 +953,8 @@ export type EventProposalUncheckedUpdateManyWithoutEvent_nameNestedInput = {
   deleteMany?: Prisma.EventProposalScalarWhereInput | Prisma.EventProposalScalarWhereInput[]
 }
 
-export type EventProposalCreateWithoutDepartmentInput = {
+export type EventProposalCreateWithoutCreated_byInput = {
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -950,8 +962,162 @@ export type EventProposalCreateWithoutDepartmentInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
+  event_scale: Prisma.EventScaleCreateNestedOneWithoutEvent_proposalsInput
+  budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
+  event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
+}
+
+export type EventProposalUncheckedCreateWithoutCreated_byInput = {
+  id?: string
+  proposal_number: string
+  event_from_date: Date | string
+  event_to_date: Date | string
+  event_description: string
+  location: string
+  event_objective: string
+  status?: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type EventProposalCreateOrConnectWithoutCreated_byInput = {
+  where: Prisma.EventProposalWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventProposalCreateWithoutCreated_byInput, Prisma.EventProposalUncheckedCreateWithoutCreated_byInput>
+}
+
+export type EventProposalCreateManyCreated_byInputEnvelope = {
+  data: Prisma.EventProposalCreateManyCreated_byInput | Prisma.EventProposalCreateManyCreated_byInput[]
+  skipDuplicates?: boolean
+}
+
+export type EventProposalCreateWithoutUpdated_byInput = {
+  id?: string
+  proposal_number: string
+  event_from_date: Date | string
+  event_to_date: Date | string
+  event_description: string
+  location: string
+  event_objective: string
+  status?: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
+  event_scale: Prisma.EventScaleCreateNestedOneWithoutEvent_proposalsInput
+  budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
+  event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
+}
+
+export type EventProposalUncheckedCreateWithoutUpdated_byInput = {
+  id?: string
+  proposal_number: string
+  event_from_date: Date | string
+  event_to_date: Date | string
+  event_description: string
+  location: string
+  event_objective: string
+  status?: string
+  created_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type EventProposalCreateOrConnectWithoutUpdated_byInput = {
+  where: Prisma.EventProposalWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventProposalCreateWithoutUpdated_byInput, Prisma.EventProposalUncheckedCreateWithoutUpdated_byInput>
+}
+
+export type EventProposalCreateManyUpdated_byInputEnvelope = {
+  data: Prisma.EventProposalCreateManyUpdated_byInput | Prisma.EventProposalCreateManyUpdated_byInput[]
+  skipDuplicates?: boolean
+}
+
+export type EventProposalUpsertWithWhereUniqueWithoutCreated_byInput = {
+  where: Prisma.EventProposalWhereUniqueInput
+  update: Prisma.XOR<Prisma.EventProposalUpdateWithoutCreated_byInput, Prisma.EventProposalUncheckedUpdateWithoutCreated_byInput>
+  create: Prisma.XOR<Prisma.EventProposalCreateWithoutCreated_byInput, Prisma.EventProposalUncheckedCreateWithoutCreated_byInput>
+}
+
+export type EventProposalUpdateWithWhereUniqueWithoutCreated_byInput = {
+  where: Prisma.EventProposalWhereUniqueInput
+  data: Prisma.XOR<Prisma.EventProposalUpdateWithoutCreated_byInput, Prisma.EventProposalUncheckedUpdateWithoutCreated_byInput>
+}
+
+export type EventProposalUpdateManyWithWhereWithoutCreated_byInput = {
+  where: Prisma.EventProposalScalarWhereInput
+  data: Prisma.XOR<Prisma.EventProposalUpdateManyMutationInput, Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byInput>
+}
+
+export type EventProposalScalarWhereInput = {
+  AND?: Prisma.EventProposalScalarWhereInput | Prisma.EventProposalScalarWhereInput[]
+  OR?: Prisma.EventProposalScalarWhereInput[]
+  NOT?: Prisma.EventProposalScalarWhereInput | Prisma.EventProposalScalarWhereInput[]
+  id?: Prisma.StringFilter<"EventProposal"> | string
+  proposal_number?: Prisma.StringFilter<"EventProposal"> | string
+  event_from_date?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
+  event_to_date?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
+  event_description?: Prisma.StringFilter<"EventProposal"> | string
+  location?: Prisma.StringFilter<"EventProposal"> | string
+  event_objective?: Prisma.StringFilter<"EventProposal"> | string
+  status?: Prisma.StringFilter<"EventProposal"> | string
+  created_by_id?: Prisma.StringFilter<"EventProposal"> | string
+  updated_by_id?: Prisma.StringFilter<"EventProposal"> | string
+  department_id?: Prisma.StringFilter<"EventProposal"> | string
+  region_id?: Prisma.StringFilter<"EventProposal"> | string
+  branch_id?: Prisma.StringFilter<"EventProposal"> | string
+  event_scale_id?: Prisma.StringFilter<"EventProposal"> | string
+  budget_master_id?: Prisma.StringFilter<"EventProposal"> | string
+  event_name_id?: Prisma.StringFilter<"EventProposal"> | string
+  created_at?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
+}
+
+export type EventProposalUpsertWithWhereUniqueWithoutUpdated_byInput = {
+  where: Prisma.EventProposalWhereUniqueInput
+  update: Prisma.XOR<Prisma.EventProposalUpdateWithoutUpdated_byInput, Prisma.EventProposalUncheckedUpdateWithoutUpdated_byInput>
+  create: Prisma.XOR<Prisma.EventProposalCreateWithoutUpdated_byInput, Prisma.EventProposalUncheckedCreateWithoutUpdated_byInput>
+}
+
+export type EventProposalUpdateWithWhereUniqueWithoutUpdated_byInput = {
+  where: Prisma.EventProposalWhereUniqueInput
+  data: Prisma.XOR<Prisma.EventProposalUpdateWithoutUpdated_byInput, Prisma.EventProposalUncheckedUpdateWithoutUpdated_byInput>
+}
+
+export type EventProposalUpdateManyWithWhereWithoutUpdated_byInput = {
+  where: Prisma.EventProposalScalarWhereInput
+  data: Prisma.XOR<Prisma.EventProposalUpdateManyMutationInput, Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byInput>
+}
+
+export type EventProposalCreateWithoutDepartmentInput = {
+  id?: string
+  proposal_number: string
+  event_from_date: Date | string
+  event_to_date: Date | string
+  event_description: string
+  location: string
+  event_objective: string
+  status?: string
   created_at?: Date | string
   updated_at?: Date | string
   region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
@@ -959,10 +1125,12 @@ export type EventProposalCreateWithoutDepartmentInput = {
   event_scale: Prisma.EventScaleCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
 }
 
 export type EventProposalUncheckedCreateWithoutDepartmentInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -970,13 +1138,13 @@ export type EventProposalUncheckedCreateWithoutDepartmentInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  region_id: number
-  branch_id: number
-  event_scale_id: number
-  budget_master_id: number
-  event_name_id: number
+  created_by_id: string
+  updated_by_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -1007,31 +1175,8 @@ export type EventProposalUpdateManyWithWhereWithoutDepartmentInput = {
   data: Prisma.XOR<Prisma.EventProposalUpdateManyMutationInput, Prisma.EventProposalUncheckedUpdateManyWithoutDepartmentInput>
 }
 
-export type EventProposalScalarWhereInput = {
-  AND?: Prisma.EventProposalScalarWhereInput | Prisma.EventProposalScalarWhereInput[]
-  OR?: Prisma.EventProposalScalarWhereInput[]
-  NOT?: Prisma.EventProposalScalarWhereInput | Prisma.EventProposalScalarWhereInput[]
-  id?: Prisma.IntFilter<"EventProposal"> | number
-  proposal_number?: Prisma.StringFilter<"EventProposal"> | string
-  event_from_date?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
-  event_to_date?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
-  event_description?: Prisma.StringFilter<"EventProposal"> | string
-  location?: Prisma.StringFilter<"EventProposal"> | string
-  event_objective?: Prisma.StringFilter<"EventProposal"> | string
-  status?: Prisma.StringFilter<"EventProposal"> | string
-  created_by?: Prisma.StringFilter<"EventProposal"> | string
-  updated_by?: Prisma.StringFilter<"EventProposal"> | string
-  department_id?: Prisma.IntFilter<"EventProposal"> | number
-  region_id?: Prisma.IntFilter<"EventProposal"> | number
-  branch_id?: Prisma.IntFilter<"EventProposal"> | number
-  event_scale_id?: Prisma.IntFilter<"EventProposal"> | number
-  budget_master_id?: Prisma.IntFilter<"EventProposal"> | number
-  event_name_id?: Prisma.IntFilter<"EventProposal"> | number
-  created_at?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
-  updated_at?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
-}
-
 export type EventProposalCreateWithoutRegionInput = {
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1039,8 +1184,6 @@ export type EventProposalCreateWithoutRegionInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
   created_at?: Date | string
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
@@ -1048,10 +1191,12 @@ export type EventProposalCreateWithoutRegionInput = {
   event_scale: Prisma.EventScaleCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
 }
 
 export type EventProposalUncheckedCreateWithoutRegionInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1059,13 +1204,13 @@ export type EventProposalUncheckedCreateWithoutRegionInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  branch_id: number
-  event_scale_id: number
-  budget_master_id: number
-  event_name_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -1097,6 +1242,7 @@ export type EventProposalUpdateManyWithWhereWithoutRegionInput = {
 }
 
 export type EventProposalCreateWithoutBranchInput = {
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1104,8 +1250,6 @@ export type EventProposalCreateWithoutBranchInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
   created_at?: Date | string
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
@@ -1113,10 +1257,12 @@ export type EventProposalCreateWithoutBranchInput = {
   event_scale: Prisma.EventScaleCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
 }
 
 export type EventProposalUncheckedCreateWithoutBranchInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1124,13 +1270,13 @@ export type EventProposalUncheckedCreateWithoutBranchInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  region_id: number
-  event_scale_id: number
-  budget_master_id: number
-  event_name_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -1162,6 +1308,7 @@ export type EventProposalUpdateManyWithWhereWithoutBranchInput = {
 }
 
 export type EventProposalCreateWithoutEvent_scaleInput = {
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1169,8 +1316,6 @@ export type EventProposalCreateWithoutEvent_scaleInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
   created_at?: Date | string
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
@@ -1178,10 +1323,12 @@ export type EventProposalCreateWithoutEvent_scaleInput = {
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
 }
 
 export type EventProposalUncheckedCreateWithoutEvent_scaleInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1189,13 +1336,13 @@ export type EventProposalUncheckedCreateWithoutEvent_scaleInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  region_id: number
-  branch_id: number
-  budget_master_id: number
-  event_name_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  budget_master_id: string
+  event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -1227,6 +1374,7 @@ export type EventProposalUpdateManyWithWhereWithoutEvent_scaleInput = {
 }
 
 export type EventProposalCreateWithoutBudget_masterInput = {
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1234,8 +1382,6 @@ export type EventProposalCreateWithoutBudget_masterInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
   created_at?: Date | string
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
@@ -1243,10 +1389,12 @@ export type EventProposalCreateWithoutBudget_masterInput = {
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   event_scale: Prisma.EventScaleCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
 }
 
 export type EventProposalUncheckedCreateWithoutBudget_masterInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1254,13 +1402,13 @@ export type EventProposalUncheckedCreateWithoutBudget_masterInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  region_id: number
-  branch_id: number
-  event_scale_id: number
-  event_name_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -1292,6 +1440,7 @@ export type EventProposalUpdateManyWithWhereWithoutBudget_masterInput = {
 }
 
 export type EventProposalCreateWithoutEvent_nameInput = {
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1299,8 +1448,6 @@ export type EventProposalCreateWithoutEvent_nameInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
   created_at?: Date | string
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
@@ -1308,10 +1455,12 @@ export type EventProposalCreateWithoutEvent_nameInput = {
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   event_scale: Prisma.EventScaleCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
 }
 
 export type EventProposalUncheckedCreateWithoutEvent_nameInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1319,13 +1468,13 @@ export type EventProposalUncheckedCreateWithoutEvent_nameInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  region_id: number
-  branch_id: number
-  event_scale_id: number
-  budget_master_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -1356,8 +1505,8 @@ export type EventProposalUpdateManyWithWhereWithoutEvent_nameInput = {
   data: Prisma.XOR<Prisma.EventProposalUpdateManyMutationInput, Prisma.EventProposalUncheckedUpdateManyWithoutEvent_nameInput>
 }
 
-export type EventProposalCreateManyDepartmentInput = {
-  id?: number
+export type EventProposalCreateManyCreated_byInput = {
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1365,18 +1514,179 @@ export type EventProposalCreateManyDepartmentInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  region_id: number
-  branch_id: number
-  event_scale_id: number
-  budget_master_id: number
-  event_name_id: number
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type EventProposalCreateManyUpdated_byInput = {
+  id?: string
+  proposal_number: string
+  event_from_date: Date | string
+  event_to_date: Date | string
+  event_description: string
+  location: string
+  event_objective: string
+  status?: string
+  created_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type EventProposalUpdateWithoutCreated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
+  event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_description?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  event_objective?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  event_scale?: Prisma.EventScaleUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
+}
+
+export type EventProposalUncheckedUpdateWithoutCreated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
+  event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_description?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  event_objective?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EventProposalUncheckedUpdateManyWithoutCreated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
+  event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_description?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  event_objective?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EventProposalUpdateWithoutUpdated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
+  event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_description?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  event_objective?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  event_scale?: Prisma.EventScaleUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
+}
+
+export type EventProposalUncheckedUpdateWithoutUpdated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
+  event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_description?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  event_objective?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EventProposalUncheckedUpdateManyWithoutUpdated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
+  event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_description?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  event_objective?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EventProposalCreateManyDepartmentInput = {
+  id?: string
+  proposal_number: string
+  event_from_date: Date | string
+  event_to_date: Date | string
+  event_description: string
+  location: string
+  event_objective: string
+  status?: string
+  created_by_id: string
+  updated_by_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type EventProposalUpdateWithoutDepartmentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1384,8 +1694,6 @@ export type EventProposalUpdateWithoutDepartmentInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
@@ -1393,10 +1701,12 @@ export type EventProposalUpdateWithoutDepartmentInput = {
   event_scale?: Prisma.EventScaleUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutDepartmentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1404,19 +1714,19 @@ export type EventProposalUncheckedUpdateWithoutDepartmentInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
-  branch_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_scale_id?: Prisma.IntFieldUpdateOperationsInput | number
-  budget_master_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_name_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalUncheckedUpdateManyWithoutDepartmentInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1424,19 +1734,19 @@ export type EventProposalUncheckedUpdateManyWithoutDepartmentInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
-  branch_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_scale_id?: Prisma.IntFieldUpdateOperationsInput | number
-  budget_master_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_name_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalCreateManyRegionInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1444,18 +1754,19 @@ export type EventProposalCreateManyRegionInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  branch_id: number
-  event_scale_id: number
-  budget_master_id: number
-  event_name_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type EventProposalUpdateWithoutRegionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1463,8 +1774,6 @@ export type EventProposalUpdateWithoutRegionInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
@@ -1472,10 +1781,12 @@ export type EventProposalUpdateWithoutRegionInput = {
   event_scale?: Prisma.EventScaleUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutRegionInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1483,19 +1794,19 @@ export type EventProposalUncheckedUpdateWithoutRegionInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  department_id?: Prisma.IntFieldUpdateOperationsInput | number
-  branch_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_scale_id?: Prisma.IntFieldUpdateOperationsInput | number
-  budget_master_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_name_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalUncheckedUpdateManyWithoutRegionInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1503,19 +1814,19 @@ export type EventProposalUncheckedUpdateManyWithoutRegionInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  department_id?: Prisma.IntFieldUpdateOperationsInput | number
-  branch_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_scale_id?: Prisma.IntFieldUpdateOperationsInput | number
-  budget_master_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_name_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalCreateManyBranchInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1523,18 +1834,19 @@ export type EventProposalCreateManyBranchInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  region_id: number
-  event_scale_id: number
-  budget_master_id: number
-  event_name_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type EventProposalUpdateWithoutBranchInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1542,8 +1854,6 @@ export type EventProposalUpdateWithoutBranchInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
@@ -1551,10 +1861,12 @@ export type EventProposalUpdateWithoutBranchInput = {
   event_scale?: Prisma.EventScaleUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutBranchInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1562,19 +1874,19 @@ export type EventProposalUncheckedUpdateWithoutBranchInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  department_id?: Prisma.IntFieldUpdateOperationsInput | number
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_scale_id?: Prisma.IntFieldUpdateOperationsInput | number
-  budget_master_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_name_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalUncheckedUpdateManyWithoutBranchInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1582,19 +1894,19 @@ export type EventProposalUncheckedUpdateManyWithoutBranchInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  department_id?: Prisma.IntFieldUpdateOperationsInput | number
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_scale_id?: Prisma.IntFieldUpdateOperationsInput | number
-  budget_master_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_name_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalCreateManyEvent_scaleInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1602,18 +1914,19 @@ export type EventProposalCreateManyEvent_scaleInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  region_id: number
-  branch_id: number
-  budget_master_id: number
-  event_name_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  budget_master_id: string
+  event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type EventProposalUpdateWithoutEvent_scaleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1621,8 +1934,6 @@ export type EventProposalUpdateWithoutEvent_scaleInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
@@ -1630,10 +1941,12 @@ export type EventProposalUpdateWithoutEvent_scaleInput = {
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutEvent_scaleInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1641,19 +1954,19 @@ export type EventProposalUncheckedUpdateWithoutEvent_scaleInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  department_id?: Prisma.IntFieldUpdateOperationsInput | number
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
-  branch_id?: Prisma.IntFieldUpdateOperationsInput | number
-  budget_master_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_name_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalUncheckedUpdateManyWithoutEvent_scaleInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1661,19 +1974,19 @@ export type EventProposalUncheckedUpdateManyWithoutEvent_scaleInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  department_id?: Prisma.IntFieldUpdateOperationsInput | number
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
-  branch_id?: Prisma.IntFieldUpdateOperationsInput | number
-  budget_master_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_name_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalCreateManyBudget_masterInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1681,18 +1994,19 @@ export type EventProposalCreateManyBudget_masterInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  region_id: number
-  branch_id: number
-  event_scale_id: number
-  event_name_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type EventProposalUpdateWithoutBudget_masterInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1700,8 +2014,6 @@ export type EventProposalUpdateWithoutBudget_masterInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
@@ -1709,10 +2021,12 @@ export type EventProposalUpdateWithoutBudget_masterInput = {
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_scale?: Prisma.EventScaleUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutBudget_masterInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1720,19 +2034,19 @@ export type EventProposalUncheckedUpdateWithoutBudget_masterInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  department_id?: Prisma.IntFieldUpdateOperationsInput | number
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
-  branch_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_scale_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_name_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalUncheckedUpdateManyWithoutBudget_masterInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1740,19 +2054,19 @@ export type EventProposalUncheckedUpdateManyWithoutBudget_masterInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  department_id?: Prisma.IntFieldUpdateOperationsInput | number
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
-  branch_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_scale_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_name_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalCreateManyEvent_nameInput = {
-  id?: number
+  id?: string
   proposal_number: string
   event_from_date: Date | string
   event_to_date: Date | string
@@ -1760,18 +2074,19 @@ export type EventProposalCreateManyEvent_nameInput = {
   location: string
   event_objective: string
   status?: string
-  created_by: string
-  updated_by: string
-  department_id: number
-  region_id: number
-  branch_id: number
-  event_scale_id: number
-  budget_master_id: number
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type EventProposalUpdateWithoutEvent_nameInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1779,8 +2094,6 @@ export type EventProposalUpdateWithoutEvent_nameInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
@@ -1788,10 +2101,12 @@ export type EventProposalUpdateWithoutEvent_nameInput = {
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_scale?: Prisma.EventScaleUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutEvent_nameInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1799,19 +2114,19 @@ export type EventProposalUncheckedUpdateWithoutEvent_nameInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  department_id?: Prisma.IntFieldUpdateOperationsInput | number
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
-  branch_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_scale_id?: Prisma.IntFieldUpdateOperationsInput | number
-  budget_master_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type EventProposalUncheckedUpdateManyWithoutEvent_nameInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
   event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1819,13 +2134,13 @@ export type EventProposalUncheckedUpdateManyWithoutEvent_nameInput = {
   location?: Prisma.StringFieldUpdateOperationsInput | string
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
-  created_by?: Prisma.StringFieldUpdateOperationsInput | string
-  updated_by?: Prisma.StringFieldUpdateOperationsInput | string
-  department_id?: Prisma.IntFieldUpdateOperationsInput | number
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
-  branch_id?: Prisma.IntFieldUpdateOperationsInput | number
-  event_scale_id?: Prisma.IntFieldUpdateOperationsInput | number
-  budget_master_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1841,8 +2156,8 @@ export type EventProposalSelect<ExtArgs extends runtime.Types.Extensions.Interna
   location?: boolean
   event_objective?: boolean
   status?: boolean
-  created_by?: boolean
-  updated_by?: boolean
+  created_by_id?: boolean
+  updated_by_id?: boolean
   department_id?: boolean
   region_id?: boolean
   branch_id?: boolean
@@ -1857,6 +2172,8 @@ export type EventProposalSelect<ExtArgs extends runtime.Types.Extensions.Interna
   event_scale?: boolean | Prisma.EventScaleDefaultArgs<ExtArgs>
   budget_master?: boolean | Prisma.BudgetMasterDefaultArgs<ExtArgs>
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["eventProposal"]>
 
 export type EventProposalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1868,8 +2185,8 @@ export type EventProposalSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   location?: boolean
   event_objective?: boolean
   status?: boolean
-  created_by?: boolean
-  updated_by?: boolean
+  created_by_id?: boolean
+  updated_by_id?: boolean
   department_id?: boolean
   region_id?: boolean
   branch_id?: boolean
@@ -1884,6 +2201,8 @@ export type EventProposalSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   event_scale?: boolean | Prisma.EventScaleDefaultArgs<ExtArgs>
   budget_master?: boolean | Prisma.BudgetMasterDefaultArgs<ExtArgs>
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["eventProposal"]>
 
 export type EventProposalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1895,8 +2214,8 @@ export type EventProposalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   location?: boolean
   event_objective?: boolean
   status?: boolean
-  created_by?: boolean
-  updated_by?: boolean
+  created_by_id?: boolean
+  updated_by_id?: boolean
   department_id?: boolean
   region_id?: boolean
   branch_id?: boolean
@@ -1911,6 +2230,8 @@ export type EventProposalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   event_scale?: boolean | Prisma.EventScaleDefaultArgs<ExtArgs>
   budget_master?: boolean | Prisma.BudgetMasterDefaultArgs<ExtArgs>
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["eventProposal"]>
 
 export type EventProposalSelectScalar = {
@@ -1922,8 +2243,8 @@ export type EventProposalSelectScalar = {
   location?: boolean
   event_objective?: boolean
   status?: boolean
-  created_by?: boolean
-  updated_by?: boolean
+  created_by_id?: boolean
+  updated_by_id?: boolean
   department_id?: boolean
   region_id?: boolean
   branch_id?: boolean
@@ -1934,7 +2255,7 @@ export type EventProposalSelectScalar = {
   updated_at?: boolean
 }
 
-export type EventProposalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "proposal_number" | "event_from_date" | "event_to_date" | "event_description" | "location" | "event_objective" | "status" | "created_by" | "updated_by" | "department_id" | "region_id" | "branch_id" | "event_scale_id" | "budget_master_id" | "event_name_id" | "created_at" | "updated_at", ExtArgs["result"]["eventProposal"]>
+export type EventProposalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "proposal_number" | "event_from_date" | "event_to_date" | "event_description" | "location" | "event_objective" | "status" | "created_by_id" | "updated_by_id" | "department_id" | "region_id" | "branch_id" | "event_scale_id" | "budget_master_id" | "event_name_id" | "created_at" | "updated_at", ExtArgs["result"]["eventProposal"]>
 export type EventProposalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
@@ -1942,6 +2263,8 @@ export type EventProposalInclude<ExtArgs extends runtime.Types.Extensions.Intern
   event_scale?: boolean | Prisma.EventScaleDefaultArgs<ExtArgs>
   budget_master?: boolean | Prisma.BudgetMasterDefaultArgs<ExtArgs>
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type EventProposalIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
@@ -1950,6 +2273,8 @@ export type EventProposalIncludeCreateManyAndReturn<ExtArgs extends runtime.Type
   event_scale?: boolean | Prisma.EventScaleDefaultArgs<ExtArgs>
   budget_master?: boolean | Prisma.BudgetMasterDefaultArgs<ExtArgs>
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type EventProposalIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
@@ -1958,6 +2283,8 @@ export type EventProposalIncludeUpdateManyAndReturn<ExtArgs extends runtime.Type
   event_scale?: boolean | Prisma.EventScaleDefaultArgs<ExtArgs>
   budget_master?: boolean | Prisma.BudgetMasterDefaultArgs<ExtArgs>
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $EventProposalPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1969,9 +2296,11 @@ export type $EventProposalPayload<ExtArgs extends runtime.Types.Extensions.Inter
     event_scale: Prisma.$EventScalePayload<ExtArgs>
     budget_master: Prisma.$BudgetMasterPayload<ExtArgs>
     event_name: Prisma.$EventNamePayload<ExtArgs>
+    created_by: Prisma.$UserPayload<ExtArgs>
+    updated_by: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     proposal_number: string
     event_from_date: Date
     event_to_date: Date
@@ -1979,14 +2308,14 @@ export type $EventProposalPayload<ExtArgs extends runtime.Types.Extensions.Inter
     location: string
     event_objective: string
     status: string
-    created_by: string
-    updated_by: string
-    department_id: number
-    region_id: number
-    branch_id: number
-    event_scale_id: number
-    budget_master_id: number
-    event_name_id: number
+    created_by_id: string
+    updated_by_id: string
+    department_id: string
+    region_id: string
+    branch_id: string
+    event_scale_id: string
+    budget_master_id: string
+    event_name_id: string
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["eventProposal"]>
@@ -2389,6 +2718,8 @@ export interface Prisma__EventProposalClient<T, Null = never, ExtArgs extends ru
   event_scale<T extends Prisma.EventScaleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventScaleDefaultArgs<ExtArgs>>): Prisma.Prisma__EventScaleClient<runtime.Types.Result.GetResult<Prisma.$EventScalePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   budget_master<T extends Prisma.BudgetMasterDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BudgetMasterDefaultArgs<ExtArgs>>): Prisma.Prisma__BudgetMasterClient<runtime.Types.Result.GetResult<Prisma.$BudgetMasterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   event_name<T extends Prisma.EventNameDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventNameDefaultArgs<ExtArgs>>): Prisma.Prisma__EventNameClient<runtime.Types.Result.GetResult<Prisma.$EventNamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  created_by<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  updated_by<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2418,7 +2749,7 @@ export interface Prisma__EventProposalClient<T, Null = never, ExtArgs extends ru
  * Fields of the EventProposal model
  */
 export interface EventProposalFieldRefs {
-  readonly id: Prisma.FieldRef<"EventProposal", 'Int'>
+  readonly id: Prisma.FieldRef<"EventProposal", 'String'>
   readonly proposal_number: Prisma.FieldRef<"EventProposal", 'String'>
   readonly event_from_date: Prisma.FieldRef<"EventProposal", 'DateTime'>
   readonly event_to_date: Prisma.FieldRef<"EventProposal", 'DateTime'>
@@ -2426,14 +2757,14 @@ export interface EventProposalFieldRefs {
   readonly location: Prisma.FieldRef<"EventProposal", 'String'>
   readonly event_objective: Prisma.FieldRef<"EventProposal", 'String'>
   readonly status: Prisma.FieldRef<"EventProposal", 'String'>
-  readonly created_by: Prisma.FieldRef<"EventProposal", 'String'>
-  readonly updated_by: Prisma.FieldRef<"EventProposal", 'String'>
-  readonly department_id: Prisma.FieldRef<"EventProposal", 'Int'>
-  readonly region_id: Prisma.FieldRef<"EventProposal", 'Int'>
-  readonly branch_id: Prisma.FieldRef<"EventProposal", 'Int'>
-  readonly event_scale_id: Prisma.FieldRef<"EventProposal", 'Int'>
-  readonly budget_master_id: Prisma.FieldRef<"EventProposal", 'Int'>
-  readonly event_name_id: Prisma.FieldRef<"EventProposal", 'Int'>
+  readonly created_by_id: Prisma.FieldRef<"EventProposal", 'String'>
+  readonly updated_by_id: Prisma.FieldRef<"EventProposal", 'String'>
+  readonly department_id: Prisma.FieldRef<"EventProposal", 'String'>
+  readonly region_id: Prisma.FieldRef<"EventProposal", 'String'>
+  readonly branch_id: Prisma.FieldRef<"EventProposal", 'String'>
+  readonly event_scale_id: Prisma.FieldRef<"EventProposal", 'String'>
+  readonly budget_master_id: Prisma.FieldRef<"EventProposal", 'String'>
+  readonly event_name_id: Prisma.FieldRef<"EventProposal", 'String'>
   readonly created_at: Prisma.FieldRef<"EventProposal", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"EventProposal", 'DateTime'>
 }

@@ -20,22 +20,12 @@ export type DepartmentModel = runtime.Types.Result.DefaultSelection<Prisma.$Depa
 
 export type AggregateDepartment = {
   _count: DepartmentCountAggregateOutputType | null
-  _avg: DepartmentAvgAggregateOutputType | null
-  _sum: DepartmentSumAggregateOutputType | null
   _min: DepartmentMinAggregateOutputType | null
   _max: DepartmentMaxAggregateOutputType | null
 }
 
-export type DepartmentAvgAggregateOutputType = {
-  id: number | null
-}
-
-export type DepartmentSumAggregateOutputType = {
-  id: number | null
-}
-
 export type DepartmentMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   department_code: string | null
   department_name: string | null
   created_at: Date | null
@@ -43,7 +33,7 @@ export type DepartmentMinAggregateOutputType = {
 }
 
 export type DepartmentMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   department_code: string | null
   department_name: string | null
   created_at: Date | null
@@ -59,14 +49,6 @@ export type DepartmentCountAggregateOutputType = {
   _all: number
 }
 
-
-export type DepartmentAvgAggregateInputType = {
-  id?: true
-}
-
-export type DepartmentSumAggregateInputType = {
-  id?: true
-}
 
 export type DepartmentMinAggregateInputType = {
   id?: true
@@ -131,18 +113,6 @@ export type DepartmentAggregateArgs<ExtArgs extends runtime.Types.Extensions.Int
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: DepartmentAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: DepartmentSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: DepartmentMinAggregateInputType
@@ -173,21 +143,17 @@ export type DepartmentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   _count?: DepartmentCountAggregateInputType | true
-  _avg?: DepartmentAvgAggregateInputType
-  _sum?: DepartmentSumAggregateInputType
   _min?: DepartmentMinAggregateInputType
   _max?: DepartmentMaxAggregateInputType
 }
 
 export type DepartmentGroupByOutputType = {
-  id: number
+  id: string
   department_code: string
   department_name: string
   created_at: Date
   updated_at: Date
   _count: DepartmentCountAggregateOutputType | null
-  _avg: DepartmentAvgAggregateOutputType | null
-  _sum: DepartmentSumAggregateOutputType | null
   _min: DepartmentMinAggregateOutputType | null
   _max: DepartmentMaxAggregateOutputType | null
 }
@@ -211,7 +177,7 @@ export type DepartmentWhereInput = {
   AND?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[]
   OR?: Prisma.DepartmentWhereInput[]
   NOT?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[]
-  id?: Prisma.IntFilter<"Department"> | number
+  id?: Prisma.StringFilter<"Department"> | string
   department_code?: Prisma.StringFilter<"Department"> | string
   department_name?: Prisma.StringFilter<"Department"> | string
   created_at?: Prisma.DateTimeFilter<"Department"> | Date | string
@@ -229,7 +195,7 @@ export type DepartmentOrderByWithRelationInput = {
 }
 
 export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   department_code?: string
   AND?: Prisma.DepartmentWhereInput | Prisma.DepartmentWhereInput[]
   OR?: Prisma.DepartmentWhereInput[]
@@ -247,17 +213,15 @@ export type DepartmentOrderByWithAggregationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.DepartmentCountOrderByAggregateInput
-  _avg?: Prisma.DepartmentAvgOrderByAggregateInput
   _max?: Prisma.DepartmentMaxOrderByAggregateInput
   _min?: Prisma.DepartmentMinOrderByAggregateInput
-  _sum?: Prisma.DepartmentSumOrderByAggregateInput
 }
 
 export type DepartmentScalarWhereWithAggregatesInput = {
   AND?: Prisma.DepartmentScalarWhereWithAggregatesInput | Prisma.DepartmentScalarWhereWithAggregatesInput[]
   OR?: Prisma.DepartmentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.DepartmentScalarWhereWithAggregatesInput | Prisma.DepartmentScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Department"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Department"> | string
   department_code?: Prisma.StringWithAggregatesFilter<"Department"> | string
   department_name?: Prisma.StringWithAggregatesFilter<"Department"> | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Department"> | Date | string
@@ -265,6 +229,7 @@ export type DepartmentScalarWhereWithAggregatesInput = {
 }
 
 export type DepartmentCreateInput = {
+  id?: string
   department_code: string
   department_name: string
   created_at?: Date | string
@@ -273,7 +238,7 @@ export type DepartmentCreateInput = {
 }
 
 export type DepartmentUncheckedCreateInput = {
-  id?: number
+  id?: string
   department_code: string
   department_name: string
   created_at?: Date | string
@@ -282,6 +247,7 @@ export type DepartmentUncheckedCreateInput = {
 }
 
 export type DepartmentUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   department_code?: Prisma.StringFieldUpdateOperationsInput | string
   department_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -290,7 +256,7 @@ export type DepartmentUpdateInput = {
 }
 
 export type DepartmentUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   department_code?: Prisma.StringFieldUpdateOperationsInput | string
   department_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -299,7 +265,7 @@ export type DepartmentUncheckedUpdateInput = {
 }
 
 export type DepartmentCreateManyInput = {
-  id?: number
+  id?: string
   department_code: string
   department_name: string
   created_at?: Date | string
@@ -307,6 +273,7 @@ export type DepartmentCreateManyInput = {
 }
 
 export type DepartmentUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   department_code?: Prisma.StringFieldUpdateOperationsInput | string
   department_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -314,7 +281,7 @@ export type DepartmentUpdateManyMutationInput = {
 }
 
 export type DepartmentUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   department_code?: Prisma.StringFieldUpdateOperationsInput | string
   department_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -334,10 +301,6 @@ export type DepartmentCountOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
-export type DepartmentAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-}
-
 export type DepartmentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   department_code?: Prisma.SortOrder
@@ -352,10 +315,6 @@ export type DepartmentMinOrderByAggregateInput = {
   department_name?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
-}
-
-export type DepartmentSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
 }
 
 export type DepartmentCreateNestedOneWithoutEvent_proposalsInput = {
@@ -373,6 +332,7 @@ export type DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput = {
 }
 
 export type DepartmentCreateWithoutEvent_proposalsInput = {
+  id?: string
   department_code: string
   department_name: string
   created_at?: Date | string
@@ -380,7 +340,7 @@ export type DepartmentCreateWithoutEvent_proposalsInput = {
 }
 
 export type DepartmentUncheckedCreateWithoutEvent_proposalsInput = {
-  id?: number
+  id?: string
   department_code: string
   department_name: string
   created_at?: Date | string
@@ -404,6 +364,7 @@ export type DepartmentUpdateToOneWithWhereWithoutEvent_proposalsInput = {
 }
 
 export type DepartmentUpdateWithoutEvent_proposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   department_code?: Prisma.StringFieldUpdateOperationsInput | string
   department_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -411,7 +372,7 @@ export type DepartmentUpdateWithoutEvent_proposalsInput = {
 }
 
 export type DepartmentUncheckedUpdateWithoutEvent_proposalsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   department_code?: Prisma.StringFieldUpdateOperationsInput | string
   department_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -497,7 +458,7 @@ export type $DepartmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
     event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     department_code: string
     department_name: string
     created_at: Date
@@ -926,7 +887,7 @@ export interface Prisma__DepartmentClient<T, Null = never, ExtArgs extends runti
  * Fields of the Department model
  */
 export interface DepartmentFieldRefs {
-  readonly id: Prisma.FieldRef<"Department", 'Int'>
+  readonly id: Prisma.FieldRef<"Department", 'String'>
   readonly department_code: Prisma.FieldRef<"Department", 'String'>
   readonly department_name: Prisma.FieldRef<"Department", 'String'>
   readonly created_at: Prisma.FieldRef<"Department", 'DateTime'>
