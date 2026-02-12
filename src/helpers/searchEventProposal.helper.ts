@@ -61,19 +61,49 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
 
   const direction = sortOrder === "asc" ? Prisma.sql`ASC` : Prisma.sql`DESC`;
 
+  let orderByClause: Prisma.Sql;
+
+  if (search) {
+    orderByClause = Prisma.sql`
+    ORDER BY
+      ts_rank(search_vector, plainto_tsquery('english', ${search})) DESC,
+      ${Prisma.raw(`"${sortBy}"`)} ${direction}
+  `;
+  } else {
+    orderByClause = Prisma.sql`
+    ORDER BY
+      ${Prisma.raw(`"${sortBy}"`)} ${direction}
+  `;
+  }
+
   const ranking = search
     ? Prisma.sql`ts_rank(search_vector, plainto_tsquery('english', ${search}))`
     : Prisma.sql`NULL`;
 
   /* ---------------- DATA QUERY ---------------- */
   const dataPromise = prisma.$queryRaw<any[]>(Prisma.sql`
-    SELECT *,
+    SELECT 
+    ep.id,
+    ep.proposal_number,
+    ep.event_from_date,
+    ep.event_to_date,
+    ep.event_description,
+    ep.location,
+    ep.event_objective,
+    ep.status,
+    ep.created_by,
+    ep.created_at,
+    ep.department_id,
+    ep.event_name_id,
+    en.description AS event_name,
       ${ranking} AS rank
-    FROM "EventProposal"
+    FROM "EventProposal" ep
+     LEFT JOIN "EventName" en 
+        ON ep.event_name_id = en.id
+     LEFT JOIN "Department" d  
+        ON ep.department_id = d.id
     ${whereClause}
-    ORDER BY
-      ${ranking} DESC NULLS LAST,
-      ${Prisma.raw(`"${sortBy}"`)} ${direction}
+    ${orderByClause}
     LIMIT ${pageSize}
     OFFSET ${skip}
   `);
