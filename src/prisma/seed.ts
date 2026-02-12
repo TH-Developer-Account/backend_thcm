@@ -97,7 +97,7 @@ async function main() {
       branches.push(
         await prisma.branch.create({
           data: {
-            branch_code: faker.location.city().slice(0, 3).toUpperCase(),
+            branch_code: `BR-${region.region_code}-${i + 1}`,
             branch_name: `${faker.location.city()} Branch`,
             region_id: region.id,
           },

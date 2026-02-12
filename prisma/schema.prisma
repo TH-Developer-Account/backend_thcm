@@ -86,6 +86,8 @@ model EventProposal {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  search_vector     Unsupported("tsvector")?
+
 }
 
 
