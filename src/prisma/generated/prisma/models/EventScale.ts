@@ -27,17 +27,15 @@ export type AggregateEventScale = {
 }
 
 export type EventScaleAvgAggregateOutputType = {
-  id: number | null
   max_budget: runtime.Decimal | null
 }
 
 export type EventScaleSumAggregateOutputType = {
-  id: number | null
   max_budget: runtime.Decimal | null
 }
 
 export type EventScaleMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   scale_code: string | null
   scale_name: string | null
   max_budget: runtime.Decimal | null
@@ -46,7 +44,7 @@ export type EventScaleMinAggregateOutputType = {
 }
 
 export type EventScaleMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   scale_code: string | null
   scale_name: string | null
   max_budget: runtime.Decimal | null
@@ -66,12 +64,10 @@ export type EventScaleCountAggregateOutputType = {
 
 
 export type EventScaleAvgAggregateInputType = {
-  id?: true
   max_budget?: true
 }
 
 export type EventScaleSumAggregateInputType = {
-  id?: true
   max_budget?: true
 }
 
@@ -190,7 +186,7 @@ export type EventScaleGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 export type EventScaleGroupByOutputType = {
-  id: number
+  id: string
   scale_code: string
   scale_name: string
   max_budget: runtime.Decimal
@@ -222,7 +218,7 @@ export type EventScaleWhereInput = {
   AND?: Prisma.EventScaleWhereInput | Prisma.EventScaleWhereInput[]
   OR?: Prisma.EventScaleWhereInput[]
   NOT?: Prisma.EventScaleWhereInput | Prisma.EventScaleWhereInput[]
-  id?: Prisma.IntFilter<"EventScale"> | number
+  id?: Prisma.StringFilter<"EventScale"> | string
   scale_code?: Prisma.StringFilter<"EventScale"> | string
   scale_name?: Prisma.StringFilter<"EventScale"> | string
   max_budget?: Prisma.DecimalFilter<"EventScale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -242,7 +238,7 @@ export type EventScaleOrderByWithRelationInput = {
 }
 
 export type EventScaleWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   scale_code?: string
   AND?: Prisma.EventScaleWhereInput | Prisma.EventScaleWhereInput[]
   OR?: Prisma.EventScaleWhereInput[]
@@ -272,7 +268,7 @@ export type EventScaleScalarWhereWithAggregatesInput = {
   AND?: Prisma.EventScaleScalarWhereWithAggregatesInput | Prisma.EventScaleScalarWhereWithAggregatesInput[]
   OR?: Prisma.EventScaleScalarWhereWithAggregatesInput[]
   NOT?: Prisma.EventScaleScalarWhereWithAggregatesInput | Prisma.EventScaleScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"EventScale"> | number
+  id?: Prisma.StringWithAggregatesFilter<"EventScale"> | string
   scale_code?: Prisma.StringWithAggregatesFilter<"EventScale"> | string
   scale_name?: Prisma.StringWithAggregatesFilter<"EventScale"> | string
   max_budget?: Prisma.DecimalWithAggregatesFilter<"EventScale"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -281,6 +277,7 @@ export type EventScaleScalarWhereWithAggregatesInput = {
 }
 
 export type EventScaleCreateInput = {
+  id?: string
   scale_code: string
   scale_name: string
   max_budget: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -290,7 +287,7 @@ export type EventScaleCreateInput = {
 }
 
 export type EventScaleUncheckedCreateInput = {
-  id?: number
+  id?: string
   scale_code: string
   scale_name: string
   max_budget: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -300,6 +297,7 @@ export type EventScaleUncheckedCreateInput = {
 }
 
 export type EventScaleUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   scale_code?: Prisma.StringFieldUpdateOperationsInput | string
   scale_name?: Prisma.StringFieldUpdateOperationsInput | string
   max_budget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -309,7 +307,7 @@ export type EventScaleUpdateInput = {
 }
 
 export type EventScaleUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   scale_code?: Prisma.StringFieldUpdateOperationsInput | string
   scale_name?: Prisma.StringFieldUpdateOperationsInput | string
   max_budget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -319,7 +317,7 @@ export type EventScaleUncheckedUpdateInput = {
 }
 
 export type EventScaleCreateManyInput = {
-  id?: number
+  id?: string
   scale_code: string
   scale_name: string
   max_budget: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -328,6 +326,7 @@ export type EventScaleCreateManyInput = {
 }
 
 export type EventScaleUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   scale_code?: Prisma.StringFieldUpdateOperationsInput | string
   scale_name?: Prisma.StringFieldUpdateOperationsInput | string
   max_budget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -336,7 +335,7 @@ export type EventScaleUpdateManyMutationInput = {
 }
 
 export type EventScaleUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   scale_code?: Prisma.StringFieldUpdateOperationsInput | string
   scale_name?: Prisma.StringFieldUpdateOperationsInput | string
   max_budget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -359,7 +358,6 @@ export type EventScaleCountOrderByAggregateInput = {
 }
 
 export type EventScaleAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   max_budget?: Prisma.SortOrder
 }
 
@@ -382,7 +380,6 @@ export type EventScaleMinOrderByAggregateInput = {
 }
 
 export type EventScaleSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   max_budget?: Prisma.SortOrder
 }
 
@@ -409,6 +406,7 @@ export type DecimalFieldUpdateOperationsInput = {
 }
 
 export type EventScaleCreateWithoutEvent_proposalsInput = {
+  id?: string
   scale_code: string
   scale_name: string
   max_budget: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -417,7 +415,7 @@ export type EventScaleCreateWithoutEvent_proposalsInput = {
 }
 
 export type EventScaleUncheckedCreateWithoutEvent_proposalsInput = {
-  id?: number
+  id?: string
   scale_code: string
   scale_name: string
   max_budget: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -442,6 +440,7 @@ export type EventScaleUpdateToOneWithWhereWithoutEvent_proposalsInput = {
 }
 
 export type EventScaleUpdateWithoutEvent_proposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   scale_code?: Prisma.StringFieldUpdateOperationsInput | string
   scale_name?: Prisma.StringFieldUpdateOperationsInput | string
   max_budget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -450,7 +449,7 @@ export type EventScaleUpdateWithoutEvent_proposalsInput = {
 }
 
 export type EventScaleUncheckedUpdateWithoutEvent_proposalsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   scale_code?: Prisma.StringFieldUpdateOperationsInput | string
   scale_name?: Prisma.StringFieldUpdateOperationsInput | string
   max_budget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -541,7 +540,7 @@ export type $EventScalePayload<ExtArgs extends runtime.Types.Extensions.Internal
     event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     scale_code: string
     scale_name: string
     max_budget: runtime.Decimal
@@ -971,7 +970,7 @@ export interface Prisma__EventScaleClient<T, Null = never, ExtArgs extends runti
  * Fields of the EventScale model
  */
 export interface EventScaleFieldRefs {
-  readonly id: Prisma.FieldRef<"EventScale", 'Int'>
+  readonly id: Prisma.FieldRef<"EventScale", 'String'>
   readonly scale_code: Prisma.FieldRef<"EventScale", 'String'>
   readonly scale_name: Prisma.FieldRef<"EventScale", 'String'>
   readonly max_budget: Prisma.FieldRef<"EventScale", 'Decimal'>

@@ -20,36 +20,24 @@ export type BranchModel = runtime.Types.Result.DefaultSelection<Prisma.$BranchPa
 
 export type AggregateBranch = {
   _count: BranchCountAggregateOutputType | null
-  _avg: BranchAvgAggregateOutputType | null
-  _sum: BranchSumAggregateOutputType | null
   _min: BranchMinAggregateOutputType | null
   _max: BranchMaxAggregateOutputType | null
 }
 
-export type BranchAvgAggregateOutputType = {
-  id: number | null
-  region_id: number | null
-}
-
-export type BranchSumAggregateOutputType = {
-  id: number | null
-  region_id: number | null
-}
-
 export type BranchMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   branch_code: string | null
   branch_name: string | null
-  region_id: number | null
+  region_id: string | null
   created_at: Date | null
   updated_at: Date | null
 }
 
 export type BranchMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   branch_code: string | null
   branch_name: string | null
-  region_id: number | null
+  region_id: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -64,16 +52,6 @@ export type BranchCountAggregateOutputType = {
   _all: number
 }
 
-
-export type BranchAvgAggregateInputType = {
-  id?: true
-  region_id?: true
-}
-
-export type BranchSumAggregateInputType = {
-  id?: true
-  region_id?: true
-}
 
 export type BranchMinAggregateInputType = {
   id?: true
@@ -141,18 +119,6 @@ export type BranchAggregateArgs<ExtArgs extends runtime.Types.Extensions.Interna
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: BranchAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: BranchSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: BranchMinAggregateInputType
@@ -183,22 +149,18 @@ export type BranchGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   _count?: BranchCountAggregateInputType | true
-  _avg?: BranchAvgAggregateInputType
-  _sum?: BranchSumAggregateInputType
   _min?: BranchMinAggregateInputType
   _max?: BranchMaxAggregateInputType
 }
 
 export type BranchGroupByOutputType = {
-  id: number
+  id: string
   branch_code: string
   branch_name: string
-  region_id: number
+  region_id: string
   created_at: Date
   updated_at: Date
   _count: BranchCountAggregateOutputType | null
-  _avg: BranchAvgAggregateOutputType | null
-  _sum: BranchSumAggregateOutputType | null
   _min: BranchMinAggregateOutputType | null
   _max: BranchMaxAggregateOutputType | null
 }
@@ -222,12 +184,13 @@ export type BranchWhereInput = {
   AND?: Prisma.BranchWhereInput | Prisma.BranchWhereInput[]
   OR?: Prisma.BranchWhereInput[]
   NOT?: Prisma.BranchWhereInput | Prisma.BranchWhereInput[]
-  id?: Prisma.IntFilter<"Branch"> | number
+  id?: Prisma.StringFilter<"Branch"> | string
   branch_code?: Prisma.StringFilter<"Branch"> | string
   branch_name?: Prisma.StringFilter<"Branch"> | string
-  region_id?: Prisma.IntFilter<"Branch"> | number
+  region_id?: Prisma.StringFilter<"Branch"> | string
   created_at?: Prisma.DateTimeFilter<"Branch"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Branch"> | Date | string
+  region?: Prisma.XOR<Prisma.RegionScalarRelationFilter, Prisma.RegionWhereInput>
   event_proposals?: Prisma.EventProposalListRelationFilter
 }
 
@@ -238,19 +201,21 @@ export type BranchOrderByWithRelationInput = {
   region_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  region?: Prisma.RegionOrderByWithRelationInput
   event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
 }
 
 export type BranchWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   branch_code?: string
   AND?: Prisma.BranchWhereInput | Prisma.BranchWhereInput[]
   OR?: Prisma.BranchWhereInput[]
   NOT?: Prisma.BranchWhereInput | Prisma.BranchWhereInput[]
   branch_name?: Prisma.StringFilter<"Branch"> | string
-  region_id?: Prisma.IntFilter<"Branch"> | number
+  region_id?: Prisma.StringFilter<"Branch"> | string
   created_at?: Prisma.DateTimeFilter<"Branch"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Branch"> | Date | string
+  region?: Prisma.XOR<Prisma.RegionScalarRelationFilter, Prisma.RegionWhereInput>
   event_proposals?: Prisma.EventProposalListRelationFilter
 }, "id" | "branch_code">
 
@@ -262,84 +227,84 @@ export type BranchOrderByWithAggregationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.BranchCountOrderByAggregateInput
-  _avg?: Prisma.BranchAvgOrderByAggregateInput
   _max?: Prisma.BranchMaxOrderByAggregateInput
   _min?: Prisma.BranchMinOrderByAggregateInput
-  _sum?: Prisma.BranchSumOrderByAggregateInput
 }
 
 export type BranchScalarWhereWithAggregatesInput = {
   AND?: Prisma.BranchScalarWhereWithAggregatesInput | Prisma.BranchScalarWhereWithAggregatesInput[]
   OR?: Prisma.BranchScalarWhereWithAggregatesInput[]
   NOT?: Prisma.BranchScalarWhereWithAggregatesInput | Prisma.BranchScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Branch"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Branch"> | string
   branch_code?: Prisma.StringWithAggregatesFilter<"Branch"> | string
   branch_name?: Prisma.StringWithAggregatesFilter<"Branch"> | string
-  region_id?: Prisma.IntWithAggregatesFilter<"Branch"> | number
+  region_id?: Prisma.StringWithAggregatesFilter<"Branch"> | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Branch"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Branch"> | Date | string
 }
 
 export type BranchCreateInput = {
+  id?: string
   branch_code: string
   branch_name: string
-  region_id: number
   created_at?: Date | string
   updated_at?: Date | string
+  region: Prisma.RegionCreateNestedOneWithoutBranchInput
   event_proposals?: Prisma.EventProposalCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateInput = {
-  id?: number
+  id?: string
   branch_code: string
   branch_name: string
-  region_id: number
+  region_id: string
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   branch_code?: Prisma.StringFieldUpdateOperationsInput | string
   branch_name?: Prisma.StringFieldUpdateOperationsInput | string
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  region?: Prisma.RegionUpdateOneRequiredWithoutBranchNestedInput
   event_proposals?: Prisma.EventProposalUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   branch_code?: Prisma.StringFieldUpdateOperationsInput | string
   branch_name?: Prisma.StringFieldUpdateOperationsInput | string
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateManyInput = {
-  id?: number
+  id?: string
   branch_code: string
   branch_name: string
-  region_id: number
+  region_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type BranchUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   branch_code?: Prisma.StringFieldUpdateOperationsInput | string
   branch_name?: Prisma.StringFieldUpdateOperationsInput | string
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BranchUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   branch_code?: Prisma.StringFieldUpdateOperationsInput | string
   branch_name?: Prisma.StringFieldUpdateOperationsInput | string
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -349,6 +314,16 @@ export type BranchScalarRelationFilter = {
   isNot?: Prisma.BranchWhereInput
 }
 
+export type BranchListRelationFilter = {
+  every?: Prisma.BranchWhereInput
+  some?: Prisma.BranchWhereInput
+  none?: Prisma.BranchWhereInput
+}
+
+export type BranchOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type BranchCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   branch_code?: Prisma.SortOrder
@@ -356,11 +331,6 @@ export type BranchCountOrderByAggregateInput = {
   region_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
-}
-
-export type BranchAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  region_id?: Prisma.SortOrder
 }
 
 export type BranchMaxOrderByAggregateInput = {
@@ -381,11 +351,6 @@ export type BranchMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
-export type BranchSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  region_id?: Prisma.SortOrder
-}
-
 export type BranchCreateNestedOneWithoutEvent_proposalsInput = {
   create?: Prisma.XOR<Prisma.BranchCreateWithoutEvent_proposalsInput, Prisma.BranchUncheckedCreateWithoutEvent_proposalsInput>
   connectOrCreate?: Prisma.BranchCreateOrConnectWithoutEvent_proposalsInput
@@ -400,19 +365,62 @@ export type BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutEvent_proposalsInput, Prisma.BranchUpdateWithoutEvent_proposalsInput>, Prisma.BranchUncheckedUpdateWithoutEvent_proposalsInput>
 }
 
+export type BranchCreateNestedManyWithoutRegionInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutRegionInput, Prisma.BranchUncheckedCreateWithoutRegionInput> | Prisma.BranchCreateWithoutRegionInput[] | Prisma.BranchUncheckedCreateWithoutRegionInput[]
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutRegionInput | Prisma.BranchCreateOrConnectWithoutRegionInput[]
+  createMany?: Prisma.BranchCreateManyRegionInputEnvelope
+  connect?: Prisma.BranchWhereUniqueInput | Prisma.BranchWhereUniqueInput[]
+}
+
+export type BranchUncheckedCreateNestedManyWithoutRegionInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutRegionInput, Prisma.BranchUncheckedCreateWithoutRegionInput> | Prisma.BranchCreateWithoutRegionInput[] | Prisma.BranchUncheckedCreateWithoutRegionInput[]
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutRegionInput | Prisma.BranchCreateOrConnectWithoutRegionInput[]
+  createMany?: Prisma.BranchCreateManyRegionInputEnvelope
+  connect?: Prisma.BranchWhereUniqueInput | Prisma.BranchWhereUniqueInput[]
+}
+
+export type BranchUpdateManyWithoutRegionNestedInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutRegionInput, Prisma.BranchUncheckedCreateWithoutRegionInput> | Prisma.BranchCreateWithoutRegionInput[] | Prisma.BranchUncheckedCreateWithoutRegionInput[]
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutRegionInput | Prisma.BranchCreateOrConnectWithoutRegionInput[]
+  upsert?: Prisma.BranchUpsertWithWhereUniqueWithoutRegionInput | Prisma.BranchUpsertWithWhereUniqueWithoutRegionInput[]
+  createMany?: Prisma.BranchCreateManyRegionInputEnvelope
+  set?: Prisma.BranchWhereUniqueInput | Prisma.BranchWhereUniqueInput[]
+  disconnect?: Prisma.BranchWhereUniqueInput | Prisma.BranchWhereUniqueInput[]
+  delete?: Prisma.BranchWhereUniqueInput | Prisma.BranchWhereUniqueInput[]
+  connect?: Prisma.BranchWhereUniqueInput | Prisma.BranchWhereUniqueInput[]
+  update?: Prisma.BranchUpdateWithWhereUniqueWithoutRegionInput | Prisma.BranchUpdateWithWhereUniqueWithoutRegionInput[]
+  updateMany?: Prisma.BranchUpdateManyWithWhereWithoutRegionInput | Prisma.BranchUpdateManyWithWhereWithoutRegionInput[]
+  deleteMany?: Prisma.BranchScalarWhereInput | Prisma.BranchScalarWhereInput[]
+}
+
+export type BranchUncheckedUpdateManyWithoutRegionNestedInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutRegionInput, Prisma.BranchUncheckedCreateWithoutRegionInput> | Prisma.BranchCreateWithoutRegionInput[] | Prisma.BranchUncheckedCreateWithoutRegionInput[]
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutRegionInput | Prisma.BranchCreateOrConnectWithoutRegionInput[]
+  upsert?: Prisma.BranchUpsertWithWhereUniqueWithoutRegionInput | Prisma.BranchUpsertWithWhereUniqueWithoutRegionInput[]
+  createMany?: Prisma.BranchCreateManyRegionInputEnvelope
+  set?: Prisma.BranchWhereUniqueInput | Prisma.BranchWhereUniqueInput[]
+  disconnect?: Prisma.BranchWhereUniqueInput | Prisma.BranchWhereUniqueInput[]
+  delete?: Prisma.BranchWhereUniqueInput | Prisma.BranchWhereUniqueInput[]
+  connect?: Prisma.BranchWhereUniqueInput | Prisma.BranchWhereUniqueInput[]
+  update?: Prisma.BranchUpdateWithWhereUniqueWithoutRegionInput | Prisma.BranchUpdateWithWhereUniqueWithoutRegionInput[]
+  updateMany?: Prisma.BranchUpdateManyWithWhereWithoutRegionInput | Prisma.BranchUpdateManyWithWhereWithoutRegionInput[]
+  deleteMany?: Prisma.BranchScalarWhereInput | Prisma.BranchScalarWhereInput[]
+}
+
 export type BranchCreateWithoutEvent_proposalsInput = {
+  id?: string
   branch_code: string
   branch_name: string
-  region_id: number
   created_at?: Date | string
   updated_at?: Date | string
+  region: Prisma.RegionCreateNestedOneWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutEvent_proposalsInput = {
-  id?: number
+  id?: string
   branch_code: string
   branch_name: string
-  region_id: number
+  region_id: string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -434,18 +442,109 @@ export type BranchUpdateToOneWithWhereWithoutEvent_proposalsInput = {
 }
 
 export type BranchUpdateWithoutEvent_proposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   branch_code?: Prisma.StringFieldUpdateOperationsInput | string
   branch_name?: Prisma.StringFieldUpdateOperationsInput | string
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  region?: Prisma.RegionUpdateOneRequiredWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateWithoutEvent_proposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_code?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_name?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type BranchUncheckedUpdateWithoutEvent_proposalsInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+export type BranchCreateWithoutRegionInput = {
+  id?: string
+  branch_code: string
+  branch_name: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  event_proposals?: Prisma.EventProposalCreateNestedManyWithoutBranchInput
+}
+
+export type BranchUncheckedCreateWithoutRegionInput = {
+  id?: string
+  branch_code: string
+  branch_name: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutBranchInput
+}
+
+export type BranchCreateOrConnectWithoutRegionInput = {
+  where: Prisma.BranchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BranchCreateWithoutRegionInput, Prisma.BranchUncheckedCreateWithoutRegionInput>
+}
+
+export type BranchCreateManyRegionInputEnvelope = {
+  data: Prisma.BranchCreateManyRegionInput | Prisma.BranchCreateManyRegionInput[]
+  skipDuplicates?: boolean
+}
+
+export type BranchUpsertWithWhereUniqueWithoutRegionInput = {
+  where: Prisma.BranchWhereUniqueInput
+  update: Prisma.XOR<Prisma.BranchUpdateWithoutRegionInput, Prisma.BranchUncheckedUpdateWithoutRegionInput>
+  create: Prisma.XOR<Prisma.BranchCreateWithoutRegionInput, Prisma.BranchUncheckedCreateWithoutRegionInput>
+}
+
+export type BranchUpdateWithWhereUniqueWithoutRegionInput = {
+  where: Prisma.BranchWhereUniqueInput
+  data: Prisma.XOR<Prisma.BranchUpdateWithoutRegionInput, Prisma.BranchUncheckedUpdateWithoutRegionInput>
+}
+
+export type BranchUpdateManyWithWhereWithoutRegionInput = {
+  where: Prisma.BranchScalarWhereInput
+  data: Prisma.XOR<Prisma.BranchUpdateManyMutationInput, Prisma.BranchUncheckedUpdateManyWithoutRegionInput>
+}
+
+export type BranchScalarWhereInput = {
+  AND?: Prisma.BranchScalarWhereInput | Prisma.BranchScalarWhereInput[]
+  OR?: Prisma.BranchScalarWhereInput[]
+  NOT?: Prisma.BranchScalarWhereInput | Prisma.BranchScalarWhereInput[]
+  id?: Prisma.StringFilter<"Branch"> | string
+  branch_code?: Prisma.StringFilter<"Branch"> | string
+  branch_name?: Prisma.StringFilter<"Branch"> | string
+  region_id?: Prisma.StringFilter<"Branch"> | string
+  created_at?: Prisma.DateTimeFilter<"Branch"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"Branch"> | Date | string
+}
+
+export type BranchCreateManyRegionInput = {
+  id?: string
+  branch_code: string
+  branch_name: string
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type BranchUpdateWithoutRegionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   branch_code?: Prisma.StringFieldUpdateOperationsInput | string
   branch_name?: Prisma.StringFieldUpdateOperationsInput | string
-  region_id?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_proposals?: Prisma.EventProposalUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateWithoutRegionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_code?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateManyWithoutRegionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_code?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -488,6 +587,7 @@ export type BranchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   region_id?: boolean
   created_at?: boolean
   updated_at?: boolean
+  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
   event_proposals?: boolean | Prisma.Branch$event_proposalsArgs<ExtArgs>
   _count?: boolean | Prisma.BranchCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["branch"]>
@@ -499,6 +599,7 @@ export type BranchSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   region_id?: boolean
   created_at?: boolean
   updated_at?: boolean
+  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["branch"]>
 
 export type BranchSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -508,6 +609,7 @@ export type BranchSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   region_id?: boolean
   created_at?: boolean
   updated_at?: boolean
+  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["branch"]>
 
 export type BranchSelectScalar = {
@@ -521,22 +623,28 @@ export type BranchSelectScalar = {
 
 export type BranchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "branch_code" | "branch_name" | "region_id" | "created_at" | "updated_at", ExtArgs["result"]["branch"]>
 export type BranchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
   event_proposals?: boolean | Prisma.Branch$event_proposalsArgs<ExtArgs>
   _count?: boolean | Prisma.BranchCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type BranchIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type BranchIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type BranchIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+}
+export type BranchIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+}
 
 export type $BranchPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Branch"
   objects: {
+    region: Prisma.$RegionPayload<ExtArgs>
     event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     branch_code: string
     branch_name: string
-    region_id: number
+    region_id: string
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["branch"]>
@@ -933,6 +1041,7 @@ readonly fields: BranchFieldRefs;
  */
 export interface Prisma__BranchClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  region<T extends Prisma.RegionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RegionDefaultArgs<ExtArgs>>): Prisma.Prisma__RegionClient<runtime.Types.Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   event_proposals<T extends Prisma.Branch$event_proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$event_proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -963,10 +1072,10 @@ export interface Prisma__BranchClient<T, Null = never, ExtArgs extends runtime.T
  * Fields of the Branch model
  */
 export interface BranchFieldRefs {
-  readonly id: Prisma.FieldRef<"Branch", 'Int'>
+  readonly id: Prisma.FieldRef<"Branch", 'String'>
   readonly branch_code: Prisma.FieldRef<"Branch", 'String'>
   readonly branch_name: Prisma.FieldRef<"Branch", 'String'>
-  readonly region_id: Prisma.FieldRef<"Branch", 'Int'>
+  readonly region_id: Prisma.FieldRef<"Branch", 'String'>
   readonly created_at: Prisma.FieldRef<"Branch", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Branch", 'DateTime'>
 }
@@ -1218,6 +1327,10 @@ export type BranchCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    */
   data: Prisma.BranchCreateManyInput | Prisma.BranchCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BranchIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1288,6 +1401,10 @@ export type BranchUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many Branches to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BranchIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**

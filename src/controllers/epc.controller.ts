@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
+import { searchEventProposals } from "../helpers/searchEventProposal.helper";
 
 export const createEventProposal = async (
   req: Request,
@@ -58,8 +59,8 @@ export const createEventProposal = async (
         branch_id,
         event_scale_id,
         budget_master_id,
-        created_by: req.user.id,
-        updated_by: req.user.id,
+        created_by_id: req.user.id,
+        updated_by_id: req.user.id,
       },
     });
 
@@ -81,109 +82,32 @@ export const getAllEventProposals = async (
     const {
       page = "1",
       pageSize = "10",
-      search = "",
+      search,
       sortBy = "created_at",
       sortOrder = "desc",
       status,
+      departmentId,
+      startDate,
+      endDate,
     } = req.query;
 
     const pageNumber = Number(page);
     const take = Number(pageSize);
-    const skip = (pageNumber - 1) * take;
 
-    /* ---------------- WHERE (FILTERING) ---------------- */
-    const where: any = {};
+    const { data, total } = await searchEventProposals({
+      search: search as string,
+      status: status as string,
+      departmentId: departmentId ? Number(departmentId) : undefined,
+      startDate: startDate ? new Date(startDate as string) : undefined,
+      endDate: endDate ? new Date(endDate as string) : undefined,
+      page: pageNumber,
+      pageSize: take,
+      sortBy: sortBy as any,
+      sortOrder: sortOrder === "asc" ? "asc" : "desc",
+    });
 
-    if (search) {
-      where.OR = [
-        {
-          company: {
-            contains: String(search),
-            mode: "insensitive",
-          },
-        },
-        {
-          email: {
-            contains: String(search),
-            mode: "insensitive",
-          },
-        },
-      ];
-    }
-
-    if (status) {
-      where.status = status;
-    }
-
-    /* ---------------- SORTING ---------------- */
-    const orderBy: any = {
-      [String(sortBy)]: sortOrder === "asc" ? "asc" : "desc",
-    };
-
-    /* ---------------- DATA QUERY ---------------- */
-    const [proposals, total] = await Promise.all([
-      prisma.eventProposal.findMany({
-        where,
-        skip,
-        take,
-        orderBy,
-        select: {
-          id: true,
-          proposal_number: true,
-          event_from_date: true,
-          event_to_date: true,
-          event_description: true,
-          location: true,
-          event_objective: true,
-          status: true,
-          created_by: true,
-          created_at: true,
-
-          department: {
-            select: {
-              department_name: true,
-            },
-          },
-
-          region: {
-            select: {
-              region_name: true,
-            },
-          },
-
-          branch: {
-            select: {
-              branch_name: true,
-            },
-          },
-
-          event_scale: {
-            select: {
-              scale_name: true,
-              max_budget: true,
-            },
-          },
-
-          budget_master: {
-            select: {
-              financial_year: true,
-              total_budget: true,
-            },
-          },
-
-          event_name: {
-            select: {
-              description: true,
-            },
-          },
-        },
-      }),
-      prisma.eventProposal.count({ where }),
-    ]);
-
-    /* ---------------- RESPONSE ---------------- */
     res.status(200).json({
-      data: proposals,
+      data,
       pagination: {
         total,
         page: pageNumber,
@@ -203,8 +127,8 @@ export const getEventProposalById = async (
   next: NextFunction,
 ) => {
   try {
-    const id = Number(req.params.id);
-    if (isNaN(id)) {
+    const id = String(req.params.id);
+    if (!id) {
       throw new ApiError(404, "Invalid ID");
     }
 
@@ -227,10 +151,10 @@ export const updateEventProposal = async (
   next: NextFunction,
 ) => {
   try {
-    const id = Number(req.params.id);
+    const id = String(req.params.id);
     const { ...data } = req.body;
 
-    if (isNaN(id)) {
+    if (id) {
       throw new ApiError(404, "Invalid ID");
     }
 
@@ -257,9 +181,9 @@ export const deleteEventProposal = async (
   next: NextFunction,
 ) => {
   try {
-    const id = Number(req.params.id);
+    const id = String(req.params.id);
 
-    if (isNaN(id)) {
+    if (id) {
       throw new ApiError(400, "Invalid ID");
     }
 
@@ -267,7 +191,7 @@ export const deleteEventProposal = async (
       where: { id },
       data: {
         status: "DELETED",
-        updated_by: req.user.id,
+        updated_by_id: req.user.id,
       },
     });
 

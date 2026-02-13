@@ -18,6 +18,9 @@ model User {
   is_default_login  Boolean         @default(true) 
   refresh_tokens     RefreshToken[]
   password_reset_tokens  PasswordResetToken[] 
+  created_event_proposals EventProposal[] @relation("EventCreatedBy")
+  updated_event_proposals EventProposal[] @relation("EventUpdatedBy")
+
   created_at    DateTime @default(now()) @db.Timestamp(6)
   updated_at    DateTime @default(now()) @db.Timestamp(6)
 }
@@ -58,23 +61,23 @@ model DailyVisitors {
 }
 
 model EventProposal {
-  id               Int      @id @default(autoincrement())
+  id               String      @id @default(uuid())
   proposal_number  String   @unique
   event_from_date       DateTime
   event_to_date       DateTime
   event_description String
   location String
   event_objective String
-  status           String   @default("DRAFT")
-  created_by String
-  updated_by String
-
-  department_id    Int
-  region_id        Int
-  branch_id        Int
-  event_scale_id   Int
-  budget_master_id Int
-  event_name_id    Int
+  status           String   @default("PENDING")
+ 
+  created_by_id    String  
+  updated_by_id    String
+  department_id    String
+  region_id        String
+  branch_id        String
+  event_scale_id   String
+  budget_master_id String
+  event_name_id    String
 
   department  Department  @relation(fields: [department_id], references: [id])
   region      Region      @relation(fields: [region_id], references: [id])
@@ -82,15 +85,18 @@ model EventProposal {
   event_scale  EventScale  @relation(fields: [event_scale_id], references: [id])
   budget_master BudgetMaster @relation(fields: [budget_master_id], references: [id])
   event_name EventName @relation(fields: [event_name_id], references: [id])
-
+  created_by User @relation("EventCreatedBy", fields: [created_by_id], references: [id])
+  updated_by User @relation("EventUpdatedBy", fields: [updated_by_id], references: [id])
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  search_vector     Unsupported("tsvector")?
 
 }
 
 
 model Department {
-  id              Int      @id @default(autoincrement())
+  id              String    @id @default(uuid())
   department_code String   @unique
   department_name String
   event_proposals EventProposal[]
@@ -101,10 +107,11 @@ model Department {
 
 
 model Region {
-  id           Int     @id @default(autoincrement())
+  id           String     @id @default(uuid())
   region_code  String  @unique
   region_name  String
   event_proposals EventProposal[]
+  branch Branch[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
@@ -112,10 +119,11 @@ model Region {
 
 
 model Branch {
-  id            Int     @id @default(autoincrement())
+  id            String     @id @default(uuid())
   branch_code   String  @unique
   branch_name   String
-  region_id     Int
+  region_id     String
+  region Region @relation(fields: [region_id], references: [id])
   event_proposals EventProposal[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -124,7 +132,7 @@ model Branch {
 
 
 model EventScale {
-  id              Int     @id @default(autoincrement())
+  id              String     @id @default(uuid())
   scale_code      String  @unique
   scale_name      String
   max_budget      Decimal
@@ -136,7 +144,7 @@ model EventScale {
 
 
 model BudgetMaster {
-  id             Int      @id @default(autoincrement())
+  id             String      @id @default(uuid())
   financial_year String
   total_budget   Decimal
   event_proposals EventProposal[]
@@ -147,7 +155,7 @@ model BudgetMaster {
 
 
 model EventName {
-  id          Int    @id @default(autoincrement())
+  id          String    @id @default(uuid())
   event_code  String @unique
   description String
   events      EventProposal[]
