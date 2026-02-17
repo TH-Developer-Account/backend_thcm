@@ -18,6 +18,8 @@ model User {
   is_default_login  Boolean         @default(true) 
   refresh_tokens     RefreshToken[]
   password_reset_tokens  PasswordResetToken[] 
+  appRoles UserAppRole[]
+  workspaces  WorkspaceUser[]
   created_event_proposals EventProposal[] @relation("EventCreatedBy")
   updated_event_proposals EventProposal[] @relation("EventUpdatedBy")
 
@@ -160,6 +162,108 @@ model EventName {
   description String
   events      EventProposal[]
 
+}
+
+model Workspace {
+  id    String              @id @default(uuid())
+  name  String
+
+  users WorkspaceUser[]
+  apps  WorkspaceApp[]
+  roles Role[]
+  userapprole UserAppRole[]
+}
+
+model WorkspaceUser {
+  userId       String
+  workspaceId  String
+  isSuperAdmin Boolean @default(false)
+
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@id([userId, workspaceId])
+}
+
+model App {
+  id   String    @id @default(uuid())
+  key  String @unique
+  name String
+
+  workspaces WorkspaceApp[]
+  userRoles UserAppRole[]
+  module Module[]
+}
+
+model WorkspaceApp {
+  workspaceId String
+  appId       String
+  enabled     Boolean @default(true)
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  app       App       @relation(fields: [appId], references: [id])
+
+  @@id([workspaceId, appId])
+}
+
+model Module {
+  id     String    @id @default(uuid())
+  key    String
+  name   String
+  appId  String
+
+  app   App   @relation(fields: [appId], references: [id])
+  roles Role[]
+
+  @@index([appId])
+}
+
+model Role {
+  id     String    @id @default(uuid())
+  name   String
+  workspaceId String
+  moduleId    String?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  module    Module?    @relation(fields: [moduleId], references: [id])
+  permissions RolePermission[]
+  users       UserAppRole[]
+
+  @@unique([workspaceId, moduleId, name])
+  @@index([workspaceId, moduleId])
+}
+
+enum PermissionAction {
+  read
+  create
+  update
+  delete
+  approve
+  export
+}
+
+model RolePermission {
+  roleId     String
+  permission PermissionAction 
+
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@id([roleId, permission])
+}
+
+model UserAppRole {
+  userId String
+  workspaceId String
+  appId  String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  app  App  @relation(fields: [appId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@id([userId, workspaceId, appId])
+  @@index([userId, workspaceId])
 }
 
 

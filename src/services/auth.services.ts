@@ -3,10 +3,22 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { prisma } from "../config/prisma";
 
-export const signAccessToken = (user) => {
-  return jwt.sign({ sub: user.id }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "15m",
-  });
+type AccessTokenPayload = {
+  id: string;
+  workspaceId: string;
+  isSuperAdmin: boolean;
+};
+
+export const signAccessToken = (payload: AccessTokenPayload) => {
+  return jwt.sign(
+    {
+      sub: payload.id,
+      workspaceId: payload.workspaceId,
+      isSuperAdmin: payload.isSuperAdmin,
+    },
+    process.env.ACCESS_TOKEN_SECRET!,
+    { expiresIn: "15m" },
+  );
 };
 
 export const createRefreshToken = async ({

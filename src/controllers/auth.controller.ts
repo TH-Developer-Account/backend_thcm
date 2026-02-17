@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { prisma } from "../config/prisma";
 import redis from "../config/redis";
 import { checkOtpLimit, updateOtpLimit } from "../utils/otpRateLimiter";
+import { buildUserPermissions } from "../utils/userPermission";
 import ApiError from "../utils/apiError";
 // import { sendPasswordResetEmail } from "../utils/sendEmail";
 import { SALT_ROUNDS } from "../utils/contants";
@@ -116,8 +117,31 @@ export const loginWithPassword = async (
         throw new ApiError(401, "Invalid credentials");
       }
 
-      // JWT logic for the user
-      const accessToken = signAccessToken(existingUser);
+      // Load workspace membership (single workspace system)
+      const workspace = await prisma.workspaceUser.findFirst({
+        where: { userId: existingUser.id },
+        select: {
+          workspaceId: true,
+          isSuperAdmin: true,
+        },
+      });
+
+      if (!workspace) {
+        throw new ApiError(403, "User not assigned to workspace");
+      }
+
+      // 🔥 Load module-level permissions
+      const permissions = await buildUserPermissions(
+        existingUser.id,
+        workspace.workspaceId,
+      );
+
+      // Create JWT with workspace context
+      const accessToken = signAccessToken({
+        id: existingUser.id,
+        workspaceId: workspace.workspaceId,
+        isSuperAdmin: workspace.isSuperAdmin,
+      });
 
       const refreshToken = await createRefreshToken({
         userId: existingUser.id,
@@ -144,6 +168,11 @@ export const loginWithPassword = async (
           is_active: existingUser.is_active,
           created_at: existingUser.created_at,
           updated_at: existingUser.updated_at,
+          workspace: {
+            id: workspace.workspaceId,
+            isSuperAdmin: workspace.isSuperAdmin,
+          },
+          permissions,
         },
       });
     }
@@ -231,8 +260,31 @@ export const verifyOtp = async (
       throw new ApiError(403, "Account is inactive");
     }
 
-    // 3️⃣ Generate tokens
-    const accessToken = signAccessToken(user);
+    // Load workspace membership (single workspace system)
+    const workspace = await prisma.workspaceUser.findFirst({
+      where: { userId: user.id },
+      select: {
+        workspaceId: true,
+        isSuperAdmin: true,
+      },
+    });
+
+    if (!workspace) {
+      throw new ApiError(403, "User not assigned to workspace");
+    }
+
+    // 🔥 Load module-level permissions
+    const permissions = await buildUserPermissions(
+      user.id,
+      workspace.workspaceId,
+    );
+
+    // Create JWT with workspace context
+    const accessToken = signAccessToken({
+      id: user.id,
+      workspaceId: workspace.workspaceId,
+      isSuperAdmin: workspace.isSuperAdmin,
+    });
 
     const refreshToken = await createRefreshToken({
       userId: user.id,
@@ -260,6 +312,11 @@ export const verifyOtp = async (
         first_name: user.first_name,
         last_name: user.last_name,
         phone_number: user.phone_number,
+        workspace: {
+          id: workspace.workspaceId,
+          isSuperAdmin: workspace.isSuperAdmin,
+        },
+        permissions,
       },
     });
   } catch (error) {
@@ -316,7 +373,25 @@ export const refreshAccessToken = async (
       ipAddress: req.ip,
     });
 
-    const accessToken = signAccessToken(stored.user);
+    // Load workspace membership (single workspace system)
+    const workspace = await prisma.workspaceUser.findFirst({
+      where: { userId: stored.user.id },
+      select: {
+        workspaceId: true,
+        isSuperAdmin: true,
+      },
+    });
+
+    if (!workspace) {
+      throw new ApiError(403, "User not assigned to workspace");
+    }
+
+    // Create JWT with workspace context
+    const accessToken = signAccessToken({
+      id: stored.user.id,
+      workspaceId: workspace.workspaceId,
+      isSuperAdmin: workspace.isSuperAdmin,
+    });
 
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,

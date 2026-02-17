@@ -1,22 +1,17 @@
 import jwt from "jsonwebtoken";
-import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
+import { buildUserPermissions } from "../utils/userPermission";
 
-export const requireAuth = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const requireAuth = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader?.startsWith("Bearer ")) {
       throw new ApiError(401, "No token provided");
     }
 
     const token = authHeader.split(" ")[1];
 
-    // Verify token
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as {
       sub: string;
     };
@@ -27,6 +22,12 @@ export const requireAuth = async (
         id: true,
         email: true,
         is_active: true,
+        workspaces: {
+          select: {
+            workspaceId: true,
+            isSuperAdmin: true,
+          },
+        },
       },
     });
 
@@ -34,14 +35,37 @@ export const requireAuth = async (
       throw new ApiError(401, "User not authorized");
     }
 
-    req.user = user;
+    const workspace = user.workspaces[0]; // single workspace
+
+    const permissions = await buildUserPermissions(
+      user.id,
+      workspace.workspaceId,
+    );
+
+    req.user = {
+      id: user.id,
+      email: user.email,
+      workspaceId: workspace.workspaceId,
+      isSuperAdmin: workspace.isSuperAdmin,
+      apps: permissions,
+    };
+
     next();
-  } catch {
+  } catch (error) {
     res.sendStatus(401);
   }
 };
 
-export const requireRole = (role) => (req, res, next) => {
-  if (req.user.role !== role) return res.sendStatus(403);
-  next();
-};
+export function authorize(app: string, module: string, action: string) {
+  return (req, res, next) => {
+    if (req.user?.isSuperAdmin) return next();
+
+    const perms = req.user?.apps?.[app]?.[module];
+
+    if (!perms || !perms.includes(action)) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    next();
+  };
+}

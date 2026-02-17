@@ -92,3 +92,43 @@ export type BudgetMaster = Prisma.BudgetMasterModel
  * 
  */
 export type EventName = Prisma.EventNameModel
+/**
+ * Model Workspace
+ * 
+ */
+export type Workspace = Prisma.WorkspaceModel
+/**
+ * Model WorkspaceUser
+ * 
+ */
+export type WorkspaceUser = Prisma.WorkspaceUserModel
+/**
+ * Model App
+ * 
+ */
+export type App = Prisma.AppModel
+/**
+ * Model WorkspaceApp
+ * 
+ */
+export type WorkspaceApp = Prisma.WorkspaceAppModel
+/**
+ * Model Module
+ * 
+ */
+export type Module = Prisma.ModuleModel
+/**
+ * Model Role
+ * 
+ */
+export type Role = Prisma.RoleModel
+/**
+ * Model RolePermission
+ * 
+ */
+export type RolePermission = Prisma.RolePermissionModel
+/**
+ * Model UserAppRole
+ * 
+ */
+export type UserAppRole = Prisma.UserAppRoleModel
