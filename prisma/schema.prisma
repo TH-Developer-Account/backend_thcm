@@ -7,6 +7,15 @@ datasource db {
   provider = "postgresql"
 }
 
+enum PermissionAction {
+  read
+  create
+  update
+  delete
+  approve
+  export
+}
+
 model User {
   id            String       @id @default(uuid())
   first_name    String   @db.VarChar(50)
@@ -113,10 +122,8 @@ model Region {
   region_code  String  @unique
   region_name  String
   event_proposals EventProposal[]
-  branch Branch[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
 }
 
 
@@ -124,20 +131,16 @@ model Branch {
   id            String     @id @default(uuid())
   branch_code   String  @unique
   branch_name   String
-  region_id     String
-  region Region @relation(fields: [region_id], references: [id])
   event_proposals EventProposal[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
 }
 
 
 model EventScale {
   id              String     @id @default(uuid())
-  scale_code      String  @unique
-  scale_name      String
-  max_budget      Decimal
+  code      String  @unique
+  title      String
   event_proposals EventProposal[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -147,8 +150,10 @@ model EventScale {
 
 model BudgetMaster {
   id             String      @id @default(uuid())
-  financial_year String
-  total_budget   Decimal
+  fiscal_year String
+  code   String
+  id_desc String
+  value Decimal
   event_proposals EventProposal[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -158,10 +163,8 @@ model BudgetMaster {
 
 model EventName {
   id          String    @id @default(uuid())
-  event_code  String @unique
-  description String
+  title String
   events      EventProposal[]
-
 }
 
 model Workspace {
@@ -233,14 +236,7 @@ model Role {
   @@index([workspaceId, moduleId])
 }
 
-enum PermissionAction {
-  read
-  create
-  update
-  delete
-  approve
-  export
-}
+
 
 model RolePermission {
   roleId     String

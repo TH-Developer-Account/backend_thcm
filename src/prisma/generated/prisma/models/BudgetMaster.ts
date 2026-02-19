@@ -27,33 +27,39 @@ export type AggregateBudgetMaster = {
 }
 
 export type BudgetMasterAvgAggregateOutputType = {
-  total_budget: runtime.Decimal | null
+  value: runtime.Decimal | null
 }
 
 export type BudgetMasterSumAggregateOutputType = {
-  total_budget: runtime.Decimal | null
+  value: runtime.Decimal | null
 }
 
 export type BudgetMasterMinAggregateOutputType = {
   id: string | null
-  financial_year: string | null
-  total_budget: runtime.Decimal | null
+  fiscal_year: string | null
+  code: string | null
+  id_desc: string | null
+  value: runtime.Decimal | null
   created_at: Date | null
   updated_at: Date | null
 }
 
 export type BudgetMasterMaxAggregateOutputType = {
   id: string | null
-  financial_year: string | null
-  total_budget: runtime.Decimal | null
+  fiscal_year: string | null
+  code: string | null
+  id_desc: string | null
+  value: runtime.Decimal | null
   created_at: Date | null
   updated_at: Date | null
 }
 
 export type BudgetMasterCountAggregateOutputType = {
   id: number
-  financial_year: number
-  total_budget: number
+  fiscal_year: number
+  code: number
+  id_desc: number
+  value: number
   created_at: number
   updated_at: number
   _all: number
@@ -61,33 +67,39 @@ export type BudgetMasterCountAggregateOutputType = {
 
 
 export type BudgetMasterAvgAggregateInputType = {
-  total_budget?: true
+  value?: true
 }
 
 export type BudgetMasterSumAggregateInputType = {
-  total_budget?: true
+  value?: true
 }
 
 export type BudgetMasterMinAggregateInputType = {
   id?: true
-  financial_year?: true
-  total_budget?: true
+  fiscal_year?: true
+  code?: true
+  id_desc?: true
+  value?: true
   created_at?: true
   updated_at?: true
 }
 
 export type BudgetMasterMaxAggregateInputType = {
   id?: true
-  financial_year?: true
-  total_budget?: true
+  fiscal_year?: true
+  code?: true
+  id_desc?: true
+  value?: true
   created_at?: true
   updated_at?: true
 }
 
 export type BudgetMasterCountAggregateInputType = {
   id?: true
-  financial_year?: true
-  total_budget?: true
+  fiscal_year?: true
+  code?: true
+  id_desc?: true
+  value?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -181,8 +193,10 @@ export type BudgetMasterGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
 
 export type BudgetMasterGroupByOutputType = {
   id: string
-  financial_year: string
-  total_budget: runtime.Decimal
+  fiscal_year: string
+  code: string
+  id_desc: string
+  value: runtime.Decimal
   created_at: Date
   updated_at: Date
   _count: BudgetMasterCountAggregateOutputType | null
@@ -212,8 +226,10 @@ export type BudgetMasterWhereInput = {
   OR?: Prisma.BudgetMasterWhereInput[]
   NOT?: Prisma.BudgetMasterWhereInput | Prisma.BudgetMasterWhereInput[]
   id?: Prisma.StringFilter<"BudgetMaster"> | string
-  financial_year?: Prisma.StringFilter<"BudgetMaster"> | string
-  total_budget?: Prisma.DecimalFilter<"BudgetMaster"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year?: Prisma.StringFilter<"BudgetMaster"> | string
+  code?: Prisma.StringFilter<"BudgetMaster"> | string
+  id_desc?: Prisma.StringFilter<"BudgetMaster"> | string
+  value?: Prisma.DecimalFilter<"BudgetMaster"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeFilter<"BudgetMaster"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"BudgetMaster"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
@@ -221,8 +237,10 @@ export type BudgetMasterWhereInput = {
 
 export type BudgetMasterOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  financial_year?: Prisma.SortOrder
-  total_budget?: Prisma.SortOrder
+  fiscal_year?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  id_desc?: Prisma.SortOrder
+  value?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
@@ -233,8 +251,10 @@ export type BudgetMasterWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.BudgetMasterWhereInput | Prisma.BudgetMasterWhereInput[]
   OR?: Prisma.BudgetMasterWhereInput[]
   NOT?: Prisma.BudgetMasterWhereInput | Prisma.BudgetMasterWhereInput[]
-  financial_year?: Prisma.StringFilter<"BudgetMaster"> | string
-  total_budget?: Prisma.DecimalFilter<"BudgetMaster"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year?: Prisma.StringFilter<"BudgetMaster"> | string
+  code?: Prisma.StringFilter<"BudgetMaster"> | string
+  id_desc?: Prisma.StringFilter<"BudgetMaster"> | string
+  value?: Prisma.DecimalFilter<"BudgetMaster"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeFilter<"BudgetMaster"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"BudgetMaster"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
@@ -242,8 +262,10 @@ export type BudgetMasterWhereUniqueInput = Prisma.AtLeast<{
 
 export type BudgetMasterOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  financial_year?: Prisma.SortOrder
-  total_budget?: Prisma.SortOrder
+  fiscal_year?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  id_desc?: Prisma.SortOrder
+  value?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.BudgetMasterCountOrderByAggregateInput
@@ -258,16 +280,20 @@ export type BudgetMasterScalarWhereWithAggregatesInput = {
   OR?: Prisma.BudgetMasterScalarWhereWithAggregatesInput[]
   NOT?: Prisma.BudgetMasterScalarWhereWithAggregatesInput | Prisma.BudgetMasterScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"BudgetMaster"> | string
-  financial_year?: Prisma.StringWithAggregatesFilter<"BudgetMaster"> | string
-  total_budget?: Prisma.DecimalWithAggregatesFilter<"BudgetMaster"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year?: Prisma.StringWithAggregatesFilter<"BudgetMaster"> | string
+  code?: Prisma.StringWithAggregatesFilter<"BudgetMaster"> | string
+  id_desc?: Prisma.StringWithAggregatesFilter<"BudgetMaster"> | string
+  value?: Prisma.DecimalWithAggregatesFilter<"BudgetMaster"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"BudgetMaster"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"BudgetMaster"> | Date | string
 }
 
 export type BudgetMasterCreateInput = {
   id?: string
-  financial_year: string
-  total_budget: runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year: string
+  code: string
+  id_desc: string
+  value: runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalCreateNestedManyWithoutBudget_masterInput
@@ -275,8 +301,10 @@ export type BudgetMasterCreateInput = {
 
 export type BudgetMasterUncheckedCreateInput = {
   id?: string
-  financial_year: string
-  total_budget: runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year: string
+  code: string
+  id_desc: string
+  value: runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutBudget_masterInput
@@ -284,8 +312,10 @@ export type BudgetMasterUncheckedCreateInput = {
 
 export type BudgetMasterUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  financial_year?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  id_desc?: Prisma.StringFieldUpdateOperationsInput | string
+  value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUpdateManyWithoutBudget_masterNestedInput
@@ -293,8 +323,10 @@ export type BudgetMasterUpdateInput = {
 
 export type BudgetMasterUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  financial_year?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  id_desc?: Prisma.StringFieldUpdateOperationsInput | string
+  value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutBudget_masterNestedInput
@@ -302,24 +334,30 @@ export type BudgetMasterUncheckedUpdateInput = {
 
 export type BudgetMasterCreateManyInput = {
   id?: string
-  financial_year: string
-  total_budget: runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year: string
+  code: string
+  id_desc: string
+  value: runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type BudgetMasterUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  financial_year?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  id_desc?: Prisma.StringFieldUpdateOperationsInput | string
+  value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BudgetMasterUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  financial_year?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  id_desc?: Prisma.StringFieldUpdateOperationsInput | string
+  value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -331,34 +369,40 @@ export type BudgetMasterScalarRelationFilter = {
 
 export type BudgetMasterCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  financial_year?: Prisma.SortOrder
-  total_budget?: Prisma.SortOrder
+  fiscal_year?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  id_desc?: Prisma.SortOrder
+  value?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
 
 export type BudgetMasterAvgOrderByAggregateInput = {
-  total_budget?: Prisma.SortOrder
+  value?: Prisma.SortOrder
 }
 
 export type BudgetMasterMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  financial_year?: Prisma.SortOrder
-  total_budget?: Prisma.SortOrder
+  fiscal_year?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  id_desc?: Prisma.SortOrder
+  value?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
 
 export type BudgetMasterMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  financial_year?: Prisma.SortOrder
-  total_budget?: Prisma.SortOrder
+  fiscal_year?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  id_desc?: Prisma.SortOrder
+  value?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
 
 export type BudgetMasterSumOrderByAggregateInput = {
-  total_budget?: Prisma.SortOrder
+  value?: Prisma.SortOrder
 }
 
 export type BudgetMasterCreateNestedOneWithoutEvent_proposalsInput = {
@@ -375,18 +419,30 @@ export type BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BudgetMasterUpdateToOneWithWhereWithoutEvent_proposalsInput, Prisma.BudgetMasterUpdateWithoutEvent_proposalsInput>, Prisma.BudgetMasterUncheckedUpdateWithoutEvent_proposalsInput>
 }
 
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
 export type BudgetMasterCreateWithoutEvent_proposalsInput = {
   id?: string
-  financial_year: string
-  total_budget: runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year: string
+  code: string
+  id_desc: string
+  value: runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type BudgetMasterUncheckedCreateWithoutEvent_proposalsInput = {
   id?: string
-  financial_year: string
-  total_budget: runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year: string
+  code: string
+  id_desc: string
+  value: runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -409,16 +465,20 @@ export type BudgetMasterUpdateToOneWithWhereWithoutEvent_proposalsInput = {
 
 export type BudgetMasterUpdateWithoutEvent_proposalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  financial_year?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  id_desc?: Prisma.StringFieldUpdateOperationsInput | string
+  value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type BudgetMasterUncheckedUpdateWithoutEvent_proposalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  financial_year?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  fiscal_year?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  id_desc?: Prisma.StringFieldUpdateOperationsInput | string
+  value?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -456,8 +516,10 @@ export type BudgetMasterCountOutputTypeCountEvent_proposalsArgs<ExtArgs extends 
 
 export type BudgetMasterSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  financial_year?: boolean
-  total_budget?: boolean
+  fiscal_year?: boolean
+  code?: boolean
+  id_desc?: boolean
+  value?: boolean
   created_at?: boolean
   updated_at?: boolean
   event_proposals?: boolean | Prisma.BudgetMaster$event_proposalsArgs<ExtArgs>
@@ -466,29 +528,35 @@ export type BudgetMasterSelect<ExtArgs extends runtime.Types.Extensions.Internal
 
 export type BudgetMasterSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  financial_year?: boolean
-  total_budget?: boolean
+  fiscal_year?: boolean
+  code?: boolean
+  id_desc?: boolean
+  value?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["budgetMaster"]>
 
 export type BudgetMasterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  financial_year?: boolean
-  total_budget?: boolean
+  fiscal_year?: boolean
+  code?: boolean
+  id_desc?: boolean
+  value?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["budgetMaster"]>
 
 export type BudgetMasterSelectScalar = {
   id?: boolean
-  financial_year?: boolean
-  total_budget?: boolean
+  fiscal_year?: boolean
+  code?: boolean
+  id_desc?: boolean
+  value?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type BudgetMasterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "financial_year" | "total_budget" | "created_at" | "updated_at", ExtArgs["result"]["budgetMaster"]>
+export type BudgetMasterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fiscal_year" | "code" | "id_desc" | "value" | "created_at" | "updated_at", ExtArgs["result"]["budgetMaster"]>
 export type BudgetMasterInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event_proposals?: boolean | Prisma.BudgetMaster$event_proposalsArgs<ExtArgs>
   _count?: boolean | Prisma.BudgetMasterCountOutputTypeDefaultArgs<ExtArgs>
@@ -503,8 +571,10 @@ export type $BudgetMasterPayload<ExtArgs extends runtime.Types.Extensions.Intern
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    financial_year: string
-    total_budget: runtime.Decimal
+    fiscal_year: string
+    code: string
+    id_desc: string
+    value: runtime.Decimal
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["budgetMaster"]>
@@ -932,8 +1002,10 @@ export interface Prisma__BudgetMasterClient<T, Null = never, ExtArgs extends run
  */
 export interface BudgetMasterFieldRefs {
   readonly id: Prisma.FieldRef<"BudgetMaster", 'String'>
-  readonly financial_year: Prisma.FieldRef<"BudgetMaster", 'String'>
-  readonly total_budget: Prisma.FieldRef<"BudgetMaster", 'Decimal'>
+  readonly fiscal_year: Prisma.FieldRef<"BudgetMaster", 'String'>
+  readonly code: Prisma.FieldRef<"BudgetMaster", 'String'>
+  readonly id_desc: Prisma.FieldRef<"BudgetMaster", 'String'>
+  readonly value: Prisma.FieldRef<"BudgetMaster", 'Decimal'>
   readonly created_at: Prisma.FieldRef<"BudgetMaster", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"BudgetMaster", 'DateTime'>
 }

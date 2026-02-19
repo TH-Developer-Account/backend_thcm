@@ -1,6 +1,3 @@
--- DropIndex
-DROP INDEX "event_proposal_search_idx";
-
 -- CreateTable
 CREATE TABLE "Workspace" (
     "id" TEXT NOT NULL,

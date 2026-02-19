@@ -1,5 +1,14 @@
 import { prisma } from "../config/prisma";
 import { faker } from "@faker-js/faker";
+import {
+  MARKETING_ACTIVITY_PLANNER,
+  EVENT_PLANNING_CALENDAR,
+  branchData,
+  eventNameData,
+  regionData,
+  budgetCodeData,
+  eventScaleData,
+} from "./constants";
 
 async function main() {
   console.log("🌱 Seeding database with Faker data...");
@@ -29,15 +38,15 @@ async function main() {
   /* -------------------- WORKSPACE -------------------- */
 
   const workspace = await prisma.workspace.create({
-    data: { name: "Main Workspace" },
+    data: { name: "Tata Hitachi Workspace" },
   });
 
   /* -------------------- APP -------------------- */
 
   const eventApp = await prisma.app.create({
     data: {
-      key: "event",
-      name: "Event Proposal System",
+      key: "MAP",
+      name: MARKETING_ACTIVITY_PLANNER,
     },
   });
 
@@ -52,8 +61,8 @@ async function main() {
 
   const proposalModule = await prisma.module.create({
     data: {
-      key: "proposal",
-      name: "Event Proposal",
+      key: "EPC",
+      name: EVENT_PLANNING_CALENDAR,
       appId: eventApp.id,
     },
   });
@@ -125,17 +134,6 @@ async function main() {
       moduleId: approvalModule.id,
       permissions: {
         create: [{ permission: "read" }, { permission: "update" }],
-      },
-    },
-  });
-
-  const reportViewerRole = await prisma.role.create({
-    data: {
-      name: "Report Viewer",
-      workspaceId: workspace.id,
-      moduleId: reportModule.id,
-      permissions: {
-        create: [{ permission: "read" }],
       },
     },
   });
@@ -225,84 +223,79 @@ async function main() {
     ),
   );
 
-  const regions = await Promise.all(
-    ["North", "South", "East", "West"].map((name) =>
-      prisma.region.create({
-        data: {
-          region_code: name.toUpperCase(),
-          region_name: `${name} Region`,
-        },
-      }),
-    ),
-  );
+  // Create Regions and retrieve the data
+  await prisma.region.createMany({
+    data: regionData,
+    skipDuplicates: true,
+  });
 
-  const branches = [];
-  for (const region of regions) {
-    for (let i = 0; i < 3; i++) {
-      branches.push(
-        await prisma.branch.create({
-          data: {
-            branch_code: `BR-${region.region_code}-${i + 1}`,
-            branch_name: faker.location.city(),
-            region_id: region.id,
-          },
-        }),
-      );
-    }
-  }
-
-  const eventScales = await Promise.all([
-    prisma.eventScale.create({
-      data: {
-        scale_code: "SMALL",
-        scale_name: "Small Event",
-        max_budget: 100000,
+  const regions = await prisma.region.findMany({
+    where: {
+      region_code: {
+        in: regionData.map((r) => r.region_code),
       },
-    }),
-    prisma.eventScale.create({
-      data: {
-        scale_code: "MEDIUM",
-        scale_name: "Medium Event",
-        max_budget: 500000,
-      },
-    }),
-    prisma.eventScale.create({
-      data: {
-        scale_code: "LARGE",
-        scale_name: "Large Event",
-        max_budget: 2000000,
-      },
-    }),
-  ]);
+    },
+    orderBy: { region_name: "asc" },
+  });
 
-  const budgetMasters = await Promise.all(
-    ["2024-2025", "2025-2026"].map((fy) =>
-      prisma.budgetMaster.create({
-        data: {
-          financial_year: fy,
-          total_budget: faker.number.int({ min: 5_000_000, max: 20_000_000 }),
-        },
-      }),
-    ),
-  );
+  // Create Branches and retrieve the data
+  await prisma.branch.createMany({
+    data: branchData,
+    skipDuplicates: true,
+  });
 
-  const eventNames = await Promise.all(
-    ["Conference", "Workshop", "Meetup", "Seminar"].map((type) =>
-      prisma.eventName.create({
-        data: {
-          event_code: type.toUpperCase().slice(0, 5),
-          description: type,
-        },
-      }),
-    ),
-  );
+  const branches = await prisma.branch.findMany({
+    where: {
+      branch_code: {
+        in: branchData.map((b) => b.branch_code),
+      },
+    },
+  });
+
+  // Create Budget Master and retrieve the data
+  await prisma.budgetMaster.createMany({
+    data: budgetCodeData,
+    skipDuplicates: true,
+  });
+
+  const budgetMasters = await prisma.budgetMaster.findMany({
+    where: {
+      code: { in: budgetCodeData.map((b) => b.code) },
+    },
+  });
+
+  // Create Event Scale and retrieve the data
+  await prisma.eventScale.createMany({
+    data: eventScaleData,
+    skipDuplicates: true,
+  });
+
+  const eventScales = await prisma.eventScale.findMany({
+    where: {
+      code: { in: eventScaleData.map((e) => e.code) },
+    },
+    orderBy: { title: "asc" },
+  });
+
+  // Create Event Name and retrieve the data
+  await prisma.eventName.createMany({
+    data: eventNameData,
+    skipDuplicates: true,
+  });
+
+  const eventNames = await prisma.eventName.findMany({
+    where: {
+      title: {
+        in: eventNameData.map((e) => e.title),
+      },
+    },
+    orderBy: { title: "asc" },
+  });
 
   for (let i = 0; i < 50; i++) {
     const department = faker.helpers.arrayElement(departments);
     const region = faker.helpers.arrayElement(regions);
-    const branch = faker.helpers.arrayElement(
-      branches.filter((b) => b.region_id === region.id),
-    );
+    const branch = faker.helpers.arrayElement(branches);
     const scale = faker.helpers.arrayElement(eventScales);
     const budget = faker.helpers.arrayElement(budgetMasters);
     const eventName = faker.helpers.arrayElement(eventNames);

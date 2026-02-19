@@ -28,7 +28,9 @@ export const syncDailyVisitors = async () => {
       },
     });
 
-    console.log(`DAU synced for ${today}: ${count}`);
+    console.log(
+      `=============>DAU synced for ${today}: ${count}<=================`,
+    );
   } catch (error) {
     console.error("DAU sync failed:", error);
   } finally {

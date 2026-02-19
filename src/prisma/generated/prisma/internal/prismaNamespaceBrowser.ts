@@ -192,7 +192,6 @@ export const BranchScalarFieldEnum = {
   id: 'id',
   branch_code: 'branch_code',
   branch_name: 'branch_name',
-  region_id: 'region_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -202,9 +201,8 @@ export type BranchScalarFieldEnum = (typeof BranchScalarFieldEnum)[keyof typeof 
 
 export const EventScaleScalarFieldEnum = {
   id: 'id',
-  scale_code: 'scale_code',
-  scale_name: 'scale_name',
-  max_budget: 'max_budget',
+  code: 'code',
+  title: 'title',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -214,8 +212,10 @@ export type EventScaleScalarFieldEnum = (typeof EventScaleScalarFieldEnum)[keyof
 
 export const BudgetMasterScalarFieldEnum = {
   id: 'id',
-  financial_year: 'financial_year',
-  total_budget: 'total_budget',
+  fiscal_year: 'fiscal_year',
+  code: 'code',
+  id_desc: 'id_desc',
+  value: 'value',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -225,8 +225,7 @@ export type BudgetMasterScalarFieldEnum = (typeof BudgetMasterScalarFieldEnum)[k
 
 export const EventNameScalarFieldEnum = {
   id: 'id',
-  event_code: 'event_code',
-  description: 'description'
+  title: 'title'
 } as const
 
 export type EventNameScalarFieldEnum = (typeof EventNameScalarFieldEnum)[keyof typeof EventNameScalarFieldEnum]
