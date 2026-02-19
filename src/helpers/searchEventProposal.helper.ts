@@ -95,7 +95,7 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
     ep.created_at,
     ep.department_id,
     ep.event_name_id,
-    en.description AS event_name,
+    en.title AS event_name,
     us.first_name AS first_name,
     us.last_name AS last_name,
       ${ranking} AS rank
