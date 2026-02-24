@@ -91,12 +91,7 @@ async function main() {
       workspaceId: workspace.id,
       moduleId: proposalModule.id,
       permissions: {
-        create: [
-          { permission: "read" },
-          { permission: "create" },
-          { permission: "update" },
-          { permission: "delete" },
-        ],
+        create: [{ permission: "read" }, { permission: "write" }],
       },
     },
   });
@@ -107,11 +102,7 @@ async function main() {
       workspaceId: workspace.id,
       moduleId: proposalModule.id,
       permissions: {
-        create: [
-          { permission: "read" },
-          { permission: "create" },
-          { permission: "update" },
-        ],
+        create: [{ permission: "read" }, { permission: "write" }],
       },
     },
   });
@@ -133,7 +124,7 @@ async function main() {
       workspaceId: workspace.id,
       moduleId: approvalModule.id,
       permissions: {
-        create: [{ permission: "read" }, { permission: "update" }],
+        create: [{ permission: "read" }],
       },
     },
   });

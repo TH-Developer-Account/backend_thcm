@@ -446,7 +446,7 @@ export async function updateWorkspaceRBAC(req: Request, res: Response) {
  * }
  */
 export async function deleteWorkspaceRBAC(req: Request, res: Response) {
-  const { workspaceId } = req.body;
+  const { workspaceId, appKey, moduleKey } = req.body;
 
   // Validate required input
   if (!workspaceId) {
@@ -455,8 +455,6 @@ export async function deleteWorkspaceRBAC(req: Request, res: Response) {
 
   try {
     await prisma.$transaction(async (tx) => {
-      const { appKey, moduleKey } = req.body;
-
       /* -------------------------------------------------
          1️⃣ RESOLVE APP AND MODULE
          -------------------------------------------------

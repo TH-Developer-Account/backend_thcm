@@ -14,14 +14,14 @@ import {
 
 const router = Router();
 
-// router.use(requireAuth); // sets req.user
-// router.use(firstAuthRequestPerDay); // tracks DAU
+router.use(requireAuth); // sets req.user
+router.use(firstAuthRequestPerDay); // tracks DAU
 
+router.get("/", asyncHandler(getAllWorkspaces));
+router.get("/:workspaceId", asyncHandler(getWorkspaceById));
 router.post("/create", asyncHandler(setupWorkspaceRBAC));
 router.put("/update/:workSpaceId", asyncHandler(updateWorkspaceRBAC));
 router.delete("/delete/:workSpaceId", asyncHandler(deleteWorkspaceRBAC));
-router.get("/:workspaceId", asyncHandler(getWorkspaceById));
-router.get("/", asyncHandler(getAllWorkspaces));
 router.put("/assign-users", asyncHandler(assignUserToWorkspace));
 router.put("/remove-users", asyncHandler(removeUserFromWorkspace));
 
