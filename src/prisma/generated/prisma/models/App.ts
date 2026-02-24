@@ -167,7 +167,7 @@ export type AppWhereInput = {
   key?: Prisma.StringFilter<"App"> | string
   name?: Prisma.StringFilter<"App"> | string
   workspaces?: Prisma.WorkspaceAppListRelationFilter
-  userRoles?: Prisma.UserAppRoleListRelationFilter
+  userProfile?: Prisma.UserAppProfileListRelationFilter
   module?: Prisma.ModuleListRelationFilter
 }
 
@@ -176,7 +176,7 @@ export type AppOrderByWithRelationInput = {
   key?: Prisma.SortOrder
   name?: Prisma.SortOrder
   workspaces?: Prisma.WorkspaceAppOrderByRelationAggregateInput
-  userRoles?: Prisma.UserAppRoleOrderByRelationAggregateInput
+  userProfile?: Prisma.UserAppProfileOrderByRelationAggregateInput
   module?: Prisma.ModuleOrderByRelationAggregateInput
 }
 
@@ -188,7 +188,7 @@ export type AppWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AppWhereInput | Prisma.AppWhereInput[]
   name?: Prisma.StringFilter<"App"> | string
   workspaces?: Prisma.WorkspaceAppListRelationFilter
-  userRoles?: Prisma.UserAppRoleListRelationFilter
+  userProfile?: Prisma.UserAppProfileListRelationFilter
   module?: Prisma.ModuleListRelationFilter
 }, "id" | "key">
 
@@ -215,7 +215,7 @@ export type AppCreateInput = {
   key: string
   name: string
   workspaces?: Prisma.WorkspaceAppCreateNestedManyWithoutAppInput
-  userRoles?: Prisma.UserAppRoleCreateNestedManyWithoutAppInput
+  userProfile?: Prisma.UserAppProfileCreateNestedManyWithoutAppInput
   module?: Prisma.ModuleCreateNestedManyWithoutAppInput
 }
 
@@ -224,7 +224,7 @@ export type AppUncheckedCreateInput = {
   key: string
   name: string
   workspaces?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutAppInput
-  userRoles?: Prisma.UserAppRoleUncheckedCreateNestedManyWithoutAppInput
+  userProfile?: Prisma.UserAppProfileUncheckedCreateNestedManyWithoutAppInput
   module?: Prisma.ModuleUncheckedCreateNestedManyWithoutAppInput
 }
 
@@ -233,7 +233,7 @@ export type AppUpdateInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   workspaces?: Prisma.WorkspaceAppUpdateManyWithoutAppNestedInput
-  userRoles?: Prisma.UserAppRoleUpdateManyWithoutAppNestedInput
+  userProfile?: Prisma.UserAppProfileUpdateManyWithoutAppNestedInput
   module?: Prisma.ModuleUpdateManyWithoutAppNestedInput
 }
 
@@ -242,7 +242,7 @@ export type AppUncheckedUpdateInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   workspaces?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutAppNestedInput
-  userRoles?: Prisma.UserAppRoleUncheckedUpdateManyWithoutAppNestedInput
+  userProfile?: Prisma.UserAppProfileUncheckedUpdateManyWithoutAppNestedInput
   module?: Prisma.ModuleUncheckedUpdateManyWithoutAppNestedInput
 }
 
@@ -315,25 +315,25 @@ export type AppUpdateOneRequiredWithoutModuleNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AppUpdateToOneWithWhereWithoutModuleInput, Prisma.AppUpdateWithoutModuleInput>, Prisma.AppUncheckedUpdateWithoutModuleInput>
 }
 
-export type AppCreateNestedOneWithoutUserRolesInput = {
-  create?: Prisma.XOR<Prisma.AppCreateWithoutUserRolesInput, Prisma.AppUncheckedCreateWithoutUserRolesInput>
-  connectOrCreate?: Prisma.AppCreateOrConnectWithoutUserRolesInput
+export type AppCreateNestedOneWithoutUserProfileInput = {
+  create?: Prisma.XOR<Prisma.AppCreateWithoutUserProfileInput, Prisma.AppUncheckedCreateWithoutUserProfileInput>
+  connectOrCreate?: Prisma.AppCreateOrConnectWithoutUserProfileInput
   connect?: Prisma.AppWhereUniqueInput
 }
 
-export type AppUpdateOneRequiredWithoutUserRolesNestedInput = {
-  create?: Prisma.XOR<Prisma.AppCreateWithoutUserRolesInput, Prisma.AppUncheckedCreateWithoutUserRolesInput>
-  connectOrCreate?: Prisma.AppCreateOrConnectWithoutUserRolesInput
-  upsert?: Prisma.AppUpsertWithoutUserRolesInput
+export type AppUpdateOneRequiredWithoutUserProfileNestedInput = {
+  create?: Prisma.XOR<Prisma.AppCreateWithoutUserProfileInput, Prisma.AppUncheckedCreateWithoutUserProfileInput>
+  connectOrCreate?: Prisma.AppCreateOrConnectWithoutUserProfileInput
+  upsert?: Prisma.AppUpsertWithoutUserProfileInput
   connect?: Prisma.AppWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.AppUpdateToOneWithWhereWithoutUserRolesInput, Prisma.AppUpdateWithoutUserRolesInput>, Prisma.AppUncheckedUpdateWithoutUserRolesInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AppUpdateToOneWithWhereWithoutUserProfileInput, Prisma.AppUpdateWithoutUserProfileInput>, Prisma.AppUncheckedUpdateWithoutUserProfileInput>
 }
 
 export type AppCreateWithoutWorkspacesInput = {
   id?: string
   key: string
   name: string
-  userRoles?: Prisma.UserAppRoleCreateNestedManyWithoutAppInput
+  userProfile?: Prisma.UserAppProfileCreateNestedManyWithoutAppInput
   module?: Prisma.ModuleCreateNestedManyWithoutAppInput
 }
 
@@ -341,7 +341,7 @@ export type AppUncheckedCreateWithoutWorkspacesInput = {
   id?: string
   key: string
   name: string
-  userRoles?: Prisma.UserAppRoleUncheckedCreateNestedManyWithoutAppInput
+  userProfile?: Prisma.UserAppProfileUncheckedCreateNestedManyWithoutAppInput
   module?: Prisma.ModuleUncheckedCreateNestedManyWithoutAppInput
 }
 
@@ -365,7 +365,7 @@ export type AppUpdateWithoutWorkspacesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  userRoles?: Prisma.UserAppRoleUpdateManyWithoutAppNestedInput
+  userProfile?: Prisma.UserAppProfileUpdateManyWithoutAppNestedInput
   module?: Prisma.ModuleUpdateManyWithoutAppNestedInput
 }
 
@@ -373,7 +373,7 @@ export type AppUncheckedUpdateWithoutWorkspacesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  userRoles?: Prisma.UserAppRoleUncheckedUpdateManyWithoutAppNestedInput
+  userProfile?: Prisma.UserAppProfileUncheckedUpdateManyWithoutAppNestedInput
   module?: Prisma.ModuleUncheckedUpdateManyWithoutAppNestedInput
 }
 
@@ -382,7 +382,7 @@ export type AppCreateWithoutModuleInput = {
   key: string
   name: string
   workspaces?: Prisma.WorkspaceAppCreateNestedManyWithoutAppInput
-  userRoles?: Prisma.UserAppRoleCreateNestedManyWithoutAppInput
+  userProfile?: Prisma.UserAppProfileCreateNestedManyWithoutAppInput
 }
 
 export type AppUncheckedCreateWithoutModuleInput = {
@@ -390,7 +390,7 @@ export type AppUncheckedCreateWithoutModuleInput = {
   key: string
   name: string
   workspaces?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutAppInput
-  userRoles?: Prisma.UserAppRoleUncheckedCreateNestedManyWithoutAppInput
+  userProfile?: Prisma.UserAppProfileUncheckedCreateNestedManyWithoutAppInput
 }
 
 export type AppCreateOrConnectWithoutModuleInput = {
@@ -414,7 +414,7 @@ export type AppUpdateWithoutModuleInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   workspaces?: Prisma.WorkspaceAppUpdateManyWithoutAppNestedInput
-  userRoles?: Prisma.UserAppRoleUpdateManyWithoutAppNestedInput
+  userProfile?: Prisma.UserAppProfileUpdateManyWithoutAppNestedInput
 }
 
 export type AppUncheckedUpdateWithoutModuleInput = {
@@ -422,10 +422,10 @@ export type AppUncheckedUpdateWithoutModuleInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   workspaces?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutAppNestedInput
-  userRoles?: Prisma.UserAppRoleUncheckedUpdateManyWithoutAppNestedInput
+  userProfile?: Prisma.UserAppProfileUncheckedUpdateManyWithoutAppNestedInput
 }
 
-export type AppCreateWithoutUserRolesInput = {
+export type AppCreateWithoutUserProfileInput = {
   id?: string
   key: string
   name: string
@@ -433,7 +433,7 @@ export type AppCreateWithoutUserRolesInput = {
   module?: Prisma.ModuleCreateNestedManyWithoutAppInput
 }
 
-export type AppUncheckedCreateWithoutUserRolesInput = {
+export type AppUncheckedCreateWithoutUserProfileInput = {
   id?: string
   key: string
   name: string
@@ -441,23 +441,23 @@ export type AppUncheckedCreateWithoutUserRolesInput = {
   module?: Prisma.ModuleUncheckedCreateNestedManyWithoutAppInput
 }
 
-export type AppCreateOrConnectWithoutUserRolesInput = {
+export type AppCreateOrConnectWithoutUserProfileInput = {
   where: Prisma.AppWhereUniqueInput
-  create: Prisma.XOR<Prisma.AppCreateWithoutUserRolesInput, Prisma.AppUncheckedCreateWithoutUserRolesInput>
+  create: Prisma.XOR<Prisma.AppCreateWithoutUserProfileInput, Prisma.AppUncheckedCreateWithoutUserProfileInput>
 }
 
-export type AppUpsertWithoutUserRolesInput = {
-  update: Prisma.XOR<Prisma.AppUpdateWithoutUserRolesInput, Prisma.AppUncheckedUpdateWithoutUserRolesInput>
-  create: Prisma.XOR<Prisma.AppCreateWithoutUserRolesInput, Prisma.AppUncheckedCreateWithoutUserRolesInput>
+export type AppUpsertWithoutUserProfileInput = {
+  update: Prisma.XOR<Prisma.AppUpdateWithoutUserProfileInput, Prisma.AppUncheckedUpdateWithoutUserProfileInput>
+  create: Prisma.XOR<Prisma.AppCreateWithoutUserProfileInput, Prisma.AppUncheckedCreateWithoutUserProfileInput>
   where?: Prisma.AppWhereInput
 }
 
-export type AppUpdateToOneWithWhereWithoutUserRolesInput = {
+export type AppUpdateToOneWithWhereWithoutUserProfileInput = {
   where?: Prisma.AppWhereInput
-  data: Prisma.XOR<Prisma.AppUpdateWithoutUserRolesInput, Prisma.AppUncheckedUpdateWithoutUserRolesInput>
+  data: Prisma.XOR<Prisma.AppUpdateWithoutUserProfileInput, Prisma.AppUncheckedUpdateWithoutUserProfileInput>
 }
 
-export type AppUpdateWithoutUserRolesInput = {
+export type AppUpdateWithoutUserProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -465,7 +465,7 @@ export type AppUpdateWithoutUserRolesInput = {
   module?: Prisma.ModuleUpdateManyWithoutAppNestedInput
 }
 
-export type AppUncheckedUpdateWithoutUserRolesInput = {
+export type AppUncheckedUpdateWithoutUserProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
@@ -480,13 +480,13 @@ export type AppUncheckedUpdateWithoutUserRolesInput = {
 
 export type AppCountOutputType = {
   workspaces: number
-  userRoles: number
+  userProfile: number
   module: number
 }
 
 export type AppCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspaces?: boolean | AppCountOutputTypeCountWorkspacesArgs
-  userRoles?: boolean | AppCountOutputTypeCountUserRolesArgs
+  userProfile?: boolean | AppCountOutputTypeCountUserProfileArgs
   module?: boolean | AppCountOutputTypeCountModuleArgs
 }
 
@@ -510,8 +510,8 @@ export type AppCountOutputTypeCountWorkspacesArgs<ExtArgs extends runtime.Types.
 /**
  * AppCountOutputType without action
  */
-export type AppCountOutputTypeCountUserRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.UserAppRoleWhereInput
+export type AppCountOutputTypeCountUserProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserAppProfileWhereInput
 }
 
 /**
@@ -527,7 +527,7 @@ export type AppSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   key?: boolean
   name?: boolean
   workspaces?: boolean | Prisma.App$workspacesArgs<ExtArgs>
-  userRoles?: boolean | Prisma.App$userRolesArgs<ExtArgs>
+  userProfile?: boolean | Prisma.App$userProfileArgs<ExtArgs>
   module?: boolean | Prisma.App$moduleArgs<ExtArgs>
   _count?: boolean | Prisma.AppCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["app"]>
@@ -553,7 +553,7 @@ export type AppSelectScalar = {
 export type AppOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "key" | "name", ExtArgs["result"]["app"]>
 export type AppInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspaces?: boolean | Prisma.App$workspacesArgs<ExtArgs>
-  userRoles?: boolean | Prisma.App$userRolesArgs<ExtArgs>
+  userProfile?: boolean | Prisma.App$userProfileArgs<ExtArgs>
   module?: boolean | Prisma.App$moduleArgs<ExtArgs>
   _count?: boolean | Prisma.AppCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -564,7 +564,7 @@ export type $AppPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   name: "App"
   objects: {
     workspaces: Prisma.$WorkspaceAppPayload<ExtArgs>[]
-    userRoles: Prisma.$UserAppRolePayload<ExtArgs>[]
+    userProfile: Prisma.$UserAppProfilePayload<ExtArgs>[]
     module: Prisma.$ModulePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -966,7 +966,7 @@ readonly fields: AppFieldRefs;
 export interface Prisma__AppClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   workspaces<T extends Prisma.App$workspacesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.App$workspacesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceAppPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  userRoles<T extends Prisma.App$userRolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.App$userRolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserAppRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userProfile<T extends Prisma.App$userProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.App$userProfileArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserAppProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   module<T extends Prisma.App$moduleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.App$moduleArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ModulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1412,27 +1412,27 @@ export type App$workspacesArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * App.userRoles
+ * App.userProfile
  */
-export type App$userRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type App$userProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the UserAppRole
+   * Select specific fields to fetch from the UserAppProfile
    */
-  select?: Prisma.UserAppRoleSelect<ExtArgs> | null
+  select?: Prisma.UserAppProfileSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the UserAppRole
+   * Omit specific fields from the UserAppProfile
    */
-  omit?: Prisma.UserAppRoleOmit<ExtArgs> | null
+  omit?: Prisma.UserAppProfileOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserAppRoleInclude<ExtArgs> | null
-  where?: Prisma.UserAppRoleWhereInput
-  orderBy?: Prisma.UserAppRoleOrderByWithRelationInput | Prisma.UserAppRoleOrderByWithRelationInput[]
-  cursor?: Prisma.UserAppRoleWhereUniqueInput
+  include?: Prisma.UserAppProfileInclude<ExtArgs> | null
+  where?: Prisma.UserAppProfileWhereInput
+  orderBy?: Prisma.UserAppProfileOrderByWithRelationInput | Prisma.UserAppProfileOrderByWithRelationInput[]
+  cursor?: Prisma.UserAppProfileWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.UserAppRoleScalarFieldEnum | Prisma.UserAppRoleScalarFieldEnum[]
+  distinct?: Prisma.UserAppProfileScalarFieldEnum | Prisma.UserAppProfileScalarFieldEnum[]
 }
 
 /**

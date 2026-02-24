@@ -136,6 +136,8 @@ export const loginWithPassword = async (
         workspace.workspaceId,
       );
 
+      console.log("========>", permissions);
+
       // Create JWT with workspace context
       const accessToken = signAccessToken({
         id: existingUser.id,
@@ -330,6 +332,7 @@ export const refreshAccessToken = async (
   next: NextFunction,
 ) => {
   try {
+    console.log("Cookie==============>", JSON.stringify(req.cookies, null, 2));
     const token = req.cookies.refreshToken;
     if (!token) throw new ApiError(401, "No refresh token provided");
 

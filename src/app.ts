@@ -4,6 +4,7 @@ import cors from "cors";
 import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
 import epcRoutes from "./routes/epc.routes";
+import workspaceRoutes from "./routes/workspace.routes";
 import errorHandler from "./middleware/error.middleware";
 import ApiError from "./utils/apiError";
 import { startJobs } from "./jobs/scheduler";
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/epc", epcRoutes);
+app.use("/api/v1/workspaces", workspaceRoutes);
 
 // Scheduler
 startJobs();

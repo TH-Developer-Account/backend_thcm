@@ -15,9 +15,9 @@ async function main() {
 
   /* -------------------- CLEAN RBAC FIRST -------------------- */
 
-  await prisma.userAppRole.deleteMany();
-  await prisma.rolePermission.deleteMany();
-  await prisma.role.deleteMany();
+  await prisma.userAppProfile.deleteMany();
+  await prisma.profilePermission.deleteMany();
+  await prisma.profile.deleteMany();
   await prisma.module.deleteMany();
   await prisma.workspaceApp.deleteMany();
   await prisma.workspaceUser.deleteMany();
@@ -85,9 +85,9 @@ async function main() {
 
   /* -------------------- ROLES -------------------- */
 
-  const adminRole = await prisma.role.create({
+  const adminRole = await prisma.profile.create({
     data: {
-      name: "Admin",
+      // name: "Admin",
       workspaceId: workspace.id,
       moduleId: proposalModule.id,
       permissions: {
@@ -101,9 +101,9 @@ async function main() {
     },
   });
 
-  const editorRole = await prisma.role.create({
+  const editorRole = await prisma.profile.create({
     data: {
-      name: "Proposal Editor",
+      // name: "Proposal Editor",
       workspaceId: workspace.id,
       moduleId: proposalModule.id,
       permissions: {
@@ -116,9 +116,9 @@ async function main() {
     },
   });
 
-  const viewerRole = await prisma.role.create({
+  const viewerRole = await prisma.profile.create({
     data: {
-      name: "Proposal Viewer",
+      // name: "Proposal Viewer",
       workspaceId: workspace.id,
       moduleId: proposalModule.id,
       permissions: {
@@ -127,9 +127,9 @@ async function main() {
     },
   });
 
-  const approvalManagerRole = await prisma.role.create({
+  const approvalManagerRole = await prisma.profile.create({
     data: {
-      name: "Approval Manager",
+      // name: "Approval Manager",
       workspaceId: workspace.id,
       moduleId: approvalModule.id,
       permissions: {
@@ -168,44 +168,44 @@ async function main() {
 
   /* -------------------- ROLE ASSIGNMENT -------------------- */
 
-  await prisma.userAppRole.create({
+  await prisma.userAppProfile.create({
     data: {
       userId: users[0].id,
       workspaceId: workspace.id,
       appId: eventApp.id,
-      roleId: adminRole.id,
+      profileId: adminRole.id,
     },
   });
 
   for (let i = 1; i <= 3; i++) {
-    await prisma.userAppRole.create({
+    await prisma.userAppProfile.create({
       data: {
         userId: users[i].id,
         workspaceId: workspace.id,
         appId: eventApp.id,
-        roleId: editorRole.id,
+        profileId: editorRole.id,
       },
     });
   }
 
   for (let i = 4; i <= 5; i++) {
-    await prisma.userAppRole.create({
+    await prisma.userAppProfile.create({
       data: {
         userId: users[i].id,
         workspaceId: workspace.id,
         appId: eventApp.id,
-        roleId: approvalManagerRole.id,
+        profileId: approvalManagerRole.id,
       },
     });
   }
 
   for (let i = 6; i < users.length; i++) {
-    await prisma.userAppRole.create({
+    await prisma.userAppProfile.create({
       data: {
         userId: users[i].id,
         workspaceId: workspace.id,
         appId: eventApp.id,
-        roleId: viewerRole.id,
+        profileId: viewerRole.id,
       },
     });
   }

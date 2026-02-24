@@ -9,11 +9,7 @@ datasource db {
 
 enum PermissionAction {
   read
-  create
-  update
-  delete
-  approve
-  export
+  write
 }
 
 model User {
@@ -27,7 +23,7 @@ model User {
   is_default_login  Boolean         @default(true) 
   refresh_tokens     RefreshToken[]
   password_reset_tokens  PasswordResetToken[] 
-  appRoles UserAppRole[]
+  appProfile UserAppProfile[]
   workspaces  WorkspaceUser[]
   created_event_proposals EventProposal[] @relation("EventCreatedBy")
   updated_event_proposals EventProposal[] @relation("EventUpdatedBy")
@@ -173,8 +169,8 @@ model Workspace {
 
   users WorkspaceUser[]
   apps  WorkspaceApp[]
-  roles Role[]
-  userapprole UserAppRole[]
+  profile Profile[]
+  userappprofile UserAppProfile[]
 }
 
 model WorkspaceUser {
@@ -194,7 +190,7 @@ model App {
   name String
 
   workspaces WorkspaceApp[]
-  userRoles UserAppRole[]
+  userProfile UserAppProfile[]
   module Module[]
 }
 
@@ -207,56 +203,57 @@ model WorkspaceApp {
   app       App       @relation(fields: [appId], references: [id])
 
   @@id([workspaceId, appId])
+  @@unique([workspaceId, appId])
 }
 
 model Module {
-  id     String    @id @default(uuid())
+  id     String @id @default(uuid())
   key    String
   name   String
   appId  String
 
-  app   App   @relation(fields: [appId], references: [id])
-  roles Role[]
-
+  app App @relation(fields: [appId], references: [id])
+ profile Profile[]
+  @@unique([appId, key])
   @@index([appId])
 }
 
-model Role {
-  id     String    @id @default(uuid())
-  name   String
+model Profile {
+  id          String  @id @default(uuid())
   workspaceId String
   moduleId    String?
 
   workspace Workspace @relation(fields: [workspaceId], references: [id])
-  module    Module?    @relation(fields: [moduleId], references: [id])
-  permissions RolePermission[]
-  users       UserAppRole[]
+  module    Module?   @relation(fields: [moduleId], references: [id])
 
-  @@unique([workspaceId, moduleId, name])
+  permissions ProfilePermission[]
+  users       UserAppProfile[]
+
+  @@unique([workspaceId, moduleId])
   @@index([workspaceId, moduleId])
 }
 
 
 
-model RolePermission {
-  roleId     String
+model ProfilePermission {
+  profileId     String
   permission PermissionAction 
 
-  role Role @relation(fields: [roleId], references: [id])
+  profile Profile @relation(fields: [profileId], references: [id])
 
-  @@id([roleId, permission])
+  @@id([profileId, permission])
 }
 
-model UserAppRole {
+model UserAppProfile {
   userId String
   workspaceId String
   appId  String
-  roleId String
+  profileId String
 
   user User @relation(fields: [userId], references: [id])
   workspace Workspace @relation(fields: [workspaceId], references: [id])
   app  App  @relation(fields: [appId], references: [id])
-  role Role @relation(fields: [roleId], references: [id])
+  profile Profile @relation(fields: [profileId], references: [id])
 
   @@id([userId, workspaceId, appId])
   @@index([userId, workspaceId])

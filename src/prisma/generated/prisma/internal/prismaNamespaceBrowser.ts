@@ -67,9 +67,9 @@ export const ModelName = {
   App: 'App',
   WorkspaceApp: 'WorkspaceApp',
   Module: 'Module',
-  Role: 'Role',
-  RolePermission: 'RolePermission',
-  UserAppRole: 'UserAppRole'
+  Profile: 'Profile',
+  ProfilePermission: 'ProfilePermission',
+  UserAppProfile: 'UserAppProfile'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -276,32 +276,31 @@ export const ModuleScalarFieldEnum = {
 export type ModuleScalarFieldEnum = (typeof ModuleScalarFieldEnum)[keyof typeof ModuleScalarFieldEnum]
 
 
-export const RoleScalarFieldEnum = {
+export const ProfileScalarFieldEnum = {
   id: 'id',
-  name: 'name',
   workspaceId: 'workspaceId',
   moduleId: 'moduleId'
 } as const
 
-export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
+export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
 
 
-export const RolePermissionScalarFieldEnum = {
-  roleId: 'roleId',
+export const ProfilePermissionScalarFieldEnum = {
+  profileId: 'profileId',
   permission: 'permission'
 } as const
 
-export type RolePermissionScalarFieldEnum = (typeof RolePermissionScalarFieldEnum)[keyof typeof RolePermissionScalarFieldEnum]
+export type ProfilePermissionScalarFieldEnum = (typeof ProfilePermissionScalarFieldEnum)[keyof typeof ProfilePermissionScalarFieldEnum]
 
 
-export const UserAppRoleScalarFieldEnum = {
+export const UserAppProfileScalarFieldEnum = {
   userId: 'userId',
   workspaceId: 'workspaceId',
   appId: 'appId',
-  roleId: 'roleId'
+  profileId: 'profileId'
 } as const
 
-export type UserAppRoleScalarFieldEnum = (typeof UserAppRoleScalarFieldEnum)[keyof typeof UserAppRoleScalarFieldEnum]
+export type UserAppProfileScalarFieldEnum = (typeof UserAppProfileScalarFieldEnum)[keyof typeof UserAppProfileScalarFieldEnum]
 
 
 export const SortOrder = {

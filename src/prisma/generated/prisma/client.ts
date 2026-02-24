@@ -118,17 +118,17 @@ export type WorkspaceApp = Prisma.WorkspaceAppModel
  */
 export type Module = Prisma.ModuleModel
 /**
- * Model Role
+ * Model Profile
  * 
  */
-export type Role = Prisma.RoleModel
+export type Profile = Prisma.ProfileModel
 /**
- * Model RolePermission
+ * Model ProfilePermission
  * 
  */
-export type RolePermission = Prisma.RolePermissionModel
+export type ProfilePermission = Prisma.ProfilePermissionModel
 /**
- * Model UserAppRole
+ * Model UserAppProfile
  * 
  */
-export type UserAppRole = Prisma.UserAppRoleModel
+export type UserAppProfile = Prisma.UserAppProfileModel

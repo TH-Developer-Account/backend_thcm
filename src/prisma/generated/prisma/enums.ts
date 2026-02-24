@@ -11,11 +11,7 @@
 
 export const PermissionAction = {
   read: 'read',
-  create: 'create',
-  update: 'update',
-  delete: 'delete',
-  approve: 'approve',
-  export: 'export'
+  write: 'write'
 } as const
 
 export type PermissionAction = (typeof PermissionAction)[keyof typeof PermissionAction]
