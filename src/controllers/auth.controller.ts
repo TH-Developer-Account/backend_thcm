@@ -153,9 +153,9 @@ export const loginWithPassword = async (
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
-        path: "/auth/refresh",
+        path: "/",
       });
 
       // Response
@@ -297,9 +297,9 @@ export const verifyOtp = async (
     // 4️⃣ Set refresh token cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      path: "/auth/refresh",
+      path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -398,9 +398,9 @@ export const refreshAccessToken = async (
 
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      path: "/auth/refresh",
+      path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 

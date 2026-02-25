@@ -11,9 +11,9 @@ export async function buildUserPermissions(
       a.key  AS app,
       m.key  AS module,
       rp.permission
-    FROM "UserAppRole" uar
-    JOIN "Role" r ON r.id = uar."roleId"
-    JOIN "RolePermission" rp ON rp."roleId" = r.id
+    FROM "UserAppProfile" uar
+    JOIN "Profile" r ON r.id = uar."profileId"
+    JOIN "ProfilePermission" rp ON rp."profileId" = r.id
     JOIN "Module" m ON m.id = r."moduleId"
     JOIN "App" a ON a.id = m."appId"
     WHERE uar."userId" = ${userId}

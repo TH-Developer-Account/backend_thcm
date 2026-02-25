@@ -13,7 +13,7 @@ import {
 async function main() {
   console.log("🌱 Seeding database with Faker data...");
 
-  /* -------------------- CLEAN RBAC FIRST -------------------- */
+  /* -------------------- CLEAN RBAC -------------------- */
 
   await prisma.userAppProfile.deleteMany();
   await prisma.profilePermission.deleteMany();
@@ -83,7 +83,7 @@ async function main() {
     },
   });
 
-  /* -------------------- ROLES -------------------- */
+  /* -------------------- PROFILES -------------------- */
 
   const adminRole = await prisma.profile.create({
     data: {
@@ -96,33 +96,44 @@ async function main() {
     },
   });
 
-  const editorRole = await prisma.profile.create({
-    data: {
-      // name: "Proposal Editor",
-      workspaceId: workspace.id,
-      moduleId: proposalModule.id,
-      permissions: {
-        create: [{ permission: "read" }, { permission: "write" }],
-      },
-    },
-  });
+  // const editorRole = await prisma.profile.create({
+  //   data: {
+  //     // name: "Editor",
+  //     workspaceId: workspace.id,
+  //     moduleId: proposalModule.id,
+  //     permissions: {
+  //       create: [{ permission: "read" }, { permission: "write" }],
+  //     },
+  //   },
+  // });
 
-  const viewerRole = await prisma.profile.create({
-    data: {
-      // name: "Proposal Viewer",
-      workspaceId: workspace.id,
-      moduleId: proposalModule.id,
-      permissions: {
-        create: [{ permission: "read" }],
-      },
-    },
-  });
+  // const viewerRole = await prisma.profile.create({
+  //   data: {
+  //     // name: "Viewer",
+  //     workspaceId: workspace.id,
+  //     moduleId: proposalModule.id,
+  //     permissions: {
+  //       create: [{ permission: "read" }],
+  //     },
+  //   },
+  // });
 
   const approvalManagerRole = await prisma.profile.create({
     data: {
       // name: "Approval Manager",
       workspaceId: workspace.id,
       moduleId: approvalModule.id,
+      permissions: {
+        create: [{ permission: "read" }, { permission: "write" }],
+      },
+    },
+  });
+
+  const reportViewerRole = await prisma.profile.create({
+    data: {
+      // name: "Report Viewer",
+      workspaceId: workspace.id,
+      moduleId: reportModule.id,
       permissions: {
         create: [{ permission: "read" }],
       },
@@ -157,7 +168,7 @@ async function main() {
     });
   }
 
-  /* -------------------- ROLE ASSIGNMENT -------------------- */
+  /* -------------------- PROFILE ASSIGNMENT -------------------- */
 
   await prisma.userAppProfile.create({
     data: {
@@ -168,18 +179,18 @@ async function main() {
     },
   });
 
-  for (let i = 1; i <= 3; i++) {
-    await prisma.userAppProfile.create({
-      data: {
-        userId: users[i].id,
-        workspaceId: workspace.id,
-        appId: eventApp.id,
-        profileId: editorRole.id,
-      },
-    });
-  }
+  // for (let i = 1; i <= 3; i++) {
+  //   await prisma.userAppProfile.create({
+  //     data: {
+  //       userId: users[i].id,
+  //       workspaceId: workspace.id,
+  //       appId: eventApp.id,
+  //       profileId: editorRole.id,
+  //     },
+  //   });
+  // }
 
-  for (let i = 4; i <= 5; i++) {
+  for (let i = 1; i <= 5; i++) {
     await prisma.userAppProfile.create({
       data: {
         userId: users[i].id,
@@ -196,12 +207,12 @@ async function main() {
         userId: users[i].id,
         workspaceId: workspace.id,
         appId: eventApp.id,
-        profileId: viewerRole.id,
+        profileId: reportViewerRole.id,
       },
     });
   }
 
-  /* -------------------- BUSINESS MASTER DATA -------------------- */
+  /* -------------------- MASTER DATA -------------------- */
 
   const departments = await Promise.all(
     ["Marketing", "HR", "Finance", "Operations", "Sales"].map((name) =>
@@ -214,81 +225,38 @@ async function main() {
     ),
   );
 
-  // Create Regions and retrieve the data
-  await prisma.region.createMany({
-    data: regionData,
-    skipDuplicates: true,
-  });
+  await prisma.region.createMany({ data: regionData, skipDuplicates: true });
+  const regions = await prisma.region.findMany();
 
-  const regions = await prisma.region.findMany({
-    where: {
-      region_code: {
-        in: regionData.map((r) => r.region_code),
-      },
-    },
-    orderBy: { region_name: "asc" },
-  });
+  await prisma.branch.createMany({ data: branchData, skipDuplicates: true });
+  const branches = await prisma.branch.findMany();
 
-  // Create Branches and retrieve the data
-  await prisma.branch.createMany({
-    data: branchData,
-    skipDuplicates: true,
-  });
-
-  const branches = await prisma.branch.findMany({
-    where: {
-      branch_code: {
-        in: branchData.map((b) => b.branch_code),
-      },
-    },
-  });
-
-  // Create Budget Master and retrieve the data
   await prisma.budgetMaster.createMany({
     data: budgetCodeData,
     skipDuplicates: true,
   });
+  const budgets = await prisma.budgetMaster.findMany();
 
-  const budgetMasters = await prisma.budgetMaster.findMany({
-    where: {
-      code: { in: budgetCodeData.map((b) => b.code) },
-    },
-  });
-
-  // Create Event Scale and retrieve the data
   await prisma.eventScale.createMany({
     data: eventScaleData,
     skipDuplicates: true,
   });
+  const scales = await prisma.eventScale.findMany();
 
-  const eventScales = await prisma.eventScale.findMany({
-    where: {
-      code: { in: eventScaleData.map((e) => e.code) },
-    },
-    orderBy: { title: "asc" },
-  });
-
-  // Create Event Name and retrieve the data
   await prisma.eventName.createMany({
     data: eventNameData,
     skipDuplicates: true,
   });
+  const eventNames = await prisma.eventName.findMany();
 
-  const eventNames = await prisma.eventName.findMany({
-    where: {
-      title: {
-        in: eventNameData.map((e) => e.title),
-      },
-    },
-    orderBy: { title: "asc" },
-  });
+  /* -------------------- EVENT PROPOSALS -------------------- */
 
   for (let i = 0; i < 50; i++) {
     const department = faker.helpers.arrayElement(departments);
     const region = faker.helpers.arrayElement(regions);
     const branch = faker.helpers.arrayElement(branches);
-    const scale = faker.helpers.arrayElement(eventScales);
-    const budget = faker.helpers.arrayElement(budgetMasters);
+    const scale = faker.helpers.arrayElement(scales);
+    const budget = faker.helpers.arrayElement(budgets);
     const eventName = faker.helpers.arrayElement(eventNames);
     const user = faker.helpers.arrayElement(users);
 
