@@ -160,8 +160,8 @@ export type WorkspaceWhereInput = {
   name?: Prisma.StringFilter<"Workspace"> | string
   users?: Prisma.WorkspaceUserListRelationFilter
   apps?: Prisma.WorkspaceAppListRelationFilter
-  profile?: Prisma.ProfileListRelationFilter
-  userappprofile?: Prisma.UserAppProfileListRelationFilter
+  roles?: Prisma.RoleListRelationFilter
+  userRoles?: Prisma.UserRoleListRelationFilter
 }
 
 export type WorkspaceOrderByWithRelationInput = {
@@ -169,8 +169,8 @@ export type WorkspaceOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   users?: Prisma.WorkspaceUserOrderByRelationAggregateInput
   apps?: Prisma.WorkspaceAppOrderByRelationAggregateInput
-  profile?: Prisma.ProfileOrderByRelationAggregateInput
-  userappprofile?: Prisma.UserAppProfileOrderByRelationAggregateInput
+  roles?: Prisma.RoleOrderByRelationAggregateInput
+  userRoles?: Prisma.UserRoleOrderByRelationAggregateInput
 }
 
 export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
@@ -181,8 +181,8 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Workspace"> | string
   users?: Prisma.WorkspaceUserListRelationFilter
   apps?: Prisma.WorkspaceAppListRelationFilter
-  profile?: Prisma.ProfileListRelationFilter
-  userappprofile?: Prisma.UserAppProfileListRelationFilter
+  roles?: Prisma.RoleListRelationFilter
+  userRoles?: Prisma.UserRoleListRelationFilter
 }, "id">
 
 export type WorkspaceOrderByWithAggregationInput = {
@@ -206,8 +206,8 @@ export type WorkspaceCreateInput = {
   name: string
   users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
   apps?: Prisma.WorkspaceAppCreateNestedManyWithoutWorkspaceInput
-  profile?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
-  userappprofile?: Prisma.UserAppProfileCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateInput = {
@@ -215,8 +215,8 @@ export type WorkspaceUncheckedCreateInput = {
   name: string
   users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
   apps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutWorkspaceInput
-  profile?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
-  userappprofile?: Prisma.UserAppProfileUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUpdateInput = {
@@ -224,8 +224,8 @@ export type WorkspaceUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
   apps?: Prisma.WorkspaceAppUpdateManyWithoutWorkspaceNestedInput
-  profile?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
-  userappprofile?: Prisma.UserAppProfileUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateInput = {
@@ -233,8 +233,8 @@ export type WorkspaceUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
   apps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutWorkspaceNestedInput
-  profile?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
-  userappprofile?: Prisma.UserAppProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateManyInput = {
@@ -300,48 +300,48 @@ export type WorkspaceUpdateOneRequiredWithoutAppsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutAppsInput, Prisma.WorkspaceUpdateWithoutAppsInput>, Prisma.WorkspaceUncheckedUpdateWithoutAppsInput>
 }
 
-export type WorkspaceCreateNestedOneWithoutProfileInput = {
-  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutProfileInput, Prisma.WorkspaceUncheckedCreateWithoutProfileInput>
-  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutProfileInput
+export type WorkspaceCreateNestedOneWithoutRolesInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutRolesInput, Prisma.WorkspaceUncheckedCreateWithoutRolesInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutRolesInput
   connect?: Prisma.WorkspaceWhereUniqueInput
 }
 
-export type WorkspaceUpdateOneRequiredWithoutProfileNestedInput = {
-  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutProfileInput, Prisma.WorkspaceUncheckedCreateWithoutProfileInput>
-  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutProfileInput
-  upsert?: Prisma.WorkspaceUpsertWithoutProfileInput
+export type WorkspaceUpdateOneRequiredWithoutRolesNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutRolesInput, Prisma.WorkspaceUncheckedCreateWithoutRolesInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutRolesInput
+  upsert?: Prisma.WorkspaceUpsertWithoutRolesInput
   connect?: Prisma.WorkspaceWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutProfileInput, Prisma.WorkspaceUpdateWithoutProfileInput>, Prisma.WorkspaceUncheckedUpdateWithoutProfileInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutRolesInput, Prisma.WorkspaceUpdateWithoutRolesInput>, Prisma.WorkspaceUncheckedUpdateWithoutRolesInput>
 }
 
-export type WorkspaceCreateNestedOneWithoutUserappprofileInput = {
-  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserappprofileInput, Prisma.WorkspaceUncheckedCreateWithoutUserappprofileInput>
-  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutUserappprofileInput
+export type WorkspaceCreateNestedOneWithoutUserRolesInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserRolesInput, Prisma.WorkspaceUncheckedCreateWithoutUserRolesInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutUserRolesInput
   connect?: Prisma.WorkspaceWhereUniqueInput
 }
 
-export type WorkspaceUpdateOneRequiredWithoutUserappprofileNestedInput = {
-  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserappprofileInput, Prisma.WorkspaceUncheckedCreateWithoutUserappprofileInput>
-  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutUserappprofileInput
-  upsert?: Prisma.WorkspaceUpsertWithoutUserappprofileInput
+export type WorkspaceUpdateOneRequiredWithoutUserRolesNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserRolesInput, Prisma.WorkspaceUncheckedCreateWithoutUserRolesInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutUserRolesInput
+  upsert?: Prisma.WorkspaceUpsertWithoutUserRolesInput
   connect?: Prisma.WorkspaceWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutUserappprofileInput, Prisma.WorkspaceUpdateWithoutUserappprofileInput>, Prisma.WorkspaceUncheckedUpdateWithoutUserappprofileInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutUserRolesInput, Prisma.WorkspaceUpdateWithoutUserRolesInput>, Prisma.WorkspaceUncheckedUpdateWithoutUserRolesInput>
 }
 
 export type WorkspaceCreateWithoutUsersInput = {
   id?: string
   name: string
   apps?: Prisma.WorkspaceAppCreateNestedManyWithoutWorkspaceInput
-  profile?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
-  userappprofile?: Prisma.UserAppProfileCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutUsersInput = {
   id?: string
   name: string
   apps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutWorkspaceInput
-  profile?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
-  userappprofile?: Prisma.UserAppProfileUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutUsersInput = {
@@ -364,32 +364,32 @@ export type WorkspaceUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   apps?: Prisma.WorkspaceAppUpdateManyWithoutWorkspaceNestedInput
-  profile?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
-  userappprofile?: Prisma.UserAppProfileUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   apps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutWorkspaceNestedInput
-  profile?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
-  userappprofile?: Prisma.UserAppProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutAppsInput = {
   id?: string
   name: string
   users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
-  profile?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
-  userappprofile?: Prisma.UserAppProfileCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutAppsInput = {
   id?: string
   name: string
   users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
-  profile?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
-  userappprofile?: Prisma.UserAppProfileUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutAppsInput = {
@@ -412,112 +412,112 @@ export type WorkspaceUpdateWithoutAppsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
-  profile?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
-  userappprofile?: Prisma.UserAppProfileUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutAppsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
-  profile?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
-  userappprofile?: Prisma.UserAppProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
-export type WorkspaceCreateWithoutProfileInput = {
+export type WorkspaceCreateWithoutRolesInput = {
   id?: string
   name: string
   users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
   apps?: Prisma.WorkspaceAppCreateNestedManyWithoutWorkspaceInput
-  userappprofile?: Prisma.UserAppProfileCreateNestedManyWithoutWorkspaceInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutWorkspaceInput
 }
 
-export type WorkspaceUncheckedCreateWithoutProfileInput = {
+export type WorkspaceUncheckedCreateWithoutRolesInput = {
   id?: string
   name: string
   users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
   apps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutWorkspaceInput
-  userappprofile?: Prisma.UserAppProfileUncheckedCreateNestedManyWithoutWorkspaceInput
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
-export type WorkspaceCreateOrConnectWithoutProfileInput = {
+export type WorkspaceCreateOrConnectWithoutRolesInput = {
   where: Prisma.WorkspaceWhereUniqueInput
-  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutProfileInput, Prisma.WorkspaceUncheckedCreateWithoutProfileInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutRolesInput, Prisma.WorkspaceUncheckedCreateWithoutRolesInput>
 }
 
-export type WorkspaceUpsertWithoutProfileInput = {
-  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutProfileInput, Prisma.WorkspaceUncheckedUpdateWithoutProfileInput>
-  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutProfileInput, Prisma.WorkspaceUncheckedCreateWithoutProfileInput>
+export type WorkspaceUpsertWithoutRolesInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutRolesInput, Prisma.WorkspaceUncheckedUpdateWithoutRolesInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutRolesInput, Prisma.WorkspaceUncheckedCreateWithoutRolesInput>
   where?: Prisma.WorkspaceWhereInput
 }
 
-export type WorkspaceUpdateToOneWithWhereWithoutProfileInput = {
+export type WorkspaceUpdateToOneWithWhereWithoutRolesInput = {
   where?: Prisma.WorkspaceWhereInput
-  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutProfileInput, Prisma.WorkspaceUncheckedUpdateWithoutProfileInput>
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutRolesInput, Prisma.WorkspaceUncheckedUpdateWithoutRolesInput>
 }
 
-export type WorkspaceUpdateWithoutProfileInput = {
+export type WorkspaceUpdateWithoutRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
   apps?: Prisma.WorkspaceAppUpdateManyWithoutWorkspaceNestedInput
-  userappprofile?: Prisma.UserAppProfileUpdateManyWithoutWorkspaceNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutWorkspaceNestedInput
 }
 
-export type WorkspaceUncheckedUpdateWithoutProfileInput = {
+export type WorkspaceUncheckedUpdateWithoutRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
   apps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutWorkspaceNestedInput
-  userappprofile?: Prisma.UserAppProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
-export type WorkspaceCreateWithoutUserappprofileInput = {
+export type WorkspaceCreateWithoutUserRolesInput = {
   id?: string
   name: string
   users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
   apps?: Prisma.WorkspaceAppCreateNestedManyWithoutWorkspaceInput
-  profile?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleCreateNestedManyWithoutWorkspaceInput
 }
 
-export type WorkspaceUncheckedCreateWithoutUserappprofileInput = {
+export type WorkspaceUncheckedCreateWithoutUserRolesInput = {
   id?: string
   name: string
   users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
   apps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutWorkspaceInput
-  profile?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
-export type WorkspaceCreateOrConnectWithoutUserappprofileInput = {
+export type WorkspaceCreateOrConnectWithoutUserRolesInput = {
   where: Prisma.WorkspaceWhereUniqueInput
-  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserappprofileInput, Prisma.WorkspaceUncheckedCreateWithoutUserappprofileInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserRolesInput, Prisma.WorkspaceUncheckedCreateWithoutUserRolesInput>
 }
 
-export type WorkspaceUpsertWithoutUserappprofileInput = {
-  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutUserappprofileInput, Prisma.WorkspaceUncheckedUpdateWithoutUserappprofileInput>
-  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserappprofileInput, Prisma.WorkspaceUncheckedCreateWithoutUserappprofileInput>
+export type WorkspaceUpsertWithoutUserRolesInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutUserRolesInput, Prisma.WorkspaceUncheckedUpdateWithoutUserRolesInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutUserRolesInput, Prisma.WorkspaceUncheckedCreateWithoutUserRolesInput>
   where?: Prisma.WorkspaceWhereInput
 }
 
-export type WorkspaceUpdateToOneWithWhereWithoutUserappprofileInput = {
+export type WorkspaceUpdateToOneWithWhereWithoutUserRolesInput = {
   where?: Prisma.WorkspaceWhereInput
-  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutUserappprofileInput, Prisma.WorkspaceUncheckedUpdateWithoutUserappprofileInput>
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutUserRolesInput, Prisma.WorkspaceUncheckedUpdateWithoutUserRolesInput>
 }
 
-export type WorkspaceUpdateWithoutUserappprofileInput = {
+export type WorkspaceUpdateWithoutUserRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
   apps?: Prisma.WorkspaceAppUpdateManyWithoutWorkspaceNestedInput
-  profile?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutWorkspaceNestedInput
 }
 
-export type WorkspaceUncheckedUpdateWithoutUserappprofileInput = {
+export type WorkspaceUncheckedUpdateWithoutUserRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
   apps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutWorkspaceNestedInput
-  profile?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 
@@ -528,15 +528,15 @@ export type WorkspaceUncheckedUpdateWithoutUserappprofileInput = {
 export type WorkspaceCountOutputType = {
   users: number
   apps: number
-  profile: number
-  userappprofile: number
+  roles: number
+  userRoles: number
 }
 
 export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | WorkspaceCountOutputTypeCountUsersArgs
   apps?: boolean | WorkspaceCountOutputTypeCountAppsArgs
-  profile?: boolean | WorkspaceCountOutputTypeCountProfileArgs
-  userappprofile?: boolean | WorkspaceCountOutputTypeCountUserappprofileArgs
+  roles?: boolean | WorkspaceCountOutputTypeCountRolesArgs
+  userRoles?: boolean | WorkspaceCountOutputTypeCountUserRolesArgs
 }
 
 /**
@@ -566,15 +566,15 @@ export type WorkspaceCountOutputTypeCountAppsArgs<ExtArgs extends runtime.Types.
 /**
  * WorkspaceCountOutputType without action
  */
-export type WorkspaceCountOutputTypeCountProfileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ProfileWhereInput
+export type WorkspaceCountOutputTypeCountRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RoleWhereInput
 }
 
 /**
  * WorkspaceCountOutputType without action
  */
-export type WorkspaceCountOutputTypeCountUserappprofileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.UserAppProfileWhereInput
+export type WorkspaceCountOutputTypeCountUserRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserRoleWhereInput
 }
 
 
@@ -583,8 +583,8 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   name?: boolean
   users?: boolean | Prisma.Workspace$usersArgs<ExtArgs>
   apps?: boolean | Prisma.Workspace$appsArgs<ExtArgs>
-  profile?: boolean | Prisma.Workspace$profileArgs<ExtArgs>
-  userappprofile?: boolean | Prisma.Workspace$userappprofileArgs<ExtArgs>
+  roles?: boolean | Prisma.Workspace$rolesArgs<ExtArgs>
+  userRoles?: boolean | Prisma.Workspace$userRolesArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspace"]>
 
@@ -607,8 +607,8 @@ export type WorkspaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Workspace$usersArgs<ExtArgs>
   apps?: boolean | Prisma.Workspace$appsArgs<ExtArgs>
-  profile?: boolean | Prisma.Workspace$profileArgs<ExtArgs>
-  userappprofile?: boolean | Prisma.Workspace$userappprofileArgs<ExtArgs>
+  roles?: boolean | Prisma.Workspace$rolesArgs<ExtArgs>
+  userRoles?: boolean | Prisma.Workspace$userRolesArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkspaceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -619,8 +619,8 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
   objects: {
     users: Prisma.$WorkspaceUserPayload<ExtArgs>[]
     apps: Prisma.$WorkspaceAppPayload<ExtArgs>[]
-    profile: Prisma.$ProfilePayload<ExtArgs>[]
-    userappprofile: Prisma.$UserAppProfilePayload<ExtArgs>[]
+    roles: Prisma.$RolePayload<ExtArgs>[]
+    userRoles: Prisma.$UserRolePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1021,8 +1021,8 @@ export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtim
   readonly [Symbol.toStringTag]: "PrismaPromise"
   users<T extends Prisma.Workspace$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   apps<T extends Prisma.Workspace$appsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$appsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceAppPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  profile<T extends Prisma.Workspace$profileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$profileArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  userappprofile<T extends Prisma.Workspace$userappprofileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$userappprofileArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserAppProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  roles<T extends Prisma.Workspace$rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userRoles<T extends Prisma.Workspace$userRolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$userRolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserRolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1490,51 +1490,51 @@ export type Workspace$appsArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * Workspace.profile
+ * Workspace.roles
  */
-export type Workspace$profileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Workspace$rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Profile
+   * Select specific fields to fetch from the Role
    */
-  select?: Prisma.ProfileSelect<ExtArgs> | null
+  select?: Prisma.RoleSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Profile
+   * Omit specific fields from the Role
    */
-  omit?: Prisma.ProfileOmit<ExtArgs> | null
+  omit?: Prisma.RoleOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.ProfileInclude<ExtArgs> | null
-  where?: Prisma.ProfileWhereInput
-  orderBy?: Prisma.ProfileOrderByWithRelationInput | Prisma.ProfileOrderByWithRelationInput[]
-  cursor?: Prisma.ProfileWhereUniqueInput
+  include?: Prisma.RoleInclude<ExtArgs> | null
+  where?: Prisma.RoleWhereInput
+  orderBy?: Prisma.RoleOrderByWithRelationInput | Prisma.RoleOrderByWithRelationInput[]
+  cursor?: Prisma.RoleWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.ProfileScalarFieldEnum | Prisma.ProfileScalarFieldEnum[]
+  distinct?: Prisma.RoleScalarFieldEnum | Prisma.RoleScalarFieldEnum[]
 }
 
 /**
- * Workspace.userappprofile
+ * Workspace.userRoles
  */
-export type Workspace$userappprofileArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Workspace$userRolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the UserAppProfile
+   * Select specific fields to fetch from the UserRole
    */
-  select?: Prisma.UserAppProfileSelect<ExtArgs> | null
+  select?: Prisma.UserRoleSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the UserAppProfile
+   * Omit specific fields from the UserRole
    */
-  omit?: Prisma.UserAppProfileOmit<ExtArgs> | null
+  omit?: Prisma.UserRoleOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.UserAppProfileInclude<ExtArgs> | null
-  where?: Prisma.UserAppProfileWhereInput
-  orderBy?: Prisma.UserAppProfileOrderByWithRelationInput | Prisma.UserAppProfileOrderByWithRelationInput[]
-  cursor?: Prisma.UserAppProfileWhereUniqueInput
+  include?: Prisma.UserRoleInclude<ExtArgs> | null
+  where?: Prisma.UserRoleWhereInput
+  orderBy?: Prisma.UserRoleOrderByWithRelationInput | Prisma.UserRoleOrderByWithRelationInput[]
+  cursor?: Prisma.UserRoleWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.UserAppProfileScalarFieldEnum | Prisma.UserAppProfileScalarFieldEnum[]
+  distinct?: Prisma.UserRoleScalarFieldEnum | Prisma.UserRoleScalarFieldEnum[]
 }
 
 /**

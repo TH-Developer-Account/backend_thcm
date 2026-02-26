@@ -188,7 +188,7 @@ export type WorkspaceAppWhereUniqueInput = Prisma.AtLeast<{
   enabled?: Prisma.BoolFilter<"WorkspaceApp"> | boolean
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   app?: Prisma.XOR<Prisma.AppScalarRelationFilter, Prisma.AppWhereInput>
-}, "workspaceId_appId" | "workspaceId_appId">
+}, "workspaceId_appId">
 
 export type WorkspaceAppOrderByWithAggregationInput = {
   workspaceId?: Prisma.SortOrder

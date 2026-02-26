@@ -23,7 +23,7 @@ model User {
   is_default_login  Boolean         @default(true) 
   refresh_tokens     RefreshToken[]
   password_reset_tokens  PasswordResetToken[] 
-  appProfile UserAppProfile[]
+  userRole UserRole[]
   workspaces  WorkspaceUser[]
   created_event_proposals EventProposal[] @relation("EventCreatedBy")
   updated_event_proposals EventProposal[] @relation("EventUpdatedBy")
@@ -164,18 +164,18 @@ model EventName {
 }
 
 model Workspace {
-  id    String              @id @default(uuid())
+  id    String @id @default(uuid())
   name  String
 
-  users WorkspaceUser[]
-  apps  WorkspaceApp[]
-  profile Profile[]
-  userappprofile UserAppProfile[]
+  users        WorkspaceUser[]
+  apps         WorkspaceApp[]
+  roles        Role[]
+  userRoles    UserRole[]
 }
 
 model WorkspaceUser {
-  userId       String
-  workspaceId  String
+  userId      String
+  workspaceId String
   isSuperAdmin Boolean @default(false)
 
   user      User      @relation(fields: [userId], references: [id])
@@ -185,13 +185,12 @@ model WorkspaceUser {
 }
 
 model App {
-  id   String    @id @default(uuid())
+  id   String @id @default(uuid())
   key  String @unique
   name String
 
   workspaces WorkspaceApp[]
-  userProfile UserAppProfile[]
-  module Module[]
+  modules    Module[]
 }
 
 model WorkspaceApp {
@@ -203,59 +202,60 @@ model WorkspaceApp {
   app       App       @relation(fields: [appId], references: [id])
 
   @@id([workspaceId, appId])
-  @@unique([workspaceId, appId])
 }
 
 model Module {
-  id     String @id @default(uuid())
-  key    String
-  name   String
-  appId  String
+  id    String @id @default(uuid())
+  key   String
+  name  String
+  appId String
 
-  app App @relation(fields: [appId], references: [id])
- profile Profile[]
+  app   App    @relation(fields: [appId], references: [id])
+  roles Role[]
+
   @@unique([appId, key])
   @@index([appId])
 }
 
-model Profile {
+// A Role is scoped to a workspace, and optionally to a specific module.
+// scope = null means it's a workspace-wide role (e.g. "Admin", "Viewer")
+// scope = moduleId means it's a module-specific role (e.g. "Report Editor" in Analytics)
+model Role {
   id          String  @id @default(uuid())
+  name        String
   workspaceId String
-  moduleId    String?
+  moduleId    String? // null = workspace-wide
 
-  workspace Workspace @relation(fields: [workspaceId], references: [id])
-  module    Module?   @relation(fields: [moduleId], references: [id])
+  workspace   Workspace          @relation(fields: [workspaceId], references: [id])
+  module      Module?            @relation(fields: [moduleId], references: [id])
+  permissions RolePermission[]
+  userRoles   UserRole[]
 
-  permissions ProfilePermission[]
-  users       UserAppProfile[]
-
-  @@unique([workspaceId, moduleId])
+  @@unique([workspaceId, moduleId, name])
   @@index([workspaceId, moduleId])
 }
 
+model RolePermission {
+  roleId     String
+  permission PermissionAction
 
+  role Role @relation(fields: [roleId], references: [id])
 
-model ProfilePermission {
-  profileId     String
-  permission PermissionAction 
-
-  profile Profile @relation(fields: [profileId], references: [id])
-
-  @@id([profileId, permission])
+  @@id([roleId, permission])
 }
 
-model UserAppProfile {
-  userId String
+// Assigns a user to a role within a workspace.
+// The role itself carries the module scope, so no need to repeat appId/moduleId here.
+model UserRole {
+  userId      String
   workspaceId String
-  appId  String
-  profileId String
+  roleId      String
 
-  user User @relation(fields: [userId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
   workspace Workspace @relation(fields: [workspaceId], references: [id])
-  app  App  @relation(fields: [appId], references: [id])
-  profile Profile @relation(fields: [profileId], references: [id])
+  role      Role      @relation(fields: [roleId], references: [id])
 
-  @@id([userId, workspaceId, appId])
+  @@id([userId, workspaceId, roleId])
   @@index([userId, workspaceId])
 }
 

@@ -1,3 +1,4 @@
+// middleware/auth.ts
 import jwt from "jsonwebtoken";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
@@ -35,7 +36,7 @@ export const requireAuth = async (req, res, next) => {
       throw new ApiError(401, "User not authorized");
     }
 
-    const workspace = user.workspaces[0]; // single workspace
+    const workspace = user.workspaces[0];
 
     const permissions = await buildUserPermissions(
       user.id,

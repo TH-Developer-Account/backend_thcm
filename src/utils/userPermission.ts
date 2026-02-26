@@ -8,16 +8,16 @@ export async function buildUserPermissions(
     { app: string; module: string; permission: string }[]
   >`
     SELECT
-      a.key  AS app,
-      m.key  AS module,
+      a.key        AS app,
+      m.key        AS module,
       rp.permission
-    FROM "UserAppProfile" uar
-    JOIN "Profile" r ON r.id = uar."profileId"
-    JOIN "ProfilePermission" rp ON rp."profileId" = r.id
-    JOIN "Module" m ON m.id = r."moduleId"
-    JOIN "App" a ON a.id = m."appId"
-    WHERE uar."userId" = ${userId}
-      AND uar."workspaceId" = ${workspaceId}
+    FROM "UserRole"        ur
+    JOIN "Role"            r  ON r.id  = ur."roleId"
+    JOIN "RolePermission"  rp ON rp."roleId" = r.id
+    JOIN "Module"          m  ON m.id  = r."moduleId"
+    JOIN "App"             a  ON a.id  = m."appId"
+    WHERE ur."userId"      = ${userId}
+      AND ur."workspaceId" = ${workspaceId}
   `;
 
   const result: Record<string, Record<string, string[]>> = {};
@@ -25,7 +25,10 @@ export async function buildUserPermissions(
   for (const row of rows) {
     if (!result[row.app]) result[row.app] = {};
     if (!result[row.app][row.module]) result[row.app][row.module] = [];
-    result[row.app][row.module].push(row.permission);
+
+    if (!result[row.app][row.module].includes(row.permission)) {
+      result[row.app][row.module].push(row.permission);
+    }
   }
 
   return result;

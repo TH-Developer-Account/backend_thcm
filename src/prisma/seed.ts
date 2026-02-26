@@ -15,9 +15,9 @@ async function main() {
 
   /* -------------------- CLEAN RBAC -------------------- */
 
-  await prisma.userAppProfile.deleteMany();
-  await prisma.profilePermission.deleteMany();
-  await prisma.profile.deleteMany();
+  await prisma.userRole.deleteMany();
+  await prisma.rolePermission.deleteMany();
+  await prisma.role.deleteMany();
   await prisma.module.deleteMany();
   await prisma.workspaceApp.deleteMany();
   await prisma.workspaceUser.deleteMany();
@@ -83,11 +83,11 @@ async function main() {
     },
   });
 
-  /* -------------------- PROFILES -------------------- */
+  /* -------------------- ROLES -------------------- */
 
-  const adminRole = await prisma.profile.create({
+  const adminRole = await prisma.role.create({
     data: {
-      // name: "Admin",
+      name: "Admin",
       workspaceId: workspace.id,
       moduleId: proposalModule.id,
       permissions: {
@@ -96,9 +96,9 @@ async function main() {
     },
   });
 
-  // const editorRole = await prisma.profile.create({
+  // const editorRole = await prisma.role.create({
   //   data: {
-  //     // name: "Editor",
+  //     name: "Editor",
   //     workspaceId: workspace.id,
   //     moduleId: proposalModule.id,
   //     permissions: {
@@ -107,9 +107,9 @@ async function main() {
   //   },
   // });
 
-  // const viewerRole = await prisma.profile.create({
+  // const viewerRole = await prisma.role.create({
   //   data: {
-  //     // name: "Viewer",
+  //     name: "Viewer",
   //     workspaceId: workspace.id,
   //     moduleId: proposalModule.id,
   //     permissions: {
@@ -118,9 +118,9 @@ async function main() {
   //   },
   // });
 
-  const approvalManagerRole = await prisma.profile.create({
+  const approvalManagerRole = await prisma.role.create({
     data: {
-      // name: "Approval Manager",
+      name: "Approval Manager",
       workspaceId: workspace.id,
       moduleId: approvalModule.id,
       permissions: {
@@ -129,9 +129,9 @@ async function main() {
     },
   });
 
-  const reportViewerRole = await prisma.profile.create({
+  const reportViewerRole = await prisma.role.create({
     data: {
-      // name: "Report Viewer",
+      name: "Report Viewer",
       workspaceId: workspace.id,
       moduleId: reportModule.id,
       permissions: {
@@ -168,46 +168,35 @@ async function main() {
     });
   }
 
-  /* -------------------- PROFILE ASSIGNMENT -------------------- */
+  /* -------------------- ROLE ASSIGNMENT -------------------- */
 
-  await prisma.userAppProfile.create({
+  // User 0 — superadmin, gets the Admin role on the proposal module
+  await prisma.userRole.create({
     data: {
       userId: users[0].id,
       workspaceId: workspace.id,
-      appId: eventApp.id,
-      profileId: adminRole.id,
+      roleId: adminRole.id,
     },
   });
 
-  // for (let i = 1; i <= 3; i++) {
-  //   await prisma.userAppProfile.create({
-  //     data: {
-  //       userId: users[i].id,
-  //       workspaceId: workspace.id,
-  //       appId: eventApp.id,
-  //       profileId: editorRole.id,
-  //     },
-  //   });
-  // }
-
+  // Users 1–5 — Approval Managers
   for (let i = 1; i <= 5; i++) {
-    await prisma.userAppProfile.create({
+    await prisma.userRole.create({
       data: {
         userId: users[i].id,
         workspaceId: workspace.id,
-        appId: eventApp.id,
-        profileId: approvalManagerRole.id,
+        roleId: approvalManagerRole.id,
       },
     });
   }
 
+  // Users 6–9 — Report Viewers
   for (let i = 6; i < users.length; i++) {
-    await prisma.userAppProfile.create({
+    await prisma.userRole.create({
       data: {
         userId: users[i].id,
         workspaceId: workspace.id,
-        appId: eventApp.id,
-        profileId: reportViewerRole.id,
+        roleId: reportViewerRole.id,
       },
     });
   }
