@@ -58,6 +58,46 @@ export type RefreshToken = Prisma.RefreshTokenModel
  */
 export type DailyVisitors = Prisma.DailyVisitorsModel
 /**
+ * Model Workspace
+ * 
+ */
+export type Workspace = Prisma.WorkspaceModel
+/**
+ * Model WorkspaceUser
+ * 
+ */
+export type WorkspaceUser = Prisma.WorkspaceUserModel
+/**
+ * Model App
+ * 
+ */
+export type App = Prisma.AppModel
+/**
+ * Model WorkspaceApp
+ * 
+ */
+export type WorkspaceApp = Prisma.WorkspaceAppModel
+/**
+ * Model Module
+ * 
+ */
+export type Module = Prisma.ModuleModel
+/**
+ * Model Profile
+ * 
+ */
+export type Profile = Prisma.ProfileModel
+/**
+ * Model ProfilePermission
+ * 
+ */
+export type ProfilePermission = Prisma.ProfilePermissionModel
+/**
+ * Model UserProfile
+ * 
+ */
+export type UserProfile = Prisma.UserProfileModel
+/**
  * Model EventProposal
  * 
  */
@@ -92,43 +132,3 @@ export type BudgetMaster = Prisma.BudgetMasterModel
  * 
  */
 export type EventName = Prisma.EventNameModel
-/**
- * Model Workspace
- * 
- */
-export type Workspace = Prisma.WorkspaceModel
-/**
- * Model WorkspaceUser
- * 
- */
-export type WorkspaceUser = Prisma.WorkspaceUserModel
-/**
- * Model App
- * 
- */
-export type App = Prisma.AppModel
-/**
- * Model WorkspaceApp
- * 
- */
-export type WorkspaceApp = Prisma.WorkspaceAppModel
-/**
- * Model Module
- * 
- */
-export type Module = Prisma.ModuleModel
-/**
- * Model Role
- * 
- */
-export type Role = Prisma.RoleModel
-/**
- * Model RolePermission
- * 
- */
-export type RolePermission = Prisma.RolePermissionModel
-/**
- * Model UserRole
- * 
- */
-export type UserRole = Prisma.UserRoleModel

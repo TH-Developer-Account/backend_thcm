@@ -14,8 +14,8 @@ import {
 
 const router = Router();
 
-router.use(requireAuth); // sets req.user
-router.use(firstAuthRequestPerDay); // tracks DAU
+// router.use(requireAuth); // sets req.user
+// router.use(firstAuthRequestPerDay); // tracks DAU
 
 router.get("/", asyncHandler(getAllWorkspaces));
 router.get("/:workspaceId", asyncHandler(getWorkspaceById));

@@ -17,7 +17,7 @@ router.use(firstAuthRequestPerDay);
 
 router.post(
   "/",
-  authorize("event", "approval", "create"),
+  authorize("MAP", "Event Proposal Form", "write"),
   asyncHandler(createEventProposal),
 );
 router.get("/", asyncHandler(getAllEventProposals));

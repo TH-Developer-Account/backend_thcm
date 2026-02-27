@@ -28,18 +28,21 @@ export type WorkspaceAppMinAggregateOutputType = {
   workspaceId: string | null
   appId: string | null
   enabled: boolean | null
+  enabledAt: Date | null
 }
 
 export type WorkspaceAppMaxAggregateOutputType = {
   workspaceId: string | null
   appId: string | null
   enabled: boolean | null
+  enabledAt: Date | null
 }
 
 export type WorkspaceAppCountAggregateOutputType = {
   workspaceId: number
   appId: number
   enabled: number
+  enabledAt: number
   _all: number
 }
 
@@ -48,18 +51,21 @@ export type WorkspaceAppMinAggregateInputType = {
   workspaceId?: true
   appId?: true
   enabled?: true
+  enabledAt?: true
 }
 
 export type WorkspaceAppMaxAggregateInputType = {
   workspaceId?: true
   appId?: true
   enabled?: true
+  enabledAt?: true
 }
 
 export type WorkspaceAppCountAggregateInputType = {
   workspaceId?: true
   appId?: true
   enabled?: true
+  enabledAt?: true
   _all?: true
 }
 
@@ -139,6 +145,7 @@ export type WorkspaceAppGroupByOutputType = {
   workspaceId: string
   appId: string
   enabled: boolean
+  enabledAt: Date
   _count: WorkspaceAppCountAggregateOutputType | null
   _min: WorkspaceAppMinAggregateOutputType | null
   _max: WorkspaceAppMaxAggregateOutputType | null
@@ -166,6 +173,7 @@ export type WorkspaceAppWhereInput = {
   workspaceId?: Prisma.StringFilter<"WorkspaceApp"> | string
   appId?: Prisma.StringFilter<"WorkspaceApp"> | string
   enabled?: Prisma.BoolFilter<"WorkspaceApp"> | boolean
+  enabledAt?: Prisma.DateTimeFilter<"WorkspaceApp"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   app?: Prisma.XOR<Prisma.AppScalarRelationFilter, Prisma.AppWhereInput>
 }
@@ -174,6 +182,7 @@ export type WorkspaceAppOrderByWithRelationInput = {
   workspaceId?: Prisma.SortOrder
   appId?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  enabledAt?: Prisma.SortOrder
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
   app?: Prisma.AppOrderByWithRelationInput
 }
@@ -186,6 +195,7 @@ export type WorkspaceAppWhereUniqueInput = Prisma.AtLeast<{
   workspaceId?: Prisma.StringFilter<"WorkspaceApp"> | string
   appId?: Prisma.StringFilter<"WorkspaceApp"> | string
   enabled?: Prisma.BoolFilter<"WorkspaceApp"> | boolean
+  enabledAt?: Prisma.DateTimeFilter<"WorkspaceApp"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   app?: Prisma.XOR<Prisma.AppScalarRelationFilter, Prisma.AppWhereInput>
 }, "workspaceId_appId">
@@ -194,6 +204,7 @@ export type WorkspaceAppOrderByWithAggregationInput = {
   workspaceId?: Prisma.SortOrder
   appId?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  enabledAt?: Prisma.SortOrder
   _count?: Prisma.WorkspaceAppCountOrderByAggregateInput
   _max?: Prisma.WorkspaceAppMaxOrderByAggregateInput
   _min?: Prisma.WorkspaceAppMinOrderByAggregateInput
@@ -206,46 +217,54 @@ export type WorkspaceAppScalarWhereWithAggregatesInput = {
   workspaceId?: Prisma.StringWithAggregatesFilter<"WorkspaceApp"> | string
   appId?: Prisma.StringWithAggregatesFilter<"WorkspaceApp"> | string
   enabled?: Prisma.BoolWithAggregatesFilter<"WorkspaceApp"> | boolean
+  enabledAt?: Prisma.DateTimeWithAggregatesFilter<"WorkspaceApp"> | Date | string
 }
 
 export type WorkspaceAppCreateInput = {
   enabled?: boolean
+  enabledAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutAppsInput
-  app: Prisma.AppCreateNestedOneWithoutWorkspacesInput
+  app: Prisma.AppCreateNestedOneWithoutWorkspaceAppsInput
 }
 
 export type WorkspaceAppUncheckedCreateInput = {
   workspaceId: string
   appId: string
   enabled?: boolean
+  enabledAt?: Date | string
 }
 
 export type WorkspaceAppUpdateInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutAppsNestedInput
-  app?: Prisma.AppUpdateOneRequiredWithoutWorkspacesNestedInput
+  app?: Prisma.AppUpdateOneRequiredWithoutWorkspaceAppsNestedInput
 }
 
 export type WorkspaceAppUncheckedUpdateInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   appId?: Prisma.StringFieldUpdateOperationsInput | string
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkspaceAppCreateManyInput = {
   workspaceId: string
   appId: string
   enabled?: boolean
+  enabledAt?: Date | string
 }
 
 export type WorkspaceAppUpdateManyMutationInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkspaceAppUncheckedUpdateManyInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   appId?: Prisma.StringFieldUpdateOperationsInput | string
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkspaceAppListRelationFilter = {
@@ -267,18 +286,21 @@ export type WorkspaceAppCountOrderByAggregateInput = {
   workspaceId?: Prisma.SortOrder
   appId?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  enabledAt?: Prisma.SortOrder
 }
 
 export type WorkspaceAppMaxOrderByAggregateInput = {
   workspaceId?: Prisma.SortOrder
   appId?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  enabledAt?: Prisma.SortOrder
 }
 
 export type WorkspaceAppMinOrderByAggregateInput = {
   workspaceId?: Prisma.SortOrder
   appId?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  enabledAt?: Prisma.SortOrder
 }
 
 export type WorkspaceAppCreateNestedManyWithoutWorkspaceInput = {
@@ -367,12 +389,14 @@ export type WorkspaceAppUncheckedUpdateManyWithoutAppNestedInput = {
 
 export type WorkspaceAppCreateWithoutWorkspaceInput = {
   enabled?: boolean
-  app: Prisma.AppCreateNestedOneWithoutWorkspacesInput
+  enabledAt?: Date | string
+  app: Prisma.AppCreateNestedOneWithoutWorkspaceAppsInput
 }
 
 export type WorkspaceAppUncheckedCreateWithoutWorkspaceInput = {
   appId: string
   enabled?: boolean
+  enabledAt?: Date | string
 }
 
 export type WorkspaceAppCreateOrConnectWithoutWorkspaceInput = {
@@ -408,16 +432,19 @@ export type WorkspaceAppScalarWhereInput = {
   workspaceId?: Prisma.StringFilter<"WorkspaceApp"> | string
   appId?: Prisma.StringFilter<"WorkspaceApp"> | string
   enabled?: Prisma.BoolFilter<"WorkspaceApp"> | boolean
+  enabledAt?: Prisma.DateTimeFilter<"WorkspaceApp"> | Date | string
 }
 
 export type WorkspaceAppCreateWithoutAppInput = {
   enabled?: boolean
+  enabledAt?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutAppsInput
 }
 
 export type WorkspaceAppUncheckedCreateWithoutAppInput = {
   workspaceId: string
   enabled?: boolean
+  enabledAt?: Date | string
 }
 
 export type WorkspaceAppCreateOrConnectWithoutAppInput = {
@@ -449,41 +476,49 @@ export type WorkspaceAppUpdateManyWithWhereWithoutAppInput = {
 export type WorkspaceAppCreateManyWorkspaceInput = {
   appId: string
   enabled?: boolean
+  enabledAt?: Date | string
 }
 
 export type WorkspaceAppUpdateWithoutWorkspaceInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  app?: Prisma.AppUpdateOneRequiredWithoutWorkspacesNestedInput
+  enabledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  app?: Prisma.AppUpdateOneRequiredWithoutWorkspaceAppsNestedInput
 }
 
 export type WorkspaceAppUncheckedUpdateWithoutWorkspaceInput = {
   appId?: Prisma.StringFieldUpdateOperationsInput | string
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkspaceAppUncheckedUpdateManyWithoutWorkspaceInput = {
   appId?: Prisma.StringFieldUpdateOperationsInput | string
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkspaceAppCreateManyAppInput = {
   workspaceId: string
   enabled?: boolean
+  enabledAt?: Date | string
 }
 
 export type WorkspaceAppUpdateWithoutAppInput = {
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutAppsNestedInput
 }
 
 export type WorkspaceAppUncheckedUpdateWithoutAppInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkspaceAppUncheckedUpdateManyWithoutAppInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  enabledAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -492,6 +527,7 @@ export type WorkspaceAppSelect<ExtArgs extends runtime.Types.Extensions.Internal
   workspaceId?: boolean
   appId?: boolean
   enabled?: boolean
+  enabledAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspaceApp"]>
@@ -500,6 +536,7 @@ export type WorkspaceAppSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   workspaceId?: boolean
   appId?: boolean
   enabled?: boolean
+  enabledAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspaceApp"]>
@@ -508,6 +545,7 @@ export type WorkspaceAppSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   workspaceId?: boolean
   appId?: boolean
   enabled?: boolean
+  enabledAt?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspaceApp"]>
@@ -516,9 +554,10 @@ export type WorkspaceAppSelectScalar = {
   workspaceId?: boolean
   appId?: boolean
   enabled?: boolean
+  enabledAt?: boolean
 }
 
-export type WorkspaceAppOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"workspaceId" | "appId" | "enabled", ExtArgs["result"]["workspaceApp"]>
+export type WorkspaceAppOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"workspaceId" | "appId" | "enabled" | "enabledAt", ExtArgs["result"]["workspaceApp"]>
 export type WorkspaceAppInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
@@ -542,6 +581,7 @@ export type $WorkspaceAppPayload<ExtArgs extends runtime.Types.Extensions.Intern
     workspaceId: string
     appId: string
     enabled: boolean
+    enabledAt: Date
   }, ExtArgs["result"]["workspaceApp"]>
   composites: {}
 }
@@ -970,6 +1010,7 @@ export interface WorkspaceAppFieldRefs {
   readonly workspaceId: Prisma.FieldRef<"WorkspaceApp", 'String'>
   readonly appId: Prisma.FieldRef<"WorkspaceApp", 'String'>
   readonly enabled: Prisma.FieldRef<"WorkspaceApp", 'Boolean'>
+  readonly enabledAt: Prisma.FieldRef<"WorkspaceApp", 'DateTime'>
 }
     
 
