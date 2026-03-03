@@ -8,22 +8,15 @@ import ApiError from "../utils/apiError";
 // ─────────────────────────────────────────────────────────────────────────────
 
 // One permission entry inside a profile definition.
-// Think of this as: "action X is allowed at this scope"
+// Every permission targets a specific module — no wildcards.
 //
-// Examples:
-//   { action: "read",  scopeType: "WORKSPACE" }
-//       → READ on every app/module in the workspace
-//
-//   { action: "write", scopeType: "APP", appKey: "MAP" }
-//       → WRITE on every module inside MAP
-//
-//   { action: "write", scopeType: "MODULE", appKey: "MAP", moduleKey: "EPC" }
-//       → WRITE on the EPC module inside MAP only
+// Example:
+//   { action: "read",  appKey: "MAP", moduleKey: "EPC" }
+//   { action: "write", appKey: "MAP", moduleKey: "EPC" }
 type PermissionInput = {
   action: "read" | "write";
-  scopeType: "WORKSPACE" | "APP" | "MODULE";
-  appKey?: string; // required when scopeType = APP or MODULE
-  moduleKey?: string; // required when scopeType = MODULE
+  appKey: string; // required — which app the module belongs to
+  moduleKey: string; // required — the specific module
 };
 
 // One profile definition in the setup/update payload
@@ -72,28 +65,10 @@ export async function can(
     },
   });
 
-  // Step 3 — Check if any permission row covers the requested action + context
-  return permissions.some((p) => {
-    // The action must match exactly (read vs write)
-    if (p.action !== action) return false;
-
-    switch (p.scopeType) {
-      // WORKSPACE scope → no appId/moduleId restriction, always passes
-      case "WORKSPACE":
-        return true;
-
-      // APP scope → must be the same app
-      case "APP":
-        return p.appId === context.appId;
-
-      // MODULE scope → must be the exact same module
-      case "MODULE":
-        return p.moduleId === context.moduleId;
-
-      default:
-        return false;
-    }
-  });
+  // Step 3 — Check if any permission row matches action + module exactly
+  return permissions.some(
+    (p) => p.action === action && p.moduleId === context.moduleId,
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -194,35 +169,20 @@ export async function setupWorkspaceRBAC(req: Request, res: Response) {
           data: { name, description, workspaceId },
         });
 
-        // Create each permission entry with its own scope
+        // Create one permission row per entry — always module-scoped
         for (const perm of permissions) {
-          const { action, scopeType, appKey, moduleKey } = perm;
+          const { action, appKey, moduleKey } = perm;
 
-          // Resolve appKey → appId (only needed for APP or MODULE scope)
-          const appId = appKey ? appKeyToId.get(appKey) : null;
-          if ((scopeType === "APP" || scopeType === "MODULE") && !appId) {
-            throw new Error(`App key not found in payload: "${appKey}"`);
-          }
-
-          // Resolve moduleKey → moduleId (only needed for MODULE scope)
-          const moduleId =
-            scopeType === "MODULE" && appKey && moduleKey
-              ? moduleKeyToId.get(`${appKey}:${moduleKey}`)
-              : null;
-          if (scopeType === "MODULE" && !moduleId) {
+          const moduleId = moduleKeyToId.get(`${appKey}:${moduleKey}`);
+          if (!moduleId) {
             throw new Error(
-              `Module key not found in payload: "${moduleKey}" under app "${appKey}"`,
+              `Module "${moduleKey}" not found under app "${appKey}". ` +
+                `Make sure the module is listed in the apps array of this payload.`,
             );
           }
 
           await tx.profilePermission.create({
-            data: {
-              profileId: profile.id,
-              action,
-              scopeType,
-              appId: appId ?? null,
-              moduleId: moduleId ?? null,
-            },
+            data: { profileId: profile.id, action, moduleId },
           });
         }
       }
@@ -317,33 +277,19 @@ export async function updateWorkspaceRBAC(req: Request, res: Response) {
           where: { profileId: profile.id },
         });
 
-        // Re-insert fresh permissions from the payload
+        // Re-insert fresh permissions — always module-scoped
         for (const perm of permissions) {
-          const { action, scopeType, appKey, moduleKey } = perm;
+          const { action, appKey, moduleKey } = perm;
 
-          const appId = appKey ? appKeyToId.get(appKey) : null;
-          if ((scopeType === "APP" || scopeType === "MODULE") && !appId) {
-            throw new Error(`App key not found in payload: "${appKey}"`);
-          }
-
-          const moduleId =
-            scopeType === "MODULE" && appKey && moduleKey
-              ? moduleKeyToId.get(`${appKey}:${moduleKey}`)
-              : null;
-          if (scopeType === "MODULE" && !moduleId) {
+          const moduleId = moduleKeyToId.get(`${appKey}:${moduleKey}`);
+          if (!moduleId) {
             throw new Error(
               `Module "${moduleKey}" not found under app "${appKey}"`,
             );
           }
 
           await tx.profilePermission.create({
-            data: {
-              profileId: profile.id,
-              action,
-              scopeType,
-              appId: appId ?? null,
-              moduleId: moduleId ?? null,
-            },
+            data: { profileId: profile.id, action, moduleId },
           });
         }
       }
@@ -405,9 +351,15 @@ export async function deleteWorkspaceRBAC(req: Request, res: Response) {
         await tx.module.delete({ where: { id: module.id } });
       } else {
         // ── Disable entire app in this workspace ────────────────────────────
-        // Remove all permission rows scoped to this app (APP or MODULE scope)
-        await tx.profilePermission.deleteMany({
+        // Find all modules belonging to this app, then delete their permissions
+        const appModules = await tx.module.findMany({
           where: { appId: app.id },
+          select: { id: true },
+        });
+        const moduleIds = appModules.map((m) => m.id);
+
+        await tx.profilePermission.deleteMany({
+          where: { moduleId: { in: moduleIds } },
         });
 
         // Soft-disable: the app still exists globally, just not active here
@@ -465,13 +417,15 @@ export async function getAllWorkspaces(req: Request, res: Response) {
             },
           },
         },
-        // Fetch profiles and their scoped permissions (with app/module names resolved)
+        // Fetch profiles and their permissions (with module → app resolved)
         profiles: {
           include: {
             permissions: {
               include: {
-                app: { select: { key: true, name: true } },
-                module: { select: { key: true, name: true } },
+                module: {
+                  include: { app: { select: { key: true, name: true } } },
+                  select: { key: true, name: true, app: true },
+                },
               },
             },
           },
@@ -501,9 +455,7 @@ export async function getAllWorkspaces(req: Request, res: Response) {
         // Each permission shows its action and resolved scope info
         permissions: profile.permissions.map((p) => ({
           action: p.action,
-          scopeType: p.scopeType,
-          // Show human-readable keys instead of raw IDs
-          appKey: p.app?.key ?? null,
+          appKey: p.module?.app?.key ?? null,
           moduleKey: p.module?.key ?? null,
         })),
       })),
@@ -544,8 +496,10 @@ export async function getWorkspaceById(req: Request, res: Response) {
           include: {
             permissions: {
               include: {
-                app: { select: { key: true, name: true } },
-                module: { select: { key: true, name: true } },
+                module: {
+                  include: { app: { select: { key: true, name: true } } },
+                  select: { key: true, name: true, app: true },
+                },
               },
             },
           },
@@ -570,8 +524,7 @@ export async function getWorkspaceById(req: Request, res: Response) {
         description: profile.description,
         permissions: profile.permissions.map((p) => ({
           action: p.action,
-          scopeType: p.scopeType,
-          appKey: p.app?.key ?? null,
+          appKey: p.module?.app?.key ?? null,
           moduleKey: p.module?.key ?? null,
         })),
       })),
@@ -749,14 +702,7 @@ export async function getMyPermissions(req: Request, res: Response) {
     if (member.isSuperAdmin) {
       return res.json({
         isSuperAdmin: true,
-        permissions: [
-          {
-            action: "write",
-            scopeType: "WORKSPACE",
-            appKey: null,
-            moduleKey: null,
-          },
-        ],
+        permissions: [], // superadmin bypass — no permission rows needed
       });
     }
 
@@ -768,8 +714,13 @@ export async function getMyPermissions(req: Request, res: Response) {
         },
       },
       include: {
-        app: { select: { key: true, name: true } },
-        module: { select: { key: true, name: true } },
+        module: {
+          select: {
+            key: true,
+            name: true,
+            app: { select: { key: true, name: true } },
+          },
+        },
       },
     });
 
@@ -786,9 +737,8 @@ export async function getMyPermissions(req: Request, res: Response) {
       })),
       permissions: permissions.map((p) => ({
         action: p.action,
-        scopeType: p.scopeType,
-        appKey: p.app?.key ?? null,
-        appName: p.app?.name ?? null,
+        appKey: p.module?.app?.key ?? null,
+        appName: p.module?.app?.name ?? null,
         moduleKey: p.module?.key ?? null,
         moduleName: p.module?.name ?? null,
       })),

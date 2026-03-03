@@ -168,7 +168,6 @@ export type AppWhereInput = {
   name?: Prisma.StringFilter<"App"> | string
   workspaceApps?: Prisma.WorkspaceAppListRelationFilter
   modules?: Prisma.ModuleListRelationFilter
-  profilePermissions?: Prisma.ProfilePermissionListRelationFilter
 }
 
 export type AppOrderByWithRelationInput = {
@@ -177,7 +176,6 @@ export type AppOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   workspaceApps?: Prisma.WorkspaceAppOrderByRelationAggregateInput
   modules?: Prisma.ModuleOrderByRelationAggregateInput
-  profilePermissions?: Prisma.ProfilePermissionOrderByRelationAggregateInput
 }
 
 export type AppWhereUniqueInput = Prisma.AtLeast<{
@@ -189,7 +187,6 @@ export type AppWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"App"> | string
   workspaceApps?: Prisma.WorkspaceAppListRelationFilter
   modules?: Prisma.ModuleListRelationFilter
-  profilePermissions?: Prisma.ProfilePermissionListRelationFilter
 }, "id" | "key">
 
 export type AppOrderByWithAggregationInput = {
@@ -216,7 +213,6 @@ export type AppCreateInput = {
   name: string
   workspaceApps?: Prisma.WorkspaceAppCreateNestedManyWithoutAppInput
   modules?: Prisma.ModuleCreateNestedManyWithoutAppInput
-  profilePermissions?: Prisma.ProfilePermissionCreateNestedManyWithoutAppInput
 }
 
 export type AppUncheckedCreateInput = {
@@ -225,7 +221,6 @@ export type AppUncheckedCreateInput = {
   name: string
   workspaceApps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutAppInput
   modules?: Prisma.ModuleUncheckedCreateNestedManyWithoutAppInput
-  profilePermissions?: Prisma.ProfilePermissionUncheckedCreateNestedManyWithoutAppInput
 }
 
 export type AppUpdateInput = {
@@ -234,7 +229,6 @@ export type AppUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceApps?: Prisma.WorkspaceAppUpdateManyWithoutAppNestedInput
   modules?: Prisma.ModuleUpdateManyWithoutAppNestedInput
-  profilePermissions?: Prisma.ProfilePermissionUpdateManyWithoutAppNestedInput
 }
 
 export type AppUncheckedUpdateInput = {
@@ -243,7 +237,6 @@ export type AppUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceApps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutAppNestedInput
   modules?: Prisma.ModuleUncheckedUpdateManyWithoutAppNestedInput
-  profilePermissions?: Prisma.ProfilePermissionUncheckedUpdateManyWithoutAppNestedInput
 }
 
 export type AppCreateManyInput = {
@@ -287,11 +280,6 @@ export type AppScalarRelationFilter = {
   isNot?: Prisma.AppWhereInput
 }
 
-export type AppNullableScalarRelationFilter = {
-  is?: Prisma.AppWhereInput | null
-  isNot?: Prisma.AppWhereInput | null
-}
-
 export type AppCreateNestedOneWithoutWorkspaceAppsInput = {
   create?: Prisma.XOR<Prisma.AppCreateWithoutWorkspaceAppsInput, Prisma.AppUncheckedCreateWithoutWorkspaceAppsInput>
   connectOrCreate?: Prisma.AppCreateOrConnectWithoutWorkspaceAppsInput
@@ -320,28 +308,11 @@ export type AppUpdateOneRequiredWithoutModulesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AppUpdateToOneWithWhereWithoutModulesInput, Prisma.AppUpdateWithoutModulesInput>, Prisma.AppUncheckedUpdateWithoutModulesInput>
 }
 
-export type AppCreateNestedOneWithoutProfilePermissionsInput = {
-  create?: Prisma.XOR<Prisma.AppCreateWithoutProfilePermissionsInput, Prisma.AppUncheckedCreateWithoutProfilePermissionsInput>
-  connectOrCreate?: Prisma.AppCreateOrConnectWithoutProfilePermissionsInput
-  connect?: Prisma.AppWhereUniqueInput
-}
-
-export type AppUpdateOneWithoutProfilePermissionsNestedInput = {
-  create?: Prisma.XOR<Prisma.AppCreateWithoutProfilePermissionsInput, Prisma.AppUncheckedCreateWithoutProfilePermissionsInput>
-  connectOrCreate?: Prisma.AppCreateOrConnectWithoutProfilePermissionsInput
-  upsert?: Prisma.AppUpsertWithoutProfilePermissionsInput
-  disconnect?: Prisma.AppWhereInput | boolean
-  delete?: Prisma.AppWhereInput | boolean
-  connect?: Prisma.AppWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.AppUpdateToOneWithWhereWithoutProfilePermissionsInput, Prisma.AppUpdateWithoutProfilePermissionsInput>, Prisma.AppUncheckedUpdateWithoutProfilePermissionsInput>
-}
-
 export type AppCreateWithoutWorkspaceAppsInput = {
   id?: string
   key: string
   name: string
   modules?: Prisma.ModuleCreateNestedManyWithoutAppInput
-  profilePermissions?: Prisma.ProfilePermissionCreateNestedManyWithoutAppInput
 }
 
 export type AppUncheckedCreateWithoutWorkspaceAppsInput = {
@@ -349,7 +320,6 @@ export type AppUncheckedCreateWithoutWorkspaceAppsInput = {
   key: string
   name: string
   modules?: Prisma.ModuleUncheckedCreateNestedManyWithoutAppInput
-  profilePermissions?: Prisma.ProfilePermissionUncheckedCreateNestedManyWithoutAppInput
 }
 
 export type AppCreateOrConnectWithoutWorkspaceAppsInput = {
@@ -373,7 +343,6 @@ export type AppUpdateWithoutWorkspaceAppsInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   modules?: Prisma.ModuleUpdateManyWithoutAppNestedInput
-  profilePermissions?: Prisma.ProfilePermissionUpdateManyWithoutAppNestedInput
 }
 
 export type AppUncheckedUpdateWithoutWorkspaceAppsInput = {
@@ -381,7 +350,6 @@ export type AppUncheckedUpdateWithoutWorkspaceAppsInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   modules?: Prisma.ModuleUncheckedUpdateManyWithoutAppNestedInput
-  profilePermissions?: Prisma.ProfilePermissionUncheckedUpdateManyWithoutAppNestedInput
 }
 
 export type AppCreateWithoutModulesInput = {
@@ -389,7 +357,6 @@ export type AppCreateWithoutModulesInput = {
   key: string
   name: string
   workspaceApps?: Prisma.WorkspaceAppCreateNestedManyWithoutAppInput
-  profilePermissions?: Prisma.ProfilePermissionCreateNestedManyWithoutAppInput
 }
 
 export type AppUncheckedCreateWithoutModulesInput = {
@@ -397,7 +364,6 @@ export type AppUncheckedCreateWithoutModulesInput = {
   key: string
   name: string
   workspaceApps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutAppInput
-  profilePermissions?: Prisma.ProfilePermissionUncheckedCreateNestedManyWithoutAppInput
 }
 
 export type AppCreateOrConnectWithoutModulesInput = {
@@ -421,7 +387,6 @@ export type AppUpdateWithoutModulesInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceApps?: Prisma.WorkspaceAppUpdateManyWithoutAppNestedInput
-  profilePermissions?: Prisma.ProfilePermissionUpdateManyWithoutAppNestedInput
 }
 
 export type AppUncheckedUpdateWithoutModulesInput = {
@@ -429,55 +394,6 @@ export type AppUncheckedUpdateWithoutModulesInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceApps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutAppNestedInput
-  profilePermissions?: Prisma.ProfilePermissionUncheckedUpdateManyWithoutAppNestedInput
-}
-
-export type AppCreateWithoutProfilePermissionsInput = {
-  id?: string
-  key: string
-  name: string
-  workspaceApps?: Prisma.WorkspaceAppCreateNestedManyWithoutAppInput
-  modules?: Prisma.ModuleCreateNestedManyWithoutAppInput
-}
-
-export type AppUncheckedCreateWithoutProfilePermissionsInput = {
-  id?: string
-  key: string
-  name: string
-  workspaceApps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutAppInput
-  modules?: Prisma.ModuleUncheckedCreateNestedManyWithoutAppInput
-}
-
-export type AppCreateOrConnectWithoutProfilePermissionsInput = {
-  where: Prisma.AppWhereUniqueInput
-  create: Prisma.XOR<Prisma.AppCreateWithoutProfilePermissionsInput, Prisma.AppUncheckedCreateWithoutProfilePermissionsInput>
-}
-
-export type AppUpsertWithoutProfilePermissionsInput = {
-  update: Prisma.XOR<Prisma.AppUpdateWithoutProfilePermissionsInput, Prisma.AppUncheckedUpdateWithoutProfilePermissionsInput>
-  create: Prisma.XOR<Prisma.AppCreateWithoutProfilePermissionsInput, Prisma.AppUncheckedCreateWithoutProfilePermissionsInput>
-  where?: Prisma.AppWhereInput
-}
-
-export type AppUpdateToOneWithWhereWithoutProfilePermissionsInput = {
-  where?: Prisma.AppWhereInput
-  data: Prisma.XOR<Prisma.AppUpdateWithoutProfilePermissionsInput, Prisma.AppUncheckedUpdateWithoutProfilePermissionsInput>
-}
-
-export type AppUpdateWithoutProfilePermissionsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  key?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  workspaceApps?: Prisma.WorkspaceAppUpdateManyWithoutAppNestedInput
-  modules?: Prisma.ModuleUpdateManyWithoutAppNestedInput
-}
-
-export type AppUncheckedUpdateWithoutProfilePermissionsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  key?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  workspaceApps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutAppNestedInput
-  modules?: Prisma.ModuleUncheckedUpdateManyWithoutAppNestedInput
 }
 
 
@@ -488,13 +404,11 @@ export type AppUncheckedUpdateWithoutProfilePermissionsInput = {
 export type AppCountOutputType = {
   workspaceApps: number
   modules: number
-  profilePermissions: number
 }
 
 export type AppCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspaceApps?: boolean | AppCountOutputTypeCountWorkspaceAppsArgs
   modules?: boolean | AppCountOutputTypeCountModulesArgs
-  profilePermissions?: boolean | AppCountOutputTypeCountProfilePermissionsArgs
 }
 
 /**
@@ -521,13 +435,6 @@ export type AppCountOutputTypeCountModulesArgs<ExtArgs extends runtime.Types.Ext
   where?: Prisma.ModuleWhereInput
 }
 
-/**
- * AppCountOutputType without action
- */
-export type AppCountOutputTypeCountProfilePermissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ProfilePermissionWhereInput
-}
-
 
 export type AppSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -535,7 +442,6 @@ export type AppSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   name?: boolean
   workspaceApps?: boolean | Prisma.App$workspaceAppsArgs<ExtArgs>
   modules?: boolean | Prisma.App$modulesArgs<ExtArgs>
-  profilePermissions?: boolean | Prisma.App$profilePermissionsArgs<ExtArgs>
   _count?: boolean | Prisma.AppCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["app"]>
 
@@ -561,7 +467,6 @@ export type AppOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
 export type AppInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspaceApps?: boolean | Prisma.App$workspaceAppsArgs<ExtArgs>
   modules?: boolean | Prisma.App$modulesArgs<ExtArgs>
-  profilePermissions?: boolean | Prisma.App$profilePermissionsArgs<ExtArgs>
   _count?: boolean | Prisma.AppCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AppIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -572,7 +477,6 @@ export type $AppPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   objects: {
     workspaceApps: Prisma.$WorkspaceAppPayload<ExtArgs>[]
     modules: Prisma.$ModulePayload<ExtArgs>[]
-    profilePermissions: Prisma.$ProfilePermissionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -974,7 +878,6 @@ export interface Prisma__AppClient<T, Null = never, ExtArgs extends runtime.Type
   readonly [Symbol.toStringTag]: "PrismaPromise"
   workspaceApps<T extends Prisma.App$workspaceAppsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.App$workspaceAppsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceAppPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   modules<T extends Prisma.App$modulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.App$modulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ModulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  profilePermissions<T extends Prisma.App$profilePermissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.App$profilePermissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1440,30 +1343,6 @@ export type App$modulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   distinct?: Prisma.ModuleScalarFieldEnum | Prisma.ModuleScalarFieldEnum[]
-}
-
-/**
- * App.profilePermissions
- */
-export type App$profilePermissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ProfilePermission
-   */
-  select?: Prisma.ProfilePermissionSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the ProfilePermission
-   */
-  omit?: Prisma.ProfilePermissionOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ProfilePermissionInclude<ExtArgs> | null
-  where?: Prisma.ProfilePermissionWhereInput
-  orderBy?: Prisma.ProfilePermissionOrderByWithRelationInput | Prisma.ProfilePermissionOrderByWithRelationInput[]
-  cursor?: Prisma.ProfilePermissionWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ProfilePermissionScalarFieldEnum | Prisma.ProfilePermissionScalarFieldEnum[]
 }
 
 /**

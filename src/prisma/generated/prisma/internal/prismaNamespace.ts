@@ -1983,8 +1983,6 @@ export const ProfilePermissionScalarFieldEnum = {
   id: 'id',
   profileId: 'profileId',
   action: 'action',
-  scopeType: 'scopeType',
-  appId: 'appId',
   moduleId: 'moduleId'
 } as const
 
@@ -2182,20 +2180,6 @@ export type EnumPermissionActionFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'PermissionAction[]'
  */
 export type ListEnumPermissionActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PermissionAction[]'>
-    
-
-
-/**
- * Reference to a field of type 'ScopeType'
- */
-export type EnumScopeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScopeType'>
-    
-
-
-/**
- * Reference to a field of type 'ScopeType[]'
- */
-export type ListEnumScopeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScopeType[]'>
     
 
 

@@ -3,6 +3,11 @@ import { faker } from "@faker-js/faker";
 import {
   MARKETING_ACTIVITY_PLANNER,
   EVENT_PLANNING_CALENDAR,
+  PRODUCT_SELECTOR,
+  ASSET_MASTER,
+  CUSTOMER_MASTER_DATA,
+  DEALER_CLAIMS,
+  KEY_ACCOUNT,
   branchData,
   eventNameData,
   regionData,
@@ -57,20 +62,20 @@ async function main() {
     data: { key: "MAP", name: MARKETING_ACTIVITY_PLANNER },
   });
 
-  const hrApp = await prisma.app.create({
-    data: { key: "HR", name: "Human Resources" },
+  const cmdApp = await prisma.app.create({
+    data: { key: "CUSTOMER_MASTER_DATA", name: "Customer Master Data" },
   });
 
-  const crmApp = await prisma.app.create({
-    data: { key: "CRM", name: "Customer Relationship Management" },
+  const dcApp = await prisma.app.create({
+    data: { key: "DEALER_CLAIMS", name: "Dealer Claims" },
   });
 
   // Enable all three apps for the workspace
   await prisma.workspaceApp.createMany({
     data: [
       { workspaceId: workspace.id, appId: mapApp.id },
-      { workspaceId: workspace.id, appId: hrApp.id },
-      { workspaceId: workspace.id, appId: crmApp.id },
+      { workspaceId: workspace.id, appId: cmdApp.id },
+      { workspaceId: workspace.id, appId: dcApp.id },
     ],
   });
   console.log("✅ Apps enabled: MAP, HR, CRM");
@@ -96,18 +101,18 @@ async function main() {
 
   // HR modules
   const payrollModule = await prisma.module.create({
-    data: { key: "PAYROLL", name: "Payroll Management", appId: hrApp.id },
+    data: { key: "PAYROLL", name: "Payroll Management", appId: cmdApp.id },
   });
   const employeeModule = await prisma.module.create({
-    data: { key: "EMP_MGMT", name: "Employee Management", appId: hrApp.id },
+    data: { key: "EMP_MGMT", name: "Employee Management", appId: cmdApp.id },
   });
 
   // CRM modules
   const leadsModule = await prisma.module.create({
-    data: { key: "LEADS", name: "Leads", appId: crmApp.id },
+    data: { key: "LEADS", name: "Leads", appId: dcApp.id },
   });
   const dealsModule = await prisma.module.create({
-    data: { key: "DEALS", name: "Deals", appId: crmApp.id },
+    data: { key: "DEALS", name: "Deals", appId: dcApp.id },
   });
 
   console.log("✅ Modules created for MAP, HR, CRM");
@@ -133,110 +138,169 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   // ── Profile 1: Workspace Admin ────────────────────────────────────────────
-  // Gets READ and WRITE at WORKSPACE scope = can do everything everywhere.
+  // READ + WRITE on every module across all apps.
   const adminProfile = await prisma.profile.create({
     data: {
       name: "Workspace Admin",
-      description: "Full read and write access across all apps and modules",
+      description: "Full access to all modules",
       workspaceId: workspace.id,
       isSystemProfile: true,
       permissions: {
         create: [
-          { action: "read", scopeType: "WORKSPACE" },
-          { action: "write", scopeType: "WORKSPACE" },
+          // MAP
+          { action: "read", moduleId: epcModule.id },
+          { action: "write", moduleId: epcModule.id },
+          { action: "read", moduleId: epfModule.id },
+          { action: "write", moduleId: epfModule.id },
+          { action: "read", moduleId: crfModule.id },
+          { action: "write", moduleId: crfModule.id },
+          // HR
+          { action: "read", moduleId: payrollModule.id },
+          { action: "write", moduleId: payrollModule.id },
+          { action: "read", moduleId: employeeModule.id },
+          { action: "write", moduleId: employeeModule.id },
+          // CRM
+          { action: "read", moduleId: leadsModule.id },
+          { action: "write", moduleId: leadsModule.id },
+          { action: "read", moduleId: dealsModule.id },
+          { action: "write", moduleId: dealsModule.id },
         ],
       },
     },
   });
 
   // ── Profile 2: Field Engineer ─────────────────────────────────────────────
-  // This is the "READ everywhere + WRITE on all MAP modules" scenario
-  // you asked about. One profile, one assignment, covers it entirely.
-  //
-  // How it works:
-  //   Row 1: action=read,  scopeType=WORKSPACE → baseline READ on everything
-  //   Row 2: action=write, scopeType=APP, appId=MAP → WRITE on ALL MAP modules
-  //
-  // When a new module is added to MAP tomorrow, this profile automatically
-  // covers it — no data changes needed.
+  // READ + WRITE on all MAP modules.
+  // READ on HR and CRM modules.
+  // No access to anything not listed here.
   const fieldEngineerProfile = await prisma.profile.create({
     data: {
       name: "Field Engineer",
-      description: "Read access everywhere, write access to all MAP modules",
+      description: "Read+write on MAP, read on HR and CRM",
       workspaceId: workspace.id,
       permissions: {
         create: [
-          {
-            action: "read",
-            scopeType: "WORKSPACE", // baseline: READ on everything
-            appId: null,
-            moduleId: null,
-          },
-          {
-            action: "write",
-            scopeType: "APP", // elevated: WRITE on all of MAP
-            appId: mapApp.id,
-            moduleId: null,
-          },
+          // MAP — full access
+          { action: "read", moduleId: epcModule.id },
+          { action: "write", moduleId: epcModule.id },
+          { action: "read", moduleId: epfModule.id },
+          { action: "write", moduleId: epfModule.id },
+          { action: "read", moduleId: crfModule.id },
+          { action: "write", moduleId: crfModule.id },
+          // HR — read only
+          { action: "read", moduleId: payrollModule.id },
+          { action: "read", moduleId: employeeModule.id },
+          // CRM — read only
+          { action: "read", moduleId: leadsModule.id },
+          { action: "read", moduleId: dealsModule.id },
         ],
       },
     },
   });
 
   // ── Profile 3: HR Admin ───────────────────────────────────────────────────
-  // READ everywhere + WRITE on all HR modules.
-  // Same pattern as Field Engineer but scoped to the HR app.
+  // READ + WRITE on all HR modules.
+  // READ on MAP and CRM modules.
   const hrAdminProfile = await prisma.profile.create({
     data: {
       name: "HR Admin",
-      description: "Read access everywhere, write access to all HR modules",
+      description: "Read+write on HR, read on MAP and CRM",
       workspaceId: workspace.id,
       permissions: {
         create: [
-          { action: "read", scopeType: "WORKSPACE" },
-          { action: "write", scopeType: "APP", appId: hrApp.id },
+          // MAP — read only
+          { action: "read", moduleId: epcModule.id },
+          { action: "read", moduleId: epfModule.id },
+          { action: "read", moduleId: crfModule.id },
+          // HR — full access
+          { action: "read", moduleId: payrollModule.id },
+          { action: "write", moduleId: payrollModule.id },
+          { action: "read", moduleId: employeeModule.id },
+          { action: "write", moduleId: employeeModule.id },
+          // CRM — read only
+          { action: "read", moduleId: leadsModule.id },
+          { action: "read", moduleId: dealsModule.id },
         ],
       },
     },
   });
 
   // ── Profile 4: EPC Specialist ─────────────────────────────────────────────
-  // READ everywhere + WRITE on MAP→EPC module ONLY.
-  // Uses MODULE scope to target one specific module, not the whole app.
+  // READ + WRITE on MAP→EPC only.
+  // READ on everything else.
   const epcSpecialistProfile = await prisma.profile.create({
     data: {
       name: "EPC Specialist",
-      description: "Read access everywhere, write access to EPC module only",
+      description: "Read+write on EPC module, read on everything else",
       workspaceId: workspace.id,
       permissions: {
         create: [
-          { action: "read", scopeType: "WORKSPACE" },
-          {
-            action: "write",
-            scopeType: "MODULE", // narrowest scope: one module only
-            appId: mapApp.id, // stored for fast querying
-            moduleId: epcModule.id, // the specific module
-          },
+          // MAP
+          { action: "read", moduleId: epcModule.id },
+          { action: "write", moduleId: epcModule.id }, // only EPC gets write
+          { action: "read", moduleId: epfModule.id },
+          { action: "read", moduleId: crfModule.id },
+          // HR
+          { action: "read", moduleId: payrollModule.id },
+          { action: "read", moduleId: employeeModule.id },
+          // CRM
+          { action: "read", moduleId: leadsModule.id },
+          { action: "read", moduleId: dealsModule.id },
         ],
       },
     },
   });
 
   // ── Profile 5: Read-Only User ─────────────────────────────────────────────
-  // Can see everything, cannot change anything.
+  // READ on every module. No write anywhere.
   const readOnlyProfile = await prisma.profile.create({
     data: {
       name: "Read-Only User",
-      description: "Read access across all apps, no write permissions",
+      description: "Read access to all modules, no write",
       workspaceId: workspace.id,
       permissions: {
-        create: [{ action: "read", scopeType: "WORKSPACE" }],
+        create: [
+          { action: "read", moduleId: epcModule.id },
+          { action: "read", moduleId: epfModule.id },
+          { action: "read", moduleId: crfModule.id },
+          { action: "read", moduleId: payrollModule.id },
+          { action: "read", moduleId: employeeModule.id },
+          { action: "read", moduleId: leadsModule.id },
+          { action: "read", moduleId: dealsModule.id },
+        ],
+      },
+    },
+  });
+
+  // ── Profile 6: CRM Restricted ─────────────────────────────────────────────
+  // READ + WRITE on MAP. READ on HR. NO access to CRM at all.
+  // This profile demonstrates the key point: CRM modules are simply
+  // not listed, so hasPermission() returns false for any CRM path.
+  const crmRestrictedProfile = await prisma.profile.create({
+    data: {
+      name: "CRM Restricted",
+      description: "Full MAP access, HR read, no CRM access",
+      workspaceId: workspace.id,
+      permissions: {
+        create: [
+          // MAP — full access
+          { action: "read", moduleId: epcModule.id },
+          { action: "write", moduleId: epcModule.id },
+          { action: "read", moduleId: epfModule.id },
+          { action: "write", moduleId: epfModule.id },
+          { action: "read", moduleId: crfModule.id },
+          { action: "write", moduleId: crfModule.id },
+          // HR — read only
+          { action: "read", moduleId: payrollModule.id },
+          { action: "read", moduleId: employeeModule.id },
+          // CRM — intentionally omitted → no access at all
+        ],
       },
     },
   });
 
   console.log(
-    "✅ Profiles created: Admin, Field Engineer, HR Admin, EPC Specialist, Read-Only",
+    "✅ Profiles created: Admin, Field Engineer, HR Admin, EPC Specialist, Read-Only, CRM Restricted",
   );
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -465,142 +529,129 @@ async function main() {
     "── Permission check demo ──────────────────────────────────────────",
   );
 
+  // Matches the new schema exactly — no scopeType, no appId on ProfilePermission.
+  // Just action + moduleId. That's the whole check.
   async function can(
     userId: string,
     action: "read" | "write",
-    context: { appId?: string; moduleId?: string } = {},
+    moduleId: string,
   ): Promise<boolean> {
     const member = await prisma.workspaceUser.findUnique({
       where: { userId_workspaceId: { userId, workspaceId: workspace.id } },
     });
     if (member?.isSuperAdmin) return true;
 
-    const permissions = await prisma.profilePermission.findMany({
+    const permission = await prisma.profilePermission.findFirst({
       where: {
+        action,
+        moduleId,
         profile: {
           userProfiles: { some: { userId, workspaceId: workspace.id } },
         },
       },
     });
 
-    return permissions.some((p) => {
-      if (p.action !== action) return false;
-      switch (p.scopeType) {
-        case "WORKSPACE":
-          return true;
-        case "APP":
-          return p.appId === context.appId;
-        case "MODULE":
-          return p.moduleId === context.moduleId;
-        default:
-          return false;
-      }
-    });
+    return permission !== null;
   }
 
-  const fieldEngineerUser = users[1]; // Field Engineer
-  const hrAdminUser = users[4]; // HR Admin
-  const epcSpecialist = users[6]; // EPC Specialist
-  const readOnlyUser = users[8]; // Read-Only
+  const fieldEngineerUser = users[1];
+  const hrAdminUser = users[4];
+  const epcSpecialist = users[6];
+  const readOnlyUser = users[8];
+  const crmRestrictedUser = users[3]; // also a Field Engineer — has no CRM rows
 
   const check = async (label: string, result: boolean, expected: boolean) => {
     const icon = result === expected ? "✅" : "❌";
     console.log(`${icon} ${label}: ${result} (expected ${expected})`);
   };
 
-  // Field Engineer: should WRITE on MAP, READ on HR, no WRITE on HR
+  // Field Engineer: WRITE on MAP, READ on HR, no WRITE on HR
   await check(
-    "FieldEng → WRITE EPC module",
-    await can(fieldEngineerUser.id, "write", {
-      appId: mapApp.id,
-      moduleId: epcModule.id,
-    }),
+    "FieldEng → WRITE EPC",
+    await can(fieldEngineerUser.id, "write", epcModule.id),
     true,
   );
   await check(
-    "FieldEng → WRITE EPF module",
-    await can(fieldEngineerUser.id, "write", {
-      appId: mapApp.id,
-      moduleId: epfModule.id,
-    }),
+    "FieldEng → WRITE EPF",
+    await can(fieldEngineerUser.id, "write", epfModule.id),
     true,
   );
   await check(
-    "FieldEng → READ  HR Payroll",
-    await can(fieldEngineerUser.id, "read", {
-      appId: hrApp.id,
-      moduleId: payrollModule.id,
-    }),
+    "FieldEng → READ  Payroll",
+    await can(fieldEngineerUser.id, "read", payrollModule.id),
     true,
   );
   await check(
-    "FieldEng → WRITE HR Payroll",
-    await can(fieldEngineerUser.id, "write", {
-      appId: hrApp.id,
-      moduleId: payrollModule.id,
-    }),
+    "FieldEng → WRITE Payroll",
+    await can(fieldEngineerUser.id, "write", payrollModule.id),
+    false,
+  );
+  await check(
+    "FieldEng → READ  Leads",
+    await can(fieldEngineerUser.id, "read", leadsModule.id),
+    true,
+  );
+  await check(
+    "FieldEng → WRITE Leads",
+    await can(fieldEngineerUser.id, "write", leadsModule.id),
     false,
   );
 
-  // HR Admin: should WRITE on HR, READ on MAP, no WRITE on MAP
+  // HR Admin: WRITE on HR, READ on MAP, no WRITE on MAP
   await check(
     "HRAdmin  → WRITE Payroll",
-    await can(hrAdminUser.id, "write", {
-      appId: hrApp.id,
-      moduleId: payrollModule.id,
-    }),
+    await can(hrAdminUser.id, "write", payrollModule.id),
     true,
   );
   await check(
-    "HRAdmin  → READ  EPC module",
-    await can(hrAdminUser.id, "read", {
-      appId: mapApp.id,
-      moduleId: epcModule.id,
-    }),
+    "HRAdmin  → READ  EPC",
+    await can(hrAdminUser.id, "read", epcModule.id),
     true,
   );
   await check(
-    "HRAdmin  → WRITE EPC module",
-    await can(hrAdminUser.id, "write", {
-      appId: mapApp.id,
-      moduleId: epcModule.id,
-    }),
+    "HRAdmin  → WRITE EPC",
+    await can(hrAdminUser.id, "write", epcModule.id),
     false,
   );
 
-  // EPC Specialist: WRITE on EPC only, not on EPF
+  // EPC Specialist: WRITE on EPC only
   await check(
-    "EPCSpec  → WRITE EPC module",
-    await can(epcSpecialist.id, "write", {
-      appId: mapApp.id,
-      moduleId: epcModule.id,
-    }),
+    "EPCSpec  → WRITE EPC",
+    await can(epcSpecialist.id, "write", epcModule.id),
     true,
   );
   await check(
-    "EPCSpec  → WRITE EPF module",
-    await can(epcSpecialist.id, "write", {
-      appId: mapApp.id,
-      moduleId: epfModule.id,
-    }),
+    "EPCSpec  → WRITE EPF",
+    await can(epcSpecialist.id, "write", epfModule.id),
+    false,
+  );
+  await check(
+    "EPCSpec  → READ  Payroll",
+    await can(epcSpecialist.id, "read", payrollModule.id),
+    true,
+  );
+
+  // Read-Only: can read, cannot write
+  await check(
+    "ReadOnly → READ  EPC",
+    await can(readOnlyUser.id, "read", epcModule.id),
+    true,
+  );
+  await check(
+    "ReadOnly → WRITE EPC",
+    await can(readOnlyUser.id, "write", epcModule.id),
     false,
   );
 
-  // Read-Only: can read, cannot write anywhere
+  // CRM Restricted (Field Engineer with no CRM rows): no access to CRM at all
   await check(
-    "ReadOnly → READ  EPC module",
-    await can(readOnlyUser.id, "read", {
-      appId: mapApp.id,
-      moduleId: epcModule.id,
-    }),
-    true,
+    "CRMRestricted → READ  Leads",
+    await can(crmRestrictedUser.id, "read", leadsModule.id),
+    false,
   );
   await check(
-    "ReadOnly → WRITE EPC module",
-    await can(readOnlyUser.id, "write", {
-      appId: mapApp.id,
-      moduleId: epcModule.id,
-    }),
+    "CRMRestricted → WRITE Leads",
+    await can(crmRestrictedUser.id, "write", leadsModule.id),
     false,
   );
 

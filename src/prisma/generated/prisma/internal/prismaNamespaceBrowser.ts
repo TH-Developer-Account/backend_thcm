@@ -204,8 +204,6 @@ export const ProfilePermissionScalarFieldEnum = {
   id: 'id',
   profileId: 'profileId',
   action: 'action',
-  scopeType: 'scopeType',
-  appId: 'appId',
   moduleId: 'moduleId'
 } as const
 

@@ -1,4 +1,10 @@
 export const MARKETING_ACTIVITY_PLANNER = "Marketing Activity Planner";
+export const PRODUCT_SELECTOR = "Product Selector";
+export const KEY_ACCOUNT = "Key Account";
+export const CUSTOMER_MASTER_DATA = "Customer Master Data";
+export const DEALER_CLAIMS = "Dealer Claims";
+export const ASSET_MASTER = "Asset Master";
+
 export const EVENT_PLANNING_CALENDAR = "Event Planning Calendar";
 
 export const branchData = [

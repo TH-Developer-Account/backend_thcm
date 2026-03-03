@@ -17,13 +17,9 @@ enum PermissionAction {
   write
 }
 
-// Where a permission applies:
-//   WORKSPACE → applies to every app and every module in the workspace
-//   APP       → applies to all modules inside one specific app
-//   MODULE    → applies to one specific module only
+// Every permission targets one specific module.
+// No WORKSPACE or APP scope exists — access is always explicit per module.
 enum ScopeType {
-  WORKSPACE
-  APP
   MODULE
 }
 
@@ -130,8 +126,6 @@ model App {
 
   workspaceApps WorkspaceApp[]
   modules       Module[]
-  // Back-relations from ProfilePermission for FK integrity
-  profilePermissions ProfilePermission[]
 }
 
 // Tracks which apps are enabled in a workspace.
@@ -193,47 +187,33 @@ model Profile {
 }
 
 // ─────────────────────────────────────────────
-// PROFILE PERMISSION  ← THE KEY MODEL
+// PROFILE PERMISSION
 // ─────────────────────────────────────────────
 
-// THIS is where scope lives — NOT on the Profile itself.
-// Each row says: "within this profile, action X is allowed at this scope"
+// One row = "this profile grants action X on module Y"
+// Every permission is explicit — there is no wildcard or blanket scope.
 //
-// How to read the scope rules:
+// Example for "Field Engineer" (read+write on MAP modules, read on HR):
+//   read  | MODULE | epc-id
+//   write | MODULE | epc-id
+//   read  | MODULE | epf-id
+//   write | MODULE | epf-id
+//   read  | MODULE | payroll-id
 //
-//   scopeType = WORKSPACE → appId = null,  moduleId = null
-//     └─ This action is allowed on every app and every module
-//
-//   scopeType = APP       → appId = set,   moduleId = null
-//     └─ This action is allowed on every module inside this app
-//
-//   scopeType = MODULE    → appId = set,   moduleId = set
-//     └─ This action is allowed on this one module only
-//        (appId is stored here too for fast lookup — it mirrors module.appId)
-//
-// Example for "Field Engineer" profile:
-//   read  | WORKSPACE | null     | null       ← baseline: READ everything
-//   write | APP       | map-id   | null       ← elevated: WRITE all of MAP
-//   write | MODULE    | hr-id    | payroll-id ← exception: WRITE payroll only
+// This table is the full, auditable list of what each profile can do.
 model ProfilePermission {
   id        String           @id @default(uuid())
   profileId String
   action    PermissionAction
-  scopeType ScopeType
 
-  // Set when scopeType = APP or MODULE
-  appId    String?
-  // Set when scopeType = MODULE only
-  moduleId String?
+  // Required — every permission must target a specific module
+  moduleId  String
 
-  profile Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  app     App?     @relation(fields: [appId], references: [id])
-  module  Module?  @relation(fields: [moduleId], references: [id])
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  module  Module  @relation(fields: [moduleId], references: [id])
 
-  // Prevent exact duplicate rows on the same profile
-  @@unique([profileId, action, scopeType, appId, moduleId])
+  @@unique([profileId, action, moduleId])
   @@index([profileId])
-  @@index([profileId, appId])
   @@index([profileId, moduleId])
 }
 

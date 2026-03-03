@@ -18,8 +18,6 @@ export type PermissionAction = (typeof PermissionAction)[keyof typeof Permission
 
 
 export const ScopeType = {
-  WORKSPACE: 'WORKSPACE',
-  APP: 'APP',
   MODULE: 'MODULE'
 } as const
 
