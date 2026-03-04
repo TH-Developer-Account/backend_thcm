@@ -1,752 +1,406 @@
 import { Request, Response } from "express";
+import { Prisma } from "../prisma/generated/prisma/client";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// TYPE HELPERS
-// These describe the shape of the JSON body we expect in each request.
+// rbac.controller.ts
+//
+// Responsibilities:
+//   - can()              → the permission check function used in middleware
+//   - getWorkspaceById   → inspect the full workspace config (apps, modules, profiles)
+//   - getMyPermissions   → called after login to populate the frontend permission store
+//
+// Profile management  → profile.controller.ts
+// User assignment     → user.controller.ts
 // ─────────────────────────────────────────────────────────────────────────────
 
-// One permission entry inside a profile definition.
-// Every permission targets a specific module — no wildcards.
+// ─────────────────────────────────────────────────────────────────────────────
+// SHARED INCLUDE + FORMATTER
+// Used by getWorkspaceById. Extracted so it can be imported by other
+// controllers that need to return workspace data.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const workspaceInclude = {
+  apps: {
+    where: { enabled: true },
+    include: { app: { include: { modules: true } } },
+  },
+  profiles: {
+    include: {
+      permissions: {
+        include: {
+          module: {
+            select: {
+              key: true,
+              name: true,
+              app: { select: { key: true, name: true } },
+            },
+          },
+        },
+      },
+    },
+  },
+} satisfies Prisma.WorkspaceInclude;
+
+export type WorkspaceWithRelations = Prisma.WorkspaceGetPayload<{
+  include: typeof workspaceInclude;
+}>;
+
+export function formatWorkspace(ws: WorkspaceWithRelations) {
+  return {
+    id: ws.id,
+    name: ws.name,
+    apps: ws.apps.map((wApp) => ({
+      key: wApp.app.key,
+      name: wApp.app.name,
+      enabled: wApp.enabled,
+      modules: wApp.app.modules.map((m) => ({ key: m.key, name: m.name })),
+    })),
+    profiles: ws.profiles.map((profile) => ({
+      id: profile.id,
+      name: profile.name,
+      description: profile.description,
+      permissions: profile.permissions.map((p) => ({
+        action: p.action,
+        appKey: p.module.app.key,
+        moduleKey: p.module.key,
+      })),
+    })),
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// can()
 //
-// Example:
-//   { action: "read",  appKey: "MAP", moduleKey: "EPC" }
-//   { action: "write", appKey: "MAP", moduleKey: "EPC" }
-type PermissionInput = {
-  action: "read" | "write";
-  appKey: string; // required — which app the module belongs to
-  moduleKey: string; // required — the specific module
+// The single permission check function. Used inside requirePermission
+// middleware — never called directly from route handlers.
+//
+// Two DB queries:
+//   1. Check if user is a workspace member + superadmin status
+//   2. findFirst on ProfilePermission matching action + moduleId
+//
+// Returns false (not 403) — the caller decides what to do with the result.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function can(
+  userId: string,
+  workspaceId: string,
+  action: "read" | "write",
+  moduleId: string,
+): Promise<boolean> {
+  const member = await prisma.workspaceUser.findUnique({
+    where: { userId_workspaceId: { userId, workspaceId } },
+    select: { isSuperAdmin: true },
+  });
+
+  if (!member) return false;
+  if (member.isSuperAdmin) return true;
+
+  const permission = await prisma.profilePermission.findFirst({
+    where: {
+      action,
+      moduleId,
+      profile: { userProfiles: { some: { userId, workspaceId } } },
+    },
+    select: { id: true },
+  });
+
+  return permission !== null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TYPES
+// ─────────────────────────────────────────────────────────────────────────────
+
+type ModuleInput = {
+  key: string;
+  name: string;
 };
 
-// One profile definition in the setup/update payload
+type AppInput = {
+  key: string;
+  name: string;
+  enabled?: boolean;
+  modules: ModuleInput[];
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// VALIDATION
+// ─────────────────────────────────────────────────────────────────────────────
+
+function validateApps(apps: AppInput[]) {
+  for (const app of apps) {
+    if (!app.key?.trim()) throw new ApiError(400, "Each app must have a key");
+    if (!app.name?.trim())
+      throw new ApiError(400, `App "${app.key}" must have a name`);
+
+    for (const mod of app.modules ?? []) {
+      if (!mod.key?.trim())
+        throw new ApiError(400, `Module in app "${app.key}" must have a key`);
+      if (!mod.name?.trim())
+        throw new ApiError(
+          400,
+          `Module "${mod.key}" in app "${app.key}" must have a name`,
+        );
+    }
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SHARED TRANSACTION HELPER
+// Used by both setup and update — upserts apps and their modules.
+// Returns "APP_KEY:MODULE_KEY" → moduleId for use by profile.controller.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function upsertAppsAndModules(
+  tx: Prisma.TransactionClient,
+  workspaceId: string,
+  apps: AppInput[],
+): Promise<Map<string, string>> {
+  const moduleKeyToId = new Map<string, string>();
+
+  for (const { key, name, enabled = true, modules = [] } of apps) {
+    const app = await tx.app.upsert({
+      where: { key },
+      create: { key, name },
+      update: { name },
+    });
+
+    await tx.workspaceApp.upsert({
+      where: { workspaceId_appId: { workspaceId, appId: app.id } },
+      create: { workspaceId, appId: app.id, enabled },
+      update: { enabled },
+    });
+
+    for (const { key: moduleKey, name: moduleName } of modules) {
+      const mod = await tx.module.upsert({
+        where: { appId_key: { appId: app.id, key: moduleKey } },
+        create: { key: moduleKey, name: moduleName, appId: app.id },
+        update: { name: moduleName },
+      });
+      moduleKeyToId.set(`${key}:${moduleKey}`, mod.id);
+    }
+  }
+
+  return moduleKeyToId;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SETUP WORKSPACE RBAC   POST /rbac/setup
+//
+// One-time bootstrap — creates the workspace, apps, modules, and initial
+// profiles all in one transaction. Call this once per environment.
+//
+// After this, use:
+//   PUT  /rbac/update        → add new apps or modules
+//   POST /profiles           → add new profiles
+//   PUT  /profiles/:id       → edit a profile's permissions
+//   POST /workspace-users/assign → assign users to the workspace
+//
+// Payload:
+// {
+//   "workSpaceName": "Tata Hitachi Workspace",
+//   "apps": [
+//     {
+//       "key": "MAP",
+//       "name": "Marketing Activity Planner",
+//       "enabled": true,
+//       "modules": [
+//         { "key": "EPC", "name": "Event Planning Calendar" },
+//         { "key": "EPF", "name": "Event Proposal Form" },
+//         { "key": "CRF", "name": "Customer Response Form" }
+//       ]
+//     }
+//   ],
+//   "profiles": [
+//     {
+//       "name": "Field Engineer",
+//       "description": "Read+write on MAP, read on HR",
+//       "permissions": [
+//         { "action": "read",  "appKey": "MAP", "moduleKey": "EPC" },
+//         { "action": "write", "appKey": "MAP", "moduleKey": "EPC" }
+//       ]
+//     }
+//   ]
+// }
+// ─────────────────────────────────────────────────────────────────────────────
+
+type PermissionInput = {
+  action: "read" | "write";
+  appKey: string;
+  moduleKey: string;
+};
+
 type ProfileInput = {
   name: string;
   description?: string;
   permissions: PermissionInput[];
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PERMISSION CHECKER  (the function you call on every API route to gate access)
-// ─────────────────────────────────────────────────────────────────────────────
+const VALID_ACTIONS = new Set(["read", "write"]);
 
-/**
- * Returns true if the user is allowed to perform `action` in the given context.
- *
- * How it works:
- *   1. If the user is a superadmin → always true, no further checks needed.
- *   2. Fetch every ProfilePermission row across all profiles the user holds.
- *   3. Return true if ANY single permission row matches the action + scope.
- *
- * The scope matching rules:
- *   WORKSPACE scope → matches any app/module (it's a blanket pass)
- *   APP scope       → matches only if appId matches the context
- *   MODULE scope    → matches only if moduleId matches the context
- */
-export async function can(
-  userId: string,
-  workspaceId: string,
-  action: "read" | "write",
-  context: { appId?: string; moduleId?: string } = {},
-): Promise<boolean> {
-  // Step 1 — Superadmin bypass
-  const member = await prisma.workspaceUser.findUnique({
-    where: { userId_workspaceId: { userId, workspaceId } },
-  });
-  if (member?.isSuperAdmin) return true;
+function validateProfiles(
+  profiles: ProfileInput[],
+  moduleKeyToId: Map<string, string>,
+) {
+  for (const profile of profiles) {
+    if (!profile.name?.trim())
+      throw new ApiError(400, "Each profile must have a name");
 
-  // Step 2 — Collect all permission rows from all profiles the user holds
-  // We join: UserProfile → Profile → ProfilePermission
-  const permissions = await prisma.profilePermission.findMany({
-    where: {
-      profile: {
-        userProfiles: { some: { userId, workspaceId } },
-      },
-    },
-  });
-
-  // Step 3 — Check if any permission row matches action + module exactly
-  return permissions.some(
-    (p) => p.action === action && p.moduleId === context.moduleId,
-  );
+    for (const perm of profile.permissions ?? []) {
+      if (!VALID_ACTIONS.has(perm.action)) {
+        throw new ApiError(
+          400,
+          `Invalid action "${perm.action}" in profile "${profile.name}". Must be "read" or "write"`,
+        );
+      }
+      if (!perm.appKey?.trim() || !perm.moduleKey?.trim()) {
+        throw new ApiError(
+          400,
+          `Every permission in profile "${profile.name}" must have appKey and moduleKey`,
+        );
+      }
+      if (!moduleKeyToId.has(`${perm.appKey}:${perm.moduleKey}`)) {
+        throw new ApiError(
+          400,
+          `Profile "${profile.name}" references unknown module "${perm.moduleKey}" ` +
+            `under app "${perm.appKey}". Make sure it is listed in the apps array.`,
+        );
+      }
+    }
+  }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// SETUP WORKSPACE RBAC
-// Called once when creating a brand new workspace.
-// Creates the workspace, enables apps, creates modules, and creates profiles.
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * POST /rbac/setup
- *
- * Expected body:
- * {
- *   workSpaceName: "Tata Hitachi Workspace",
- *   apps: [
- *     {
- *       key: "MAP",
- *       name: "Marketing Activity Planner",
- *       enabled: true,
- *       modules: [
- *         { key: "EPC", name: "Event Planning Calendar" },
- *         { key: "EPF", name: "Event Proposal Form" },
- *         { key: "CRF", name: "Customer Response Form" }
- *       ]
- *     }
- *   ],
- *   profiles: [
- *     {
- *       name: "Field Engineer",
- *       description: "Write access to MAP, read everywhere else",
- *       permissions: [
- *         { action: "read",  scopeType: "WORKSPACE" },
- *         { action: "write", scopeType: "APP", appKey: "MAP" }
- *       ]
- *     }
- *   ]
- * }
- */
 export async function setupWorkspaceRBAC(req: Request, res: Response) {
   const { workSpaceName, apps = [], profiles = [] } = req.body;
 
-  if (!workSpaceName) {
+  if (!workSpaceName?.trim())
     throw new ApiError(400, "workSpaceName is required");
-  }
+  validateApps(apps);
 
   try {
     const result = await prisma.$transaction(async (tx) => {
-      // ── Step 1: Create the workspace ──────────────────────────────────────
       const workspace = await tx.workspace.create({
         data: { name: workSpaceName },
       });
-      const workspaceId = workspace.id;
 
-      // ── Step 2: Create/enable apps and their modules ──────────────────────
-      // We build two lookup maps so we can resolve keys → IDs later:
-      //   appKeyToId:    "MAP" → "uuid-of-map"
-      //   moduleKeyToId: "EPC" → "uuid-of-epc"
-      const appKeyToId = new Map<string, string>();
-      const moduleKeyToId = new Map<string, string>();
+      const moduleKeyToId = await upsertAppsAndModules(tx, workspace.id, apps);
 
-      for (const appInput of apps) {
-        const { key, name, enabled = true, modules = [] } = appInput;
+      // Validate profile permissions reference real modules before writing
+      validateProfiles(profiles, moduleKeyToId);
 
-        // upsert: create the app globally if it doesn't exist yet,
-        // or update its name if it already exists
-        const app = await tx.app.upsert({
-          where: { key },
-          create: { key, name },
-          update: { name },
-        });
-        appKeyToId.set(key, app.id);
-
-        // Enable this app for our new workspace
-        await tx.workspaceApp.upsert({
-          where: { workspaceId_appId: { workspaceId, appId: app.id } },
-          create: { workspaceId, appId: app.id, enabled },
-          update: { enabled },
-        });
-
-        // Create/update each module under this app
-        for (const { key: moduleKey, name: moduleName } of modules) {
-          const module = await tx.module.upsert({
-            where: { appId_key: { appId: app.id, key: moduleKey } },
-            create: { key: moduleKey, name: moduleName, appId: app.id },
-            update: { name: moduleName },
-          });
-          // Store with a composite key so we know which app it belongs to
-          moduleKeyToId.set(`${key}:${moduleKey}`, module.id);
-        }
-      }
-
-      // ── Step 3: Create profiles and their scoped permissions ──────────────
-      for (const profileInput of profiles) {
-        const { name, description, permissions = [] } = profileInput;
-
-        // Create the profile container (just a name + workspace link)
+      for (const { name, description, permissions = [] } of profiles) {
         const profile = await tx.profile.create({
-          data: { name, description, workspaceId },
+          data: { name, description, workspaceId: workspace.id },
         });
 
-        // Create one permission row per entry — always module-scoped
-        for (const perm of permissions) {
-          const { action, appKey, moduleKey } = perm;
-
-          const moduleId = moduleKeyToId.get(`${appKey}:${moduleKey}`);
-          if (!moduleId) {
-            throw new Error(
-              `Module "${moduleKey}" not found under app "${appKey}". ` +
-                `Make sure the module is listed in the apps array of this payload.`,
-            );
-          }
-
-          await tx.profilePermission.create({
-            data: { profileId: profile.id, action, moduleId },
+        if (permissions.length > 0) {
+          await tx.profilePermission.createMany({
+            data: permissions.map(({ action, appKey, moduleKey }) => ({
+              profileId: profile.id,
+              action,
+              moduleId: moduleKeyToId.get(`${appKey}:${moduleKey}`)!,
+            })),
           });
         }
       }
 
-      return { success: true, workspaceId };
+      return { workspaceId: workspace.id };
     });
 
-    res.status(201).json(result);
+    res.status(201).json({
+      message: "Workspace configured successfully",
+      data: result,
+    });
   } catch (error: any) {
-    console.error("RBAC setup failed:", error);
+    if (error instanceof ApiError) throw error;
+    console.error("setupWorkspaceRBAC failed:", error);
     res
       .status(500)
-      .json({ message: "Failed to configure RBAC", error: error.message });
+      .json({ message: "Failed to configure workspace", error: error.message });
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// UPDATE WORKSPACE RBAC
-// Used to add/edit apps, modules, and profiles in an existing workspace.
+// UPDATE WORKSPACE RBAC   PUT /rbac/update
+//
+// Adds or updates apps and modules in an existing workspace.
+// Profiles are NOT handled here — use profile.controller for that.
+//
+// Safe to call with just the new/changed apps — existing apps and modules
+// not in the payload are untouched (upsert, not replace).
+//
+// Typical use cases:
+//   - Add a new app with its modules
+//   - Add a new module to an existing app
+//   - Rename an app or module
+//   - Enable or disable an app in the workspace
+//
+// After adding a new module, go to PUT /profiles/:id to grant access
+// to whichever profiles should have it. New modules are never auto-granted.
+//
+// Payload:
+// {
+//   "workspaceId": "uuid",
+//   "workspace": { "name": "New Name" },   // optional — rename the workspace
+//   "apps": [
+//     {
+//       "key": "FINANCE",
+//       "name": "Finance Management",
+//       "enabled": true,
+//       "modules": [
+//         { "key": "BUDGETS",  "name": "Budget Planning" },
+//         { "key": "INVOICES", "name": "Invoice Management" }
+//       ]
+//     }
+//   ]
+// }
+//
+// To add a module to an existing app, just include that app in the payload:
+// {
+//   "workspaceId": "uuid",
+//   "apps": [
+//     {
+//       "key": "MAP",
+//       "name": "Marketing Activity Planner",
+//       "modules": [
+//         { "key": "EPC", "name": "Event Planning Calendar" },  // existing — untouched
+//         { "key": "EPF", "name": "Event Proposal Form" },      // existing — untouched
+//         { "key": "CRF", "name": "Customer Response Form" },   // existing — untouched
+//         { "key": "NEW", "name": "New Module" }                // new — added
+//       ]
+//     }
+//   ]
+// }
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * PUT /rbac/update
- *
- * Same body shape as setup, plus a required `workspaceId`.
- * Permissions for each profile are FULLY REPLACED (delete-then-create)
- * so the payload is always the source of truth.
- */
 export async function updateWorkspaceRBAC(req: Request, res: Response) {
-  const { workspaceId, workspace, apps = [], profiles = [] } = req.body;
+  const { workspaceId, workspace, apps = [] } = req.body; // no profiles
 
-  if (!workspaceId) {
-    throw new ApiError(400, "workspaceId is required");
-  }
+  if (!workspaceId) throw new ApiError(400, "workspaceId is required");
+  validateApps(apps);
 
   try {
-    const result = await prisma.$transaction(async (tx) => {
-      // ── Step 1: Optionally rename the workspace ───────────────────────────
-      if (workspace?.name) {
+    await prisma.$transaction(async (tx) => {
+      // Optionally rename the workspace
+      if (workspace?.name?.trim()) {
         await tx.workspace.update({
           where: { id: workspaceId },
           data: { name: workspace.name },
         });
       }
 
-      // ── Step 2: Upsert apps and modules (same as setup) ───────────────────
-      const appKeyToId = new Map<string, string>();
-      const moduleKeyToId = new Map<string, string>();
-
-      for (const appInput of apps) {
-        const { key, name, enabled = true, modules = [] } = appInput;
-
-        const app = await tx.app.upsert({
-          where: { key },
-          create: { key, name },
-          update: { name },
-        });
-        appKeyToId.set(key, app.id);
-
-        await tx.workspaceApp.upsert({
-          where: { workspaceId_appId: { workspaceId, appId: app.id } },
-          create: { workspaceId, appId: app.id, enabled },
-          update: { enabled },
-        });
-
-        for (const { key: moduleKey, name: moduleName } of modules) {
-          const module = await tx.module.upsert({
-            where: { appId_key: { appId: app.id, key: moduleKey } },
-            create: { key: moduleKey, name: moduleName, appId: app.id },
-            update: { name: moduleName },
-          });
-          moduleKeyToId.set(`${key}:${moduleKey}`, module.id);
-        }
-      }
-
-      // ── Step 3: Upsert profiles and REPLACE their permissions ─────────────
-      // "Replace" means: delete all existing permissions for that profile,
-      // then insert fresh ones from the payload. This is the safest approach
-      // because it avoids stale permissions lingering after an edit.
-      for (const profileInput of profiles) {
-        const { name, description, permissions = [] } = profileInput;
-
-        // upsert the profile by name (unique within workspace)
-        const profile = await tx.profile.upsert({
-          where: { workspaceId_name: { workspaceId, name } },
-          create: { name, description, workspaceId },
-          update: { description },
-        });
-
-        // Delete all current permissions for this profile
-        await tx.profilePermission.deleteMany({
-          where: { profileId: profile.id },
-        });
-
-        // Re-insert fresh permissions — always module-scoped
-        for (const perm of permissions) {
-          const { action, appKey, moduleKey } = perm;
-
-          const moduleId = moduleKeyToId.get(`${appKey}:${moduleKey}`);
-          if (!moduleId) {
-            throw new Error(
-              `Module "${moduleKey}" not found under app "${appKey}"`,
-            );
-          }
-
-          await tx.profilePermission.create({
-            data: { profileId: profile.id, action, moduleId },
-          });
-        }
-      }
-
-      return { workspaceId };
+      // Upsert apps and modules — profiles untouched
+      await upsertAppsAndModules(tx, workspaceId, apps);
     });
 
-    res.json({ message: "Workspace RBAC updated successfully", data: result });
+    res.json({ message: "Workspace updated successfully" });
   } catch (error: any) {
-    console.error("RBAC update failed:", error);
+    if (error instanceof ApiError) throw error;
+    console.error("updateWorkspaceRBAC failed:", error);
     res
       .status(500)
-      .json({ message: "RBAC update failed", error: error.message });
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// DELETE WORKSPACE RBAC ELEMENTS
-// Removes a module (and all profiles scoped to it) from a workspace,
-// then soft-disables the app if requested.
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * DELETE /rbac/delete
- *
- * Body: { workspaceId, appKey, moduleKey? }
- *
- * If moduleKey is provided → remove that module + its permissions
- * If only appKey is provided → disable the entire app in this workspace
- */
-export async function deleteWorkspaceRBAC(req: Request, res: Response) {
-  const { workspaceId, appKey, moduleKey } = req.body;
-
-  if (!workspaceId || !appKey) {
-    throw new ApiError(400, "workspaceId and appKey are required");
-  }
-
-  try {
-    await prisma.$transaction(async (tx) => {
-      // Resolve app
-      const app = await tx.app.findUnique({ where: { key: appKey } });
-      if (!app) throw new ApiError(404, `App "${appKey}" not found`);
-
-      if (moduleKey) {
-        // ── Remove one module ───────────────────────────────────────────────
-        const module = await tx.module.findFirst({
-          where: { key: moduleKey, appId: app.id },
-        });
-        if (!module) throw new ApiError(404, `Module "${moduleKey}" not found`);
-
-        // Delete all ProfilePermission rows that target this module.
-        // Because of onDelete: Cascade on ProfilePermission → Profile,
-        // we only delete the permission rows, NOT the profiles themselves.
-        await tx.profilePermission.deleteMany({
-          where: { moduleId: module.id },
-        });
-
-        // Delete the module itself
-        await tx.module.delete({ where: { id: module.id } });
-      } else {
-        // ── Disable entire app in this workspace ────────────────────────────
-        // Find all modules belonging to this app, then delete their permissions
-        const appModules = await tx.module.findMany({
-          where: { appId: app.id },
-          select: { id: true },
-        });
-        const moduleIds = appModules.map((m) => m.id);
-
-        await tx.profilePermission.deleteMany({
-          where: { moduleId: { in: moduleIds } },
-        });
-
-        // Soft-disable: the app still exists globally, just not active here
-        await tx.workspaceApp.update({
-          where: { workspaceId_appId: { workspaceId, appId: app.id } },
-          data: { enabled: false },
-        });
-      }
-    });
-
-    res.status(200).json({ message: "RBAC delete operation successful" });
-  } catch (error: any) {
-    console.error("RBAC delete failed:", error);
-    res
-      .status(500)
-      .json({ message: "RBAC delete failed", error: error.message });
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// GET ALL WORKSPACES
-// Returns every workspace with its apps, modules, and profiles.
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * GET /rbac/workspaces
- *
- * Response shape:
- * {
- *   count: number,
- *   data: [
- *     {
- *       id, name,
- *       apps: [{ key, name, enabled, modules: [{ key, name }] }],
- *       profiles: [
- *         {
- *           id, name, description,
- *           permissions: [{ action, scopeType, appKey?, moduleKey? }]
- *         }
- *       ]
- *     }
- *   ]
- * }
- */
-export async function getAllWorkspaces(req: Request, res: Response) {
-  try {
-    const workspaces = await prisma.workspace.findMany({
-      include: {
-        // Fetch apps and their modules
-        apps: {
-          where: { enabled: true },
-          include: {
-            app: {
-              include: { modules: true },
-            },
-          },
-        },
-        // Fetch profiles and their permissions (with module → app resolved)
-        profiles: {
-          include: {
-            permissions: {
-              include: {
-                module: {
-                  include: { app: { select: { key: true, name: true } } },
-                  select: { key: true, name: true, app: true },
-                },
-              },
-            },
-          },
-        },
-      },
-      orderBy: { name: "asc" },
-    });
-
-    const response = workspaces.map((ws) => ({
-      id: ws.id,
-      name: ws.name,
-
-      apps: ws.apps.map((wApp) => ({
-        key: wApp.app.key,
-        name: wApp.app.name,
-        enabled: wApp.enabled,
-        modules: wApp.app.modules.map((m) => ({
-          key: m.key,
-          name: m.name,
-        })),
-      })),
-
-      profiles: ws.profiles.map((profile) => ({
-        id: profile.id,
-        name: profile.name,
-        description: profile.description,
-        // Each permission shows its action and resolved scope info
-        permissions: profile.permissions.map((p) => ({
-          action: p.action,
-          appKey: p.module?.app?.key ?? null,
-          moduleKey: p.module?.key ?? null,
-        })),
-      })),
-    }));
-
-    res.json({ count: response.length, data: response });
-  } catch (error: any) {
-    console.error("getAllWorkspaces failed:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch workspaces", error: error.message });
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// GET SINGLE WORKSPACE
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * GET /rbac/workspaces/:workspaceId
- */
-export async function getWorkspaceById(req: Request, res: Response) {
-  const { workspaceId } = req.params;
-
-  if (!workspaceId) throw new ApiError(400, "workspaceId is required");
-
-  try {
-    const ws = await prisma.workspace.findUnique({
-      where: { id: workspaceId as string },
-      include: {
-        apps: {
-          where: { enabled: true },
-          include: {
-            app: { include: { modules: true } },
-          },
-        },
-        profiles: {
-          include: {
-            permissions: {
-              include: {
-                module: {
-                  include: { app: { select: { key: true, name: true } } },
-                  select: { key: true, name: true, app: true },
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-
-    if (!ws) throw new ApiError(404, "Workspace not found");
-
-    res.json({
-      id: ws.id,
-      name: ws.name,
-      apps: ws.apps.map((wApp) => ({
-        key: wApp.app.key,
-        name: wApp.app.name,
-        enabled: wApp.enabled,
-        modules: wApp.app.modules.map((m) => ({ key: m.key, name: m.name })),
-      })),
-      profiles: ws.profiles.map((profile) => ({
-        id: profile.id,
-        name: profile.name,
-        description: profile.description,
-        permissions: profile.permissions.map((p) => ({
-          action: p.action,
-          appKey: p.module?.app?.key ?? null,
-          moduleKey: p.module?.key ?? null,
-        })),
-      })),
-    });
-  } catch (error: any) {
-    console.error("getWorkspaceById failed:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch workspace", error: error.message });
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ASSIGN USER TO WORKSPACE
-// Adds a user to a workspace and optionally gives them one or more profiles.
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * POST /rbac/assign-user
- *
- * Body:
- * {
- *   userId: string,
- *   workspaceId: string,
- *   profileIds?: string[],   ← array so you can assign multiple profiles at once
- *   isSuperAdmin?: boolean
- * }
- */
-export async function assignUserToWorkspace(req: Request, res: Response) {
-  const {
-    userId,
-    workspaceId,
-    profileIds = [],
-    isSuperAdmin = false,
-  } = req.body;
-
-  if (!userId || !workspaceId) {
-    throw new ApiError(400, "userId and workspaceId are required");
-  }
-
-  try {
-    const result = await prisma.$transaction(async (tx) => {
-      // ── Validate that both user and workspace exist ───────────────────────
-      const user = await tx.user.findUnique({ where: { id: userId } });
-      if (!user) throw new ApiError(404, "User not found");
-
-      const workspace = await tx.workspace.findUnique({
-        where: { id: workspaceId },
-      });
-      if (!workspace) throw new ApiError(404, "Workspace not found");
-
-      // ── Add or update workspace membership ───────────────────────────────
-      const membership = await tx.workspaceUser.upsert({
-        where: { userId_workspaceId: { userId, workspaceId } },
-        update: { isSuperAdmin },
-        create: { userId, workspaceId, isSuperAdmin },
-      });
-
-      // ── Assign each profile to the user ───────────────────────────────────
-      // We validate that every profile belongs to this workspace first.
-      // A user can hold multiple profiles simultaneously.
-      const assignments = [];
-      for (const profileId of profileIds) {
-        const profile = await tx.profile.findFirst({
-          where: { id: profileId, workspaceId },
-        });
-        if (!profile) {
-          throw new ApiError(
-            400,
-            `Profile "${profileId}" does not belong to this workspace`,
-          );
-        }
-
-        const assignment = await tx.userProfile.upsert({
-          where: {
-            userId_workspaceId_profileId: { userId, workspaceId, profileId },
-          },
-          update: {},
-          create: { userId, workspaceId, profileId },
-        });
-        assignments.push(assignment);
-      }
-
-      return { membership, assignments };
-    });
-
-    res.json({
-      message: "User assigned to workspace successfully",
-      data: result,
-    });
-  } catch (error: any) {
-    console.error("assignUserToWorkspace failed:", error);
-    res
-      .status(500)
-      .json({ message: "User assignment failed", error: error.message });
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// REMOVE USER FROM WORKSPACE
-// Cleans up all profile assignments then removes workspace membership.
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * DELETE /rbac/remove-user
- *
- * Body: { userId: string, workspaceId: string }
- */
-export async function removeUserFromWorkspace(req: Request, res: Response) {
-  const { userId, workspaceId } = req.body;
-
-  if (!userId || !workspaceId) {
-    throw new ApiError(400, "userId and workspaceId are required");
-  }
-
-  try {
-    await prisma.$transaction(async (tx) => {
-      // Check the user is actually in this workspace
-      const membership = await tx.workspaceUser.findUnique({
-        where: { userId_workspaceId: { userId, workspaceId } },
-      });
-      if (!membership)
-        throw new ApiError(404, "User is not part of this workspace");
-
-      // Remove all profile assignments for this user in this workspace
-      await tx.userProfile.deleteMany({ where: { userId, workspaceId } });
-
-      // Remove workspace membership
-      await tx.workspaceUser.delete({
-        where: { userId_workspaceId: { userId, workspaceId } },
-      });
-    });
-
-    res.json({
-      message: "User removed from workspace successfully",
-      success: true,
-    });
-  } catch (error: any) {
-    console.error("removeUserFromWorkspace failed:", error);
-    res.status(500).json({
-      message: "Failed to remove user from workspace",
-      error: error.message,
-    });
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// GET USER PERMISSIONS
-// Useful for a "what can I do?" API that the frontend calls after login.
-// ─────────────────────────────────────────────────────────────────────────────
-
-/**
- * GET /rbac/my-permissions?workspaceId=xxx
- *
- * Returns a flat list of all permission entries the calling user holds,
- * with human-readable scope info. The frontend uses this to show/hide buttons.
- */
-export async function getMyPermissions(req: Request, res: Response) {
-  // In a real app, userId would come from the JWT (req.user.id).
-  // Here we read it from query params for simplicity.
-  const { userId, workspaceId } = req.query as Record<string, string>;
-
-  if (!userId || !workspaceId) {
-    throw new ApiError(400, "userId and workspaceId are required");
-  }
-
-  try {
-    // Superadmin shortcut — return a synthetic "can do everything" response
-    const member = await prisma.workspaceUser.findUnique({
-      where: { userId_workspaceId: { userId, workspaceId } },
-    });
-    if (!member)
-      throw new ApiError(403, "User is not a member of this workspace");
-
-    if (member.isSuperAdmin) {
-      return res.json({
-        isSuperAdmin: true,
-        permissions: [], // superadmin bypass — no permission rows needed
-      });
-    }
-
-    // Fetch every ProfilePermission across all profiles this user holds
-    const permissions = await prisma.profilePermission.findMany({
-      where: {
-        profile: {
-          userProfiles: { some: { userId, workspaceId } },
-        },
-      },
-      include: {
-        module: {
-          select: {
-            key: true,
-            name: true,
-            app: { select: { key: true, name: true } },
-          },
-        },
-      },
-    });
-
-    const profiles = await prisma.userProfile.findMany({
-      where: { userId, workspaceId },
-      include: { profile: { select: { id: true, name: true } } },
-    });
-
-    res.json({
-      isSuperAdmin: false,
-      profiles: profiles.map((up) => ({
-        id: up.profile.id,
-        name: up.profile.name,
-      })),
-      permissions: permissions.map((p) => ({
-        action: p.action,
-        appKey: p.module?.app?.key ?? null,
-        appName: p.module?.app?.name ?? null,
-        moduleKey: p.module?.key ?? null,
-        moduleName: p.module?.name ?? null,
-      })),
-    });
-  } catch (error: any) {
-    console.error("getMyPermissions failed:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to fetch permissions", error: error.message });
+      .json({ message: "Workspace update failed", error: error.message });
   }
 }

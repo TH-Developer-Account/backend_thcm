@@ -42,7 +42,6 @@ export const getCurrentUser = async (
         is_active: true,
         created_at: true,
         updated_at: true,
-        // Don't return password!
       },
     });
 
@@ -75,31 +74,9 @@ export const getCurrentUser = async (
 
     console.log("========>", permissions);
 
-    // New
-    const perm = {
-      isSuperAdmin: false,
-      permissions: [
-        {
-          action: "read",
-          scopeType: "WORKSPACE",
-          appKey: null,
-          moduleKey: null,
-        },
-        {
-          action: "write",
-          scopeType: "APP",
-          appKey: "HR",
-          moduleKey: null,
-        },
-      ],
-    };
-
     res.status(200).json({
       user,
-      workspace: {
-        id: workspace.workspaceId,
-        isSuperAdmin: workspace.isSuperAdmin,
-      },
+      workspaceId: workspace.workspaceId,
       permissions,
     });
   } catch (error) {
@@ -152,5 +129,138 @@ export async function getC4CEmployees(req: Request, res: Response) {
   } catch (error) {
     console.error("SAP error:", error.response?.data || error.message);
     res.status(500).json({ message: "Failed to fetch SAP data" });
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PUT /workspace-users/profiles
+//
+// Assigns a single profile to one or many users in one call.
+//
+// Payload:
+// {
+//   "userIds":   ["uuid-1", "uuid-2", "uuid-3"],
+//   "profileId": "uuid"    ← send null to clear the profile for all userIds
+// }
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function assignUserProfiles(req: Request, res: Response) {
+  const { userIds, profileId, workspaceId } = req.body as {
+    userIds: string[];
+    profileId: string | null;
+    workspaceId: string;
+  };
+
+  if (!Array.isArray(userIds) || userIds.length === 0) {
+    throw new ApiError(400, "userIds must be a non-empty array");
+  }
+  if (profileId === undefined) {
+    throw new ApiError(400, "profileId is required (send null to clear)");
+  }
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Validate all userIds are workspace members in one query
+      const members = await tx.workspaceUser.findMany({
+        where: { workspaceId, userId: { in: userIds } },
+        select: { userId: true },
+      });
+
+      if (members.length !== userIds.length) {
+        const found = new Set(members.map((m) => m.userId));
+        const missing = userIds.filter((id) => !found.has(id));
+        throw new ApiError(
+          404,
+          `These users are not in the workspace: ${missing.join(", ")}`,
+        );
+      }
+
+      // Validate profileId belongs to this workspace
+      if (profileId !== null) {
+        const profile = await tx.profile.findFirst({
+          where: { id: profileId, workspaceId },
+          select: { id: true },
+        });
+        if (!profile)
+          throw new ApiError(404, "Profile not found in this workspace");
+      }
+
+      // Clear all current assignments for these users
+      await tx.userProfile.deleteMany({
+        where: { workspaceId, userId: { in: userIds } },
+      });
+
+      // Assign the new profile if not null
+      if (profileId !== null) {
+        await tx.userProfile.createMany({
+          data: userIds.map((userId) => ({ userId, workspaceId, profileId })),
+        });
+      }
+    });
+
+    const message = profileId
+      ? `Profile assigned to ${userIds.length} user(s) successfully`
+      : `Profile cleared for ${userIds.length} user(s) successfully`;
+
+    res.json({ message });
+  } catch (error: any) {
+    if (error instanceof ApiError) throw error;
+    console.error("assignUserProfiles failed:", error);
+    res
+      .status(500)
+      .json({ message: "Failed to assign profiles", error: error.message });
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DELETE /workspace-users/:userId
+//
+// Removes a user from the workspace entirely.
+// Deletes all their profile assignments first, then the membership row.
+//
+// Payload:
+// {
+//   "workspaceId": "uuid"
+// }
+//
+// This does NOT delete the User record itself — the user still exists in
+// the system, they just no longer have access to this workspace.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function removeUserFromWorkspace(req: Request, res: Response) {
+  const { userId } = req.params;
+  const { workspaceId } = req.body;
+
+  if (!workspaceId) throw new ApiError(400, "workspaceId is required");
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      const member = await tx.workspaceUser.findUnique({
+        where: {
+          userId_workspaceId: { userId: userId as string, workspaceId },
+        },
+        select: { userId: true },
+      });
+      if (!member)
+        throw new ApiError(404, "User is not part of this workspace");
+
+      await tx.userProfile.deleteMany({
+        where: { userId: userId as string, workspaceId },
+      });
+      await tx.workspaceUser.delete({
+        where: {
+          userId_workspaceId: { userId: userId as string, workspaceId },
+        },
+      });
+    });
+
+    res.json({ message: "User removed from workspace successfully" });
+  } catch (error: any) {
+    if (error instanceof ApiError) throw error;
+    console.error("removeUserFromWorkspace failed:", error);
+    res.status(500).json({
+      message: "Failed to remove user from workspace",
+      error: error.message,
+    });
   }
 }

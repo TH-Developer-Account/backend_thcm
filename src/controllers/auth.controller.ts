@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { prisma } from "../config/prisma";
-import redis from "../config/redis";
 import { checkOtpLimit, updateOtpLimit } from "../utils/otpRateLimiter";
 import { buildUserPermissions } from "../utils/userPermission";
 import ApiError from "../utils/apiError";
@@ -136,8 +135,6 @@ export const loginWithPassword = async (
         workspace.workspaceId,
       );
 
-      console.log("========>", permissions);
-
       // Create JWT with workspace context
       const accessToken = signAccessToken({
         id: existingUser.id,
@@ -170,12 +167,9 @@ export const loginWithPassword = async (
           is_active: existingUser.is_active,
           created_at: existingUser.created_at,
           updated_at: existingUser.updated_at,
-          workspace: {
-            id: workspace.workspaceId,
-            isSuperAdmin: workspace.isSuperAdmin,
-          },
-          permissions,
         },
+        workspaceId: workspace.workspaceId,
+        permissions,
       });
     }
   } catch (error) {
@@ -314,12 +308,9 @@ export const verifyOtp = async (
         first_name: user.first_name,
         last_name: user.last_name,
         phone_number: user.phone_number,
-        workspace: {
-          id: workspace.workspaceId,
-          isSuperAdmin: workspace.isSuperAdmin,
-        },
-        permissions,
       },
+      workspaceId: workspace.workspaceId,
+      permissions,
     });
   } catch (error) {
     next(error);
