@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import { prisma } from "../config/prisma";
-import redis from "../config/redis";
 import { checkOtpLimit, updateOtpLimit } from "../utils/otpRateLimiter";
+import { buildUserPermissions } from "../utils/userPermission";
 import ApiError from "../utils/apiError";
 // import { sendPasswordResetEmail } from "../utils/sendEmail";
 import { SALT_ROUNDS } from "../utils/contants";
@@ -116,8 +116,31 @@ export const loginWithPassword = async (
         throw new ApiError(401, "Invalid credentials");
       }
 
-      // JWT logic for the user
-      const accessToken = signAccessToken(existingUser);
+      // Load workspace membership (single workspace system)
+      const workspace = await prisma.workspaceUser.findFirst({
+        where: { userId: existingUser.id },
+        select: {
+          workspaceId: true,
+          isSuperAdmin: true,
+        },
+      });
+
+      if (!workspace) {
+        throw new ApiError(403, "User not assigned to workspace");
+      }
+
+      // 🔥 Load module-level permissions
+      const permissions = await buildUserPermissions(
+        existingUser.id,
+        workspace.workspaceId,
+      );
+
+      // Create JWT with workspace context
+      const accessToken = signAccessToken({
+        id: existingUser.id,
+        workspaceId: workspace.workspaceId,
+        isSuperAdmin: workspace.isSuperAdmin,
+      });
 
       const refreshToken = await createRefreshToken({
         userId: existingUser.id,
@@ -127,9 +150,9 @@ export const loginWithPassword = async (
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        sameSite: "strict",
+        sameSite: "lax",
         secure: process.env.NODE_ENV === "production",
-        path: "/auth/refresh",
+        path: "/",
       });
 
       // Response
@@ -145,6 +168,8 @@ export const loginWithPassword = async (
           created_at: existingUser.created_at,
           updated_at: existingUser.updated_at,
         },
+        workspaceId: workspace.workspaceId,
+        permissions,
       });
     }
   } catch (error) {
@@ -231,8 +256,31 @@ export const verifyOtp = async (
       throw new ApiError(403, "Account is inactive");
     }
 
-    // 3️⃣ Generate tokens
-    const accessToken = signAccessToken(user);
+    // Load workspace membership (single workspace system)
+    const workspace = await prisma.workspaceUser.findFirst({
+      where: { userId: user.id },
+      select: {
+        workspaceId: true,
+        isSuperAdmin: true,
+      },
+    });
+
+    if (!workspace) {
+      throw new ApiError(403, "User not assigned to workspace");
+    }
+
+    // 🔥 Load module-level permissions
+    const permissions = await buildUserPermissions(
+      user.id,
+      workspace.workspaceId,
+    );
+
+    // Create JWT with workspace context
+    const accessToken = signAccessToken({
+      id: user.id,
+      workspaceId: workspace.workspaceId,
+      isSuperAdmin: workspace.isSuperAdmin,
+    });
 
     const refreshToken = await createRefreshToken({
       userId: user.id,
@@ -243,9 +291,9 @@ export const verifyOtp = async (
     // 4️⃣ Set refresh token cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      path: "/auth/refresh",
+      path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -261,6 +309,8 @@ export const verifyOtp = async (
         last_name: user.last_name,
         phone_number: user.phone_number,
       },
+      workspaceId: workspace.workspaceId,
+      permissions,
     });
   } catch (error) {
     next(error);
@@ -273,6 +323,7 @@ export const refreshAccessToken = async (
   next: NextFunction,
 ) => {
   try {
+    console.log("Cookie==============>", JSON.stringify(req.cookies, null, 2));
     const token = req.cookies.refreshToken;
     if (!token) throw new ApiError(401, "No refresh token provided");
 
@@ -316,13 +367,31 @@ export const refreshAccessToken = async (
       ipAddress: req.ip,
     });
 
-    const accessToken = signAccessToken(stored.user);
+    // Load workspace membership (single workspace system)
+    const workspace = await prisma.workspaceUser.findFirst({
+      where: { userId: stored.user.id },
+      select: {
+        workspaceId: true,
+        isSuperAdmin: true,
+      },
+    });
+
+    if (!workspace) {
+      throw new ApiError(403, "User not assigned to workspace");
+    }
+
+    // Create JWT with workspace context
+    const accessToken = signAccessToken({
+      id: stored.user.id,
+      workspaceId: workspace.workspaceId,
+      isSuperAdmin: workspace.isSuperAdmin,
+    });
 
     res.cookie("refreshToken", newRefreshToken, {
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      path: "/auth/refresh",
+      path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 

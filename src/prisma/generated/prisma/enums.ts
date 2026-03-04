@@ -9,7 +9,16 @@
 * 🟢 You can import this file directly.
 */
 
+export const PermissionAction = {
+  read: 'read',
+  write: 'write'
+} as const
+
+export type PermissionAction = (typeof PermissionAction)[keyof typeof PermissionAction]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const ScopeType = {
+  MODULE: 'MODULE'
+} as const
+
+export type ScopeType = (typeof ScopeType)[keyof typeof ScopeType]

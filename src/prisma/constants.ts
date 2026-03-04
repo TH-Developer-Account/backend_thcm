@@ -1,0 +1,222 @@
+export const MARKETING_ACTIVITY_PLANNER = "Marketing Activity Planner";
+export const PRODUCT_SELECTOR = "Product Selector";
+export const KEY_ACCOUNT = "Key Account";
+export const CUSTOMER_MASTER_DATA = "Customer Master Data";
+export const DEALER_CLAIMS = "Dealer Claims";
+export const ASSET_MASTER = "Asset Master";
+
+export const EVENT_PLANNING_CALENDAR = "Event Planning Calendar";
+
+export const branchData = [
+  { branch_name: "Ahmedabad", branch_code: "AHM" },
+  { branch_name: "Aurangabad", branch_code: "AUR" },
+  { branch_name: "Bengaluru", branch_code: "BAN" },
+  { branch_name: "Bhubaneswar", branch_code: "BHU" },
+  { branch_name: "Chandigarh", branch_code: "CHA" },
+  { branch_name: "Chennai", branch_code: "CHE" },
+  { branch_name: "Cochin", branch_code: "COC" },
+  { branch_name: "Bengaluru-Corporate", branch_code: "COR" },
+  { branch_name: "Durgapur", branch_code: "DUR" },
+  { branch_name: "Goa", branch_code: "GOA" },
+  { branch_name: "Guwahati", branch_code: "GUW" },
+  { branch_name: "Hubli", branch_code: "HUB" },
+  { branch_name: "Hyderabad", branch_code: "HYD" },
+  { branch_name: "Indore", branch_code: "IND" },
+  { branch_name: "Jabalpur", branch_code: "JAB" },
+  { branch_name: "Jaipur", branch_code: "JAI" },
+  { branch_name: "Jamshedpur", branch_code: "JAM" },
+  { branch_name: "Kolkata", branch_code: "KOL" },
+  { branch_name: "Lucknow", branch_code: "LUC" },
+  { branch_name: "Madurai", branch_code: "MAD" },
+  { branch_name: "Mumbai", branch_code: "MUM" },
+  { branch_name: "Nagpur", branch_code: "NAG" },
+  { branch_name: "Nellore", branch_code: "NEL" },
+  { branch_name: "New Delhi", branch_code: "DEL" },
+  { branch_name: "Patna", branch_code: "PAT" },
+  { branch_name: "Pune", branch_code: "PUN" },
+  { branch_name: "Raipur", branch_code: "RAI" },
+  { branch_name: "Rajkot", branch_code: "RAJ" },
+  { branch_name: "Salem", branch_code: "SAL" },
+  { branch_name: "Udaipur", branch_code: "UDA" },
+  { branch_name: "Vijaywada", branch_code: "VIJ" },
+  { branch_name: "Jamshedpur Plant", branch_code: "JPL" },
+  { branch_name: "Dharwad Plant", branch_code: "DPL" },
+  { branch_name: "Kharagapur Plant", branch_code: "KPL" },
+  { branch_name: "Others", branch_code: "OTH" },
+  { branch_name: "Nepal", branch_code: "NEP" },
+  { branch_name: "Bhutan", branch_code: "BHT" },
+  { branch_name: "Bangladesh", branch_code: "BDH" },
+  { branch_name: "SriLanka", branch_code: "SRL" },
+  { branch_name: "Africa", branch_code: "AFR" },
+];
+
+export const eventNameData = [
+  { title: "Customer Meet - Big (Above 50+ customers)" },
+  { title: "Customer Meet -Small" },
+  { title: "KA Customer meet" },
+  { title: "Application Study" },
+  { title: "Roadshow" },
+  { title: "Demo-in-Dirt" },
+  { title: "Try & Buy offer for Machines" },
+  { title: "Presentation to Govt. Bodies & Municipalities" },
+  { title: "Financier Meet" },
+  { title: "Customer Plant visit" },
+  { title: "Loan Mela" },
+  { title: "Product Launch" },
+  { title: "Newspaper Advt." },
+  { title: "Exhibitions & Fairs" },
+  { title: "Hoardings/Glow Sign Boards" },
+  { title: "Others-Sales" },
+  { title: "Operator Training" },
+  { title: "Operator Meet" },
+  { title: "Training to Customer Staff" },
+  { title: "Service Campaign" },
+  { title: "Competition Product Performance-Service" },
+  { title: "Others-Service" },
+  { title: "Parts Mela" },
+  { title: "Try & Buy offer for attachments" },
+  { title: "Others-Spares" },
+  { title: "Key Handing Over" },
+  { title: "Marketing HO Expense" },
+];
+
+export const regionData = [
+  { region_name: "East", region_code: "EAS" },
+  { region_name: "Central", region_code: "CEN" },
+  { region_name: "North", region_code: "NOR" },
+  { region_name: "South-1", region_code: "SO1" },
+  { region_name: "South-2", region_code: "SO2" },
+  { region_name: "West", region_code: "WES" },
+  { region_name: "Exports", region_code: "EXP" },
+  { region_name: "Corporate", region_code: "COR" },
+];
+
+export const budgetCodeData = [
+  {
+    fiscal_year: "2025-2026",
+    code: "P1SMN1380105",
+    id_desc: "North 1",
+    value: 3800000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P1SMN2380105",
+    id_desc: "North 2",
+    value: 3800000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P1SME1380105",
+    id_desc: "East 1",
+    value: 4000000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P1SME2380105",
+    id_desc: "East 2",
+    value: 1000000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P1SMCR380105",
+    id_desc: "Central",
+    value: 3500000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P1SMS1380105",
+    id_desc: "South 1",
+    value: 5000000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P1SMS2380105",
+    id_desc: "South 2",
+    value: 3000000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P1SMS3380105",
+    id_desc: "South 3",
+    value: 2300000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P1SMW1380105",
+    id_desc: "West 1",
+    value: 4500000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P1SMW2380105",
+    id_desc: "West 2",
+    value: 2500000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "U13406380105",
+    id_desc: "KA Customer Engagement",
+    value: 3500000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "U33406380105",
+    id_desc: "Mining Customer Engagement",
+    value: 4000000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P33406380105",
+    id_desc: "Product Launch & Small Exhibitions",
+    value: 4000000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P53406380105",
+    id_desc: "Market Research",
+    value: 700000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "U53406380105",
+    id_desc: "Product Marketing",
+    value: 1600000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P63406380105",
+    id_desc: "Product & Content Development",
+    value: 5000000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P73406380105",
+    id_desc: "Retainers",
+    value: 9400000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "P83406380105",
+    id_desc: "Digital Marketing",
+    value: 6800000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "U23406380105",
+    id_desc: "Export Market Promotion",
+    value: 1500000,
+  },
+  {
+    fiscal_year: "2025-2026",
+    code: "U33406380105",
+    id_desc: "Corporate Communications",
+    value: 4000000,
+  },
+];
+
+export const eventScaleData = [
+  { title: "PAX SIZE <50", code: "PAX SIZE <50" },
+  { title: "PAX SIZE >50-100", code: "PAX SIZE >50-100" },
+  { title: "PAX SIZE >100-200", code: "PAX SIZE >100-200" },
+  { title: "PAX SIZE >200", code: "PAX SIZE >200" },
+];

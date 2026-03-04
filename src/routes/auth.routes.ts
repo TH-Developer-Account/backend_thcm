@@ -25,6 +25,6 @@ router.post("/reset-password/:token", resetPasswordWithToken);
 router.post("/send-otp", asyncHandler(sendOtp));
 router.post("/verify-otp", asyncHandler(verifyOtp));
 router.post("/refresh", asyncHandler(refreshAccessToken));
-router.post("/logout", requireAuth, asyncHandler(logout));
+router.post("/logout", asyncHandler(logout));
 
 export default router;

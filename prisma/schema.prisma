@@ -7,28 +7,54 @@ datasource db {
   provider = "postgresql"
 }
 
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+// The two basic actions a user can perform
+enum PermissionAction {
+  read
+  write
+}
+
+// Every permission targets one specific module.
+// No WORKSPACE or APP scope exists — access is always explicit per module.
+enum ScopeType {
+  MODULE
+}
+
+// ─────────────────────────────────────────────
+// AUTH MODELS (unchanged)
+// ─────────────────────────────────────────────
+
 model User {
-  id            String       @id @default(uuid())
-  first_name    String   @db.VarChar(50)
-  last_name     String   @db.VarChar(50)
-  email         String    @unique @db.VarChar(100)
-  phone_number  String  @unique @db.VarChar(15)
-  password      String    @db.VarChar(255)
-  is_active     Boolean  @default(true)
-  is_default_login  Boolean         @default(true) 
-  refresh_tokens     RefreshToken[]
-  password_reset_tokens  PasswordResetToken[] 
+  id                   String               @id @default(uuid())
+  first_name           String               @db.VarChar(50)
+  last_name            String               @db.VarChar(50)
+  email                String               @unique @db.VarChar(100)
+  phone_number         String               @unique @db.VarChar(15)
+  password             String               @db.VarChar(255)
+  is_active            Boolean              @default(true)
+  is_default_login     Boolean              @default(true)
+  refresh_tokens       RefreshToken[]
+  password_reset_tokens PasswordResetToken[]
+
+  // RBAC relations
+  workspaceUsers       WorkspaceUser[]
+  userProfiles         UserProfile[]
+
+  // Business data relations
   created_event_proposals EventProposal[] @relation("EventCreatedBy")
   updated_event_proposals EventProposal[] @relation("EventUpdatedBy")
 
-  created_at    DateTime @default(now()) @db.Timestamp(6)
-  updated_at    DateTime @default(now()) @db.Timestamp(6)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
 }
 
 model PasswordResetToken {
   id         String   @id @default(uuid())
   user_id    String
-  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   token      String   @unique @db.VarChar(255)
   expires_at DateTime
   used       Boolean  @default(false)
@@ -36,41 +62,201 @@ model PasswordResetToken {
 }
 
 model RefreshToken {
-  id        String   @id @default(uuid())
-  token_id      String   @unique @db.VarChar(36) // UUID
-  token_hash    String   @db.VarChar(255)
-  token     String   @unique
+  id         String   @id @default(uuid())
+  token_id   String   @unique @db.VarChar(36)
+  token_hash String   @db.VarChar(255)
+  token      String   @unique
   user_id    String
-  user      User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_agent    String?
-  ip_address    String?
-  revoked       Boolean  @default(false)
-  expires_at    DateTime
-  created_at    DateTime @default(now())
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_agent String?
+  ip_address String?
+  revoked    Boolean  @default(false)
+  expires_at DateTime
+  created_at DateTime @default(now())
 }
 
-// prisma/schema.prisma
-
 model DailyVisitors {
-  id          String   @id @default(uuid())
-  date        DateTime @unique @db.Date
-  total_visits Int     @default(0)
-  created_at  DateTime @default(now())
-  
+  id           String   @id @default(uuid())
+  date         DateTime @unique @db.Date
+  total_visits Int      @default(0)
+  created_at   DateTime @default(now())
+
   @@index([date])
 }
 
+// ─────────────────────────────────────────────
+// WORKSPACE
+// ─────────────────────────────────────────────
+
+model Workspace {
+  id   String @id @default(uuid())
+  name String
+
+  users        WorkspaceUser[]
+  apps         WorkspaceApp[]
+  profiles     Profile[]
+  userProfiles UserProfile[]
+}
+
+// Tracks which users belong to a workspace.
+// isSuperAdmin = true bypasses all permission checks for that user.
+model WorkspaceUser {
+  userId       String
+  workspaceId  String
+  isSuperAdmin Boolean  @default(false)
+  joinedAt     DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@id([userId, workspaceId])
+  @@index([workspaceId])
+}
+
+// ─────────────────────────────────────────────
+// APP + MODULE
+// ─────────────────────────────────────────────
+
+// An App is a global entity (e.g. MAP, HR, CRM).
+// It exists once and can be enabled in many workspaces.
+model App {
+  id   String @id @default(uuid())
+  key  String @unique // "MAP" | "HR" | "CRM"
+  name String
+
+  workspaceApps WorkspaceApp[]
+  modules       Module[]
+}
+
+// Tracks which apps are enabled in a workspace.
+// enabled = false means the app is soft-disabled for that workspace.
+model WorkspaceApp {
+  workspaceId String
+  appId       String
+  enabled     Boolean  @default(true)
+  enabledAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  app       App       @relation(fields: [appId], references: [id])
+
+  @@id([workspaceId, appId])
+  @@index([workspaceId])
+}
+
+// A Module belongs to an App (e.g. EPC, EPF, CRF belong to MAP).
+model Module {
+  id    String @id @default(uuid())
+  key   String // "EPC" | "EPF" | "CRF" | "payroll" | "employee-management"
+  name  String
+  appId String
+
+  app                App                 @relation(fields: [appId], references: [id])
+  // Back-relations from ProfilePermission for FK integrity
+  profilePermissions ProfilePermission[]
+
+  @@unique([appId, key])
+  @@index([appId])
+}
+
+// ─────────────────────────────────────────────
+// PROFILE  (replaces the old "Role" model)
+// ─────────────────────────────────────────────
+
+// A Profile is just a NAMED CONTAINER for a set of permissions.
+// It has NO scope of its own — scope lives on each ProfilePermission row.
+//
+// Example profiles:
+//   "Field Engineer"   → WRITE on MAP app + READ everywhere
+//   "HR Admin"         → WRITE on HR app
+//   "Read-Only User"   → READ across workspace
+//   "EPC Specialist"   → WRITE on MAP→EPC module only
+model Profile {
+  id              String  @id @default(uuid())
+  name            String  // Human-readable label shown in the UI
+  description     String?
+  workspaceId     String
+  isSystemProfile Boolean @default(false) // system profiles cannot be deleted
+
+  workspace    Workspace           @relation(fields: [workspaceId], references: [id])
+  permissions  ProfilePermission[]
+  userProfiles UserProfile[]
+
+  // Two profiles in the same workspace cannot share the same name
+  @@unique([workspaceId, name])
+  @@index([workspaceId])
+}
+
+// ─────────────────────────────────────────────
+// PROFILE PERMISSION
+// ─────────────────────────────────────────────
+
+// One row = "this profile grants action X on module Y"
+// Every permission is explicit — there is no wildcard or blanket scope.
+//
+// Example for "Field Engineer" (read+write on MAP modules, read on HR):
+//   read  | MODULE | epc-id
+//   write | MODULE | epc-id
+//   read  | MODULE | epf-id
+//   write | MODULE | epf-id
+//   read  | MODULE | payroll-id
+//
+// This table is the full, auditable list of what each profile can do.
+model ProfilePermission {
+  id        String           @id @default(uuid())
+  profileId String
+  action    PermissionAction
+
+  // Required — every permission must target a specific module
+  moduleId  String
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  module  Module  @relation(fields: [moduleId], references: [id])
+
+  @@unique([profileId, action, moduleId])
+  @@index([profileId])
+  @@index([profileId, moduleId])
+}
+
+// ─────────────────────────────────────────────
+// USER → PROFILE ASSIGNMENT
+// ─────────────────────────────────────────────
+
+// One row = "user X holds profile Y in workspace W"
+// A user CAN hold multiple profiles at once.
+// The unique key is (userId, workspaceId, profileId) — NOT (userId, workspaceId)
+// This means one user can be assigned both "Field Engineer" AND "HR Admin".
+model UserProfile {
+  id          String   @id @default(uuid())
+  userId      String
+  workspaceId String
+  profileId   String
+  assignedAt  DateTime @default(now())
+  assignedBy  String?  // userId of who granted this — useful for audit logs
+
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  profile   Profile   @relation(fields: [profileId], references: [id])
+
+  @@unique([userId, workspaceId, profileId])
+  @@index([userId, workspaceId])
+  @@index([workspaceId, profileId])
+}
+
+// ─────────────────────────────────────────────
+// BUSINESS DATA MODELS (unchanged)
+// ─────────────────────────────────────────────
+
 model EventProposal {
-  id               String      @id @default(uuid())
+  id               String   @id @default(uuid())
   proposal_number  String   @unique
-  event_from_date       DateTime
-  event_to_date       DateTime
+  event_from_date  DateTime
+  event_to_date    DateTime
   event_description String
-  location String
-  event_objective String
+  location         String
+  event_objective  String
   status           String   @default("PENDING")
- 
-  created_by_id    String  
+
+  created_by_id    String
   updated_by_id    String
   department_id    String
   region_id        String
@@ -79,90 +265,70 @@ model EventProposal {
   budget_master_id String
   event_name_id    String
 
-  department  Department  @relation(fields: [department_id], references: [id])
-  region      Region      @relation(fields: [region_id], references: [id])
-  branch      Branch      @relation(fields: [branch_id], references: [id])
-  event_scale  EventScale  @relation(fields: [event_scale_id], references: [id])
+  department    Department   @relation(fields: [department_id], references: [id])
+  region        Region       @relation(fields: [region_id], references: [id])
+  branch        Branch       @relation(fields: [branch_id], references: [id])
+  event_scale   EventScale   @relation(fields: [event_scale_id], references: [id])
   budget_master BudgetMaster @relation(fields: [budget_master_id], references: [id])
-  event_name EventName @relation(fields: [event_name_id], references: [id])
-  created_by User @relation("EventCreatedBy", fields: [created_by_id], references: [id])
-  updated_by User @relation("EventUpdatedBy", fields: [updated_by_id], references: [id])
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  event_name    EventName    @relation(fields: [event_name_id], references: [id])
+  created_by    User         @relation("EventCreatedBy", fields: [created_by_id], references: [id])
+  updated_by    User         @relation("EventUpdatedBy", fields: [updated_by_id], references: [id])
 
-  search_vector     Unsupported("tsvector")?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
 
+  search_vector Unsupported("tsvector")?
 }
-
 
 model Department {
-  id              String    @id @default(uuid())
-  department_code String   @unique
+  id              String          @id @default(uuid())
+  department_code String          @unique
   department_name String
   event_proposals EventProposal[]
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
 }
-
 
 model Region {
-  id           String     @id @default(uuid())
-  region_code  String  @unique
-  region_name  String
+  id              String          @id @default(uuid())
+  region_code     String          @unique
+  region_name     String
   event_proposals EventProposal[]
-  branch Branch[]
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
 }
-
 
 model Branch {
-  id            String     @id @default(uuid())
-  branch_code   String  @unique
-  branch_name   String
-  region_id     String
-  region Region @relation(fields: [region_id], references: [id])
+  id              String          @id @default(uuid())
+  branch_code     String          @unique
+  branch_name     String
   event_proposals EventProposal[]
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
 }
-
 
 model EventScale {
-  id              String     @id @default(uuid())
-  scale_code      String  @unique
-  scale_name      String
-  max_budget      Decimal
+  id              String          @id @default(uuid())
+  code            String          @unique
+  title           String
   event_proposals EventProposal[]
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
 }
-
 
 model BudgetMaster {
-  id             String      @id @default(uuid())
-  financial_year String
-  total_budget   Decimal
+  id              String          @id @default(uuid())
+  fiscal_year     String
+  code            String
+  id_desc         String
+  value           Decimal
   event_proposals EventProposal[]
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
 }
-
 
 model EventName {
-  id          String    @id @default(uuid())
-  event_code  String @unique
-  description String
-  events      EventProposal[]
-
+  id     String          @id @default(uuid())
+  title  String
+  events EventProposal[]
 }
-
-
-
-
-

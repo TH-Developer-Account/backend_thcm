@@ -55,6 +55,14 @@ export const ModelName = {
   PasswordResetToken: 'PasswordResetToken',
   RefreshToken: 'RefreshToken',
   DailyVisitors: 'DailyVisitors',
+  Workspace: 'Workspace',
+  WorkspaceUser: 'WorkspaceUser',
+  App: 'App',
+  WorkspaceApp: 'WorkspaceApp',
+  Module: 'Module',
+  Profile: 'Profile',
+  ProfilePermission: 'ProfilePermission',
+  UserProfile: 'UserProfile',
   EventProposal: 'EventProposal',
   Department: 'Department',
   Region: 'Region',
@@ -134,6 +142,86 @@ export const DailyVisitorsScalarFieldEnum = {
 export type DailyVisitorsScalarFieldEnum = (typeof DailyVisitorsScalarFieldEnum)[keyof typeof DailyVisitorsScalarFieldEnum]
 
 
+export const WorkspaceScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+} as const
+
+export type WorkspaceScalarFieldEnum = (typeof WorkspaceScalarFieldEnum)[keyof typeof WorkspaceScalarFieldEnum]
+
+
+export const WorkspaceUserScalarFieldEnum = {
+  userId: 'userId',
+  workspaceId: 'workspaceId',
+  isSuperAdmin: 'isSuperAdmin',
+  joinedAt: 'joinedAt'
+} as const
+
+export type WorkspaceUserScalarFieldEnum = (typeof WorkspaceUserScalarFieldEnum)[keyof typeof WorkspaceUserScalarFieldEnum]
+
+
+export const AppScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  name: 'name'
+} as const
+
+export type AppScalarFieldEnum = (typeof AppScalarFieldEnum)[keyof typeof AppScalarFieldEnum]
+
+
+export const WorkspaceAppScalarFieldEnum = {
+  workspaceId: 'workspaceId',
+  appId: 'appId',
+  enabled: 'enabled',
+  enabledAt: 'enabledAt'
+} as const
+
+export type WorkspaceAppScalarFieldEnum = (typeof WorkspaceAppScalarFieldEnum)[keyof typeof WorkspaceAppScalarFieldEnum]
+
+
+export const ModuleScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  name: 'name',
+  appId: 'appId'
+} as const
+
+export type ModuleScalarFieldEnum = (typeof ModuleScalarFieldEnum)[keyof typeof ModuleScalarFieldEnum]
+
+
+export const ProfileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  workspaceId: 'workspaceId',
+  isSystemProfile: 'isSystemProfile'
+} as const
+
+export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
+
+
+export const ProfilePermissionScalarFieldEnum = {
+  id: 'id',
+  profileId: 'profileId',
+  action: 'action',
+  moduleId: 'moduleId'
+} as const
+
+export type ProfilePermissionScalarFieldEnum = (typeof ProfilePermissionScalarFieldEnum)[keyof typeof ProfilePermissionScalarFieldEnum]
+
+
+export const UserProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  workspaceId: 'workspaceId',
+  profileId: 'profileId',
+  assignedAt: 'assignedAt',
+  assignedBy: 'assignedBy'
+} as const
+
+export type UserProfileScalarFieldEnum = (typeof UserProfileScalarFieldEnum)[keyof typeof UserProfileScalarFieldEnum]
+
+
 export const EventProposalScalarFieldEnum = {
   id: 'id',
   proposal_number: 'proposal_number',
@@ -184,7 +272,6 @@ export const BranchScalarFieldEnum = {
   id: 'id',
   branch_code: 'branch_code',
   branch_name: 'branch_name',
-  region_id: 'region_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -194,9 +281,8 @@ export type BranchScalarFieldEnum = (typeof BranchScalarFieldEnum)[keyof typeof 
 
 export const EventScaleScalarFieldEnum = {
   id: 'id',
-  scale_code: 'scale_code',
-  scale_name: 'scale_name',
-  max_budget: 'max_budget',
+  code: 'code',
+  title: 'title',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -206,8 +292,10 @@ export type EventScaleScalarFieldEnum = (typeof EventScaleScalarFieldEnum)[keyof
 
 export const BudgetMasterScalarFieldEnum = {
   id: 'id',
-  financial_year: 'financial_year',
-  total_budget: 'total_budget',
+  fiscal_year: 'fiscal_year',
+  code: 'code',
+  id_desc: 'id_desc',
+  value: 'value',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -217,8 +305,7 @@ export type BudgetMasterScalarFieldEnum = (typeof BudgetMasterScalarFieldEnum)[k
 
 export const EventNameScalarFieldEnum = {
   id: 'id',
-  event_code: 'event_code',
-  description: 'description'
+  title: 'title'
 } as const
 
 export type EventNameScalarFieldEnum = (typeof EventNameScalarFieldEnum)[keyof typeof EventNameScalarFieldEnum]

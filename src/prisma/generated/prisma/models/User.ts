@@ -224,6 +224,8 @@ export type UserWhereInput = {
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
   refresh_tokens?: Prisma.RefreshTokenListRelationFilter
   password_reset_tokens?: Prisma.PasswordResetTokenListRelationFilter
+  workspaceUsers?: Prisma.WorkspaceUserListRelationFilter
+  userProfiles?: Prisma.UserProfileListRelationFilter
   created_event_proposals?: Prisma.EventProposalListRelationFilter
   updated_event_proposals?: Prisma.EventProposalListRelationFilter
 }
@@ -241,6 +243,8 @@ export type UserOrderByWithRelationInput = {
   updated_at?: Prisma.SortOrder
   refresh_tokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
   password_reset_tokens?: Prisma.PasswordResetTokenOrderByRelationAggregateInput
+  workspaceUsers?: Prisma.WorkspaceUserOrderByRelationAggregateInput
+  userProfiles?: Prisma.UserProfileOrderByRelationAggregateInput
   created_event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
   updated_event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
 }
@@ -261,6 +265,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
   refresh_tokens?: Prisma.RefreshTokenListRelationFilter
   password_reset_tokens?: Prisma.PasswordResetTokenListRelationFilter
+  workspaceUsers?: Prisma.WorkspaceUserListRelationFilter
+  userProfiles?: Prisma.UserProfileListRelationFilter
   created_event_proposals?: Prisma.EventProposalListRelationFilter
   updated_event_proposals?: Prisma.EventProposalListRelationFilter
 }, "id" | "email" | "phone_number">
@@ -310,6 +316,8 @@ export type UserCreateInput = {
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
 }
@@ -327,6 +335,8 @@ export type UserUncheckedCreateInput = {
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
 }
@@ -344,6 +354,8 @@ export type UserUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
 }
@@ -361,6 +373,8 @@ export type UserUncheckedUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
 }
@@ -488,6 +502,34 @@ export type UserUpdateOneRequiredWithoutRefresh_tokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRefresh_tokensInput, Prisma.UserUpdateWithoutRefresh_tokensInput>, Prisma.UserUncheckedUpdateWithoutRefresh_tokensInput>
 }
 
+export type UserCreateNestedOneWithoutWorkspaceUsersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWorkspaceUsersInput, Prisma.UserUncheckedCreateWithoutWorkspaceUsersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWorkspaceUsersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutWorkspaceUsersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutWorkspaceUsersInput, Prisma.UserUncheckedCreateWithoutWorkspaceUsersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutWorkspaceUsersInput
+  upsert?: Prisma.UserUpsertWithoutWorkspaceUsersInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWorkspaceUsersInput, Prisma.UserUpdateWithoutWorkspaceUsersInput>, Prisma.UserUncheckedUpdateWithoutWorkspaceUsersInput>
+}
+
+export type UserCreateNestedOneWithoutUserProfilesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserProfilesInput, Prisma.UserUncheckedCreateWithoutUserProfilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserProfilesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutUserProfilesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUserProfilesInput, Prisma.UserUncheckedCreateWithoutUserProfilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserProfilesInput
+  upsert?: Prisma.UserUpsertWithoutUserProfilesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUserProfilesInput, Prisma.UserUpdateWithoutUserProfilesInput>, Prisma.UserUncheckedUpdateWithoutUserProfilesInput>
+}
+
 export type UserCreateNestedOneWithoutCreated_event_proposalsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutCreated_event_proposalsInput, Prisma.UserUncheckedCreateWithoutCreated_event_proposalsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreated_event_proposalsInput
@@ -528,6 +570,8 @@ export type UserCreateWithoutPassword_reset_tokensInput = {
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
 }
@@ -544,6 +588,8 @@ export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
 }
@@ -576,6 +622,8 @@ export type UserUpdateWithoutPassword_reset_tokensInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
 }
@@ -592,6 +640,8 @@ export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
 }
@@ -608,6 +658,8 @@ export type UserCreateWithoutRefresh_tokensInput = {
   created_at?: Date | string
   updated_at?: Date | string
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
 }
@@ -624,6 +676,8 @@ export type UserUncheckedCreateWithoutRefresh_tokensInput = {
   created_at?: Date | string
   updated_at?: Date | string
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
 }
@@ -656,6 +710,8 @@ export type UserUpdateWithoutRefresh_tokensInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
 }
@@ -672,6 +728,184 @@ export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
+}
+
+export type UserCreateWithoutWorkspaceUsersInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
+}
+
+export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
+}
+
+export type UserCreateOrConnectWithoutWorkspaceUsersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutWorkspaceUsersInput, Prisma.UserUncheckedCreateWithoutWorkspaceUsersInput>
+}
+
+export type UserUpsertWithoutWorkspaceUsersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutWorkspaceUsersInput, Prisma.UserUncheckedUpdateWithoutWorkspaceUsersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutWorkspaceUsersInput, Prisma.UserUncheckedCreateWithoutWorkspaceUsersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutWorkspaceUsersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutWorkspaceUsersInput, Prisma.UserUncheckedUpdateWithoutWorkspaceUsersInput>
+}
+
+export type UserUpdateWithoutWorkspaceUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
+}
+
+export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
+}
+
+export type UserCreateWithoutUserProfilesInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
+}
+
+export type UserUncheckedCreateWithoutUserProfilesInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
+}
+
+export type UserCreateOrConnectWithoutUserProfilesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserProfilesInput, Prisma.UserUncheckedCreateWithoutUserProfilesInput>
+}
+
+export type UserUpsertWithoutUserProfilesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUserProfilesInput, Prisma.UserUncheckedUpdateWithoutUserProfilesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUserProfilesInput, Prisma.UserUncheckedCreateWithoutUserProfilesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUserProfilesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUserProfilesInput, Prisma.UserUncheckedUpdateWithoutUserProfilesInput>
+}
+
+export type UserUpdateWithoutUserProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUserProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
 }
@@ -689,6 +923,8 @@ export type UserCreateWithoutCreated_event_proposalsInput = {
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
 }
 
@@ -705,6 +941,8 @@ export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
 }
 
@@ -726,6 +964,8 @@ export type UserCreateWithoutUpdated_event_proposalsInput = {
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
 }
 
@@ -742,6 +982,8 @@ export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
 }
 
@@ -774,6 +1016,8 @@ export type UserUpdateWithoutCreated_event_proposalsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
 }
 
@@ -790,6 +1034,8 @@ export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
 }
 
@@ -817,6 +1063,8 @@ export type UserUpdateWithoutUpdated_event_proposalsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
 }
 
@@ -833,6 +1081,8 @@ export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
 }
 
@@ -844,6 +1094,8 @@ export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
 export type UserCountOutputType = {
   refresh_tokens: number
   password_reset_tokens: number
+  workspaceUsers: number
+  userProfiles: number
   created_event_proposals: number
   updated_event_proposals: number
 }
@@ -851,6 +1103,8 @@ export type UserCountOutputType = {
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   refresh_tokens?: boolean | UserCountOutputTypeCountRefresh_tokensArgs
   password_reset_tokens?: boolean | UserCountOutputTypeCountPassword_reset_tokensArgs
+  workspaceUsers?: boolean | UserCountOutputTypeCountWorkspaceUsersArgs
+  userProfiles?: boolean | UserCountOutputTypeCountUserProfilesArgs
   created_event_proposals?: boolean | UserCountOutputTypeCountCreated_event_proposalsArgs
   updated_event_proposals?: boolean | UserCountOutputTypeCountUpdated_event_proposalsArgs
 }
@@ -882,6 +1136,20 @@ export type UserCountOutputTypeCountPassword_reset_tokensArgs<ExtArgs extends ru
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountWorkspaceUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkspaceUserWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUserProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserProfileWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountCreated_event_proposalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EventProposalWhereInput
 }
@@ -907,6 +1175,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updated_at?: boolean
   refresh_tokens?: boolean | Prisma.User$refresh_tokensArgs<ExtArgs>
   password_reset_tokens?: boolean | Prisma.User$password_reset_tokensArgs<ExtArgs>
+  workspaceUsers?: boolean | Prisma.User$workspaceUsersArgs<ExtArgs>
+  userProfiles?: boolean | Prisma.User$userProfilesArgs<ExtArgs>
   created_event_proposals?: boolean | Prisma.User$created_event_proposalsArgs<ExtArgs>
   updated_event_proposals?: boolean | Prisma.User$updated_event_proposalsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -955,6 +1225,8 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   refresh_tokens?: boolean | Prisma.User$refresh_tokensArgs<ExtArgs>
   password_reset_tokens?: boolean | Prisma.User$password_reset_tokensArgs<ExtArgs>
+  workspaceUsers?: boolean | Prisma.User$workspaceUsersArgs<ExtArgs>
+  userProfiles?: boolean | Prisma.User$userProfilesArgs<ExtArgs>
   created_event_proposals?: boolean | Prisma.User$created_event_proposalsArgs<ExtArgs>
   updated_event_proposals?: boolean | Prisma.User$updated_event_proposalsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -967,6 +1239,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     refresh_tokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
     password_reset_tokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
+    workspaceUsers: Prisma.$WorkspaceUserPayload<ExtArgs>[]
+    userProfiles: Prisma.$UserProfilePayload<ExtArgs>[]
     created_event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
     updated_event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
   }
@@ -1377,6 +1651,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   refresh_tokens<T extends Prisma.User$refresh_tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refresh_tokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   password_reset_tokens<T extends Prisma.User$password_reset_tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$password_reset_tokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workspaceUsers<T extends Prisma.User$workspaceUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workspaceUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userProfiles<T extends Prisma.User$userProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   created_event_proposals<T extends Prisma.User$created_event_proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$created_event_proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   updated_event_proposals<T extends Prisma.User$updated_event_proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updated_event_proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1851,6 +2127,54 @@ export type User$password_reset_tokensArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.PasswordResetTokenScalarFieldEnum | Prisma.PasswordResetTokenScalarFieldEnum[]
+}
+
+/**
+ * User.workspaceUsers
+ */
+export type User$workspaceUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkspaceUser
+   */
+  select?: Prisma.WorkspaceUserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkspaceUser
+   */
+  omit?: Prisma.WorkspaceUserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkspaceUserInclude<ExtArgs> | null
+  where?: Prisma.WorkspaceUserWhereInput
+  orderBy?: Prisma.WorkspaceUserOrderByWithRelationInput | Prisma.WorkspaceUserOrderByWithRelationInput[]
+  cursor?: Prisma.WorkspaceUserWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkspaceUserScalarFieldEnum | Prisma.WorkspaceUserScalarFieldEnum[]
+}
+
+/**
+ * User.userProfiles
+ */
+export type User$userProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserProfile
+   */
+  select?: Prisma.UserProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserProfile
+   */
+  omit?: Prisma.UserProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserProfileInclude<ExtArgs> | null
+  where?: Prisma.UserProfileWhereInput
+  orderBy?: Prisma.UserProfileOrderByWithRelationInput | Prisma.UserProfileOrderByWithRelationInput[]
+  cursor?: Prisma.UserProfileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserProfileScalarFieldEnum | Prisma.UserProfileScalarFieldEnum[]
 }
 
 /**
