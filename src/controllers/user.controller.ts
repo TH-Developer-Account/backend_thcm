@@ -200,7 +200,7 @@ export async function assignUserProfiles(req: Request, res: Response) {
       ? `Profile assigned to ${userIds.length} user(s) successfully`
       : `Profile cleared for ${userIds.length} user(s) successfully`;
 
-    res.json({ message });
+    res.status(200).json({ message });
   } catch (error: any) {
     if (error instanceof ApiError) throw error;
     console.error("assignUserProfiles failed:", error);
