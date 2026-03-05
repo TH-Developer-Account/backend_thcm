@@ -72,8 +72,6 @@ export const getCurrentUser = async (
       workspace.workspaceId,
     );
 
-    console.log("========>", permissions);
-
     res.status(200).json({
       user,
       workspaceId: workspace.workspaceId,

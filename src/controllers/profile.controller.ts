@@ -181,11 +181,6 @@ export async function getProfiles(req: Request, res: Response) {
       orderBy: { created_at: "desc" },
     });
 
-    console.log(
-      "=========================>",
-      JSON.stringify(profiles, null, 2),
-    );
-
     res.json({ count: profiles.length, data: profiles.map(formatProfile) });
   } catch (error: any) {
     console.error("getProfiles failed:", error);
