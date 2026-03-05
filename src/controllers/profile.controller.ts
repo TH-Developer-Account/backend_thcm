@@ -112,6 +112,18 @@ const profileInclude = {
       { action: "asc" as const },
     ],
   },
+  userProfiles: {
+    select: {
+      user: {
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+        },
+      },
+    },
+  },
   _count: { select: { userProfiles: true } },
 } satisfies Prisma.ProfileInclude;
 
@@ -122,6 +134,12 @@ function formatProfile(profile: any) {
     description: profile.description,
     isSystemProfile: profile.isSystemProfile,
     assignedUserCount: profile._count.userProfiles,
+    users: profile.userProfiles.map((up: any) => ({
+      id: up.user.id,
+      firstName: up.user.first_name,
+      lastName: up.user.last_name,
+      email: up.user.email,
+    })),
     permissions: profile.permissions.map((p: any) => ({
       action: p.action,
       appKey: p.module.app.key,
