@@ -29,6 +29,8 @@ export type ModuleMinAggregateOutputType = {
   key: string | null
   name: string | null
   appId: string | null
+  created_at: Date | null
+  updated_at: Date | null
 }
 
 export type ModuleMaxAggregateOutputType = {
@@ -36,6 +38,8 @@ export type ModuleMaxAggregateOutputType = {
   key: string | null
   name: string | null
   appId: string | null
+  created_at: Date | null
+  updated_at: Date | null
 }
 
 export type ModuleCountAggregateOutputType = {
@@ -43,6 +47,8 @@ export type ModuleCountAggregateOutputType = {
   key: number
   name: number
   appId: number
+  created_at: number
+  updated_at: number
   _all: number
 }
 
@@ -52,6 +58,8 @@ export type ModuleMinAggregateInputType = {
   key?: true
   name?: true
   appId?: true
+  created_at?: true
+  updated_at?: true
 }
 
 export type ModuleMaxAggregateInputType = {
@@ -59,6 +67,8 @@ export type ModuleMaxAggregateInputType = {
   key?: true
   name?: true
   appId?: true
+  created_at?: true
+  updated_at?: true
 }
 
 export type ModuleCountAggregateInputType = {
@@ -66,6 +76,8 @@ export type ModuleCountAggregateInputType = {
   key?: true
   name?: true
   appId?: true
+  created_at?: true
+  updated_at?: true
   _all?: true
 }
 
@@ -146,6 +158,8 @@ export type ModuleGroupByOutputType = {
   key: string
   name: string
   appId: string
+  created_at: Date
+  updated_at: Date
   _count: ModuleCountAggregateOutputType | null
   _min: ModuleMinAggregateOutputType | null
   _max: ModuleMaxAggregateOutputType | null
@@ -174,6 +188,8 @@ export type ModuleWhereInput = {
   key?: Prisma.StringFilter<"Module"> | string
   name?: Prisma.StringFilter<"Module"> | string
   appId?: Prisma.StringFilter<"Module"> | string
+  created_at?: Prisma.DateTimeFilter<"Module"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"Module"> | Date | string
   app?: Prisma.XOR<Prisma.AppScalarRelationFilter, Prisma.AppWhereInput>
   profilePermissions?: Prisma.ProfilePermissionListRelationFilter
 }
@@ -183,6 +199,8 @@ export type ModuleOrderByWithRelationInput = {
   key?: Prisma.SortOrder
   name?: Prisma.SortOrder
   appId?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
   app?: Prisma.AppOrderByWithRelationInput
   profilePermissions?: Prisma.ProfilePermissionOrderByRelationAggregateInput
 }
@@ -196,6 +214,8 @@ export type ModuleWhereUniqueInput = Prisma.AtLeast<{
   key?: Prisma.StringFilter<"Module"> | string
   name?: Prisma.StringFilter<"Module"> | string
   appId?: Prisma.StringFilter<"Module"> | string
+  created_at?: Prisma.DateTimeFilter<"Module"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"Module"> | Date | string
   app?: Prisma.XOR<Prisma.AppScalarRelationFilter, Prisma.AppWhereInput>
   profilePermissions?: Prisma.ProfilePermissionListRelationFilter
 }, "id" | "appId_key">
@@ -205,6 +225,8 @@ export type ModuleOrderByWithAggregationInput = {
   key?: Prisma.SortOrder
   name?: Prisma.SortOrder
   appId?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
   _count?: Prisma.ModuleCountOrderByAggregateInput
   _max?: Prisma.ModuleMaxOrderByAggregateInput
   _min?: Prisma.ModuleMinOrderByAggregateInput
@@ -218,12 +240,16 @@ export type ModuleScalarWhereWithAggregatesInput = {
   key?: Prisma.StringWithAggregatesFilter<"Module"> | string
   name?: Prisma.StringWithAggregatesFilter<"Module"> | string
   appId?: Prisma.StringWithAggregatesFilter<"Module"> | string
+  created_at?: Prisma.DateTimeWithAggregatesFilter<"Module"> | Date | string
+  updated_at?: Prisma.DateTimeWithAggregatesFilter<"Module"> | Date | string
 }
 
 export type ModuleCreateInput = {
   id?: string
   key: string
   name: string
+  created_at?: Date | string
+  updated_at?: Date | string
   app: Prisma.AppCreateNestedOneWithoutModulesInput
   profilePermissions?: Prisma.ProfilePermissionCreateNestedManyWithoutModuleInput
 }
@@ -233,6 +259,8 @@ export type ModuleUncheckedCreateInput = {
   key: string
   name: string
   appId: string
+  created_at?: Date | string
+  updated_at?: Date | string
   profilePermissions?: Prisma.ProfilePermissionUncheckedCreateNestedManyWithoutModuleInput
 }
 
@@ -240,6 +268,8 @@ export type ModuleUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   app?: Prisma.AppUpdateOneRequiredWithoutModulesNestedInput
   profilePermissions?: Prisma.ProfilePermissionUpdateManyWithoutModuleNestedInput
 }
@@ -249,6 +279,8 @@ export type ModuleUncheckedUpdateInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profilePermissions?: Prisma.ProfilePermissionUncheckedUpdateManyWithoutModuleNestedInput
 }
 
@@ -257,12 +289,16 @@ export type ModuleCreateManyInput = {
   key: string
   name: string
   appId: string
+  created_at?: Date | string
+  updated_at?: Date | string
 }
 
 export type ModuleUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ModuleUncheckedUpdateManyInput = {
@@ -270,6 +306,8 @@ export type ModuleUncheckedUpdateManyInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ModuleListRelationFilter = {
@@ -292,6 +330,8 @@ export type ModuleCountOrderByAggregateInput = {
   key?: Prisma.SortOrder
   name?: Prisma.SortOrder
   appId?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type ModuleMaxOrderByAggregateInput = {
@@ -299,6 +339,8 @@ export type ModuleMaxOrderByAggregateInput = {
   key?: Prisma.SortOrder
   name?: Prisma.SortOrder
   appId?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type ModuleMinOrderByAggregateInput = {
@@ -306,6 +348,8 @@ export type ModuleMinOrderByAggregateInput = {
   key?: Prisma.SortOrder
   name?: Prisma.SortOrder
   appId?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type ModuleScalarRelationFilter = {
@@ -373,6 +417,8 @@ export type ModuleCreateWithoutAppInput = {
   id?: string
   key: string
   name: string
+  created_at?: Date | string
+  updated_at?: Date | string
   profilePermissions?: Prisma.ProfilePermissionCreateNestedManyWithoutModuleInput
 }
 
@@ -380,6 +426,8 @@ export type ModuleUncheckedCreateWithoutAppInput = {
   id?: string
   key: string
   name: string
+  created_at?: Date | string
+  updated_at?: Date | string
   profilePermissions?: Prisma.ProfilePermissionUncheckedCreateNestedManyWithoutModuleInput
 }
 
@@ -417,12 +465,16 @@ export type ModuleScalarWhereInput = {
   key?: Prisma.StringFilter<"Module"> | string
   name?: Prisma.StringFilter<"Module"> | string
   appId?: Prisma.StringFilter<"Module"> | string
+  created_at?: Prisma.DateTimeFilter<"Module"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"Module"> | Date | string
 }
 
 export type ModuleCreateWithoutProfilePermissionsInput = {
   id?: string
   key: string
   name: string
+  created_at?: Date | string
+  updated_at?: Date | string
   app: Prisma.AppCreateNestedOneWithoutModulesInput
 }
 
@@ -431,6 +483,8 @@ export type ModuleUncheckedCreateWithoutProfilePermissionsInput = {
   key: string
   name: string
   appId: string
+  created_at?: Date | string
+  updated_at?: Date | string
 }
 
 export type ModuleCreateOrConnectWithoutProfilePermissionsInput = {
@@ -453,6 +507,8 @@ export type ModuleUpdateWithoutProfilePermissionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   app?: Prisma.AppUpdateOneRequiredWithoutModulesNestedInput
 }
 
@@ -461,18 +517,24 @@ export type ModuleUncheckedUpdateWithoutProfilePermissionsInput = {
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ModuleCreateManyAppInput = {
   id?: string
   key: string
   name: string
+  created_at?: Date | string
+  updated_at?: Date | string
 }
 
 export type ModuleUpdateWithoutAppInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profilePermissions?: Prisma.ProfilePermissionUpdateManyWithoutModuleNestedInput
 }
 
@@ -480,6 +542,8 @@ export type ModuleUncheckedUpdateWithoutAppInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   profilePermissions?: Prisma.ProfilePermissionUncheckedUpdateManyWithoutModuleNestedInput
 }
 
@@ -487,6 +551,8 @@ export type ModuleUncheckedUpdateManyWithoutAppInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -525,6 +591,8 @@ export type ModuleSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   key?: boolean
   name?: boolean
   appId?: boolean
+  created_at?: boolean
+  updated_at?: boolean
   app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
   profilePermissions?: boolean | Prisma.Module$profilePermissionsArgs<ExtArgs>
   _count?: boolean | Prisma.ModuleCountOutputTypeDefaultArgs<ExtArgs>
@@ -535,6 +603,8 @@ export type ModuleSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   key?: boolean
   name?: boolean
   appId?: boolean
+  created_at?: boolean
+  updated_at?: boolean
   app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["module"]>
 
@@ -543,6 +613,8 @@ export type ModuleSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   key?: boolean
   name?: boolean
   appId?: boolean
+  created_at?: boolean
+  updated_at?: boolean
   app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["module"]>
 
@@ -551,9 +623,11 @@ export type ModuleSelectScalar = {
   key?: boolean
   name?: boolean
   appId?: boolean
+  created_at?: boolean
+  updated_at?: boolean
 }
 
-export type ModuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "key" | "name" | "appId", ExtArgs["result"]["module"]>
+export type ModuleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "key" | "name" | "appId" | "created_at" | "updated_at", ExtArgs["result"]["module"]>
 export type ModuleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
   profilePermissions?: boolean | Prisma.Module$profilePermissionsArgs<ExtArgs>
@@ -577,6 +651,8 @@ export type $ModulePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     key: string
     name: string
     appId: string
+    created_at: Date
+    updated_at: Date
   }, ExtArgs["result"]["module"]>
   composites: {}
 }
@@ -1006,6 +1082,8 @@ export interface ModuleFieldRefs {
   readonly key: Prisma.FieldRef<"Module", 'String'>
   readonly name: Prisma.FieldRef<"Module", 'String'>
   readonly appId: Prisma.FieldRef<"Module", 'String'>
+  readonly created_at: Prisma.FieldRef<"Module", 'DateTime'>
+  readonly updated_at: Prisma.FieldRef<"Module", 'DateTime'>
 }
     
 

@@ -178,8 +178,13 @@ export async function getProfiles(req: Request, res: Response) {
     const profiles = await prisma.profile.findMany({
       where: { workspaceId },
       include: profileInclude,
-      orderBy: { name: "asc" },
+      orderBy: { created_at: "desc" },
     });
+
+    console.log(
+      "=========================>",
+      JSON.stringify(profiles, null, 2),
+    );
 
     res.json({ count: profiles.length, data: profiles.map(formatProfile) });
   } catch (error: any) {

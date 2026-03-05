@@ -96,6 +96,8 @@ model Workspace {
   apps         WorkspaceApp[]
   profiles     Profile[]
   userProfiles UserProfile[]
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
 }
 
 // Tracks which users belong to a workspace.
@@ -123,6 +125,8 @@ model App {
   id   String @id @default(uuid())
   key  String @unique // "MAP" | "HR" | "CRM"
   name String
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
 
   workspaceApps WorkspaceApp[]
   modules       Module[]
@@ -149,6 +153,8 @@ model Module {
   key   String // "EPC" | "EPF" | "CRF" | "payroll" | "employee-management"
   name  String
   appId String
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
 
   app                App                 @relation(fields: [appId], references: [id])
   // Back-relations from ProfilePermission for FK integrity
@@ -176,6 +182,8 @@ model Profile {
   description     String?
   workspaceId     String
   isSystemProfile Boolean @default(false) // system profiles cannot be deleted
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
 
   workspace    Workspace           @relation(fields: [workspaceId], references: [id])
   permissions  ProfilePermission[]

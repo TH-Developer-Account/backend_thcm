@@ -28,18 +28,24 @@ export type AppMinAggregateOutputType = {
   id: string | null
   key: string | null
   name: string | null
+  created_at: Date | null
+  updated_at: Date | null
 }
 
 export type AppMaxAggregateOutputType = {
   id: string | null
   key: string | null
   name: string | null
+  created_at: Date | null
+  updated_at: Date | null
 }
 
 export type AppCountAggregateOutputType = {
   id: number
   key: number
   name: number
+  created_at: number
+  updated_at: number
   _all: number
 }
 
@@ -48,18 +54,24 @@ export type AppMinAggregateInputType = {
   id?: true
   key?: true
   name?: true
+  created_at?: true
+  updated_at?: true
 }
 
 export type AppMaxAggregateInputType = {
   id?: true
   key?: true
   name?: true
+  created_at?: true
+  updated_at?: true
 }
 
 export type AppCountAggregateInputType = {
   id?: true
   key?: true
   name?: true
+  created_at?: true
+  updated_at?: true
   _all?: true
 }
 
@@ -139,6 +151,8 @@ export type AppGroupByOutputType = {
   id: string
   key: string
   name: string
+  created_at: Date
+  updated_at: Date
   _count: AppCountAggregateOutputType | null
   _min: AppMinAggregateOutputType | null
   _max: AppMaxAggregateOutputType | null
@@ -166,6 +180,8 @@ export type AppWhereInput = {
   id?: Prisma.StringFilter<"App"> | string
   key?: Prisma.StringFilter<"App"> | string
   name?: Prisma.StringFilter<"App"> | string
+  created_at?: Prisma.DateTimeFilter<"App"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"App"> | Date | string
   workspaceApps?: Prisma.WorkspaceAppListRelationFilter
   modules?: Prisma.ModuleListRelationFilter
 }
@@ -174,6 +190,8 @@ export type AppOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   key?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
   workspaceApps?: Prisma.WorkspaceAppOrderByRelationAggregateInput
   modules?: Prisma.ModuleOrderByRelationAggregateInput
 }
@@ -185,6 +203,8 @@ export type AppWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.AppWhereInput[]
   NOT?: Prisma.AppWhereInput | Prisma.AppWhereInput[]
   name?: Prisma.StringFilter<"App"> | string
+  created_at?: Prisma.DateTimeFilter<"App"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"App"> | Date | string
   workspaceApps?: Prisma.WorkspaceAppListRelationFilter
   modules?: Prisma.ModuleListRelationFilter
 }, "id" | "key">
@@ -193,6 +213,8 @@ export type AppOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   key?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
   _count?: Prisma.AppCountOrderByAggregateInput
   _max?: Prisma.AppMaxOrderByAggregateInput
   _min?: Prisma.AppMinOrderByAggregateInput
@@ -205,12 +227,16 @@ export type AppScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"App"> | string
   key?: Prisma.StringWithAggregatesFilter<"App"> | string
   name?: Prisma.StringWithAggregatesFilter<"App"> | string
+  created_at?: Prisma.DateTimeWithAggregatesFilter<"App"> | Date | string
+  updated_at?: Prisma.DateTimeWithAggregatesFilter<"App"> | Date | string
 }
 
 export type AppCreateInput = {
   id?: string
   key: string
   name: string
+  created_at?: Date | string
+  updated_at?: Date | string
   workspaceApps?: Prisma.WorkspaceAppCreateNestedManyWithoutAppInput
   modules?: Prisma.ModuleCreateNestedManyWithoutAppInput
 }
@@ -219,6 +245,8 @@ export type AppUncheckedCreateInput = {
   id?: string
   key: string
   name: string
+  created_at?: Date | string
+  updated_at?: Date | string
   workspaceApps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutAppInput
   modules?: Prisma.ModuleUncheckedCreateNestedManyWithoutAppInput
 }
@@ -227,6 +255,8 @@ export type AppUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaceApps?: Prisma.WorkspaceAppUpdateManyWithoutAppNestedInput
   modules?: Prisma.ModuleUpdateManyWithoutAppNestedInput
 }
@@ -235,6 +265,8 @@ export type AppUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaceApps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutAppNestedInput
   modules?: Prisma.ModuleUncheckedUpdateManyWithoutAppNestedInput
 }
@@ -243,36 +275,48 @@ export type AppCreateManyInput = {
   id?: string
   key: string
   name: string
+  created_at?: Date | string
+  updated_at?: Date | string
 }
 
 export type AppUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AppUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AppCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   key?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type AppMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   key?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type AppMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   key?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type AppScalarRelationFilter = {
@@ -312,6 +356,8 @@ export type AppCreateWithoutWorkspaceAppsInput = {
   id?: string
   key: string
   name: string
+  created_at?: Date | string
+  updated_at?: Date | string
   modules?: Prisma.ModuleCreateNestedManyWithoutAppInput
 }
 
@@ -319,6 +365,8 @@ export type AppUncheckedCreateWithoutWorkspaceAppsInput = {
   id?: string
   key: string
   name: string
+  created_at?: Date | string
+  updated_at?: Date | string
   modules?: Prisma.ModuleUncheckedCreateNestedManyWithoutAppInput
 }
 
@@ -342,6 +390,8 @@ export type AppUpdateWithoutWorkspaceAppsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modules?: Prisma.ModuleUpdateManyWithoutAppNestedInput
 }
 
@@ -349,6 +399,8 @@ export type AppUncheckedUpdateWithoutWorkspaceAppsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modules?: Prisma.ModuleUncheckedUpdateManyWithoutAppNestedInput
 }
 
@@ -356,6 +408,8 @@ export type AppCreateWithoutModulesInput = {
   id?: string
   key: string
   name: string
+  created_at?: Date | string
+  updated_at?: Date | string
   workspaceApps?: Prisma.WorkspaceAppCreateNestedManyWithoutAppInput
 }
 
@@ -363,6 +417,8 @@ export type AppUncheckedCreateWithoutModulesInput = {
   id?: string
   key: string
   name: string
+  created_at?: Date | string
+  updated_at?: Date | string
   workspaceApps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutAppInput
 }
 
@@ -386,6 +442,8 @@ export type AppUpdateWithoutModulesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaceApps?: Prisma.WorkspaceAppUpdateManyWithoutAppNestedInput
 }
 
@@ -393,6 +451,8 @@ export type AppUncheckedUpdateWithoutModulesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   key?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaceApps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutAppNestedInput
 }
 
@@ -440,6 +500,8 @@ export type AppSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   id?: boolean
   key?: boolean
   name?: boolean
+  created_at?: boolean
+  updated_at?: boolean
   workspaceApps?: boolean | Prisma.App$workspaceAppsArgs<ExtArgs>
   modules?: boolean | Prisma.App$modulesArgs<ExtArgs>
   _count?: boolean | Prisma.AppCountOutputTypeDefaultArgs<ExtArgs>
@@ -449,21 +511,27 @@ export type AppSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   id?: boolean
   key?: boolean
   name?: boolean
+  created_at?: boolean
+  updated_at?: boolean
 }, ExtArgs["result"]["app"]>
 
 export type AppSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   key?: boolean
   name?: boolean
+  created_at?: boolean
+  updated_at?: boolean
 }, ExtArgs["result"]["app"]>
 
 export type AppSelectScalar = {
   id?: boolean
   key?: boolean
   name?: boolean
+  created_at?: boolean
+  updated_at?: boolean
 }
 
-export type AppOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "key" | "name", ExtArgs["result"]["app"]>
+export type AppOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "key" | "name" | "created_at" | "updated_at", ExtArgs["result"]["app"]>
 export type AppInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspaceApps?: boolean | Prisma.App$workspaceAppsArgs<ExtArgs>
   modules?: boolean | Prisma.App$modulesArgs<ExtArgs>
@@ -482,6 +550,8 @@ export type $AppPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     id: string
     key: string
     name: string
+    created_at: Date
+    updated_at: Date
   }, ExtArgs["result"]["app"]>
   composites: {}
 }
@@ -910,6 +980,8 @@ export interface AppFieldRefs {
   readonly id: Prisma.FieldRef<"App", 'String'>
   readonly key: Prisma.FieldRef<"App", 'String'>
   readonly name: Prisma.FieldRef<"App", 'String'>
+  readonly created_at: Prisma.FieldRef<"App", 'DateTime'>
+  readonly updated_at: Prisma.FieldRef<"App", 'DateTime'>
 }
     
 

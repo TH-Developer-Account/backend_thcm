@@ -144,7 +144,9 @@ export type DailyVisitorsScalarFieldEnum = (typeof DailyVisitorsScalarFieldEnum)
 
 export const WorkspaceScalarFieldEnum = {
   id: 'id',
-  name: 'name'
+  name: 'name',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 } as const
 
 export type WorkspaceScalarFieldEnum = (typeof WorkspaceScalarFieldEnum)[keyof typeof WorkspaceScalarFieldEnum]
@@ -163,7 +165,9 @@ export type WorkspaceUserScalarFieldEnum = (typeof WorkspaceUserScalarFieldEnum)
 export const AppScalarFieldEnum = {
   id: 'id',
   key: 'key',
-  name: 'name'
+  name: 'name',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 } as const
 
 export type AppScalarFieldEnum = (typeof AppScalarFieldEnum)[keyof typeof AppScalarFieldEnum]
@@ -183,7 +187,9 @@ export const ModuleScalarFieldEnum = {
   id: 'id',
   key: 'key',
   name: 'name',
-  appId: 'appId'
+  appId: 'appId',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 } as const
 
 export type ModuleScalarFieldEnum = (typeof ModuleScalarFieldEnum)[keyof typeof ModuleScalarFieldEnum]
@@ -194,7 +200,9 @@ export const ProfileScalarFieldEnum = {
   name: 'name',
   description: 'description',
   workspaceId: 'workspaceId',
-  isSystemProfile: 'isSystemProfile'
+  isSystemProfile: 'isSystemProfile',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 } as const
 
 export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]

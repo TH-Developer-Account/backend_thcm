@@ -18,7 +18,7 @@ router.use(firstAuthRequestPerDay); // tracks DAU
 router.get("/", asyncHandler(getProfiles));
 router.get("/:profileId", asyncHandler(getProfileById));
 router.post("/create", asyncHandler(createProfile));
-router.post("/update/:profileId", asyncHandler(updateProfile));
+router.patch("/update/:profileId", asyncHandler(updateProfile));
 router.delete("/delete/:profileId", asyncHandler(deleteProfile));
 
 export default router;
