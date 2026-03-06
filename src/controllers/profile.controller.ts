@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
-import { Prisma } from "../prisma/generated/prisma/client";
+import { formatProfile, profileInclude } from "../utils/contants";
 import ApiError from "../utils/apiError";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -88,66 +88,6 @@ async function resolveModuleIds(
     }
     return { action: p.action, moduleId };
   });
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// SHARED INCLUDE
-// Both getProfiles and getProfileById return the same permission shape.
-// ─────────────────────────────────────────────────────────────────────────────
-
-const profileInclude = {
-  permissions: {
-    include: {
-      module: {
-        select: {
-          key: true,
-          name: true,
-          app: { select: { key: true, name: true } },
-        },
-      },
-    },
-    orderBy: [
-      { module: { app: { key: "asc" as const } } },
-      { module: { key: "asc" as const } },
-      { action: "asc" as const },
-    ],
-  },
-  userProfiles: {
-    select: {
-      user: {
-        select: {
-          id: true,
-          first_name: true,
-          last_name: true,
-          email: true,
-        },
-      },
-    },
-  },
-  _count: { select: { userProfiles: true } },
-} satisfies Prisma.ProfileInclude;
-
-function formatProfile(profile: any) {
-  return {
-    id: profile.id,
-    name: profile.name,
-    description: profile.description,
-    isSystemProfile: profile.isSystemProfile,
-    assignedUserCount: profile._count.userProfiles,
-    users: profile.userProfiles.map((up: any) => ({
-      id: up.user.id,
-      firstName: up.user.first_name,
-      lastName: up.user.last_name,
-      email: up.user.email,
-    })),
-    permissions: profile.permissions.map((p: any) => ({
-      action: p.action,
-      appKey: p.module.app.key,
-      appName: p.module.app.name,
-      moduleKey: p.module.key,
-      moduleName: p.module.name,
-    })),
-  };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -457,7 +397,9 @@ export async function deleteProfile(req: Request, res: Response) {
     // Permissions cascade-delete via onDelete: Cascade on the relation
     await prisma.profile.delete({ where: { id: profileId as string } });
 
-    res.json({ message: `Profile "${profile.name}" deleted successfully` });
+    res
+      .status(200)
+      .json({ message: `Profile "${profile.name}" deleted successfully` });
   } catch (error: any) {
     if (error instanceof ApiError) throw error;
     console.error("deleteProfile failed:", error);

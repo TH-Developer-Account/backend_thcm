@@ -3,6 +3,7 @@ import axios from "axios";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
 import { buildUserPermissions } from "../utils/userPermission";
+import { formatProfile, profileInclude } from "../utils/contants";
 
 // Extend Request interface
 declare module "express-serve-static-core" {
@@ -196,11 +197,22 @@ export async function assignUserProfiles(req: Request, res: Response) {
       }
     });
 
+    let profileData = null;
+
+    if (profileId) {
+      const profile = await prisma.profile.findFirst({
+        where: { id: profileId, workspaceId },
+        include: profileInclude,
+      });
+
+      profileData = profile ? formatProfile(profile) : null;
+    }
+
     const message = profileId
       ? `Profile assigned to ${userIds.length} user(s) successfully`
       : `Profile cleared for ${userIds.length} user(s) successfully`;
 
-    res.status(200).json({ message });
+    res.status(200).json({ message, profile: profileData });
   } catch (error: any) {
     if (error instanceof ApiError) throw error;
     console.error("assignUserProfiles failed:", error);
