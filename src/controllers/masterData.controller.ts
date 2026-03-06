@@ -67,11 +67,6 @@ export const getMasterData = async (req: Request, res: Response) => {
       }),
     ]);
 
-    console.log(
-      "Budget==============>",
-      JSON.stringify(budgetMasters, null, 2),
-    );
-
     res.json({
       departments: formatOptions(departments, "department_name"),
       regions: formatOptions(regions, "region_name"),
