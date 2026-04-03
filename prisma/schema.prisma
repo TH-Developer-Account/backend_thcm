@@ -384,6 +384,9 @@ model StageInstance {
   stageOrder   Int
   strategy     StrategyType
   minApprovals Int?
+  startedAt   DateTime?
+  dueAt       DateTime?
+  escalatedTo String? // userId
 
   status StageStatus @default(PENDING)
 
@@ -400,6 +403,7 @@ model Approval {
 
   status      ApprovalStatus @default(PENDING)
   actedAt     DateTime?
+  reason      String?
 
   stage    StageInstance @relation(fields: [stageId], references: [id])
   approver User          @relation(fields: [approverId], references: [id])
@@ -465,4 +469,14 @@ model EventName {
   id     String          @id @default(uuid())
   title  String
   events EventProposal[]
+}
+
+model ApprovalAudit {
+  id          String   @id @default(uuid())
+  workflowId  String
+  stageId     String
+  approverId  String
+  action      ApprovalStatus
+  reason      String?
+  createdAt   DateTime @default(now())
 }

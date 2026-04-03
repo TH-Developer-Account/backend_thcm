@@ -42,6 +42,9 @@ export type StageInstanceMinAggregateOutputType = {
   stageOrder: number | null
   strategy: $Enums.StrategyType | null
   minApprovals: number | null
+  startedAt: Date | null
+  dueAt: Date | null
+  escalatedTo: string | null
   status: $Enums.StageStatus | null
 }
 
@@ -51,6 +54,9 @@ export type StageInstanceMaxAggregateOutputType = {
   stageOrder: number | null
   strategy: $Enums.StrategyType | null
   minApprovals: number | null
+  startedAt: Date | null
+  dueAt: Date | null
+  escalatedTo: string | null
   status: $Enums.StageStatus | null
 }
 
@@ -60,6 +66,9 @@ export type StageInstanceCountAggregateOutputType = {
   stageOrder: number
   strategy: number
   minApprovals: number
+  startedAt: number
+  dueAt: number
+  escalatedTo: number
   status: number
   _all: number
 }
@@ -81,6 +90,9 @@ export type StageInstanceMinAggregateInputType = {
   stageOrder?: true
   strategy?: true
   minApprovals?: true
+  startedAt?: true
+  dueAt?: true
+  escalatedTo?: true
   status?: true
 }
 
@@ -90,6 +102,9 @@ export type StageInstanceMaxAggregateInputType = {
   stageOrder?: true
   strategy?: true
   minApprovals?: true
+  startedAt?: true
+  dueAt?: true
+  escalatedTo?: true
   status?: true
 }
 
@@ -99,6 +114,9 @@ export type StageInstanceCountAggregateInputType = {
   stageOrder?: true
   strategy?: true
   minApprovals?: true
+  startedAt?: true
+  dueAt?: true
+  escalatedTo?: true
   status?: true
   _all?: true
 }
@@ -195,6 +213,9 @@ export type StageInstanceGroupByOutputType = {
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals: number | null
+  startedAt: Date | null
+  dueAt: Date | null
+  escalatedTo: string | null
   status: $Enums.StageStatus
   _count: StageInstanceCountAggregateOutputType | null
   _avg: StageInstanceAvgAggregateOutputType | null
@@ -227,6 +248,9 @@ export type StageInstanceWhereInput = {
   stageOrder?: Prisma.IntFilter<"StageInstance"> | number
   strategy?: Prisma.EnumStrategyTypeFilter<"StageInstance"> | $Enums.StrategyType
   minApprovals?: Prisma.IntNullableFilter<"StageInstance"> | number | null
+  startedAt?: Prisma.DateTimeNullableFilter<"StageInstance"> | Date | string | null
+  dueAt?: Prisma.DateTimeNullableFilter<"StageInstance"> | Date | string | null
+  escalatedTo?: Prisma.StringNullableFilter<"StageInstance"> | string | null
   status?: Prisma.EnumStageStatusFilter<"StageInstance"> | $Enums.StageStatus
   workflow?: Prisma.XOR<Prisma.WorkflowInstanceScalarRelationFilter, Prisma.WorkflowInstanceWhereInput>
   approvals?: Prisma.ApprovalListRelationFilter
@@ -238,6 +262,9 @@ export type StageInstanceOrderByWithRelationInput = {
   stageOrder?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
   minApprovals?: Prisma.SortOrderInput | Prisma.SortOrder
+  startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  escalatedTo?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   workflow?: Prisma.WorkflowInstanceOrderByWithRelationInput
   approvals?: Prisma.ApprovalOrderByRelationAggregateInput
@@ -253,6 +280,9 @@ export type StageInstanceWhereUniqueInput = Prisma.AtLeast<{
   stageOrder?: Prisma.IntFilter<"StageInstance"> | number
   strategy?: Prisma.EnumStrategyTypeFilter<"StageInstance"> | $Enums.StrategyType
   minApprovals?: Prisma.IntNullableFilter<"StageInstance"> | number | null
+  startedAt?: Prisma.DateTimeNullableFilter<"StageInstance"> | Date | string | null
+  dueAt?: Prisma.DateTimeNullableFilter<"StageInstance"> | Date | string | null
+  escalatedTo?: Prisma.StringNullableFilter<"StageInstance"> | string | null
   status?: Prisma.EnumStageStatusFilter<"StageInstance"> | $Enums.StageStatus
   workflow?: Prisma.XOR<Prisma.WorkflowInstanceScalarRelationFilter, Prisma.WorkflowInstanceWhereInput>
   approvals?: Prisma.ApprovalListRelationFilter
@@ -264,6 +294,9 @@ export type StageInstanceOrderByWithAggregationInput = {
   stageOrder?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
   minApprovals?: Prisma.SortOrderInput | Prisma.SortOrder
+  startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  escalatedTo?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   _count?: Prisma.StageInstanceCountOrderByAggregateInput
   _avg?: Prisma.StageInstanceAvgOrderByAggregateInput
@@ -281,6 +314,9 @@ export type StageInstanceScalarWhereWithAggregatesInput = {
   stageOrder?: Prisma.IntWithAggregatesFilter<"StageInstance"> | number
   strategy?: Prisma.EnumStrategyTypeWithAggregatesFilter<"StageInstance"> | $Enums.StrategyType
   minApprovals?: Prisma.IntNullableWithAggregatesFilter<"StageInstance"> | number | null
+  startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"StageInstance"> | Date | string | null
+  dueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"StageInstance"> | Date | string | null
+  escalatedTo?: Prisma.StringNullableWithAggregatesFilter<"StageInstance"> | string | null
   status?: Prisma.EnumStageStatusWithAggregatesFilter<"StageInstance"> | $Enums.StageStatus
 }
 
@@ -289,6 +325,9 @@ export type StageInstanceCreateInput = {
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
+  startedAt?: Date | string | null
+  dueAt?: Date | string | null
+  escalatedTo?: string | null
   status?: $Enums.StageStatus
   workflow: Prisma.WorkflowInstanceCreateNestedOneWithoutStagesInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutStageInput
@@ -300,6 +339,9 @@ export type StageInstanceUncheckedCreateInput = {
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
+  startedAt?: Date | string | null
+  dueAt?: Date | string | null
+  escalatedTo?: string | null
   status?: $Enums.StageStatus
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutStageInput
 }
@@ -309,6 +351,9 @@ export type StageInstanceUpdateInput = {
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
   workflow?: Prisma.WorkflowInstanceUpdateOneRequiredWithoutStagesNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutStageNestedInput
@@ -320,6 +365,9 @@ export type StageInstanceUncheckedUpdateInput = {
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutStageNestedInput
 }
@@ -330,6 +378,9 @@ export type StageInstanceCreateManyInput = {
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
+  startedAt?: Date | string | null
+  dueAt?: Date | string | null
+  escalatedTo?: string | null
   status?: $Enums.StageStatus
 }
 
@@ -338,6 +389,9 @@ export type StageInstanceUpdateManyMutationInput = {
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
 }
 
@@ -347,6 +401,9 @@ export type StageInstanceUncheckedUpdateManyInput = {
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
 }
 
@@ -371,6 +428,9 @@ export type StageInstanceCountOrderByAggregateInput = {
   stageOrder?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
   minApprovals?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrder
+  dueAt?: Prisma.SortOrder
+  escalatedTo?: Prisma.SortOrder
   status?: Prisma.SortOrder
 }
 
@@ -385,6 +445,9 @@ export type StageInstanceMaxOrderByAggregateInput = {
   stageOrder?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
   minApprovals?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrder
+  dueAt?: Prisma.SortOrder
+  escalatedTo?: Prisma.SortOrder
   status?: Prisma.SortOrder
 }
 
@@ -394,6 +457,9 @@ export type StageInstanceMinOrderByAggregateInput = {
   stageOrder?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
   minApprovals?: Prisma.SortOrder
+  startedAt?: Prisma.SortOrder
+  dueAt?: Prisma.SortOrder
+  escalatedTo?: Prisma.SortOrder
   status?: Prisma.SortOrder
 }
 
@@ -449,6 +515,10 @@ export type StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput = {
   deleteMany?: Prisma.StageInstanceScalarWhereInput | Prisma.StageInstanceScalarWhereInput[]
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type EnumStageStatusFieldUpdateOperationsInput = {
   set?: $Enums.StageStatus
 }
@@ -472,6 +542,9 @@ export type StageInstanceCreateWithoutWorkflowInput = {
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
+  startedAt?: Date | string | null
+  dueAt?: Date | string | null
+  escalatedTo?: string | null
   status?: $Enums.StageStatus
   approvals?: Prisma.ApprovalCreateNestedManyWithoutStageInput
 }
@@ -481,6 +554,9 @@ export type StageInstanceUncheckedCreateWithoutWorkflowInput = {
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
+  startedAt?: Date | string | null
+  dueAt?: Date | string | null
+  escalatedTo?: string | null
   status?: $Enums.StageStatus
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutStageInput
 }
@@ -520,6 +596,9 @@ export type StageInstanceScalarWhereInput = {
   stageOrder?: Prisma.IntFilter<"StageInstance"> | number
   strategy?: Prisma.EnumStrategyTypeFilter<"StageInstance"> | $Enums.StrategyType
   minApprovals?: Prisma.IntNullableFilter<"StageInstance"> | number | null
+  startedAt?: Prisma.DateTimeNullableFilter<"StageInstance"> | Date | string | null
+  dueAt?: Prisma.DateTimeNullableFilter<"StageInstance"> | Date | string | null
+  escalatedTo?: Prisma.StringNullableFilter<"StageInstance"> | string | null
   status?: Prisma.EnumStageStatusFilter<"StageInstance"> | $Enums.StageStatus
 }
 
@@ -528,6 +607,9 @@ export type StageInstanceCreateWithoutApprovalsInput = {
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
+  startedAt?: Date | string | null
+  dueAt?: Date | string | null
+  escalatedTo?: string | null
   status?: $Enums.StageStatus
   workflow: Prisma.WorkflowInstanceCreateNestedOneWithoutStagesInput
 }
@@ -538,6 +620,9 @@ export type StageInstanceUncheckedCreateWithoutApprovalsInput = {
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
+  startedAt?: Date | string | null
+  dueAt?: Date | string | null
+  escalatedTo?: string | null
   status?: $Enums.StageStatus
 }
 
@@ -562,6 +647,9 @@ export type StageInstanceUpdateWithoutApprovalsInput = {
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
   workflow?: Prisma.WorkflowInstanceUpdateOneRequiredWithoutStagesNestedInput
 }
@@ -572,6 +660,9 @@ export type StageInstanceUncheckedUpdateWithoutApprovalsInput = {
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
 }
 
@@ -580,6 +671,9 @@ export type StageInstanceCreateManyWorkflowInput = {
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
+  startedAt?: Date | string | null
+  dueAt?: Date | string | null
+  escalatedTo?: string | null
   status?: $Enums.StageStatus
 }
 
@@ -588,6 +682,9 @@ export type StageInstanceUpdateWithoutWorkflowInput = {
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
   approvals?: Prisma.ApprovalUpdateManyWithoutStageNestedInput
 }
@@ -597,6 +694,9 @@ export type StageInstanceUncheckedUpdateWithoutWorkflowInput = {
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutStageNestedInput
 }
@@ -606,6 +706,9 @@ export type StageInstanceUncheckedUpdateManyWithoutWorkflowInput = {
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
 }
 
@@ -646,6 +749,9 @@ export type StageInstanceSelect<ExtArgs extends runtime.Types.Extensions.Interna
   stageOrder?: boolean
   strategy?: boolean
   minApprovals?: boolean
+  startedAt?: boolean
+  dueAt?: boolean
+  escalatedTo?: boolean
   status?: boolean
   workflow?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
   approvals?: boolean | Prisma.StageInstance$approvalsArgs<ExtArgs>
@@ -658,6 +764,9 @@ export type StageInstanceSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   stageOrder?: boolean
   strategy?: boolean
   minApprovals?: boolean
+  startedAt?: boolean
+  dueAt?: boolean
+  escalatedTo?: boolean
   status?: boolean
   workflow?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["stageInstance"]>
@@ -668,6 +777,9 @@ export type StageInstanceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   stageOrder?: boolean
   strategy?: boolean
   minApprovals?: boolean
+  startedAt?: boolean
+  dueAt?: boolean
+  escalatedTo?: boolean
   status?: boolean
   workflow?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["stageInstance"]>
@@ -678,10 +790,13 @@ export type StageInstanceSelectScalar = {
   stageOrder?: boolean
   strategy?: boolean
   minApprovals?: boolean
+  startedAt?: boolean
+  dueAt?: boolean
+  escalatedTo?: boolean
   status?: boolean
 }
 
-export type StageInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workflowId" | "stageOrder" | "strategy" | "minApprovals" | "status", ExtArgs["result"]["stageInstance"]>
+export type StageInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workflowId" | "stageOrder" | "strategy" | "minApprovals" | "startedAt" | "dueAt" | "escalatedTo" | "status", ExtArgs["result"]["stageInstance"]>
 export type StageInstanceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workflow?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
   approvals?: boolean | Prisma.StageInstance$approvalsArgs<ExtArgs>
@@ -706,6 +821,9 @@ export type $StageInstancePayload<ExtArgs extends runtime.Types.Extensions.Inter
     stageOrder: number
     strategy: $Enums.StrategyType
     minApprovals: number | null
+    startedAt: Date | null
+    dueAt: Date | null
+    escalatedTo: string | null
     status: $Enums.StageStatus
   }, ExtArgs["result"]["stageInstance"]>
   composites: {}
@@ -1137,6 +1255,9 @@ export interface StageInstanceFieldRefs {
   readonly stageOrder: Prisma.FieldRef<"StageInstance", 'Int'>
   readonly strategy: Prisma.FieldRef<"StageInstance", 'StrategyType'>
   readonly minApprovals: Prisma.FieldRef<"StageInstance", 'Int'>
+  readonly startedAt: Prisma.FieldRef<"StageInstance", 'DateTime'>
+  readonly dueAt: Prisma.FieldRef<"StageInstance", 'DateTime'>
+  readonly escalatedTo: Prisma.FieldRef<"StageInstance", 'String'>
   readonly status: Prisma.FieldRef<"StageInstance", 'StageStatus'>
 }
     

@@ -142,3 +142,8 @@ export type BudgetMaster = Prisma.BudgetMasterModel
  * 
  */
 export type EventName = Prisma.EventNameModel
+/**
+ * Model ApprovalAudit
+ * 
+ */
+export type ApprovalAudit = Prisma.ApprovalAuditModel

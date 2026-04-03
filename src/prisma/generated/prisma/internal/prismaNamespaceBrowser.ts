@@ -75,7 +75,8 @@ export const ModelName = {
   Branch: 'Branch',
   EventScale: 'EventScale',
   BudgetMaster: 'BudgetMaster',
-  EventName: 'EventName'
+  EventName: 'EventName',
+  ApprovalAudit: 'ApprovalAudit'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -314,6 +315,9 @@ export const StageInstanceScalarFieldEnum = {
   stageOrder: 'stageOrder',
   strategy: 'strategy',
   minApprovals: 'minApprovals',
+  startedAt: 'startedAt',
+  dueAt: 'dueAt',
+  escalatedTo: 'escalatedTo',
   status: 'status'
 } as const
 
@@ -325,7 +329,8 @@ export const ApprovalScalarFieldEnum = {
   stageId: 'stageId',
   approverId: 'approverId',
   status: 'status',
-  actedAt: 'actedAt'
+  actedAt: 'actedAt',
+  reason: 'reason'
 } as const
 
 export type ApprovalScalarFieldEnum = (typeof ApprovalScalarFieldEnum)[keyof typeof ApprovalScalarFieldEnum]
@@ -394,6 +399,19 @@ export const EventNameScalarFieldEnum = {
 } as const
 
 export type EventNameScalarFieldEnum = (typeof EventNameScalarFieldEnum)[keyof typeof EventNameScalarFieldEnum]
+
+
+export const ApprovalAuditScalarFieldEnum = {
+  id: 'id',
+  workflowId: 'workflowId',
+  stageId: 'stageId',
+  approverId: 'approverId',
+  action: 'action',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type ApprovalAuditScalarFieldEnum = (typeof ApprovalAuditScalarFieldEnum)[keyof typeof ApprovalAuditScalarFieldEnum]
 
 
 export const SortOrder = {

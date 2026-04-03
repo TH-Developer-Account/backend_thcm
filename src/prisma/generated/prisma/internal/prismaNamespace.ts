@@ -408,7 +408,8 @@ export const ModelName = {
   Branch: 'Branch',
   EventScale: 'EventScale',
   BudgetMaster: 'BudgetMaster',
-  EventName: 'EventName'
+  EventName: 'EventName',
+  ApprovalAudit: 'ApprovalAudit'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -424,7 +425,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "department" | "region" | "branch" | "eventScale" | "budgetMaster" | "eventName"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "department" | "region" | "branch" | "eventScale" | "budgetMaster" | "eventName" | "approvalAudit"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2278,6 +2279,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ApprovalAudit: {
+      payload: Prisma.$ApprovalAuditPayload<ExtArgs>
+      fields: Prisma.ApprovalAuditFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ApprovalAuditFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ApprovalAuditFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
+        }
+        findFirst: {
+          args: Prisma.ApprovalAuditFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ApprovalAuditFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
+        }
+        findMany: {
+          args: Prisma.ApprovalAuditFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>[]
+        }
+        create: {
+          args: Prisma.ApprovalAuditCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
+        }
+        createMany: {
+          args: Prisma.ApprovalAuditCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ApprovalAuditCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>[]
+        }
+        delete: {
+          args: Prisma.ApprovalAuditDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
+        }
+        update: {
+          args: Prisma.ApprovalAuditUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
+        }
+        deleteMany: {
+          args: Prisma.ApprovalAuditDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ApprovalAuditUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ApprovalAuditUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>[]
+        }
+        upsert: {
+          args: Prisma.ApprovalAuditUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
+        }
+        aggregate: {
+          args: Prisma.ApprovalAuditAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateApprovalAudit>
+        }
+        groupBy: {
+          args: Prisma.ApprovalAuditGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApprovalAuditGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ApprovalAuditCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApprovalAuditCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2537,6 +2612,9 @@ export const StageInstanceScalarFieldEnum = {
   stageOrder: 'stageOrder',
   strategy: 'strategy',
   minApprovals: 'minApprovals',
+  startedAt: 'startedAt',
+  dueAt: 'dueAt',
+  escalatedTo: 'escalatedTo',
   status: 'status'
 } as const
 
@@ -2548,7 +2626,8 @@ export const ApprovalScalarFieldEnum = {
   stageId: 'stageId',
   approverId: 'approverId',
   status: 'status',
-  actedAt: 'actedAt'
+  actedAt: 'actedAt',
+  reason: 'reason'
 } as const
 
 export type ApprovalScalarFieldEnum = (typeof ApprovalScalarFieldEnum)[keyof typeof ApprovalScalarFieldEnum]
@@ -2617,6 +2696,19 @@ export const EventNameScalarFieldEnum = {
 } as const
 
 export type EventNameScalarFieldEnum = (typeof EventNameScalarFieldEnum)[keyof typeof EventNameScalarFieldEnum]
+
+
+export const ApprovalAuditScalarFieldEnum = {
+  id: 'id',
+  workflowId: 'workflowId',
+  stageId: 'stageId',
+  approverId: 'approverId',
+  action: 'action',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type ApprovalAuditScalarFieldEnum = (typeof ApprovalAuditScalarFieldEnum)[keyof typeof ApprovalAuditScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2915,6 +3007,7 @@ export type GlobalOmitConfig = {
   eventScale?: Prisma.EventScaleOmit
   budgetMaster?: Prisma.BudgetMasterOmit
   eventName?: Prisma.EventNameOmit
+  approvalAudit?: Prisma.ApprovalAuditOmit
 }
 
 /* Types for Logging */

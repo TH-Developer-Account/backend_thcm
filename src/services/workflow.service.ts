@@ -128,3 +128,53 @@ export const approveStage = async ({
     }
   });
 };
+
+export const rejectStage = async ({
+  stageId,
+  userId,
+  reason,
+}: {
+  stageId: string;
+  userId: string;
+  reason?: string;
+}) => {
+  return prisma.$transaction(async (tx) => {
+    // 1. mark rejection
+    await tx.approval.update({
+      where: {
+        stageId_approverId: {
+          stageId,
+          approverId: userId,
+        },
+      },
+      data: {
+        status: "REJECTED",
+        reason,
+        actedAt: new Date(),
+      },
+    });
+
+    const stage = await tx.stageInstance.findUnique({
+      where: { id: stageId },
+      include: { workflow: true },
+    });
+
+    // 2. mark stage rejected
+    await tx.stageInstance.update({
+      where: { id: stageId },
+      data: { status: "REJECTED" },
+    });
+
+    // 3. mark workflow rejected
+    await tx.workflowInstance.update({
+      where: { id: stage!.workflowId },
+      data: { status: "REJECTED" },
+    });
+
+    // (optional) update EPC status
+    await tx.eventProposal.update({
+      where: { id: stage!.workflow.eventProposalId },
+      data: { status: "REJECTED" },
+    });
+  });
+};
