@@ -103,6 +103,36 @@ export type UserProfile = Prisma.UserProfileModel
  */
 export type EventProposal = Prisma.EventProposalModel
 /**
+ * Model WorkflowTemplate
+ * 
+ */
+export type WorkflowTemplate = Prisma.WorkflowTemplateModel
+/**
+ * Model TemplateStage
+ * 
+ */
+export type TemplateStage = Prisma.TemplateStageModel
+/**
+ * Model TemplateApprover
+ * 
+ */
+export type TemplateApprover = Prisma.TemplateApproverModel
+/**
+ * Model WorkflowInstance
+ * 
+ */
+export type WorkflowInstance = Prisma.WorkflowInstanceModel
+/**
+ * Model StageInstance
+ * 
+ */
+export type StageInstance = Prisma.StageInstanceModel
+/**
+ * Model Approval
+ * 
+ */
+export type Approval = Prisma.ApprovalModel
+/**
  * Model Department
  * 
  */

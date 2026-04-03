@@ -294,6 +294,7 @@ export type EventProposalWhereInput = {
   event_name?: Prisma.XOR<Prisma.EventNameScalarRelationFilter, Prisma.EventNameWhereInput>
   created_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   updated_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  workflow?: Prisma.XOR<Prisma.WorkflowInstanceNullableScalarRelationFilter, Prisma.WorkflowInstanceWhereInput> | null
 }
 
 export type EventProposalOrderByWithRelationInput = {
@@ -323,6 +324,7 @@ export type EventProposalOrderByWithRelationInput = {
   event_name?: Prisma.EventNameOrderByWithRelationInput
   created_by?: Prisma.UserOrderByWithRelationInput
   updated_by?: Prisma.UserOrderByWithRelationInput
+  workflow?: Prisma.WorkflowInstanceOrderByWithRelationInput
 }
 
 export type EventProposalWhereUniqueInput = Prisma.AtLeast<{
@@ -355,6 +357,7 @@ export type EventProposalWhereUniqueInput = Prisma.AtLeast<{
   event_name?: Prisma.XOR<Prisma.EventNameScalarRelationFilter, Prisma.EventNameWhereInput>
   created_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   updated_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  workflow?: Prisma.XOR<Prisma.WorkflowInstanceNullableScalarRelationFilter, Prisma.WorkflowInstanceWhereInput> | null
 }, "id" | "proposal_number">
 
 export type EventProposalOrderByWithAggregationInput = {
@@ -424,6 +427,7 @@ export type EventProposalCreateInput = {
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
+  workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalUncheckedCreateInput = {
@@ -445,6 +449,7 @@ export type EventProposalUncheckedCreateInput = {
   event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalUpdateInput = {
@@ -466,6 +471,7 @@ export type EventProposalUpdateInput = {
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
+  workflow?: Prisma.WorkflowInstanceUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateInput = {
@@ -487,6 +493,7 @@ export type EventProposalUncheckedUpdateInput = {
   event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalCreateManyInput = {
@@ -617,6 +624,11 @@ export type EventProposalMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
+export type EventProposalScalarRelationFilter = {
+  is?: Prisma.EventProposalWhereInput
+  isNot?: Prisma.EventProposalWhereInput
+}
+
 export type EventProposalCreateNestedManyWithoutCreated_byInput = {
   create?: Prisma.XOR<Prisma.EventProposalCreateWithoutCreated_byInput, Prisma.EventProposalUncheckedCreateWithoutCreated_byInput> | Prisma.EventProposalCreateWithoutCreated_byInput[] | Prisma.EventProposalUncheckedCreateWithoutCreated_byInput[]
   connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutCreated_byInput | Prisma.EventProposalCreateOrConnectWithoutCreated_byInput[]
@@ -699,6 +711,20 @@ export type EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput = {
   update?: Prisma.EventProposalUpdateWithWhereUniqueWithoutUpdated_byInput | Prisma.EventProposalUpdateWithWhereUniqueWithoutUpdated_byInput[]
   updateMany?: Prisma.EventProposalUpdateManyWithWhereWithoutUpdated_byInput | Prisma.EventProposalUpdateManyWithWhereWithoutUpdated_byInput[]
   deleteMany?: Prisma.EventProposalScalarWhereInput | Prisma.EventProposalScalarWhereInput[]
+}
+
+export type EventProposalCreateNestedOneWithoutWorkflowInput = {
+  create?: Prisma.XOR<Prisma.EventProposalCreateWithoutWorkflowInput, Prisma.EventProposalUncheckedCreateWithoutWorkflowInput>
+  connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutWorkflowInput
+  connect?: Prisma.EventProposalWhereUniqueInput
+}
+
+export type EventProposalUpdateOneRequiredWithoutWorkflowNestedInput = {
+  create?: Prisma.XOR<Prisma.EventProposalCreateWithoutWorkflowInput, Prisma.EventProposalUncheckedCreateWithoutWorkflowInput>
+  connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutWorkflowInput
+  upsert?: Prisma.EventProposalUpsertWithoutWorkflowInput
+  connect?: Prisma.EventProposalWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventProposalUpdateToOneWithWhereWithoutWorkflowInput, Prisma.EventProposalUpdateWithoutWorkflowInput>, Prisma.EventProposalUncheckedUpdateWithoutWorkflowInput>
 }
 
 export type EventProposalCreateNestedManyWithoutDepartmentInput = {
@@ -971,6 +997,7 @@ export type EventProposalCreateWithoutCreated_byInput = {
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
+  workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalUncheckedCreateWithoutCreated_byInput = {
@@ -991,6 +1018,7 @@ export type EventProposalUncheckedCreateWithoutCreated_byInput = {
   event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalCreateOrConnectWithoutCreated_byInput = {
@@ -1021,6 +1049,7 @@ export type EventProposalCreateWithoutUpdated_byInput = {
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
+  workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalUncheckedCreateWithoutUpdated_byInput = {
@@ -1041,6 +1070,7 @@ export type EventProposalUncheckedCreateWithoutUpdated_byInput = {
   event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalCreateOrConnectWithoutUpdated_byInput = {
@@ -1109,6 +1139,106 @@ export type EventProposalUpdateManyWithWhereWithoutUpdated_byInput = {
   data: Prisma.XOR<Prisma.EventProposalUpdateManyMutationInput, Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byInput>
 }
 
+export type EventProposalCreateWithoutWorkflowInput = {
+  id?: string
+  proposal_number: string
+  event_from_date: Date | string
+  event_to_date: Date | string
+  event_description: string
+  location: string
+  event_objective: string
+  status?: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
+  event_scale: Prisma.EventScaleCreateNestedOneWithoutEvent_proposalsInput
+  budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
+  event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
+}
+
+export type EventProposalUncheckedCreateWithoutWorkflowInput = {
+  id?: string
+  proposal_number: string
+  event_from_date: Date | string
+  event_to_date: Date | string
+  event_description: string
+  location: string
+  event_objective: string
+  status?: string
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale_id: string
+  budget_master_id: string
+  event_name_id: string
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type EventProposalCreateOrConnectWithoutWorkflowInput = {
+  where: Prisma.EventProposalWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventProposalCreateWithoutWorkflowInput, Prisma.EventProposalUncheckedCreateWithoutWorkflowInput>
+}
+
+export type EventProposalUpsertWithoutWorkflowInput = {
+  update: Prisma.XOR<Prisma.EventProposalUpdateWithoutWorkflowInput, Prisma.EventProposalUncheckedUpdateWithoutWorkflowInput>
+  create: Prisma.XOR<Prisma.EventProposalCreateWithoutWorkflowInput, Prisma.EventProposalUncheckedCreateWithoutWorkflowInput>
+  where?: Prisma.EventProposalWhereInput
+}
+
+export type EventProposalUpdateToOneWithWhereWithoutWorkflowInput = {
+  where?: Prisma.EventProposalWhereInput
+  data: Prisma.XOR<Prisma.EventProposalUpdateWithoutWorkflowInput, Prisma.EventProposalUncheckedUpdateWithoutWorkflowInput>
+}
+
+export type EventProposalUpdateWithoutWorkflowInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
+  event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_description?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  event_objective?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  event_scale?: Prisma.EventScaleUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
+}
+
+export type EventProposalUncheckedUpdateWithoutWorkflowInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
+  event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_description?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  event_objective?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale_id?: Prisma.StringFieldUpdateOperationsInput | string
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type EventProposalCreateWithoutDepartmentInput = {
   id?: string
   proposal_number: string
@@ -1127,6 +1257,7 @@ export type EventProposalCreateWithoutDepartmentInput = {
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
+  workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalUncheckedCreateWithoutDepartmentInput = {
@@ -1147,6 +1278,7 @@ export type EventProposalUncheckedCreateWithoutDepartmentInput = {
   event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalCreateOrConnectWithoutDepartmentInput = {
@@ -1193,6 +1325,7 @@ export type EventProposalCreateWithoutRegionInput = {
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
+  workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalUncheckedCreateWithoutRegionInput = {
@@ -1213,6 +1346,7 @@ export type EventProposalUncheckedCreateWithoutRegionInput = {
   event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalCreateOrConnectWithoutRegionInput = {
@@ -1259,6 +1393,7 @@ export type EventProposalCreateWithoutBranchInput = {
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
+  workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalUncheckedCreateWithoutBranchInput = {
@@ -1279,6 +1414,7 @@ export type EventProposalUncheckedCreateWithoutBranchInput = {
   event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalCreateOrConnectWithoutBranchInput = {
@@ -1325,6 +1461,7 @@ export type EventProposalCreateWithoutEvent_scaleInput = {
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
+  workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalUncheckedCreateWithoutEvent_scaleInput = {
@@ -1345,6 +1482,7 @@ export type EventProposalUncheckedCreateWithoutEvent_scaleInput = {
   event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalCreateOrConnectWithoutEvent_scaleInput = {
@@ -1391,6 +1529,7 @@ export type EventProposalCreateWithoutBudget_masterInput = {
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
+  workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalUncheckedCreateWithoutBudget_masterInput = {
@@ -1411,6 +1550,7 @@ export type EventProposalUncheckedCreateWithoutBudget_masterInput = {
   event_name_id: string
   created_at?: Date | string
   updated_at?: Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalCreateOrConnectWithoutBudget_masterInput = {
@@ -1457,6 +1597,7 @@ export type EventProposalCreateWithoutEvent_nameInput = {
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
+  workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalUncheckedCreateWithoutEvent_nameInput = {
@@ -1477,6 +1618,7 @@ export type EventProposalUncheckedCreateWithoutEvent_nameInput = {
   budget_master_id: string
   created_at?: Date | string
   updated_at?: Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedCreateNestedOneWithoutEventInput
 }
 
 export type EventProposalCreateOrConnectWithoutEvent_nameInput = {
@@ -1563,6 +1705,7 @@ export type EventProposalUpdateWithoutCreated_byInput = {
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
+  workflow?: Prisma.WorkflowInstanceUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutCreated_byInput = {
@@ -1583,6 +1726,7 @@ export type EventProposalUncheckedUpdateWithoutCreated_byInput = {
   event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateManyWithoutCreated_byInput = {
@@ -1623,6 +1767,7 @@ export type EventProposalUpdateWithoutUpdated_byInput = {
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
+  workflow?: Prisma.WorkflowInstanceUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutUpdated_byInput = {
@@ -1643,6 +1788,7 @@ export type EventProposalUncheckedUpdateWithoutUpdated_byInput = {
   event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateManyWithoutUpdated_byInput = {
@@ -1703,6 +1849,7 @@ export type EventProposalUpdateWithoutDepartmentInput = {
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
+  workflow?: Prisma.WorkflowInstanceUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutDepartmentInput = {
@@ -1723,6 +1870,7 @@ export type EventProposalUncheckedUpdateWithoutDepartmentInput = {
   event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateManyWithoutDepartmentInput = {
@@ -1783,6 +1931,7 @@ export type EventProposalUpdateWithoutRegionInput = {
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
+  workflow?: Prisma.WorkflowInstanceUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutRegionInput = {
@@ -1803,6 +1952,7 @@ export type EventProposalUncheckedUpdateWithoutRegionInput = {
   event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateManyWithoutRegionInput = {
@@ -1863,6 +2013,7 @@ export type EventProposalUpdateWithoutBranchInput = {
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
+  workflow?: Prisma.WorkflowInstanceUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutBranchInput = {
@@ -1883,6 +2034,7 @@ export type EventProposalUncheckedUpdateWithoutBranchInput = {
   event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateManyWithoutBranchInput = {
@@ -1943,6 +2095,7 @@ export type EventProposalUpdateWithoutEvent_scaleInput = {
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
+  workflow?: Prisma.WorkflowInstanceUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutEvent_scaleInput = {
@@ -1963,6 +2116,7 @@ export type EventProposalUncheckedUpdateWithoutEvent_scaleInput = {
   event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateManyWithoutEvent_scaleInput = {
@@ -2023,6 +2177,7 @@ export type EventProposalUpdateWithoutBudget_masterInput = {
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
+  workflow?: Prisma.WorkflowInstanceUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutBudget_masterInput = {
@@ -2043,6 +2198,7 @@ export type EventProposalUncheckedUpdateWithoutBudget_masterInput = {
   event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateManyWithoutBudget_masterInput = {
@@ -2103,6 +2259,7 @@ export type EventProposalUpdateWithoutEvent_nameInput = {
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
+  workflow?: Prisma.WorkflowInstanceUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateWithoutEvent_nameInput = {
@@ -2123,6 +2280,7 @@ export type EventProposalUncheckedUpdateWithoutEvent_nameInput = {
   budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workflow?: Prisma.WorkflowInstanceUncheckedUpdateOneWithoutEventNestedInput
 }
 
 export type EventProposalUncheckedUpdateManyWithoutEvent_nameInput = {
@@ -2174,6 +2332,7 @@ export type EventProposalSelect<ExtArgs extends runtime.Types.Extensions.Interna
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
   created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  workflow?: boolean | Prisma.EventProposal$workflowArgs<ExtArgs>
 }, ExtArgs["result"]["eventProposal"]>
 
 export type EventProposalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2265,6 +2424,7 @@ export type EventProposalInclude<ExtArgs extends runtime.Types.Extensions.Intern
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
   created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  workflow?: boolean | Prisma.EventProposal$workflowArgs<ExtArgs>
 }
 export type EventProposalIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
@@ -2298,6 +2458,7 @@ export type $EventProposalPayload<ExtArgs extends runtime.Types.Extensions.Inter
     event_name: Prisma.$EventNamePayload<ExtArgs>
     created_by: Prisma.$UserPayload<ExtArgs>
     updated_by: Prisma.$UserPayload<ExtArgs>
+    workflow: Prisma.$WorkflowInstancePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2720,6 +2881,7 @@ export interface Prisma__EventProposalClient<T, Null = never, ExtArgs extends ru
   event_name<T extends Prisma.EventNameDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventNameDefaultArgs<ExtArgs>>): Prisma.Prisma__EventNameClient<runtime.Types.Result.GetResult<Prisma.$EventNamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   created_by<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   updated_by<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  workflow<T extends Prisma.EventProposal$workflowArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventProposal$workflowArgs<ExtArgs>>): Prisma.Prisma__WorkflowInstanceClient<runtime.Types.Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3160,6 +3322,25 @@ export type EventProposalDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many EventProposals to delete.
    */
   limit?: number
+}
+
+/**
+ * EventProposal.workflow
+ */
+export type EventProposal$workflowArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkflowInstance
+   */
+  select?: Prisma.WorkflowInstanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkflowInstance
+   */
+  omit?: Prisma.WorkflowInstanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkflowInstanceInclude<ExtArgs> | null
+  where?: Prisma.WorkflowInstanceWhereInput
 }
 
 /**

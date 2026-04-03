@@ -22,3 +22,40 @@ export const ScopeType = {
 } as const
 
 export type ScopeType = (typeof ScopeType)[keyof typeof ScopeType]
+
+
+export const StrategyType = {
+  ALL: 'ALL',
+  ANY: 'ANY',
+  QUORUM: 'QUORUM'
+} as const
+
+export type StrategyType = (typeof StrategyType)[keyof typeof StrategyType]
+
+
+export const WorkflowStatus = {
+  IN_PROGRESS: 'IN_PROGRESS',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type WorkflowStatus = (typeof WorkflowStatus)[keyof typeof WorkflowStatus]
+
+
+export const StageStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type StageStatus = (typeof StageStatus)[keyof typeof StageStatus]
+
+
+export const ApprovalStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type ApprovalStatus = (typeof ApprovalStatus)[keyof typeof ApprovalStatus]

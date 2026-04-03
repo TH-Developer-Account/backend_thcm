@@ -18,20 +18,26 @@ import {
 async function main() {
   console.log("🌱 Seeding database...");
 
-  // ─────────────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
   // STEP 1: CLEAN ALL TABLES
-  // Order matters here — delete child tables before parent tables
-  // to avoid foreign key constraint errors.
-  // ─────────────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
 
-  await prisma.userProfile.deleteMany(); // user ↔ profile assignments
-  await prisma.profilePermission.deleteMany(); // permission rows inside profiles
-  await prisma.profile.deleteMany(); // profile containers
-  await prisma.workspaceUser.deleteMany(); // user ↔ workspace memberships
-  await prisma.workspaceApp.deleteMany(); // workspace ↔ app links
-  await prisma.module.deleteMany(); // modules (EPC, Payroll, etc.)
-  await prisma.app.deleteMany(); // apps (MAP, HR, CRM)
-  await prisma.workspace.deleteMany(); // workspace itself
+  // ✅ WORKFLOW CLEANUP (ADDED)
+  await prisma.approval.deleteMany();
+  await prisma.stageInstance.deleteMany();
+  await prisma.workflowInstance.deleteMany();
+  await prisma.templateApprover.deleteMany();
+  await prisma.templateStage.deleteMany();
+  await prisma.workflowTemplate.deleteMany();
+
+  await prisma.userProfile.deleteMany();
+  await prisma.profilePermission.deleteMany();
+  await prisma.profile.deleteMany();
+  await prisma.workspaceUser.deleteMany();
+  await prisma.workspaceApp.deleteMany();
+  await prisma.module.deleteMany();
+  await prisma.app.deleteMany();
+  await prisma.workspace.deleteMany();
 
   await prisma.eventProposal.deleteMany();
   await prisma.branch.deleteMany();
@@ -658,6 +664,125 @@ async function main() {
   console.log(
     "────────────────────────────────────────────────────────────────────\n",
   );
+
+  // ─────────────────────────────────────────────
+  // STEP 11: WORKFLOW TEMPLATE (ADDED)
+  // ─────────────────────────────────────────────
+
+  const template = await prisma.workflowTemplate.create({
+    data: {
+      name: "Standard EPC Approval",
+      workspaceId: workspace.id,
+      regionId: regions[0].id,
+      minBudget: 0,
+      maxBudget: 1000000,
+      priority: 1,
+
+      stages: {
+        create: [
+          {
+            stageOrder: 1,
+            strategy: "ANY",
+            approvers: {
+              create: [{ userId: users[1].id }, { userId: users[2].id }],
+            },
+          },
+          {
+            stageOrder: 2,
+            strategy: "ALL",
+            approvers: {
+              create: [{ userId: users[4].id }, { userId: users[5].id }],
+            },
+          },
+          {
+            stageOrder: 3,
+            strategy: "QUORUM",
+            minApprovals: 2,
+            approvers: {
+              create: [
+                { userId: users[6].id },
+                { userId: users[7].id },
+                { userId: users[8].id },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  console.log("✅ Workflow template created");
+
+  // ─────────────────────────────────────────────
+  // STEP 12: WORKFLOW INSTANCES (ADDED)
+  // ─────────────────────────────────────────────
+
+  const proposals = await prisma.eventProposal.findMany({ take: 10 });
+
+  const templateWithStages = await prisma.workflowTemplate.findUnique({
+    where: { id: template.id },
+    include: {
+      stages: {
+        include: {
+          approvers: true,
+        },
+      },
+    },
+  });
+
+  if (!templateWithStages) throw new Error("Template not found");
+
+  for (let i = 0; i < proposals.length; i++) {
+    const epc = proposals[i];
+
+    // 👇 distribute stage (1,2,3,1,2,3...)
+    const activeStageOrder = (i % templateWithStages.stages.length) + 1;
+
+    await prisma.workflowInstance.create({
+      data: {
+        templateId: template.id,
+        workspaceId: workspace.id,
+        eventProposalId: epc.id,
+        currentStage: activeStageOrder,
+
+        stages: {
+          create: templateWithStages.stages.map((stage) => {
+            let status: "PENDING" | "IN_PROGRESS" | "APPROVED" = "PENDING";
+
+            if (stage.stageOrder < activeStageOrder) {
+              status = "APPROVED";
+            } else if (stage.stageOrder === activeStageOrder) {
+              status = "IN_PROGRESS";
+            }
+
+            return {
+              stageOrder: stage.stageOrder,
+              strategy: stage.strategy,
+              minApprovals: stage.minApprovals,
+              status,
+
+              approvals: {
+                create: stage.approvers.map((a) => ({
+                  approverId: a.userId,
+
+                  // 👇 mark approvals done for past stages
+                  status:
+                    stage.stageOrder < activeStageOrder
+                      ? "APPROVED"
+                      : "PENDING",
+
+                  actedAt:
+                    stage.stageOrder < activeStageOrder ? new Date() : null,
+                })),
+              },
+            };
+          }),
+        },
+      },
+    });
+  }
+
+  console.log("✅ Workflow instances created with distributed stages");
 }
 
 main()

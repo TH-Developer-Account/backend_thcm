@@ -64,6 +64,12 @@ export const ModelName = {
   ProfilePermission: 'ProfilePermission',
   UserProfile: 'UserProfile',
   EventProposal: 'EventProposal',
+  WorkflowTemplate: 'WorkflowTemplate',
+  TemplateStage: 'TemplateStage',
+  TemplateApprover: 'TemplateApprover',
+  WorkflowInstance: 'WorkflowInstance',
+  StageInstance: 'StageInstance',
+  Approval: 'Approval',
   Department: 'Department',
   Region: 'Region',
   Branch: 'Branch',
@@ -252,6 +258,77 @@ export const EventProposalScalarFieldEnum = {
 } as const
 
 export type EventProposalScalarFieldEnum = (typeof EventProposalScalarFieldEnum)[keyof typeof EventProposalScalarFieldEnum]
+
+
+export const WorkflowTemplateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  workspaceId: 'workspaceId',
+  regionId: 'regionId',
+  minBudget: 'minBudget',
+  maxBudget: 'maxBudget',
+  priority: 'priority',
+  isActive: 'isActive',
+  created_at: 'created_at'
+} as const
+
+export type WorkflowTemplateScalarFieldEnum = (typeof WorkflowTemplateScalarFieldEnum)[keyof typeof WorkflowTemplateScalarFieldEnum]
+
+
+export const TemplateStageScalarFieldEnum = {
+  id: 'id',
+  templateId: 'templateId',
+  stageOrder: 'stageOrder',
+  strategy: 'strategy',
+  minApprovals: 'minApprovals'
+} as const
+
+export type TemplateStageScalarFieldEnum = (typeof TemplateStageScalarFieldEnum)[keyof typeof TemplateStageScalarFieldEnum]
+
+
+export const TemplateApproverScalarFieldEnum = {
+  id: 'id',
+  stageId: 'stageId',
+  userId: 'userId'
+} as const
+
+export type TemplateApproverScalarFieldEnum = (typeof TemplateApproverScalarFieldEnum)[keyof typeof TemplateApproverScalarFieldEnum]
+
+
+export const WorkflowInstanceScalarFieldEnum = {
+  id: 'id',
+  templateId: 'templateId',
+  workspaceId: 'workspaceId',
+  eventProposalId: 'eventProposalId',
+  status: 'status',
+  currentStage: 'currentStage',
+  created_at: 'created_at'
+} as const
+
+export type WorkflowInstanceScalarFieldEnum = (typeof WorkflowInstanceScalarFieldEnum)[keyof typeof WorkflowInstanceScalarFieldEnum]
+
+
+export const StageInstanceScalarFieldEnum = {
+  id: 'id',
+  workflowId: 'workflowId',
+  stageOrder: 'stageOrder',
+  strategy: 'strategy',
+  minApprovals: 'minApprovals',
+  status: 'status'
+} as const
+
+export type StageInstanceScalarFieldEnum = (typeof StageInstanceScalarFieldEnum)[keyof typeof StageInstanceScalarFieldEnum]
+
+
+export const ApprovalScalarFieldEnum = {
+  id: 'id',
+  stageId: 'stageId',
+  approverId: 'approverId',
+  status: 'status',
+  actedAt: 'actedAt'
+} as const
+
+export type ApprovalScalarFieldEnum = (typeof ApprovalScalarFieldEnum)[keyof typeof ApprovalScalarFieldEnum]
 
 
 export const DepartmentScalarFieldEnum = {

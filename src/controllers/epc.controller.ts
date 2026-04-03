@@ -3,6 +3,23 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
 import { searchEventProposals } from "../helpers/searchEventProposal.helper";
+import { createEventProposalWithWorkflow } from "../services/workflow.service";
+
+export const createEPCController = async (req: Request, res: Response) => {
+  try {
+    const result = await createEventProposalWithWorkflow(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
 
 export const createEventProposal = async (
   req: Request,
