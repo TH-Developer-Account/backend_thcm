@@ -7,6 +7,7 @@ import {
   StrategyType,
   WorkflowStatus,
 } from "../prisma/generated/prisma/client";
+import ApiError from "../utils/apiError";
 
 export const createEventProposalWithWorkflow = async (input: any) => {
   return prisma.$transaction(async (tx) => {
@@ -53,80 +54,84 @@ export const approveStage = async ({
   stageId: string;
   userId: string;
 }) => {
-  return prisma.$transaction(async (tx) => {
-    // 1. Mark approval
-    await tx.approval.update({
-      where: {
-        stageId_approverId: {
-          stageId,
-          approverId: userId,
+  try {
+    await prisma.$transaction(async (tx) => {
+      // 1. Mark approval
+      await tx.approval.update({
+        where: {
+          stageId_approverId: {
+            stageId,
+            approverId: userId,
+          },
         },
-      },
-      data: {
-        status: ApprovalStatus.APPROVED,
-        actedAt: new Date(),
-      },
-    });
+        data: {
+          status: ApprovalStatus.APPROVED,
+          actedAt: new Date(),
+        },
+      });
 
-    const stage = await tx.stageInstance.findUnique({
-      where: { id: stageId },
-      include: { approvals: true, workflow: true },
-    });
+      const stage = await tx.stageInstance.findUnique({
+        where: { id: stageId },
+        include: { approvals: true, workflow: true },
+      });
 
-    const approvedCount = stage!.approvals.filter(
-      (a) => a.status === ApprovalStatus.APPROVED,
-    ).length;
+      const approvedCount = stage!.approvals.filter(
+        (a) => a.status === ApprovalStatus.APPROVED,
+      ).length;
 
-    const total = stage!.approvals.length;
+      const total = stage!.approvals.length;
 
-    let isStageApproved = false;
+      let isStageApproved = false;
 
-    switch (stage!.strategy) {
-      case StrategyType.ALL:
-        isStageApproved = approvedCount === total;
-        break;
-      case StrategyType.ANY:
-        isStageApproved = approvedCount >= 1;
-        break;
-      case StrategyType.QUORUM:
-        isStageApproved = approvedCount >= (stage!.minApprovals || 1);
-        break;
-    }
+      switch (stage!.strategy) {
+        case StrategyType.ALL:
+          isStageApproved = approvedCount === total;
+          break;
+        case StrategyType.ANY:
+          isStageApproved = approvedCount >= 1;
+          break;
+        case StrategyType.QUORUM:
+          isStageApproved = approvedCount >= (stage!.minApprovals || 1);
+          break;
+      }
 
-    if (!isStageApproved) return;
+      if (!isStageApproved) return;
 
-    // 2. Approve stage
-    await tx.stageInstance.update({
-      where: { id: stageId },
-      data: { status: StageStatus.APPROVED },
-    });
-
-    // 3. Move to next stage
-    const nextStage = await tx.stageInstance.findFirst({
-      where: {
-        workflowId: stage!.workflowId,
-        stageOrder: stage!.stageOrder + 1,
-      },
-    });
-
-    if (nextStage) {
+      // 2. Approve stage
       await tx.stageInstance.update({
-        where: { id: nextStage.id },
-        data: { status: StageStatus.IN_PROGRESS },
+        where: { id: stageId },
+        data: { status: StageStatus.APPROVED },
       });
 
-      await tx.workflowInstance.update({
-        where: { id: stage!.workflowId },
-        data: { currentStage: nextStage.stageOrder },
+      // 3. Move to next stage
+      const nextStage = await tx.stageInstance.findFirst({
+        where: {
+          workflowId: stage!.workflowId,
+          stageOrder: stage!.stageOrder + 1,
+        },
       });
-    } else {
-      // final stage
-      await tx.workflowInstance.update({
-        where: { id: stage!.workflowId },
-        data: { status: WorkflowStatus.APPROVED },
-      });
-    }
-  });
+
+      if (nextStage) {
+        await tx.stageInstance.update({
+          where: { id: nextStage.id },
+          data: { status: StageStatus.IN_PROGRESS },
+        });
+
+        await tx.workflowInstance.update({
+          where: { id: stage!.workflowId },
+          data: { currentStage: nextStage.stageOrder },
+        });
+      } else {
+        // final stage
+        await tx.workflowInstance.update({
+          where: { id: stage!.workflowId },
+          data: { status: WorkflowStatus.APPROVED },
+        });
+      }
+    });
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const rejectStage = async ({
