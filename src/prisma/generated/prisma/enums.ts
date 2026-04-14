@@ -59,3 +59,21 @@ export const ApprovalStatus = {
 } as const
 
 export type ApprovalStatus = (typeof ApprovalStatus)[keyof typeof ApprovalStatus]
+
+
+export const ProductType = {
+  EPF: 'EPF',
+  CRF: 'CRF'
+} as const
+
+export type ProductType = (typeof ProductType)[keyof typeof ProductType]
+
+
+export const ProductCategory = {
+  EVENT_OVERHEAD: 'EVENT_OVERHEAD',
+  PRINTED_MATERIAL: 'PRINTED_MATERIAL',
+  SOUVENIR: 'SOUVENIR',
+  ARTWORK: 'ARTWORK'
+} as const
+
+export type ProductCategory = (typeof ProductCategory)[keyof typeof ProductCategory]

@@ -76,7 +76,11 @@ export const ModelName = {
   EventScale: 'EventScale',
   BudgetMaster: 'BudgetMaster',
   EventName: 'EventName',
-  ApprovalAudit: 'ApprovalAudit'
+  ApprovalAudit: 'ApprovalAudit',
+  ProductMaster: 'ProductMaster',
+  EPF: 'EPF',
+  CRF: 'CRF',
+  LineItem: 'LineItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -412,6 +416,59 @@ export const ApprovalAuditScalarFieldEnum = {
 } as const
 
 export type ApprovalAuditScalarFieldEnum = (typeof ApprovalAuditScalarFieldEnum)[keyof typeof ApprovalAuditScalarFieldEnum]
+
+
+export const ProductMasterScalarFieldEnum = {
+  id: 'id',
+  productType: 'productType',
+  category: 'category',
+  partNumber: 'partNumber',
+  name: 'name',
+  description: 'description',
+  unitRate: 'unitRate',
+  isActive: 'isActive',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type ProductMasterScalarFieldEnum = (typeof ProductMasterScalarFieldEnum)[keyof typeof ProductMasterScalarFieldEnum]
+
+
+export const EPFScalarFieldEnum = {
+  id: 'id',
+  epcId: 'epcId',
+  total_budget: 'total_budget',
+  expected_revenue: 'expected_revenue',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type EPFScalarFieldEnum = (typeof EPFScalarFieldEnum)[keyof typeof EPFScalarFieldEnum]
+
+
+export const CRFScalarFieldEnum = {
+  id: 'id',
+  epcId: 'epcId',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CRFScalarFieldEnum = (typeof CRFScalarFieldEnum)[keyof typeof CRFScalarFieldEnum]
+
+
+export const LineItemScalarFieldEnum = {
+  id: 'id',
+  epfId: 'epfId',
+  crfId: 'crfId',
+  productId: 'productId',
+  quantity: 'quantity',
+  rate: 'rate',
+  amount: 'amount',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type LineItemScalarFieldEnum = (typeof LineItemScalarFieldEnum)[keyof typeof LineItemScalarFieldEnum]
 
 
 export const SortOrder = {

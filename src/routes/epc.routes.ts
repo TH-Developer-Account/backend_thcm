@@ -21,11 +21,6 @@ router.post(
   authorize("MAP", "Event Proposal Form", "write"),
   asyncHandler(createEPCController),
 );
-// router.post(
-//   "/",
-//   authorize("MAP", "Event Proposal Form", "write"),
-//   asyncHandler(createEventProposal),
-// );
 router.get("/", asyncHandler(getAllEventProposals));
 router.get("/:id", asyncHandler(getEventProposalById));
 router.put("/:id", asyncHandler(updateEventProposal));

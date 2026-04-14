@@ -47,6 +47,18 @@ enum ApprovalStatus {
   REJECTED
 }
 
+enum ProductType {
+  EPF
+  CRF
+}
+
+enum ProductCategory {
+  EVENT_OVERHEAD
+  PRINTED_MATERIAL
+  SOUVENIR
+  ARTWORK
+}
+
 // ─────────────────────────────────────────────
 // AUTH MODELS (unchanged)
 // ─────────────────────────────────────────────
@@ -300,9 +312,10 @@ model EventProposal {
   created_by    User         @relation("EventCreatedBy", fields: [created_by_id], references: [id])
   updated_by    User         @relation("EventUpdatedBy", fields: [updated_by_id], references: [id])
   
+  epf EPF?
+  crf CRF?
   workflow WorkflowInstance?
   search_vector Unsupported("tsvector")?
-
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
 }
@@ -479,4 +492,82 @@ model ApprovalAudit {
   action      ApprovalStatus
   reason      String?
   createdAt   DateTime @default(now())
+}
+
+model ProductMaster {
+  id          String @id @default(uuid())
+
+  productType ProductType
+  category    ProductCategory
+
+  partNumber  String @unique
+  name        String
+  description String?
+
+  unitRate    Decimal @db.Decimal(10, 2)
+
+  isActive    Boolean @default(true)
+
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  // 🔗 Relations
+  lineItems   LineItem[]
+}
+
+model EPF {
+  id        String @id @default(uuid())
+  epcId     String @unique   // one EPF per EPC
+
+  // 🔗 Relation
+  epc       EventProposal @relation(fields: [epcId], references: [id])
+
+  // 🧾 EPF-specific fields
+  total_budget     Decimal? @db.Decimal(12,2)
+  expected_revenue Decimal? @db.Decimal(12,2)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // 🔗 Line items
+  lineItems LineItem[]
+}
+
+model CRF {
+  id        String @id @default(uuid())
+  epcId     String @unique   // one CRF per EPC (optional)
+
+  // 🔗 Relation
+  epc       EventProposal @relation(fields: [epcId], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // 🔗 Line items
+  lineItems LineItem[]
+}
+
+model LineItem {
+  id        String @id @default(uuid())
+
+  // 🔗 Parent references (ONLY ONE should be non-null)
+  epfId     String?
+  crfId     String?
+
+  productId String
+
+  quantity  Decimal @db.Decimal(10,2)
+  rate      Decimal @db.Decimal(10,2)
+  amount    Decimal @db.Decimal(12,2)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // 🔗 Relations
+  epf     EPF?           @relation(fields: [epfId], references: [id])
+  crf     CRF?           @relation(fields: [crfId], references: [id])
+  product ProductMaster  @relation(fields: [productId], references: [id])
+
+  @@index([epfId])
+  @@index([crfId])
 }

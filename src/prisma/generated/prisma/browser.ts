@@ -147,3 +147,23 @@ export type EventName = Prisma.EventNameModel
  * 
  */
 export type ApprovalAudit = Prisma.ApprovalAuditModel
+/**
+ * Model ProductMaster
+ * 
+ */
+export type ProductMaster = Prisma.ProductMasterModel
+/**
+ * Model EPF
+ * 
+ */
+export type EPF = Prisma.EPFModel
+/**
+ * Model CRF
+ * 
+ */
+export type CRF = Prisma.CRFModel
+/**
+ * Model LineItem
+ * 
+ */
+export type LineItem = Prisma.LineItemModel

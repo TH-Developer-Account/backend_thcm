@@ -1,4 +1,5 @@
 import { prisma } from "../config/prisma";
+import { PrismaClient } from "../prisma/generated/prisma/client";
 import { faker } from "@faker-js/faker";
 import {
   MARKETING_ACTIVITY_PLANNER,
@@ -781,6 +782,117 @@ async function main() {
       },
     });
   }
+
+  // --------------------------------------------------
+  // 1️⃣ Create Sample Products
+  // --------------------------------------------------
+
+  const products = await prisma.productMaster.createMany({
+    data: [
+      {
+        partNumber: "EPF-001",
+        name: "Venue Booking",
+        description: "Hall and venue charges",
+        unitRate: Math.floor(Math.random() * 50000),
+        productType: "EPF",
+        category: "EVENT_OVERHEAD",
+      },
+      {
+        partNumber: "EPF-002",
+        name: "Catering",
+        description: "Food and beverages",
+        unitRate: Math.floor(Math.random() * 1200),
+        productType: "EPF",
+        category: "EVENT_OVERHEAD",
+      },
+
+      // CRF Products
+      {
+        partNumber: "CRF-001",
+        name: "Brochure Printing",
+        description: "Product brochures",
+        unitRate: Math.floor(Math.random() * 5000),
+        productType: "CRF",
+        category: "PRINTED_MATERIAL",
+      },
+      {
+        partNumber: "CRF-002",
+        name: "Gift Hampers",
+        description: "Customer souvenirs",
+        unitRate: Math.floor(Math.random() * 2500),
+        productType: "CRF",
+        category: "SOUVENIR",
+      },
+      {
+        partNumber: "CRF-003",
+        name: "Standee Design",
+        description: "Artwork for banners",
+        unitRate: Math.floor(Math.random() * 2000),
+        productType: "CRF",
+        category: "ARTWORK",
+      },
+    ],
+  });
+
+  console.log("✅ Products created");
+
+  const allProducts = await prisma.productMaster.findMany();
+
+  const epfProducts = allProducts.filter((p) => p.productType === "EPF");
+  const crfProducts = allProducts.filter((p) => p.productType === "CRF");
+
+  for (let i = 0; i < proposals.length; i++) {
+    const epc = proposals[i];
+
+    const epf = await prisma.ePF.create({
+      data: {
+        epcId: epc.id,
+        total_budget: Math.floor(Math.random() * (30000 - 20000 + 1)) + 20000,
+        expected_revenue:
+          Math.floor(Math.random() * (30000 - 20000 + 1)) + 20000,
+      },
+    });
+
+    const crf = await prisma.cRF.create({
+      data: {
+        epcId: epc.id,
+      },
+    });
+
+    for (const product of epfProducts) {
+      const quantity = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
+      const rate = product.unitRate;
+      const amount = quantity * Number(rate);
+
+      await prisma.lineItem.create({
+        data: {
+          epfId: epf.id,
+          productId: product.id,
+          quantity,
+          rate,
+          amount,
+        },
+      });
+    }
+
+    for (const product of crfProducts) {
+      const quantity = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+      const rate = product.unitRate;
+      const amount = quantity * Number(rate);
+
+      await prisma.lineItem.create({
+        data: {
+          crfId: crf.id,
+          productId: product.id,
+          quantity,
+          rate,
+          amount,
+        },
+      });
+    }
+  }
+
+  console.log("✅ EPF and CRF created");
 
   console.log("✅ Workflow instances created with distributed stages");
 }
