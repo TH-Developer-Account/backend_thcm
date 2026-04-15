@@ -251,6 +251,9 @@ export const getTemplates = async (filters: any) => {
             },
           },
         },
+        app: { select: { id: true, key: true, name: true } },
+        created_by: { select: { first_name: true, last_name: true } },
+        updated_by: { select: { first_name: true, last_name: true } },
       },
     }),
 
