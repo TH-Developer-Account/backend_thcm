@@ -175,100 +175,109 @@ export const deleteTemplate = async (templateId: string) => {
   });
 };
 
-export const getTemplates = async (filters: any) => {
+export const getTemplates = async (query: any) => {
   const {
     workspaceId,
-    regionId,
-    minBudget,
-    maxBudget,
     isActive,
+    search,
+    filters,
     page,
     limit,
     sortBy,
     sortOrder,
-  } = filters;
+  } = query;
 
   const where: any = {};
 
   if (workspaceId) where.workspaceId = workspaceId;
-  if (regionId) where.regionId = regionId;
   if (isActive !== undefined) where.isActive = isActive === "true";
 
-  if (minBudget || maxBudget) {
-    where.AND = [];
+  // ✅ Advanced Filters (NEW)
+  if (filters) {
+    const parsedFilters =
+      typeof filters === "string" ? JSON.parse(filters) : filters;
 
-    if (minBudget) {
-      where.AND.push({
-        maxBudget: { gte: Number(minBudget) },
-      });
+    const { createdBy, app } = parsedFilters;
+
+    if (app?.length) {
+      where.appId = {
+        in: Array.isArray(app) ? app : [app], // fallback safety
+      };
     }
 
-    if (maxBudget) {
-      where.AND.push({
-        minBudget: { lte: Number(maxBudget) },
-      });
+    if (createdBy?.length) {
+      where.created_by_id = {
+        in: Array.isArray(createdBy) ? createdBy : [createdBy], // fallback safety
+      };
     }
-  }
 
-  // Whitelist allowed sort fields to prevent arbitrary column injection
-  const allowedSortFields = [
-    "created_at",
-    "updated_at",
-    "name",
-    "minBudget",
-    "maxBudget",
-  ];
-  const allowedSortOrders = ["asc", "desc"];
+    if (search?.trim()) {
+      where.OR = [
+        { name: { contains: search.trim(), mode: "insensitive" } },
+        { description: { contains: search.trim(), mode: "insensitive" } },
+      ];
+    }
 
-  const resolvedSortBy = allowedSortFields.includes(sortBy)
-    ? sortBy
-    : "created_at";
-  const resolvedSortOrder = allowedSortOrders.includes(sortOrder)
-    ? sortOrder
-    : "desc";
+    // Whitelist allowed sort fields to prevent arbitrary column injection
+    const allowedSortFields = [
+      "created_at",
+      "updated_at",
+      "name",
+      "minBudget",
+      "maxBudget",
+    ];
+    const allowedSortOrders = ["asc", "desc"];
 
-  const [data, total] = await Promise.all([
-    prisma.workflowTemplate.findMany({
-      where,
-      skip: (page - 1) * limit,
-      take: limit,
-      orderBy: { [resolvedSortBy]: resolvedSortOrder },
-      include: {
-        stages: {
-          orderBy: { stageOrder: "asc" },
-          include: {
-            approvers: {
-              include: {
-                user: {
-                  select: {
-                    id: true,
-                    first_name: true,
-                    last_name: true,
-                    email: true,
+    const resolvedSortBy = allowedSortFields.includes(sortBy)
+      ? sortBy
+      : "created_at";
+    const resolvedSortOrder = allowedSortOrders.includes(sortOrder)
+      ? sortOrder
+      : "desc";
+
+    const [data, total] = await Promise.all([
+      prisma.workflowTemplate.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { [resolvedSortBy]: resolvedSortOrder },
+        include: {
+          stages: {
+            orderBy: { stageOrder: "asc" },
+            include: {
+              approvers: {
+                include: {
+                  user: {
+                    select: {
+                      id: true,
+                      first_name: true,
+                      last_name: true,
+                      email: true,
+                    },
                   },
                 },
               },
             },
           },
+          app: { select: { id: true, key: true, name: true } },
+          created_by: { select: { first_name: true, last_name: true } },
+          updated_by: { select: { first_name: true, last_name: true } },
         },
-        app: { select: { id: true, key: true, name: true } },
-        created_by: { select: { first_name: true, last_name: true } },
-        updated_by: { select: { first_name: true, last_name: true } },
+      }),
+
+      prisma.workflowTemplate.count({ where }),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
       },
-    }),
-
-    prisma.workflowTemplate.count({ where }),
-  ]);
-
-  return {
-    data,
-    meta: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
-  };
+    };
+  }
 };
 
 export const getTemplateById = async (templateId: string) => {

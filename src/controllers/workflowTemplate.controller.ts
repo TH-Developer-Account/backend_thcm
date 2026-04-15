@@ -60,9 +60,8 @@ export const getTemplates = async (req: Request, res: Response) => {
   try {
     const {
       workspaceId,
-      regionId,
-      minBudget,
-      maxBudget,
+      filters,
+      search,
       isActive,
       page = 1,
       limit = 10,
@@ -72,14 +71,13 @@ export const getTemplates = async (req: Request, res: Response) => {
 
     const result = await service.getTemplates({
       workspaceId,
-      regionId,
-      minBudget,
-      maxBudget,
       isActive,
       page: Number(page),
       limit: Number(limit),
       sortBy,
       sortOrder,
+      filters,
+      search,
     });
 
     res.json(result);
