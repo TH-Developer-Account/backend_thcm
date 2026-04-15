@@ -70,6 +70,7 @@ export const ModelName = {
   WorkflowInstance: 'WorkflowInstance',
   StageInstance: 'StageInstance',
   Approval: 'Approval',
+  WorkFlowTemplateUser: 'WorkFlowTemplateUser',
   Department: 'Department',
   Region: 'Region',
   Branch: 'Branch',
@@ -344,6 +345,16 @@ export const ApprovalScalarFieldEnum = {
 } as const
 
 export type ApprovalScalarFieldEnum = (typeof ApprovalScalarFieldEnum)[keyof typeof ApprovalScalarFieldEnum]
+
+
+export const WorkFlowTemplateUserScalarFieldEnum = {
+  id: 'id',
+  templateId: 'templateId',
+  userId: 'userId',
+  created_at: 'created_at'
+} as const
+
+export type WorkFlowTemplateUserScalarFieldEnum = (typeof WorkFlowTemplateUserScalarFieldEnum)[keyof typeof WorkFlowTemplateUserScalarFieldEnum]
 
 
 export const DepartmentScalarFieldEnum = {

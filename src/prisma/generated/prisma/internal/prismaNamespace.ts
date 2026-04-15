@@ -403,6 +403,7 @@ export const ModelName = {
   WorkflowInstance: 'WorkflowInstance',
   StageInstance: 'StageInstance',
   Approval: 'Approval',
+  WorkFlowTemplateUser: 'WorkFlowTemplateUser',
   Department: 'Department',
   Region: 'Region',
   Branch: 'Branch',
@@ -429,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "department" | "region" | "branch" | "eventScale" | "budgetMaster" | "eventName" | "approvalAudit" | "productMaster" | "ePF" | "cRF" | "lineItem"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "department" | "region" | "branch" | "eventScale" | "budgetMaster" | "eventName" | "approvalAudit" | "productMaster" | "ePF" | "cRF" | "lineItem"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1839,6 +1840,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    WorkFlowTemplateUser: {
+      payload: Prisma.$WorkFlowTemplateUserPayload<ExtArgs>
+      fields: Prisma.WorkFlowTemplateUserFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.WorkFlowTemplateUserFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkFlowTemplateUserPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.WorkFlowTemplateUserFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkFlowTemplateUserPayload>
+        }
+        findFirst: {
+          args: Prisma.WorkFlowTemplateUserFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkFlowTemplateUserPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.WorkFlowTemplateUserFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkFlowTemplateUserPayload>
+        }
+        findMany: {
+          args: Prisma.WorkFlowTemplateUserFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkFlowTemplateUserPayload>[]
+        }
+        create: {
+          args: Prisma.WorkFlowTemplateUserCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkFlowTemplateUserPayload>
+        }
+        createMany: {
+          args: Prisma.WorkFlowTemplateUserCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.WorkFlowTemplateUserCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkFlowTemplateUserPayload>[]
+        }
+        delete: {
+          args: Prisma.WorkFlowTemplateUserDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkFlowTemplateUserPayload>
+        }
+        update: {
+          args: Prisma.WorkFlowTemplateUserUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkFlowTemplateUserPayload>
+        }
+        deleteMany: {
+          args: Prisma.WorkFlowTemplateUserDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.WorkFlowTemplateUserUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.WorkFlowTemplateUserUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkFlowTemplateUserPayload>[]
+        }
+        upsert: {
+          args: Prisma.WorkFlowTemplateUserUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$WorkFlowTemplateUserPayload>
+        }
+        aggregate: {
+          args: Prisma.WorkFlowTemplateUserAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateWorkFlowTemplateUser>
+        }
+        groupBy: {
+          args: Prisma.WorkFlowTemplateUserGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkFlowTemplateUserGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.WorkFlowTemplateUserCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.WorkFlowTemplateUserCountAggregateOutputType> | number
+        }
+      }
+    }
     Department: {
       payload: Prisma.$DepartmentPayload<ExtArgs>
       fields: Prisma.DepartmentFieldRefs
@@ -2939,6 +3014,16 @@ export const ApprovalScalarFieldEnum = {
 export type ApprovalScalarFieldEnum = (typeof ApprovalScalarFieldEnum)[keyof typeof ApprovalScalarFieldEnum]
 
 
+export const WorkFlowTemplateUserScalarFieldEnum = {
+  id: 'id',
+  templateId: 'templateId',
+  userId: 'userId',
+  created_at: 'created_at'
+} as const
+
+export type WorkFlowTemplateUserScalarFieldEnum = (typeof WorkFlowTemplateUserScalarFieldEnum)[keyof typeof WorkFlowTemplateUserScalarFieldEnum]
+
+
 export const DepartmentScalarFieldEnum = {
   id: 'id',
   department_code: 'department_code',
@@ -3388,6 +3473,7 @@ export type GlobalOmitConfig = {
   workflowInstance?: Prisma.WorkflowInstanceOmit
   stageInstance?: Prisma.StageInstanceOmit
   approval?: Prisma.ApprovalOmit
+  workFlowTemplateUser?: Prisma.WorkFlowTemplateUserOmit
   department?: Prisma.DepartmentOmit
   region?: Prisma.RegionOmit
   branch?: Prisma.BranchOmit

@@ -87,6 +87,7 @@ model User {
   // ✅ NEW
   approvals Approval[]
   templateApprovals TemplateApprover[]
+  workFlowUsers WorkFlowTemplateUser[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -347,6 +348,7 @@ model WorkflowTemplate {
 
   stages TemplateStage[]
   workflowInstances WorkflowInstance[]
+  workFlowUsers WorkFlowTemplateUser[]
 
   app           App         @relation(fields: [appId], references: [id])
   workspace     Workspace   @relation(fields: [workspaceId], references: [id])
@@ -434,6 +436,22 @@ model Approval {
 
   @@unique([stageId, approverId])
 }
+
+model WorkFlowTemplateUser {
+  id          String         @id @default(uuid())
+  templateId  String
+  userId      String
+  created_at  DateTime       @default(now())
+
+  template    WorkflowTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  user        User             @relation(fields: [userId], references: [id])
+
+
+  @@unique([templateId, userId]) // same user can have multiple roles on same template
+  @@index([templateId,userId])
+}
+
+
 
 // ─────────────────────────────────────────────
 // OTHER MODELS (unchanged)

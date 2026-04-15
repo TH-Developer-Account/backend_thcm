@@ -113,6 +113,11 @@ export type StageInstance = Prisma.StageInstanceModel
  */
 export type Approval = Prisma.ApprovalModel
 /**
+ * Model WorkFlowTemplateUser
+ * 
+ */
+export type WorkFlowTemplateUser = Prisma.WorkFlowTemplateUserModel
+/**
  * Model Department
  * 
  */

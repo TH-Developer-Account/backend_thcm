@@ -8,6 +8,7 @@ import {
   deleteTemplate,
   getTemplates,
   getTemplateById,
+  assignUsersToWorkflow,
 } from "../controllers/workflowTemplate.controller";
 
 const router = Router();
@@ -20,5 +21,6 @@ router.get("/", asyncHandler(getTemplates));
 router.get("/:templateId", asyncHandler(getTemplateById));
 router.put("/:templateId", asyncHandler(updateTemplate));
 router.delete("/:templateId", asyncHandler(deleteTemplate));
+router.post("/assign-profile", asyncHandler(assignUsersToWorkflow));
 
 export default router;
