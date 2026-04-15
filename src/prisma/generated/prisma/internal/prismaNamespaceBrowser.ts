@@ -268,13 +268,17 @@ export type EventProposalScalarFieldEnum = (typeof EventProposalScalarFieldEnum)
 export const WorkflowTemplateScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  description: 'description',
   workspaceId: 'workspaceId',
-  regionId: 'regionId',
-  minBudget: 'minBudget',
-  maxBudget: 'maxBudget',
-  priority: 'priority',
   isActive: 'isActive',
-  created_at: 'created_at'
+  appId: 'appId',
+  metaData_1: 'metaData_1',
+  metaData_2: 'metaData_2',
+  metaData_3: 'metaData_3',
+  created_by_id: 'created_by_id',
+  updated_by_id: 'updated_by_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 } as const
 
 export type WorkflowTemplateScalarFieldEnum = (typeof WorkflowTemplateScalarFieldEnum)[keyof typeof WorkflowTemplateScalarFieldEnum]
@@ -282,6 +286,7 @@ export type WorkflowTemplateScalarFieldEnum = (typeof WorkflowTemplateScalarFiel
 
 export const TemplateStageScalarFieldEnum = {
   id: 'id',
+  name: 'name',
   templateId: 'templateId',
   stageOrder: 'stageOrder',
   strategy: 'strategy',
@@ -307,7 +312,8 @@ export const WorkflowInstanceScalarFieldEnum = {
   eventProposalId: 'eventProposalId',
   status: 'status',
   currentStage: 'currentStage',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 } as const
 
 export type WorkflowInstanceScalarFieldEnum = (typeof WorkflowInstanceScalarFieldEnum)[keyof typeof WorkflowInstanceScalarFieldEnum]

@@ -20,108 +20,106 @@ export type WorkflowTemplateModel = runtime.Types.Result.DefaultSelection<Prisma
 
 export type AggregateWorkflowTemplate = {
   _count: WorkflowTemplateCountAggregateOutputType | null
-  _avg: WorkflowTemplateAvgAggregateOutputType | null
-  _sum: WorkflowTemplateSumAggregateOutputType | null
   _min: WorkflowTemplateMinAggregateOutputType | null
   _max: WorkflowTemplateMaxAggregateOutputType | null
-}
-
-export type WorkflowTemplateAvgAggregateOutputType = {
-  minBudget: runtime.Decimal | null
-  maxBudget: runtime.Decimal | null
-  priority: number | null
-}
-
-export type WorkflowTemplateSumAggregateOutputType = {
-  minBudget: runtime.Decimal | null
-  maxBudget: runtime.Decimal | null
-  priority: number | null
 }
 
 export type WorkflowTemplateMinAggregateOutputType = {
   id: string | null
   name: string | null
+  description: string | null
   workspaceId: string | null
-  regionId: string | null
-  minBudget: runtime.Decimal | null
-  maxBudget: runtime.Decimal | null
-  priority: number | null
   isActive: boolean | null
+  appId: string | null
+  metaData_1: string | null
+  metaData_2: string | null
+  metaData_3: string | null
+  created_by_id: string | null
+  updated_by_id: string | null
   created_at: Date | null
+  updated_at: Date | null
 }
 
 export type WorkflowTemplateMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  description: string | null
   workspaceId: string | null
-  regionId: string | null
-  minBudget: runtime.Decimal | null
-  maxBudget: runtime.Decimal | null
-  priority: number | null
   isActive: boolean | null
+  appId: string | null
+  metaData_1: string | null
+  metaData_2: string | null
+  metaData_3: string | null
+  created_by_id: string | null
+  updated_by_id: string | null
   created_at: Date | null
+  updated_at: Date | null
 }
 
 export type WorkflowTemplateCountAggregateOutputType = {
   id: number
   name: number
+  description: number
   workspaceId: number
-  regionId: number
-  minBudget: number
-  maxBudget: number
-  priority: number
   isActive: number
+  appId: number
+  metaData_1: number
+  metaData_2: number
+  metaData_3: number
+  created_by_id: number
+  updated_by_id: number
   created_at: number
+  updated_at: number
   _all: number
 }
 
 
-export type WorkflowTemplateAvgAggregateInputType = {
-  minBudget?: true
-  maxBudget?: true
-  priority?: true
-}
-
-export type WorkflowTemplateSumAggregateInputType = {
-  minBudget?: true
-  maxBudget?: true
-  priority?: true
-}
-
 export type WorkflowTemplateMinAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   workspaceId?: true
-  regionId?: true
-  minBudget?: true
-  maxBudget?: true
-  priority?: true
   isActive?: true
+  appId?: true
+  metaData_1?: true
+  metaData_2?: true
+  metaData_3?: true
+  created_by_id?: true
+  updated_by_id?: true
   created_at?: true
+  updated_at?: true
 }
 
 export type WorkflowTemplateMaxAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   workspaceId?: true
-  regionId?: true
-  minBudget?: true
-  maxBudget?: true
-  priority?: true
   isActive?: true
+  appId?: true
+  metaData_1?: true
+  metaData_2?: true
+  metaData_3?: true
+  created_by_id?: true
+  updated_by_id?: true
   created_at?: true
+  updated_at?: true
 }
 
 export type WorkflowTemplateCountAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   workspaceId?: true
-  regionId?: true
-  minBudget?: true
-  maxBudget?: true
-  priority?: true
   isActive?: true
+  appId?: true
+  metaData_1?: true
+  metaData_2?: true
+  metaData_3?: true
+  created_by_id?: true
+  updated_by_id?: true
   created_at?: true
+  updated_at?: true
   _all?: true
 }
 
@@ -163,18 +161,6 @@ export type WorkflowTemplateAggregateArgs<ExtArgs extends runtime.Types.Extensio
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: WorkflowTemplateAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: WorkflowTemplateSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: WorkflowTemplateMinAggregateInputType
@@ -205,8 +191,6 @@ export type WorkflowTemplateGroupByArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   _count?: WorkflowTemplateCountAggregateInputType | true
-  _avg?: WorkflowTemplateAvgAggregateInputType
-  _sum?: WorkflowTemplateSumAggregateInputType
   _min?: WorkflowTemplateMinAggregateInputType
   _max?: WorkflowTemplateMaxAggregateInputType
 }
@@ -214,16 +198,18 @@ export type WorkflowTemplateGroupByArgs<ExtArgs extends runtime.Types.Extensions
 export type WorkflowTemplateGroupByOutputType = {
   id: string
   name: string
+  description: string
   workspaceId: string
-  regionId: string
-  minBudget: runtime.Decimal
-  maxBudget: runtime.Decimal
-  priority: number
   isActive: boolean
+  appId: string
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_by_id: string
+  updated_by_id: string
   created_at: Date
+  updated_at: Date
   _count: WorkflowTemplateCountAggregateOutputType | null
-  _avg: WorkflowTemplateAvgAggregateOutputType | null
-  _sum: WorkflowTemplateSumAggregateOutputType | null
   _min: WorkflowTemplateMinAggregateOutputType | null
   _max: WorkflowTemplateMaxAggregateOutputType | null
 }
@@ -249,33 +235,45 @@ export type WorkflowTemplateWhereInput = {
   NOT?: Prisma.WorkflowTemplateWhereInput | Prisma.WorkflowTemplateWhereInput[]
   id?: Prisma.StringFilter<"WorkflowTemplate"> | string
   name?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  description?: Prisma.StringFilter<"WorkflowTemplate"> | string
   workspaceId?: Prisma.StringFilter<"WorkflowTemplate"> | string
-  regionId?: Prisma.StringFilter<"WorkflowTemplate"> | string
-  minBudget?: Prisma.DecimalFilter<"WorkflowTemplate"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFilter<"WorkflowTemplate"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFilter<"WorkflowTemplate"> | number
   isActive?: Prisma.BoolFilter<"WorkflowTemplate"> | boolean
+  appId?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  metaData_1?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  metaData_2?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  metaData_3?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  created_by_id?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  updated_by_id?: Prisma.StringFilter<"WorkflowTemplate"> | string
   created_at?: Prisma.DateTimeFilter<"WorkflowTemplate"> | Date | string
-  workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
-  region?: Prisma.XOR<Prisma.RegionScalarRelationFilter, Prisma.RegionWhereInput>
+  updated_at?: Prisma.DateTimeFilter<"WorkflowTemplate"> | Date | string
   stages?: Prisma.TemplateStageListRelationFilter
   workflowInstances?: Prisma.WorkflowInstanceListRelationFilter
+  app?: Prisma.XOR<Prisma.AppScalarRelationFilter, Prisma.AppWhereInput>
+  workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
+  created_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  updated_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type WorkflowTemplateOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
-  regionId?: Prisma.SortOrder
-  minBudget?: Prisma.SortOrder
-  maxBudget?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
+  metaData_1?: Prisma.SortOrder
+  metaData_2?: Prisma.SortOrder
+  metaData_3?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
-  workspace?: Prisma.WorkspaceOrderByWithRelationInput
-  region?: Prisma.RegionOrderByWithRelationInput
+  updated_at?: Prisma.SortOrder
   stages?: Prisma.TemplateStageOrderByRelationAggregateInput
   workflowInstances?: Prisma.WorkflowInstanceOrderByRelationAggregateInput
+  app?: Prisma.AppOrderByWithRelationInput
+  workspace?: Prisma.WorkspaceOrderByWithRelationInput
+  created_by?: Prisma.UserOrderByWithRelationInput
+  updated_by?: Prisma.UserOrderByWithRelationInput
 }
 
 export type WorkflowTemplateWhereUniqueInput = Prisma.AtLeast<{
@@ -284,34 +282,42 @@ export type WorkflowTemplateWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.WorkflowTemplateWhereInput[]
   NOT?: Prisma.WorkflowTemplateWhereInput | Prisma.WorkflowTemplateWhereInput[]
   name?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  description?: Prisma.StringFilter<"WorkflowTemplate"> | string
   workspaceId?: Prisma.StringFilter<"WorkflowTemplate"> | string
-  regionId?: Prisma.StringFilter<"WorkflowTemplate"> | string
-  minBudget?: Prisma.DecimalFilter<"WorkflowTemplate"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFilter<"WorkflowTemplate"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFilter<"WorkflowTemplate"> | number
   isActive?: Prisma.BoolFilter<"WorkflowTemplate"> | boolean
+  appId?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  metaData_1?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  metaData_2?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  metaData_3?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  created_by_id?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  updated_by_id?: Prisma.StringFilter<"WorkflowTemplate"> | string
   created_at?: Prisma.DateTimeFilter<"WorkflowTemplate"> | Date | string
-  workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
-  region?: Prisma.XOR<Prisma.RegionScalarRelationFilter, Prisma.RegionWhereInput>
+  updated_at?: Prisma.DateTimeFilter<"WorkflowTemplate"> | Date | string
   stages?: Prisma.TemplateStageListRelationFilter
   workflowInstances?: Prisma.WorkflowInstanceListRelationFilter
+  app?: Prisma.XOR<Prisma.AppScalarRelationFilter, Prisma.AppWhereInput>
+  workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
+  created_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  updated_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
 export type WorkflowTemplateOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
-  regionId?: Prisma.SortOrder
-  minBudget?: Prisma.SortOrder
-  maxBudget?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
+  metaData_1?: Prisma.SortOrder
+  metaData_2?: Prisma.SortOrder
+  metaData_3?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
   _count?: Prisma.WorkflowTemplateCountOrderByAggregateInput
-  _avg?: Prisma.WorkflowTemplateAvgOrderByAggregateInput
   _max?: Prisma.WorkflowTemplateMaxOrderByAggregateInput
   _min?: Prisma.WorkflowTemplateMinOrderByAggregateInput
-  _sum?: Prisma.WorkflowTemplateSumOrderByAggregateInput
 }
 
 export type WorkflowTemplateScalarWhereWithAggregatesInput = {
@@ -320,39 +326,51 @@ export type WorkflowTemplateScalarWhereWithAggregatesInput = {
   NOT?: Prisma.WorkflowTemplateScalarWhereWithAggregatesInput | Prisma.WorkflowTemplateScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
   name?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
+  description?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
   workspaceId?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
-  regionId?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
-  minBudget?: Prisma.DecimalWithAggregatesFilter<"WorkflowTemplate"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalWithAggregatesFilter<"WorkflowTemplate"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntWithAggregatesFilter<"WorkflowTemplate"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"WorkflowTemplate"> | boolean
+  appId?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
+  metaData_1?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
+  metaData_2?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
+  metaData_3?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
+  created_by_id?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
+  updated_by_id?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"WorkflowTemplate"> | Date | string
+  updated_at?: Prisma.DateTimeWithAggregatesFilter<"WorkflowTemplate"> | Date | string
 }
 
 export type WorkflowTemplateCreateInput = {
   id?: string
   name: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
+  description: string
   isActive?: boolean
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
   created_at?: Date | string
-  workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowTemplatesInput
-  region: Prisma.RegionCreateNestedOneWithoutWorkflowTemplatesInput
+  updated_at?: Date | string
   stages?: Prisma.TemplateStageCreateNestedManyWithoutTemplateInput
   workflowInstances?: Prisma.WorkflowInstanceCreateNestedManyWithoutTemplateInput
+  app: Prisma.AppCreateNestedOneWithoutWorkFlowTemplateInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowTemplatesInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_workflowInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_workflowInput
 }
 
 export type WorkflowTemplateUncheckedCreateInput = {
   id?: string
   name: string
+  description: string
   workspaceId: string
-  regionId: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
   isActive?: boolean
+  appId: string
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_by_id: string
+  updated_by_id: string
   created_at?: Date | string
+  updated_at?: Date | string
   stages?: Prisma.TemplateStageUncheckedCreateNestedManyWithoutTemplateInput
   workflowInstances?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutTemplateInput
 }
@@ -360,27 +378,35 @@ export type WorkflowTemplateUncheckedCreateInput = {
 export type WorkflowTemplateUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.TemplateStageUpdateManyWithoutTemplateNestedInput
   workflowInstances?: Prisma.WorkflowInstanceUpdateManyWithoutTemplateNestedInput
+  app?: Prisma.AppUpdateOneRequiredWithoutWorkFlowTemplateNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_workflowNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_workflowNestedInput
 }
 
 export type WorkflowTemplateUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
-  regionId?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.TemplateStageUncheckedUpdateManyWithoutTemplateNestedInput
   workflowInstances?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutTemplateNestedInput
 }
@@ -388,35 +414,45 @@ export type WorkflowTemplateUncheckedUpdateInput = {
 export type WorkflowTemplateCreateManyInput = {
   id?: string
   name: string
+  description: string
   workspaceId: string
-  regionId: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
   isActive?: boolean
+  appId: string
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_by_id: string
+  updated_by_id: string
   created_at?: Date | string
+  updated_at?: Date | string
 }
 
 export type WorkflowTemplateUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkflowTemplateUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
-  regionId?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkflowTemplateListRelationFilter = {
@@ -432,54 +468,138 @@ export type WorkflowTemplateOrderByRelationAggregateInput = {
 export type WorkflowTemplateCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
-  regionId?: Prisma.SortOrder
-  minBudget?: Prisma.SortOrder
-  maxBudget?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
+  metaData_1?: Prisma.SortOrder
+  metaData_2?: Prisma.SortOrder
+  metaData_3?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
-}
-
-export type WorkflowTemplateAvgOrderByAggregateInput = {
-  minBudget?: Prisma.SortOrder
-  maxBudget?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type WorkflowTemplateMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
-  regionId?: Prisma.SortOrder
-  minBudget?: Prisma.SortOrder
-  maxBudget?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
+  metaData_1?: Prisma.SortOrder
+  metaData_2?: Prisma.SortOrder
+  metaData_3?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type WorkflowTemplateMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
-  regionId?: Prisma.SortOrder
-  minBudget?: Prisma.SortOrder
-  maxBudget?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
+  metaData_1?: Prisma.SortOrder
+  metaData_2?: Prisma.SortOrder
+  metaData_3?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
-}
-
-export type WorkflowTemplateSumOrderByAggregateInput = {
-  minBudget?: Prisma.SortOrder
-  maxBudget?: Prisma.SortOrder
-  priority?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type WorkflowTemplateScalarRelationFilter = {
   is?: Prisma.WorkflowTemplateWhereInput
   isNot?: Prisma.WorkflowTemplateWhereInput
+}
+
+export type WorkflowTemplateCreateNestedManyWithoutCreated_byInput = {
+  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutCreated_byInput, Prisma.WorkflowTemplateUncheckedCreateWithoutCreated_byInput> | Prisma.WorkflowTemplateCreateWithoutCreated_byInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutCreated_byInput[]
+  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutCreated_byInput | Prisma.WorkflowTemplateCreateOrConnectWithoutCreated_byInput[]
+  createMany?: Prisma.WorkflowTemplateCreateManyCreated_byInputEnvelope
+  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+}
+
+export type WorkflowTemplateCreateNestedManyWithoutUpdated_byInput = {
+  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutUpdated_byInput, Prisma.WorkflowTemplateUncheckedCreateWithoutUpdated_byInput> | Prisma.WorkflowTemplateCreateWithoutUpdated_byInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutUpdated_byInput[]
+  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutUpdated_byInput | Prisma.WorkflowTemplateCreateOrConnectWithoutUpdated_byInput[]
+  createMany?: Prisma.WorkflowTemplateCreateManyUpdated_byInputEnvelope
+  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+}
+
+export type WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput = {
+  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutCreated_byInput, Prisma.WorkflowTemplateUncheckedCreateWithoutCreated_byInput> | Prisma.WorkflowTemplateCreateWithoutCreated_byInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutCreated_byInput[]
+  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutCreated_byInput | Prisma.WorkflowTemplateCreateOrConnectWithoutCreated_byInput[]
+  createMany?: Prisma.WorkflowTemplateCreateManyCreated_byInputEnvelope
+  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+}
+
+export type WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput = {
+  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutUpdated_byInput, Prisma.WorkflowTemplateUncheckedCreateWithoutUpdated_byInput> | Prisma.WorkflowTemplateCreateWithoutUpdated_byInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutUpdated_byInput[]
+  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutUpdated_byInput | Prisma.WorkflowTemplateCreateOrConnectWithoutUpdated_byInput[]
+  createMany?: Prisma.WorkflowTemplateCreateManyUpdated_byInputEnvelope
+  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+}
+
+export type WorkflowTemplateUpdateManyWithoutCreated_byNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutCreated_byInput, Prisma.WorkflowTemplateUncheckedCreateWithoutCreated_byInput> | Prisma.WorkflowTemplateCreateWithoutCreated_byInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutCreated_byInput[]
+  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutCreated_byInput | Prisma.WorkflowTemplateCreateOrConnectWithoutCreated_byInput[]
+  upsert?: Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutCreated_byInput | Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutCreated_byInput[]
+  createMany?: Prisma.WorkflowTemplateCreateManyCreated_byInputEnvelope
+  set?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  disconnect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  delete?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  update?: Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutCreated_byInput | Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutCreated_byInput[]
+  updateMany?: Prisma.WorkflowTemplateUpdateManyWithWhereWithoutCreated_byInput | Prisma.WorkflowTemplateUpdateManyWithWhereWithoutCreated_byInput[]
+  deleteMany?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
+}
+
+export type WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutUpdated_byInput, Prisma.WorkflowTemplateUncheckedCreateWithoutUpdated_byInput> | Prisma.WorkflowTemplateCreateWithoutUpdated_byInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutUpdated_byInput[]
+  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutUpdated_byInput | Prisma.WorkflowTemplateCreateOrConnectWithoutUpdated_byInput[]
+  upsert?: Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutUpdated_byInput | Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutUpdated_byInput[]
+  createMany?: Prisma.WorkflowTemplateCreateManyUpdated_byInputEnvelope
+  set?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  disconnect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  delete?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  update?: Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutUpdated_byInput | Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutUpdated_byInput[]
+  updateMany?: Prisma.WorkflowTemplateUpdateManyWithWhereWithoutUpdated_byInput | Prisma.WorkflowTemplateUpdateManyWithWhereWithoutUpdated_byInput[]
+  deleteMany?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
+}
+
+export type WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutCreated_byInput, Prisma.WorkflowTemplateUncheckedCreateWithoutCreated_byInput> | Prisma.WorkflowTemplateCreateWithoutCreated_byInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutCreated_byInput[]
+  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutCreated_byInput | Prisma.WorkflowTemplateCreateOrConnectWithoutCreated_byInput[]
+  upsert?: Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutCreated_byInput | Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutCreated_byInput[]
+  createMany?: Prisma.WorkflowTemplateCreateManyCreated_byInputEnvelope
+  set?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  disconnect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  delete?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  update?: Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutCreated_byInput | Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutCreated_byInput[]
+  updateMany?: Prisma.WorkflowTemplateUpdateManyWithWhereWithoutCreated_byInput | Prisma.WorkflowTemplateUpdateManyWithWhereWithoutCreated_byInput[]
+  deleteMany?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
+}
+
+export type WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutUpdated_byInput, Prisma.WorkflowTemplateUncheckedCreateWithoutUpdated_byInput> | Prisma.WorkflowTemplateCreateWithoutUpdated_byInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutUpdated_byInput[]
+  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutUpdated_byInput | Prisma.WorkflowTemplateCreateOrConnectWithoutUpdated_byInput[]
+  upsert?: Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutUpdated_byInput | Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutUpdated_byInput[]
+  createMany?: Prisma.WorkflowTemplateCreateManyUpdated_byInputEnvelope
+  set?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  disconnect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  delete?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  update?: Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutUpdated_byInput | Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutUpdated_byInput[]
+  updateMany?: Prisma.WorkflowTemplateUpdateManyWithWhereWithoutUpdated_byInput | Prisma.WorkflowTemplateUpdateManyWithWhereWithoutUpdated_byInput[]
+  deleteMany?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
 }
 
 export type WorkflowTemplateCreateNestedManyWithoutWorkspaceInput = {
@@ -524,12 +644,46 @@ export type WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput = {
   deleteMany?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
 }
 
-export type DecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+export type WorkflowTemplateCreateNestedManyWithoutAppInput = {
+  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutAppInput, Prisma.WorkflowTemplateUncheckedCreateWithoutAppInput> | Prisma.WorkflowTemplateCreateWithoutAppInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutAppInput[]
+  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutAppInput | Prisma.WorkflowTemplateCreateOrConnectWithoutAppInput[]
+  createMany?: Prisma.WorkflowTemplateCreateManyAppInputEnvelope
+  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+}
+
+export type WorkflowTemplateUncheckedCreateNestedManyWithoutAppInput = {
+  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutAppInput, Prisma.WorkflowTemplateUncheckedCreateWithoutAppInput> | Prisma.WorkflowTemplateCreateWithoutAppInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutAppInput[]
+  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutAppInput | Prisma.WorkflowTemplateCreateOrConnectWithoutAppInput[]
+  createMany?: Prisma.WorkflowTemplateCreateManyAppInputEnvelope
+  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+}
+
+export type WorkflowTemplateUpdateManyWithoutAppNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutAppInput, Prisma.WorkflowTemplateUncheckedCreateWithoutAppInput> | Prisma.WorkflowTemplateCreateWithoutAppInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutAppInput[]
+  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutAppInput | Prisma.WorkflowTemplateCreateOrConnectWithoutAppInput[]
+  upsert?: Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutAppInput | Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutAppInput[]
+  createMany?: Prisma.WorkflowTemplateCreateManyAppInputEnvelope
+  set?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  disconnect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  delete?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  update?: Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutAppInput | Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutAppInput[]
+  updateMany?: Prisma.WorkflowTemplateUpdateManyWithWhereWithoutAppInput | Prisma.WorkflowTemplateUpdateManyWithWhereWithoutAppInput[]
+  deleteMany?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
+}
+
+export type WorkflowTemplateUncheckedUpdateManyWithoutAppNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutAppInput, Prisma.WorkflowTemplateUncheckedCreateWithoutAppInput> | Prisma.WorkflowTemplateCreateWithoutAppInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutAppInput[]
+  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutAppInput | Prisma.WorkflowTemplateCreateOrConnectWithoutAppInput[]
+  upsert?: Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutAppInput | Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutAppInput[]
+  createMany?: Prisma.WorkflowTemplateCreateManyAppInputEnvelope
+  set?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  disconnect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  delete?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+  update?: Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutAppInput | Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutAppInput[]
+  updateMany?: Prisma.WorkflowTemplateUpdateManyWithWhereWithoutAppInput | Prisma.WorkflowTemplateUpdateManyWithWhereWithoutAppInput[]
+  deleteMany?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
 }
 
 export type WorkflowTemplateCreateNestedOneWithoutStagesInput = {
@@ -560,70 +714,175 @@ export type WorkflowTemplateUpdateOneRequiredWithoutWorkflowInstancesNestedInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkflowTemplateUpdateToOneWithWhereWithoutWorkflowInstancesInput, Prisma.WorkflowTemplateUpdateWithoutWorkflowInstancesInput>, Prisma.WorkflowTemplateUncheckedUpdateWithoutWorkflowInstancesInput>
 }
 
-export type WorkflowTemplateCreateNestedManyWithoutRegionInput = {
-  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutRegionInput, Prisma.WorkflowTemplateUncheckedCreateWithoutRegionInput> | Prisma.WorkflowTemplateCreateWithoutRegionInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutRegionInput[]
-  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutRegionInput | Prisma.WorkflowTemplateCreateOrConnectWithoutRegionInput[]
-  createMany?: Prisma.WorkflowTemplateCreateManyRegionInputEnvelope
-  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+export type WorkflowTemplateCreateWithoutCreated_byInput = {
+  id?: string
+  name: string
+  description: string
+  isActive?: boolean
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  stages?: Prisma.TemplateStageCreateNestedManyWithoutTemplateInput
+  workflowInstances?: Prisma.WorkflowInstanceCreateNestedManyWithoutTemplateInput
+  app: Prisma.AppCreateNestedOneWithoutWorkFlowTemplateInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowTemplatesInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_workflowInput
 }
 
-export type WorkflowTemplateUncheckedCreateNestedManyWithoutRegionInput = {
-  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutRegionInput, Prisma.WorkflowTemplateUncheckedCreateWithoutRegionInput> | Prisma.WorkflowTemplateCreateWithoutRegionInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutRegionInput[]
-  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutRegionInput | Prisma.WorkflowTemplateCreateOrConnectWithoutRegionInput[]
-  createMany?: Prisma.WorkflowTemplateCreateManyRegionInputEnvelope
-  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
+export type WorkflowTemplateUncheckedCreateWithoutCreated_byInput = {
+  id?: string
+  name: string
+  description: string
+  workspaceId: string
+  isActive?: boolean
+  appId: string
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  updated_by_id: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  stages?: Prisma.TemplateStageUncheckedCreateNestedManyWithoutTemplateInput
+  workflowInstances?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutTemplateInput
 }
 
-export type WorkflowTemplateUpdateManyWithoutRegionNestedInput = {
-  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutRegionInput, Prisma.WorkflowTemplateUncheckedCreateWithoutRegionInput> | Prisma.WorkflowTemplateCreateWithoutRegionInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutRegionInput[]
-  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutRegionInput | Prisma.WorkflowTemplateCreateOrConnectWithoutRegionInput[]
-  upsert?: Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutRegionInput | Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutRegionInput[]
-  createMany?: Prisma.WorkflowTemplateCreateManyRegionInputEnvelope
-  set?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
-  disconnect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
-  delete?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
-  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
-  update?: Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutRegionInput | Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutRegionInput[]
-  updateMany?: Prisma.WorkflowTemplateUpdateManyWithWhereWithoutRegionInput | Prisma.WorkflowTemplateUpdateManyWithWhereWithoutRegionInput[]
-  deleteMany?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
+export type WorkflowTemplateCreateOrConnectWithoutCreated_byInput = {
+  where: Prisma.WorkflowTemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutCreated_byInput, Prisma.WorkflowTemplateUncheckedCreateWithoutCreated_byInput>
 }
 
-export type WorkflowTemplateUncheckedUpdateManyWithoutRegionNestedInput = {
-  create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutRegionInput, Prisma.WorkflowTemplateUncheckedCreateWithoutRegionInput> | Prisma.WorkflowTemplateCreateWithoutRegionInput[] | Prisma.WorkflowTemplateUncheckedCreateWithoutRegionInput[]
-  connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutRegionInput | Prisma.WorkflowTemplateCreateOrConnectWithoutRegionInput[]
-  upsert?: Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutRegionInput | Prisma.WorkflowTemplateUpsertWithWhereUniqueWithoutRegionInput[]
-  createMany?: Prisma.WorkflowTemplateCreateManyRegionInputEnvelope
-  set?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
-  disconnect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
-  delete?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
-  connect?: Prisma.WorkflowTemplateWhereUniqueInput | Prisma.WorkflowTemplateWhereUniqueInput[]
-  update?: Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutRegionInput | Prisma.WorkflowTemplateUpdateWithWhereUniqueWithoutRegionInput[]
-  updateMany?: Prisma.WorkflowTemplateUpdateManyWithWhereWithoutRegionInput | Prisma.WorkflowTemplateUpdateManyWithWhereWithoutRegionInput[]
-  deleteMany?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
+export type WorkflowTemplateCreateManyCreated_byInputEnvelope = {
+  data: Prisma.WorkflowTemplateCreateManyCreated_byInput | Prisma.WorkflowTemplateCreateManyCreated_byInput[]
+  skipDuplicates?: boolean
+}
+
+export type WorkflowTemplateCreateWithoutUpdated_byInput = {
+  id?: string
+  name: string
+  description: string
+  isActive?: boolean
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  stages?: Prisma.TemplateStageCreateNestedManyWithoutTemplateInput
+  workflowInstances?: Prisma.WorkflowInstanceCreateNestedManyWithoutTemplateInput
+  app: Prisma.AppCreateNestedOneWithoutWorkFlowTemplateInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowTemplatesInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_workflowInput
+}
+
+export type WorkflowTemplateUncheckedCreateWithoutUpdated_byInput = {
+  id?: string
+  name: string
+  description: string
+  workspaceId: string
+  isActive?: boolean
+  appId: string
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_by_id: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  stages?: Prisma.TemplateStageUncheckedCreateNestedManyWithoutTemplateInput
+  workflowInstances?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutTemplateInput
+}
+
+export type WorkflowTemplateCreateOrConnectWithoutUpdated_byInput = {
+  where: Prisma.WorkflowTemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutUpdated_byInput, Prisma.WorkflowTemplateUncheckedCreateWithoutUpdated_byInput>
+}
+
+export type WorkflowTemplateCreateManyUpdated_byInputEnvelope = {
+  data: Prisma.WorkflowTemplateCreateManyUpdated_byInput | Prisma.WorkflowTemplateCreateManyUpdated_byInput[]
+  skipDuplicates?: boolean
+}
+
+export type WorkflowTemplateUpsertWithWhereUniqueWithoutCreated_byInput = {
+  where: Prisma.WorkflowTemplateWhereUniqueInput
+  update: Prisma.XOR<Prisma.WorkflowTemplateUpdateWithoutCreated_byInput, Prisma.WorkflowTemplateUncheckedUpdateWithoutCreated_byInput>
+  create: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutCreated_byInput, Prisma.WorkflowTemplateUncheckedCreateWithoutCreated_byInput>
+}
+
+export type WorkflowTemplateUpdateWithWhereUniqueWithoutCreated_byInput = {
+  where: Prisma.WorkflowTemplateWhereUniqueInput
+  data: Prisma.XOR<Prisma.WorkflowTemplateUpdateWithoutCreated_byInput, Prisma.WorkflowTemplateUncheckedUpdateWithoutCreated_byInput>
+}
+
+export type WorkflowTemplateUpdateManyWithWhereWithoutCreated_byInput = {
+  where: Prisma.WorkflowTemplateScalarWhereInput
+  data: Prisma.XOR<Prisma.WorkflowTemplateUpdateManyMutationInput, Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byInput>
+}
+
+export type WorkflowTemplateScalarWhereInput = {
+  AND?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
+  OR?: Prisma.WorkflowTemplateScalarWhereInput[]
+  NOT?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
+  id?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  name?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  description?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  workspaceId?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  isActive?: Prisma.BoolFilter<"WorkflowTemplate"> | boolean
+  appId?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  metaData_1?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  metaData_2?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  metaData_3?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  created_by_id?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  updated_by_id?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  created_at?: Prisma.DateTimeFilter<"WorkflowTemplate"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"WorkflowTemplate"> | Date | string
+}
+
+export type WorkflowTemplateUpsertWithWhereUniqueWithoutUpdated_byInput = {
+  where: Prisma.WorkflowTemplateWhereUniqueInput
+  update: Prisma.XOR<Prisma.WorkflowTemplateUpdateWithoutUpdated_byInput, Prisma.WorkflowTemplateUncheckedUpdateWithoutUpdated_byInput>
+  create: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutUpdated_byInput, Prisma.WorkflowTemplateUncheckedCreateWithoutUpdated_byInput>
+}
+
+export type WorkflowTemplateUpdateWithWhereUniqueWithoutUpdated_byInput = {
+  where: Prisma.WorkflowTemplateWhereUniqueInput
+  data: Prisma.XOR<Prisma.WorkflowTemplateUpdateWithoutUpdated_byInput, Prisma.WorkflowTemplateUncheckedUpdateWithoutUpdated_byInput>
+}
+
+export type WorkflowTemplateUpdateManyWithWhereWithoutUpdated_byInput = {
+  where: Prisma.WorkflowTemplateScalarWhereInput
+  data: Prisma.XOR<Prisma.WorkflowTemplateUpdateManyMutationInput, Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byInput>
 }
 
 export type WorkflowTemplateCreateWithoutWorkspaceInput = {
   id?: string
   name: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
+  description: string
   isActive?: boolean
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
   created_at?: Date | string
-  region: Prisma.RegionCreateNestedOneWithoutWorkflowTemplatesInput
+  updated_at?: Date | string
   stages?: Prisma.TemplateStageCreateNestedManyWithoutTemplateInput
   workflowInstances?: Prisma.WorkflowInstanceCreateNestedManyWithoutTemplateInput
+  app: Prisma.AppCreateNestedOneWithoutWorkFlowTemplateInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_workflowInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_workflowInput
 }
 
 export type WorkflowTemplateUncheckedCreateWithoutWorkspaceInput = {
   id?: string
   name: string
-  regionId: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
+  description: string
   isActive?: boolean
+  appId: string
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_by_id: string
+  updated_by_id: string
   created_at?: Date | string
+  updated_at?: Date | string
   stages?: Prisma.TemplateStageUncheckedCreateNestedManyWithoutTemplateInput
   workflowInstances?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutTemplateInput
 }
@@ -654,44 +913,97 @@ export type WorkflowTemplateUpdateManyWithWhereWithoutWorkspaceInput = {
   data: Prisma.XOR<Prisma.WorkflowTemplateUpdateManyMutationInput, Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceInput>
 }
 
-export type WorkflowTemplateScalarWhereInput = {
-  AND?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
-  OR?: Prisma.WorkflowTemplateScalarWhereInput[]
-  NOT?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
-  id?: Prisma.StringFilter<"WorkflowTemplate"> | string
-  name?: Prisma.StringFilter<"WorkflowTemplate"> | string
-  workspaceId?: Prisma.StringFilter<"WorkflowTemplate"> | string
-  regionId?: Prisma.StringFilter<"WorkflowTemplate"> | string
-  minBudget?: Prisma.DecimalFilter<"WorkflowTemplate"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFilter<"WorkflowTemplate"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFilter<"WorkflowTemplate"> | number
-  isActive?: Prisma.BoolFilter<"WorkflowTemplate"> | boolean
-  created_at?: Prisma.DateTimeFilter<"WorkflowTemplate"> | Date | string
+export type WorkflowTemplateCreateWithoutAppInput = {
+  id?: string
+  name: string
+  description: string
+  isActive?: boolean
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  stages?: Prisma.TemplateStageCreateNestedManyWithoutTemplateInput
+  workflowInstances?: Prisma.WorkflowInstanceCreateNestedManyWithoutTemplateInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowTemplatesInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_workflowInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_workflowInput
+}
+
+export type WorkflowTemplateUncheckedCreateWithoutAppInput = {
+  id?: string
+  name: string
+  description: string
+  workspaceId: string
+  isActive?: boolean
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_by_id: string
+  updated_by_id: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  stages?: Prisma.TemplateStageUncheckedCreateNestedManyWithoutTemplateInput
+  workflowInstances?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutTemplateInput
+}
+
+export type WorkflowTemplateCreateOrConnectWithoutAppInput = {
+  where: Prisma.WorkflowTemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutAppInput, Prisma.WorkflowTemplateUncheckedCreateWithoutAppInput>
+}
+
+export type WorkflowTemplateCreateManyAppInputEnvelope = {
+  data: Prisma.WorkflowTemplateCreateManyAppInput | Prisma.WorkflowTemplateCreateManyAppInput[]
+  skipDuplicates?: boolean
+}
+
+export type WorkflowTemplateUpsertWithWhereUniqueWithoutAppInput = {
+  where: Prisma.WorkflowTemplateWhereUniqueInput
+  update: Prisma.XOR<Prisma.WorkflowTemplateUpdateWithoutAppInput, Prisma.WorkflowTemplateUncheckedUpdateWithoutAppInput>
+  create: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutAppInput, Prisma.WorkflowTemplateUncheckedCreateWithoutAppInput>
+}
+
+export type WorkflowTemplateUpdateWithWhereUniqueWithoutAppInput = {
+  where: Prisma.WorkflowTemplateWhereUniqueInput
+  data: Prisma.XOR<Prisma.WorkflowTemplateUpdateWithoutAppInput, Prisma.WorkflowTemplateUncheckedUpdateWithoutAppInput>
+}
+
+export type WorkflowTemplateUpdateManyWithWhereWithoutAppInput = {
+  where: Prisma.WorkflowTemplateScalarWhereInput
+  data: Prisma.XOR<Prisma.WorkflowTemplateUpdateManyMutationInput, Prisma.WorkflowTemplateUncheckedUpdateManyWithoutAppInput>
 }
 
 export type WorkflowTemplateCreateWithoutStagesInput = {
   id?: string
   name: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
+  description: string
   isActive?: boolean
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
   created_at?: Date | string
-  workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowTemplatesInput
-  region: Prisma.RegionCreateNestedOneWithoutWorkflowTemplatesInput
+  updated_at?: Date | string
   workflowInstances?: Prisma.WorkflowInstanceCreateNestedManyWithoutTemplateInput
+  app: Prisma.AppCreateNestedOneWithoutWorkFlowTemplateInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowTemplatesInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_workflowInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_workflowInput
 }
 
 export type WorkflowTemplateUncheckedCreateWithoutStagesInput = {
   id?: string
   name: string
+  description: string
   workspaceId: string
-  regionId: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
   isActive?: boolean
+  appId: string
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_by_id: string
+  updated_by_id: string
   created_at?: Date | string
+  updated_at?: Date | string
   workflowInstances?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutTemplateInput
 }
 
@@ -714,52 +1026,68 @@ export type WorkflowTemplateUpdateToOneWithWhereWithoutStagesInput = {
 export type WorkflowTemplateUpdateWithoutStagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workflowInstances?: Prisma.WorkflowInstanceUpdateManyWithoutTemplateNestedInput
+  app?: Prisma.AppUpdateOneRequiredWithoutWorkFlowTemplateNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_workflowNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_workflowNestedInput
 }
 
 export type WorkflowTemplateUncheckedUpdateWithoutStagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
-  regionId?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workflowInstances?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutTemplateNestedInput
 }
 
 export type WorkflowTemplateCreateWithoutWorkflowInstancesInput = {
   id?: string
   name: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
+  description: string
   isActive?: boolean
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
   created_at?: Date | string
-  workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowTemplatesInput
-  region: Prisma.RegionCreateNestedOneWithoutWorkflowTemplatesInput
+  updated_at?: Date | string
   stages?: Prisma.TemplateStageCreateNestedManyWithoutTemplateInput
+  app: Prisma.AppCreateNestedOneWithoutWorkFlowTemplateInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowTemplatesInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_workflowInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_workflowInput
 }
 
 export type WorkflowTemplateUncheckedCreateWithoutWorkflowInstancesInput = {
   id?: string
   name: string
+  description: string
   workspaceId: string
-  regionId: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
   isActive?: boolean
+  appId: string
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_by_id: string
+  updated_by_id: string
   created_at?: Date | string
+  updated_at?: Date | string
   stages?: Prisma.TemplateStageUncheckedCreateNestedManyWithoutTemplateInput
 }
 
@@ -782,114 +1110,210 @@ export type WorkflowTemplateUpdateToOneWithWhereWithoutWorkflowInstancesInput = 
 export type WorkflowTemplateUpdateWithoutWorkflowInstancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.TemplateStageUpdateManyWithoutTemplateNestedInput
+  app?: Prisma.AppUpdateOneRequiredWithoutWorkFlowTemplateNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_workflowNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_workflowNestedInput
 }
 
 export type WorkflowTemplateUncheckedUpdateWithoutWorkflowInstancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
-  regionId?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.TemplateStageUncheckedUpdateManyWithoutTemplateNestedInput
 }
 
-export type WorkflowTemplateCreateWithoutRegionInput = {
+export type WorkflowTemplateCreateManyCreated_byInput = {
   id?: string
   name: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
-  isActive?: boolean
-  created_at?: Date | string
-  workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowTemplatesInput
-  stages?: Prisma.TemplateStageCreateNestedManyWithoutTemplateInput
-  workflowInstances?: Prisma.WorkflowInstanceCreateNestedManyWithoutTemplateInput
-}
-
-export type WorkflowTemplateUncheckedCreateWithoutRegionInput = {
-  id?: string
-  name: string
+  description: string
   workspaceId: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
   isActive?: boolean
+  appId: string
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  updated_by_id: string
   created_at?: Date | string
-  stages?: Prisma.TemplateStageUncheckedCreateNestedManyWithoutTemplateInput
-  workflowInstances?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutTemplateInput
+  updated_at?: Date | string
 }
 
-export type WorkflowTemplateCreateOrConnectWithoutRegionInput = {
-  where: Prisma.WorkflowTemplateWhereUniqueInput
-  create: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutRegionInput, Prisma.WorkflowTemplateUncheckedCreateWithoutRegionInput>
+export type WorkflowTemplateCreateManyUpdated_byInput = {
+  id?: string
+  name: string
+  description: string
+  workspaceId: string
+  isActive?: boolean
+  appId: string
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_by_id: string
+  created_at?: Date | string
+  updated_at?: Date | string
 }
 
-export type WorkflowTemplateCreateManyRegionInputEnvelope = {
-  data: Prisma.WorkflowTemplateCreateManyRegionInput | Prisma.WorkflowTemplateCreateManyRegionInput[]
-  skipDuplicates?: boolean
+export type WorkflowTemplateUpdateWithoutCreated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stages?: Prisma.TemplateStageUpdateManyWithoutTemplateNestedInput
+  workflowInstances?: Prisma.WorkflowInstanceUpdateManyWithoutTemplateNestedInput
+  app?: Prisma.AppUpdateOneRequiredWithoutWorkFlowTemplateNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_workflowNestedInput
 }
 
-export type WorkflowTemplateUpsertWithWhereUniqueWithoutRegionInput = {
-  where: Prisma.WorkflowTemplateWhereUniqueInput
-  update: Prisma.XOR<Prisma.WorkflowTemplateUpdateWithoutRegionInput, Prisma.WorkflowTemplateUncheckedUpdateWithoutRegionInput>
-  create: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutRegionInput, Prisma.WorkflowTemplateUncheckedCreateWithoutRegionInput>
+export type WorkflowTemplateUncheckedUpdateWithoutCreated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stages?: Prisma.TemplateStageUncheckedUpdateManyWithoutTemplateNestedInput
+  workflowInstances?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutTemplateNestedInput
 }
 
-export type WorkflowTemplateUpdateWithWhereUniqueWithoutRegionInput = {
-  where: Prisma.WorkflowTemplateWhereUniqueInput
-  data: Prisma.XOR<Prisma.WorkflowTemplateUpdateWithoutRegionInput, Prisma.WorkflowTemplateUncheckedUpdateWithoutRegionInput>
+export type WorkflowTemplateUncheckedUpdateManyWithoutCreated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type WorkflowTemplateUpdateManyWithWhereWithoutRegionInput = {
-  where: Prisma.WorkflowTemplateScalarWhereInput
-  data: Prisma.XOR<Prisma.WorkflowTemplateUpdateManyMutationInput, Prisma.WorkflowTemplateUncheckedUpdateManyWithoutRegionInput>
+export type WorkflowTemplateUpdateWithoutUpdated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stages?: Prisma.TemplateStageUpdateManyWithoutTemplateNestedInput
+  workflowInstances?: Prisma.WorkflowInstanceUpdateManyWithoutTemplateNestedInput
+  app?: Prisma.AppUpdateOneRequiredWithoutWorkFlowTemplateNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_workflowNestedInput
+}
+
+export type WorkflowTemplateUncheckedUpdateWithoutUpdated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stages?: Prisma.TemplateStageUncheckedUpdateManyWithoutTemplateNestedInput
+  workflowInstances?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutTemplateNestedInput
+}
+
+export type WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkflowTemplateCreateManyWorkspaceInput = {
   id?: string
   name: string
-  regionId: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
+  description: string
   isActive?: boolean
+  appId: string
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_by_id: string
+  updated_by_id: string
   created_at?: Date | string
+  updated_at?: Date | string
 }
 
 export type WorkflowTemplateUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  region?: Prisma.RegionUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.TemplateStageUpdateManyWithoutTemplateNestedInput
   workflowInstances?: Prisma.WorkflowInstanceUpdateManyWithoutTemplateNestedInput
+  app?: Prisma.AppUpdateOneRequiredWithoutWorkFlowTemplateNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_workflowNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_workflowNestedInput
 }
 
 export type WorkflowTemplateUncheckedUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  regionId?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.TemplateStageUncheckedUpdateManyWithoutTemplateNestedInput
   workflowInstances?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutTemplateNestedInput
 }
@@ -897,60 +1321,80 @@ export type WorkflowTemplateUncheckedUpdateWithoutWorkspaceInput = {
 export type WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  regionId?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type WorkflowTemplateCreateManyRegionInput = {
+export type WorkflowTemplateCreateManyAppInput = {
   id?: string
   name: string
+  description: string
   workspaceId: string
-  minBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget: runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: number
   isActive?: boolean
+  metaData_1: string
+  metaData_2: string
+  metaData_3: string
+  created_by_id: string
+  updated_by_id: string
   created_at?: Date | string
+  updated_at?: Date | string
 }
 
-export type WorkflowTemplateUpdateWithoutRegionInput = {
+export type WorkflowTemplateUpdateWithoutAppInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.TemplateStageUpdateManyWithoutTemplateNestedInput
   workflowInstances?: Prisma.WorkflowInstanceUpdateManyWithoutTemplateNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowTemplatesNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_workflowNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_workflowNestedInput
 }
 
-export type WorkflowTemplateUncheckedUpdateWithoutRegionInput = {
+export type WorkflowTemplateUncheckedUpdateWithoutAppInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.TemplateStageUncheckedUpdateManyWithoutTemplateNestedInput
   workflowInstances?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutTemplateNestedInput
 }
 
-export type WorkflowTemplateUncheckedUpdateManyWithoutRegionInput = {
+export type WorkflowTemplateUncheckedUpdateManyWithoutAppInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
-  minBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  maxBudget?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  priority?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
+  metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -996,95 +1440,129 @@ export type WorkflowTemplateCountOutputTypeCountWorkflowInstancesArgs<ExtArgs ex
 export type WorkflowTemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   workspaceId?: boolean
-  regionId?: boolean
-  minBudget?: boolean
-  maxBudget?: boolean
-  priority?: boolean
   isActive?: boolean
+  appId?: boolean
+  metaData_1?: boolean
+  metaData_2?: boolean
+  metaData_3?: boolean
+  created_by_id?: boolean
+  updated_by_id?: boolean
   created_at?: boolean
-  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  updated_at?: boolean
   stages?: boolean | Prisma.WorkflowTemplate$stagesArgs<ExtArgs>
   workflowInstances?: boolean | Prisma.WorkflowTemplate$workflowInstancesArgs<ExtArgs>
+  app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
+  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.WorkflowTemplateCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workflowTemplate"]>
 
 export type WorkflowTemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   workspaceId?: boolean
-  regionId?: boolean
-  minBudget?: boolean
-  maxBudget?: boolean
-  priority?: boolean
   isActive?: boolean
+  appId?: boolean
+  metaData_1?: boolean
+  metaData_2?: boolean
+  metaData_3?: boolean
+  created_by_id?: boolean
+  updated_by_id?: boolean
   created_at?: boolean
+  updated_at?: boolean
+  app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workflowTemplate"]>
 
 export type WorkflowTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   workspaceId?: boolean
-  regionId?: boolean
-  minBudget?: boolean
-  maxBudget?: boolean
-  priority?: boolean
   isActive?: boolean
+  appId?: boolean
+  metaData_1?: boolean
+  metaData_2?: boolean
+  metaData_3?: boolean
+  created_by_id?: boolean
+  updated_by_id?: boolean
   created_at?: boolean
+  updated_at?: boolean
+  app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workflowTemplate"]>
 
 export type WorkflowTemplateSelectScalar = {
   id?: boolean
   name?: boolean
+  description?: boolean
   workspaceId?: boolean
-  regionId?: boolean
-  minBudget?: boolean
-  maxBudget?: boolean
-  priority?: boolean
   isActive?: boolean
+  appId?: boolean
+  metaData_1?: boolean
+  metaData_2?: boolean
+  metaData_3?: boolean
+  created_by_id?: boolean
+  updated_by_id?: boolean
   created_at?: boolean
+  updated_at?: boolean
 }
 
-export type WorkflowTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "workspaceId" | "regionId" | "minBudget" | "maxBudget" | "priority" | "isActive" | "created_at", ExtArgs["result"]["workflowTemplate"]>
+export type WorkflowTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "workspaceId" | "isActive" | "appId" | "metaData_1" | "metaData_2" | "metaData_3" | "created_by_id" | "updated_by_id" | "created_at" | "updated_at", ExtArgs["result"]["workflowTemplate"]>
 export type WorkflowTemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
   stages?: boolean | Prisma.WorkflowTemplate$stagesArgs<ExtArgs>
   workflowInstances?: boolean | Prisma.WorkflowTemplate$workflowInstancesArgs<ExtArgs>
+  app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
+  workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.WorkflowTemplateCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkflowTemplateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type WorkflowTemplateIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $WorkflowTemplatePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "WorkflowTemplate"
   objects: {
-    workspace: Prisma.$WorkspacePayload<ExtArgs>
-    region: Prisma.$RegionPayload<ExtArgs>
     stages: Prisma.$TemplateStagePayload<ExtArgs>[]
     workflowInstances: Prisma.$WorkflowInstancePayload<ExtArgs>[]
+    app: Prisma.$AppPayload<ExtArgs>
+    workspace: Prisma.$WorkspacePayload<ExtArgs>
+    created_by: Prisma.$UserPayload<ExtArgs>
+    updated_by: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    description: string
     workspaceId: string
-    regionId: string
-    minBudget: runtime.Decimal
-    maxBudget: runtime.Decimal
-    priority: number
     isActive: boolean
+    appId: string
+    metaData_1: string
+    metaData_2: string
+    metaData_3: string
+    created_by_id: string
+    updated_by_id: string
     created_at: Date
+    updated_at: Date
   }, ExtArgs["result"]["workflowTemplate"]>
   composites: {}
 }
@@ -1479,10 +1957,12 @@ readonly fields: WorkflowTemplateFieldRefs;
  */
 export interface Prisma__WorkflowTemplateClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  region<T extends Prisma.RegionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RegionDefaultArgs<ExtArgs>>): Prisma.Prisma__RegionClient<runtime.Types.Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   stages<T extends Prisma.WorkflowTemplate$stagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkflowTemplate$stagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TemplateStagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflowInstances<T extends Prisma.WorkflowTemplate$workflowInstancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkflowTemplate$workflowInstancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  app<T extends Prisma.AppDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AppDefaultArgs<ExtArgs>>): Prisma.Prisma__AppClient<runtime.Types.Result.GetResult<Prisma.$AppPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  created_by<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  updated_by<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1514,13 +1994,17 @@ export interface Prisma__WorkflowTemplateClient<T, Null = never, ExtArgs extends
 export interface WorkflowTemplateFieldRefs {
   readonly id: Prisma.FieldRef<"WorkflowTemplate", 'String'>
   readonly name: Prisma.FieldRef<"WorkflowTemplate", 'String'>
+  readonly description: Prisma.FieldRef<"WorkflowTemplate", 'String'>
   readonly workspaceId: Prisma.FieldRef<"WorkflowTemplate", 'String'>
-  readonly regionId: Prisma.FieldRef<"WorkflowTemplate", 'String'>
-  readonly minBudget: Prisma.FieldRef<"WorkflowTemplate", 'Decimal'>
-  readonly maxBudget: Prisma.FieldRef<"WorkflowTemplate", 'Decimal'>
-  readonly priority: Prisma.FieldRef<"WorkflowTemplate", 'Int'>
   readonly isActive: Prisma.FieldRef<"WorkflowTemplate", 'Boolean'>
+  readonly appId: Prisma.FieldRef<"WorkflowTemplate", 'String'>
+  readonly metaData_1: Prisma.FieldRef<"WorkflowTemplate", 'String'>
+  readonly metaData_2: Prisma.FieldRef<"WorkflowTemplate", 'String'>
+  readonly metaData_3: Prisma.FieldRef<"WorkflowTemplate", 'String'>
+  readonly created_by_id: Prisma.FieldRef<"WorkflowTemplate", 'String'>
+  readonly updated_by_id: Prisma.FieldRef<"WorkflowTemplate", 'String'>
   readonly created_at: Prisma.FieldRef<"WorkflowTemplate", 'DateTime'>
+  readonly updated_at: Prisma.FieldRef<"WorkflowTemplate", 'DateTime'>
 }
     
 

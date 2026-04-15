@@ -25,7 +25,7 @@ enum ScopeType {
 enum StrategyType {
   ALL
   ANY
-  QUORUM
+  SOME
 }
 
 enum WorkflowStatus {
@@ -80,6 +80,9 @@ model User {
 
   created_event_proposals EventProposal[] @relation("EventCreatedBy")
   updated_event_proposals EventProposal[] @relation("EventUpdatedBy")
+
+  created_workflow WorkflowTemplate[] @relation("WorkFlowCreatedBy")
+  updated_workflow WorkflowTemplate[] @relation("WorkFlowUpdatedBy")
 
   // ✅ NEW
   approvals Approval[]
@@ -171,6 +174,7 @@ model App {
 
   workspaceApps WorkspaceApp[]
   modules       Module[]
+  workFlowTemplate WorkflowTemplate[]
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
@@ -327,26 +331,32 @@ model EventProposal {
 model WorkflowTemplate {
   id          String   @id @default(uuid())
   name        String
+  description String
 
   workspaceId String
-  regionId    String
-  minBudget   Decimal
-  maxBudget   Decimal
-
-  priority    Int      @default(0)
   isActive    Boolean  @default(true)
+  appId       String
+  metaData_1    String
+  metaData_2    String
+  metaData_3    String
 
-  workspace Workspace @relation(fields: [workspaceId], references: [id])
-  region    Region    @relation(fields: [regionId], references: [id])
+  created_by_id    String
+  updated_by_id    String
+  created_at DateTime @default(now())
+  updated_at    DateTime @updatedAt
 
   stages TemplateStage[]
   workflowInstances WorkflowInstance[]
 
-  created_at DateTime @default(now())
+  app           App         @relation(fields: [appId], references: [id])
+  workspace     Workspace   @relation(fields: [workspaceId], references: [id])
+  created_by    User        @relation("WorkFlowCreatedBy", fields: [created_by_id], references: [id])
+  updated_by    User        @relation("WorkFlowUpdatedBy", fields: [updated_by_id], references: [id])
 }
 
 model TemplateStage {
   id            String   @id @default(uuid())
+  name          String
   templateId    String
   stageOrder    Int
   strategy      StrategyType
@@ -389,6 +399,7 @@ model WorkflowInstance {
   stages StageInstance[]
 
   created_at DateTime @default(now())
+  updated_at    DateTime @updatedAt
 }
 
 model StageInstance {
@@ -444,9 +455,6 @@ model Region {
   event_proposals EventProposal[]
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
-
-  // ✅ NEW
-  workflowTemplates WorkflowTemplate[]
 }
 
 model Branch {

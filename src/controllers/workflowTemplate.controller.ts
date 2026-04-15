@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as service from "../services/template.service";
+import ApiError from "../utils/apiError";
 
 // payload to be sent
 // {
@@ -34,7 +35,11 @@ import * as service from "../services/template.service";
 // }
 export const createTemplateController = async (req: Request, res: Response) => {
   try {
-    const template = await service.createWorkflowTemplate(req.body);
+    const userId = req?.user?.id;
+
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const template = await service.createWorkflowTemplate(req.body, userId);
 
     res.status(201).json({
       success: true,
@@ -60,6 +65,8 @@ export const getTemplates = async (req: Request, res: Response) => {
       isActive,
       page = 1,
       limit = 10,
+      sortBy = "created_at",
+      sortOrder = "desc",
     } = req.query;
 
     const result = await service.getTemplates({
@@ -70,6 +77,8 @@ export const getTemplates = async (req: Request, res: Response) => {
       isActive,
       page: Number(page),
       limit: Number(limit),
+      sortBy,
+      sortOrder,
     });
 
     res.json(result);
@@ -116,8 +125,15 @@ export const updateTemplate = async (req: Request, res: Response) => {
   try {
     const { templateId } = req.params;
     const payload = req.body;
+    const userId = req?.user?.id;
 
-    const result = await service.updateTemplate(templateId as string, payload);
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const result = await service.updateTemplate(
+      templateId as string,
+      payload,
+      userId,
+    );
 
     res.json(result);
   } catch (err: any) {

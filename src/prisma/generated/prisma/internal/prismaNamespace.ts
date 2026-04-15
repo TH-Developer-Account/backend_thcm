@@ -2861,13 +2861,17 @@ export type EventProposalScalarFieldEnum = (typeof EventProposalScalarFieldEnum)
 export const WorkflowTemplateScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  description: 'description',
   workspaceId: 'workspaceId',
-  regionId: 'regionId',
-  minBudget: 'minBudget',
-  maxBudget: 'maxBudget',
-  priority: 'priority',
   isActive: 'isActive',
-  created_at: 'created_at'
+  appId: 'appId',
+  metaData_1: 'metaData_1',
+  metaData_2: 'metaData_2',
+  metaData_3: 'metaData_3',
+  created_by_id: 'created_by_id',
+  updated_by_id: 'updated_by_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 } as const
 
 export type WorkflowTemplateScalarFieldEnum = (typeof WorkflowTemplateScalarFieldEnum)[keyof typeof WorkflowTemplateScalarFieldEnum]
@@ -2875,6 +2879,7 @@ export type WorkflowTemplateScalarFieldEnum = (typeof WorkflowTemplateScalarFiel
 
 export const TemplateStageScalarFieldEnum = {
   id: 'id',
+  name: 'name',
   templateId: 'templateId',
   stageOrder: 'stageOrder',
   strategy: 'strategy',
@@ -2900,7 +2905,8 @@ export const WorkflowInstanceScalarFieldEnum = {
   eventProposalId: 'eventProposalId',
   status: 'status',
   currentStage: 'currentStage',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 } as const
 
 export type WorkflowInstanceScalarFieldEnum = (typeof WorkflowInstanceScalarFieldEnum)[keyof typeof WorkflowInstanceScalarFieldEnum]
@@ -3158,20 +3164,6 @@ export type ListEnumPermissionActionFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
- * Reference to a field of type 'Decimal'
- */
-export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
-    
-
-
-/**
- * Reference to a field of type 'Decimal[]'
- */
-export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
-    
-
-
-/**
  * Reference to a field of type 'StrategyType'
  */
 export type EnumStrategyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StrategyType'>
@@ -3224,6 +3216,20 @@ export type EnumApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'ApprovalStatus[]'
  */
 export type ListEnumApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApprovalStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 

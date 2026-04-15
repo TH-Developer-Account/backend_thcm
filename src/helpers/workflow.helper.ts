@@ -3,6 +3,7 @@ import { StageStatus, ApprovalStatus } from "../prisma/generated/prisma/client";
 
 export const buildWorkflowStages = (templateStages: any[]) => {
   return templateStages.map((stage: any) => ({
+    name: stage.name,
     stageOrder: stage.stageOrder,
     strategy: stage.strategy,
     minApprovals: stage.minApprovals,
@@ -60,7 +61,7 @@ export const approveStage = async ({
       case "ANY":
         isStageApproved = approvedCount >= 1;
         break;
-      case "QUORUM":
+      case "SOME":
         isStageApproved = approvedCount >= (stage!.minApprovals || 1);
         break;
     }

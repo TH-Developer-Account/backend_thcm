@@ -42,6 +42,7 @@ export type WorkflowInstanceMinAggregateOutputType = {
   status: $Enums.WorkflowStatus | null
   currentStage: number | null
   created_at: Date | null
+  updated_at: Date | null
 }
 
 export type WorkflowInstanceMaxAggregateOutputType = {
@@ -52,6 +53,7 @@ export type WorkflowInstanceMaxAggregateOutputType = {
   status: $Enums.WorkflowStatus | null
   currentStage: number | null
   created_at: Date | null
+  updated_at: Date | null
 }
 
 export type WorkflowInstanceCountAggregateOutputType = {
@@ -62,6 +64,7 @@ export type WorkflowInstanceCountAggregateOutputType = {
   status: number
   currentStage: number
   created_at: number
+  updated_at: number
   _all: number
 }
 
@@ -82,6 +85,7 @@ export type WorkflowInstanceMinAggregateInputType = {
   status?: true
   currentStage?: true
   created_at?: true
+  updated_at?: true
 }
 
 export type WorkflowInstanceMaxAggregateInputType = {
@@ -92,6 +96,7 @@ export type WorkflowInstanceMaxAggregateInputType = {
   status?: true
   currentStage?: true
   created_at?: true
+  updated_at?: true
 }
 
 export type WorkflowInstanceCountAggregateInputType = {
@@ -102,6 +107,7 @@ export type WorkflowInstanceCountAggregateInputType = {
   status?: true
   currentStage?: true
   created_at?: true
+  updated_at?: true
   _all?: true
 }
 
@@ -199,6 +205,7 @@ export type WorkflowInstanceGroupByOutputType = {
   status: $Enums.WorkflowStatus
   currentStage: number
   created_at: Date
+  updated_at: Date
   _count: WorkflowInstanceCountAggregateOutputType | null
   _avg: WorkflowInstanceAvgAggregateOutputType | null
   _sum: WorkflowInstanceSumAggregateOutputType | null
@@ -232,6 +239,7 @@ export type WorkflowInstanceWhereInput = {
   status?: Prisma.EnumWorkflowStatusFilter<"WorkflowInstance"> | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFilter<"WorkflowInstance"> | number
   created_at?: Prisma.DateTimeFilter<"WorkflowInstance"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"WorkflowInstance"> | Date | string
   template?: Prisma.XOR<Prisma.WorkflowTemplateScalarRelationFilter, Prisma.WorkflowTemplateWhereInput>
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   event?: Prisma.XOR<Prisma.EventProposalScalarRelationFilter, Prisma.EventProposalWhereInput>
@@ -246,6 +254,7 @@ export type WorkflowInstanceOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   currentStage?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
   template?: Prisma.WorkflowTemplateOrderByWithRelationInput
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
   event?: Prisma.EventProposalOrderByWithRelationInput
@@ -263,6 +272,7 @@ export type WorkflowInstanceWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumWorkflowStatusFilter<"WorkflowInstance"> | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFilter<"WorkflowInstance"> | number
   created_at?: Prisma.DateTimeFilter<"WorkflowInstance"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"WorkflowInstance"> | Date | string
   template?: Prisma.XOR<Prisma.WorkflowTemplateScalarRelationFilter, Prisma.WorkflowTemplateWhereInput>
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   event?: Prisma.XOR<Prisma.EventProposalScalarRelationFilter, Prisma.EventProposalWhereInput>
@@ -277,6 +287,7 @@ export type WorkflowInstanceOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   currentStage?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
   _count?: Prisma.WorkflowInstanceCountOrderByAggregateInput
   _avg?: Prisma.WorkflowInstanceAvgOrderByAggregateInput
   _max?: Prisma.WorkflowInstanceMaxOrderByAggregateInput
@@ -295,6 +306,7 @@ export type WorkflowInstanceScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumWorkflowStatusWithAggregatesFilter<"WorkflowInstance"> | $Enums.WorkflowStatus
   currentStage?: Prisma.IntWithAggregatesFilter<"WorkflowInstance"> | number
   created_at?: Prisma.DateTimeWithAggregatesFilter<"WorkflowInstance"> | Date | string
+  updated_at?: Prisma.DateTimeWithAggregatesFilter<"WorkflowInstance"> | Date | string
 }
 
 export type WorkflowInstanceCreateInput = {
@@ -302,6 +314,7 @@ export type WorkflowInstanceCreateInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
   template: Prisma.WorkflowTemplateCreateNestedOneWithoutWorkflowInstancesInput
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
   event: Prisma.EventProposalCreateNestedOneWithoutWorkflowInput
@@ -316,6 +329,7 @@ export type WorkflowInstanceUncheckedCreateInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
 }
 
@@ -324,6 +338,7 @@ export type WorkflowInstanceUpdateInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   template?: Prisma.WorkflowTemplateUpdateOneRequiredWithoutWorkflowInstancesNestedInput
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
   event?: Prisma.EventProposalUpdateOneRequiredWithoutWorkflowNestedInput
@@ -338,6 +353,7 @@ export type WorkflowInstanceUncheckedUpdateInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
 }
 
@@ -349,6 +365,7 @@ export type WorkflowInstanceCreateManyInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
 }
 
 export type WorkflowInstanceUpdateManyMutationInput = {
@@ -356,6 +373,7 @@ export type WorkflowInstanceUpdateManyMutationInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkflowInstanceUncheckedUpdateManyInput = {
@@ -366,6 +384,7 @@ export type WorkflowInstanceUncheckedUpdateManyInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkflowInstanceListRelationFilter = {
@@ -391,6 +410,7 @@ export type WorkflowInstanceCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   currentStage?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type WorkflowInstanceAvgOrderByAggregateInput = {
@@ -405,6 +425,7 @@ export type WorkflowInstanceMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   currentStage?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type WorkflowInstanceMinOrderByAggregateInput = {
@@ -415,6 +436,7 @@ export type WorkflowInstanceMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   currentStage?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  updated_at?: Prisma.SortOrder
 }
 
 export type WorkflowInstanceSumOrderByAggregateInput = {
@@ -565,6 +587,7 @@ export type WorkflowInstanceCreateWithoutWorkspaceInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
   template: Prisma.WorkflowTemplateCreateNestedOneWithoutWorkflowInstancesInput
   event: Prisma.EventProposalCreateNestedOneWithoutWorkflowInput
   stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
@@ -577,6 +600,7 @@ export type WorkflowInstanceUncheckedCreateWithoutWorkspaceInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
 }
 
@@ -617,6 +641,7 @@ export type WorkflowInstanceScalarWhereInput = {
   status?: Prisma.EnumWorkflowStatusFilter<"WorkflowInstance"> | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFilter<"WorkflowInstance"> | number
   created_at?: Prisma.DateTimeFilter<"WorkflowInstance"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"WorkflowInstance"> | Date | string
 }
 
 export type WorkflowInstanceCreateWithoutEventInput = {
@@ -624,6 +649,7 @@ export type WorkflowInstanceCreateWithoutEventInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
   template: Prisma.WorkflowTemplateCreateNestedOneWithoutWorkflowInstancesInput
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
   stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
@@ -636,6 +662,7 @@ export type WorkflowInstanceUncheckedCreateWithoutEventInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
 }
 
@@ -660,6 +687,7 @@ export type WorkflowInstanceUpdateWithoutEventInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   template?: Prisma.WorkflowTemplateUpdateOneRequiredWithoutWorkflowInstancesNestedInput
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
   stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
@@ -672,6 +700,7 @@ export type WorkflowInstanceUncheckedUpdateWithoutEventInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
 }
 
@@ -680,6 +709,7 @@ export type WorkflowInstanceCreateWithoutTemplateInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
   event: Prisma.EventProposalCreateNestedOneWithoutWorkflowInput
   stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
@@ -692,6 +722,7 @@ export type WorkflowInstanceUncheckedCreateWithoutTemplateInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
 }
 
@@ -726,6 +757,7 @@ export type WorkflowInstanceCreateWithoutStagesInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
   template: Prisma.WorkflowTemplateCreateNestedOneWithoutWorkflowInstancesInput
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
   event: Prisma.EventProposalCreateNestedOneWithoutWorkflowInput
@@ -739,6 +771,7 @@ export type WorkflowInstanceUncheckedCreateWithoutStagesInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
 }
 
 export type WorkflowInstanceCreateOrConnectWithoutStagesInput = {
@@ -762,6 +795,7 @@ export type WorkflowInstanceUpdateWithoutStagesInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   template?: Prisma.WorkflowTemplateUpdateOneRequiredWithoutWorkflowInstancesNestedInput
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
   event?: Prisma.EventProposalUpdateOneRequiredWithoutWorkflowNestedInput
@@ -775,6 +809,7 @@ export type WorkflowInstanceUncheckedUpdateWithoutStagesInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkflowInstanceCreateManyWorkspaceInput = {
@@ -784,6 +819,7 @@ export type WorkflowInstanceCreateManyWorkspaceInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
 }
 
 export type WorkflowInstanceUpdateWithoutWorkspaceInput = {
@@ -791,6 +827,7 @@ export type WorkflowInstanceUpdateWithoutWorkspaceInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   template?: Prisma.WorkflowTemplateUpdateOneRequiredWithoutWorkflowInstancesNestedInput
   event?: Prisma.EventProposalUpdateOneRequiredWithoutWorkflowNestedInput
   stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
@@ -803,6 +840,7 @@ export type WorkflowInstanceUncheckedUpdateWithoutWorkspaceInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
 }
 
@@ -813,6 +851,7 @@ export type WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type WorkflowInstanceCreateManyTemplateInput = {
@@ -822,6 +861,7 @@ export type WorkflowInstanceCreateManyTemplateInput = {
   status?: $Enums.WorkflowStatus
   currentStage: number
   created_at?: Date | string
+  updated_at?: Date | string
 }
 
 export type WorkflowInstanceUpdateWithoutTemplateInput = {
@@ -829,6 +869,7 @@ export type WorkflowInstanceUpdateWithoutTemplateInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
   event?: Prisma.EventProposalUpdateOneRequiredWithoutWorkflowNestedInput
   stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
@@ -841,6 +882,7 @@ export type WorkflowInstanceUncheckedUpdateWithoutTemplateInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
 }
 
@@ -851,6 +893,7 @@ export type WorkflowInstanceUncheckedUpdateManyWithoutTemplateInput = {
   status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -892,6 +935,7 @@ export type WorkflowInstanceSelect<ExtArgs extends runtime.Types.Extensions.Inte
   status?: boolean
   currentStage?: boolean
   created_at?: boolean
+  updated_at?: boolean
   template?: boolean | Prisma.WorkflowTemplateDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
@@ -907,6 +951,7 @@ export type WorkflowInstanceSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   status?: boolean
   currentStage?: boolean
   created_at?: boolean
+  updated_at?: boolean
   template?: boolean | Prisma.WorkflowTemplateDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
@@ -920,6 +965,7 @@ export type WorkflowInstanceSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   status?: boolean
   currentStage?: boolean
   created_at?: boolean
+  updated_at?: boolean
   template?: boolean | Prisma.WorkflowTemplateDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
@@ -933,9 +979,10 @@ export type WorkflowInstanceSelectScalar = {
   status?: boolean
   currentStage?: boolean
   created_at?: boolean
+  updated_at?: boolean
 }
 
-export type WorkflowInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "templateId" | "workspaceId" | "eventProposalId" | "status" | "currentStage" | "created_at", ExtArgs["result"]["workflowInstance"]>
+export type WorkflowInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "templateId" | "workspaceId" | "eventProposalId" | "status" | "currentStage" | "created_at" | "updated_at", ExtArgs["result"]["workflowInstance"]>
 export type WorkflowInstanceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   template?: boolean | Prisma.WorkflowTemplateDefaultArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -970,6 +1017,7 @@ export type $WorkflowInstancePayload<ExtArgs extends runtime.Types.Extensions.In
     status: $Enums.WorkflowStatus
     currentStage: number
     created_at: Date
+    updated_at: Date
   }, ExtArgs["result"]["workflowInstance"]>
   composites: {}
 }
@@ -1404,6 +1452,7 @@ export interface WorkflowInstanceFieldRefs {
   readonly status: Prisma.FieldRef<"WorkflowInstance", 'WorkflowStatus'>
   readonly currentStage: Prisma.FieldRef<"WorkflowInstance", 'Int'>
   readonly created_at: Prisma.FieldRef<"WorkflowInstance", 'DateTime'>
+  readonly updated_at: Prisma.FieldRef<"WorkflowInstance", 'DateTime'>
 }
     
 

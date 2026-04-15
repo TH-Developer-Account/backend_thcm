@@ -673,15 +673,19 @@ async function main() {
   const template = await prisma.workflowTemplate.create({
     data: {
       name: "Standard EPC Approval",
+      description: "This is the EPC Approval flow",
       workspaceId: workspace.id,
-      regionId: regions[0].id,
-      minBudget: 0,
-      maxBudget: 1000000,
-      priority: 1,
+      created_by_id: users[0].id,
+      updated_by_id: users[0].id,
+      appId: mapApp.id,
+      metaData_1: ">20000",
+      metaData_2: "",
+      metaData_3: "",
 
       stages: {
         create: [
           {
+            name: "Checker",
             stageOrder: 1,
             strategy: "ANY",
             approvers: {
@@ -689,6 +693,7 @@ async function main() {
             },
           },
           {
+            name: "Recommender",
             stageOrder: 2,
             strategy: "ALL",
             approvers: {
@@ -696,8 +701,9 @@ async function main() {
             },
           },
           {
+            name: "Validator",
             stageOrder: 3,
-            strategy: "QUORUM",
+            strategy: "SOME",
             minApprovals: 2,
             approvers: {
               create: [

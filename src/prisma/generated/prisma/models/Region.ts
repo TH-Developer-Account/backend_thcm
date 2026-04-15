@@ -183,7 +183,6 @@ export type RegionWhereInput = {
   created_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
-  workflowTemplates?: Prisma.WorkflowTemplateListRelationFilter
 }
 
 export type RegionOrderByWithRelationInput = {
@@ -193,7 +192,6 @@ export type RegionOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
-  workflowTemplates?: Prisma.WorkflowTemplateOrderByRelationAggregateInput
 }
 
 export type RegionWhereUniqueInput = Prisma.AtLeast<{
@@ -206,7 +204,6 @@ export type RegionWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
-  workflowTemplates?: Prisma.WorkflowTemplateListRelationFilter
 }, "id" | "region_code">
 
 export type RegionOrderByWithAggregationInput = {
@@ -238,7 +235,6 @@ export type RegionCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalCreateNestedManyWithoutRegionInput
-  workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutRegionInput
 }
 
 export type RegionUncheckedCreateInput = {
@@ -248,7 +244,6 @@ export type RegionUncheckedCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutRegionInput
-  workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutRegionInput
 }
 
 export type RegionUpdateInput = {
@@ -258,7 +253,6 @@ export type RegionUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUpdateManyWithoutRegionNestedInput
-  workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutRegionNestedInput
 }
 
 export type RegionUncheckedUpdateInput = {
@@ -268,7 +262,6 @@ export type RegionUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutRegionNestedInput
-  workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutRegionNestedInput
 }
 
 export type RegionCreateManyInput = {
@@ -338,27 +331,12 @@ export type RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RegionUpdateToOneWithWhereWithoutEvent_proposalsInput, Prisma.RegionUpdateWithoutEvent_proposalsInput>, Prisma.RegionUncheckedUpdateWithoutEvent_proposalsInput>
 }
 
-export type RegionCreateNestedOneWithoutWorkflowTemplatesInput = {
-  create?: Prisma.XOR<Prisma.RegionCreateWithoutWorkflowTemplatesInput, Prisma.RegionUncheckedCreateWithoutWorkflowTemplatesInput>
-  connectOrCreate?: Prisma.RegionCreateOrConnectWithoutWorkflowTemplatesInput
-  connect?: Prisma.RegionWhereUniqueInput
-}
-
-export type RegionUpdateOneRequiredWithoutWorkflowTemplatesNestedInput = {
-  create?: Prisma.XOR<Prisma.RegionCreateWithoutWorkflowTemplatesInput, Prisma.RegionUncheckedCreateWithoutWorkflowTemplatesInput>
-  connectOrCreate?: Prisma.RegionCreateOrConnectWithoutWorkflowTemplatesInput
-  upsert?: Prisma.RegionUpsertWithoutWorkflowTemplatesInput
-  connect?: Prisma.RegionWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.RegionUpdateToOneWithWhereWithoutWorkflowTemplatesInput, Prisma.RegionUpdateWithoutWorkflowTemplatesInput>, Prisma.RegionUncheckedUpdateWithoutWorkflowTemplatesInput>
-}
-
 export type RegionCreateWithoutEvent_proposalsInput = {
   id?: string
   region_code: string
   region_name: string
   created_at?: Date | string
   updated_at?: Date | string
-  workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutRegionInput
 }
 
 export type RegionUncheckedCreateWithoutEvent_proposalsInput = {
@@ -367,7 +345,6 @@ export type RegionUncheckedCreateWithoutEvent_proposalsInput = {
   region_name: string
   created_at?: Date | string
   updated_at?: Date | string
-  workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutRegionInput
 }
 
 export type RegionCreateOrConnectWithoutEvent_proposalsInput = {
@@ -392,7 +369,6 @@ export type RegionUpdateWithoutEvent_proposalsInput = {
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutRegionNestedInput
 }
 
 export type RegionUncheckedUpdateWithoutEvent_proposalsInput = {
@@ -401,59 +377,6 @@ export type RegionUncheckedUpdateWithoutEvent_proposalsInput = {
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutRegionNestedInput
-}
-
-export type RegionCreateWithoutWorkflowTemplatesInput = {
-  id?: string
-  region_code: string
-  region_name: string
-  created_at?: Date | string
-  updated_at?: Date | string
-  event_proposals?: Prisma.EventProposalCreateNestedManyWithoutRegionInput
-}
-
-export type RegionUncheckedCreateWithoutWorkflowTemplatesInput = {
-  id?: string
-  region_code: string
-  region_name: string
-  created_at?: Date | string
-  updated_at?: Date | string
-  event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutRegionInput
-}
-
-export type RegionCreateOrConnectWithoutWorkflowTemplatesInput = {
-  where: Prisma.RegionWhereUniqueInput
-  create: Prisma.XOR<Prisma.RegionCreateWithoutWorkflowTemplatesInput, Prisma.RegionUncheckedCreateWithoutWorkflowTemplatesInput>
-}
-
-export type RegionUpsertWithoutWorkflowTemplatesInput = {
-  update: Prisma.XOR<Prisma.RegionUpdateWithoutWorkflowTemplatesInput, Prisma.RegionUncheckedUpdateWithoutWorkflowTemplatesInput>
-  create: Prisma.XOR<Prisma.RegionCreateWithoutWorkflowTemplatesInput, Prisma.RegionUncheckedCreateWithoutWorkflowTemplatesInput>
-  where?: Prisma.RegionWhereInput
-}
-
-export type RegionUpdateToOneWithWhereWithoutWorkflowTemplatesInput = {
-  where?: Prisma.RegionWhereInput
-  data: Prisma.XOR<Prisma.RegionUpdateWithoutWorkflowTemplatesInput, Prisma.RegionUncheckedUpdateWithoutWorkflowTemplatesInput>
-}
-
-export type RegionUpdateWithoutWorkflowTemplatesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  region_code?: Prisma.StringFieldUpdateOperationsInput | string
-  region_name?: Prisma.StringFieldUpdateOperationsInput | string
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  event_proposals?: Prisma.EventProposalUpdateManyWithoutRegionNestedInput
-}
-
-export type RegionUncheckedUpdateWithoutWorkflowTemplatesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  region_code?: Prisma.StringFieldUpdateOperationsInput | string
-  region_name?: Prisma.StringFieldUpdateOperationsInput | string
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutRegionNestedInput
 }
 
 
@@ -463,12 +386,10 @@ export type RegionUncheckedUpdateWithoutWorkflowTemplatesInput = {
 
 export type RegionCountOutputType = {
   event_proposals: number
-  workflowTemplates: number
 }
 
 export type RegionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event_proposals?: boolean | RegionCountOutputTypeCountEvent_proposalsArgs
-  workflowTemplates?: boolean | RegionCountOutputTypeCountWorkflowTemplatesArgs
 }
 
 /**
@@ -488,13 +409,6 @@ export type RegionCountOutputTypeCountEvent_proposalsArgs<ExtArgs extends runtim
   where?: Prisma.EventProposalWhereInput
 }
 
-/**
- * RegionCountOutputType without action
- */
-export type RegionCountOutputTypeCountWorkflowTemplatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.WorkflowTemplateWhereInput
-}
-
 
 export type RegionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -503,7 +417,6 @@ export type RegionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   created_at?: boolean
   updated_at?: boolean
   event_proposals?: boolean | Prisma.Region$event_proposalsArgs<ExtArgs>
-  workflowTemplates?: boolean | Prisma.Region$workflowTemplatesArgs<ExtArgs>
   _count?: boolean | Prisma.RegionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["region"]>
 
@@ -534,7 +447,6 @@ export type RegionSelectScalar = {
 export type RegionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "region_code" | "region_name" | "created_at" | "updated_at", ExtArgs["result"]["region"]>
 export type RegionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event_proposals?: boolean | Prisma.Region$event_proposalsArgs<ExtArgs>
-  workflowTemplates?: boolean | Prisma.Region$workflowTemplatesArgs<ExtArgs>
   _count?: boolean | Prisma.RegionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RegionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -544,7 +456,6 @@ export type $RegionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Region"
   objects: {
     event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
-    workflowTemplates: Prisma.$WorkflowTemplatePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -947,7 +858,6 @@ readonly fields: RegionFieldRefs;
 export interface Prisma__RegionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   event_proposals<T extends Prisma.Region$event_proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Region$event_proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  workflowTemplates<T extends Prisma.Region$workflowTemplatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Region$workflowTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1391,30 +1301,6 @@ export type Region$event_proposalsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.EventProposalScalarFieldEnum | Prisma.EventProposalScalarFieldEnum[]
-}
-
-/**
- * Region.workflowTemplates
- */
-export type Region$workflowTemplatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the WorkflowTemplate
-   */
-  select?: Prisma.WorkflowTemplateSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the WorkflowTemplate
-   */
-  omit?: Prisma.WorkflowTemplateOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.WorkflowTemplateInclude<ExtArgs> | null
-  where?: Prisma.WorkflowTemplateWhereInput
-  orderBy?: Prisma.WorkflowTemplateOrderByWithRelationInput | Prisma.WorkflowTemplateOrderByWithRelationInput[]
-  cursor?: Prisma.WorkflowTemplateWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.WorkflowTemplateScalarFieldEnum | Prisma.WorkflowTemplateScalarFieldEnum[]
 }
 
 /**

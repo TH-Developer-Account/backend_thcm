@@ -83,7 +83,11 @@ export const getCurrentUser = async (
   }
 };
 
-export async function getByDEmployees(req: Request, res: Response) {
+export async function getByDEmployees(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const response = await axios.get(
       "https://my347749.sapbydesign.com/sap/byd/odata/cc_home_analytics.svc/RPZD655449B1A636628E3B774QueryResults?$select=Ts1ANs627E6567A30CCE2,CCOMPANY_UUID,TCOMPANY_UUID,CY4M9FABQY_37FB16C540,Ts1ANsB16243B33AE70B6,CEMPLOYEE_UUID,TEMPLOYEE_UUID,CWA_START_DATE,Cs1ANsDEEFA17BFFCF618,Ts1ANsA4889B6AD57D2F6,Ts1ANs188C5F1E104E8F1,CEE_PRIV_MAIL,CEE_PRIV_MOBILE,Ts1ANs564DE5EF7E2FC4D,Ts1ANsE819527096E9697,CWA_END_DATE,Ts1ANs6AE1BC19D4E7A30,Ts1ANsE1AB739751277B4&$top=10&$format=json",
@@ -102,12 +106,15 @@ export async function getByDEmployees(req: Request, res: Response) {
 
     res.json(results);
   } catch (error) {
-    console.error("SAP error:", error.response?.data || error.message);
-    res.status(500).json({ message: "Failed to fetch SAP data" });
+    next(error);
   }
 }
 
-export async function getC4CEmployees(req: Request, res: Response) {
+export async function getC4CEmployees(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const response = await axios.get(
       "https://my349841.crm.ondemand.com/sap/c4c/odata/ana_businessanalytics_analytics.svc/RPZ4EA7D91CAB6B391554B8F0QueryResults?$select=TSTAFFED_OC_UUID,CWRKADRS_EMAIL,CEE_UUID,CEE_GIVEN_NAME,TJOB_UUID,CEE_FAMILY_NAME,CRESP_MANAGER_UUID,TRESP_MANAGER_UUID,CWRKADRS_FRM_MOBILE,CEMPL_TYPE_START_DATE,CEMPL_TYPE_END_DATE&$top=10&$format=json",
@@ -126,8 +133,7 @@ export async function getC4CEmployees(req: Request, res: Response) {
 
     res.json(results);
   } catch (error) {
-    console.error("SAP error:", error.response?.data || error.message);
-    res.status(500).json({ message: "Failed to fetch SAP data" });
+    next(error);
   }
 }
 

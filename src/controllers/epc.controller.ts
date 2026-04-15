@@ -42,6 +42,10 @@ export const createEventProposal = async (
       budget_master_id,
     } = req.body;
 
+    const userId = req?.user?.id;
+
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
     if (
       !proposal_number ||
       !event_name_id ||
@@ -76,8 +80,8 @@ export const createEventProposal = async (
         branch_id,
         event_scale_id,
         budget_master_id,
-        created_by_id: req.user.id,
-        updated_by_id: req.user.id,
+        created_by_id: userId,
+        updated_by_id: userId,
       },
     });
 
@@ -170,6 +174,9 @@ export const updateEventProposal = async (
   try {
     const id = String(req.params.id);
     const { ...data } = req.body;
+    const userId = req?.user?.id;
+
+    if (!userId) throw new ApiError(401, "Unauthorized");
 
     if (id) {
       throw new ApiError(404, "Invalid ID");
@@ -179,7 +186,7 @@ export const updateEventProposal = async (
       where: { id },
       data: {
         ...data,
-        updated_by: req.user.id,
+        updated_by: userId,
       },
     });
 
@@ -200,6 +207,10 @@ export const deleteEventProposal = async (
   try {
     const id = String(req.params.id);
 
+    const userId = req?.user?.id;
+
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
     if (id) {
       throw new ApiError(400, "Invalid ID");
     }
@@ -208,11 +219,13 @@ export const deleteEventProposal = async (
       where: { id },
       data: {
         status: "DELETED",
-        updated_by_id: req.user.id,
+        updated_by_id: userId,
       },
     });
 
-    res.status(200).json({ message: "Event Proposal deleted successfully" });
+    res
+      .status(200)
+      .json({ message: "Event Proposal deleted successfully", data: updated });
   } catch (error: any) {
     next(error);
   }

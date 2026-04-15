@@ -2,31 +2,40 @@ import { prisma } from "../config/prisma";
 
 type CreateTemplateInput = {
   name: string;
+  description: string;
   workspaceId: string;
-  regionId: string;
-  minBudget: number;
-  maxBudget: number;
-  priority?: number;
+  metaData_1: string;
+  metaData_2: string;
+  metaData_3: string;
+  appId: string;
   stages: {
+    name: string;
     stageOrder: number;
-    strategy: "ALL" | "ANY" | "QUORUM";
+    strategy: "ALL" | "ANY" | "SOME";
     minApprovals?: number;
     approverIds: string[];
   }[];
 };
 
-export const createWorkflowTemplate = async (input: CreateTemplateInput) => {
+export const createWorkflowTemplate = async (
+  input: CreateTemplateInput,
+  userId: string,
+) => {
   return prisma.workflowTemplate.create({
     data: {
       name: input.name,
+      description: input.description,
       workspaceId: input.workspaceId,
-      regionId: input.regionId,
-      minBudget: input.minBudget,
-      maxBudget: input.maxBudget,
-      priority: input.priority ?? 0,
+      created_by_id: userId,
+      updated_by_id: userId,
+      appId: input.appId,
+      metaData_1: input.metaData_1,
+      metaData_2: input.metaData_2,
+      metaData_3: input.metaData_3,
 
       stages: {
         create: input.stages.map((stage) => ({
+          name: stage.name,
           stageOrder: stage.stageOrder,
           strategy: stage.strategy,
           minApprovals: stage.minApprovals,
@@ -43,19 +52,24 @@ export const createWorkflowTemplate = async (input: CreateTemplateInput) => {
       stages: {
         include: { approvers: true },
       },
+      app: true,
     },
   });
 };
 
-export const updateTemplate = async (templateId: string, payload: any) => {
+export const updateTemplate = async (
+  templateId: string,
+  payload: any,
+  userId: string,
+) => {
   const {
     name,
-    regionId,
-    minBudget,
-    maxBudget,
-    priority,
+    metaData_1,
+    metaData_2,
+    metaData_3,
     isActive,
     stages, // full replacement expected
+    appId,
   } = payload;
 
   return prisma.$transaction(async (tx) => {
@@ -83,11 +97,12 @@ export const updateTemplate = async (templateId: string, payload: any) => {
       where: { id: templateId },
       data: {
         name,
-        regionId,
-        minBudget,
-        maxBudget,
-        priority,
+        metaData_1,
+        metaData_2,
+        metaData_3,
         isActive,
+        updated_by_id: userId,
+        appId,
       },
     });
 
@@ -103,6 +118,7 @@ export const updateTemplate = async (templateId: string, payload: any) => {
       const createdStage = await tx.templateStage.create({
         data: {
           templateId,
+          name: stage.name,
           stageOrder: stage.stageOrder,
           strategy: stage.strategy,
           minApprovals: stage.minApprovals,
@@ -160,8 +176,17 @@ export const deleteTemplate = async (templateId: string) => {
 };
 
 export const getTemplates = async (filters: any) => {
-  const { workspaceId, regionId, minBudget, maxBudget, isActive, page, limit } =
-    filters;
+  const {
+    workspaceId,
+    regionId,
+    minBudget,
+    maxBudget,
+    isActive,
+    page,
+    limit,
+    sortBy,
+    sortOrder,
+  } = filters;
 
   const where: any = {};
 
@@ -185,15 +210,30 @@ export const getTemplates = async (filters: any) => {
     }
   }
 
+  // Whitelist allowed sort fields to prevent arbitrary column injection
+  const allowedSortFields = [
+    "created_at",
+    "updated_at",
+    "name",
+    "minBudget",
+    "maxBudget",
+  ];
+  const allowedSortOrders = ["asc", "desc"];
+
+  const resolvedSortBy = allowedSortFields.includes(sortBy)
+    ? sortBy
+    : "created_at";
+  const resolvedSortOrder = allowedSortOrders.includes(sortOrder)
+    ? sortOrder
+    : "desc";
+
   const [data, total] = await Promise.all([
     prisma.workflowTemplate.findMany({
       where,
       skip: (page - 1) * limit,
       take: limit,
-      orderBy: { priority: "desc" },
-
+      orderBy: { [resolvedSortBy]: resolvedSortOrder },
       include: {
-        region: true,
         stages: {
           orderBy: { stageOrder: "asc" },
           include: {
@@ -236,9 +276,6 @@ export const getTemplateById = async (templateId: string) => {
       workspace: {
         select: { id: true, name: true },
       },
-      region: {
-        select: { id: true, region_name: true },
-      },
       stages: {
         orderBy: { stageOrder: "asc" },
         include: {
@@ -268,23 +305,16 @@ export const getTemplateById = async (templateId: string) => {
 
 export const selectTemplate = async ({
   workspaceId,
-  regionId,
-  budget,
 }: {
   workspaceId: string;
-  regionId: string;
-  budget: number;
 }) => {
   const templates = await prisma.workflowTemplate.findMany({
     where: {
       workspaceId,
-      regionId,
       isActive: true,
-      minBudget: { lte: budget },
-      maxBudget: { gte: budget },
     },
     orderBy: {
-      priority: "desc",
+      created_at: "desc",
     },
     include: {
       stages: {

@@ -19,8 +19,6 @@ export const createEventProposalWithWorkflow = async (input: any) => {
     // 2. Select template
     const template = await selectTemplate({
       workspaceId: input.workspaceId,
-      regionId: input.region_id,
-      budget: Number(input.budgetAmount || 0),
     });
 
     // 3. Build stages
@@ -90,7 +88,7 @@ export const approveStage = async ({
         case StrategyType.ANY:
           isStageApproved = approvedCount >= 1;
           break;
-        case StrategyType.QUORUM:
+        case StrategyType.SOME:
           isStageApproved = approvedCount >= (stage!.minApprovals || 1);
           break;
       }

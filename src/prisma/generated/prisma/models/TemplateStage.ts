@@ -38,6 +38,7 @@ export type TemplateStageSumAggregateOutputType = {
 
 export type TemplateStageMinAggregateOutputType = {
   id: string | null
+  name: string | null
   templateId: string | null
   stageOrder: number | null
   strategy: $Enums.StrategyType | null
@@ -46,6 +47,7 @@ export type TemplateStageMinAggregateOutputType = {
 
 export type TemplateStageMaxAggregateOutputType = {
   id: string | null
+  name: string | null
   templateId: string | null
   stageOrder: number | null
   strategy: $Enums.StrategyType | null
@@ -54,6 +56,7 @@ export type TemplateStageMaxAggregateOutputType = {
 
 export type TemplateStageCountAggregateOutputType = {
   id: number
+  name: number
   templateId: number
   stageOrder: number
   strategy: number
@@ -74,6 +77,7 @@ export type TemplateStageSumAggregateInputType = {
 
 export type TemplateStageMinAggregateInputType = {
   id?: true
+  name?: true
   templateId?: true
   stageOrder?: true
   strategy?: true
@@ -82,6 +86,7 @@ export type TemplateStageMinAggregateInputType = {
 
 export type TemplateStageMaxAggregateInputType = {
   id?: true
+  name?: true
   templateId?: true
   stageOrder?: true
   strategy?: true
@@ -90,6 +95,7 @@ export type TemplateStageMaxAggregateInputType = {
 
 export type TemplateStageCountAggregateInputType = {
   id?: true
+  name?: true
   templateId?: true
   stageOrder?: true
   strategy?: true
@@ -185,6 +191,7 @@ export type TemplateStageGroupByArgs<ExtArgs extends runtime.Types.Extensions.In
 
 export type TemplateStageGroupByOutputType = {
   id: string
+  name: string
   templateId: string
   stageOrder: number
   strategy: $Enums.StrategyType
@@ -216,6 +223,7 @@ export type TemplateStageWhereInput = {
   OR?: Prisma.TemplateStageWhereInput[]
   NOT?: Prisma.TemplateStageWhereInput | Prisma.TemplateStageWhereInput[]
   id?: Prisma.StringFilter<"TemplateStage"> | string
+  name?: Prisma.StringFilter<"TemplateStage"> | string
   templateId?: Prisma.StringFilter<"TemplateStage"> | string
   stageOrder?: Prisma.IntFilter<"TemplateStage"> | number
   strategy?: Prisma.EnumStrategyTypeFilter<"TemplateStage"> | $Enums.StrategyType
@@ -226,6 +234,7 @@ export type TemplateStageWhereInput = {
 
 export type TemplateStageOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
   stageOrder?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
@@ -240,6 +249,7 @@ export type TemplateStageWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.TemplateStageWhereInput | Prisma.TemplateStageWhereInput[]
   OR?: Prisma.TemplateStageWhereInput[]
   NOT?: Prisma.TemplateStageWhereInput | Prisma.TemplateStageWhereInput[]
+  name?: Prisma.StringFilter<"TemplateStage"> | string
   templateId?: Prisma.StringFilter<"TemplateStage"> | string
   stageOrder?: Prisma.IntFilter<"TemplateStage"> | number
   strategy?: Prisma.EnumStrategyTypeFilter<"TemplateStage"> | $Enums.StrategyType
@@ -250,6 +260,7 @@ export type TemplateStageWhereUniqueInput = Prisma.AtLeast<{
 
 export type TemplateStageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
   stageOrder?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
@@ -266,6 +277,7 @@ export type TemplateStageScalarWhereWithAggregatesInput = {
   OR?: Prisma.TemplateStageScalarWhereWithAggregatesInput[]
   NOT?: Prisma.TemplateStageScalarWhereWithAggregatesInput | Prisma.TemplateStageScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"TemplateStage"> | string
+  name?: Prisma.StringWithAggregatesFilter<"TemplateStage"> | string
   templateId?: Prisma.StringWithAggregatesFilter<"TemplateStage"> | string
   stageOrder?: Prisma.IntWithAggregatesFilter<"TemplateStage"> | number
   strategy?: Prisma.EnumStrategyTypeWithAggregatesFilter<"TemplateStage"> | $Enums.StrategyType
@@ -274,6 +286,7 @@ export type TemplateStageScalarWhereWithAggregatesInput = {
 
 export type TemplateStageCreateInput = {
   id?: string
+  name: string
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
@@ -283,6 +296,7 @@ export type TemplateStageCreateInput = {
 
 export type TemplateStageUncheckedCreateInput = {
   id?: string
+  name: string
   templateId: string
   stageOrder: number
   strategy: $Enums.StrategyType
@@ -292,6 +306,7 @@ export type TemplateStageUncheckedCreateInput = {
 
 export type TemplateStageUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -301,6 +316,7 @@ export type TemplateStageUpdateInput = {
 
 export type TemplateStageUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
@@ -310,6 +326,7 @@ export type TemplateStageUncheckedUpdateInput = {
 
 export type TemplateStageCreateManyInput = {
   id?: string
+  name: string
   templateId: string
   stageOrder: number
   strategy: $Enums.StrategyType
@@ -318,6 +335,7 @@ export type TemplateStageCreateManyInput = {
 
 export type TemplateStageUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -325,6 +343,7 @@ export type TemplateStageUpdateManyMutationInput = {
 
 export type TemplateStageUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
@@ -348,6 +367,7 @@ export type TemplateStageTemplateIdStageOrderCompoundUniqueInput = {
 
 export type TemplateStageCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
   stageOrder?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
@@ -361,6 +381,7 @@ export type TemplateStageAvgOrderByAggregateInput = {
 
 export type TemplateStageMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
   stageOrder?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
@@ -369,6 +390,7 @@ export type TemplateStageMaxOrderByAggregateInput = {
 
 export type TemplateStageMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
   stageOrder?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
@@ -455,6 +477,7 @@ export type TemplateStageUpdateOneRequiredWithoutApproversNestedInput = {
 
 export type TemplateStageCreateWithoutTemplateInput = {
   id?: string
+  name: string
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
@@ -463,6 +486,7 @@ export type TemplateStageCreateWithoutTemplateInput = {
 
 export type TemplateStageUncheckedCreateWithoutTemplateInput = {
   id?: string
+  name: string
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
@@ -500,6 +524,7 @@ export type TemplateStageScalarWhereInput = {
   OR?: Prisma.TemplateStageScalarWhereInput[]
   NOT?: Prisma.TemplateStageScalarWhereInput | Prisma.TemplateStageScalarWhereInput[]
   id?: Prisma.StringFilter<"TemplateStage"> | string
+  name?: Prisma.StringFilter<"TemplateStage"> | string
   templateId?: Prisma.StringFilter<"TemplateStage"> | string
   stageOrder?: Prisma.IntFilter<"TemplateStage"> | number
   strategy?: Prisma.EnumStrategyTypeFilter<"TemplateStage"> | $Enums.StrategyType
@@ -508,6 +533,7 @@ export type TemplateStageScalarWhereInput = {
 
 export type TemplateStageCreateWithoutApproversInput = {
   id?: string
+  name: string
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
@@ -516,6 +542,7 @@ export type TemplateStageCreateWithoutApproversInput = {
 
 export type TemplateStageUncheckedCreateWithoutApproversInput = {
   id?: string
+  name: string
   templateId: string
   stageOrder: number
   strategy: $Enums.StrategyType
@@ -540,6 +567,7 @@ export type TemplateStageUpdateToOneWithWhereWithoutApproversInput = {
 
 export type TemplateStageUpdateWithoutApproversInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -548,6 +576,7 @@ export type TemplateStageUpdateWithoutApproversInput = {
 
 export type TemplateStageUncheckedUpdateWithoutApproversInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
@@ -556,6 +585,7 @@ export type TemplateStageUncheckedUpdateWithoutApproversInput = {
 
 export type TemplateStageCreateManyTemplateInput = {
   id?: string
+  name: string
   stageOrder: number
   strategy: $Enums.StrategyType
   minApprovals?: number | null
@@ -563,6 +593,7 @@ export type TemplateStageCreateManyTemplateInput = {
 
 export type TemplateStageUpdateWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -571,6 +602,7 @@ export type TemplateStageUpdateWithoutTemplateInput = {
 
 export type TemplateStageUncheckedUpdateWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -579,6 +611,7 @@ export type TemplateStageUncheckedUpdateWithoutTemplateInput = {
 
 export type TemplateStageUncheckedUpdateManyWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
@@ -617,6 +650,7 @@ export type TemplateStageCountOutputTypeCountApproversArgs<ExtArgs extends runti
 
 export type TemplateStageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  name?: boolean
   templateId?: boolean
   stageOrder?: boolean
   strategy?: boolean
@@ -628,6 +662,7 @@ export type TemplateStageSelect<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type TemplateStageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  name?: boolean
   templateId?: boolean
   stageOrder?: boolean
   strategy?: boolean
@@ -637,6 +672,7 @@ export type TemplateStageSelectCreateManyAndReturn<ExtArgs extends runtime.Types
 
 export type TemplateStageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  name?: boolean
   templateId?: boolean
   stageOrder?: boolean
   strategy?: boolean
@@ -646,13 +682,14 @@ export type TemplateStageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
 
 export type TemplateStageSelectScalar = {
   id?: boolean
+  name?: boolean
   templateId?: boolean
   stageOrder?: boolean
   strategy?: boolean
   minApprovals?: boolean
 }
 
-export type TemplateStageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "templateId" | "stageOrder" | "strategy" | "minApprovals", ExtArgs["result"]["templateStage"]>
+export type TemplateStageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "templateId" | "stageOrder" | "strategy" | "minApprovals", ExtArgs["result"]["templateStage"]>
 export type TemplateStageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   template?: boolean | Prisma.WorkflowTemplateDefaultArgs<ExtArgs>
   approvers?: boolean | Prisma.TemplateStage$approversArgs<ExtArgs>
@@ -673,6 +710,7 @@ export type $TemplateStagePayload<ExtArgs extends runtime.Types.Extensions.Inter
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    name: string
     templateId: string
     stageOrder: number
     strategy: $Enums.StrategyType
@@ -1103,6 +1141,7 @@ export interface Prisma__TemplateStageClient<T, Null = never, ExtArgs extends ru
  */
 export interface TemplateStageFieldRefs {
   readonly id: Prisma.FieldRef<"TemplateStage", 'String'>
+  readonly name: Prisma.FieldRef<"TemplateStage", 'String'>
   readonly templateId: Prisma.FieldRef<"TemplateStage", 'String'>
   readonly stageOrder: Prisma.FieldRef<"TemplateStage", 'Int'>
   readonly strategy: Prisma.FieldRef<"TemplateStage", 'StrategyType'>

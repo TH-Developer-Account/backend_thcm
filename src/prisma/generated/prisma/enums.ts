@@ -27,7 +27,7 @@ export type ScopeType = (typeof ScopeType)[keyof typeof ScopeType]
 export const StrategyType = {
   ALL: 'ALL',
   ANY: 'ANY',
-  QUORUM: 'QUORUM'
+  SOME: 'SOME'
 } as const
 
 export type StrategyType = (typeof StrategyType)[keyof typeof StrategyType]

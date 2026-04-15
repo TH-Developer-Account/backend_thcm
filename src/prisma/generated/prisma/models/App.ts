@@ -184,6 +184,7 @@ export type AppWhereInput = {
   updated_at?: Prisma.DateTimeFilter<"App"> | Date | string
   workspaceApps?: Prisma.WorkspaceAppListRelationFilter
   modules?: Prisma.ModuleListRelationFilter
+  workFlowTemplate?: Prisma.WorkflowTemplateListRelationFilter
 }
 
 export type AppOrderByWithRelationInput = {
@@ -194,6 +195,7 @@ export type AppOrderByWithRelationInput = {
   updated_at?: Prisma.SortOrder
   workspaceApps?: Prisma.WorkspaceAppOrderByRelationAggregateInput
   modules?: Prisma.ModuleOrderByRelationAggregateInput
+  workFlowTemplate?: Prisma.WorkflowTemplateOrderByRelationAggregateInput
 }
 
 export type AppWhereUniqueInput = Prisma.AtLeast<{
@@ -207,6 +209,7 @@ export type AppWhereUniqueInput = Prisma.AtLeast<{
   updated_at?: Prisma.DateTimeFilter<"App"> | Date | string
   workspaceApps?: Prisma.WorkspaceAppListRelationFilter
   modules?: Prisma.ModuleListRelationFilter
+  workFlowTemplate?: Prisma.WorkflowTemplateListRelationFilter
 }, "id" | "key">
 
 export type AppOrderByWithAggregationInput = {
@@ -239,6 +242,7 @@ export type AppCreateInput = {
   updated_at?: Date | string
   workspaceApps?: Prisma.WorkspaceAppCreateNestedManyWithoutAppInput
   modules?: Prisma.ModuleCreateNestedManyWithoutAppInput
+  workFlowTemplate?: Prisma.WorkflowTemplateCreateNestedManyWithoutAppInput
 }
 
 export type AppUncheckedCreateInput = {
@@ -249,6 +253,7 @@ export type AppUncheckedCreateInput = {
   updated_at?: Date | string
   workspaceApps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutAppInput
   modules?: Prisma.ModuleUncheckedCreateNestedManyWithoutAppInput
+  workFlowTemplate?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutAppInput
 }
 
 export type AppUpdateInput = {
@@ -259,6 +264,7 @@ export type AppUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaceApps?: Prisma.WorkspaceAppUpdateManyWithoutAppNestedInput
   modules?: Prisma.ModuleUpdateManyWithoutAppNestedInput
+  workFlowTemplate?: Prisma.WorkflowTemplateUpdateManyWithoutAppNestedInput
 }
 
 export type AppUncheckedUpdateInput = {
@@ -269,6 +275,7 @@ export type AppUncheckedUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaceApps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutAppNestedInput
   modules?: Prisma.ModuleUncheckedUpdateManyWithoutAppNestedInput
+  workFlowTemplate?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutAppNestedInput
 }
 
 export type AppCreateManyInput = {
@@ -352,6 +359,20 @@ export type AppUpdateOneRequiredWithoutModulesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AppUpdateToOneWithWhereWithoutModulesInput, Prisma.AppUpdateWithoutModulesInput>, Prisma.AppUncheckedUpdateWithoutModulesInput>
 }
 
+export type AppCreateNestedOneWithoutWorkFlowTemplateInput = {
+  create?: Prisma.XOR<Prisma.AppCreateWithoutWorkFlowTemplateInput, Prisma.AppUncheckedCreateWithoutWorkFlowTemplateInput>
+  connectOrCreate?: Prisma.AppCreateOrConnectWithoutWorkFlowTemplateInput
+  connect?: Prisma.AppWhereUniqueInput
+}
+
+export type AppUpdateOneRequiredWithoutWorkFlowTemplateNestedInput = {
+  create?: Prisma.XOR<Prisma.AppCreateWithoutWorkFlowTemplateInput, Prisma.AppUncheckedCreateWithoutWorkFlowTemplateInput>
+  connectOrCreate?: Prisma.AppCreateOrConnectWithoutWorkFlowTemplateInput
+  upsert?: Prisma.AppUpsertWithoutWorkFlowTemplateInput
+  connect?: Prisma.AppWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AppUpdateToOneWithWhereWithoutWorkFlowTemplateInput, Prisma.AppUpdateWithoutWorkFlowTemplateInput>, Prisma.AppUncheckedUpdateWithoutWorkFlowTemplateInput>
+}
+
 export type AppCreateWithoutWorkspaceAppsInput = {
   id?: string
   key: string
@@ -359,6 +380,7 @@ export type AppCreateWithoutWorkspaceAppsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   modules?: Prisma.ModuleCreateNestedManyWithoutAppInput
+  workFlowTemplate?: Prisma.WorkflowTemplateCreateNestedManyWithoutAppInput
 }
 
 export type AppUncheckedCreateWithoutWorkspaceAppsInput = {
@@ -368,6 +390,7 @@ export type AppUncheckedCreateWithoutWorkspaceAppsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   modules?: Prisma.ModuleUncheckedCreateNestedManyWithoutAppInput
+  workFlowTemplate?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutAppInput
 }
 
 export type AppCreateOrConnectWithoutWorkspaceAppsInput = {
@@ -393,6 +416,7 @@ export type AppUpdateWithoutWorkspaceAppsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modules?: Prisma.ModuleUpdateManyWithoutAppNestedInput
+  workFlowTemplate?: Prisma.WorkflowTemplateUpdateManyWithoutAppNestedInput
 }
 
 export type AppUncheckedUpdateWithoutWorkspaceAppsInput = {
@@ -402,6 +426,7 @@ export type AppUncheckedUpdateWithoutWorkspaceAppsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   modules?: Prisma.ModuleUncheckedUpdateManyWithoutAppNestedInput
+  workFlowTemplate?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutAppNestedInput
 }
 
 export type AppCreateWithoutModulesInput = {
@@ -411,6 +436,7 @@ export type AppCreateWithoutModulesInput = {
   created_at?: Date | string
   updated_at?: Date | string
   workspaceApps?: Prisma.WorkspaceAppCreateNestedManyWithoutAppInput
+  workFlowTemplate?: Prisma.WorkflowTemplateCreateNestedManyWithoutAppInput
 }
 
 export type AppUncheckedCreateWithoutModulesInput = {
@@ -420,6 +446,7 @@ export type AppUncheckedCreateWithoutModulesInput = {
   created_at?: Date | string
   updated_at?: Date | string
   workspaceApps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutAppInput
+  workFlowTemplate?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutAppInput
 }
 
 export type AppCreateOrConnectWithoutModulesInput = {
@@ -445,6 +472,7 @@ export type AppUpdateWithoutModulesInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaceApps?: Prisma.WorkspaceAppUpdateManyWithoutAppNestedInput
+  workFlowTemplate?: Prisma.WorkflowTemplateUpdateManyWithoutAppNestedInput
 }
 
 export type AppUncheckedUpdateWithoutModulesInput = {
@@ -454,6 +482,63 @@ export type AppUncheckedUpdateWithoutModulesInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspaceApps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutAppNestedInput
+  workFlowTemplate?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutAppNestedInput
+}
+
+export type AppCreateWithoutWorkFlowTemplateInput = {
+  id?: string
+  key: string
+  name: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  workspaceApps?: Prisma.WorkspaceAppCreateNestedManyWithoutAppInput
+  modules?: Prisma.ModuleCreateNestedManyWithoutAppInput
+}
+
+export type AppUncheckedCreateWithoutWorkFlowTemplateInput = {
+  id?: string
+  key: string
+  name: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  workspaceApps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutAppInput
+  modules?: Prisma.ModuleUncheckedCreateNestedManyWithoutAppInput
+}
+
+export type AppCreateOrConnectWithoutWorkFlowTemplateInput = {
+  where: Prisma.AppWhereUniqueInput
+  create: Prisma.XOR<Prisma.AppCreateWithoutWorkFlowTemplateInput, Prisma.AppUncheckedCreateWithoutWorkFlowTemplateInput>
+}
+
+export type AppUpsertWithoutWorkFlowTemplateInput = {
+  update: Prisma.XOR<Prisma.AppUpdateWithoutWorkFlowTemplateInput, Prisma.AppUncheckedUpdateWithoutWorkFlowTemplateInput>
+  create: Prisma.XOR<Prisma.AppCreateWithoutWorkFlowTemplateInput, Prisma.AppUncheckedCreateWithoutWorkFlowTemplateInput>
+  where?: Prisma.AppWhereInput
+}
+
+export type AppUpdateToOneWithWhereWithoutWorkFlowTemplateInput = {
+  where?: Prisma.AppWhereInput
+  data: Prisma.XOR<Prisma.AppUpdateWithoutWorkFlowTemplateInput, Prisma.AppUncheckedUpdateWithoutWorkFlowTemplateInput>
+}
+
+export type AppUpdateWithoutWorkFlowTemplateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  key?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspaceApps?: Prisma.WorkspaceAppUpdateManyWithoutAppNestedInput
+  modules?: Prisma.ModuleUpdateManyWithoutAppNestedInput
+}
+
+export type AppUncheckedUpdateWithoutWorkFlowTemplateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  key?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspaceApps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutAppNestedInput
+  modules?: Prisma.ModuleUncheckedUpdateManyWithoutAppNestedInput
 }
 
 
@@ -464,11 +549,13 @@ export type AppUncheckedUpdateWithoutModulesInput = {
 export type AppCountOutputType = {
   workspaceApps: number
   modules: number
+  workFlowTemplate: number
 }
 
 export type AppCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspaceApps?: boolean | AppCountOutputTypeCountWorkspaceAppsArgs
   modules?: boolean | AppCountOutputTypeCountModulesArgs
+  workFlowTemplate?: boolean | AppCountOutputTypeCountWorkFlowTemplateArgs
 }
 
 /**
@@ -495,6 +582,13 @@ export type AppCountOutputTypeCountModulesArgs<ExtArgs extends runtime.Types.Ext
   where?: Prisma.ModuleWhereInput
 }
 
+/**
+ * AppCountOutputType without action
+ */
+export type AppCountOutputTypeCountWorkFlowTemplateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkflowTemplateWhereInput
+}
+
 
 export type AppSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -504,6 +598,7 @@ export type AppSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   updated_at?: boolean
   workspaceApps?: boolean | Prisma.App$workspaceAppsArgs<ExtArgs>
   modules?: boolean | Prisma.App$modulesArgs<ExtArgs>
+  workFlowTemplate?: boolean | Prisma.App$workFlowTemplateArgs<ExtArgs>
   _count?: boolean | Prisma.AppCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["app"]>
 
@@ -535,6 +630,7 @@ export type AppOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
 export type AppInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspaceApps?: boolean | Prisma.App$workspaceAppsArgs<ExtArgs>
   modules?: boolean | Prisma.App$modulesArgs<ExtArgs>
+  workFlowTemplate?: boolean | Prisma.App$workFlowTemplateArgs<ExtArgs>
   _count?: boolean | Prisma.AppCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AppIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -545,6 +641,7 @@ export type $AppPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   objects: {
     workspaceApps: Prisma.$WorkspaceAppPayload<ExtArgs>[]
     modules: Prisma.$ModulePayload<ExtArgs>[]
+    workFlowTemplate: Prisma.$WorkflowTemplatePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -948,6 +1045,7 @@ export interface Prisma__AppClient<T, Null = never, ExtArgs extends runtime.Type
   readonly [Symbol.toStringTag]: "PrismaPromise"
   workspaceApps<T extends Prisma.App$workspaceAppsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.App$workspaceAppsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceAppPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   modules<T extends Prisma.App$modulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.App$modulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ModulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workFlowTemplate<T extends Prisma.App$workFlowTemplateArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.App$workFlowTemplateArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1415,6 +1513,30 @@ export type App$modulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   distinct?: Prisma.ModuleScalarFieldEnum | Prisma.ModuleScalarFieldEnum[]
+}
+
+/**
+ * App.workFlowTemplate
+ */
+export type App$workFlowTemplateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkflowTemplate
+   */
+  select?: Prisma.WorkflowTemplateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkflowTemplate
+   */
+  omit?: Prisma.WorkflowTemplateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkflowTemplateInclude<ExtArgs> | null
+  where?: Prisma.WorkflowTemplateWhereInput
+  orderBy?: Prisma.WorkflowTemplateOrderByWithRelationInput | Prisma.WorkflowTemplateOrderByWithRelationInput[]
+  cursor?: Prisma.WorkflowTemplateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkflowTemplateScalarFieldEnum | Prisma.WorkflowTemplateScalarFieldEnum[]
 }
 
 /**
