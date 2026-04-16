@@ -210,74 +210,74 @@ export const getTemplates = async (query: any) => {
         in: Array.isArray(createdBy) ? createdBy : [createdBy], // fallback safety
       };
     }
+  }
 
-    if (search?.trim()) {
-      where.OR = [
-        { name: { contains: search.trim(), mode: "insensitive" } },
-        { description: { contains: search.trim(), mode: "insensitive" } },
-      ];
-    }
-
-    // Whitelist allowed sort fields to prevent arbitrary column injection
-    const allowedSortFields = [
-      "created_at",
-      "updated_at",
-      "name",
-      "minBudget",
-      "maxBudget",
+  if (search?.trim()) {
+    where.OR = [
+      { name: { contains: search.trim(), mode: "insensitive" } },
+      { description: { contains: search.trim(), mode: "insensitive" } },
     ];
-    const allowedSortOrders = ["asc", "desc"];
+  }
 
-    const resolvedSortBy = allowedSortFields.includes(sortBy)
-      ? sortBy
-      : "created_at";
-    const resolvedSortOrder = allowedSortOrders.includes(sortOrder)
-      ? sortOrder
-      : "desc";
+  // Whitelist allowed sort fields to prevent arbitrary column injection
+  const allowedSortFields = [
+    "created_at",
+    "updated_at",
+    "name",
+    "minBudget",
+    "maxBudget",
+  ];
+  const allowedSortOrders = ["asc", "desc"];
 
-    const [data, total] = await Promise.all([
-      prisma.workflowTemplate.findMany({
-        where,
-        skip: (page - 1) * limit,
-        take: limit,
-        orderBy: { [resolvedSortBy]: resolvedSortOrder },
-        include: {
-          stages: {
-            orderBy: { stageOrder: "asc" },
-            include: {
-              approvers: {
-                include: {
-                  user: {
-                    select: {
-                      id: true,
-                      first_name: true,
-                      last_name: true,
-                      email: true,
-                    },
+  const resolvedSortBy = allowedSortFields.includes(sortBy)
+    ? sortBy
+    : "created_at";
+  const resolvedSortOrder = allowedSortOrders.includes(sortOrder)
+    ? sortOrder
+    : "desc";
+
+  const [data, total] = await Promise.all([
+    prisma.workflowTemplate.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { [resolvedSortBy]: resolvedSortOrder },
+      include: {
+        stages: {
+          orderBy: { stageOrder: "asc" },
+          include: {
+            approvers: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    email: true,
                   },
                 },
               },
             },
           },
-          app: { select: { id: true, key: true, name: true } },
-          created_by: { select: { first_name: true, last_name: true } },
-          updated_by: { select: { first_name: true, last_name: true } },
         },
-      }),
-
-      prisma.workflowTemplate.count({ where }),
-    ]);
-
-    return {
-      data,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
+        app: { select: { id: true, key: true, name: true } },
+        created_by: { select: { first_name: true, last_name: true } },
+        updated_by: { select: { first_name: true, last_name: true } },
       },
-    };
-  }
+    }),
+
+    prisma.workflowTemplate.count({ where }),
+  ]);
+
+  return {
+    data,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
 };
 
 export const getTemplateById = async (templateId: string) => {
