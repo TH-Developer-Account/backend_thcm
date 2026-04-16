@@ -14,9 +14,44 @@ declare module "express-serve-static-core" {
   }
 }
 
-export const getUsers = async (req: Request, res: Response) => {
-  const users = await prisma.user.findMany();
-  res.status(200).json(users);
+export const getUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { profile } = req.query as { profile?: string };
+
+    const users = await prisma.user.findMany({
+      where:
+        profile && profile !== "all"
+          ? {
+              userProfiles: {
+                some: {
+                  profile: {
+                    name: profile, // match profile name
+                  },
+                },
+              },
+            }
+          : {},
+      //  include: {
+      //     userProfiles: {
+      //       include: {
+      //         profile: true, // optional: include profile data in response
+      //       },
+      //     },
+      //   },
+    });
+
+    res.status(200).json(users);
+  } catch (error: any) {
+    console.error("getUsers failed:", error);
+    res.status(500).json({
+      message: "Failed to fetch users",
+      error: error.message,
+    });
+  }
 };
 
 export const getCurrentUser = async (

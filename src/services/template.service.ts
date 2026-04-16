@@ -197,11 +197,11 @@ export const getTemplates = async (query: any) => {
     const parsedFilters =
       typeof filters === "string" ? JSON.parse(filters) : filters;
 
-    const { createdBy, app } = parsedFilters;
+    const { createdBy, apps } = parsedFilters;
 
-    if (app?.length) {
+    if (apps?.length) {
       where.appId = {
-        in: Array.isArray(app) ? app : [app], // fallback safety
+        in: Array.isArray(apps) ? apps : [apps], // fallback safety
       };
     }
 
