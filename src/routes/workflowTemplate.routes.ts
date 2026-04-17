@@ -16,11 +16,13 @@ const router = Router();
 router.use(requireAuth); // sets req.user
 router.use(firstAuthRequestPerDay);
 
+router.post("/assign-profile", asyncHandler(assignUsersToWorkflow));
 router.post("/", asyncHandler(createTemplateController));
+
+router.post("/update/:templateId", asyncHandler(updateTemplate));
+router.delete("/delete/:templateId", asyncHandler(deleteTemplate));
+
 router.get("/", asyncHandler(getTemplates));
 router.get("/:templateId", asyncHandler(getTemplateById));
-router.put("/:templateId", asyncHandler(updateTemplate));
-router.delete("/:templateId", asyncHandler(deleteTemplate));
-router.post("/assign-profile", asyncHandler(assignUsersToWorkflow));
 
 export default router;

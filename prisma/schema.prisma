@@ -461,6 +461,7 @@ model Department {
   id              String          @id @default(uuid())
   department_code String          @unique
   department_name String
+  isActive        Boolean @default(true)
   event_proposals EventProposal[]
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
@@ -470,6 +471,7 @@ model Region {
   id              String          @id @default(uuid())
   region_code     String          @unique
   region_name     String
+  isActive        Boolean @default(true)
   event_proposals EventProposal[]
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
@@ -479,6 +481,7 @@ model Branch {
   id              String          @id @default(uuid())
   branch_code     String          @unique
   branch_name     String
+  isActive        Boolean @default(true)
   event_proposals EventProposal[]
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
@@ -488,6 +491,7 @@ model EventScale {
   id              String          @id @default(uuid())
   code            String          @unique
   title           String
+  isActive        Boolean @default(true)
   event_proposals EventProposal[]
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt

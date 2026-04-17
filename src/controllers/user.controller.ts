@@ -20,28 +20,49 @@ export const getUsers = async (
   next: NextFunction,
 ) => {
   try {
-    const { profile } = req.query as { profile?: string };
+    const { profile, search = "" } = req.query as {
+      profile?: string;
+      search?: string;
+    };
 
     const users = await prisma.user.findMany({
-      where:
-        profile && profile !== "all"
-          ? {
-              userProfiles: {
-                some: {
-                  profile: {
-                    name: profile, // match profile name
+      where: {
+        AND: [
+          profile && profile !== "all"
+            ? {
+                userProfiles: {
+                  some: {
+                    profile: { name: profile },
                   },
                 },
-              },
-            }
-          : {},
-      //  include: {
-      //     userProfiles: {
-      //       include: {
-      //         profile: true, // optional: include profile data in response
-      //       },
-      //     },
-      //   },
+              }
+            : {},
+          search
+            ? {
+                OR: [
+                  {
+                    first_name: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                  {
+                    last_name: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                  {
+                    email: {
+                      contains: search,
+                      mode: "insensitive",
+                    },
+                  },
+                ],
+              }
+            : {},
+        ],
+      },
     });
 
     res.status(200).json(users);
