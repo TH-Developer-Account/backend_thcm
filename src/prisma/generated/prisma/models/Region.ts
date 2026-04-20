@@ -28,6 +28,7 @@ export type RegionMinAggregateOutputType = {
   id: string | null
   region_code: string | null
   region_name: string | null
+  isActive: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -36,6 +37,7 @@ export type RegionMaxAggregateOutputType = {
   id: string | null
   region_code: string | null
   region_name: string | null
+  isActive: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -44,6 +46,7 @@ export type RegionCountAggregateOutputType = {
   id: number
   region_code: number
   region_name: number
+  isActive: number
   created_at: number
   updated_at: number
   _all: number
@@ -54,6 +57,7 @@ export type RegionMinAggregateInputType = {
   id?: true
   region_code?: true
   region_name?: true
+  isActive?: true
   created_at?: true
   updated_at?: true
 }
@@ -62,6 +66,7 @@ export type RegionMaxAggregateInputType = {
   id?: true
   region_code?: true
   region_name?: true
+  isActive?: true
   created_at?: true
   updated_at?: true
 }
@@ -70,6 +75,7 @@ export type RegionCountAggregateInputType = {
   id?: true
   region_code?: true
   region_name?: true
+  isActive?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -151,6 +157,7 @@ export type RegionGroupByOutputType = {
   id: string
   region_code: string
   region_name: string
+  isActive: boolean
   created_at: Date
   updated_at: Date
   _count: RegionCountAggregateOutputType | null
@@ -180,6 +187,7 @@ export type RegionWhereInput = {
   id?: Prisma.StringFilter<"Region"> | string
   region_code?: Prisma.StringFilter<"Region"> | string
   region_name?: Prisma.StringFilter<"Region"> | string
+  isActive?: Prisma.BoolFilter<"Region"> | boolean
   created_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
@@ -189,6 +197,7 @@ export type RegionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   region_code?: Prisma.SortOrder
   region_name?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
@@ -201,6 +210,7 @@ export type RegionWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.RegionWhereInput[]
   NOT?: Prisma.RegionWhereInput | Prisma.RegionWhereInput[]
   region_name?: Prisma.StringFilter<"Region"> | string
+  isActive?: Prisma.BoolFilter<"Region"> | boolean
   created_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
@@ -210,6 +220,7 @@ export type RegionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   region_code?: Prisma.SortOrder
   region_name?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.RegionCountOrderByAggregateInput
@@ -224,6 +235,7 @@ export type RegionScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Region"> | string
   region_code?: Prisma.StringWithAggregatesFilter<"Region"> | string
   region_name?: Prisma.StringWithAggregatesFilter<"Region"> | string
+  isActive?: Prisma.BoolWithAggregatesFilter<"Region"> | boolean
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Region"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Region"> | Date | string
 }
@@ -232,6 +244,7 @@ export type RegionCreateInput = {
   id?: string
   region_code: string
   region_name: string
+  isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalCreateNestedManyWithoutRegionInput
@@ -241,6 +254,7 @@ export type RegionUncheckedCreateInput = {
   id?: string
   region_code: string
   region_name: string
+  isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutRegionInput
@@ -250,6 +264,7 @@ export type RegionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   region_code?: Prisma.StringFieldUpdateOperationsInput | string
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUpdateManyWithoutRegionNestedInput
@@ -259,6 +274,7 @@ export type RegionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   region_code?: Prisma.StringFieldUpdateOperationsInput | string
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutRegionNestedInput
@@ -268,6 +284,7 @@ export type RegionCreateManyInput = {
   id?: string
   region_code: string
   region_name: string
+  isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -276,6 +293,7 @@ export type RegionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   region_code?: Prisma.StringFieldUpdateOperationsInput | string
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -284,6 +302,7 @@ export type RegionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   region_code?: Prisma.StringFieldUpdateOperationsInput | string
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -297,6 +316,7 @@ export type RegionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   region_code?: Prisma.SortOrder
   region_name?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -305,6 +325,7 @@ export type RegionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   region_code?: Prisma.SortOrder
   region_name?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -313,6 +334,7 @@ export type RegionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   region_code?: Prisma.SortOrder
   region_name?: Prisma.SortOrder
+  isActive?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -335,6 +357,7 @@ export type RegionCreateWithoutEvent_proposalsInput = {
   id?: string
   region_code: string
   region_name: string
+  isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -343,6 +366,7 @@ export type RegionUncheckedCreateWithoutEvent_proposalsInput = {
   id?: string
   region_code: string
   region_name: string
+  isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -367,6 +391,7 @@ export type RegionUpdateWithoutEvent_proposalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   region_code?: Prisma.StringFieldUpdateOperationsInput | string
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -375,6 +400,7 @@ export type RegionUncheckedUpdateWithoutEvent_proposalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   region_code?: Prisma.StringFieldUpdateOperationsInput | string
   region_name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -414,6 +440,7 @@ export type RegionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   id?: boolean
   region_code?: boolean
   region_name?: boolean
+  isActive?: boolean
   created_at?: boolean
   updated_at?: boolean
   event_proposals?: boolean | Prisma.Region$event_proposalsArgs<ExtArgs>
@@ -424,6 +451,7 @@ export type RegionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   id?: boolean
   region_code?: boolean
   region_name?: boolean
+  isActive?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["region"]>
@@ -432,6 +460,7 @@ export type RegionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   id?: boolean
   region_code?: boolean
   region_name?: boolean
+  isActive?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["region"]>
@@ -440,11 +469,12 @@ export type RegionSelectScalar = {
   id?: boolean
   region_code?: boolean
   region_name?: boolean
+  isActive?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type RegionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "region_code" | "region_name" | "created_at" | "updated_at", ExtArgs["result"]["region"]>
+export type RegionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "region_code" | "region_name" | "isActive" | "created_at" | "updated_at", ExtArgs["result"]["region"]>
 export type RegionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event_proposals?: boolean | Prisma.Region$event_proposalsArgs<ExtArgs>
   _count?: boolean | Prisma.RegionCountOutputTypeDefaultArgs<ExtArgs>
@@ -461,6 +491,7 @@ export type $RegionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     id: string
     region_code: string
     region_name: string
+    isActive: boolean
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["region"]>
@@ -890,6 +921,7 @@ export interface RegionFieldRefs {
   readonly id: Prisma.FieldRef<"Region", 'String'>
   readonly region_code: Prisma.FieldRef<"Region", 'String'>
   readonly region_name: Prisma.FieldRef<"Region", 'String'>
+  readonly isActive: Prisma.FieldRef<"Region", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"Region", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Region", 'DateTime'>
 }

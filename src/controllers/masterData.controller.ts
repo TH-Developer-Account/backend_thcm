@@ -14,7 +14,6 @@ const MODEL_MAP: Record<string, any> = {
   department: prisma.department,
   region: prisma.region,
   branch: prisma.branch,
-  eventScale: prisma.eventScale,
   eventName: prisma.eventName,
   budgetMaster: prisma.budgetMaster,
 };
@@ -23,9 +22,9 @@ export const getMasterData = async (req: Request, res: Response) => {
   try {
     const [
       departments,
+      verticals,
       regions,
       branches,
-      eventScales,
       budgetMasters,
       eventNames,
     ] = await Promise.all([
@@ -37,6 +36,17 @@ export const getMasterData = async (req: Request, res: Response) => {
         },
         // where: { status: "active" },
         orderBy: { department_name: "asc" },
+      }),
+
+      prisma.vertical.findMany({
+        // where: { status: "active" },
+        select: {
+          id: true,
+          name: true,
+          departmentId: true,
+        },
+        // where: { status: "active" },
+        orderBy: { name: "asc" },
       }),
 
       prisma.region.findMany({
@@ -55,14 +65,6 @@ export const getMasterData = async (req: Request, res: Response) => {
           branch_name: true,
         },
         orderBy: { branch_name: "asc" },
-      }),
-
-      prisma.eventScale.findMany({
-        // where: { status: "active" },
-        select: {
-          id: true,
-          title: true,
-        },
       }),
 
       prisma.budgetMaster.findMany({
@@ -89,11 +91,17 @@ export const getMasterData = async (req: Request, res: Response) => {
       departments: formatOptions(departments, "department_name"),
       regions: formatOptions(regions, "region_name"),
       branches: formatOptions(branches, "branch_name"),
-      eventScales: formatOptions(eventScales, "title"),
       eventNames: formatOptions(eventNames, "title"),
       budgetMasters: budgetMasters.map((b) => ({
         value: b.id,
-        label: `${b.id_desc} (${b.value})`,
+        label: `${b.code}`,
+        description: `${b.id_desc}`,
+        budgetAmount: b.value,
+      })),
+      vertical: verticals.map((b) => ({
+        value: b.id,
+        label: `${b.name}`,
+        department: b.departmentId,
       })),
     });
   } catch (error) {

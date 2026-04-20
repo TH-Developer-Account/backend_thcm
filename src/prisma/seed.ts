@@ -1,19 +1,13 @@
 import { prisma } from "../config/prisma";
-import { PrismaClient } from "../prisma/generated/prisma/client";
 import { faker } from "@faker-js/faker";
 import {
   MARKETING_ACTIVITY_PLANNER,
   EVENT_PLANNING_CALENDAR,
-  PRODUCT_SELECTOR,
-  ASSET_MASTER,
-  CUSTOMER_MASTER_DATA,
-  DEALER_CLAIMS,
-  KEY_ACCOUNT,
   branchData,
   eventNameData,
   regionData,
   budgetCodeData,
-  eventScaleData,
+  verticalsData,
 } from "./constants";
 
 async function main() {
@@ -43,8 +37,8 @@ async function main() {
   await prisma.eventProposal.deleteMany();
   await prisma.branch.deleteMany();
   await prisma.region.deleteMany();
+  await prisma.vertical.deleteMany();
   await prisma.department.deleteMany();
-  await prisma.eventScale.deleteMany();
   await prisma.budgetMaster.deleteMany();
   await prisma.eventName.deleteMany();
   await prisma.user.deleteMany();
@@ -445,7 +439,14 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   const departments = await Promise.all(
-    ["Marketing", "HR", "Finance", "Operations", "Sales"].map((name) =>
+    [
+      "Marketing",
+      "Service",
+      "Corporate",
+      "Parts",
+      "Sales",
+      "Manufacturing and Plant Administration",
+    ].map((name) =>
       prisma.department.create({
         data: {
           department_code: name.slice(0, 3).toUpperCase(),
@@ -454,6 +455,22 @@ async function main() {
       }),
     ),
   );
+
+  for (const item of verticalsData) {
+    const dept = departments.find(
+      (d) => d.department_name === item.departmentName,
+    );
+
+    if (!dept) continue;
+
+    await prisma.vertical.createMany({
+      data: item.verticals.map((v) => ({
+        name: v,
+        code: v.slice(0, 3).toUpperCase(),
+        departmentId: dept.id,
+      })),
+    });
+  }
 
   await prisma.region.createMany({ data: regionData, skipDuplicates: true });
   const regions = await prisma.region.findMany();
@@ -467,12 +484,6 @@ async function main() {
   });
   const budgets = await prisma.budgetMaster.findMany();
 
-  await prisma.eventScale.createMany({
-    data: eventScaleData,
-    skipDuplicates: true,
-  });
-  const scales = await prisma.eventScale.findMany();
-
   await prisma.eventName.createMany({
     data: eventNameData,
     skipDuplicates: true,
@@ -485,9 +496,18 @@ async function main() {
 
   for (let i = 0; i < 50; i++) {
     const department = faker.helpers.arrayElement(departments);
+    const verticals = await prisma.vertical.findMany({
+      where: { departmentId: department.id },
+    });
+    if (verticals.length === 0) {
+      console.warn(
+        `No verticals found for department ${department.department_name}`,
+      );
+      continue; // skip this iteration
+    }
+    const vertical = faker.helpers.arrayElement(verticals);
     const region = faker.helpers.arrayElement(regions);
     const branch = faker.helpers.arrayElement(branches);
-    const scale = faker.helpers.arrayElement(scales);
     const budget = faker.helpers.arrayElement(budgets);
     const eventName = faker.helpers.arrayElement(eventNames);
     const user = faker.helpers.arrayElement(users);
@@ -516,9 +536,12 @@ async function main() {
         created_by_id: user.id,
         updated_by_id: user.id,
         department_id: department.id,
+        vertical_id: vertical.id,
         region_id: region.id,
         branch_id: branch.id,
-        event_scale_id: scale.id,
+        event_scale: faker.helpers.arrayElement([
+          10, 50, 100, 20000, 50000, 10000,
+        ]),
         budget_master_id: budget.id,
         event_name_id: eventName.id,
       },

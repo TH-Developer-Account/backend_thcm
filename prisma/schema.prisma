@@ -304,14 +304,15 @@ model EventProposal {
   department_id    String
   region_id        String
   branch_id        String
-  event_scale_id   String
+  event_scale      Int
   budget_master_id String
   event_name_id    String
+  vertical_id   String
 
   department    Department   @relation(fields: [department_id], references: [id])
+  vertical      Vertical  @relation(fields: [vertical_id], references: [id])
   region        Region       @relation(fields: [region_id], references: [id])
-  branch        Branch       @relation(fields: [branch_id], references: [id])
-  event_scale   EventScale   @relation(fields: [event_scale_id], references: [id])
+  branch        Branch       @relation(fields: [branch_id], references: [id])   
   budget_master BudgetMaster @relation(fields: [budget_master_id], references: [id])
   event_name    EventName    @relation(fields: [event_name_id], references: [id])
   created_by    User         @relation("EventCreatedBy", fields: [created_by_id], references: [id])
@@ -463,8 +464,20 @@ model Department {
   department_name String
   isActive        Boolean @default(true)
   event_proposals EventProposal[]
+  verticals       Vertical[]  
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
+}
+
+model Vertical {
+  id            String     @id @default(uuid())
+  name          String
+  code          String
+  departmentId  String
+  department    Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  event_proposals EventProposal[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model Region {
@@ -487,15 +500,6 @@ model Branch {
   updated_at      DateTime        @updatedAt
 }
 
-model EventScale {
-  id              String          @id @default(uuid())
-  code            String          @unique
-  title           String
-  isActive        Boolean @default(true)
-  event_proposals EventProposal[]
-  created_at      DateTime        @default(now())
-  updated_at      DateTime        @updatedAt
-}
 
 model BudgetMaster {
   id              String          @id @default(uuid())

@@ -214,9 +214,55 @@ export const budgetCodeData = [
   },
 ];
 
-export const eventScaleData = [
-  { title: "PAX SIZE <50", code: "PAX SIZE <50" },
-  { title: "PAX SIZE >50-100", code: "PAX SIZE >50-100" },
-  { title: "PAX SIZE >100-200", code: "PAX SIZE >100-200" },
-  { title: "PAX SIZE >200", code: "PAX SIZE >200" },
+export const verticalsData = [
+  {
+    departmentName: "Marketing",
+    verticals: [
+      "Product Marketing",
+      "Branding and Communication",
+      "Digital Communication",
+      "Product Demonstrations",
+      "Market Research",
+    ],
+  },
+  {
+    departmentName: "Sales",
+    verticals: [
+      "Mining",
+      "Infra/Construction",
+      "Compact",
+      "Rental",
+      "Dealer Development",
+      "key Accounts",
+      "Sales Administration",
+      "Used Equipments",
+      "Exports",
+      "Government Business",
+    ],
+  },
+  {
+    departmentName: "Service",
+    verticals: [
+      "Infra/Construction",
+      "FMC- Infra/Construction",
+      "Technical Support Group",
+      "Technical Training",
+      "Training Academy",
+      "Mining Service",
+      "FMC-Mining",
+      "Reman",
+    ],
+  },
+  {
+    departmentName: "Manufacturing & Plant Administration",
+    verticals: ["Dharwad", "Kharagpur"],
+  },
+  {
+    departmentName: "Corporate",
+    verticals: ["Managing Director's Office", "External Affairs"],
+  },
+  {
+    departmentName: "Parts",
+    verticals: [],
+  },
 ];

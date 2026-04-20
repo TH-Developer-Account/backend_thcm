@@ -143,6 +143,11 @@ export type WorkFlowTemplateUser = Prisma.WorkFlowTemplateUserModel
  */
 export type Department = Prisma.DepartmentModel
 /**
+ * Model Vertical
+ * 
+ */
+export type Vertical = Prisma.VerticalModel
+/**
  * Model Region
  * 
  */
@@ -152,11 +157,6 @@ export type Region = Prisma.RegionModel
  * 
  */
 export type Branch = Prisma.BranchModel
-/**
- * Model EventScale
- * 
- */
-export type EventScale = Prisma.EventScaleModel
 /**
  * Model BudgetMaster
  * 

@@ -405,9 +405,9 @@ export const ModelName = {
   Approval: 'Approval',
   WorkFlowTemplateUser: 'WorkFlowTemplateUser',
   Department: 'Department',
+  Vertical: 'Vertical',
   Region: 'Region',
   Branch: 'Branch',
-  EventScale: 'EventScale',
   BudgetMaster: 'BudgetMaster',
   EventName: 'EventName',
   ApprovalAudit: 'ApprovalAudit',
@@ -430,7 +430,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "department" | "region" | "branch" | "eventScale" | "budgetMaster" | "eventName" | "approvalAudit" | "productMaster" | "ePF" | "cRF" | "lineItem"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "approvalAudit" | "productMaster" | "ePF" | "cRF" | "lineItem"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1988,6 +1988,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Vertical: {
+      payload: Prisma.$VerticalPayload<ExtArgs>
+      fields: Prisma.VerticalFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VerticalFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerticalPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VerticalFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerticalPayload>
+        }
+        findFirst: {
+          args: Prisma.VerticalFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerticalPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VerticalFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerticalPayload>
+        }
+        findMany: {
+          args: Prisma.VerticalFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerticalPayload>[]
+        }
+        create: {
+          args: Prisma.VerticalCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerticalPayload>
+        }
+        createMany: {
+          args: Prisma.VerticalCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VerticalCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerticalPayload>[]
+        }
+        delete: {
+          args: Prisma.VerticalDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerticalPayload>
+        }
+        update: {
+          args: Prisma.VerticalUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerticalPayload>
+        }
+        deleteMany: {
+          args: Prisma.VerticalDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VerticalUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VerticalUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerticalPayload>[]
+        }
+        upsert: {
+          args: Prisma.VerticalUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerticalPayload>
+        }
+        aggregate: {
+          args: Prisma.VerticalAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVertical>
+        }
+        groupBy: {
+          args: Prisma.VerticalGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerticalGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VerticalCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerticalCountAggregateOutputType> | number
+        }
+      }
+    }
     Region: {
       payload: Prisma.$RegionPayload<ExtArgs>
       fields: Prisma.RegionFieldRefs
@@ -2133,80 +2207,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.BranchCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.BranchCountAggregateOutputType> | number
-        }
-      }
-    }
-    EventScale: {
-      payload: Prisma.$EventScalePayload<ExtArgs>
-      fields: Prisma.EventScaleFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.EventScaleFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventScalePayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.EventScaleFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventScalePayload>
-        }
-        findFirst: {
-          args: Prisma.EventScaleFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventScalePayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.EventScaleFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventScalePayload>
-        }
-        findMany: {
-          args: Prisma.EventScaleFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventScalePayload>[]
-        }
-        create: {
-          args: Prisma.EventScaleCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventScalePayload>
-        }
-        createMany: {
-          args: Prisma.EventScaleCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.EventScaleCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventScalePayload>[]
-        }
-        delete: {
-          args: Prisma.EventScaleDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventScalePayload>
-        }
-        update: {
-          args: Prisma.EventScaleUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventScalePayload>
-        }
-        deleteMany: {
-          args: Prisma.EventScaleDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.EventScaleUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.EventScaleUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventScalePayload>[]
-        }
-        upsert: {
-          args: Prisma.EventScaleUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventScalePayload>
-        }
-        aggregate: {
-          args: Prisma.EventScaleAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateEventScale>
-        }
-        groupBy: {
-          args: Prisma.EventScaleGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.EventScaleGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.EventScaleCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.EventScaleCountAggregateOutputType> | number
         }
       }
     }
@@ -2923,9 +2923,10 @@ export const EventProposalScalarFieldEnum = {
   department_id: 'department_id',
   region_id: 'region_id',
   branch_id: 'branch_id',
-  event_scale_id: 'event_scale_id',
+  event_scale: 'event_scale',
   budget_master_id: 'budget_master_id',
   event_name_id: 'event_name_id',
+  vertical_id: 'vertical_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -3028,6 +3029,7 @@ export const DepartmentScalarFieldEnum = {
   id: 'id',
   department_code: 'department_code',
   department_name: 'department_name',
+  isActive: 'isActive',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -3035,10 +3037,23 @@ export const DepartmentScalarFieldEnum = {
 export type DepartmentScalarFieldEnum = (typeof DepartmentScalarFieldEnum)[keyof typeof DepartmentScalarFieldEnum]
 
 
+export const VerticalScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  code: 'code',
+  departmentId: 'departmentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerticalScalarFieldEnum = (typeof VerticalScalarFieldEnum)[keyof typeof VerticalScalarFieldEnum]
+
+
 export const RegionScalarFieldEnum = {
   id: 'id',
   region_code: 'region_code',
   region_name: 'region_name',
+  isActive: 'isActive',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -3050,22 +3065,12 @@ export const BranchScalarFieldEnum = {
   id: 'id',
   branch_code: 'branch_code',
   branch_name: 'branch_name',
+  isActive: 'isActive',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
 
 export type BranchScalarFieldEnum = (typeof BranchScalarFieldEnum)[keyof typeof BranchScalarFieldEnum]
-
-
-export const EventScaleScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  title: 'title',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type EventScaleScalarFieldEnum = (typeof EventScaleScalarFieldEnum)[keyof typeof EventScaleScalarFieldEnum]
 
 
 export const BudgetMasterScalarFieldEnum = {
@@ -3475,9 +3480,9 @@ export type GlobalOmitConfig = {
   approval?: Prisma.ApprovalOmit
   workFlowTemplateUser?: Prisma.WorkFlowTemplateUserOmit
   department?: Prisma.DepartmentOmit
+  vertical?: Prisma.VerticalOmit
   region?: Prisma.RegionOmit
   branch?: Prisma.BranchOmit
-  eventScale?: Prisma.EventScaleOmit
   budgetMaster?: Prisma.BudgetMasterOmit
   eventName?: Prisma.EventNameOmit
   approvalAudit?: Prisma.ApprovalAuditOmit

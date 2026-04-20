@@ -36,9 +36,10 @@ export const createEventProposal = async (
       location,
       event_objective,
       department_id,
+      vertical_id,
       region_id,
       branch_id,
-      event_scale_id,
+      event_scale,
       budget_master_id,
     } = req.body;
 
@@ -52,9 +53,10 @@ export const createEventProposal = async (
       !event_from_date ||
       !event_to_date ||
       !department_id ||
+      !vertical_id ||
       !region_id ||
       !branch_id ||
-      !event_scale_id ||
+      !event_scale ||
       !budget_master_id
     ) {
       throw new ApiError(400, "Missing required fields");
@@ -76,9 +78,10 @@ export const createEventProposal = async (
         location,
         event_objective,
         department_id,
+        vertical_id,
         region_id,
         branch_id,
-        event_scale_id,
+        event_scale,
         budget_master_id,
         created_by_id: userId,
         updated_by_id: userId,
