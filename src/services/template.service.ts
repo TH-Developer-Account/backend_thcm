@@ -263,6 +263,18 @@ export const getTemplates = async (query: any) => {
         app: { select: { id: true, key: true, name: true } },
         created_by: { select: { first_name: true, last_name: true } },
         updated_by: { select: { first_name: true, last_name: true } },
+        workFlowUsers: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                email: true,
+              },
+            },
+          },
+        },
       },
     }),
 
