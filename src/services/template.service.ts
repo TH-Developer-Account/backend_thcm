@@ -161,15 +161,21 @@ export const deleteTemplate = async (templateId: string) => {
 
     // Optional: prevent delete if ANY historical workflows exist
     if (template.workflowInstances.length > 0) {
-      throw new Error(
-        "Template already used. Soft delete (isActive=false) recommended.",
-      );
+      await tx.workflowTemplate.update({
+        where: { id: templateId },
+        data: {
+          isActive: false,
+        },
+      });
+      // throw new Error(
+      //   "Template already used. Soft delete (isActive=false) recommended.",
+      // );
+    } else {
+      // Delete (cascade handles stages + approvers)
+      await tx.workflowTemplate.delete({
+        where: { id: templateId },
+      });
     }
-
-    // Delete (cascade handles stages + approvers)
-    await tx.workflowTemplate.delete({
-      where: { id: templateId },
-    });
 
     return { message: "Template deleted successfully" };
   });
