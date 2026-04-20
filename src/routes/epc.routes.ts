@@ -8,6 +8,7 @@ import {
   getEventProposalById,
   updateEventProposal,
   deleteEventProposal,
+  createEPCController,
 } from "../controllers/epc.controller";
 
 const router = Router();
@@ -18,7 +19,7 @@ router.use(firstAuthRequestPerDay);
 router.post(
   "/",
   authorize("MAP", "Event Proposal Form", "write"),
-  asyncHandler(createEventProposal),
+  asyncHandler(createEPCController),
 );
 router.get("/", asyncHandler(getAllEventProposals));
 router.get("/:id", asyncHandler(getEventProposalById));

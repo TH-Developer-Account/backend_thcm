@@ -11,16 +11,52 @@ datasource db {
 // ENUMS
 // ─────────────────────────────────────────────
 
-// The two basic actions a user can perform
 enum PermissionAction {
   read
   write
 }
 
-// Every permission targets one specific module.
-// No WORKSPACE or APP scope exists — access is always explicit per module.
 enum ScopeType {
   MODULE
+}
+
+// ✅ NEW ENUMS (WORKFLOW)
+
+enum StrategyType {
+  ALL
+  ANY
+  SOME
+}
+
+enum WorkflowStatus {
+  IN_PROGRESS
+  APPROVED
+  REJECTED
+}
+
+enum StageStatus {
+  PENDING
+  IN_PROGRESS
+  APPROVED
+  REJECTED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ProductType {
+  EPF
+  CRF
+}
+
+enum ProductCategory {
+  EVENT_OVERHEAD
+  PRINTED_MATERIAL
+  SOUVENIR
+  ARTWORK
 }
 
 // ─────────────────────────────────────────────
@@ -39,13 +75,19 @@ model User {
   refresh_tokens       RefreshToken[]
   password_reset_tokens PasswordResetToken[]
 
-  // RBAC relations
   workspaceUsers       WorkspaceUser[]
   userProfiles         UserProfile[]
 
-  // Business data relations
   created_event_proposals EventProposal[] @relation("EventCreatedBy")
   updated_event_proposals EventProposal[] @relation("EventUpdatedBy")
+
+  created_workflow WorkflowTemplate[] @relation("WorkFlowCreatedBy")
+  updated_workflow WorkflowTemplate[] @relation("WorkFlowUpdatedBy")
+
+  // ✅ NEW
+  approvals Approval[]
+  templateApprovals TemplateApprover[]
+  workFlowUsers WorkFlowTemplateUser[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -96,6 +138,11 @@ model Workspace {
   apps         WorkspaceApp[]
   profiles     Profile[]
   userProfiles UserProfile[]
+
+  // ✅ NEW
+  workflowTemplates WorkflowTemplate[]
+  workflows         WorkflowInstance[]
+
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
 }
@@ -116,20 +163,22 @@ model WorkspaceUser {
 }
 
 // ─────────────────────────────────────────────
-// APP + MODULE
+// APP + MODULE (unchanged)
 // ─────────────────────────────────────────────
 
 // An App is a global entity (e.g. MAP, HR, CRM).
 // It exists once and can be enabled in many workspaces.
 model App {
   id   String @id @default(uuid())
-  key  String @unique // "MAP" | "HR" | "CRM"
+  key  String @unique
   name String
-  created_at DateTime @default(now()) @db.Timestamp(6)
-  updated_at DateTime @default(now()) @db.Timestamp(6)
 
   workspaceApps WorkspaceApp[]
   modules       Module[]
+  workFlowTemplate WorkflowTemplate[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
 }
 
 // Tracks which apps are enabled in a workspace.
@@ -150,22 +199,20 @@ model WorkspaceApp {
 // A Module belongs to an App (e.g. EPC, EPF, CRF belong to MAP).
 model Module {
   id    String @id @default(uuid())
-  key   String // "EPC" | "EPF" | "CRF" | "payroll" | "employee-management"
+  key   String
   name  String
   appId String
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
 
   app                App                 @relation(fields: [appId], references: [id])
-  // Back-relations from ProfilePermission for FK integrity
   profilePermissions ProfilePermission[]
 
   @@unique([appId, key])
-  @@index([appId])
 }
 
 // ─────────────────────────────────────────────
-// PROFILE  (replaces the old "Role" model)
+// PROFILE (unchanged)
 // ─────────────────────────────────────────────
 
 // A Profile is just a NAMED CONTAINER for a set of permissions.
@@ -176,22 +223,22 @@ model Module {
 //   "HR Admin"         → WRITE on HR app
 //   "Read-Only User"   → READ across workspace
 //   "EPC Specialist"   → WRITE on MAP→EPC module only
+
 model Profile {
   id              String  @id @default(uuid())
-  name            String  // Human-readable label shown in the UI
+  name            String
   description     String?
   workspaceId     String
-  isSystemProfile Boolean @default(false) // system profiles cannot be deleted
-  created_at DateTime @default(now()) @db.Timestamp(6)
+  isSystemProfile Boolean @default(false)
+   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
 
   workspace    Workspace           @relation(fields: [workspaceId], references: [id])
   permissions  ProfilePermission[]
   userProfiles UserProfile[]
 
-  // Two profiles in the same workspace cannot share the same name
   @@unique([workspaceId, name])
-  @@index([workspaceId])
+   @@index([workspaceId])
 }
 
 // ─────────────────────────────────────────────
@@ -213,45 +260,33 @@ model ProfilePermission {
   id        String           @id @default(uuid())
   profileId String
   action    PermissionAction
-
-  // Required — every permission must target a specific module
   moduleId  String
 
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   module  Module  @relation(fields: [moduleId], references: [id])
 
   @@unique([profileId, action, moduleId])
-  @@index([profileId])
-  @@index([profileId, moduleId])
+   @@index([profileId, moduleId])
 }
 
-// ─────────────────────────────────────────────
-// USER → PROFILE ASSIGNMENT
-// ─────────────────────────────────────────────
-
-// One row = "user X holds profile Y in workspace W"
-// A user CAN hold multiple profiles at once.
-// The unique key is (userId, workspaceId, profileId) — NOT (userId, workspaceId)
-// This means one user can be assigned both "Field Engineer" AND "HR Admin".
 model UserProfile {
   id          String   @id @default(uuid())
   userId      String
   workspaceId String
   profileId   String
   assignedAt  DateTime @default(now())
-  assignedBy  String?  // userId of who granted this — useful for audit logs
+  assignedBy  String?  
 
   user      User      @relation(fields: [userId], references: [id])
   workspace Workspace @relation(fields: [workspaceId], references: [id])
   profile   Profile   @relation(fields: [profileId], references: [id])
 
   @@unique([userId, workspaceId, profileId])
-  @@index([userId, workspaceId])
-  @@index([workspaceId, profileId])
+  @@index([userId, workspaceId,profileId])
 }
 
 // ─────────────────────────────────────────────
-// BUSINESS DATA MODELS (unchanged)
+// BUSINESS DATA
 // ─────────────────────────────────────────────
 
 model EventProposal {
@@ -269,38 +304,187 @@ model EventProposal {
   department_id    String
   region_id        String
   branch_id        String
-  event_scale_id   String
+  event_scale      Int
   budget_master_id String
   event_name_id    String
+  vertical_id   String
 
   department    Department   @relation(fields: [department_id], references: [id])
+  vertical      Vertical  @relation(fields: [vertical_id], references: [id])
   region        Region       @relation(fields: [region_id], references: [id])
-  branch        Branch       @relation(fields: [branch_id], references: [id])
-  event_scale   EventScale   @relation(fields: [event_scale_id], references: [id])
+  branch        Branch       @relation(fields: [branch_id], references: [id])   
   budget_master BudgetMaster @relation(fields: [budget_master_id], references: [id])
   event_name    EventName    @relation(fields: [event_name_id], references: [id])
   created_by    User         @relation("EventCreatedBy", fields: [created_by_id], references: [id])
   updated_by    User         @relation("EventUpdatedBy", fields: [updated_by_id], references: [id])
-
+  
+  epf EPF?
+  crf CRF?
+  workflow WorkflowInstance?
+  search_vector Unsupported("tsvector")?
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
-
-  search_vector Unsupported("tsvector")?
 }
+
+// ─────────────────────────────────────────────
+// ✅ WORKFLOW SYSTEM
+// ─────────────────────────────────────────────
+
+model WorkflowTemplate {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+
+  workspaceId String
+  isActive    Boolean  @default(true)
+  appId       String
+  metaData_1    String
+  metaData_2    String
+  metaData_3    String
+
+  created_by_id    String
+  updated_by_id    String
+  created_at DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  stages TemplateStage[]
+  workflowInstances WorkflowInstance[]
+  workFlowUsers WorkFlowTemplateUser[]
+
+  app           App         @relation(fields: [appId], references: [id])
+  workspace     Workspace   @relation(fields: [workspaceId], references: [id])
+  created_by    User        @relation("WorkFlowCreatedBy", fields: [created_by_id], references: [id])
+  updated_by    User        @relation("WorkFlowUpdatedBy", fields: [updated_by_id], references: [id])
+}
+
+model TemplateStage {
+  id            String   @id @default(uuid())
+  name          String
+  templateId    String
+  stageOrder    Int
+  strategy      StrategyType
+  minApprovals  Int?
+
+  template  WorkflowTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  approvers TemplateApprover[]
+
+  @@unique([templateId, stageOrder])
+}
+
+model TemplateApprover {
+  id       String @id @default(uuid())
+  stageId  String
+  userId   String
+
+  stage TemplateStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  user  User          @relation(fields: [userId], references: [id])
+
+  @@unique([stageId, userId])
+}
+
+// ─────────────────────────────────────────────
+// RUNTIME
+// ─────────────────────────────────────────────
+
+model WorkflowInstance {
+  id               String @id @default(uuid())
+  templateId       String
+  workspaceId      String
+  eventProposalId  String @unique
+
+  status           WorkflowStatus @default(IN_PROGRESS)
+  currentStage     Int
+
+  template  WorkflowTemplate @relation(fields: [templateId], references: [id])
+  workspace Workspace        @relation(fields: [workspaceId], references: [id])
+  event     EventProposal    @relation(fields: [eventProposalId], references: [id])
+
+  stages StageInstance[]
+
+  created_at DateTime @default(now())
+  updated_at    DateTime @updatedAt
+}
+
+model StageInstance {
+  id           String @id @default(uuid())
+  workflowId   String
+  stageOrder   Int
+  strategy     StrategyType
+  minApprovals Int?
+  startedAt   DateTime?
+  dueAt       DateTime?
+  escalatedTo String? // userId
+
+  status StageStatus @default(PENDING)
+
+  workflow  WorkflowInstance @relation(fields: [workflowId], references: [id])
+  approvals Approval[]
+
+  @@unique([workflowId, stageOrder])
+}
+
+model Approval {
+  id          String @id @default(uuid())
+  stageId     String
+  approverId  String
+
+  status      ApprovalStatus @default(PENDING)
+  actedAt     DateTime?
+  reason      String?
+
+  stage    StageInstance @relation(fields: [stageId], references: [id])
+  approver User          @relation(fields: [approverId], references: [id])
+
+  @@unique([stageId, approverId])
+}
+
+model WorkFlowTemplateUser {
+  id          String         @id @default(uuid())
+  templateId  String
+  userId      String
+  created_at  DateTime       @default(now())
+
+  template    WorkflowTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  user        User             @relation(fields: [userId], references: [id])
+
+
+  @@unique([templateId, userId]) // same user can have multiple roles on same template
+  @@index([templateId,userId])
+}
+
+
+
+// ─────────────────────────────────────────────
+// OTHER MODELS (unchanged)
+// ─────────────────────────────────────────────
 
 model Department {
   id              String          @id @default(uuid())
   department_code String          @unique
   department_name String
+  isActive        Boolean @default(true)
   event_proposals EventProposal[]
+  verticals       Vertical[]  
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
+}
+
+model Vertical {
+  id            String     @id @default(uuid())
+  name          String
+  code          String
+  departmentId  String
+  department    Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  event_proposals EventProposal[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model Region {
   id              String          @id @default(uuid())
   region_code     String          @unique
   region_name     String
+  isActive        Boolean @default(true)
   event_proposals EventProposal[]
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
@@ -310,19 +494,12 @@ model Branch {
   id              String          @id @default(uuid())
   branch_code     String          @unique
   branch_name     String
+  isActive        Boolean @default(true)
   event_proposals EventProposal[]
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
 }
 
-model EventScale {
-  id              String          @id @default(uuid())
-  code            String          @unique
-  title           String
-  event_proposals EventProposal[]
-  created_at      DateTime        @default(now())
-  updated_at      DateTime        @updatedAt
-}
 
 model BudgetMaster {
   id              String          @id @default(uuid())
@@ -339,4 +516,92 @@ model EventName {
   id     String          @id @default(uuid())
   title  String
   events EventProposal[]
+}
+
+model ApprovalAudit {
+  id          String   @id @default(uuid())
+  workflowId  String
+  stageId     String
+  approverId  String
+  action      ApprovalStatus
+  reason      String?
+  createdAt   DateTime @default(now())
+}
+
+model ProductMaster {
+  id          String @id @default(uuid())
+
+  productType ProductType
+  category    ProductCategory
+
+  partNumber  String @unique
+  name        String
+  description String?
+
+  unitRate    Decimal @db.Decimal(10, 2)
+
+  isActive    Boolean @default(true)
+
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  // 🔗 Relations
+  lineItems   LineItem[]
+}
+
+model EPF {
+  id        String @id @default(uuid())
+  epcId     String @unique   // one EPF per EPC
+
+  // 🔗 Relation
+  epc       EventProposal @relation(fields: [epcId], references: [id])
+
+  // 🧾 EPF-specific fields
+  total_budget     Decimal? @db.Decimal(12,2)
+  expected_revenue Decimal? @db.Decimal(12,2)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // 🔗 Line items
+  lineItems LineItem[]
+}
+
+model CRF {
+  id        String @id @default(uuid())
+  epcId     String @unique   // one CRF per EPC (optional)
+
+  // 🔗 Relation
+  epc       EventProposal @relation(fields: [epcId], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // 🔗 Line items
+  lineItems LineItem[]
+}
+
+model LineItem {
+  id        String @id @default(uuid())
+
+  // 🔗 Parent references (ONLY ONE should be non-null)
+  epfId     String?
+  crfId     String?
+
+  productId String
+
+  quantity  Decimal @db.Decimal(10,2)
+  rate      Decimal @db.Decimal(10,2)
+  amount    Decimal @db.Decimal(12,2)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // 🔗 Relations
+  epf     EPF?           @relation(fields: [epfId], references: [id])
+  crf     CRF?           @relation(fields: [crfId], references: [id])
+  product ProductMaster  @relation(fields: [productId], references: [id])
+
+  @@index([epfId])
+  @@index([crfId])
 }

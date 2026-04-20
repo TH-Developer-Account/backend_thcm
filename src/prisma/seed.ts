@@ -3,41 +3,42 @@ import { faker } from "@faker-js/faker";
 import {
   MARKETING_ACTIVITY_PLANNER,
   EVENT_PLANNING_CALENDAR,
-  PRODUCT_SELECTOR,
-  ASSET_MASTER,
-  CUSTOMER_MASTER_DATA,
-  DEALER_CLAIMS,
-  KEY_ACCOUNT,
   branchData,
   eventNameData,
   regionData,
   budgetCodeData,
-  eventScaleData,
+  verticalsData,
 } from "./constants";
 
 async function main() {
   console.log("🌱 Seeding database...");
 
-  // ─────────────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
   // STEP 1: CLEAN ALL TABLES
-  // Order matters here — delete child tables before parent tables
-  // to avoid foreign key constraint errors.
-  // ─────────────────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
 
-  await prisma.userProfile.deleteMany(); // user ↔ profile assignments
-  await prisma.profilePermission.deleteMany(); // permission rows inside profiles
-  await prisma.profile.deleteMany(); // profile containers
-  await prisma.workspaceUser.deleteMany(); // user ↔ workspace memberships
-  await prisma.workspaceApp.deleteMany(); // workspace ↔ app links
-  await prisma.module.deleteMany(); // modules (EPC, Payroll, etc.)
-  await prisma.app.deleteMany(); // apps (MAP, HR, CRM)
-  await prisma.workspace.deleteMany(); // workspace itself
+  // ✅ WORKFLOW CLEANUP (ADDED)
+  await prisma.approval.deleteMany();
+  await prisma.stageInstance.deleteMany();
+  await prisma.workflowInstance.deleteMany();
+  await prisma.templateApprover.deleteMany();
+  await prisma.templateStage.deleteMany();
+  await prisma.workflowTemplate.deleteMany();
+
+  await prisma.userProfile.deleteMany();
+  await prisma.profilePermission.deleteMany();
+  await prisma.profile.deleteMany();
+  await prisma.workspaceUser.deleteMany();
+  await prisma.workspaceApp.deleteMany();
+  await prisma.module.deleteMany();
+  await prisma.app.deleteMany();
+  await prisma.workspace.deleteMany();
 
   await prisma.eventProposal.deleteMany();
   await prisma.branch.deleteMany();
   await prisma.region.deleteMany();
+  await prisma.vertical.deleteMany();
   await prisma.department.deleteMany();
-  await prisma.eventScale.deleteMany();
   await prisma.budgetMaster.deleteMany();
   await prisma.eventName.deleteMany();
   await prisma.user.deleteMany();
@@ -438,7 +439,14 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
 
   const departments = await Promise.all(
-    ["Marketing", "HR", "Finance", "Operations", "Sales"].map((name) =>
+    [
+      "Marketing",
+      "Service",
+      "Corporate",
+      "Parts",
+      "Sales",
+      "Manufacturing and Plant Administration",
+    ].map((name) =>
       prisma.department.create({
         data: {
           department_code: name.slice(0, 3).toUpperCase(),
@@ -447,6 +455,22 @@ async function main() {
       }),
     ),
   );
+
+  for (const item of verticalsData) {
+    const dept = departments.find(
+      (d) => d.department_name === item.departmentName,
+    );
+
+    if (!dept) continue;
+
+    await prisma.vertical.createMany({
+      data: item.verticals.map((v) => ({
+        name: v,
+        code: v.slice(0, 3).toUpperCase(),
+        departmentId: dept.id,
+      })),
+    });
+  }
 
   await prisma.region.createMany({ data: regionData, skipDuplicates: true });
   const regions = await prisma.region.findMany();
@@ -460,12 +484,6 @@ async function main() {
   });
   const budgets = await prisma.budgetMaster.findMany();
 
-  await prisma.eventScale.createMany({
-    data: eventScaleData,
-    skipDuplicates: true,
-  });
-  const scales = await prisma.eventScale.findMany();
-
   await prisma.eventName.createMany({
     data: eventNameData,
     skipDuplicates: true,
@@ -478,9 +496,18 @@ async function main() {
 
   for (let i = 0; i < 50; i++) {
     const department = faker.helpers.arrayElement(departments);
+    const verticals = await prisma.vertical.findMany({
+      where: { departmentId: department.id },
+    });
+    if (verticals.length === 0) {
+      console.warn(
+        `No verticals found for department ${department.department_name}`,
+      );
+      continue; // skip this iteration
+    }
+    const vertical = faker.helpers.arrayElement(verticals);
     const region = faker.helpers.arrayElement(regions);
     const branch = faker.helpers.arrayElement(branches);
-    const scale = faker.helpers.arrayElement(scales);
     const budget = faker.helpers.arrayElement(budgets);
     const eventName = faker.helpers.arrayElement(eventNames);
     const user = faker.helpers.arrayElement(users);
@@ -509,9 +536,12 @@ async function main() {
         created_by_id: user.id,
         updated_by_id: user.id,
         department_id: department.id,
+        vertical_id: vertical.id,
         region_id: region.id,
         branch_id: branch.id,
-        event_scale_id: scale.id,
+        event_scale: faker.helpers.arrayElement([
+          10, 50, 100, 20000, 50000, 10000,
+        ]),
         budget_master_id: budget.id,
         event_name_id: eventName.id,
       },
@@ -658,6 +688,242 @@ async function main() {
   console.log(
     "────────────────────────────────────────────────────────────────────\n",
   );
+
+  // ─────────────────────────────────────────────
+  // STEP 11: WORKFLOW TEMPLATE (ADDED)
+  // ─────────────────────────────────────────────
+
+  const template = await prisma.workflowTemplate.create({
+    data: {
+      name: "Standard EPC Approval",
+      description: "This is the EPC Approval flow",
+      workspaceId: workspace.id,
+      created_by_id: users[0].id,
+      updated_by_id: users[0].id,
+      appId: mapApp.id,
+      metaData_1: ">20000",
+      metaData_2: "",
+      metaData_3: "",
+
+      stages: {
+        create: [
+          {
+            name: "Checker",
+            stageOrder: 1,
+            strategy: "ANY",
+            approvers: {
+              create: [{ userId: users[1].id }, { userId: users[2].id }],
+            },
+          },
+          {
+            name: "Recommender",
+            stageOrder: 2,
+            strategy: "ALL",
+            approvers: {
+              create: [{ userId: users[4].id }, { userId: users[5].id }],
+            },
+          },
+          {
+            name: "Validator",
+            stageOrder: 3,
+            strategy: "SOME",
+            minApprovals: 2,
+            approvers: {
+              create: [
+                { userId: users[6].id },
+                { userId: users[7].id },
+                { userId: users[8].id },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  console.log("✅ Workflow template created");
+
+  // ─────────────────────────────────────────────
+  // STEP 12: WORKFLOW INSTANCES (ADDED)
+  // ─────────────────────────────────────────────
+
+  const proposals = await prisma.eventProposal.findMany({ take: 10 });
+
+  const templateWithStages = await prisma.workflowTemplate.findUnique({
+    where: { id: template.id },
+    include: {
+      stages: {
+        include: {
+          approvers: true,
+        },
+      },
+    },
+  });
+
+  if (!templateWithStages) throw new Error("Template not found");
+
+  for (let i = 0; i < proposals.length; i++) {
+    const epc = proposals[i];
+
+    // 👇 distribute stage (1,2,3,1,2,3...)
+    const activeStageOrder = (i % templateWithStages.stages.length) + 1;
+
+    await prisma.workflowInstance.create({
+      data: {
+        templateId: template.id,
+        workspaceId: workspace.id,
+        eventProposalId: epc.id,
+        currentStage: activeStageOrder,
+
+        stages: {
+          create: templateWithStages.stages.map((stage) => {
+            let status: "PENDING" | "IN_PROGRESS" | "APPROVED" = "PENDING";
+
+            if (stage.stageOrder < activeStageOrder) {
+              status = "APPROVED";
+            } else if (stage.stageOrder === activeStageOrder) {
+              status = "IN_PROGRESS";
+            }
+
+            return {
+              stageOrder: stage.stageOrder,
+              strategy: stage.strategy,
+              minApprovals: stage.minApprovals,
+              status,
+
+              approvals: {
+                create: stage.approvers.map((a) => ({
+                  approverId: a.userId,
+
+                  // 👇 mark approvals done for past stages
+                  status:
+                    stage.stageOrder < activeStageOrder
+                      ? "APPROVED"
+                      : "PENDING",
+
+                  actedAt:
+                    stage.stageOrder < activeStageOrder ? new Date() : null,
+                })),
+              },
+            };
+          }),
+        },
+      },
+    });
+  }
+
+  // --------------------------------------------------
+  // 1️⃣ Create Sample Products
+  // --------------------------------------------------
+
+  const products = await prisma.productMaster.createMany({
+    data: [
+      {
+        partNumber: "EPF-001",
+        name: "Venue Booking",
+        description: "Hall and venue charges",
+        unitRate: Math.floor(Math.random() * 50000),
+        productType: "EPF",
+        category: "EVENT_OVERHEAD",
+      },
+      {
+        partNumber: "EPF-002",
+        name: "Catering",
+        description: "Food and beverages",
+        unitRate: Math.floor(Math.random() * 1200),
+        productType: "EPF",
+        category: "EVENT_OVERHEAD",
+      },
+
+      // CRF Products
+      {
+        partNumber: "CRF-001",
+        name: "Brochure Printing",
+        description: "Product brochures",
+        unitRate: Math.floor(Math.random() * 5000),
+        productType: "CRF",
+        category: "PRINTED_MATERIAL",
+      },
+      {
+        partNumber: "CRF-002",
+        name: "Gift Hampers",
+        description: "Customer souvenirs",
+        unitRate: Math.floor(Math.random() * 2500),
+        productType: "CRF",
+        category: "SOUVENIR",
+      },
+      {
+        partNumber: "CRF-003",
+        name: "Standee Design",
+        description: "Artwork for banners",
+        unitRate: Math.floor(Math.random() * 2000),
+        productType: "CRF",
+        category: "ARTWORK",
+      },
+    ],
+  });
+
+  console.log("✅ Products created");
+
+  const allProducts = await prisma.productMaster.findMany();
+
+  const epfProducts = allProducts.filter((p) => p.productType === "EPF");
+  const crfProducts = allProducts.filter((p) => p.productType === "CRF");
+
+  for (let i = 0; i < proposals.length; i++) {
+    const epc = proposals[i];
+
+    const epf = await prisma.ePF.create({
+      data: {
+        epcId: epc.id,
+        total_budget: Math.floor(Math.random() * (30000 - 20000 + 1)) + 20000,
+        expected_revenue:
+          Math.floor(Math.random() * (30000 - 20000 + 1)) + 20000,
+      },
+    });
+
+    const crf = await prisma.cRF.create({
+      data: {
+        epcId: epc.id,
+      },
+    });
+
+    for (const product of epfProducts) {
+      const quantity = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
+      const rate = product.unitRate;
+      const amount = quantity * Number(rate);
+
+      await prisma.lineItem.create({
+        data: {
+          epfId: epf.id,
+          productId: product.id,
+          quantity,
+          rate,
+          amount,
+        },
+      });
+    }
+
+    for (const product of crfProducts) {
+      const quantity = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+      const rate = product.unitRate;
+      const amount = quantity * Number(rate);
+
+      await prisma.lineItem.create({
+        data: {
+          crfId: crf.id,
+          productId: product.id,
+          quantity,
+          rate,
+          amount,
+        },
+      });
+    }
+  }
+
+  console.log("✅ EPF and CRF created");
+
+  console.log("✅ Workflow instances created with distributed stages");
 }
 
 main()

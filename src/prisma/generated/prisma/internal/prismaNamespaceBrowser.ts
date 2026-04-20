@@ -64,12 +64,24 @@ export const ModelName = {
   ProfilePermission: 'ProfilePermission',
   UserProfile: 'UserProfile',
   EventProposal: 'EventProposal',
+  WorkflowTemplate: 'WorkflowTemplate',
+  TemplateStage: 'TemplateStage',
+  TemplateApprover: 'TemplateApprover',
+  WorkflowInstance: 'WorkflowInstance',
+  StageInstance: 'StageInstance',
+  Approval: 'Approval',
+  WorkFlowTemplateUser: 'WorkFlowTemplateUser',
   Department: 'Department',
+  Vertical: 'Vertical',
   Region: 'Region',
   Branch: 'Branch',
-  EventScale: 'EventScale',
   BudgetMaster: 'BudgetMaster',
-  EventName: 'EventName'
+  EventName: 'EventName',
+  ApprovalAudit: 'ApprovalAudit',
+  ProductMaster: 'ProductMaster',
+  EPF: 'EPF',
+  CRF: 'CRF',
+  LineItem: 'LineItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -244,9 +256,10 @@ export const EventProposalScalarFieldEnum = {
   department_id: 'department_id',
   region_id: 'region_id',
   branch_id: 'branch_id',
-  event_scale_id: 'event_scale_id',
+  event_scale: 'event_scale',
   budget_master_id: 'budget_master_id',
   event_name_id: 'event_name_id',
+  vertical_id: 'vertical_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -254,10 +267,102 @@ export const EventProposalScalarFieldEnum = {
 export type EventProposalScalarFieldEnum = (typeof EventProposalScalarFieldEnum)[keyof typeof EventProposalScalarFieldEnum]
 
 
+export const WorkflowTemplateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  workspaceId: 'workspaceId',
+  isActive: 'isActive',
+  appId: 'appId',
+  metaData_1: 'metaData_1',
+  metaData_2: 'metaData_2',
+  metaData_3: 'metaData_3',
+  created_by_id: 'created_by_id',
+  updated_by_id: 'updated_by_id',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type WorkflowTemplateScalarFieldEnum = (typeof WorkflowTemplateScalarFieldEnum)[keyof typeof WorkflowTemplateScalarFieldEnum]
+
+
+export const TemplateStageScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  templateId: 'templateId',
+  stageOrder: 'stageOrder',
+  strategy: 'strategy',
+  minApprovals: 'minApprovals'
+} as const
+
+export type TemplateStageScalarFieldEnum = (typeof TemplateStageScalarFieldEnum)[keyof typeof TemplateStageScalarFieldEnum]
+
+
+export const TemplateApproverScalarFieldEnum = {
+  id: 'id',
+  stageId: 'stageId',
+  userId: 'userId'
+} as const
+
+export type TemplateApproverScalarFieldEnum = (typeof TemplateApproverScalarFieldEnum)[keyof typeof TemplateApproverScalarFieldEnum]
+
+
+export const WorkflowInstanceScalarFieldEnum = {
+  id: 'id',
+  templateId: 'templateId',
+  workspaceId: 'workspaceId',
+  eventProposalId: 'eventProposalId',
+  status: 'status',
+  currentStage: 'currentStage',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type WorkflowInstanceScalarFieldEnum = (typeof WorkflowInstanceScalarFieldEnum)[keyof typeof WorkflowInstanceScalarFieldEnum]
+
+
+export const StageInstanceScalarFieldEnum = {
+  id: 'id',
+  workflowId: 'workflowId',
+  stageOrder: 'stageOrder',
+  strategy: 'strategy',
+  minApprovals: 'minApprovals',
+  startedAt: 'startedAt',
+  dueAt: 'dueAt',
+  escalatedTo: 'escalatedTo',
+  status: 'status'
+} as const
+
+export type StageInstanceScalarFieldEnum = (typeof StageInstanceScalarFieldEnum)[keyof typeof StageInstanceScalarFieldEnum]
+
+
+export const ApprovalScalarFieldEnum = {
+  id: 'id',
+  stageId: 'stageId',
+  approverId: 'approverId',
+  status: 'status',
+  actedAt: 'actedAt',
+  reason: 'reason'
+} as const
+
+export type ApprovalScalarFieldEnum = (typeof ApprovalScalarFieldEnum)[keyof typeof ApprovalScalarFieldEnum]
+
+
+export const WorkFlowTemplateUserScalarFieldEnum = {
+  id: 'id',
+  templateId: 'templateId',
+  userId: 'userId',
+  created_at: 'created_at'
+} as const
+
+export type WorkFlowTemplateUserScalarFieldEnum = (typeof WorkFlowTemplateUserScalarFieldEnum)[keyof typeof WorkFlowTemplateUserScalarFieldEnum]
+
+
 export const DepartmentScalarFieldEnum = {
   id: 'id',
   department_code: 'department_code',
   department_name: 'department_name',
+  isActive: 'isActive',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -265,10 +370,23 @@ export const DepartmentScalarFieldEnum = {
 export type DepartmentScalarFieldEnum = (typeof DepartmentScalarFieldEnum)[keyof typeof DepartmentScalarFieldEnum]
 
 
+export const VerticalScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  code: 'code',
+  departmentId: 'departmentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VerticalScalarFieldEnum = (typeof VerticalScalarFieldEnum)[keyof typeof VerticalScalarFieldEnum]
+
+
 export const RegionScalarFieldEnum = {
   id: 'id',
   region_code: 'region_code',
   region_name: 'region_name',
+  isActive: 'isActive',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -280,22 +398,12 @@ export const BranchScalarFieldEnum = {
   id: 'id',
   branch_code: 'branch_code',
   branch_name: 'branch_name',
+  isActive: 'isActive',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
 
 export type BranchScalarFieldEnum = (typeof BranchScalarFieldEnum)[keyof typeof BranchScalarFieldEnum]
-
-
-export const EventScaleScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  title: 'title',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type EventScaleScalarFieldEnum = (typeof EventScaleScalarFieldEnum)[keyof typeof EventScaleScalarFieldEnum]
 
 
 export const BudgetMasterScalarFieldEnum = {
@@ -317,6 +425,72 @@ export const EventNameScalarFieldEnum = {
 } as const
 
 export type EventNameScalarFieldEnum = (typeof EventNameScalarFieldEnum)[keyof typeof EventNameScalarFieldEnum]
+
+
+export const ApprovalAuditScalarFieldEnum = {
+  id: 'id',
+  workflowId: 'workflowId',
+  stageId: 'stageId',
+  approverId: 'approverId',
+  action: 'action',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type ApprovalAuditScalarFieldEnum = (typeof ApprovalAuditScalarFieldEnum)[keyof typeof ApprovalAuditScalarFieldEnum]
+
+
+export const ProductMasterScalarFieldEnum = {
+  id: 'id',
+  productType: 'productType',
+  category: 'category',
+  partNumber: 'partNumber',
+  name: 'name',
+  description: 'description',
+  unitRate: 'unitRate',
+  isActive: 'isActive',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type ProductMasterScalarFieldEnum = (typeof ProductMasterScalarFieldEnum)[keyof typeof ProductMasterScalarFieldEnum]
+
+
+export const EPFScalarFieldEnum = {
+  id: 'id',
+  epcId: 'epcId',
+  total_budget: 'total_budget',
+  expected_revenue: 'expected_revenue',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type EPFScalarFieldEnum = (typeof EPFScalarFieldEnum)[keyof typeof EPFScalarFieldEnum]
+
+
+export const CRFScalarFieldEnum = {
+  id: 'id',
+  epcId: 'epcId',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CRFScalarFieldEnum = (typeof CRFScalarFieldEnum)[keyof typeof CRFScalarFieldEnum]
+
+
+export const LineItemScalarFieldEnum = {
+  id: 'id',
+  epfId: 'epfId',
+  crfId: 'crfId',
+  productId: 'productId',
+  quantity: 'quantity',
+  rate: 'rate',
+  amount: 'amount',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type LineItemScalarFieldEnum = (typeof LineItemScalarFieldEnum)[keyof typeof LineItemScalarFieldEnum]
 
 
 export const SortOrder = {

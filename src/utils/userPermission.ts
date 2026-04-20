@@ -9,6 +9,8 @@ export type ResolvedPermission = {
   action: "read" | "write";
   appKey: string;
   moduleKey: string;
+  appId: string;
+  appName: string;
 };
 
 export type UserPermissions = {
@@ -43,16 +45,24 @@ export async function buildUserPermissions(
   });
 
   if (!member) return { isSuperAdmin: false, permissions: [] };
-  if (member.isSuperAdmin) return { isSuperAdmin: true, permissions: [] };
+  // if (member.isSuperAdmin) return { isSuperAdmin: true, permissions: [] };
 
   // Single SQL query — joins UserProfile → Profile → ProfilePermission → Module → App
   // Every row now has a concrete appKey and moduleKey (no nulls possible).
   const rows = await prisma.$queryRaw<
-    { action: string; appKey: string; moduleKey: string }[]
+    {
+      action: string;
+      appKey: string;
+      moduleKey: string;
+      appId: string;
+      appName: string;
+    }[]
   >`
     SELECT
       pp.action   AS "action",
       a.key       AS "appKey",
+      a.id        AS "appId",
+      a.name      AS "appName",
       m.key       AS "moduleKey"
     FROM "UserProfile"       up
     JOIN "Profile"           p  ON p.id  = up."profileId"
@@ -74,11 +84,13 @@ export async function buildUserPermissions(
     permissions.push({
       action: row.action as "read" | "write",
       appKey: row.appKey,
+      appId: row.appId,
+      appName: row.appName,
       moduleKey: row.moduleKey,
     });
   }
 
-  return { isSuperAdmin: false, permissions };
+  return { isSuperAdmin: member.isSuperAdmin, permissions };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

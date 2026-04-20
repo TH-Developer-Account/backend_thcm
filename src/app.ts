@@ -7,6 +7,10 @@ import epcRoutes from "./routes/epc.routes";
 import workspaceRoutes from "./routes/workspace.routes";
 import profileRoutes from "./routes/profile.routes";
 import masterDataRoutes from "./routes/masterData.routes";
+import workflowTemplateRoutes from "./routes/workflowTemplate.routes";
+import workflowRoutes from "./routes/workflow.routes";
+import efpRoutes from "./routes/epf.routes";
+import crfRoutes from "./routes/crf.routes";
 import errorHandler from "./middleware/error.middleware";
 import ApiError from "./utils/apiError";
 import { startJobs } from "./jobs/scheduler";
@@ -31,6 +35,10 @@ app.use("/api/v1/epc", epcRoutes);
 app.use("/api/v1/workspaces", workspaceRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/master-data", masterDataRoutes);
+app.use("/api/v1/work-flow", workflowTemplateRoutes);
+app.use("/api/v1/soa", workflowRoutes);
+app.use("/api/v1/epf", efpRoutes);
+app.use("/api/v1/crf", crfRoutes);
 
 // Scheduler
 startJobs();

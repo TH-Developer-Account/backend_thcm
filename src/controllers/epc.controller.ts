@@ -3,6 +3,23 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
 import { searchEventProposals } from "../helpers/searchEventProposal.helper";
+import { createEventProposalWithWorkflow } from "../services/workflow.service";
+
+export const createEPCController = async (req: Request, res: Response) => {
+  try {
+    const result = await createEventProposalWithWorkflow(req.body);
+
+    res.status(201).json({
+      success: true,
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
 
 export const createEventProposal = async (
   req: Request,
@@ -19,11 +36,16 @@ export const createEventProposal = async (
       location,
       event_objective,
       department_id,
+      vertical_id,
       region_id,
       branch_id,
-      event_scale_id,
+      event_scale,
       budget_master_id,
     } = req.body;
+
+    const userId = req?.user?.id;
+
+    if (!userId) throw new ApiError(401, "Unauthorized");
 
     if (
       !proposal_number ||
@@ -31,9 +53,10 @@ export const createEventProposal = async (
       !event_from_date ||
       !event_to_date ||
       !department_id ||
+      !vertical_id ||
       !region_id ||
       !branch_id ||
-      !event_scale_id ||
+      !event_scale ||
       !budget_master_id
     ) {
       throw new ApiError(400, "Missing required fields");
@@ -55,12 +78,13 @@ export const createEventProposal = async (
         location,
         event_objective,
         department_id,
+        vertical_id,
         region_id,
         branch_id,
-        event_scale_id,
+        event_scale,
         budget_master_id,
-        created_by_id: req.user.id,
-        updated_by_id: req.user.id,
+        created_by_id: userId,
+        updated_by_id: userId,
       },
     });
 
@@ -153,6 +177,9 @@ export const updateEventProposal = async (
   try {
     const id = String(req.params.id);
     const { ...data } = req.body;
+    const userId = req?.user?.id;
+
+    if (!userId) throw new ApiError(401, "Unauthorized");
 
     if (id) {
       throw new ApiError(404, "Invalid ID");
@@ -162,7 +189,7 @@ export const updateEventProposal = async (
       where: { id },
       data: {
         ...data,
-        updated_by: req.user.id,
+        updated_by: userId,
       },
     });
 
@@ -183,6 +210,10 @@ export const deleteEventProposal = async (
   try {
     const id = String(req.params.id);
 
+    const userId = req?.user?.id;
+
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
     if (id) {
       throw new ApiError(400, "Invalid ID");
     }
@@ -191,11 +222,13 @@ export const deleteEventProposal = async (
       where: { id },
       data: {
         status: "DELETED",
-        updated_by_id: req.user.id,
+        updated_by_id: userId,
       },
     });
 
-    res.status(200).json({ message: "Event Proposal deleted successfully" });
+    res
+      .status(200)
+      .json({ message: "Event Proposal deleted successfully", data: updated });
   } catch (error: any) {
     next(error);
   }

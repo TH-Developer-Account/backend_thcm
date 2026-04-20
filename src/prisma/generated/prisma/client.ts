@@ -103,10 +103,50 @@ export type UserProfile = Prisma.UserProfileModel
  */
 export type EventProposal = Prisma.EventProposalModel
 /**
+ * Model WorkflowTemplate
+ * 
+ */
+export type WorkflowTemplate = Prisma.WorkflowTemplateModel
+/**
+ * Model TemplateStage
+ * 
+ */
+export type TemplateStage = Prisma.TemplateStageModel
+/**
+ * Model TemplateApprover
+ * 
+ */
+export type TemplateApprover = Prisma.TemplateApproverModel
+/**
+ * Model WorkflowInstance
+ * 
+ */
+export type WorkflowInstance = Prisma.WorkflowInstanceModel
+/**
+ * Model StageInstance
+ * 
+ */
+export type StageInstance = Prisma.StageInstanceModel
+/**
+ * Model Approval
+ * 
+ */
+export type Approval = Prisma.ApprovalModel
+/**
+ * Model WorkFlowTemplateUser
+ * 
+ */
+export type WorkFlowTemplateUser = Prisma.WorkFlowTemplateUserModel
+/**
  * Model Department
  * 
  */
 export type Department = Prisma.DepartmentModel
+/**
+ * Model Vertical
+ * 
+ */
+export type Vertical = Prisma.VerticalModel
 /**
  * Model Region
  * 
@@ -118,11 +158,6 @@ export type Region = Prisma.RegionModel
  */
 export type Branch = Prisma.BranchModel
 /**
- * Model EventScale
- * 
- */
-export type EventScale = Prisma.EventScaleModel
-/**
  * Model BudgetMaster
  * 
  */
@@ -132,3 +167,28 @@ export type BudgetMaster = Prisma.BudgetMasterModel
  * 
  */
 export type EventName = Prisma.EventNameModel
+/**
+ * Model ApprovalAudit
+ * 
+ */
+export type ApprovalAudit = Prisma.ApprovalAuditModel
+/**
+ * Model ProductMaster
+ * 
+ */
+export type ProductMaster = Prisma.ProductMasterModel
+/**
+ * Model EPF
+ * 
+ */
+export type EPF = Prisma.EPFModel
+/**
+ * Model CRF
+ * 
+ */
+export type CRF = Prisma.CRFModel
+/**
+ * Model LineItem
+ * 
+ */
+export type LineItem = Prisma.LineItemModel
