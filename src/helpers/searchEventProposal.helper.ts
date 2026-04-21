@@ -59,7 +59,7 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
       ? Prisma.sql`WHERE ${Prisma.join(conditions, "AND")}`
       : Prisma.empty;
 
-  const direction = sortOrder === "asc" ? Prisma.sql`ASC` : Prisma.sql`DESC`;
+  const direction = sortOrder === "desc" ? Prisma.sql`DESC` : Prisma.sql`ASC`;
 
   let orderByClause: Prisma.Sql;
 
@@ -98,7 +98,10 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
     en.title AS event_name,
     us.first_name AS first_name,
     us.last_name AS last_name,
-      ${ranking} AS rank
+    epf.id AS epf_id,
+    crf.id AS crf_id,
+    wf.id AS workflow_id,
+    ${ranking} AS rank
     FROM "EventProposal" ep
      LEFT JOIN "EventName" en 
         ON ep.event_name_id = en.id
@@ -106,6 +109,12 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
         ON ep.department_id = d.id
      LEFT JOIN "User" us  
         ON ep.created_by_id = us.id
+     LEFT JOIN "EPF" epf
+        ON ep.id = epf."epcId"
+     LEFT JOIN "CRF" crf
+        ON ep.id = crf."epcId"
+     LEFT JOIN "WorkflowInstance" wf
+        ON ep.id = wf."eventProposalId"
     ${whereClause}
     ${orderByClause}
     LIMIT ${pageSize}

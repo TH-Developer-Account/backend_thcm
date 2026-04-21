@@ -19,7 +19,7 @@ router.use(firstAuthRequestPerDay);
 router.post(
   "/",
   authorize("MAP", "Event Proposal Form", "write"),
-  asyncHandler(createEPCController),
+  asyncHandler(createEventProposal),
 );
 router.get("/", asyncHandler(getAllEventProposals));
 router.get("/:id", asyncHandler(getEventProposalById));

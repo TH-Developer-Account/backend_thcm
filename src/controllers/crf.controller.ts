@@ -96,7 +96,7 @@ export const createCRF = async (
       return crf;
     });
 
-    res.status(200).json(result);
+    res.status(200).json({ message: "CRF created successfully", data: result });
   } catch (error) {
     next(error);
   }

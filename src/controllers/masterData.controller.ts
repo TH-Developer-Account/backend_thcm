@@ -1,5 +1,6 @@
 import { prisma } from "../config/prisma";
-import { Request, Response } from "express";
+import { ProductType } from "../prisma/generated/prisma/client";
+import { Request, Response, NextFunction } from "express";
 import { handleCreate, handleUpdate } from "../helpers/masterData.helper";
 import ApiError from "../utils/apiError";
 
@@ -143,5 +144,42 @@ export const manageMasterData = async (req: Request, res: Response) => {
       message: "Failed to manage master data",
       error: error.message,
     });
+  }
+};
+
+export const getProductsByType = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { productType } = req.query;
+
+    if (!productType || typeof productType !== "string") {
+      throw new ApiError(400, "productType is required");
+    }
+
+    const type = productType.toUpperCase() as keyof typeof ProductType;
+
+    if (!ProductType[type]) {
+      throw new ApiError(400, "Invalid productType");
+    }
+
+    const products = await prisma.productMaster.findMany({
+      where: {
+        productType: ProductType[type], // ensures EPF/CRF match
+      },
+      orderBy: {
+        name: "asc",
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      data: products,
+    });
+  } catch (error) {
+    next(error);
   }
 };

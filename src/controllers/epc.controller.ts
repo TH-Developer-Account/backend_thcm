@@ -29,16 +29,16 @@ export const createEventProposal = async (
   try {
     const {
       proposal_number,
-      event_name_id,
+      event_name,
       event_from_date,
       event_to_date,
       event_description,
       location,
       event_objective,
-      department_id,
-      vertical_id,
-      region_id,
-      branch_id,
+      department,
+      vertical,
+      region,
+      branch,
       event_scale,
       budget_master_id,
     } = req.body;
@@ -49,13 +49,12 @@ export const createEventProposal = async (
 
     if (
       !proposal_number ||
-      !event_name_id ||
+      !event_name ||
       !event_from_date ||
       !event_to_date ||
-      !department_id ||
-      !vertical_id ||
-      !region_id ||
-      !branch_id ||
+      !department ||
+      !region ||
+      !branch ||
       !event_scale ||
       !budget_master_id
     ) {
@@ -71,17 +70,17 @@ export const createEventProposal = async (
     const proposal = await prisma.eventProposal.create({
       data: {
         proposal_number,
-        event_name_id,
+        event_name_id: event_name,
         event_from_date: new Date(event_from_date),
         event_to_date: new Date(event_to_date),
         event_description,
         location,
         event_objective,
-        department_id,
-        vertical_id,
-        region_id,
-        branch_id,
-        event_scale,
+        department_id: department,
+        vertical_id: vertical,
+        region_id: region,
+        branch_id: branch,
+        event_scale: Number(event_scale),
         budget_master_id,
         created_by_id: userId,
         updated_by_id: userId,
@@ -158,11 +157,24 @@ export const getEventProposalById = async (
 
     const proposal = await prisma.eventProposal.findUnique({
       where: { id },
+      include: {
+        epf: true,
+        crf: true,
+        workflow: {
+          include: {
+            stages: true,
+          },
+        },
+        event_name: true,
+        department: true,
+        created_by: true,
+      },
     });
 
     if (!proposal) {
       throw new ApiError(404, "Event Proposal not found");
     }
+
     res.status(200).json(proposal);
   } catch (error: any) {
     next(error);

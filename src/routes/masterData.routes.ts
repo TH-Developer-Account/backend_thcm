@@ -3,11 +3,13 @@ import asyncHandler from "../middleware/async.middleware";
 import {
   getMasterData,
   manageMasterData,
+  getProductsByType,
 } from "../controllers/masterData.controller";
 
 const router = Router();
 
 router.get("/", asyncHandler(getMasterData));
+router.get("/products", asyncHandler(getProductsByType));
 router.post("/manage", asyncHandler(manageMasterData));
 
 export default router;
