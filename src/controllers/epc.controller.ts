@@ -151,32 +151,67 @@ export const getEventProposalById = async (
 ) => {
   try {
     const id = String(req.params.id);
+
     if (!id) {
-      throw new ApiError(404, "Invalid ID");
+      throw new ApiError(400, "Invalid EPC ID");
     }
 
-    const proposal = await prisma.eventProposal.findUnique({
+    const epc = await prisma.eventProposal.findUnique({
       where: { id },
       include: {
-        epf: true,
-        crf: true,
-        workflow: {
+        department: true,
+        vertical: true,
+        region: true,
+        branch: true,
+        budget_master: true,
+        event_name: true,
+        epf: {
           include: {
-            stages: true,
+            lineItems: {
+              include: {
+                product: true, // productMaster
+              },
+            },
           },
         },
-        event_name: true,
-        department: true,
-        created_by: true,
+        crf: {
+          include: {
+            lineItems: {
+              include: {
+                product: true,
+              },
+            },
+          },
+        },
+        workflow: {
+          include: {
+            template: true,
+            stages: {
+              include: {
+                approvals: {
+                  include: {
+                    approver: true,
+                  },
+                },
+              },
+              orderBy: {
+                stageOrder: "asc",
+              },
+            },
+          },
+        },
       },
     });
 
-    if (!proposal) {
-      throw new ApiError(404, "Event Proposal not found");
+    if (!epc) {
+      throw new ApiError(404, "EPC not found");
     }
 
-    res.status(200).json(proposal);
-  } catch (error: any) {
+    res.status(200).json({
+      success: true,
+      data: epc,
+    });
+  } catch (error) {
     next(error);
   }
 };
