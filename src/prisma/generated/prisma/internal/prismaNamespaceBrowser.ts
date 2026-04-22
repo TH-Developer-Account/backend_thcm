@@ -81,7 +81,8 @@ export const ModelName = {
   ProductMaster: 'ProductMaster',
   EPF: 'EPF',
   CRF: 'CRF',
-  LineItem: 'LineItem'
+  LineItem: 'LineItem',
+  Comment: 'Comment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -491,6 +492,19 @@ export const LineItemScalarFieldEnum = {
 } as const
 
 export type LineItemScalarFieldEnum = (typeof LineItemScalarFieldEnum)[keyof typeof LineItemScalarFieldEnum]
+
+
+export const CommentScalarFieldEnum = {
+  id: 'id',
+  message: 'message',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  userId: 'userId',
+  approvalId: 'approvalId',
+  type: 'type'
+} as const
+
+export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
 
 
 export const SortOrder = {

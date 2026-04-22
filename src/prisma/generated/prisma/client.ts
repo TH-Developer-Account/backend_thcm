@@ -192,3 +192,8 @@ export type CRF = Prisma.CRFModel
  * 
  */
 export type LineItem = Prisma.LineItemModel
+/**
+ * Model Comment
+ * 
+ */
+export type Comment = Prisma.CommentModel
