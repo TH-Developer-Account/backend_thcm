@@ -182,6 +182,12 @@ export const epcFullInfoSelect = {
                   phone_number: true,
                 },
               },
+              comments: {
+                orderBy: { createdAt: "asc" },
+                select: {
+                  message: true,
+                },
+              },
             },
           },
         },
