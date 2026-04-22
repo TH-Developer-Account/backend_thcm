@@ -36,7 +36,8 @@ export type StrategyType = (typeof StrategyType)[keyof typeof StrategyType]
 export const WorkflowStatus = {
   IN_PROGRESS: 'IN_PROGRESS',
   APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  SUPERSEDED: 'SUPERSEDED'
 } as const
 
 export type WorkflowStatus = (typeof WorkflowStatus)[keyof typeof WorkflowStatus]
@@ -55,10 +56,29 @@ export type StageStatus = (typeof StageStatus)[keyof typeof StageStatus]
 export const ApprovalStatus = {
   PENDING: 'PENDING',
   APPROVED: 'APPROVED',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  CLARIFY: 'CLARIFY'
 } as const
 
 export type ApprovalStatus = (typeof ApprovalStatus)[keyof typeof ApprovalStatus]
+
+
+export const WorkflowType = {
+  STANDARD: 'STANDARD',
+  DEVIATION: 'DEVIATION'
+} as const
+
+export type WorkflowType = (typeof WorkflowType)[keyof typeof WorkflowType]
+
+
+export const AuditAction = {
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CLARIFY: 'CLARIFY',
+  DEVIATION: 'DEVIATION'
+} as const
+
+export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
 
 
 export const ProductType = {

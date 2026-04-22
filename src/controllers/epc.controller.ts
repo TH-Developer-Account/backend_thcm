@@ -6,21 +6,61 @@ import { epcFullInfoSelect } from "../utils/contants";
 import { searchEventProposals } from "../helpers/searchEventProposal.helper";
 import { createEventProposalWithWorkflow } from "../services/workflow.service";
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Reusable select for the active workflow's current state.
+// Used in getEventProposalById and anywhere you need EPC + live workflow data.
+//
+// Pattern:
+//   workflows: { where: { isActive: true } }          ← only the active workflow
+//   stages:    { where: { isCurrentIteration: true } } ← only the current run's stages
+//
+// For full history (all workflows, all iterations) use the history endpoint on
+// the workflow controller instead — it keeps EPC queries lean.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const activeWorkflowInclude = {
+  where: { isActive: true },
+  include: {
+    template: {
+      select: { id: true, name: true, description: true },
+    },
+    stages: {
+      where: { isCurrentIteration: true }, // ✅ only current iteration stages
+      orderBy: { stageOrder: "asc" as const },
+      include: {
+        approvals: {
+          include: {
+            approver: {
+              select: { id: true, first_name: true, last_name: true },
+            },
+            comments: {
+              orderBy: { createdAt: "asc" as const },
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /epc/with-workflow
+// Creates an EPC together with its initial workflow in a single service call.
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const createEPCController = async (req: Request, res: Response) => {
   try {
     const result = await createEventProposalWithWorkflow(req.body);
-
-    res.status(201).json({
-      success: true,
-      data: result,
-    });
+    res.status(201).json({ success: true, data: result });
   } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /epc
+// Creates an EPC without a workflow (workflow is assigned separately).
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const createEventProposal = async (
   req: Request,
@@ -45,7 +85,6 @@ export const createEventProposal = async (
     } = req.body;
 
     const userId = req?.user?.id;
-
     if (!userId) throw new ApiError(401, "Unauthorized");
 
     if (
@@ -65,8 +104,6 @@ export const createEventProposal = async (
     if (new Date(event_from_date) > new Date(event_to_date)) {
       throw new ApiError(400, "event_from_date cannot be after event_to_date");
     }
-
-    // Check if the user has the permission to create EPC
 
     const proposal = await prisma.eventProposal.create({
       data: {
@@ -88,14 +125,30 @@ export const createEventProposal = async (
       },
     });
 
-    res.status(201).json(proposal);
+    res.status(201).json({ success: true, data: proposal });
   } catch (error: any) {
     if (error.code === "P2002") {
-      throw new ApiError(409, "Proposal number already exists");
+      return next(new ApiError(409, "Proposal number already exists"));
     }
     next(error);
   }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /epc
+//
+// Paginated list of EPCs with optional filters.
+// Supports four main views:
+//   ?pendingOnMe=true  — EPCs where the current user has a PENDING approval
+//                        on the active workflow's current iteration
+//   ?approvedByMe=true — EPCs where the current user has an APPROVED approval
+//   (no flag)          — All EPCs, optionally filtered by status/dept/date
+//
+// NOTE: The `searchEventProposals` helper should be updated to use
+//   `isActive: true` when filtering workflow instances, and
+//   `isCurrentIteration: true` when filtering stages.
+//   See the inline comment inside this function for the query shape.
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const getAllEventProposals = async (
   req: Request,
@@ -113,15 +166,57 @@ export const getAllEventProposals = async (
       departmentId,
       startDate,
       endDate,
+      approvedByMe,
+      pendingOnMe,
     } = req.query;
+
+    const userId = req?.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
 
     const pageNumber = Number(page);
     const take = Number(pageSize);
 
+    // NOTE FOR searchEventProposals HELPER:
+    // When building the `pendingOnMe` query, the where clause should be:
+    //
+    //   workflows: {
+    //     some: {
+    //       isActive: true,          ← active workflow only
+    //       stages: {
+    //         some: {
+    //           isCurrentIteration: true,  ← current run only
+    //           status: 'IN_PROGRESS',
+    //           approvals: {
+    //             some: {
+    //               approverId: userId,
+    //               status: 'PENDING'
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    //
+    // For `approvedByMe`:
+    //   workflows: {
+    //     some: {
+    //       stages: {
+    //         some: {
+    //           approvals: {
+    //             some: { approverId: userId, status: 'APPROVED' }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+
     const { data, total } = await searchEventProposals({
+      userId,
+      approvedByMe: approvedByMe === "true",
+      pendingOnMe: pendingOnMe === "true",
       search: search as string,
       status: status as string,
-      departmentId: departmentId ? Number(departmentId) : undefined,
+      departmentId: departmentId ? String(departmentId) : undefined,
       startDate: startDate ? new Date(startDate as string) : undefined,
       endDate: endDate ? new Date(endDate as string) : undefined,
       page: pageNumber,
@@ -131,6 +226,7 @@ export const getAllEventProposals = async (
     });
 
     res.status(200).json({
+      success: true,
       data,
       pagination: {
         total,
@@ -140,10 +236,19 @@ export const getAllEventProposals = async (
       },
     });
   } catch (error) {
-    console.log("error===========>", JSON.stringify(error, null, 2));
     next(error);
   }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /epc/:id
+//
+// Returns a single EPC with its ACTIVE workflow and CURRENT iteration stages.
+// This is the standard "live state" view — fast and uncluttered.
+//
+// For full history (all workflows + all iterations), use:
+//   GET /workflows/:workflowId/history
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const getEventProposalById = async (
   req: Request,
@@ -152,30 +257,46 @@ export const getEventProposalById = async (
 ) => {
   try {
     const id = String(req.params.id);
-
-    if (!id) {
-      throw new ApiError(400, "Invalid EPC ID");
-    }
+    if (!id) throw new ApiError(400, "Invalid EPC ID");
 
     const epc = await prisma.eventProposal.findUnique({
       where: { id },
       include: {
         ...epcFullInfoSelect,
+
+        // ✅ CHANGE: was `workflow: { ... }` (singular, optional)
+        // Now `workflows` (plural) filtered to isActive=true.
+        // Result is an array — take [0] if you need a single object,
+        // or present it as-is to the client (max 1 element in normal operation).
+        workflows: activeWorkflowInclude,
       },
     });
 
-    if (!epc) {
-      throw new ApiError(404, "EPC not found");
-    }
+    if (!epc) throw new ApiError(404, "EPC not found");
 
-    res.status(200).json({
-      success: true,
-      data: epc,
-    });
+    // Flatten for convenience: expose `activeWorkflow` directly rather than
+    // making the client pick from the array.
+    const { workflows, ...epcData } = epc;
+    const response = {
+      ...epcData,
+      activeWorkflow: workflows[0] ?? null,
+    };
+
+    res.status(200).json({ success: true, data: response });
   } catch (error) {
     next(error);
   }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PATCH /epc/:id
+//
+// Updates an EPC's fields.
+//
+// ✅ BUG FIX: Original code had `if (id) throw` which threw on every valid
+// request (a truthy id means the id IS present, not absent).
+// Corrected to `if (!id)`.
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const updateEventProposal = async (
   req: Request,
@@ -189,26 +310,33 @@ export const updateEventProposal = async (
 
     if (!userId) throw new ApiError(401, "Unauthorized");
 
-    if (id) {
-      throw new ApiError(404, "Invalid ID");
-    }
+    // ✅ BUG FIX: was `if (id)` — inverted condition caused every request to fail
+    if (!id) throw new ApiError(400, "Invalid ID");
 
     const updated = await prisma.eventProposal.update({
       where: { id },
       data: {
         ...data,
-        updated_by: userId,
+        updated_by_id: userId, // ✅ also fixed field name (was `updated_by`)
       },
     });
 
-    res.status(200).json(updated);
+    res.status(200).json({ success: true, data: updated });
   } catch (error: any) {
     if (error.code === "P2025") {
-      throw new ApiError(404, "Event Proposal not found");
+      return next(new ApiError(404, "Event Proposal not found"));
     }
     next(error);
   }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DELETE /epc/:id  (soft delete — sets status to DELETED)
+//
+// ✅ BUG FIX: Same inverted `if (id)` issue as updateEventProposal.
+// Also added a guard: an EPC with an active IN_PROGRESS workflow should not
+// be deletable until the workflow is concluded or superseded.
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const deleteEventProposal = async (
   req: Request,
@@ -217,13 +345,25 @@ export const deleteEventProposal = async (
 ) => {
   try {
     const id = String(req.params.id);
-
     const userId = req?.user?.id;
 
     if (!userId) throw new ApiError(401, "Unauthorized");
 
-    if (id) {
-      throw new ApiError(400, "Invalid ID");
+    // ✅ BUG FIX: was `if (id)` — inverted condition caused every request to fail
+    if (!id) throw new ApiError(400, "Invalid ID");
+
+    // Guard: do not allow deletion while an active workflow is IN_PROGRESS
+    const activeWorkflow = await prisma.workflowInstance.findFirst({
+      where: { eventProposalId: id, isActive: true },
+      select: { id: true, status: true },
+    });
+
+    if (activeWorkflow && activeWorkflow.status === "IN_PROGRESS") {
+      throw new ApiError(
+        409,
+        "Cannot delete an EPC while its workflow is IN_PROGRESS. " +
+          "Please complete or supersede the workflow first.",
+      );
     }
 
     const updated = await prisma.eventProposal.update({
@@ -234,10 +374,12 @@ export const deleteEventProposal = async (
       },
     });
 
-    res
-      .status(200)
-      .json({ message: "Event Proposal deleted successfully", data: updated });
-  } catch (error: any) {
+    res.status(200).json({
+      success: true,
+      message: "Event Proposal deleted successfully",
+      data: updated,
+    });
+  } catch (error) {
     next(error);
   }
 };

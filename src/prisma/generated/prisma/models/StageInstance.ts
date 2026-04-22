@@ -28,11 +28,13 @@ export type AggregateStageInstance = {
 
 export type StageInstanceAvgAggregateOutputType = {
   stageOrder: number | null
+  iteration: number | null
   minApprovals: number | null
 }
 
 export type StageInstanceSumAggregateOutputType = {
   stageOrder: number | null
+  iteration: number | null
   minApprovals: number | null
 }
 
@@ -40,6 +42,8 @@ export type StageInstanceMinAggregateOutputType = {
   id: string | null
   workflowId: string | null
   stageOrder: number | null
+  iteration: number | null
+  isCurrentIteration: boolean | null
   strategy: $Enums.StrategyType | null
   minApprovals: number | null
   startedAt: Date | null
@@ -52,6 +56,8 @@ export type StageInstanceMaxAggregateOutputType = {
   id: string | null
   workflowId: string | null
   stageOrder: number | null
+  iteration: number | null
+  isCurrentIteration: boolean | null
   strategy: $Enums.StrategyType | null
   minApprovals: number | null
   startedAt: Date | null
@@ -64,6 +70,8 @@ export type StageInstanceCountAggregateOutputType = {
   id: number
   workflowId: number
   stageOrder: number
+  iteration: number
+  isCurrentIteration: number
   strategy: number
   minApprovals: number
   startedAt: number
@@ -76,11 +84,13 @@ export type StageInstanceCountAggregateOutputType = {
 
 export type StageInstanceAvgAggregateInputType = {
   stageOrder?: true
+  iteration?: true
   minApprovals?: true
 }
 
 export type StageInstanceSumAggregateInputType = {
   stageOrder?: true
+  iteration?: true
   minApprovals?: true
 }
 
@@ -88,6 +98,8 @@ export type StageInstanceMinAggregateInputType = {
   id?: true
   workflowId?: true
   stageOrder?: true
+  iteration?: true
+  isCurrentIteration?: true
   strategy?: true
   minApprovals?: true
   startedAt?: true
@@ -100,6 +112,8 @@ export type StageInstanceMaxAggregateInputType = {
   id?: true
   workflowId?: true
   stageOrder?: true
+  iteration?: true
+  isCurrentIteration?: true
   strategy?: true
   minApprovals?: true
   startedAt?: true
@@ -112,6 +126,8 @@ export type StageInstanceCountAggregateInputType = {
   id?: true
   workflowId?: true
   stageOrder?: true
+  iteration?: true
+  isCurrentIteration?: true
   strategy?: true
   minApprovals?: true
   startedAt?: true
@@ -211,6 +227,8 @@ export type StageInstanceGroupByOutputType = {
   id: string
   workflowId: string
   stageOrder: number
+  iteration: number
+  isCurrentIteration: boolean
   strategy: $Enums.StrategyType
   minApprovals: number | null
   startedAt: Date | null
@@ -246,6 +264,8 @@ export type StageInstanceWhereInput = {
   id?: Prisma.StringFilter<"StageInstance"> | string
   workflowId?: Prisma.StringFilter<"StageInstance"> | string
   stageOrder?: Prisma.IntFilter<"StageInstance"> | number
+  iteration?: Prisma.IntFilter<"StageInstance"> | number
+  isCurrentIteration?: Prisma.BoolFilter<"StageInstance"> | boolean
   strategy?: Prisma.EnumStrategyTypeFilter<"StageInstance"> | $Enums.StrategyType
   minApprovals?: Prisma.IntNullableFilter<"StageInstance"> | number | null
   startedAt?: Prisma.DateTimeNullableFilter<"StageInstance"> | Date | string | null
@@ -260,6 +280,8 @@ export type StageInstanceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   workflowId?: Prisma.SortOrder
   stageOrder?: Prisma.SortOrder
+  iteration?: Prisma.SortOrder
+  isCurrentIteration?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
   minApprovals?: Prisma.SortOrderInput | Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -272,12 +294,14 @@ export type StageInstanceOrderByWithRelationInput = {
 
 export type StageInstanceWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  workflowId_stageOrder?: Prisma.StageInstanceWorkflowIdStageOrderCompoundUniqueInput
+  workflowId_stageOrder_iteration?: Prisma.StageInstanceWorkflowIdStageOrderIterationCompoundUniqueInput
   AND?: Prisma.StageInstanceWhereInput | Prisma.StageInstanceWhereInput[]
   OR?: Prisma.StageInstanceWhereInput[]
   NOT?: Prisma.StageInstanceWhereInput | Prisma.StageInstanceWhereInput[]
   workflowId?: Prisma.StringFilter<"StageInstance"> | string
   stageOrder?: Prisma.IntFilter<"StageInstance"> | number
+  iteration?: Prisma.IntFilter<"StageInstance"> | number
+  isCurrentIteration?: Prisma.BoolFilter<"StageInstance"> | boolean
   strategy?: Prisma.EnumStrategyTypeFilter<"StageInstance"> | $Enums.StrategyType
   minApprovals?: Prisma.IntNullableFilter<"StageInstance"> | number | null
   startedAt?: Prisma.DateTimeNullableFilter<"StageInstance"> | Date | string | null
@@ -286,12 +310,14 @@ export type StageInstanceWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumStageStatusFilter<"StageInstance"> | $Enums.StageStatus
   workflow?: Prisma.XOR<Prisma.WorkflowInstanceScalarRelationFilter, Prisma.WorkflowInstanceWhereInput>
   approvals?: Prisma.ApprovalListRelationFilter
-}, "id" | "workflowId_stageOrder">
+}, "id" | "workflowId_stageOrder_iteration">
 
 export type StageInstanceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   workflowId?: Prisma.SortOrder
   stageOrder?: Prisma.SortOrder
+  iteration?: Prisma.SortOrder
+  isCurrentIteration?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
   minApprovals?: Prisma.SortOrderInput | Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -312,6 +338,8 @@ export type StageInstanceScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"StageInstance"> | string
   workflowId?: Prisma.StringWithAggregatesFilter<"StageInstance"> | string
   stageOrder?: Prisma.IntWithAggregatesFilter<"StageInstance"> | number
+  iteration?: Prisma.IntWithAggregatesFilter<"StageInstance"> | number
+  isCurrentIteration?: Prisma.BoolWithAggregatesFilter<"StageInstance"> | boolean
   strategy?: Prisma.EnumStrategyTypeWithAggregatesFilter<"StageInstance"> | $Enums.StrategyType
   minApprovals?: Prisma.IntNullableWithAggregatesFilter<"StageInstance"> | number | null
   startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"StageInstance"> | Date | string | null
@@ -323,6 +351,8 @@ export type StageInstanceScalarWhereWithAggregatesInput = {
 export type StageInstanceCreateInput = {
   id?: string
   stageOrder: number
+  iteration?: number
+  isCurrentIteration?: boolean
   strategy: $Enums.StrategyType
   minApprovals?: number | null
   startedAt?: Date | string | null
@@ -337,6 +367,8 @@ export type StageInstanceUncheckedCreateInput = {
   id?: string
   workflowId: string
   stageOrder: number
+  iteration?: number
+  isCurrentIteration?: boolean
   strategy: $Enums.StrategyType
   minApprovals?: number | null
   startedAt?: Date | string | null
@@ -349,6 +381,8 @@ export type StageInstanceUncheckedCreateInput = {
 export type StageInstanceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isCurrentIteration?: Prisma.BoolFieldUpdateOperationsInput | boolean
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -363,6 +397,8 @@ export type StageInstanceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workflowId?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isCurrentIteration?: Prisma.BoolFieldUpdateOperationsInput | boolean
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -376,6 +412,8 @@ export type StageInstanceCreateManyInput = {
   id?: string
   workflowId: string
   stageOrder: number
+  iteration?: number
+  isCurrentIteration?: boolean
   strategy: $Enums.StrategyType
   minApprovals?: number | null
   startedAt?: Date | string | null
@@ -387,6 +425,8 @@ export type StageInstanceCreateManyInput = {
 export type StageInstanceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isCurrentIteration?: Prisma.BoolFieldUpdateOperationsInput | boolean
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -399,6 +439,8 @@ export type StageInstanceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workflowId?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isCurrentIteration?: Prisma.BoolFieldUpdateOperationsInput | boolean
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -417,15 +459,18 @@ export type StageInstanceOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type StageInstanceWorkflowIdStageOrderCompoundUniqueInput = {
+export type StageInstanceWorkflowIdStageOrderIterationCompoundUniqueInput = {
   workflowId: string
   stageOrder: number
+  iteration: number
 }
 
 export type StageInstanceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   workflowId?: Prisma.SortOrder
   stageOrder?: Prisma.SortOrder
+  iteration?: Prisma.SortOrder
+  isCurrentIteration?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
   minApprovals?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
@@ -436,6 +481,7 @@ export type StageInstanceCountOrderByAggregateInput = {
 
 export type StageInstanceAvgOrderByAggregateInput = {
   stageOrder?: Prisma.SortOrder
+  iteration?: Prisma.SortOrder
   minApprovals?: Prisma.SortOrder
 }
 
@@ -443,6 +489,8 @@ export type StageInstanceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   workflowId?: Prisma.SortOrder
   stageOrder?: Prisma.SortOrder
+  iteration?: Prisma.SortOrder
+  isCurrentIteration?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
   minApprovals?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
@@ -455,6 +503,8 @@ export type StageInstanceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   workflowId?: Prisma.SortOrder
   stageOrder?: Prisma.SortOrder
+  iteration?: Prisma.SortOrder
+  isCurrentIteration?: Prisma.SortOrder
   strategy?: Prisma.SortOrder
   minApprovals?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
@@ -465,6 +515,7 @@ export type StageInstanceMinOrderByAggregateInput = {
 
 export type StageInstanceSumOrderByAggregateInput = {
   stageOrder?: Prisma.SortOrder
+  iteration?: Prisma.SortOrder
   minApprovals?: Prisma.SortOrder
 }
 
@@ -540,6 +591,8 @@ export type StageInstanceUpdateOneRequiredWithoutApprovalsNestedInput = {
 export type StageInstanceCreateWithoutWorkflowInput = {
   id?: string
   stageOrder: number
+  iteration?: number
+  isCurrentIteration?: boolean
   strategy: $Enums.StrategyType
   minApprovals?: number | null
   startedAt?: Date | string | null
@@ -552,6 +605,8 @@ export type StageInstanceCreateWithoutWorkflowInput = {
 export type StageInstanceUncheckedCreateWithoutWorkflowInput = {
   id?: string
   stageOrder: number
+  iteration?: number
+  isCurrentIteration?: boolean
   strategy: $Enums.StrategyType
   minApprovals?: number | null
   startedAt?: Date | string | null
@@ -594,6 +649,8 @@ export type StageInstanceScalarWhereInput = {
   id?: Prisma.StringFilter<"StageInstance"> | string
   workflowId?: Prisma.StringFilter<"StageInstance"> | string
   stageOrder?: Prisma.IntFilter<"StageInstance"> | number
+  iteration?: Prisma.IntFilter<"StageInstance"> | number
+  isCurrentIteration?: Prisma.BoolFilter<"StageInstance"> | boolean
   strategy?: Prisma.EnumStrategyTypeFilter<"StageInstance"> | $Enums.StrategyType
   minApprovals?: Prisma.IntNullableFilter<"StageInstance"> | number | null
   startedAt?: Prisma.DateTimeNullableFilter<"StageInstance"> | Date | string | null
@@ -605,6 +662,8 @@ export type StageInstanceScalarWhereInput = {
 export type StageInstanceCreateWithoutApprovalsInput = {
   id?: string
   stageOrder: number
+  iteration?: number
+  isCurrentIteration?: boolean
   strategy: $Enums.StrategyType
   minApprovals?: number | null
   startedAt?: Date | string | null
@@ -618,6 +677,8 @@ export type StageInstanceUncheckedCreateWithoutApprovalsInput = {
   id?: string
   workflowId: string
   stageOrder: number
+  iteration?: number
+  isCurrentIteration?: boolean
   strategy: $Enums.StrategyType
   minApprovals?: number | null
   startedAt?: Date | string | null
@@ -645,6 +706,8 @@ export type StageInstanceUpdateToOneWithWhereWithoutApprovalsInput = {
 export type StageInstanceUpdateWithoutApprovalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isCurrentIteration?: Prisma.BoolFieldUpdateOperationsInput | boolean
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -658,6 +721,8 @@ export type StageInstanceUncheckedUpdateWithoutApprovalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workflowId?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isCurrentIteration?: Prisma.BoolFieldUpdateOperationsInput | boolean
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -669,6 +734,8 @@ export type StageInstanceUncheckedUpdateWithoutApprovalsInput = {
 export type StageInstanceCreateManyWorkflowInput = {
   id?: string
   stageOrder: number
+  iteration?: number
+  isCurrentIteration?: boolean
   strategy: $Enums.StrategyType
   minApprovals?: number | null
   startedAt?: Date | string | null
@@ -680,6 +747,8 @@ export type StageInstanceCreateManyWorkflowInput = {
 export type StageInstanceUpdateWithoutWorkflowInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isCurrentIteration?: Prisma.BoolFieldUpdateOperationsInput | boolean
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -692,6 +761,8 @@ export type StageInstanceUpdateWithoutWorkflowInput = {
 export type StageInstanceUncheckedUpdateWithoutWorkflowInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isCurrentIteration?: Prisma.BoolFieldUpdateOperationsInput | boolean
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -704,6 +775,8 @@ export type StageInstanceUncheckedUpdateWithoutWorkflowInput = {
 export type StageInstanceUncheckedUpdateManyWithoutWorkflowInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isCurrentIteration?: Prisma.BoolFieldUpdateOperationsInput | boolean
   strategy?: Prisma.EnumStrategyTypeFieldUpdateOperationsInput | $Enums.StrategyType
   minApprovals?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -747,6 +820,8 @@ export type StageInstanceSelect<ExtArgs extends runtime.Types.Extensions.Interna
   id?: boolean
   workflowId?: boolean
   stageOrder?: boolean
+  iteration?: boolean
+  isCurrentIteration?: boolean
   strategy?: boolean
   minApprovals?: boolean
   startedAt?: boolean
@@ -762,6 +837,8 @@ export type StageInstanceSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   workflowId?: boolean
   stageOrder?: boolean
+  iteration?: boolean
+  isCurrentIteration?: boolean
   strategy?: boolean
   minApprovals?: boolean
   startedAt?: boolean
@@ -775,6 +852,8 @@ export type StageInstanceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   id?: boolean
   workflowId?: boolean
   stageOrder?: boolean
+  iteration?: boolean
+  isCurrentIteration?: boolean
   strategy?: boolean
   minApprovals?: boolean
   startedAt?: boolean
@@ -788,6 +867,8 @@ export type StageInstanceSelectScalar = {
   id?: boolean
   workflowId?: boolean
   stageOrder?: boolean
+  iteration?: boolean
+  isCurrentIteration?: boolean
   strategy?: boolean
   minApprovals?: boolean
   startedAt?: boolean
@@ -796,7 +877,7 @@ export type StageInstanceSelectScalar = {
   status?: boolean
 }
 
-export type StageInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workflowId" | "stageOrder" | "strategy" | "minApprovals" | "startedAt" | "dueAt" | "escalatedTo" | "status", ExtArgs["result"]["stageInstance"]>
+export type StageInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workflowId" | "stageOrder" | "iteration" | "isCurrentIteration" | "strategy" | "minApprovals" | "startedAt" | "dueAt" | "escalatedTo" | "status", ExtArgs["result"]["stageInstance"]>
 export type StageInstanceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workflow?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
   approvals?: boolean | Prisma.StageInstance$approvalsArgs<ExtArgs>
@@ -819,6 +900,8 @@ export type $StageInstancePayload<ExtArgs extends runtime.Types.Extensions.Inter
     id: string
     workflowId: string
     stageOrder: number
+    iteration: number
+    isCurrentIteration: boolean
     strategy: $Enums.StrategyType
     minApprovals: number | null
     startedAt: Date | null
@@ -1253,6 +1336,8 @@ export interface StageInstanceFieldRefs {
   readonly id: Prisma.FieldRef<"StageInstance", 'String'>
   readonly workflowId: Prisma.FieldRef<"StageInstance", 'String'>
   readonly stageOrder: Prisma.FieldRef<"StageInstance", 'Int'>
+  readonly iteration: Prisma.FieldRef<"StageInstance", 'Int'>
+  readonly isCurrentIteration: Prisma.FieldRef<"StageInstance", 'Boolean'>
   readonly strategy: Prisma.FieldRef<"StageInstance", 'StrategyType'>
   readonly minApprovals: Prisma.FieldRef<"StageInstance", 'Int'>
   readonly startedAt: Prisma.FieldRef<"StageInstance", 'DateTime'>
