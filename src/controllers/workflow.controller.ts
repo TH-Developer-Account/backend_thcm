@@ -2,30 +2,24 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../config/prisma";
 import { approveStage } from "../services/workflow.service"; // adjust path
 import { Prisma } from "../prisma/generated/prisma/client"; // for error handling
+import { budgetMap } from "../utils/contants";
 import ApiError from "../utils/apiError";
 
-const evaluateCondition = (condition: string, value: number): boolean => {
-  if (!condition) return true;
+const evaluateBudget = (
+  selectedValue: string,
+  actualValue: number,
+): boolean => {
+  const range = budgetMap[selectedValue];
 
-  const operator = condition.match(/(>=|<=|>|<|=)/)?.[0];
-  const threshold = Number(condition.replace(/(>=|<=|>|<|=)/, ""));
+  if (!range) return false;
 
-  console.log({ condition, operator, threshold, value });
+  const { min, max } = range;
 
-  switch (operator) {
-    case ">":
-      return value > threshold;
-    case "<":
-      return value < threshold;
-    case ">=":
-      return value >= threshold;
-    case "<=":
-      return value <= threshold;
-    case "=":
-      return value === threshold;
-    default:
-      return false;
+  if (max === null) {
+    return actualValue >= min;
   }
+
+  return actualValue >= min && actualValue <= max;
 };
 
 export const assignWorkflowController = async (
@@ -68,10 +62,7 @@ export const assignWorkflowController = async (
 
     // 2️⃣ Filter templates based on metaData_1 condition
     const matchedTemplate = templates.find((template) => {
-      const result = evaluateCondition(
-        template.metaData_1 || "",
-        Number(budget),
-      );
+      const result = evaluateBudget(template.metaData_1 || "", Number(budget));
       return result;
     });
 

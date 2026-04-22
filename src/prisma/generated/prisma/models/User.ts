@@ -233,6 +233,7 @@ export type UserWhereInput = {
   approvals?: Prisma.ApprovalListRelationFilter
   templateApprovals?: Prisma.TemplateApproverListRelationFilter
   workFlowUsers?: Prisma.WorkFlowTemplateUserListRelationFilter
+  comments?: Prisma.CommentListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -257,6 +258,7 @@ export type UserOrderByWithRelationInput = {
   approvals?: Prisma.ApprovalOrderByRelationAggregateInput
   templateApprovals?: Prisma.TemplateApproverOrderByRelationAggregateInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserOrderByRelationAggregateInput
+  comments?: Prisma.CommentOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -284,6 +286,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   approvals?: Prisma.ApprovalListRelationFilter
   templateApprovals?: Prisma.TemplateApproverListRelationFilter
   workFlowUsers?: Prisma.WorkFlowTemplateUserListRelationFilter
+  comments?: Prisma.CommentListRelationFilter
 }, "id" | "email" | "phone_number">
 
 export type UserOrderByWithAggregationInput = {
@@ -340,6 +343,7 @@ export type UserCreateInput = {
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -364,6 +368,7 @@ export type UserUncheckedCreateInput = {
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -388,6 +393,7 @@ export type UserUpdateInput = {
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -412,6 +418,7 @@ export type UserUncheckedUpdateInput = {
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -663,6 +670,20 @@ export type UserUpdateOneRequiredWithoutWorkFlowUsersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWorkFlowUsersInput, Prisma.UserUpdateWithoutWorkFlowUsersInput>, Prisma.UserUncheckedUpdateWithoutWorkFlowUsersInput>
 }
 
+export type UserCreateNestedOneWithoutCommentsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommentsInput, Prisma.UserUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCommentsInput, Prisma.UserUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCommentsInput
+  upsert?: Prisma.UserUpsertWithoutCommentsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCommentsInput, Prisma.UserUpdateWithoutCommentsInput>, Prisma.UserUncheckedUpdateWithoutCommentsInput>
+}
+
 export type UserCreateWithoutPassword_reset_tokensInput = {
   id?: string
   first_name: string
@@ -684,6 +705,7 @@ export type UserCreateWithoutPassword_reset_tokensInput = {
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
@@ -707,6 +729,7 @@ export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPassword_reset_tokensInput = {
@@ -746,6 +769,7 @@ export type UserUpdateWithoutPassword_reset_tokensInput = {
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
@@ -769,6 +793,7 @@ export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRefresh_tokensInput = {
@@ -792,6 +817,7 @@ export type UserCreateWithoutRefresh_tokensInput = {
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefresh_tokensInput = {
@@ -815,6 +841,7 @@ export type UserUncheckedCreateWithoutRefresh_tokensInput = {
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefresh_tokensInput = {
@@ -854,6 +881,7 @@ export type UserUpdateWithoutRefresh_tokensInput = {
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
@@ -877,6 +905,7 @@ export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutWorkspaceUsersInput = {
@@ -900,6 +929,7 @@ export type UserCreateWithoutWorkspaceUsersInput = {
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
@@ -923,6 +953,7 @@ export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWorkspaceUsersInput = {
@@ -962,6 +993,7 @@ export type UserUpdateWithoutWorkspaceUsersInput = {
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
@@ -985,6 +1017,7 @@ export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUserProfilesInput = {
@@ -1008,6 +1041,7 @@ export type UserCreateWithoutUserProfilesInput = {
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUserProfilesInput = {
@@ -1031,6 +1065,7 @@ export type UserUncheckedCreateWithoutUserProfilesInput = {
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUserProfilesInput = {
@@ -1070,6 +1105,7 @@ export type UserUpdateWithoutUserProfilesInput = {
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserProfilesInput = {
@@ -1093,6 +1129,7 @@ export type UserUncheckedUpdateWithoutUserProfilesInput = {
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreated_event_proposalsInput = {
@@ -1116,6 +1153,7 @@ export type UserCreateWithoutCreated_event_proposalsInput = {
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
@@ -1139,6 +1177,7 @@ export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreated_event_proposalsInput = {
@@ -1167,6 +1206,7 @@ export type UserCreateWithoutUpdated_event_proposalsInput = {
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
@@ -1190,6 +1230,7 @@ export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUpdated_event_proposalsInput = {
@@ -1229,6 +1270,7 @@ export type UserUpdateWithoutCreated_event_proposalsInput = {
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
@@ -1252,6 +1294,7 @@ export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutUpdated_event_proposalsInput = {
@@ -1286,6 +1329,7 @@ export type UserUpdateWithoutUpdated_event_proposalsInput = {
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
@@ -1309,6 +1353,7 @@ export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreated_workflowInput = {
@@ -1332,6 +1377,7 @@ export type UserCreateWithoutCreated_workflowInput = {
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreated_workflowInput = {
@@ -1355,6 +1401,7 @@ export type UserUncheckedCreateWithoutCreated_workflowInput = {
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreated_workflowInput = {
@@ -1383,6 +1430,7 @@ export type UserCreateWithoutUpdated_workflowInput = {
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUpdated_workflowInput = {
@@ -1406,6 +1454,7 @@ export type UserUncheckedCreateWithoutUpdated_workflowInput = {
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUpdated_workflowInput = {
@@ -1445,6 +1494,7 @@ export type UserUpdateWithoutCreated_workflowInput = {
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreated_workflowInput = {
@@ -1468,6 +1518,7 @@ export type UserUncheckedUpdateWithoutCreated_workflowInput = {
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutUpdated_workflowInput = {
@@ -1502,6 +1553,7 @@ export type UserUpdateWithoutUpdated_workflowInput = {
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
@@ -1525,6 +1577,7 @@ export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTemplateApprovalsInput = {
@@ -1548,6 +1601,7 @@ export type UserCreateWithoutTemplateApprovalsInput = {
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
@@ -1571,6 +1625,7 @@ export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTemplateApprovalsInput = {
@@ -1610,6 +1665,7 @@ export type UserUpdateWithoutTemplateApprovalsInput = {
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
@@ -1633,6 +1689,7 @@ export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutApprovalsInput = {
@@ -1656,6 +1713,7 @@ export type UserCreateWithoutApprovalsInput = {
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutApprovalsInput = {
@@ -1679,6 +1737,7 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutApprovalsInput = {
@@ -1718,6 +1777,7 @@ export type UserUpdateWithoutApprovalsInput = {
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovalsInput = {
@@ -1741,6 +1801,7 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutWorkFlowUsersInput = {
@@ -1764,6 +1825,7 @@ export type UserCreateWithoutWorkFlowUsersInput = {
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
@@ -1787,6 +1849,7 @@ export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWorkFlowUsersInput = {
@@ -1826,6 +1889,7 @@ export type UserUpdateWithoutWorkFlowUsersInput = {
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
@@ -1849,6 +1913,119 @@ export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCommentsInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCommentsInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCommentsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommentsInput, Prisma.UserUncheckedCreateWithoutCommentsInput>
+}
+
+export type UserUpsertWithoutCommentsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCommentsInput, Prisma.UserUncheckedUpdateWithoutCommentsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCommentsInput, Prisma.UserUncheckedCreateWithoutCommentsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCommentsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCommentsInput, Prisma.UserUncheckedUpdateWithoutCommentsInput>
+}
+
+export type UserUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1868,6 +2045,7 @@ export type UserCountOutputType = {
   approvals: number
   templateApprovals: number
   workFlowUsers: number
+  comments: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1882,6 +2060,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   approvals?: boolean | UserCountOutputTypeCountApprovalsArgs
   templateApprovals?: boolean | UserCountOutputTypeCountTemplateApprovalsArgs
   workFlowUsers?: boolean | UserCountOutputTypeCountWorkFlowUsersArgs
+  comments?: boolean | UserCountOutputTypeCountCommentsArgs
 }
 
 /**
@@ -1971,6 +2150,13 @@ export type UserCountOutputTypeCountWorkFlowUsersArgs<ExtArgs extends runtime.Ty
   where?: Prisma.WorkFlowTemplateUserWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1994,6 +2180,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   approvals?: boolean | Prisma.User$approvalsArgs<ExtArgs>
   templateApprovals?: boolean | Prisma.User$templateApprovalsArgs<ExtArgs>
   workFlowUsers?: boolean | Prisma.User$workFlowUsersArgs<ExtArgs>
+  comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2049,6 +2236,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   approvals?: boolean | Prisma.User$approvalsArgs<ExtArgs>
   templateApprovals?: boolean | Prisma.User$templateApprovalsArgs<ExtArgs>
   workFlowUsers?: boolean | Prisma.User$workFlowUsersArgs<ExtArgs>
+  comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2068,6 +2256,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     approvals: Prisma.$ApprovalPayload<ExtArgs>[]
     templateApprovals: Prisma.$TemplateApproverPayload<ExtArgs>[]
     workFlowUsers: Prisma.$WorkFlowTemplateUserPayload<ExtArgs>[]
+    comments: Prisma.$CommentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2485,6 +2674,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   approvals<T extends Prisma.User$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   templateApprovals<T extends Prisma.User$templateApprovalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$templateApprovalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TemplateApproverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workFlowUsers<T extends Prisma.User$workFlowUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workFlowUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkFlowTemplateUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3173,6 +3363,30 @@ export type User$workFlowUsersArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.WorkFlowTemplateUserScalarFieldEnum | Prisma.WorkFlowTemplateUserScalarFieldEnum[]
+}
+
+/**
+ * User.comments
+ */
+export type User$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comment
+   */
+  select?: Prisma.CommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comment
+   */
+  omit?: Prisma.CommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentInclude<ExtArgs> | null
+  where?: Prisma.CommentWhereInput
+  orderBy?: Prisma.CommentOrderByWithRelationInput | Prisma.CommentOrderByWithRelationInput[]
+  cursor?: Prisma.CommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
 }
 
 /**

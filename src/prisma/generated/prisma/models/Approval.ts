@@ -192,6 +192,7 @@ export type ApprovalWhereInput = {
   reason?: Prisma.StringNullableFilter<"Approval"> | string | null
   stage?: Prisma.XOR<Prisma.StageInstanceScalarRelationFilter, Prisma.StageInstanceWhereInput>
   approver?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  comments?: Prisma.CommentListRelationFilter
 }
 
 export type ApprovalOrderByWithRelationInput = {
@@ -203,6 +204,7 @@ export type ApprovalOrderByWithRelationInput = {
   reason?: Prisma.SortOrderInput | Prisma.SortOrder
   stage?: Prisma.StageInstanceOrderByWithRelationInput
   approver?: Prisma.UserOrderByWithRelationInput
+  comments?: Prisma.CommentOrderByRelationAggregateInput
 }
 
 export type ApprovalWhereUniqueInput = Prisma.AtLeast<{
@@ -218,6 +220,7 @@ export type ApprovalWhereUniqueInput = Prisma.AtLeast<{
   reason?: Prisma.StringNullableFilter<"Approval"> | string | null
   stage?: Prisma.XOR<Prisma.StageInstanceScalarRelationFilter, Prisma.StageInstanceWhereInput>
   approver?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  comments?: Prisma.CommentListRelationFilter
 }, "id" | "stageId_approverId">
 
 export type ApprovalOrderByWithAggregationInput = {
@@ -251,6 +254,7 @@ export type ApprovalCreateInput = {
   reason?: string | null
   stage: Prisma.StageInstanceCreateNestedOneWithoutApprovalsInput
   approver: Prisma.UserCreateNestedOneWithoutApprovalsInput
+  comments?: Prisma.CommentCreateNestedManyWithoutApprovalInput
 }
 
 export type ApprovalUncheckedCreateInput = {
@@ -260,6 +264,7 @@ export type ApprovalUncheckedCreateInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutApprovalInput
 }
 
 export type ApprovalUpdateInput = {
@@ -269,6 +274,7 @@ export type ApprovalUpdateInput = {
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StageInstanceUpdateOneRequiredWithoutApprovalsNestedInput
   approver?: Prisma.UserUpdateOneRequiredWithoutApprovalsNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutApprovalNestedInput
 }
 
 export type ApprovalUncheckedUpdateInput = {
@@ -278,6 +284,7 @@ export type ApprovalUncheckedUpdateInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutApprovalNestedInput
 }
 
 export type ApprovalCreateManyInput = {
@@ -345,6 +352,11 @@ export type ApprovalMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   actedAt?: Prisma.SortOrder
   reason?: Prisma.SortOrder
+}
+
+export type ApprovalScalarRelationFilter = {
+  is?: Prisma.ApprovalWhereInput
+  isNot?: Prisma.ApprovalWhereInput
 }
 
 export type ApprovalCreateNestedManyWithoutApproverInput = {
@@ -435,12 +447,27 @@ export type EnumApprovalStatusFieldUpdateOperationsInput = {
   set?: $Enums.ApprovalStatus
 }
 
+export type ApprovalCreateNestedOneWithoutCommentsInput = {
+  create?: Prisma.XOR<Prisma.ApprovalCreateWithoutCommentsInput, Prisma.ApprovalUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.ApprovalCreateOrConnectWithoutCommentsInput
+  connect?: Prisma.ApprovalWhereUniqueInput
+}
+
+export type ApprovalUpdateOneRequiredWithoutCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ApprovalCreateWithoutCommentsInput, Prisma.ApprovalUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.ApprovalCreateOrConnectWithoutCommentsInput
+  upsert?: Prisma.ApprovalUpsertWithoutCommentsInput
+  connect?: Prisma.ApprovalWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ApprovalUpdateToOneWithWhereWithoutCommentsInput, Prisma.ApprovalUpdateWithoutCommentsInput>, Prisma.ApprovalUncheckedUpdateWithoutCommentsInput>
+}
+
 export type ApprovalCreateWithoutApproverInput = {
   id?: string
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
   stage: Prisma.StageInstanceCreateNestedOneWithoutApprovalsInput
+  comments?: Prisma.CommentCreateNestedManyWithoutApprovalInput
 }
 
 export type ApprovalUncheckedCreateWithoutApproverInput = {
@@ -449,6 +476,7 @@ export type ApprovalUncheckedCreateWithoutApproverInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutApprovalInput
 }
 
 export type ApprovalCreateOrConnectWithoutApproverInput = {
@@ -495,6 +523,7 @@ export type ApprovalCreateWithoutStageInput = {
   actedAt?: Date | string | null
   reason?: string | null
   approver: Prisma.UserCreateNestedOneWithoutApprovalsInput
+  comments?: Prisma.CommentCreateNestedManyWithoutApprovalInput
 }
 
 export type ApprovalUncheckedCreateWithoutStageInput = {
@@ -503,6 +532,7 @@ export type ApprovalUncheckedCreateWithoutStageInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutApprovalInput
 }
 
 export type ApprovalCreateOrConnectWithoutStageInput = {
@@ -531,6 +561,58 @@ export type ApprovalUpdateManyWithWhereWithoutStageInput = {
   data: Prisma.XOR<Prisma.ApprovalUpdateManyMutationInput, Prisma.ApprovalUncheckedUpdateManyWithoutStageInput>
 }
 
+export type ApprovalCreateWithoutCommentsInput = {
+  id?: string
+  status?: $Enums.ApprovalStatus
+  actedAt?: Date | string | null
+  reason?: string | null
+  stage: Prisma.StageInstanceCreateNestedOneWithoutApprovalsInput
+  approver: Prisma.UserCreateNestedOneWithoutApprovalsInput
+}
+
+export type ApprovalUncheckedCreateWithoutCommentsInput = {
+  id?: string
+  stageId: string
+  approverId: string
+  status?: $Enums.ApprovalStatus
+  actedAt?: Date | string | null
+  reason?: string | null
+}
+
+export type ApprovalCreateOrConnectWithoutCommentsInput = {
+  where: Prisma.ApprovalWhereUniqueInput
+  create: Prisma.XOR<Prisma.ApprovalCreateWithoutCommentsInput, Prisma.ApprovalUncheckedCreateWithoutCommentsInput>
+}
+
+export type ApprovalUpsertWithoutCommentsInput = {
+  update: Prisma.XOR<Prisma.ApprovalUpdateWithoutCommentsInput, Prisma.ApprovalUncheckedUpdateWithoutCommentsInput>
+  create: Prisma.XOR<Prisma.ApprovalCreateWithoutCommentsInput, Prisma.ApprovalUncheckedCreateWithoutCommentsInput>
+  where?: Prisma.ApprovalWhereInput
+}
+
+export type ApprovalUpdateToOneWithWhereWithoutCommentsInput = {
+  where?: Prisma.ApprovalWhereInput
+  data: Prisma.XOR<Prisma.ApprovalUpdateWithoutCommentsInput, Prisma.ApprovalUncheckedUpdateWithoutCommentsInput>
+}
+
+export type ApprovalUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+  actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stage?: Prisma.StageInstanceUpdateOneRequiredWithoutApprovalsNestedInput
+  approver?: Prisma.UserUpdateOneRequiredWithoutApprovalsNestedInput
+}
+
+export type ApprovalUncheckedUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  stageId?: Prisma.StringFieldUpdateOperationsInput | string
+  approverId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+  actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
 export type ApprovalCreateManyApproverInput = {
   id?: string
   stageId: string
@@ -545,6 +627,7 @@ export type ApprovalUpdateWithoutApproverInput = {
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StageInstanceUpdateOneRequiredWithoutApprovalsNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutApprovalNestedInput
 }
 
 export type ApprovalUncheckedUpdateWithoutApproverInput = {
@@ -553,6 +636,7 @@ export type ApprovalUncheckedUpdateWithoutApproverInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutApprovalNestedInput
 }
 
 export type ApprovalUncheckedUpdateManyWithoutApproverInput = {
@@ -577,6 +661,7 @@ export type ApprovalUpdateWithoutStageInput = {
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   approver?: Prisma.UserUpdateOneRequiredWithoutApprovalsNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutApprovalNestedInput
 }
 
 export type ApprovalUncheckedUpdateWithoutStageInput = {
@@ -585,6 +670,7 @@ export type ApprovalUncheckedUpdateWithoutStageInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutApprovalNestedInput
 }
 
 export type ApprovalUncheckedUpdateManyWithoutStageInput = {
@@ -596,6 +682,35 @@ export type ApprovalUncheckedUpdateManyWithoutStageInput = {
 }
 
 
+/**
+ * Count Type ApprovalCountOutputType
+ */
+
+export type ApprovalCountOutputType = {
+  comments: number
+}
+
+export type ApprovalCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  comments?: boolean | ApprovalCountOutputTypeCountCommentsArgs
+}
+
+/**
+ * ApprovalCountOutputType without action
+ */
+export type ApprovalCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ApprovalCountOutputType
+   */
+  select?: Prisma.ApprovalCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ApprovalCountOutputType without action
+ */
+export type ApprovalCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentWhereInput
+}
+
 
 export type ApprovalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -606,6 +721,8 @@ export type ApprovalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   reason?: boolean
   stage?: boolean | Prisma.StageInstanceDefaultArgs<ExtArgs>
   approver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  comments?: boolean | Prisma.Approval$commentsArgs<ExtArgs>
+  _count?: boolean | Prisma.ApprovalCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["approval"]>
 
 export type ApprovalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -643,6 +760,8 @@ export type ApprovalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type ApprovalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   stage?: boolean | Prisma.StageInstanceDefaultArgs<ExtArgs>
   approver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  comments?: boolean | Prisma.Approval$commentsArgs<ExtArgs>
+  _count?: boolean | Prisma.ApprovalCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ApprovalIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   stage?: boolean | Prisma.StageInstanceDefaultArgs<ExtArgs>
@@ -658,6 +777,7 @@ export type $ApprovalPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     stage: Prisma.$StageInstancePayload<ExtArgs>
     approver: Prisma.$UserPayload<ExtArgs>
+    comments: Prisma.$CommentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1062,6 +1182,7 @@ export interface Prisma__ApprovalClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   stage<T extends Prisma.StageInstanceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StageInstanceDefaultArgs<ExtArgs>>): Prisma.Prisma__StageInstanceClient<runtime.Types.Result.GetResult<Prisma.$StageInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   approver<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  comments<T extends Prisma.Approval$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Approval$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1490,6 +1611,30 @@ export type ApprovalDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Approvals to delete.
    */
   limit?: number
+}
+
+/**
+ * Approval.comments
+ */
+export type Approval$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comment
+   */
+  select?: Prisma.CommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comment
+   */
+  omit?: Prisma.CommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentInclude<ExtArgs> | null
+  where?: Prisma.CommentWhereInput
+  orderBy?: Prisma.CommentOrderByWithRelationInput | Prisma.CommentOrderByWithRelationInput[]
+  cursor?: Prisma.CommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
 }
 
 /**

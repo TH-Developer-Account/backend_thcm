@@ -59,3 +59,11 @@ export function formatProfile(profile: any) {
     })),
   };
 }
+
+export const budgetMap: Record<string, { min: number; max: number | null }> = {
+  below_20k: { min: 0, max: 20000 },
+  "20k_3l": { min: 20000, max: 300000 },
+  "3l_6l": { min: 300000, max: 600000 },
+  "6l_10l": { min: 600000, max: 1000000 },
+  above_10l: { min: 1000000, max: null },
+};

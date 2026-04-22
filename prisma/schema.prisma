@@ -88,6 +88,7 @@ model User {
   approvals Approval[]
   templateApprovals TemplateApprover[]
   workFlowUsers WorkFlowTemplateUser[]
+  comments Comment[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -434,6 +435,7 @@ model Approval {
 
   stage    StageInstance @relation(fields: [stageId], references: [id])
   approver User          @relation(fields: [approverId], references: [id])
+  comments     Comment[]
 
   @@unique([stageId, approverId])
 }
@@ -604,4 +606,19 @@ model LineItem {
 
   @@index([epfId])
   @@index([crfId])
+}
+
+model Comment {
+  id          String   @id @default(uuid())
+  message     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  approvalId  String
+  type        String @default("COMMENT")
+  user        User     @relation(fields: [userId], references: [id])
+  approval    Approval @relation(fields: [approvalId], references: [id], onDelete: Cascade)
+
+  @@index([approvalId])
+  @@index([userId])
 }
