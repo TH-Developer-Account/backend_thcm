@@ -2,6 +2,7 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
+import { epcFullInfoSelect } from "../utils/contants";
 import { searchEventProposals } from "../helpers/searchEventProposal.helper";
 import { createEventProposalWithWorkflow } from "../services/workflow.service";
 
@@ -159,47 +160,7 @@ export const getEventProposalById = async (
     const epc = await prisma.eventProposal.findUnique({
       where: { id },
       include: {
-        department: true,
-        vertical: true,
-        region: true,
-        branch: true,
-        budget_master: true,
-        event_name: true,
-        epf: {
-          include: {
-            lineItems: {
-              include: {
-                product: true, // productMaster
-              },
-            },
-          },
-        },
-        crf: {
-          include: {
-            lineItems: {
-              include: {
-                product: true,
-              },
-            },
-          },
-        },
-        workflow: {
-          include: {
-            template: true,
-            stages: {
-              include: {
-                approvals: {
-                  include: {
-                    approver: true,
-                  },
-                },
-              },
-              orderBy: {
-                stageOrder: "asc",
-              },
-            },
-          },
-        },
+        ...epcFullInfoSelect,
       },
     });
 

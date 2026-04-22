@@ -67,3 +67,125 @@ export const budgetMap: Record<string, { min: number; max: number | null }> = {
   "6l_10l": { min: 600000, max: 1000000 },
   above_10l: { min: 1000000, max: null },
 };
+
+export const epcFullInfoSelect = {
+  department: {
+    select: {
+      id: true,
+      department_name: true,
+    },
+  },
+  vertical: {
+    select: {
+      id: true,
+      name: true,
+      code: true,
+    },
+  },
+  region: {
+    select: {
+      id: true,
+      region_name: true,
+    },
+  },
+  branch: {
+    select: {
+      id: true,
+      branch_name: true,
+    },
+  },
+  event_name: {
+    select: {
+      id: true,
+      title: true,
+    },
+  },
+  budget_master: {
+    select: {
+      id: true,
+      value: true,
+    },
+  },
+  epf: {
+    select: {
+      id: true,
+      total_budget: true,
+      expected_revenue: true,
+      lineItems: {
+        select: {
+          id: true,
+          quantity: true,
+          amount: true,
+          product: {
+            select: {
+              id: true,
+              partNumber: true,
+              name: true,
+              description: true,
+            },
+          },
+        },
+      },
+    },
+  },
+  crf: {
+    select: {
+      id: true,
+      lineItems: {
+        select: {
+          id: true,
+          quantity: true,
+          amount: true,
+          product: {
+            select: {
+              id: true,
+              partNumber: true,
+              name: true,
+              description: true,
+            },
+          },
+        },
+      },
+    },
+  },
+  workflow: {
+    select: {
+      id: true,
+      templateId: true,
+      status: true,
+      currentStage: true,
+      template: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          metaData_1: true,
+        },
+      },
+      stages: {
+        select: {
+          id: true,
+          stageOrder: true,
+          strategy: true,
+          minApprovals: true,
+          status: true,
+          approvals: {
+            select: {
+              id: true,
+              status: true,
+              approver: {
+                select: {
+                  id: true,
+                  first_name: true,
+                  last_name: true,
+                  email: true,
+                  phone_number: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+} as const;
