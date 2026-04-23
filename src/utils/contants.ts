@@ -109,8 +109,16 @@ export const epcFullInfoSelect = {
   epf: {
     select: {
       id: true,
-      total_budget: true,
-      expected_revenue: true,
+      externalParticipants: true,
+      internalParticipants: true,
+      eventBudget: true,
+      annualBudget: true,
+      availableBudget: true,
+      dealerName: true,
+      dealerPercent: true,
+      dealerShare: true,
+      tataHitachiPoAmount: true,
+      status: true,
       lineItems: {
         select: {
           id: true,
