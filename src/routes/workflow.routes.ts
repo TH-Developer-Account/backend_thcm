@@ -13,8 +13,8 @@ import { firstAuthRequestPerDay } from "../middleware/dailyActiveUsers.middlewar
 
 const router = Router();
 
-// router.use(requireAuth); // sets req.user
-// router.use(firstAuthRequestPerDay); // tracks DAU
+router.use(requireAuth); // sets req.user
+router.use(firstAuthRequestPerDay); // tracks DAU
 
 router.post("/stages/:stageId/approve", asyncHandler(approveStageController));
 router.post("/assign-workflow", asyncHandler(assignWorkflowController));
