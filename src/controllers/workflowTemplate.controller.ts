@@ -3,58 +3,50 @@ import { prisma } from "../config/prisma";
 import * as service from "../services/template.service";
 import ApiError from "../utils/apiError";
 
-// payload to be sent
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /workflow-templates
+//
+// Creates a new WorkflowTemplate with its stages and approvers.
+//
+// Expected payload:
 // {
 //   "name": "Standard EPC Approval",
 //   "workspaceId": "workspace-uuid",
-//   "regionId": "region-uuid",
-
-//   "minBudget": 0,
-//   "maxBudget": 1000000,
-
-//   "priority": 1,
-//   "isActive": true,
-
+//   "appId": "app-uuid",
+//   "metaData_1": "0-1000000",   ← budget range key (used by evaluateBudget)
+//   "metaData_2": "",
+//   "metaData_3": "",
 //   "stages": [
-//     {
-//       "stageOrder": 1,
-//       "strategy": "ANY",
-//       "approverIds": ["user-uuid-1", "user-uuid-2"]
-//     },
-//     {
-//       "stageOrder": 2,
-//       "strategy": "ALL",
-//       "approverIds": ["user-uuid-3", "user-uuid-4"]
-//     },
-//     {
-//       "stageOrder": 3,
-//       "strategy": "QUORUM",
-//       "minApprovals": 2,
-//       "approverIds": ["user-uuid-5", "user-uuid-6", "user-uuid-7"]
-//     }
+//     { "stageOrder": 1, "strategy": "ANY",  "approverIds": ["u1", "u2"] },
+//     { "stageOrder": 2, "strategy": "ALL",  "approverIds": ["u3"] },
+//     { "stageOrder": 3, "strategy": "SOME", "minApprovals": 2, "approverIds": ["u4","u5","u6"] }
 //   ]
 // }
+//
+// No schema changes needed here — WorkflowTemplate itself is unchanged.
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const createTemplateController = async (req: Request, res: Response) => {
   try {
     const userId = req?.user?.id;
-
     if (!userId) throw new ApiError(401, "Unauthorized");
 
     const template = await service.createWorkflowTemplate(req.body, userId);
 
-    res.status(201).json({
-      success: true,
-      data: template,
-    });
+    res.status(201).json({ success: true, data: template });
   } catch (err: any) {
-    res.status(500).json({
+    res.status(err instanceof ApiError ? err.statusCode : 500).json({
       success: false,
       message: err.message,
     });
   }
 };
 
-// controllers/workflowTemplate.controller.ts
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /workflow-templates
+//
+// Paginated list of templates for a workspace.
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const getTemplates = async (req: Request, res: Response) => {
   try {
@@ -80,45 +72,49 @@ export const getTemplates = async (req: Request, res: Response) => {
       search,
     });
 
-    res.json(result);
+    res.status(200).json(result);
   } catch (err: any) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ success: false, error: err.message });
   }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /workflow-templates/:templateId
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const getTemplateById = async (req: Request, res: Response) => {
   try {
     const { templateId } = req.params;
+    if (!templateId) throw new ApiError(400, "templateId is required");
 
     const result = await service.getTemplateById(templateId as string);
-
-    res.json(result);
+    res.status(200).json({ success: true, data: result });
   } catch (err: any) {
-    res.status(404).json({ error: err.message });
+    res
+      .status(err instanceof ApiError ? err.statusCode : 404)
+      .json({ success: false, error: err.message });
   }
 };
 
-// Payload to be sent
+// ─────────────────────────────────────────────────────────────────────────────
+// PATCH /workflow-templates/:templateId
+//
+// Updates a template's metadata, stages, and approvers.
+//
+// IMPORTANT: Editing a template does NOT retroactively affect WorkflowInstances
+// that were already created from it. Runtime instances (StageInstance,
+// Approval) snapshot the template at creation time, so live workflows are safe.
+//
+// Expected payload:
 // {
 //   "name": "Updated EPC Flow",
-//   "regionId": "region-uuid",
-//   "minBudget": 0,
-//   "maxBudget": 2000000,
-//   "priority": 2,
-//   "isActive": true,
+//   "metaData_1": "0-2000000",
 //   "stages": [
-//     {
-//       "stageOrder": 1,
-//       "strategy": "ANY",
-//       "approverIds": ["user1", "user2"]
-//     },
-//     {
-//       "stageOrder": 2,
-//       "strategy": "ALL",
-//       "approverIds": ["user3"]
-//     }
+//     { "stageOrder": 1, "strategy": "ANY",  "approverIds": ["u1","u2"] },
+//     { "stageOrder": 2, "strategy": "ALL",  "approverIds": ["u3"] }
 //   ]
 // }
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const updateTemplate = async (req: Request, res: Response) => {
   try {
@@ -126,7 +122,19 @@ export const updateTemplate = async (req: Request, res: Response) => {
     const payload = req.body;
     const userId = req?.user?.id;
 
+    if (!templateId) throw new ApiError(400, "templateId is required");
     if (!userId) throw new ApiError(401, "Unauthorized");
+
+    // Guard: warn if there are active IN_PROGRESS workflow instances using
+    // this template. The update is still allowed (instances are independent)
+    // but this helps surface potential confusion.
+    const activeCount = await prisma.workflowInstance.count({
+      where: {
+        templateId: templateId as string,
+        isActive: true,
+        status: "IN_PROGRESS",
+      },
+    });
 
     const result = await service.updateTemplate(
       templateId as string,
@@ -134,34 +142,74 @@ export const updateTemplate = async (req: Request, res: Response) => {
       userId,
     );
 
-    res.json(result);
+    res.status(200).json({
+      success: true,
+      data: result,
+      ...(activeCount > 0 && {
+        warning:
+          `This template has ${activeCount} active IN_PROGRESS workflow(s). ` +
+          "They are unaffected by this change (they snapshot the template at creation time), " +
+          "but new workflows created from this template will use the updated configuration.",
+      }),
+    });
   } catch (err: any) {
-    res.status(400).json({ error: err.message });
+    res
+      .status(err instanceof ApiError ? err.statusCode : 400)
+      .json({ success: false, error: err.message });
   }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DELETE /workflow-templates/:templateId
+//
+// Soft-deletes (deactivates) a template by setting isActive=false.
+// Hard delete is blocked if any active WorkflowInstance references it,
+// because the runtime stages need the template for the clarify re-run
+// (it re-reads template.stages to create new StageInstances).
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const deleteTemplate = async (req: Request, res: Response) => {
   try {
     const { templateId } = req.params;
+    if (!templateId) throw new ApiError(400, "templateId is required");
+
+    // Block deletion if any active workflow still references this template.
+    // The clarifyStageController re-reads template.stages to seed new stages,
+    // so deleting the template would break any in-flight clarify flow.
+    const activeWorkflowCount = await prisma.workflowInstance.count({
+      where: {
+        templateId: templateId as string,
+        isActive: true,
+        status: "IN_PROGRESS",
+      },
+    });
+
+    if (activeWorkflowCount > 0) {
+      throw new ApiError(
+        409,
+        `Cannot delete template: ${activeWorkflowCount} active workflow(s) are currently using it. ` +
+          "Wait for them to complete or be superseded before deleting.",
+      );
+    }
 
     const result = await service.deleteTemplate(templateId as string);
-
-    res.json(result);
+    res.status(200).json({ success: true, data: result });
   } catch (err: any) {
-    res.status(400).json({ error: err.message });
+    res
+      .status(err instanceof ApiError ? err.statusCode : 400)
+      .json({ success: false, error: err.message });
   }
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PUT /workflow-templates/users
 //
-// Assigns users to a workflow template in one call.
+// Assigns (or clears) users who are allowed to manage workflows built from
+// this template (i.e. who can call /workflows/assign and /workflows/deviation).
 //
-// Payload:
-// {
-//   "templateId": "uuid",
-//   "userIds":    ["uuid-1", "uuid-2", "uuid-3"]  ← send empty array to clear all
-// }
+// Send an empty array to remove all users.
+//
+// Payload: { "templateId": "uuid", "userIds": ["uuid-1", "uuid-2"] }
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function assignUsersToWorkflow(req: Request, res: Response) {
@@ -170,29 +218,25 @@ export async function assignUsersToWorkflow(req: Request, res: Response) {
     userIds: string[];
   };
 
-  if (!templateId) {
-    throw new ApiError(400, "templateId is required");
-  }
+  if (!templateId) throw new ApiError(400, "templateId is required");
   if (!Array.isArray(userIds)) {
-    throw new ApiError(
-      400,
-      "userIds must be an array (send empty array to clear)",
-    );
+    throw new ApiError(400, "userIds must be an array (send [] to clear all)");
   }
 
   try {
     await prisma.$transaction(async (tx) => {
-      // Validate template exists and get workspaceId from it
       const template = await tx.workflowTemplate.findUnique({
         where: { id: templateId },
         select: { id: true, workspaceId: true },
       });
       if (!template) throw new ApiError(404, "Template not found");
 
-      // Validate all userIds are workspace members in one query
       if (userIds.length > 0) {
         const members = await tx.workspaceUser.findMany({
-          where: { workspaceId: template.workspaceId, userId: { in: userIds } },
+          where: {
+            workspaceId: template.workspaceId,
+            userId: { in: userIds },
+          },
           select: { userId: true },
         });
 
@@ -201,15 +245,14 @@ export async function assignUsersToWorkflow(req: Request, res: Response) {
           const missing = userIds.filter((id) => !found.has(id));
           throw new ApiError(
             404,
-            `These users are not in the workspace: ${missing.join(", ")}`,
+            `These users are not workspace members: ${missing.join(", ")}`,
           );
         }
       }
 
-      // Clear all current assignments for this template
+      // Replace all assignments atomically
       await tx.workFlowTemplateUser.deleteMany({ where: { templateId } });
 
-      // Assign new users if array is not empty
       if (userIds.length > 0) {
         await tx.workFlowTemplateUser.createMany({
           data: userIds.map((userId) => ({ templateId, userId })),
@@ -217,35 +260,33 @@ export async function assignUsersToWorkflow(req: Request, res: Response) {
       }
     });
 
-    // Fetch updated assignments to return in response
-    let assignedUsers = null;
-
-    if (userIds.length > 0) {
-      assignedUsers = await prisma.workFlowTemplateUser.findMany({
-        where: { templateId },
-        include: {
-          user: {
-            select: {
-              id: true,
-              first_name: true,
-              last_name: true,
-              email: true,
+    const assignedUsers =
+      userIds.length > 0
+        ? await prisma.workFlowTemplateUser.findMany({
+            where: { templateId },
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  first_name: true,
+                  last_name: true,
+                  email: true,
+                },
+              },
             },
-          },
-        },
-      });
-    }
+          })
+        : null;
 
     const message =
       userIds.length > 0
         ? `${userIds.length} user(s) assigned to template successfully`
-        : `All users cleared from template successfully`;
+        : "All users cleared from template successfully";
 
-    res.status(200).json({ message, users: assignedUsers });
+    res.status(200).json({ success: true, message, users: assignedUsers });
   } catch (error: any) {
     if (error instanceof ApiError) throw error;
-    console.error("assignUsersToTemplate failed:", error);
     res.status(500).json({
+      success: false,
       message: "Failed to assign users to template",
       error: error.message,
     });

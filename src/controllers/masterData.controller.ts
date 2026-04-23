@@ -4,10 +4,18 @@ import { Request, Response, NextFunction } from "express";
 import { handleCreate, handleUpdate } from "../helpers/masterData.helper";
 import ApiError from "../utils/apiError";
 
-const formatOptions = (data: any[], labelKey: string) => {
+const formatOptions = <T>(
+  data: T[],
+  config: {
+    label: (item: T) => string;
+    value?: (item: T) => string;
+    extra?: (item: T) => Record<string, any>;
+  },
+) => {
   return data.map((item) => ({
-    value: item.id,
-    label: item[labelKey],
+    value: config.value ? config.value(item) : (item as any).id,
+    label: config.label(item),
+    ...(config.extra ? config.extra(item) : {}),
   }));
 };
 
@@ -34,6 +42,7 @@ export const getMasterData = async (req: Request, res: Response) => {
         select: {
           id: true,
           department_name: true,
+          department_code: true,
         },
         // where: { status: "active" },
         orderBy: { department_name: "asc" },
@@ -45,6 +54,7 @@ export const getMasterData = async (req: Request, res: Response) => {
           id: true,
           name: true,
           departmentId: true,
+          code: true,
         },
         // where: { status: "active" },
         orderBy: { name: "asc" },
@@ -55,6 +65,7 @@ export const getMasterData = async (req: Request, res: Response) => {
         select: {
           id: true,
           region_name: true,
+          region_code: true,
         },
         orderBy: { region_name: "asc" },
       }),
@@ -64,6 +75,7 @@ export const getMasterData = async (req: Request, res: Response) => {
         select: {
           id: true,
           branch_name: true,
+          branch_code: true,
         },
         orderBy: { branch_name: "asc" },
       }),
@@ -89,10 +101,21 @@ export const getMasterData = async (req: Request, res: Response) => {
     ]);
 
     res.json({
-      departments: formatOptions(departments, "department_name"),
-      regions: formatOptions(regions, "region_name"),
-      branches: formatOptions(branches, "branch_name"),
-      eventNames: formatOptions(eventNames, "title"),
+      departments: formatOptions(departments, {
+        label: (d) => d.department_name,
+        extra: (d) => ({ code: d.department_code }),
+      }),
+      regions: formatOptions(regions, {
+        label: (r) => r.region_name,
+        extra: (r) => ({ code: r.region_code }),
+      }),
+      branches: formatOptions(branches, {
+        label: (b) => b.branch_name,
+        extra: (b) => ({ code: b.branch_code }),
+      }),
+      eventNames: formatOptions(eventNames, {
+        label: (e) => e.title,
+      }),
       budgetMasters: budgetMasters.map((b) => ({
         value: b.id,
         label: `${b.code}`,
@@ -102,6 +125,7 @@ export const getMasterData = async (req: Request, res: Response) => {
       vertical: verticals.map((b) => ({
         value: b.id,
         label: `${b.name}`,
+        code: `${b.code}`,
         department: b.departmentId,
       })),
     });

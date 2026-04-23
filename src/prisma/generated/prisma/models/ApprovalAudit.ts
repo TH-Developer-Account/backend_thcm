@@ -29,7 +29,7 @@ export type ApprovalAuditMinAggregateOutputType = {
   workflowId: string | null
   stageId: string | null
   approverId: string | null
-  action: $Enums.ApprovalStatus | null
+  action: $Enums.AuditAction | null
   reason: string | null
   createdAt: Date | null
 }
@@ -39,7 +39,7 @@ export type ApprovalAuditMaxAggregateOutputType = {
   workflowId: string | null
   stageId: string | null
   approverId: string | null
-  action: $Enums.ApprovalStatus | null
+  action: $Enums.AuditAction | null
   reason: string | null
   createdAt: Date | null
 }
@@ -164,7 +164,7 @@ export type ApprovalAuditGroupByOutputType = {
   workflowId: string
   stageId: string
   approverId: string
-  action: $Enums.ApprovalStatus
+  action: $Enums.AuditAction
   reason: string | null
   createdAt: Date
   _count: ApprovalAuditCountAggregateOutputType | null
@@ -195,7 +195,7 @@ export type ApprovalAuditWhereInput = {
   workflowId?: Prisma.StringFilter<"ApprovalAudit"> | string
   stageId?: Prisma.StringFilter<"ApprovalAudit"> | string
   approverId?: Prisma.StringFilter<"ApprovalAudit"> | string
-  action?: Prisma.EnumApprovalStatusFilter<"ApprovalAudit"> | $Enums.ApprovalStatus
+  action?: Prisma.EnumAuditActionFilter<"ApprovalAudit"> | $Enums.AuditAction
   reason?: Prisma.StringNullableFilter<"ApprovalAudit"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ApprovalAudit"> | Date | string
 }
@@ -218,7 +218,7 @@ export type ApprovalAuditWhereUniqueInput = Prisma.AtLeast<{
   workflowId?: Prisma.StringFilter<"ApprovalAudit"> | string
   stageId?: Prisma.StringFilter<"ApprovalAudit"> | string
   approverId?: Prisma.StringFilter<"ApprovalAudit"> | string
-  action?: Prisma.EnumApprovalStatusFilter<"ApprovalAudit"> | $Enums.ApprovalStatus
+  action?: Prisma.EnumAuditActionFilter<"ApprovalAudit"> | $Enums.AuditAction
   reason?: Prisma.StringNullableFilter<"ApprovalAudit"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ApprovalAudit"> | Date | string
 }, "id">
@@ -244,7 +244,7 @@ export type ApprovalAuditScalarWhereWithAggregatesInput = {
   workflowId?: Prisma.StringWithAggregatesFilter<"ApprovalAudit"> | string
   stageId?: Prisma.StringWithAggregatesFilter<"ApprovalAudit"> | string
   approverId?: Prisma.StringWithAggregatesFilter<"ApprovalAudit"> | string
-  action?: Prisma.EnumApprovalStatusWithAggregatesFilter<"ApprovalAudit"> | $Enums.ApprovalStatus
+  action?: Prisma.EnumAuditActionWithAggregatesFilter<"ApprovalAudit"> | $Enums.AuditAction
   reason?: Prisma.StringNullableWithAggregatesFilter<"ApprovalAudit"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ApprovalAudit"> | Date | string
 }
@@ -254,7 +254,7 @@ export type ApprovalAuditCreateInput = {
   workflowId: string
   stageId: string
   approverId: string
-  action: $Enums.ApprovalStatus
+  action: $Enums.AuditAction
   reason?: string | null
   createdAt?: Date | string
 }
@@ -264,7 +264,7 @@ export type ApprovalAuditUncheckedCreateInput = {
   workflowId: string
   stageId: string
   approverId: string
-  action: $Enums.ApprovalStatus
+  action: $Enums.AuditAction
   reason?: string | null
   createdAt?: Date | string
 }
@@ -274,7 +274,7 @@ export type ApprovalAuditUpdateInput = {
   workflowId?: Prisma.StringFieldUpdateOperationsInput | string
   stageId?: Prisma.StringFieldUpdateOperationsInput | string
   approverId?: Prisma.StringFieldUpdateOperationsInput | string
-  action?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+  action?: Prisma.EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -284,7 +284,7 @@ export type ApprovalAuditUncheckedUpdateInput = {
   workflowId?: Prisma.StringFieldUpdateOperationsInput | string
   stageId?: Prisma.StringFieldUpdateOperationsInput | string
   approverId?: Prisma.StringFieldUpdateOperationsInput | string
-  action?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+  action?: Prisma.EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -294,7 +294,7 @@ export type ApprovalAuditCreateManyInput = {
   workflowId: string
   stageId: string
   approverId: string
-  action: $Enums.ApprovalStatus
+  action: $Enums.AuditAction
   reason?: string | null
   createdAt?: Date | string
 }
@@ -304,7 +304,7 @@ export type ApprovalAuditUpdateManyMutationInput = {
   workflowId?: Prisma.StringFieldUpdateOperationsInput | string
   stageId?: Prisma.StringFieldUpdateOperationsInput | string
   approverId?: Prisma.StringFieldUpdateOperationsInput | string
-  action?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+  action?: Prisma.EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -314,7 +314,7 @@ export type ApprovalAuditUncheckedUpdateManyInput = {
   workflowId?: Prisma.StringFieldUpdateOperationsInput | string
   stageId?: Prisma.StringFieldUpdateOperationsInput | string
   approverId?: Prisma.StringFieldUpdateOperationsInput | string
-  action?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
+  action?: Prisma.EnumAuditActionFieldUpdateOperationsInput | $Enums.AuditAction
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -347,6 +347,10 @@ export type ApprovalAuditMinOrderByAggregateInput = {
   action?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type EnumAuditActionFieldUpdateOperationsInput = {
+  set?: $Enums.AuditAction
 }
 
 
@@ -401,7 +405,7 @@ export type $ApprovalAuditPayload<ExtArgs extends runtime.Types.Extensions.Inter
     workflowId: string
     stageId: string
     approverId: string
-    action: $Enums.ApprovalStatus
+    action: $Enums.AuditAction
     reason: string | null
     createdAt: Date
   }, ExtArgs["result"]["approvalAudit"]>
@@ -831,7 +835,7 @@ export interface ApprovalAuditFieldRefs {
   readonly workflowId: Prisma.FieldRef<"ApprovalAudit", 'String'>
   readonly stageId: Prisma.FieldRef<"ApprovalAudit", 'String'>
   readonly approverId: Prisma.FieldRef<"ApprovalAudit", 'String'>
-  readonly action: Prisma.FieldRef<"ApprovalAudit", 'ApprovalStatus'>
+  readonly action: Prisma.FieldRef<"ApprovalAudit", 'AuditAction'>
   readonly reason: Prisma.FieldRef<"ApprovalAudit", 'String'>
   readonly createdAt: Prisma.FieldRef<"ApprovalAudit", 'DateTime'>
 }

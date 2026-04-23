@@ -148,12 +148,11 @@ export const epcFullInfoSelect = {
       },
     },
   },
-  workflow: {
-    select: {
-      id: true,
-      templateId: true,
-      status: true,
-      currentStage: true,
+  workflows: {
+    where: { isActive: true },
+    orderBy: { createdAt: "desc" },
+    take: 1, // 👈 only latest active workflow
+    include: {
       template: {
         select: {
           id: true,
@@ -163,16 +162,10 @@ export const epcFullInfoSelect = {
         },
       },
       stages: {
-        select: {
-          id: true,
-          stageOrder: true,
-          strategy: true,
-          minApprovals: true,
-          status: true,
+        orderBy: { stageOrder: "asc" },
+        include: {
           approvals: {
-            select: {
-              id: true,
-              status: true,
+            include: {
               approver: {
                 select: {
                   id: true,
@@ -184,9 +177,6 @@ export const epcFullInfoSelect = {
               },
               comments: {
                 orderBy: { createdAt: "asc" },
-                select: {
-                  message: true,
-                },
               },
             },
           },
