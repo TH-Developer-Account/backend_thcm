@@ -1,3 +1,5 @@
+// backend - controller
+import axios from "axios";
 import { prisma } from "../config/prisma";
 import { ProductType } from "../prisma/generated/prisma/client";
 import { Request, Response, NextFunction } from "express";
@@ -205,5 +207,26 @@ export const getProductsByType = async (
     });
   } catch (error) {
     next(error);
+  }
+};
+
+export const getBudgetOData = async (req: Request, res: Response) => {
+  try {
+    const response = await axios.get(
+      "http://th-s4-qas-ad.tatahitachi.co.in:8001/sap/opu/odata/sap/ZBUDGET_API_SRV/ZSTR_BUDGET_APISet?$filter=BudgetCode%20eq%20%27P1SMN1380105%27&sap-client=635",
+      {
+        auth: {
+          username: "d39351",
+          password: "Publi@4321",
+        },
+        headers: {
+          Accept: "application/json",
+        },
+      },
+    );
+
+    res.json(response.data);
+  } catch (err: any) {
+    throw new ApiError(500, "Unable to fetch the budget info from s4");
   }
 };
