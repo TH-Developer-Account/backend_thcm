@@ -465,8 +465,16 @@ export type ProductMasterScalarFieldEnum = (typeof ProductMasterScalarFieldEnum)
 export const EPFScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
-  total_budget: 'total_budget',
-  expected_revenue: 'expected_revenue',
+  status: 'status',
+  externalParticipants: 'externalParticipants',
+  internalParticipants: 'internalParticipants',
+  eventBudget: 'eventBudget',
+  annualBudget: 'annualBudget',
+  availableBudget: 'availableBudget',
+  dealerName: 'dealerName',
+  dealerPercent: 'dealerPercent',
+  dealerShare: 'dealerShare',
+  tataHitachiPoAmount: 'tataHitachiPoAmount',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const

@@ -27,20 +27,40 @@ export type AggregateEPF = {
 }
 
 export type EPFAvgAggregateOutputType = {
-  total_budget: runtime.Decimal | null
-  expected_revenue: runtime.Decimal | null
+  externalParticipants: number | null
+  internalParticipants: number | null
+  eventBudget: runtime.Decimal | null
+  annualBudget: runtime.Decimal | null
+  availableBudget: runtime.Decimal | null
+  dealerPercent: number | null
+  dealerShare: number | null
+  tataHitachiPoAmount: number | null
 }
 
 export type EPFSumAggregateOutputType = {
-  total_budget: runtime.Decimal | null
-  expected_revenue: runtime.Decimal | null
+  externalParticipants: number | null
+  internalParticipants: number | null
+  eventBudget: runtime.Decimal | null
+  annualBudget: runtime.Decimal | null
+  availableBudget: runtime.Decimal | null
+  dealerPercent: number | null
+  dealerShare: number | null
+  tataHitachiPoAmount: number | null
 }
 
 export type EPFMinAggregateOutputType = {
   id: string | null
   epcId: string | null
-  total_budget: runtime.Decimal | null
-  expected_revenue: runtime.Decimal | null
+  status: string | null
+  externalParticipants: number | null
+  internalParticipants: number | null
+  eventBudget: runtime.Decimal | null
+  annualBudget: runtime.Decimal | null
+  availableBudget: runtime.Decimal | null
+  dealerName: string | null
+  dealerPercent: number | null
+  dealerShare: number | null
+  tataHitachiPoAmount: number | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -48,8 +68,16 @@ export type EPFMinAggregateOutputType = {
 export type EPFMaxAggregateOutputType = {
   id: string | null
   epcId: string | null
-  total_budget: runtime.Decimal | null
-  expected_revenue: runtime.Decimal | null
+  status: string | null
+  externalParticipants: number | null
+  internalParticipants: number | null
+  eventBudget: runtime.Decimal | null
+  annualBudget: runtime.Decimal | null
+  availableBudget: runtime.Decimal | null
+  dealerName: string | null
+  dealerPercent: number | null
+  dealerShare: number | null
+  tataHitachiPoAmount: number | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -57,8 +85,16 @@ export type EPFMaxAggregateOutputType = {
 export type EPFCountAggregateOutputType = {
   id: number
   epcId: number
-  total_budget: number
-  expected_revenue: number
+  status: number
+  externalParticipants: number
+  internalParticipants: number
+  eventBudget: number
+  annualBudget: number
+  availableBudget: number
+  dealerName: number
+  dealerPercent: number
+  dealerShare: number
+  tataHitachiPoAmount: number
   created_at: number
   updated_at: number
   _all: number
@@ -66,20 +102,40 @@ export type EPFCountAggregateOutputType = {
 
 
 export type EPFAvgAggregateInputType = {
-  total_budget?: true
-  expected_revenue?: true
+  externalParticipants?: true
+  internalParticipants?: true
+  eventBudget?: true
+  annualBudget?: true
+  availableBudget?: true
+  dealerPercent?: true
+  dealerShare?: true
+  tataHitachiPoAmount?: true
 }
 
 export type EPFSumAggregateInputType = {
-  total_budget?: true
-  expected_revenue?: true
+  externalParticipants?: true
+  internalParticipants?: true
+  eventBudget?: true
+  annualBudget?: true
+  availableBudget?: true
+  dealerPercent?: true
+  dealerShare?: true
+  tataHitachiPoAmount?: true
 }
 
 export type EPFMinAggregateInputType = {
   id?: true
   epcId?: true
-  total_budget?: true
-  expected_revenue?: true
+  status?: true
+  externalParticipants?: true
+  internalParticipants?: true
+  eventBudget?: true
+  annualBudget?: true
+  availableBudget?: true
+  dealerName?: true
+  dealerPercent?: true
+  dealerShare?: true
+  tataHitachiPoAmount?: true
   created_at?: true
   updated_at?: true
 }
@@ -87,8 +143,16 @@ export type EPFMinAggregateInputType = {
 export type EPFMaxAggregateInputType = {
   id?: true
   epcId?: true
-  total_budget?: true
-  expected_revenue?: true
+  status?: true
+  externalParticipants?: true
+  internalParticipants?: true
+  eventBudget?: true
+  annualBudget?: true
+  availableBudget?: true
+  dealerName?: true
+  dealerPercent?: true
+  dealerShare?: true
+  tataHitachiPoAmount?: true
   created_at?: true
   updated_at?: true
 }
@@ -96,8 +160,16 @@ export type EPFMaxAggregateInputType = {
 export type EPFCountAggregateInputType = {
   id?: true
   epcId?: true
-  total_budget?: true
-  expected_revenue?: true
+  status?: true
+  externalParticipants?: true
+  internalParticipants?: true
+  eventBudget?: true
+  annualBudget?: true
+  availableBudget?: true
+  dealerName?: true
+  dealerPercent?: true
+  dealerShare?: true
+  tataHitachiPoAmount?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -192,8 +264,16 @@ export type EPFGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type EPFGroupByOutputType = {
   id: string
   epcId: string
-  total_budget: runtime.Decimal | null
-  expected_revenue: runtime.Decimal | null
+  status: string | null
+  externalParticipants: number | null
+  internalParticipants: number | null
+  eventBudget: runtime.Decimal | null
+  annualBudget: runtime.Decimal | null
+  availableBudget: runtime.Decimal | null
+  dealerName: string | null
+  dealerPercent: number | null
+  dealerShare: number | null
+  tataHitachiPoAmount: number | null
   created_at: Date
   updated_at: Date
   _count: EPFCountAggregateOutputType | null
@@ -224,8 +304,16 @@ export type EPFWhereInput = {
   NOT?: Prisma.EPFWhereInput | Prisma.EPFWhereInput[]
   id?: Prisma.StringFilter<"EPF"> | string
   epcId?: Prisma.StringFilter<"EPF"> | string
-  total_budget?: Prisma.DecimalNullableFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: Prisma.DecimalNullableFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.StringNullableFilter<"EPF"> | string | null
+  externalParticipants?: Prisma.IntNullableFilter<"EPF"> | number | null
+  internalParticipants?: Prisma.IntNullableFilter<"EPF"> | number | null
+  eventBudget?: Prisma.DecimalNullableFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: Prisma.DecimalNullableFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: Prisma.DecimalNullableFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: Prisma.StringNullableFilter<"EPF"> | string | null
+  dealerPercent?: Prisma.IntNullableFilter<"EPF"> | number | null
+  dealerShare?: Prisma.IntNullableFilter<"EPF"> | number | null
+  tataHitachiPoAmount?: Prisma.IntNullableFilter<"EPF"> | number | null
   created_at?: Prisma.DateTimeFilter<"EPF"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"EPF"> | Date | string
   epc?: Prisma.XOR<Prisma.EventProposalScalarRelationFilter, Prisma.EventProposalWhereInput>
@@ -235,8 +323,16 @@ export type EPFWhereInput = {
 export type EPFOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
-  total_budget?: Prisma.SortOrderInput | Prisma.SortOrder
-  expected_revenue?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalParticipants?: Prisma.SortOrderInput | Prisma.SortOrder
+  internalParticipants?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventBudget?: Prisma.SortOrderInput | Prisma.SortOrder
+  annualBudget?: Prisma.SortOrderInput | Prisma.SortOrder
+  availableBudget?: Prisma.SortOrderInput | Prisma.SortOrder
+  dealerName?: Prisma.SortOrderInput | Prisma.SortOrder
+  dealerPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  dealerShare?: Prisma.SortOrderInput | Prisma.SortOrder
+  tataHitachiPoAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   epc?: Prisma.EventProposalOrderByWithRelationInput
@@ -249,8 +345,16 @@ export type EPFWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.EPFWhereInput | Prisma.EPFWhereInput[]
   OR?: Prisma.EPFWhereInput[]
   NOT?: Prisma.EPFWhereInput | Prisma.EPFWhereInput[]
-  total_budget?: Prisma.DecimalNullableFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: Prisma.DecimalNullableFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.StringNullableFilter<"EPF"> | string | null
+  externalParticipants?: Prisma.IntNullableFilter<"EPF"> | number | null
+  internalParticipants?: Prisma.IntNullableFilter<"EPF"> | number | null
+  eventBudget?: Prisma.DecimalNullableFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: Prisma.DecimalNullableFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: Prisma.DecimalNullableFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: Prisma.StringNullableFilter<"EPF"> | string | null
+  dealerPercent?: Prisma.IntNullableFilter<"EPF"> | number | null
+  dealerShare?: Prisma.IntNullableFilter<"EPF"> | number | null
+  tataHitachiPoAmount?: Prisma.IntNullableFilter<"EPF"> | number | null
   created_at?: Prisma.DateTimeFilter<"EPF"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"EPF"> | Date | string
   epc?: Prisma.XOR<Prisma.EventProposalScalarRelationFilter, Prisma.EventProposalWhereInput>
@@ -260,8 +364,16 @@ export type EPFWhereUniqueInput = Prisma.AtLeast<{
 export type EPFOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
-  total_budget?: Prisma.SortOrderInput | Prisma.SortOrder
-  expected_revenue?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrderInput | Prisma.SortOrder
+  externalParticipants?: Prisma.SortOrderInput | Prisma.SortOrder
+  internalParticipants?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventBudget?: Prisma.SortOrderInput | Prisma.SortOrder
+  annualBudget?: Prisma.SortOrderInput | Prisma.SortOrder
+  availableBudget?: Prisma.SortOrderInput | Prisma.SortOrder
+  dealerName?: Prisma.SortOrderInput | Prisma.SortOrder
+  dealerPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  dealerShare?: Prisma.SortOrderInput | Prisma.SortOrder
+  tataHitachiPoAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.EPFCountOrderByAggregateInput
@@ -277,16 +389,32 @@ export type EPFScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EPFScalarWhereWithAggregatesInput | Prisma.EPFScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"EPF"> | string
   epcId?: Prisma.StringWithAggregatesFilter<"EPF"> | string
-  total_budget?: Prisma.DecimalNullableWithAggregatesFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: Prisma.DecimalNullableWithAggregatesFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.StringNullableWithAggregatesFilter<"EPF"> | string | null
+  externalParticipants?: Prisma.IntNullableWithAggregatesFilter<"EPF"> | number | null
+  internalParticipants?: Prisma.IntNullableWithAggregatesFilter<"EPF"> | number | null
+  eventBudget?: Prisma.DecimalNullableWithAggregatesFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: Prisma.DecimalNullableWithAggregatesFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: Prisma.DecimalNullableWithAggregatesFilter<"EPF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: Prisma.StringNullableWithAggregatesFilter<"EPF"> | string | null
+  dealerPercent?: Prisma.IntNullableWithAggregatesFilter<"EPF"> | number | null
+  dealerShare?: Prisma.IntNullableWithAggregatesFilter<"EPF"> | number | null
+  tataHitachiPoAmount?: Prisma.IntNullableWithAggregatesFilter<"EPF"> | number | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"EPF"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"EPF"> | Date | string
 }
 
 export type EPFCreateInput = {
   id?: string
-  total_budget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: string | null
+  externalParticipants?: number | null
+  internalParticipants?: number | null
+  eventBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: string | null
+  dealerPercent?: number | null
+  dealerShare?: number | null
+  tataHitachiPoAmount?: number | null
   created_at?: Date | string
   updated_at?: Date | string
   epc: Prisma.EventProposalCreateNestedOneWithoutEpfInput
@@ -296,8 +424,16 @@ export type EPFCreateInput = {
 export type EPFUncheckedCreateInput = {
   id?: string
   epcId: string
-  total_budget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: string | null
+  externalParticipants?: number | null
+  internalParticipants?: number | null
+  eventBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: string | null
+  dealerPercent?: number | null
+  dealerShare?: number | null
+  tataHitachiPoAmount?: number | null
   created_at?: Date | string
   updated_at?: Date | string
   lineItems?: Prisma.LineItemUncheckedCreateNestedManyWithoutEpfInput
@@ -305,8 +441,16 @@ export type EPFUncheckedCreateInput = {
 
 export type EPFUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  internalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  eventBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealerPercent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dealerShare?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tataHitachiPoAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epc?: Prisma.EventProposalUpdateOneRequiredWithoutEpfNestedInput
@@ -316,8 +460,16 @@ export type EPFUpdateInput = {
 export type EPFUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epcId?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  internalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  eventBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealerPercent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dealerShare?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tataHitachiPoAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.LineItemUncheckedUpdateManyWithoutEpfNestedInput
@@ -326,16 +478,32 @@ export type EPFUncheckedUpdateInput = {
 export type EPFCreateManyInput = {
   id?: string
   epcId: string
-  total_budget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: string | null
+  externalParticipants?: number | null
+  internalParticipants?: number | null
+  eventBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: string | null
+  dealerPercent?: number | null
+  dealerShare?: number | null
+  tataHitachiPoAmount?: number | null
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type EPFUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  internalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  eventBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealerPercent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dealerShare?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tataHitachiPoAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -343,8 +511,16 @@ export type EPFUpdateManyMutationInput = {
 export type EPFUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epcId?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  internalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  eventBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealerPercent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dealerShare?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tataHitachiPoAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -357,22 +533,44 @@ export type EPFNullableScalarRelationFilter = {
 export type EPFCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
-  total_budget?: Prisma.SortOrder
-  expected_revenue?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  externalParticipants?: Prisma.SortOrder
+  internalParticipants?: Prisma.SortOrder
+  eventBudget?: Prisma.SortOrder
+  annualBudget?: Prisma.SortOrder
+  availableBudget?: Prisma.SortOrder
+  dealerName?: Prisma.SortOrder
+  dealerPercent?: Prisma.SortOrder
+  dealerShare?: Prisma.SortOrder
+  tataHitachiPoAmount?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
 
 export type EPFAvgOrderByAggregateInput = {
-  total_budget?: Prisma.SortOrder
-  expected_revenue?: Prisma.SortOrder
+  externalParticipants?: Prisma.SortOrder
+  internalParticipants?: Prisma.SortOrder
+  eventBudget?: Prisma.SortOrder
+  annualBudget?: Prisma.SortOrder
+  availableBudget?: Prisma.SortOrder
+  dealerPercent?: Prisma.SortOrder
+  dealerShare?: Prisma.SortOrder
+  tataHitachiPoAmount?: Prisma.SortOrder
 }
 
 export type EPFMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
-  total_budget?: Prisma.SortOrder
-  expected_revenue?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  externalParticipants?: Prisma.SortOrder
+  internalParticipants?: Prisma.SortOrder
+  eventBudget?: Prisma.SortOrder
+  annualBudget?: Prisma.SortOrder
+  availableBudget?: Prisma.SortOrder
+  dealerName?: Prisma.SortOrder
+  dealerPercent?: Prisma.SortOrder
+  dealerShare?: Prisma.SortOrder
+  tataHitachiPoAmount?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -380,15 +578,29 @@ export type EPFMaxOrderByAggregateInput = {
 export type EPFMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
-  total_budget?: Prisma.SortOrder
-  expected_revenue?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  externalParticipants?: Prisma.SortOrder
+  internalParticipants?: Prisma.SortOrder
+  eventBudget?: Prisma.SortOrder
+  annualBudget?: Prisma.SortOrder
+  availableBudget?: Prisma.SortOrder
+  dealerName?: Prisma.SortOrder
+  dealerPercent?: Prisma.SortOrder
+  dealerShare?: Prisma.SortOrder
+  tataHitachiPoAmount?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
 
 export type EPFSumOrderByAggregateInput = {
-  total_budget?: Prisma.SortOrder
-  expected_revenue?: Prisma.SortOrder
+  externalParticipants?: Prisma.SortOrder
+  internalParticipants?: Prisma.SortOrder
+  eventBudget?: Prisma.SortOrder
+  annualBudget?: Prisma.SortOrder
+  availableBudget?: Prisma.SortOrder
+  dealerPercent?: Prisma.SortOrder
+  dealerShare?: Prisma.SortOrder
+  tataHitachiPoAmount?: Prisma.SortOrder
 }
 
 export type EPFCreateNestedOneWithoutEpcInput = {
@@ -449,8 +661,16 @@ export type EPFUpdateOneWithoutLineItemsNestedInput = {
 
 export type EPFCreateWithoutEpcInput = {
   id?: string
-  total_budget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: string | null
+  externalParticipants?: number | null
+  internalParticipants?: number | null
+  eventBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: string | null
+  dealerPercent?: number | null
+  dealerShare?: number | null
+  tataHitachiPoAmount?: number | null
   created_at?: Date | string
   updated_at?: Date | string
   lineItems?: Prisma.LineItemCreateNestedManyWithoutEpfInput
@@ -458,8 +678,16 @@ export type EPFCreateWithoutEpcInput = {
 
 export type EPFUncheckedCreateWithoutEpcInput = {
   id?: string
-  total_budget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: string | null
+  externalParticipants?: number | null
+  internalParticipants?: number | null
+  eventBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: string | null
+  dealerPercent?: number | null
+  dealerShare?: number | null
+  tataHitachiPoAmount?: number | null
   created_at?: Date | string
   updated_at?: Date | string
   lineItems?: Prisma.LineItemUncheckedCreateNestedManyWithoutEpfInput
@@ -483,8 +711,16 @@ export type EPFUpdateToOneWithWhereWithoutEpcInput = {
 
 export type EPFUpdateWithoutEpcInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  internalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  eventBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealerPercent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dealerShare?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tataHitachiPoAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.LineItemUpdateManyWithoutEpfNestedInput
@@ -492,8 +728,16 @@ export type EPFUpdateWithoutEpcInput = {
 
 export type EPFUncheckedUpdateWithoutEpcInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  internalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  eventBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealerPercent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dealerShare?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tataHitachiPoAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.LineItemUncheckedUpdateManyWithoutEpfNestedInput
@@ -501,8 +745,16 @@ export type EPFUncheckedUpdateWithoutEpcInput = {
 
 export type EPFCreateWithoutLineItemsInput = {
   id?: string
-  total_budget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: string | null
+  externalParticipants?: number | null
+  internalParticipants?: number | null
+  eventBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: string | null
+  dealerPercent?: number | null
+  dealerShare?: number | null
+  tataHitachiPoAmount?: number | null
   created_at?: Date | string
   updated_at?: Date | string
   epc: Prisma.EventProposalCreateNestedOneWithoutEpfInput
@@ -511,8 +763,16 @@ export type EPFCreateWithoutLineItemsInput = {
 export type EPFUncheckedCreateWithoutLineItemsInput = {
   id?: string
   epcId: string
-  total_budget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: string | null
+  externalParticipants?: number | null
+  internalParticipants?: number | null
+  eventBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: string | null
+  dealerPercent?: number | null
+  dealerShare?: number | null
+  tataHitachiPoAmount?: number | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -535,8 +795,16 @@ export type EPFUpdateToOneWithWhereWithoutLineItemsInput = {
 
 export type EPFUpdateWithoutLineItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  internalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  eventBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealerPercent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dealerShare?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tataHitachiPoAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epc?: Prisma.EventProposalUpdateOneRequiredWithoutEpfNestedInput
@@ -545,8 +813,16 @@ export type EPFUpdateWithoutLineItemsInput = {
 export type EPFUncheckedUpdateWithoutLineItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epcId?: Prisma.StringFieldUpdateOperationsInput | string
-  total_budget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  expected_revenue?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  status?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  internalParticipants?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  eventBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  annualBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  availableBudget?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  dealerName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealerPercent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  dealerShare?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  tataHitachiPoAmount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -585,8 +861,16 @@ export type EPFCountOutputTypeCountLineItemsArgs<ExtArgs extends runtime.Types.E
 export type EPFSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   epcId?: boolean
-  total_budget?: boolean
-  expected_revenue?: boolean
+  status?: boolean
+  externalParticipants?: boolean
+  internalParticipants?: boolean
+  eventBudget?: boolean
+  annualBudget?: boolean
+  availableBudget?: boolean
+  dealerName?: boolean
+  dealerPercent?: boolean
+  dealerShare?: boolean
+  tataHitachiPoAmount?: boolean
   created_at?: boolean
   updated_at?: boolean
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
@@ -597,8 +881,16 @@ export type EPFSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
 export type EPFSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   epcId?: boolean
-  total_budget?: boolean
-  expected_revenue?: boolean
+  status?: boolean
+  externalParticipants?: boolean
+  internalParticipants?: boolean
+  eventBudget?: boolean
+  annualBudget?: boolean
+  availableBudget?: boolean
+  dealerName?: boolean
+  dealerPercent?: boolean
+  dealerShare?: boolean
+  tataHitachiPoAmount?: boolean
   created_at?: boolean
   updated_at?: boolean
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
@@ -607,8 +899,16 @@ export type EPFSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
 export type EPFSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   epcId?: boolean
-  total_budget?: boolean
-  expected_revenue?: boolean
+  status?: boolean
+  externalParticipants?: boolean
+  internalParticipants?: boolean
+  eventBudget?: boolean
+  annualBudget?: boolean
+  availableBudget?: boolean
+  dealerName?: boolean
+  dealerPercent?: boolean
+  dealerShare?: boolean
+  tataHitachiPoAmount?: boolean
   created_at?: boolean
   updated_at?: boolean
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
@@ -617,13 +917,21 @@ export type EPFSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
 export type EPFSelectScalar = {
   id?: boolean
   epcId?: boolean
-  total_budget?: boolean
-  expected_revenue?: boolean
+  status?: boolean
+  externalParticipants?: boolean
+  internalParticipants?: boolean
+  eventBudget?: boolean
+  annualBudget?: boolean
+  availableBudget?: boolean
+  dealerName?: boolean
+  dealerPercent?: boolean
+  dealerShare?: boolean
+  tataHitachiPoAmount?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type EPFOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "epcId" | "total_budget" | "expected_revenue" | "created_at" | "updated_at", ExtArgs["result"]["ePF"]>
+export type EPFOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "epcId" | "status" | "externalParticipants" | "internalParticipants" | "eventBudget" | "annualBudget" | "availableBudget" | "dealerName" | "dealerPercent" | "dealerShare" | "tataHitachiPoAmount" | "created_at" | "updated_at", ExtArgs["result"]["ePF"]>
 export type EPFInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
   lineItems?: boolean | Prisma.EPF$lineItemsArgs<ExtArgs>
@@ -645,8 +953,16 @@ export type $EPFPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     epcId: string
-    total_budget: runtime.Decimal | null
-    expected_revenue: runtime.Decimal | null
+    status: string | null
+    externalParticipants: number | null
+    internalParticipants: number | null
+    eventBudget: runtime.Decimal | null
+    annualBudget: runtime.Decimal | null
+    availableBudget: runtime.Decimal | null
+    dealerName: string | null
+    dealerPercent: number | null
+    dealerShare: number | null
+    tataHitachiPoAmount: number | null
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["ePF"]>
@@ -1076,8 +1392,16 @@ export interface Prisma__EPFClient<T, Null = never, ExtArgs extends runtime.Type
 export interface EPFFieldRefs {
   readonly id: Prisma.FieldRef<"EPF", 'String'>
   readonly epcId: Prisma.FieldRef<"EPF", 'String'>
-  readonly total_budget: Prisma.FieldRef<"EPF", 'Decimal'>
-  readonly expected_revenue: Prisma.FieldRef<"EPF", 'Decimal'>
+  readonly status: Prisma.FieldRef<"EPF", 'String'>
+  readonly externalParticipants: Prisma.FieldRef<"EPF", 'Int'>
+  readonly internalParticipants: Prisma.FieldRef<"EPF", 'Int'>
+  readonly eventBudget: Prisma.FieldRef<"EPF", 'Decimal'>
+  readonly annualBudget: Prisma.FieldRef<"EPF", 'Decimal'>
+  readonly availableBudget: Prisma.FieldRef<"EPF", 'Decimal'>
+  readonly dealerName: Prisma.FieldRef<"EPF", 'String'>
+  readonly dealerPercent: Prisma.FieldRef<"EPF", 'Int'>
+  readonly dealerShare: Prisma.FieldRef<"EPF", 'Int'>
+  readonly tataHitachiPoAmount: Prisma.FieldRef<"EPF", 'Int'>
   readonly created_at: Prisma.FieldRef<"EPF", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"EPF", 'DateTime'>
 }

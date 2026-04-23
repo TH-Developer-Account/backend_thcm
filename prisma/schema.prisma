@@ -604,16 +604,23 @@ model ProductMaster {
 model EPF {
   id    String @id @default(uuid())
   epcId String @unique
-
+  status String?
   epc EventProposal @relation(fields: [epcId], references: [id])
-
-  total_budget     Decimal? @db.Decimal(12, 2)
-  expected_revenue Decimal? @db.Decimal(12, 2)
-
+  // 👥 Participants
+  externalParticipants Int?
+  internalParticipants Int?
+  // 💰 Budget
+  eventBudget     Decimal? @db.Decimal(12, 2)
+  annualBudget    Decimal? @db.Decimal(12, 2)
+  availableBudget Decimal? @db.Decimal(12, 2)
+  // 🤝 Dealer Contribution
+  dealerName          String?
+  dealerPercent       Int? 
+  dealerShare         Int? 
+  tataHitachiPoAmount Int? 
+  lineItems LineItem[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
-  lineItems LineItem[]
 }
 
 model CRF {
