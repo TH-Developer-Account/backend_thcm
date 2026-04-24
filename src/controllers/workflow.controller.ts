@@ -164,6 +164,69 @@ export const assignWorkflowController = async (
   }
 };
 
+export const previewWorkflowController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    const { workspaceId, appId, budget } = req.body;
+
+    if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!workspaceId || !appId || budget === undefined) {
+      throw new ApiError(400, "workspaceId, appId and budget are required");
+    }
+
+    // 1. Get templates
+    const templates = await prisma.workflowTemplate.findMany({
+      where: {
+        workspaceId,
+        appId,
+        isActive: true,
+        workFlowUsers: { some: { userId } },
+      },
+      include: {
+        stages: {
+          include: {
+            approvers: {
+              include: {
+                user: true,
+              },
+            },
+          },
+          orderBy: { stageOrder: "asc" },
+        },
+      },
+    });
+
+    if (!templates.length) {
+      throw new ApiError(404, "No workflow templates found");
+    }
+
+    // 2. Match template
+    const matchedTemplate = templates.find((t) =>
+      evaluateBudget(t.metaData_1 || "", Number(budget)),
+    );
+
+    if (!matchedTemplate) {
+      throw new ApiError(
+        400,
+        "No matching workflow template found for given budget",
+      );
+    }
+
+    // ✅ 3. RETURN TEMPLATE (NO DB WRITE)
+    res.status(200).json({
+      success: true,
+      message: "Workflow preview fetched successfully",
+      data: matchedTemplate,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /workflows/stages/:stageId/approve
 //

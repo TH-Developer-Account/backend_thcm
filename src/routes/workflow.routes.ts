@@ -7,6 +7,7 @@ import {
   triggerDeviationController,
   getWorkflowController,
   getWorkflowHistoryController,
+  previewWorkflowController,
 } from "../controllers/workflow.controller";
 import { requireAuth } from "../middleware/auth.middleware";
 import { firstAuthRequestPerDay } from "../middleware/dailyActiveUsers.middleware";
@@ -18,6 +19,7 @@ router.use(firstAuthRequestPerDay); // tracks DAU
 
 router.post("/stages/:stageId/approve", asyncHandler(approveStageController));
 router.post("/assign-workflow", asyncHandler(assignWorkflowController));
+router.post("/preview-workflow", asyncHandler(previewWorkflowController));
 router.post("/stages/:stageId/clarify", asyncHandler(clarifyStageController));
 router.post(
   "/stages/:stageId/trigger-deviation",
