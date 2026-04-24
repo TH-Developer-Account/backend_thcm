@@ -125,7 +125,13 @@ export const createEventProposal = async (
       },
     });
 
-    res.status(201).json({ success: true, data: proposal });
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: "EPC created successfully",
+        data: proposal,
+      });
   } catch (error: any) {
     if (error.code === "P2002") {
       return next(new ApiError(409, "Proposal number already exists"));
