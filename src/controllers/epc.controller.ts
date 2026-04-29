@@ -80,7 +80,6 @@ export const createEventProposal = async (
       vertical,
       region,
       branch,
-      event_scale,
       budget_master_id,
     } = req.body;
 
@@ -95,7 +94,6 @@ export const createEventProposal = async (
       !department ||
       !region ||
       !branch ||
-      !event_scale ||
       !budget_master_id
     ) {
       throw new ApiError(400, "Missing required fields");
@@ -118,20 +116,18 @@ export const createEventProposal = async (
         vertical_id: vertical,
         region_id: region,
         branch_id: branch,
-        event_scale: Number(event_scale),
+        event_scale: 0,
         budget_master_id,
         created_by_id: userId,
         updated_by_id: userId,
       },
     });
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "EPC created successfully",
-        data: proposal,
-      });
+    res.status(201).json({
+      success: true,
+      message: "EPC created successfully",
+      data: proposal,
+    });
   } catch (error: any) {
     if (error.code === "P2002") {
       return next(new ApiError(409, "Proposal number already exists"));
