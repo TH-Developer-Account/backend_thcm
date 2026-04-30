@@ -45,7 +45,7 @@ export const addComment = async (
       include: {
         stage: {
           include: {
-            workflow: true, // need isActive, currentStage, iteration
+            workflow: true,
           },
         },
       },
@@ -189,29 +189,22 @@ export const getWorkflowComments = async (
       orderBy: { createdAt: "asc" }, // chronological timeline
     });
 
-    // Group by iteration for structured response
-    const byIteration = new Map<number, typeof comments>();
-    for (const comment of comments) {
-      const iter = comment.approval.stage.iteration;
-      const group = byIteration.get(iter) ?? [];
-      group.push(comment);
-      byIteration.set(iter, group);
-    }
-
-    const groupedComments = Array.from(byIteration.entries()).map(
-      ([iteration, items]) => ({
-        iteration,
-        isCurrent: iteration === workflow.iteration,
-        comments: items,
-      }),
-    );
+    const formattedComments = comments.map((c) => ({
+      id: c.id,
+      comment: c.message,
+      user: {
+        id: c.user.id,
+        first_name: c.user.first_name,
+        last_name: c.user.last_name,
+      },
+      createdAt: c.createdAt.toISOString(), // optional but recommended
+    }));
 
     res.status(200).json({
       success: true,
       workflowId: workflowInstanceId,
       totalComments: comments.length,
-      totalIterations: byIteration.size,
-      data: groupedComments,
+      data: formattedComments,
     });
   } catch (error) {
     next(error);

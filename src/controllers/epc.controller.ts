@@ -31,7 +31,12 @@ const activeWorkflowInclude = {
         approvals: {
           include: {
             approver: {
-              select: { id: true, first_name: true, last_name: true },
+              select: {
+                id: true,
+                first_name: true,
+                last_name: true,
+                email: true,
+              },
             },
             comments: {
               orderBy: { createdAt: "asc" as const },
