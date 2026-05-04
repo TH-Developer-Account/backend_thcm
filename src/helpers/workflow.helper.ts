@@ -7,6 +7,7 @@ export const buildWorkflowStages = (templateStages: any[]) => {
     stageOrder: stage.stageOrder,
     strategy: stage.strategy,
     minApprovals: stage.minApprovals,
+    stageName: stage.name,
     status:
       stage.stageOrder === 1 ? StageStatus.IN_PROGRESS : StageStatus.PENDING,
 

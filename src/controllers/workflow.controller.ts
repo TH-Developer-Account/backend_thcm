@@ -115,6 +115,7 @@ export const assignWorkflowController = async (
             stageOrder: stage.stageOrder,
             strategy: stage.strategy,
             minApprovals: stage.minApprovals,
+            stageName: stage.name,
             iteration: 1, // ✅ NEW: belongs to iteration 1
             isCurrentIteration: true, // ✅ NEW: these are the live stages
             // Stage 1 starts immediately; the rest are PENDING until their turn

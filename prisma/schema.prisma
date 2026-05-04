@@ -434,6 +434,7 @@ model StageInstance {
   id         String @id @default(uuid())
   workflowId String
   stageOrder Int
+  stageName String?
 
   // ✅ CHANGE 11: Added iteration
   // Mirrors WorkflowInstance.iteration. Every stage created for iteration N
