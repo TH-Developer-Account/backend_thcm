@@ -151,6 +151,7 @@ export const epcFullInfoSelect = {
               partNumber: true,
               name: true,
               description: true,
+              category: true,
             },
           },
         },
