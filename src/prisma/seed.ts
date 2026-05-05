@@ -876,9 +876,26 @@ async function main() {
     const epf = await prisma.ePF.create({
       data: {
         epcId: epc.id,
-        total_budget: Math.floor(Math.random() * (30000 - 20000 + 1)) + 20000,
-        expected_revenue:
-          Math.floor(Math.random() * (30000 - 20000 + 1)) + 20000,
+
+        // 👥 Participants
+        externalParticipants: Math.floor(Math.random() * 50) + 10,
+        internalParticipants: Math.floor(Math.random() * 30) + 5,
+
+        // 💰 Budget
+        eventBudget: Math.floor(Math.random() * (30000 - 20000 + 1)) + 20000,
+        annualBudget:
+          Math.floor(Math.random() * (500000 - 200000 + 1)) + 200000,
+        availableBudget:
+          Math.floor(Math.random() * (100000 - 50000 + 1)) + 50000,
+
+        // 🤝 Dealer Contribution
+        dealerName: "Sample Dealer",
+        dealerPercent: Math.floor(Math.random() * 50) + 1,
+        dealerShare: Math.floor(Math.random() * 20000) + 5000,
+        tataHitachiPoAmount: Math.floor(Math.random() * 30000) + 10000,
+
+        // optional
+        status: "ACTIVE",
       },
     });
 

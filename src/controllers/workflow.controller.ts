@@ -319,8 +319,9 @@ export const clarifyStageController = async (
 ) => {
   try {
     const { stageId } = req.params;
-    const userId = "2d7ef364-beed-4ed8-bc8d-eb423d52ea99";
-    const { reason } = req.body;
+    const userId = req?.user?.id;
+    // const { reason } = req.body;
+    const reason = "Please check the clarification comment";
 
     if (!stageId) throw new ApiError(400, "stageId is required");
     if (!userId) throw new ApiError(401, "Unauthorized");
