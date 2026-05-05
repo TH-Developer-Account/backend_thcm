@@ -3070,6 +3070,7 @@ export const StageInstanceScalarFieldEnum = {
   id: 'id',
   workflowId: 'workflowId',
   stageOrder: 'stageOrder',
+  stageName: 'stageName',
   iteration: 'iteration',
   isCurrentIteration: 'isCurrentIteration',
   strategy: 'strategy',

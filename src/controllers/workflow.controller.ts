@@ -422,6 +422,7 @@ export const clarifyStageController = async (
       for (const templateStage of workflow.template.stages) {
         await tx.stageInstance.create({
           data: {
+            stageName: templateStage.name,
             workflowId: workflow.id,
             stageOrder: templateStage.stageOrder,
             iteration: newIteration, // ← belongs to the new run
