@@ -83,6 +83,12 @@ export const createEPF = async (
         data: lineItemsData,
       });
 
+      // ── Step 5: Update EPC to submitted ────────────────────────────────────────
+      await tx.eventProposal.update({
+        where: { id: epcId },
+        data: { status: "SUBMITTED" },
+      });
+
       return epf;
     });
 

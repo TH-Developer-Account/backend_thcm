@@ -404,13 +404,13 @@ export const ModelName = {
   StageInstance: 'StageInstance',
   Approval: 'Approval',
   WorkFlowTemplateUser: 'WorkFlowTemplateUser',
+  ApprovalAudit: 'ApprovalAudit',
   Department: 'Department',
   Vertical: 'Vertical',
   Region: 'Region',
   Branch: 'Branch',
   BudgetMaster: 'BudgetMaster',
   EventName: 'EventName',
-  ApprovalAudit: 'ApprovalAudit',
   ProductMaster: 'ProductMaster',
   EPF: 'EPF',
   CRF: 'CRF',
@@ -431,7 +431,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "approvalAudit" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "approvalAudit" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1915,6 +1915,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ApprovalAudit: {
+      payload: Prisma.$ApprovalAuditPayload<ExtArgs>
+      fields: Prisma.ApprovalAuditFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ApprovalAuditFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ApprovalAuditFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
+        }
+        findFirst: {
+          args: Prisma.ApprovalAuditFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ApprovalAuditFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
+        }
+        findMany: {
+          args: Prisma.ApprovalAuditFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>[]
+        }
+        create: {
+          args: Prisma.ApprovalAuditCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
+        }
+        createMany: {
+          args: Prisma.ApprovalAuditCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ApprovalAuditCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>[]
+        }
+        delete: {
+          args: Prisma.ApprovalAuditDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
+        }
+        update: {
+          args: Prisma.ApprovalAuditUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
+        }
+        deleteMany: {
+          args: Prisma.ApprovalAuditDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ApprovalAuditUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ApprovalAuditUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>[]
+        }
+        upsert: {
+          args: Prisma.ApprovalAuditUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
+        }
+        aggregate: {
+          args: Prisma.ApprovalAuditAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateApprovalAudit>
+        }
+        groupBy: {
+          args: Prisma.ApprovalAuditGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApprovalAuditGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ApprovalAuditCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ApprovalAuditCountAggregateOutputType> | number
+        }
+      }
+    }
     Department: {
       payload: Prisma.$DepartmentPayload<ExtArgs>
       fields: Prisma.DepartmentFieldRefs
@@ -2356,80 +2430,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.EventNameCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.EventNameCountAggregateOutputType> | number
-        }
-      }
-    }
-    ApprovalAudit: {
-      payload: Prisma.$ApprovalAuditPayload<ExtArgs>
-      fields: Prisma.ApprovalAuditFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ApprovalAuditFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ApprovalAuditFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
-        }
-        findFirst: {
-          args: Prisma.ApprovalAuditFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ApprovalAuditFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
-        }
-        findMany: {
-          args: Prisma.ApprovalAuditFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>[]
-        }
-        create: {
-          args: Prisma.ApprovalAuditCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
-        }
-        createMany: {
-          args: Prisma.ApprovalAuditCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ApprovalAuditCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>[]
-        }
-        delete: {
-          args: Prisma.ApprovalAuditDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
-        }
-        update: {
-          args: Prisma.ApprovalAuditUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
-        }
-        deleteMany: {
-          args: Prisma.ApprovalAuditDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ApprovalAuditUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ApprovalAuditUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>[]
-        }
-        upsert: {
-          args: Prisma.ApprovalAuditUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ApprovalAuditPayload>
-        }
-        aggregate: {
-          args: Prisma.ApprovalAuditAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateApprovalAudit>
-        }
-        groupBy: {
-          args: Prisma.ApprovalAuditGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ApprovalAuditGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ApprovalAuditCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ApprovalAuditCountAggregateOutputType> | number
         }
       }
     }
@@ -3106,6 +3106,19 @@ export const WorkFlowTemplateUserScalarFieldEnum = {
 export type WorkFlowTemplateUserScalarFieldEnum = (typeof WorkFlowTemplateUserScalarFieldEnum)[keyof typeof WorkFlowTemplateUserScalarFieldEnum]
 
 
+export const ApprovalAuditScalarFieldEnum = {
+  id: 'id',
+  workflowId: 'workflowId',
+  stageId: 'stageId',
+  approverId: 'approverId',
+  action: 'action',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type ApprovalAuditScalarFieldEnum = (typeof ApprovalAuditScalarFieldEnum)[keyof typeof ApprovalAuditScalarFieldEnum]
+
+
 export const DepartmentScalarFieldEnum = {
   id: 'id',
   department_code: 'department_code',
@@ -3173,19 +3186,6 @@ export const EventNameScalarFieldEnum = {
 } as const
 
 export type EventNameScalarFieldEnum = (typeof EventNameScalarFieldEnum)[keyof typeof EventNameScalarFieldEnum]
-
-
-export const ApprovalAuditScalarFieldEnum = {
-  id: 'id',
-  workflowId: 'workflowId',
-  stageId: 'stageId',
-  approverId: 'approverId',
-  action: 'action',
-  reason: 'reason',
-  createdAt: 'createdAt'
-} as const
-
-export type ApprovalAuditScalarFieldEnum = (typeof ApprovalAuditScalarFieldEnum)[keyof typeof ApprovalAuditScalarFieldEnum]
 
 
 export const ProductMasterScalarFieldEnum = {
@@ -3426,20 +3426,6 @@ export type ListEnumApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
- * Reference to a field of type 'Decimal'
- */
-export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
-    
-
-
-/**
- * Reference to a field of type 'Decimal[]'
- */
-export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
-    
-
-
-/**
  * Reference to a field of type 'AuditAction'
  */
 export type EnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditAction'>
@@ -3450,6 +3436,20 @@ export type EnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'AuditAction[]'
  */
 export type ListEnumAuditActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuditAction[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 
@@ -3609,13 +3609,13 @@ export type GlobalOmitConfig = {
   stageInstance?: Prisma.StageInstanceOmit
   approval?: Prisma.ApprovalOmit
   workFlowTemplateUser?: Prisma.WorkFlowTemplateUserOmit
+  approvalAudit?: Prisma.ApprovalAuditOmit
   department?: Prisma.DepartmentOmit
   vertical?: Prisma.VerticalOmit
   region?: Prisma.RegionOmit
   branch?: Prisma.BranchOmit
   budgetMaster?: Prisma.BudgetMasterOmit
   eventName?: Prisma.EventNameOmit
-  approvalAudit?: Prisma.ApprovalAuditOmit
   productMaster?: Prisma.ProductMasterOmit
   ePF?: Prisma.EPFOmit
   cRF?: Prisma.CRFOmit

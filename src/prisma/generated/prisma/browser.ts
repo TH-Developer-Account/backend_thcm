@@ -118,6 +118,11 @@ export type Approval = Prisma.ApprovalModel
  */
 export type WorkFlowTemplateUser = Prisma.WorkFlowTemplateUserModel
 /**
+ * Model ApprovalAudit
+ * 
+ */
+export type ApprovalAudit = Prisma.ApprovalAuditModel
+/**
  * Model Department
  * 
  */
@@ -147,11 +152,6 @@ export type BudgetMaster = Prisma.BudgetMasterModel
  * 
  */
 export type EventName = Prisma.EventNameModel
-/**
- * Model ApprovalAudit
- * 
- */
-export type ApprovalAudit = Prisma.ApprovalAuditModel
 /**
  * Model ProductMaster
  * 

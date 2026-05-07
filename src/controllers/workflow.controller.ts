@@ -403,18 +403,26 @@ export const clarifyStageController = async (
         },
       });
 
-      // ── Step 4: Archive the current iteration's stages ────────────────────
-      // Setting isCurrentIteration=false on ALL current stages (not just this one)
-      // because clarify restarts from stage 1. All stages in iteration N are now
-      // historical. Their data (approvals, comments, reasons) is fully preserved.
+      // ── Step 4: Archive ALL current iteration stages ──────────────────────
+      // Two calls because IN_PROGRESS needs status flipped to REJECTED (interrupted),
+      // while PENDING + APPROVED keep their status — only isCurrentIteration clears.
+      // Previously only PENDING was in the second filter, leaving APPROVED stages
+      // with isCurrentIteration=true and causing doubled stages on the next iteration.
       await tx.stageInstance.updateMany({
-        where: { workflowId: workflow.id, isCurrentIteration: true },
-        data: {
-          isCurrentIteration: false,
-          // Mark IN_PROGRESS stage as REJECTED so the status reflects
-          // that this run did not complete normally
-          status: "REJECTED",
+        where: {
+          workflowId: workflow.id,
+          isCurrentIteration: true,
+          status: "IN_PROGRESS",
         },
+        data: { isCurrentIteration: false, status: "REJECTED" },
+      });
+      await tx.stageInstance.updateMany({
+        where: {
+          workflowId: workflow.id,
+          isCurrentIteration: true,
+          status: { in: ["PENDING", "APPROVED"] },
+        },
+        data: { isCurrentIteration: false },
       });
 
       // ── Step 5: Build new stages for iteration N+1 ────────────────────────
@@ -453,7 +461,13 @@ export const clarifyStageController = async (
         },
       });
 
-      // ── Step 7: Write audit record ────────────────────────────────────────
+      // ── Step 7: Update EPC to pending ────────────────────────────────────────
+      await tx.eventProposal.update({
+        where: { id: workflow.eventProposalId },
+        data: { status: "PENDING" },
+      });
+
+      // ── Step 8: Write audit record ────────────────────────────────────────
       await tx.approvalAudit.create({
         data: {
           workflowId: workflow.id,
@@ -650,7 +664,7 @@ export const triggerDeviationController = async (
       await tx.approvalAudit.create({
         data: {
           workflowId: activeWorkflow.id, // the workflow that was replaced
-          stageId: activeWorkflow.id, // no specific stage; use workflow id as reference
+          stageId: null, // no specific stage; use workflow id as reference
           approverId: userId,
           action: "DEVIATION",
           reason: `${reason.trim()} | New budget: ${newBudget} | New template: ${matchedTemplate.name}`,

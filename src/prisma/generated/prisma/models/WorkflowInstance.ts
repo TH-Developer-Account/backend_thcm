@@ -272,6 +272,7 @@ export type WorkflowInstanceWhereInput = {
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   event?: Prisma.XOR<Prisma.EventProposalScalarRelationFilter, Prisma.EventProposalWhereInput>
   stages?: Prisma.StageInstanceListRelationFilter
+  approvalAudits?: Prisma.ApprovalAuditListRelationFilter
 }
 
 export type WorkflowInstanceOrderByWithRelationInput = {
@@ -290,6 +291,7 @@ export type WorkflowInstanceOrderByWithRelationInput = {
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
   event?: Prisma.EventProposalOrderByWithRelationInput
   stages?: Prisma.StageInstanceOrderByRelationAggregateInput
+  approvalAudits?: Prisma.ApprovalAuditOrderByRelationAggregateInput
 }
 
 export type WorkflowInstanceWhereUniqueInput = Prisma.AtLeast<{
@@ -311,6 +313,7 @@ export type WorkflowInstanceWhereUniqueInput = Prisma.AtLeast<{
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   event?: Prisma.XOR<Prisma.EventProposalScalarRelationFilter, Prisma.EventProposalWhereInput>
   stages?: Prisma.StageInstanceListRelationFilter
+  approvalAudits?: Prisma.ApprovalAuditListRelationFilter
 }, "id">
 
 export type WorkflowInstanceOrderByWithAggregationInput = {
@@ -362,6 +365,7 @@ export type WorkflowInstanceCreateInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
   event: Prisma.EventProposalCreateNestedOneWithoutWorkflowsInput
   stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
+  approvalAudits?: Prisma.ApprovalAuditCreateNestedManyWithoutWorkflowInput
 }
 
 export type WorkflowInstanceUncheckedCreateInput = {
@@ -377,6 +381,7 @@ export type WorkflowInstanceUncheckedCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
+  approvalAudits?: Prisma.ApprovalAuditUncheckedCreateNestedManyWithoutWorkflowInput
 }
 
 export type WorkflowInstanceUpdateInput = {
@@ -392,6 +397,7 @@ export type WorkflowInstanceUpdateInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
   event?: Prisma.EventProposalUpdateOneRequiredWithoutWorkflowsNestedInput
   stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
+  approvalAudits?: Prisma.ApprovalAuditUpdateManyWithoutWorkflowNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateInput = {
@@ -407,6 +413,7 @@ export type WorkflowInstanceUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
+  approvalAudits?: Prisma.ApprovalAuditUncheckedUpdateManyWithoutWorkflowNestedInput
 }
 
 export type WorkflowInstanceCreateManyInput = {
@@ -663,6 +670,20 @@ export type WorkflowInstanceUpdateOneRequiredWithoutStagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkflowInstanceUpdateToOneWithWhereWithoutStagesInput, Prisma.WorkflowInstanceUpdateWithoutStagesInput>, Prisma.WorkflowInstanceUncheckedUpdateWithoutStagesInput>
 }
 
+export type WorkflowInstanceCreateNestedOneWithoutApprovalAuditsInput = {
+  create?: Prisma.XOR<Prisma.WorkflowInstanceCreateWithoutApprovalAuditsInput, Prisma.WorkflowInstanceUncheckedCreateWithoutApprovalAuditsInput>
+  connectOrCreate?: Prisma.WorkflowInstanceCreateOrConnectWithoutApprovalAuditsInput
+  connect?: Prisma.WorkflowInstanceWhereUniqueInput
+}
+
+export type WorkflowInstanceUpdateOneRequiredWithoutApprovalAuditsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkflowInstanceCreateWithoutApprovalAuditsInput, Prisma.WorkflowInstanceUncheckedCreateWithoutApprovalAuditsInput>
+  connectOrCreate?: Prisma.WorkflowInstanceCreateOrConnectWithoutApprovalAuditsInput
+  upsert?: Prisma.WorkflowInstanceUpsertWithoutApprovalAuditsInput
+  connect?: Prisma.WorkflowInstanceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkflowInstanceUpdateToOneWithWhereWithoutApprovalAuditsInput, Prisma.WorkflowInstanceUpdateWithoutApprovalAuditsInput>, Prisma.WorkflowInstanceUncheckedUpdateWithoutApprovalAuditsInput>
+}
+
 export type WorkflowInstanceCreateWithoutWorkspaceInput = {
   id?: string
   iteration?: number
@@ -675,6 +696,7 @@ export type WorkflowInstanceCreateWithoutWorkspaceInput = {
   template: Prisma.WorkflowTemplateCreateNestedOneWithoutWorkflowInstancesInput
   event: Prisma.EventProposalCreateNestedOneWithoutWorkflowsInput
   stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
+  approvalAudits?: Prisma.ApprovalAuditCreateNestedManyWithoutWorkflowInput
 }
 
 export type WorkflowInstanceUncheckedCreateWithoutWorkspaceInput = {
@@ -689,6 +711,7 @@ export type WorkflowInstanceUncheckedCreateWithoutWorkspaceInput = {
   created_at?: Date | string
   updated_at?: Date | string
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
+  approvalAudits?: Prisma.ApprovalAuditUncheckedCreateNestedManyWithoutWorkflowInput
 }
 
 export type WorkflowInstanceCreateOrConnectWithoutWorkspaceInput = {
@@ -746,6 +769,7 @@ export type WorkflowInstanceCreateWithoutEventInput = {
   template: Prisma.WorkflowTemplateCreateNestedOneWithoutWorkflowInstancesInput
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
   stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
+  approvalAudits?: Prisma.ApprovalAuditCreateNestedManyWithoutWorkflowInput
 }
 
 export type WorkflowInstanceUncheckedCreateWithoutEventInput = {
@@ -760,6 +784,7 @@ export type WorkflowInstanceUncheckedCreateWithoutEventInput = {
   created_at?: Date | string
   updated_at?: Date | string
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
+  approvalAudits?: Prisma.ApprovalAuditUncheckedCreateNestedManyWithoutWorkflowInput
 }
 
 export type WorkflowInstanceCreateOrConnectWithoutEventInput = {
@@ -800,6 +825,7 @@ export type WorkflowInstanceCreateWithoutTemplateInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
   event: Prisma.EventProposalCreateNestedOneWithoutWorkflowsInput
   stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
+  approvalAudits?: Prisma.ApprovalAuditCreateNestedManyWithoutWorkflowInput
 }
 
 export type WorkflowInstanceUncheckedCreateWithoutTemplateInput = {
@@ -814,6 +840,7 @@ export type WorkflowInstanceUncheckedCreateWithoutTemplateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
+  approvalAudits?: Prisma.ApprovalAuditUncheckedCreateNestedManyWithoutWorkflowInput
 }
 
 export type WorkflowInstanceCreateOrConnectWithoutTemplateInput = {
@@ -854,6 +881,7 @@ export type WorkflowInstanceCreateWithoutStagesInput = {
   template: Prisma.WorkflowTemplateCreateNestedOneWithoutWorkflowInstancesInput
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
   event: Prisma.EventProposalCreateNestedOneWithoutWorkflowsInput
+  approvalAudits?: Prisma.ApprovalAuditCreateNestedManyWithoutWorkflowInput
 }
 
 export type WorkflowInstanceUncheckedCreateWithoutStagesInput = {
@@ -868,6 +896,7 @@ export type WorkflowInstanceUncheckedCreateWithoutStagesInput = {
   currentStage: number
   created_at?: Date | string
   updated_at?: Date | string
+  approvalAudits?: Prisma.ApprovalAuditUncheckedCreateNestedManyWithoutWorkflowInput
 }
 
 export type WorkflowInstanceCreateOrConnectWithoutStagesInput = {
@@ -898,6 +927,7 @@ export type WorkflowInstanceUpdateWithoutStagesInput = {
   template?: Prisma.WorkflowTemplateUpdateOneRequiredWithoutWorkflowInstancesNestedInput
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
   event?: Prisma.EventProposalUpdateOneRequiredWithoutWorkflowsNestedInput
+  approvalAudits?: Prisma.ApprovalAuditUpdateManyWithoutWorkflowNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateWithoutStagesInput = {
@@ -912,6 +942,83 @@ export type WorkflowInstanceUncheckedUpdateWithoutStagesInput = {
   currentStage?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvalAudits?: Prisma.ApprovalAuditUncheckedUpdateManyWithoutWorkflowNestedInput
+}
+
+export type WorkflowInstanceCreateWithoutApprovalAuditsInput = {
+  id?: string
+  iteration?: number
+  isActive?: boolean
+  workflowType?: $Enums.WorkflowType
+  status?: $Enums.WorkflowStatus
+  currentStage: number
+  created_at?: Date | string
+  updated_at?: Date | string
+  template: Prisma.WorkflowTemplateCreateNestedOneWithoutWorkflowInstancesInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
+  event: Prisma.EventProposalCreateNestedOneWithoutWorkflowsInput
+  stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
+}
+
+export type WorkflowInstanceUncheckedCreateWithoutApprovalAuditsInput = {
+  id?: string
+  templateId: string
+  workspaceId: string
+  eventProposalId: string
+  iteration?: number
+  isActive?: boolean
+  workflowType?: $Enums.WorkflowType
+  status?: $Enums.WorkflowStatus
+  currentStage: number
+  created_at?: Date | string
+  updated_at?: Date | string
+  stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
+}
+
+export type WorkflowInstanceCreateOrConnectWithoutApprovalAuditsInput = {
+  where: Prisma.WorkflowInstanceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkflowInstanceCreateWithoutApprovalAuditsInput, Prisma.WorkflowInstanceUncheckedCreateWithoutApprovalAuditsInput>
+}
+
+export type WorkflowInstanceUpsertWithoutApprovalAuditsInput = {
+  update: Prisma.XOR<Prisma.WorkflowInstanceUpdateWithoutApprovalAuditsInput, Prisma.WorkflowInstanceUncheckedUpdateWithoutApprovalAuditsInput>
+  create: Prisma.XOR<Prisma.WorkflowInstanceCreateWithoutApprovalAuditsInput, Prisma.WorkflowInstanceUncheckedCreateWithoutApprovalAuditsInput>
+  where?: Prisma.WorkflowInstanceWhereInput
+}
+
+export type WorkflowInstanceUpdateToOneWithWhereWithoutApprovalAuditsInput = {
+  where?: Prisma.WorkflowInstanceWhereInput
+  data: Prisma.XOR<Prisma.WorkflowInstanceUpdateWithoutApprovalAuditsInput, Prisma.WorkflowInstanceUncheckedUpdateWithoutApprovalAuditsInput>
+}
+
+export type WorkflowInstanceUpdateWithoutApprovalAuditsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  workflowType?: Prisma.EnumWorkflowTypeFieldUpdateOperationsInput | $Enums.WorkflowType
+  status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
+  currentStage?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  template?: Prisma.WorkflowTemplateUpdateOneRequiredWithoutWorkflowInstancesNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
+  event?: Prisma.EventProposalUpdateOneRequiredWithoutWorkflowsNestedInput
+  stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
+}
+
+export type WorkflowInstanceUncheckedUpdateWithoutApprovalAuditsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  eventProposalId?: Prisma.StringFieldUpdateOperationsInput | string
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  workflowType?: Prisma.EnumWorkflowTypeFieldUpdateOperationsInput | $Enums.WorkflowType
+  status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
+  currentStage?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
 }
 
 export type WorkflowInstanceCreateManyWorkspaceInput = {
@@ -939,6 +1046,7 @@ export type WorkflowInstanceUpdateWithoutWorkspaceInput = {
   template?: Prisma.WorkflowTemplateUpdateOneRequiredWithoutWorkflowInstancesNestedInput
   event?: Prisma.EventProposalUpdateOneRequiredWithoutWorkflowsNestedInput
   stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
+  approvalAudits?: Prisma.ApprovalAuditUpdateManyWithoutWorkflowNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateWithoutWorkspaceInput = {
@@ -953,6 +1061,7 @@ export type WorkflowInstanceUncheckedUpdateWithoutWorkspaceInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
+  approvalAudits?: Prisma.ApprovalAuditUncheckedUpdateManyWithoutWorkflowNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceInput = {
@@ -993,6 +1102,7 @@ export type WorkflowInstanceUpdateWithoutEventInput = {
   template?: Prisma.WorkflowTemplateUpdateOneRequiredWithoutWorkflowInstancesNestedInput
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
   stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
+  approvalAudits?: Prisma.ApprovalAuditUpdateManyWithoutWorkflowNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateWithoutEventInput = {
@@ -1007,6 +1117,7 @@ export type WorkflowInstanceUncheckedUpdateWithoutEventInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
+  approvalAudits?: Prisma.ApprovalAuditUncheckedUpdateManyWithoutWorkflowNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateManyWithoutEventInput = {
@@ -1047,6 +1158,7 @@ export type WorkflowInstanceUpdateWithoutTemplateInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
   event?: Prisma.EventProposalUpdateOneRequiredWithoutWorkflowsNestedInput
   stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
+  approvalAudits?: Prisma.ApprovalAuditUpdateManyWithoutWorkflowNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateWithoutTemplateInput = {
@@ -1061,6 +1173,7 @@ export type WorkflowInstanceUncheckedUpdateWithoutTemplateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
+  approvalAudits?: Prisma.ApprovalAuditUncheckedUpdateManyWithoutWorkflowNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateManyWithoutTemplateInput = {
@@ -1083,10 +1196,12 @@ export type WorkflowInstanceUncheckedUpdateManyWithoutTemplateInput = {
 
 export type WorkflowInstanceCountOutputType = {
   stages: number
+  approvalAudits: number
 }
 
 export type WorkflowInstanceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   stages?: boolean | WorkflowInstanceCountOutputTypeCountStagesArgs
+  approvalAudits?: boolean | WorkflowInstanceCountOutputTypeCountApprovalAuditsArgs
 }
 
 /**
@@ -1106,6 +1221,13 @@ export type WorkflowInstanceCountOutputTypeCountStagesArgs<ExtArgs extends runti
   where?: Prisma.StageInstanceWhereInput
 }
 
+/**
+ * WorkflowInstanceCountOutputType without action
+ */
+export type WorkflowInstanceCountOutputTypeCountApprovalAuditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ApprovalAuditWhereInput
+}
+
 
 export type WorkflowInstanceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1123,6 +1245,7 @@ export type WorkflowInstanceSelect<ExtArgs extends runtime.Types.Extensions.Inte
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
   stages?: boolean | Prisma.WorkflowInstance$stagesArgs<ExtArgs>
+  approvalAudits?: boolean | Prisma.WorkflowInstance$approvalAuditsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkflowInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workflowInstance"]>
 
@@ -1180,6 +1303,7 @@ export type WorkflowInstanceInclude<ExtArgs extends runtime.Types.Extensions.Int
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   event?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
   stages?: boolean | Prisma.WorkflowInstance$stagesArgs<ExtArgs>
+  approvalAudits?: boolean | Prisma.WorkflowInstance$approvalAuditsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkflowInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkflowInstanceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1200,6 +1324,7 @@ export type $WorkflowInstancePayload<ExtArgs extends runtime.Types.Extensions.In
     workspace: Prisma.$WorkspacePayload<ExtArgs>
     event: Prisma.$EventProposalPayload<ExtArgs>
     stages: Prisma.$StageInstancePayload<ExtArgs>[]
+    approvalAudits: Prisma.$ApprovalAuditPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1611,6 +1736,7 @@ export interface Prisma__WorkflowInstanceClient<T, Null = never, ExtArgs extends
   workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   event<T extends Prisma.EventProposalDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventProposalDefaultArgs<ExtArgs>>): Prisma.Prisma__EventProposalClient<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   stages<T extends Prisma.WorkflowInstance$stagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkflowInstance$stagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StageInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  approvalAudits<T extends Prisma.WorkflowInstance$approvalAuditsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkflowInstance$approvalAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApprovalAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2068,6 +2194,30 @@ export type WorkflowInstance$stagesArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.StageInstanceScalarFieldEnum | Prisma.StageInstanceScalarFieldEnum[]
+}
+
+/**
+ * WorkflowInstance.approvalAudits
+ */
+export type WorkflowInstance$approvalAuditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ApprovalAudit
+   */
+  select?: Prisma.ApprovalAuditSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ApprovalAudit
+   */
+  omit?: Prisma.ApprovalAuditOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ApprovalAuditInclude<ExtArgs> | null
+  where?: Prisma.ApprovalAuditWhereInput
+  orderBy?: Prisma.ApprovalAuditOrderByWithRelationInput | Prisma.ApprovalAuditOrderByWithRelationInput[]
+  cursor?: Prisma.ApprovalAuditWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ApprovalAuditScalarFieldEnum | Prisma.ApprovalAuditScalarFieldEnum[]
 }
 
 /**
