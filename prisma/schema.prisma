@@ -606,7 +606,7 @@ model EPF {
   id    String @id @default(uuid())
   epcId String @unique
   status String?
-  epc EventProposal @relation(fields: [epcId], references: [id])
+  epc EventProposal @relation(fields: [epcId], references: [id], onDelete: Cascade)
   // 👥 Participants
   externalParticipants Int?
   internalParticipants Int?
@@ -628,7 +628,7 @@ model CRF {
   id    String @id @default(uuid())
   epcId String @unique
 
-  epc EventProposal @relation(fields: [epcId], references: [id])
+  epc EventProposal @relation(fields: [epcId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -650,8 +650,8 @@ model LineItem {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  epf     EPF?          @relation(fields: [epfId], references: [id])
-  crf     CRF?          @relation(fields: [crfId], references: [id])
+  epf     EPF?          @relation(fields: [epfId], references: [id], onDelete: Cascade)
+  crf     CRF?          @relation(fields: [crfId], references: [id], onDelete: Cascade)
   product ProductMaster @relation(fields: [productId], references: [id])
 
   @@index([epfId])

@@ -408,13 +408,20 @@ export const clarifyStageController = async (
       // because clarify restarts from stage 1. All stages in iteration N are now
       // historical. Their data (approvals, comments, reasons) is fully preserved.
       await tx.stageInstance.updateMany({
-        where: { workflowId: workflow.id, isCurrentIteration: true },
-        data: {
-          isCurrentIteration: false,
-          // Mark IN_PROGRESS stage as REJECTED so the status reflects
-          // that this run did not complete normally
-          status: "REJECTED",
+        where: {
+          workflowId: workflow.id,
+          isCurrentIteration: true,
+          status: "IN_PROGRESS",
         },
+        data: { isCurrentIteration: false, status: "REJECTED" },
+      });
+      await tx.stageInstance.updateMany({
+        where: {
+          workflowId: workflow.id,
+          isCurrentIteration: true,
+          status: "PENDING",
+        },
+        data: { isCurrentIteration: false, status: "PENDING" }, // preserve, just archive
       });
 
       // ── Step 5: Build new stages for iteration N+1 ────────────────────────
@@ -453,7 +460,13 @@ export const clarifyStageController = async (
         },
       });
 
-      // ── Step 7: Write audit record ────────────────────────────────────────
+      // ── Step 7: Update EPC to pending ────────────────────────────────────────
+      await tx.eventProposal.update({
+        where: { id: workflow.eventProposalId },
+        data: { status: "PENDING" },
+      });
+
+      // ── Step 8: Write audit record ────────────────────────────────────────
       await tx.approvalAudit.create({
         data: {
           workflowId: workflow.id,
