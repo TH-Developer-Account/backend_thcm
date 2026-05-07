@@ -4,7 +4,7 @@ import { requireAuth, authorize } from "../middleware/auth.middleware";
 import { firstAuthRequestPerDay } from "../middleware/dailyActiveUsers.middleware";
 import {
   addComment,
-  getWorkflowComments,
+  getEPCActivityTimeline,
 } from "../controllers/comment.controller";
 
 const router = Router();
@@ -13,6 +13,6 @@ router.use(requireAuth); // sets req.user
 router.use(firstAuthRequestPerDay);
 
 router.post("/", asyncHandler(addComment));
-router.get("/:workflowInstanceId", asyncHandler(getWorkflowComments));
+router.get("/:epcId", asyncHandler(getEPCActivityTimeline));
 
 export default router;

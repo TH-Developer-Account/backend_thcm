@@ -403,10 +403,11 @@ export const clarifyStageController = async (
         },
       });
 
-      // ── Step 4: Archive the current iteration's stages ────────────────────
-      // Setting isCurrentIteration=false on ALL current stages (not just this one)
-      // because clarify restarts from stage 1. All stages in iteration N are now
-      // historical. Their data (approvals, comments, reasons) is fully preserved.
+      // ── Step 4: Archive ALL current iteration stages ──────────────────────
+      // Two calls because IN_PROGRESS needs status flipped to REJECTED (interrupted),
+      // while PENDING + APPROVED keep their status — only isCurrentIteration clears.
+      // Previously only PENDING was in the second filter, leaving APPROVED stages
+      // with isCurrentIteration=true and causing doubled stages on the next iteration.
       await tx.stageInstance.updateMany({
         where: {
           workflowId: workflow.id,
@@ -419,9 +420,9 @@ export const clarifyStageController = async (
         where: {
           workflowId: workflow.id,
           isCurrentIteration: true,
-          status: "PENDING",
+          status: { in: ["PENDING", "APPROVED"] },
         },
-        data: { isCurrentIteration: false, status: "PENDING" }, // preserve, just archive
+        data: { isCurrentIteration: false },
       });
 
       // ── Step 5: Build new stages for iteration N+1 ────────────────────────
@@ -663,7 +664,7 @@ export const triggerDeviationController = async (
       await tx.approvalAudit.create({
         data: {
           workflowId: activeWorkflow.id, // the workflow that was replaced
-          stageId: activeWorkflow.id, // no specific stage; use workflow id as reference
+          stageId: null, // no specific stage; use workflow id as reference
           approverId: userId,
           action: "DEVIATION",
           reason: `${reason.trim()} | New budget: ${newBudget} | New template: ${matchedTemplate.name}`,

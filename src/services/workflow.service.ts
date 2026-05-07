@@ -126,6 +126,16 @@ export const approveStage = async ({
           data: { status: WorkflowStatus.APPROVED },
         });
       }
+
+      await tx.approvalAudit.create({
+        data: {
+          workflowId: stage!.workflowId,
+          stageId: stageId as string,
+          approverId: userId,
+          action: "APPROVED",
+          reason: "This is approved",
+        },
+      });
     });
   } catch (error) {
     throw error;
