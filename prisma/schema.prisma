@@ -386,6 +386,7 @@ model WorkflowInstance {
   workspace Workspace        @relation(fields: [workspaceId], references: [id])
   event     EventProposal    @relation(fields: [eventProposalId], references: [id])
   stages    StageInstance[]
+  comments  Comment[]
 
   // ✅ Back-relation for ApprovalAudit.workflow
   approvalAudits ApprovalAudit[]
@@ -629,12 +630,14 @@ model Comment {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   userId     String
-  approvalId String
+  approvalId String?
   type       String   @default("COMMENT")
+  workflowId String?
 
   user     User     @relation(fields: [userId], references: [id])
-  approval Approval @relation(fields: [approvalId], references: [id], onDelete: Cascade)
+  approval Approval? @relation(fields: [approvalId], references: [id], onDelete: Cascade)
+  workflow   WorkflowInstance? @relation(fields: [workflowId], references: [id], onDelete: Cascade)
 
-  @@index([approvalId])
+
   @@index([userId])
 }

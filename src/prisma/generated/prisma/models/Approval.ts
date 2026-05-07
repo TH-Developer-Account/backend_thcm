@@ -354,9 +354,9 @@ export type ApprovalMinOrderByAggregateInput = {
   reason?: Prisma.SortOrder
 }
 
-export type ApprovalScalarRelationFilter = {
-  is?: Prisma.ApprovalWhereInput
-  isNot?: Prisma.ApprovalWhereInput
+export type ApprovalNullableScalarRelationFilter = {
+  is?: Prisma.ApprovalWhereInput | null
+  isNot?: Prisma.ApprovalWhereInput | null
 }
 
 export type ApprovalCreateNestedManyWithoutApproverInput = {
@@ -453,10 +453,12 @@ export type ApprovalCreateNestedOneWithoutCommentsInput = {
   connect?: Prisma.ApprovalWhereUniqueInput
 }
 
-export type ApprovalUpdateOneRequiredWithoutCommentsNestedInput = {
+export type ApprovalUpdateOneWithoutCommentsNestedInput = {
   create?: Prisma.XOR<Prisma.ApprovalCreateWithoutCommentsInput, Prisma.ApprovalUncheckedCreateWithoutCommentsInput>
   connectOrCreate?: Prisma.ApprovalCreateOrConnectWithoutCommentsInput
   upsert?: Prisma.ApprovalUpsertWithoutCommentsInput
+  disconnect?: Prisma.ApprovalWhereInput | boolean
+  delete?: Prisma.ApprovalWhereInput | boolean
   connect?: Prisma.ApprovalWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ApprovalUpdateToOneWithWhereWithoutCommentsInput, Prisma.ApprovalUpdateWithoutCommentsInput>, Prisma.ApprovalUncheckedUpdateWithoutCommentsInput>
 }

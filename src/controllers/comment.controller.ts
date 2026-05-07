@@ -121,73 +121,101 @@ export const addComment = async (
   }
 };
 
+export const addCreatorComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req?.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const { epcId, message, type = "COMMENT" } = req.body;
+
+    if (!epcId) throw new ApiError(400, "epcId is required");
+    if (!message) throw new ApiError(400, "message is required");
+    if (String(message).trim().length < 3) {
+      throw new ApiError(400, "Comment must be at least 3 characters");
+    }
+
+    // ── Load EPC with all workflow instances ─────────────────────────────────
+    const epc = await prisma.eventProposal.findUnique({
+      where: { id: epcId },
+      select: {
+        id: true,
+        created_by_id: true,
+        workflows: {
+          select: { id: true, isActive: true },
+          orderBy: { created_at: "desc" }, // most recent first
+        },
+      },
+    });
+
+    if (!epc) throw new ApiError(404, "EPC not found");
+
+    // ── Guard: only the EPC creator can use this endpoint ────────────────────
+    if (epc.created_by_id !== userId) {
+      throw new ApiError(
+        403,
+        "Only the creator of this EPC can post a creator comment",
+      );
+    }
+
+    // ── Guard: at least one workflow must exist ───────────────────────────────
+    // A comment must anchor to a WorkflowInstance (for timeline context).
+    // If no workflow has been assigned yet, there is nothing to attach to.
+    if (!epc.workflows.length) {
+      throw new ApiError(
+        400,
+        "No workflow has been assigned to this EPC yet. Comments can be added once a workflow is assigned.",
+      );
+    }
+
+    // ── Pick the best workflowId to attach to ────────────────────────────────
+    // Prefer the active workflow. Fall back to the most recently created one
+    // (first in the desc-ordered list) if all workflows are superseded.
+    const targetWorkflow =
+      epc.workflows.find((w) => w.isActive) ?? epc.workflows[0];
+
+    const comment = await prisma.comment.create({
+      data: {
+        message: String(message).trim(),
+        type,
+        userId,
+        workflowId: targetWorkflow.id,
+        approvalId: undefined,
+      },
+      include: {
+        user: { select: { id: true, first_name: true, last_name: true } },
+      },
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Comment added successfully",
+      data: comment,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /epc/:epcId/activity
 //
-// Single chat-like activity feed for an EPC covering its ENTIRE lifecycle:
-// all workflow instances (STANDARD + every DEVIATION), all clarify iterations,
-// all stages — merged into one flat chronological list.
+// Unified chronological activity feed for an EPC covering its entire lifecycle.
+// Merges three types of entries into one flat sorted array:
 //
-// Every entry has a discriminated `entryType` field:
+//   entryType: "COMMENT"        — approver comment (via approvalId chain)
+//   entryType: "CREATOR_COMMENT"— creator comment (via workflowId directly)
+//   entryType: "AUDIT_LOG"      — system event from ApprovalAudit
+//                                 (APPROVED / REJECTED / CLARIFY / DEVIATION)
 //
-//   "COMMENT"   — free-text message left by an approver on their Approval
-//   "AUDIT_LOG" — system event from ApprovalAudit:
-//                   APPROVED  : approver approved their stage
-//                   REJECTED  : approver rejected their stage
-//                   CLARIFY   : approver sent workflow back to stage 1
-//                   DEVIATION : budget changed, new workflow instance created
-//
-// ── How the query works now that ApprovalAudit has relations ─────────────────
-// With proper FK relations on ApprovalAudit (workflow, stage?, actor), we can
-// use a single `include` to get actor name and stage context inline — no manual
-// batching or sentinel detection needed in application code.
-//
-// Total DB round-trips: 3
+// DB round-trips: 4
 //   1. eventProposal  → validate EPC, pull all workflowIds + metadata
-//   2. comment        → all comments with user + stage context
-//   3. approvalAudit  → all audit rows with actor + stage included directly
-//
-// ── DEVIATION rows ───────────────────────────────────────────────────────────
-// stageId is null for DEVIATION audit rows (no triggering stage). Prisma
-// returns stage: null for those rows — no special handling needed.
-//
-// ── Response shape ───────────────────────────────────────────────────────────
-// {
-//   success: true,
-//   epcId: "uuid",
-//   totalEntries: 14,
-//   data: [
-//     {
-//       entryType: "AUDIT_LOG",
-//       id: "uuid",
-//       action: "APPROVED",
-//       reason: null,
-//       actor: { id, first_name, last_name },
-//       workflowId: "uuid",
-//       workflowType: "STANDARD",
-//       isActiveWorkflow: false,
-//       stageOrder: 1,              // null for DEVIATION entries
-//       stageName: "Finance Check", // null for DEVIATION entries
-//       iteration: 1,              // null for DEVIATION entries
-//       isCurrentIteration: false, // null for DEVIATION entries
-//       createdAt: "ISO string"
-//     },
-//     {
-//       entryType: "COMMENT",
-//       id: "uuid",
-//       message: "Please recheck budget line 3",
-//       actor: { id, first_name, last_name },
-//       workflowId: "uuid",
-//       workflowType: "STANDARD",
-//       isActiveWorkflow: true,
-//       stageOrder: 1,
-//       stageName: "Finance Check",
-//       iteration: 2,
-//       isCurrentIteration: true,
-//       createdAt: "ISO string"
-//     }
-//   ]
-// }
+//   2. comment        → approver comments via approval → stage → workflow chain
+//   3. comment        → creator comments via workflowId directly
+//   4. approvalAudit  → all audit rows with actor + stage included (via relations)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getEPCActivityTimeline = async (
@@ -205,11 +233,7 @@ export const getEPCActivityTimeline = async (
       select: {
         id: true,
         workflows: {
-          select: {
-            id: true,
-            workflowType: true,
-            isActive: true,
-          },
+          select: { id: true, workflowType: true, isActive: true },
         },
       },
     });
@@ -227,7 +251,7 @@ export const getEPCActivityTimeline = async (
 
     const workflowIds = epc.workflows.map((w) => w.id);
 
-    // Fast O(1) annotation lookup: workflowId → { workflowType, isActive }
+    // O(1) annotation lookup: workflowId → { workflowType, isActive }
     const workflowMeta = new Map(
       epc.workflows.map((w) => [
         w.id,
@@ -235,10 +259,10 @@ export const getEPCActivityTimeline = async (
       ]),
     );
 
-    // ── Step 2: All comments across every workflow instance ───────────────────
-    // Traverses Comment → Approval → StageInstance to get full stage context.
-    const rawComments = await prisma.comment.findMany({
+    // ── Step 2: Approver comments (approvalId is set, workflowId is null) ────
+    const approverComments = await prisma.comment.findMany({
       where: {
+        approvalId: { not: null },
         approval: {
           stage: { workflowId: { in: workflowIds } },
         },
@@ -247,9 +271,7 @@ export const getEPCActivityTimeline = async (
         id: true,
         message: true,
         createdAt: true,
-        user: {
-          select: { id: true, first_name: true, last_name: true },
-        },
+        user: { select: { id: true, first_name: true, last_name: true } },
         approval: {
           select: {
             stage: {
@@ -267,11 +289,24 @@ export const getEPCActivityTimeline = async (
       orderBy: { createdAt: "asc" },
     });
 
-    // ── Step 3: All audit rows — actor and stage included directly ────────────
-    // ApprovalAudit now has proper @relation fields, so Prisma can traverse
-    // actor (User) and stage (StageInstance?) inline. No manual batching needed.
-    // stage is null for DEVIATION rows — Prisma returns null, no special casing.
-    const rawAuditLogs = await prisma.approvalAudit.findMany({
+    // ── Step 3: Creator comments (workflowId is set, approvalId is null) ─────
+    const creatorComments = await prisma.comment.findMany({
+      where: {
+        workflowId: { in: workflowIds },
+        approvalId: null,
+      },
+      select: {
+        id: true,
+        message: true,
+        createdAt: true,
+        workflowId: true,
+        user: { select: { id: true, first_name: true, last_name: true } },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+
+    // ── Step 4: Audit logs (with actor + stage via Prisma relations) ──────────
+    const auditLogs = await prisma.approvalAudit.findMany({
       where: { workflowId: { in: workflowIds } },
       select: {
         id: true,
@@ -279,9 +314,7 @@ export const getEPCActivityTimeline = async (
         action: true,
         reason: true,
         createdAt: true,
-        actor: {
-          select: { id: true, first_name: true, last_name: true },
-        },
+        actor: { select: { id: true, first_name: true, last_name: true } },
         stage: {
           select: {
             stageOrder: true,
@@ -294,39 +327,112 @@ export const getEPCActivityTimeline = async (
       orderBy: { createdAt: "asc" },
     });
 
-    // ── Step 4: Shape and merge ───────────────────────────────────────────────
+    // ── Step 5: Shape and merge ───────────────────────────────────────────────
 
-    const commentEntries = rawComments.map((c) => {
-      const wf = workflowMeta.get(c.approval.stage.workflowId);
-      return {
-        entryType: "COMMENT",
-        id: c.id,
-        message: c.message,
-        actor: c.user,
-        workflowId: c.approval.stage.workflowId,
-        workflowType: wf?.workflowType ?? null,
-        isActiveWorkflow: wf?.isActive ?? null,
-        stageOrder: c.approval.stage.stageOrder,
-        stageName: c.approval.stage.stageName,
-        iteration: c.approval.stage.iteration,
-        isCurrentIteration: c.approval.stage.isCurrentIteration,
-        createdAt: c.createdAt.toISOString(),
-      };
-    });
+    type Actor = { id: string; first_name: string; last_name: string } | null;
 
-    const auditEntries = rawAuditLogs.map((a) => {
+    type StageContext = {
+      stageOrder: number | null;
+      stageName: string | null;
+      iteration: number | null;
+      isCurrentIteration: boolean | null;
+    };
+
+    type ApproverCommentEntry = {
+      entryType: "COMMENT";
+      id: string;
+      message: string;
+      actor: Actor;
+      workflowId: string;
+      workflowType: string | null;
+      isActiveWorkflow: boolean | null;
+      createdAt: string;
+    } & StageContext;
+
+    type CreatorCommentEntry = {
+      entryType: "CREATOR_COMMENT";
+      id: string;
+      message: string;
+      actor: Actor;
+      workflowId: string;
+      workflowType: string | null;
+      isActiveWorkflow: boolean | null;
+      // No stage context — creator comments are workflow-level, not stage-level
+      stageOrder: null;
+      stageName: null;
+      iteration: null;
+      isCurrentIteration: null;
+      createdAt: string;
+    };
+
+    type AuditEntry = {
+      entryType: "AUDIT_LOG";
+      id: string;
+      action: string;
+      reason: string | null;
+      actor: Actor;
+      workflowId: string;
+      workflowType: string | null;
+      isActiveWorkflow: boolean | null;
+      createdAt: string;
+    } & StageContext;
+
+    type TimelineEntry =
+      | ApproverCommentEntry
+      | CreatorCommentEntry
+      | AuditEntry;
+
+    const approverCommentEntries: ApproverCommentEntry[] = approverComments.map(
+      (c) => {
+        const wf = workflowMeta.get(c.approval!.stage.workflowId);
+        return {
+          entryType: "COMMENT",
+          id: c.id,
+          message: c.message,
+          actor: c.user,
+          workflowId: c.approval!.stage.workflowId,
+          workflowType: wf?.workflowType ?? null,
+          isActiveWorkflow: wf?.isActive ?? null,
+          stageOrder: c.approval!.stage.stageOrder,
+          stageName: c.approval!.stage.stageName,
+          iteration: c.approval!.stage.iteration,
+          isCurrentIteration: c.approval!.stage.isCurrentIteration,
+          createdAt: c.createdAt.toISOString(),
+        };
+      },
+    );
+
+    const creatorCommentEntries: CreatorCommentEntry[] = creatorComments.map(
+      (c) => {
+        const wf = workflowMeta.get(c.workflowId!);
+        return {
+          entryType: "CREATOR_COMMENT",
+          id: c.id,
+          message: c.message,
+          actor: c.user,
+          workflowId: c.workflowId!,
+          workflowType: wf?.workflowType ?? null,
+          isActiveWorkflow: wf?.isActive ?? null,
+          stageOrder: null,
+          stageName: null,
+          iteration: null,
+          isCurrentIteration: null,
+          createdAt: c.createdAt.toISOString(),
+        };
+      },
+    );
+
+    const auditEntries: AuditEntry[] = auditLogs.map((a) => {
       const wf = workflowMeta.get(a.workflowId);
       return {
         entryType: "AUDIT_LOG",
         id: a.id,
         action: a.action,
         reason: a.reason ?? null,
-        // actor relation is always populated (every audit row has an approverId)
         actor: a.actor,
         workflowId: a.workflowId,
         workflowType: wf?.workflowType ?? null,
         isActiveWorkflow: wf?.isActive ?? null,
-        // stage is null for DEVIATION rows — Prisma returns null directly
         stageOrder: a.stage?.stageOrder ?? null,
         stageName: a.stage?.stageName ?? null,
         iteration: a.stage?.iteration ?? null,
@@ -335,8 +441,11 @@ export const getEPCActivityTimeline = async (
       };
     });
 
-    // Merge both arrays and sort by timestamp ascending (oldest first)
-    const timeline = [...commentEntries, ...auditEntries].sort(
+    const timeline: TimelineEntry[] = [
+      ...approverCommentEntries,
+      ...creatorCommentEntries,
+      ...auditEntries,
+    ].sort(
       (a, b) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
