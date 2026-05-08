@@ -34,6 +34,6 @@ export const firstAuthRequestPerDay = async (
     next();
   } catch (err) {
     console.error("First-auth-request DAU error:", err);
-    next(); // analytics must never break the app
+    next(err); // analytics must never break the app
   }
 };

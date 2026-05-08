@@ -415,7 +415,8 @@ export const ModelName = {
   EPF: 'EPF',
   CRF: 'CRF',
   LineItem: 'LineItem',
-  Comment: 'Comment'
+  Comment: 'Comment',
+  Operator: 'Operator'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -431,7 +432,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "approvalAudit" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "approvalAudit" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2803,6 +2804,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Operator: {
+      payload: Prisma.$OperatorPayload<ExtArgs>
+      fields: Prisma.OperatorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OperatorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperatorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OperatorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperatorPayload>
+        }
+        findFirst: {
+          args: Prisma.OperatorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperatorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OperatorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperatorPayload>
+        }
+        findMany: {
+          args: Prisma.OperatorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperatorPayload>[]
+        }
+        create: {
+          args: Prisma.OperatorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperatorPayload>
+        }
+        createMany: {
+          args: Prisma.OperatorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OperatorCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperatorPayload>[]
+        }
+        delete: {
+          args: Prisma.OperatorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperatorPayload>
+        }
+        update: {
+          args: Prisma.OperatorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperatorPayload>
+        }
+        deleteMany: {
+          args: Prisma.OperatorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OperatorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OperatorUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperatorPayload>[]
+        }
+        upsert: {
+          args: Prisma.OperatorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OperatorPayload>
+        }
+        aggregate: {
+          args: Prisma.OperatorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOperator>
+        }
+        groupBy: {
+          args: Prisma.OperatorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OperatorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OperatorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OperatorCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3263,6 +3338,19 @@ export const CommentScalarFieldEnum = {
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
 
 
+export const OperatorScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  phone: 'phone',
+  machineSerial: 'machineSerial',
+  submittedBy: 'submittedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OperatorScalarFieldEnum = (typeof OperatorScalarFieldEnum)[keyof typeof OperatorScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3622,6 +3710,7 @@ export type GlobalOmitConfig = {
   cRF?: Prisma.CRFOmit
   lineItem?: Prisma.LineItemOmit
   comment?: Prisma.CommentOmit
+  operator?: Prisma.OperatorOmit
 }
 
 /* Types for Logging */

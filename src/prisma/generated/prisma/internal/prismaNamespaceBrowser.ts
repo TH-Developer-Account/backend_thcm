@@ -82,7 +82,8 @@ export const ModelName = {
   EPF: 'EPF',
   CRF: 'CRF',
   LineItem: 'LineItem',
-  Comment: 'Comment'
+  Comment: 'Comment',
+  Operator: 'Operator'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -520,6 +521,19 @@ export const CommentScalarFieldEnum = {
 } as const
 
 export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const OperatorScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  phone: 'phone',
+  machineSerial: 'machineSerial',
+  submittedBy: 'submittedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type OperatorScalarFieldEnum = (typeof OperatorScalarFieldEnum)[keyof typeof OperatorScalarFieldEnum]
 
 
 export const SortOrder = {

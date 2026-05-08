@@ -177,3 +177,8 @@ export type LineItem = Prisma.LineItemModel
  * 
  */
 export type Comment = Prisma.CommentModel
+/**
+ * Model Operator
+ * 
+ */
+export type Operator = Prisma.OperatorModel

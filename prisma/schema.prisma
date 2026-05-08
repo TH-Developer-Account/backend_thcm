@@ -641,3 +641,17 @@ model Comment {
 
   @@index([userId])
 }
+
+model Operator {
+  id             Int               @id @default(autoincrement())
+  name           String
+  phone          String            @unique
+  machineSerial  String
+  submittedBy    String           
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([machineSerial])         // look up operators by machine quickly
+  @@index([submittedBy])           // look up all registrations a dealer submitted
+}
+
