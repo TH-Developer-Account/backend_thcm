@@ -1,0 +1,36 @@
+services:
+  api:
+    build: .
+    expose:
+      - "8000"
+    env_file: .env
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      - redis # wait for shared redis
+    restart: unless-stopped
+    mem_limit: 1g
+    networks:
+      - shared-net
+
+  postgres:
+    image: postgres:16-alpine
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    mem_limit: 512m
+    networks:
+      - shared-net
+
+volumes:
+  postgres_data:
+
+networks:
+  shared-net:
+    external: true
