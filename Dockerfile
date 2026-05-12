@@ -3,7 +3,7 @@ FROM node:20-alpine
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci
+RUN npm ci                   
 
 COPY prisma ./prisma
 COPY prisma.config.ts ./
@@ -14,4 +14,4 @@ COPY src ./src
 
 EXPOSE 8000
 
-CMD [ "node", "src/server.ts"]
+CMD ["npx", "ts-node", "src/server.ts"]
