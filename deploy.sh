@@ -2,7 +2,7 @@
 set -e
 
 echo "→ Pulling latest code..."
-git pull origin main
+git pull origin develop
 
 echo "→ Building new image..."
 docker compose build --no-cache
