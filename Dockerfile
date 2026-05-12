@@ -1,27 +1,16 @@
-# ─── Stage 1: Dependencies ────────────────────────────────────────────────
-FROM node:20-alpine AS deps
+FROM node:20-alpine
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci
 
-# ─── Stage 2: Production ──────────────────────────────────────────────────
-FROM node:20-alpine AS production
-
-WORKDIR /app
-
-# Copy production dependencies
-COPY --from=deps /app/node_modules ./node_modules
-
-# Copy prisma schema and generate client
 COPY prisma ./prisma
 RUN npx prisma generate
 
-# Copy source
+COPY tsconfig.json ./
 COPY src ./src
-COPY server.js ./
 
 EXPOSE 8000
 
-CMD ["node", "server.js"]
+CMD [ "node", "src/server.ts"]
