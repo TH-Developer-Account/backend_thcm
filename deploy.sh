@@ -8,7 +8,7 @@ echo "→ Building new image..."
 docker compose build --no-cache
 
 echo "→ Running migrations..."
-docker compose run --rm api npx prisma migrate deploy
+docker compose run --rm -e DATABASE_URL=postgresql://postgres:123@postgres:5432/postgres api npx prisma migrate deploy
 
 echo "→ Restarting service..."
 docker compose up -d
