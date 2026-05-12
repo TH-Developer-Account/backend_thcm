@@ -1,15 +1,10 @@
 import Redis from "ioredis";
 
-console.log(
-  "Connecting to Redis...",
-  process.env.REDIS_PASSWORD,
-  process.env.REDIS_PORT,
-);
+const REDIS_URL = process.env.REDIS_URL ?? "redis://127.0.0.1:6379";
 
-const redis = new Redis({
-  host: "127.0.0.1",
-  port: Number(process.env.REDIS_PORT) || 6379,
-  //   password: process.env.REDIS_PASSWORD,
+// Used by application code (dedup, token caching)
+const redis = new Redis(REDIS_URL, {
+  maxRetriesPerRequest: 1,
 });
 
 redis.on("connect", () => {
