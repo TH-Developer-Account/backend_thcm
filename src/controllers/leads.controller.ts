@@ -316,3 +316,86 @@ export const deleteLead = async (
     next(error);
   }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /external/leads?phone=9876543210
+//
+// Called by an external service. Looks up all leads matching the given phone
+// number and returns each one with its full EPC context.
+//
+// If multiple leads share the same phone number (same person attended multiple
+// events) they are all returned as an array.
+//
+// Response shape:
+// {
+//   "success": true,
+//   "phone": "9876543210",
+//   "totalMatches": 2,
+//   "data": [
+//     {
+//       "lead": { id, name, email, phone, company, designation, source, status, notes, ... },
+//       "epc":  { id, proposal_number, event_name, event_from_date, event_to_date,
+//                 location, event_description, event_objective, status, department,
+//                 region, branch, vertical }
+//     },
+//     ...
+//   ]
+// }
+//
+// Returns 404 if no leads are found for the given phone number.
+// Returns 400 if the phone query param is missing or blank.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getLeadsByPhone = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const phone = String(req.query.phone ?? "").trim();
+
+    if (!phone) {
+      throw new ApiError(400, "phone query parameter is required");
+    }
+
+    const leads = await prisma.lead.findMany({
+      where: { phone },
+      orderBy: { created_at: "desc" },
+      include: {
+        epc: {
+          include: {
+            event_name: { select: { id: true, title: true } },
+          },
+        },
+      },
+    });
+
+    if (leads.length === 0) {
+      throw new ApiError(404, `No leads found for phone number: ${phone}`);
+    }
+
+    // ── Shape the response — lead and epc side by side ────────────────────
+    const data = leads.map(({ epc, ...lead }) => ({
+      lead: {
+        name: lead.name,
+        phone: lead.phone,
+        email: lead.email,
+      },
+      epc: {
+        id: epc.id,
+        event_name: epc.event_name.title,
+        event_description: epc.event_description,
+        proposal_number: epc.proposal_number,
+      },
+    }));
+
+    res.status(200).json({
+      success: true,
+      phone,
+      totalMatches: data.length,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

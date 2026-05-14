@@ -1,10 +1,17 @@
 import { Router } from "express";
 import asyncHandler from "../middleware/async.middleware";
 import { requireAuth } from "../middleware/auth.middleware";
+import { internalAuth } from "../middleware/internalAuth.middleware";
 import { firstAuthRequestPerDay } from "../middleware/dailyActiveUsers.middleware";
-import { createLeads, getLeads } from "../controllers/leads.controller";
+import {
+  createLeads,
+  getLeads,
+  getLeadsByPhone,
+} from "../controllers/leads.controller";
 
 const router = Router();
+
+router.get("/get-lead-by-phone", internalAuth, asyncHandler(getLeadsByPhone));
 
 router.use(requireAuth);
 router.use(firstAuthRequestPerDay);
