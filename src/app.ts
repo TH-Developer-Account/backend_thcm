@@ -13,6 +13,7 @@ import efpRoutes from "./routes/epf.routes";
 import crfRoutes from "./routes/crf.routes";
 import commentRoutes from "./routes/comments.routes";
 import operatorRoutes from "./routes/operator.routes";
+import leadRoutes from "./routes/leads.routes";
 import errorHandler from "./middleware/error.middleware";
 import ApiError from "./utils/apiError";
 import { startJobs } from "./jobs/scheduler";
@@ -43,6 +44,7 @@ app.use("/api/v1/epf", efpRoutes);
 app.use("/api/v1/crf", crfRoutes);
 app.use("/api/v1/comment", commentRoutes);
 app.use("/api/v1/operator", operatorRoutes);
+app.use("/api/v1/leads", leadRoutes);
 
 // Scheduler
 startJobs();

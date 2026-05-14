@@ -305,6 +305,7 @@ model EventProposal {
   crf CRF?
 
   workflows WorkflowInstance[]
+  leads     Lead[]
 
   search_vector Unsupported("tsvector")?
   created_at    DateTime                 @default(now())
@@ -654,4 +655,19 @@ model Operator {
   @@index([machineSerial])         // look up operators by machine quickly
   @@index([submittedBy])           // look up all registrations a dealer submitted
 }
+
+model Lead {
+  id             String      @id @default(uuid())
+  epcId          String
+  name           String      @db.VarChar(100)
+  email          String?     @db.VarChar(100)
+  phone          String?     @db.VarChar(15)
+  notes          String?
+  epc            EventProposal @relation(fields: [epcId], references: [id])
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+
+  @@index([epcId])
+}
+
 

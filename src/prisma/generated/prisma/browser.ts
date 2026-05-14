@@ -182,3 +182,8 @@ export type Comment = Prisma.CommentModel
  * 
  */
 export type Operator = Prisma.OperatorModel
+/**
+ * Model Lead
+ * 
+ */
+export type Lead = Prisma.LeadModel

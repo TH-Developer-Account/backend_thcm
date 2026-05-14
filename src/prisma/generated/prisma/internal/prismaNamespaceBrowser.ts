@@ -83,7 +83,8 @@ export const ModelName = {
   CRF: 'CRF',
   LineItem: 'LineItem',
   Comment: 'Comment',
-  Operator: 'Operator'
+  Operator: 'Operator',
+  Lead: 'Lead'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -534,6 +535,20 @@ export const OperatorScalarFieldEnum = {
 } as const
 
 export type OperatorScalarFieldEnum = (typeof OperatorScalarFieldEnum)[keyof typeof OperatorScalarFieldEnum]
+
+
+export const LeadScalarFieldEnum = {
+  id: 'id',
+  epcId: 'epcId',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  notes: 'notes',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
 
 
 export const SortOrder = {
