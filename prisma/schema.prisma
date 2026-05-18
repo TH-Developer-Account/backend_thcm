@@ -648,6 +648,7 @@ model Operator {
   name           String
   phone          String            @unique
   machineSerial  String
+  operatorType   String
   submittedBy    String           
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt

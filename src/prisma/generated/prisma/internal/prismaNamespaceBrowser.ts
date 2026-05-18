@@ -529,6 +529,7 @@ export const OperatorScalarFieldEnum = {
   name: 'name',
   phone: 'phone',
   machineSerial: 'machineSerial',
+  operatorType: 'operatorType',
   submittedBy: 'submittedBy',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -39,6 +39,7 @@ export type OperatorMinAggregateOutputType = {
   name: string | null
   phone: string | null
   machineSerial: string | null
+  operatorType: string | null
   submittedBy: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,6 +50,7 @@ export type OperatorMaxAggregateOutputType = {
   name: string | null
   phone: string | null
   machineSerial: string | null
+  operatorType: string | null
   submittedBy: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -59,6 +61,7 @@ export type OperatorCountAggregateOutputType = {
   name: number
   phone: number
   machineSerial: number
+  operatorType: number
   submittedBy: number
   createdAt: number
   updatedAt: number
@@ -79,6 +82,7 @@ export type OperatorMinAggregateInputType = {
   name?: true
   phone?: true
   machineSerial?: true
+  operatorType?: true
   submittedBy?: true
   createdAt?: true
   updatedAt?: true
@@ -89,6 +93,7 @@ export type OperatorMaxAggregateInputType = {
   name?: true
   phone?: true
   machineSerial?: true
+  operatorType?: true
   submittedBy?: true
   createdAt?: true
   updatedAt?: true
@@ -99,6 +104,7 @@ export type OperatorCountAggregateInputType = {
   name?: true
   phone?: true
   machineSerial?: true
+  operatorType?: true
   submittedBy?: true
   createdAt?: true
   updatedAt?: true
@@ -196,6 +202,7 @@ export type OperatorGroupByOutputType = {
   name: string
   phone: string
   machineSerial: string
+  operatorType: string
   submittedBy: string
   createdAt: Date
   updatedAt: Date
@@ -229,6 +236,7 @@ export type OperatorWhereInput = {
   name?: Prisma.StringFilter<"Operator"> | string
   phone?: Prisma.StringFilter<"Operator"> | string
   machineSerial?: Prisma.StringFilter<"Operator"> | string
+  operatorType?: Prisma.StringFilter<"Operator"> | string
   submittedBy?: Prisma.StringFilter<"Operator"> | string
   createdAt?: Prisma.DateTimeFilter<"Operator"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Operator"> | Date | string
@@ -239,6 +247,7 @@ export type OperatorOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   machineSerial?: Prisma.SortOrder
+  operatorType?: Prisma.SortOrder
   submittedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -252,6 +261,7 @@ export type OperatorWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.OperatorWhereInput | Prisma.OperatorWhereInput[]
   name?: Prisma.StringFilter<"Operator"> | string
   machineSerial?: Prisma.StringFilter<"Operator"> | string
+  operatorType?: Prisma.StringFilter<"Operator"> | string
   submittedBy?: Prisma.StringFilter<"Operator"> | string
   createdAt?: Prisma.DateTimeFilter<"Operator"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Operator"> | Date | string
@@ -262,6 +272,7 @@ export type OperatorOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   machineSerial?: Prisma.SortOrder
+  operatorType?: Prisma.SortOrder
   submittedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -280,6 +291,7 @@ export type OperatorScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Operator"> | string
   phone?: Prisma.StringWithAggregatesFilter<"Operator"> | string
   machineSerial?: Prisma.StringWithAggregatesFilter<"Operator"> | string
+  operatorType?: Prisma.StringWithAggregatesFilter<"Operator"> | string
   submittedBy?: Prisma.StringWithAggregatesFilter<"Operator"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Operator"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Operator"> | Date | string
@@ -289,6 +301,7 @@ export type OperatorCreateInput = {
   name: string
   phone: string
   machineSerial: string
+  operatorType: string
   submittedBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -299,6 +312,7 @@ export type OperatorUncheckedCreateInput = {
   name: string
   phone: string
   machineSerial: string
+  operatorType: string
   submittedBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -308,6 +322,7 @@ export type OperatorUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   machineSerial?: Prisma.StringFieldUpdateOperationsInput | string
+  operatorType?: Prisma.StringFieldUpdateOperationsInput | string
   submittedBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -318,6 +333,7 @@ export type OperatorUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   machineSerial?: Prisma.StringFieldUpdateOperationsInput | string
+  operatorType?: Prisma.StringFieldUpdateOperationsInput | string
   submittedBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -328,6 +344,7 @@ export type OperatorCreateManyInput = {
   name: string
   phone: string
   machineSerial: string
+  operatorType: string
   submittedBy: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -337,6 +354,7 @@ export type OperatorUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   machineSerial?: Prisma.StringFieldUpdateOperationsInput | string
+  operatorType?: Prisma.StringFieldUpdateOperationsInput | string
   submittedBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -347,6 +365,7 @@ export type OperatorUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.StringFieldUpdateOperationsInput | string
   machineSerial?: Prisma.StringFieldUpdateOperationsInput | string
+  operatorType?: Prisma.StringFieldUpdateOperationsInput | string
   submittedBy?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -357,6 +376,7 @@ export type OperatorCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   machineSerial?: Prisma.SortOrder
+  operatorType?: Prisma.SortOrder
   submittedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -371,6 +391,7 @@ export type OperatorMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   machineSerial?: Prisma.SortOrder
+  operatorType?: Prisma.SortOrder
   submittedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -381,6 +402,7 @@ export type OperatorMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   machineSerial?: Prisma.SortOrder
+  operatorType?: Prisma.SortOrder
   submittedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -397,6 +419,7 @@ export type OperatorSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name?: boolean
   phone?: boolean
   machineSerial?: boolean
+  operatorType?: boolean
   submittedBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -407,6 +430,7 @@ export type OperatorSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   phone?: boolean
   machineSerial?: boolean
+  operatorType?: boolean
   submittedBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -417,6 +441,7 @@ export type OperatorSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   phone?: boolean
   machineSerial?: boolean
+  operatorType?: boolean
   submittedBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -427,12 +452,13 @@ export type OperatorSelectScalar = {
   name?: boolean
   phone?: boolean
   machineSerial?: boolean
+  operatorType?: boolean
   submittedBy?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OperatorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "phone" | "machineSerial" | "submittedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["operator"]>
+export type OperatorOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "phone" | "machineSerial" | "operatorType" | "submittedBy" | "createdAt" | "updatedAt", ExtArgs["result"]["operator"]>
 
 export type $OperatorPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Operator"
@@ -442,6 +468,7 @@ export type $OperatorPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     name: string
     phone: string
     machineSerial: string
+    operatorType: string
     submittedBy: string
     createdAt: Date
     updatedAt: Date
@@ -872,6 +899,7 @@ export interface OperatorFieldRefs {
   readonly name: Prisma.FieldRef<"Operator", 'String'>
   readonly phone: Prisma.FieldRef<"Operator", 'String'>
   readonly machineSerial: Prisma.FieldRef<"Operator", 'String'>
+  readonly operatorType: Prisma.FieldRef<"Operator", 'String'>
   readonly submittedBy: Prisma.FieldRef<"Operator", 'String'>
   readonly createdAt: Prisma.FieldRef<"Operator", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Operator", 'DateTime'>
