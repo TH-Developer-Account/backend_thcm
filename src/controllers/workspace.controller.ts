@@ -297,11 +297,21 @@ export async function setupWorkspaceRBAC(req: Request, res: Response) {
 
         if (permissions.length > 0) {
           await tx.profilePermission.createMany({
-            data: permissions.map(({ action, appKey, moduleKey }) => ({
-              profileId: profile.id,
-              action,
-              moduleId: moduleKeyToId.get(`${appKey}:${moduleKey}`)!,
-            })),
+            data: permissions.map(
+              ({
+                action,
+                appKey,
+                moduleKey,
+              }: {
+                action: string;
+                appKey: string;
+                moduleKey: string;
+              }) => ({
+                profileId: profile.id,
+                action,
+                moduleId: moduleKeyToId.get(`${appKey}:${moduleKey}`)!,
+              }),
+            ),
           });
         }
       }
