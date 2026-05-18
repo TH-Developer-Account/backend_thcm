@@ -9,13 +9,7 @@ import { prisma } from "../config/prisma";
 import logger from "../config/logger";
 
 // Fields the bot is allowed to send — anything else is ignored
-const REQUIRED_FIELDS = [
-  "name",
-  "phone",
-  "machine",
-  "submittedBy",
-  "operatorType",
-];
+const REQUIRED_FIELDS = ["name", "phone", "machine", "submittedBy", "type"];
 
 export async function registerOperator(
   req: Request,
@@ -42,7 +36,7 @@ export async function registerOperator(
         name: body.name,
         phone: body.phone,
         machineSerial: body.machine,
-        operatorType: body.operatorType,
+        operatorType: body.type,
         submittedBy: body.submittedBy,
       },
     });
