@@ -8,6 +8,7 @@ import {
   getWorkflowController,
   getWorkflowHistoryController,
   previewWorkflowController,
+  activateFirstStageController,
 } from "../controllers/workflow.controller";
 import { requireAuth } from "../middleware/auth.middleware";
 import { firstAuthRequestPerDay } from "../middleware/dailyActiveUsers.middleware";
@@ -21,6 +22,10 @@ router.post("/stages/:stageId/approve", asyncHandler(approveStageController));
 router.post("/assign-workflow", asyncHandler(assignWorkflowController));
 router.post("/preview-workflow", asyncHandler(previewWorkflowController));
 router.post("/stages/:stageId/clarify", asyncHandler(clarifyStageController));
+router.post(
+  "/stages/activate-first-stage",
+  asyncHandler(activateFirstStageController),
+);
 router.post(
   "/stages/:stageId/trigger-deviation",
   asyncHandler(triggerDeviationController),

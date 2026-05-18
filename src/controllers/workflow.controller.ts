@@ -10,14 +10,14 @@ import ApiError from "../utils/apiError";
 // ─────────────────────────────────────────────────────────────────────────────
 
 const evaluateBudget = (
-	selectedValue: string,
-	actualValue: number,
+  selectedValue: string,
+  actualValue: number,
 ): boolean => {
-	const range = budgetMap[selectedValue];
-	if (!range) return false;
-	const { min, max } = range;
-	if (max === null) return actualValue >= min;
-	return actualValue >= min && actualValue <= max;
+  const range = budgetMap[selectedValue];
+  if (!range) return false;
+  const { min, max } = range;
+  if (max === null) return actualValue >= min;
+  return actualValue >= min && actualValue <= max;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -36,196 +36,196 @@ const evaluateBudget = (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const assignWorkflowController = async (
-	req: Request,
-	res: Response,
-	next: NextFunction,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ) => {
-	try {
-		const userId = req.user?.id;
-		const { eventProposalId, workspaceId, appId, budget } = req.body;
+  try {
+    const userId = req.user?.id;
+    const { eventProposalId, workspaceId, appId, budget } = req.body;
 
-		if (!userId) throw new ApiError(401, "Unauthorized");
-		if (!eventProposalId || !workspaceId || !appId || budget === undefined) {
-			throw new ApiError(
-				400,
-				"eventProposalId, workspaceId, appId and budget are required",
-			);
-		}
+    if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!eventProposalId || !workspaceId || !appId || budget === undefined) {
+      throw new ApiError(
+        400,
+        "eventProposalId, workspaceId, appId and budget are required",
+      );
+    }
 
-		// Guard: reject if an active workflow already exists for this EPC.
-		// Only the Deviation controller is allowed to create a second workflow.
-		const existing = await prisma.workflowInstance.findFirst({
-			where: { eventProposalId, isActive: true },
-		});
-		if (existing) {
-			throw new ApiError(
-				409,
-				"An active workflow already exists for this event proposal. " +
-					"Use the deviation endpoint to replace it.",
-			);
-		}
+    // Guard: reject if an active workflow already exists for this EPC.
+    // Only the Deviation controller is allowed to create a second workflow.
+    const existing = await prisma.workflowInstance.findFirst({
+      where: { eventProposalId, isActive: true },
+    });
+    if (existing) {
+      throw new ApiError(
+        409,
+        "An active workflow already exists for this event proposal. " +
+          "Use the deviation endpoint to replace it.",
+      );
+    }
 
-		// 1. Find all templates for this app + workspace that the user manages
-		const templates = await prisma.workflowTemplate.findMany({
-			where: {
-				workspaceId,
-				appId,
-				isActive: true,
-				workFlowUsers: { some: { userId } },
-			},
-			include: {
-				stages: {
-					include: { approvers: true },
-					orderBy: { stageOrder: "asc" },
-				},
-			},
-		});
+    // 1. Find all templates for this app + workspace that the user manages
+    const templates = await prisma.workflowTemplate.findMany({
+      where: {
+        workspaceId,
+        appId,
+        isActive: true,
+        workFlowUsers: { some: { userId } },
+      },
+      include: {
+        stages: {
+          include: { approvers: true },
+          orderBy: { stageOrder: "asc" },
+        },
+      },
+    });
 
-		if (!templates.length) {
-			throw new ApiError(
-				404,
-				"No workflow templates found for this workspace/app",
-			);
-		}
+    if (!templates.length) {
+      throw new ApiError(
+        404,
+        "No workflow templates found for this workspace/app",
+      );
+    }
 
-		// 2. Pick the template whose budget range covers the submitted budget
-		const matchedTemplate = templates.find((t) =>
-			evaluateBudget(t.metaData_1 || "", Number(budget)),
-		);
-		if (!matchedTemplate) {
-			throw new ApiError(
-				400,
-				"No matching workflow template found for the given budget",
-			);
-		}
+    // 2. Pick the template whose budget range covers the submitted budget
+    const matchedTemplate = templates.find((t) =>
+      evaluateBudget(t.metaData_1 || "", Number(budget)),
+    );
+    if (!matchedTemplate) {
+      throw new ApiError(
+        400,
+        "No matching workflow template found for the given budget",
+      );
+    }
 
-		// 3. Create the WorkflowInstance, StageInstances, and Approvals in one write
-		const workflowInstance = await prisma.workflowInstance.create({
-			data: {
-				templateId: matchedTemplate.id,
-				workspaceId,
-				eventProposalId,
-				currentStage: 1,
-				iteration: 1, // ✅ NEW: first iteration
-				isActive: true, // ✅ NEW: this is the active workflow
-				workflowType: "STANDARD", // ✅ NEW: normal first-run
+    // 3. Create the WorkflowInstance, StageInstances, and Approvals in one write
+    const workflowInstance = await prisma.workflowInstance.create({
+      data: {
+        templateId: matchedTemplate.id,
+        workspaceId,
+        eventProposalId,
+        currentStage: 1,
+        iteration: 1, // ✅ NEW: first iteration
+        isActive: true, // ✅ NEW: this is the active workflow
+        workflowType: "STANDARD", // ✅ NEW: normal first-run
 
-				stages: {
-					create: matchedTemplate.stages.map((stage) => ({
-						stageOrder: stage.stageOrder,
-						strategy: stage.strategy,
-						minApprovals: stage.minApprovals,
-						stageName: stage.name,
-						iteration: 1, // ✅ NEW: belongs to iteration 1
-						isCurrentIteration: true, // ✅ NEW: these are the live stages
-						// Stage 1 starts immediately; the rest are PENDING until their turn
-						status: stage.stageOrder === 1 ? "IN_PROGRESS" : "PENDING",
-						startedAt: stage.stageOrder === 1 ? new Date() : null, // ✅ NEW
+        stages: {
+          create: matchedTemplate.stages.map((stage) => ({
+            stageOrder: stage.stageOrder,
+            strategy: stage.strategy,
+            minApprovals: stage.minApprovals,
+            stageName: stage.name,
+            iteration: 1, // ✅ NEW: belongs to iteration 1
+            isCurrentIteration: true, // ✅ NEW: these are the live stages
+            // Stage 1 starts immediately; the rest are PENDING until their turn
+            status: stage.stageOrder === 1 ? "IN_PROGRESS" : "PENDING",
+            startedAt: stage.stageOrder === 1 ? new Date() : null, // ✅ NEW
 
-						approvals: {
-							create: stage.approvers.map((a) => ({
-								approverId: a.userId,
-								status: "PENDING",
-							})),
-						},
-					})),
-				},
-			},
+            approvals: {
+              create: stage.approvers.map((a) => ({
+                approverId: a.userId,
+                status: "PENDING",
+              })),
+            },
+          })),
+        },
+      },
 
-			include: {
-				template: true,
-				stages: {
-					where: { isCurrentIteration: true }, // ✅ NEW: only return live stages
-					orderBy: { stageOrder: "asc" },
-					include: {
-						approvals: {
-							include: {
-								approver: {
-									select: {
-										id: true,
-										first_name: true,
-										last_name: true,
-										email: true,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		});
+      include: {
+        template: true,
+        stages: {
+          where: { isCurrentIteration: true }, // ✅ NEW: only return live stages
+          orderBy: { stageOrder: "asc" },
+          include: {
+            approvals: {
+              include: {
+                approver: {
+                  select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    email: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
 
-		res.status(201).json({
-			success: true,
-			message: "Workflow assigned successfully",
-			data: workflowInstance,
-		});
-	} catch (error) {
-		next(error);
-	}
+    res.status(201).json({
+      success: true,
+      message: "Workflow assigned successfully",
+      data: workflowInstance,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const previewWorkflowController = async (
-	req: Request,
-	res: Response,
-	next: NextFunction,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ) => {
-	try {
-		const userId = req.user?.id;
-		const { workspaceId, appId, budget } = req.body;
+  try {
+    const userId = req.user?.id;
+    const { workspaceId, appId, budget } = req.body;
 
-		if (!userId) throw new ApiError(401, "Unauthorized");
-		if (!workspaceId || !appId || budget === undefined) {
-			throw new ApiError(400, "workspaceId, appId and budget are required");
-		}
+    if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!workspaceId || !appId || budget === undefined) {
+      throw new ApiError(400, "workspaceId, appId and budget are required");
+    }
 
-		// 1. Get templates
-		const templates = await prisma.workflowTemplate.findMany({
-			where: {
-				workspaceId,
-				appId,
-				isActive: true,
-				workFlowUsers: { some: { userId } },
-			},
-			include: {
-				stages: {
-					include: {
-						approvers: {
-							include: {
-								user: true,
-							},
-						},
-					},
-					orderBy: { stageOrder: "asc" },
-				},
-			},
-		});
+    // 1. Get templates
+    const templates = await prisma.workflowTemplate.findMany({
+      where: {
+        workspaceId,
+        appId,
+        isActive: true,
+        workFlowUsers: { some: { userId } },
+      },
+      include: {
+        stages: {
+          include: {
+            approvers: {
+              include: {
+                user: true,
+              },
+            },
+          },
+          orderBy: { stageOrder: "asc" },
+        },
+      },
+    });
 
-		if (!templates.length) {
-			throw new ApiError(404, "No workflow templates found");
-		}
+    if (!templates.length) {
+      throw new ApiError(404, "No workflow templates found");
+    }
 
-		// 2. Match template
-		const matchedTemplate = templates.find((t) =>
-			evaluateBudget(t.metaData_1 || "", Number(budget)),
-		);
+    // 2. Match template
+    const matchedTemplate = templates.find((t) =>
+      evaluateBudget(t.metaData_1 || "", Number(budget)),
+    );
 
-		if (!matchedTemplate) {
-			throw new ApiError(
-				400,
-				"No matching workflow template found for given budget",
-			);
-		}
+    if (!matchedTemplate) {
+      throw new ApiError(
+        400,
+        "No matching workflow template found for given budget",
+      );
+    }
 
-		// ✅ 3. RETURN TEMPLATE (NO DB WRITE)
-		res.status(200).json({
-			success: true,
-			message: "Workflow preview fetched successfully",
-			data: matchedTemplate,
-		});
-	} catch (error) {
-		next(error);
-	}
+    // ✅ 3. RETURN TEMPLATE (NO DB WRITE)
+    res.status(200).json({
+      success: true,
+      message: "Workflow preview fetched successfully",
+      data: matchedTemplate,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -245,54 +245,54 @@ export const previewWorkflowController = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const approveStageController = async (
-	req: Request,
-	res: Response,
-	next: NextFunction,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ) => {
-	try {
-		const { stageId } = req.params;
-		const userId = req.user?.id;
+  try {
+    const { stageId } = req.params;
+    const userId = req.user?.id;
 
-		if (!stageId) throw new ApiError(400, "stageId is required");
-		if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!stageId) throw new ApiError(400, "stageId is required");
+    if (!userId) throw new ApiError(401, "Unauthorized");
 
-		// Validate the stage is current before handing off to the service
-		const stage = await prisma.stageInstance.findUnique({
-			where: { id: stageId as string },
-			select: {
-				isCurrentIteration: true,
-				workflow: { select: { isActive: true } },
-			},
-		});
+    // Validate the stage is current before handing off to the service
+    const stage = await prisma.stageInstance.findUnique({
+      where: { id: stageId as string },
+      select: {
+        isCurrentIteration: true,
+        workflow: { select: { isActive: true } },
+      },
+    });
 
-		if (!stage) throw new ApiError(404, "Stage not found");
-		if (!stage.isCurrentIteration) {
-			throw new ApiError(
-				400,
-				"This stage belongs to a past iteration and cannot be acted on",
-			);
-		}
-		if (!stage.workflow.isActive) {
-			throw new ApiError(
-				400,
-				"This workflow has been superseded and is no longer active",
-			);
-		}
+    if (!stage) throw new ApiError(404, "Stage not found");
+    if (!stage.isCurrentIteration) {
+      throw new ApiError(
+        400,
+        "This stage belongs to a past iteration and cannot be acted on",
+      );
+    }
+    if (!stage.workflow.isActive) {
+      throw new ApiError(
+        400,
+        "This workflow has been superseded and is no longer active",
+      );
+    }
 
-		await approveStage({ stageId: stageId as string, userId });
+    await approveStage({ stageId: stageId as string, userId });
 
-		res.status(200).json({
-			success: true,
-			message: "Stage approval processed successfully",
-		});
-	} catch (error) {
-		if (error instanceof Prisma.PrismaClientKnownRequestError) {
-			if (error.code === "P2025") {
-				return next(new ApiError(404, "Approval record or stage not found"));
-			}
-		}
-		next(error);
-	}
+    res.status(200).json({
+      success: true,
+      message: "Stage approval processed successfully",
+    });
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        return next(new ApiError(404, "Approval record or stage not found"));
+      }
+    }
+    next(error);
+  }
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -313,180 +313,284 @@ export const approveStageController = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const clarifyStageController = async (
-	req: Request,
-	res: Response,
-	next: NextFunction,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ) => {
-	try {
-		const { stageId } = req.params;
-		const userId = req?.user?.id;
-		const { reason } = req.body;
+  try {
+    const { stageId } = req.params;
+    const userId = req?.user?.id;
+    const { reason } = req.body;
 
-		if (!stageId) throw new ApiError(400, "stageId is required");
-		if (!userId) throw new ApiError(401, "Unauthorized");
-		if (!reason || String(reason).trim().length < 3) {
-			throw new ApiError(
-				400,
-				"A reason of at least 3 characters is required for clarification",
-			);
-		}
+    if (!stageId) throw new ApiError(400, "stageId is required");
+    if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!reason || String(reason).trim().length < 3) {
+      throw new ApiError(
+        400,
+        "A reason of at least 3 characters is required for clarification",
+      );
+    }
 
-		await prisma.$transaction(async (tx) => {
-			// ── Step 1: Load stage with full context ──────────────────────────────
-			const stage = await tx.stageInstance.findUnique({
-				where: { id: stageId as string },
-				include: {
-					approvals: true,
-					workflow: {
-						include: {
-							template: {
-								include: {
-									stages: {
-										include: { approvers: true },
-										orderBy: { stageOrder: "asc" },
-									},
-								},
-							},
-						},
-					},
-				},
-			});
+    await prisma.$transaction(async (tx) => {
+      // ── Step 1: Load stage with full context ──────────────────────────────
+      const stage = await tx.stageInstance.findUnique({
+        where: { id: stageId as string },
+        include: {
+          approvals: true,
+          workflow: {
+            include: {
+              template: {
+                include: {
+                  stages: {
+                    include: { approvers: true },
+                    orderBy: { stageOrder: "asc" },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
 
-			if (!stage) throw new ApiError(404, "Stage not found");
+      if (!stage) throw new ApiError(404, "Stage not found");
 
-			// ── Step 2: Guard checks ──────────────────────────────────────────────
+      // ── Step 2: Guard checks ──────────────────────────────────────────────
 
-			// Must be part of the live iteration
-			if (!stage.isCurrentIteration) {
-				throw new ApiError(400, "This stage belongs to a past iteration");
-			}
+      // Must be part of the live iteration
+      if (!stage.isCurrentIteration) {
+        throw new ApiError(400, "This stage belongs to a past iteration");
+      }
 
-			const workflow = stage.workflow;
+      const workflow = stage.workflow;
 
-			// Workflow must still be active (not superseded by a Deviation)
-			if (!workflow.isActive) {
-				throw new ApiError(
-					400,
-					"This workflow has been superseded and cannot be modified",
-				);
-			}
+      // Workflow must still be active (not superseded by a Deviation)
+      if (!workflow.isActive) {
+        throw new ApiError(
+          400,
+          "This workflow has been superseded and cannot be modified",
+        );
+      }
 
-			// Stage must be the currently active stage
-			if (workflow.currentStage !== stage.stageOrder) {
-				throw new ApiError(400, "This stage is not currently active");
-			}
+      // Stage must be the currently active stage
+      if (workflow.currentStage !== stage.stageOrder) {
+        throw new ApiError(400, "This stage is not currently active");
+      }
 
-			// Stage must be IN_PROGRESS
-			if (stage.status !== "IN_PROGRESS") {
-				throw new ApiError(400, "Stage is not in progress");
-			}
+      // Stage must be IN_PROGRESS
+      if (stage.status !== "IN_PROGRESS") {
+        throw new ApiError(400, "Stage is not in progress");
+      }
 
-			// User must have an approval record on this stage
-			const approval = stage.approvals.find((a) => a.approverId === userId);
-			if (!approval) {
-				throw new ApiError(403, "You are not assigned to this stage");
-			}
+      // User must have an approval record on this stage
+      const approval = stage.approvals.find((a) => a.approverId === userId);
+      if (!approval) {
+        throw new ApiError(403, "You are not assigned to this stage");
+      }
 
-			// Approver must not have already acted
-			if (approval.status !== "PENDING") {
-				throw new ApiError(400, "You have already acted on this approval");
-			}
+      // Approver must not have already acted
+      if (approval.status !== "PENDING") {
+        throw new ApiError(400, "You have already acted on this approval");
+      }
 
-			// ── Step 3: Mark this approval as CLARIFY ─────────────────────────────
-			await tx.approval.update({
-				where: { id: approval.id },
-				data: {
-					status: "CLARIFY",
-					reason: reason.trim(),
-					actedAt: new Date(),
-				},
-			});
+      // ── Step 3: Mark this approval as CLARIFY ─────────────────────────────
+      await tx.approval.update({
+        where: { id: approval.id },
+        data: {
+          status: "CLARIFY",
+          reason: reason.trim(),
+          actedAt: new Date(),
+        },
+      });
 
-			// ── Step 4: Archive ALL current iteration stages ──────────────────────
-			// Two calls because IN_PROGRESS needs status flipped to REJECTED (interrupted),
-			// while PENDING + APPROVED keep their status — only isCurrentIteration clears.
-			// Previously only PENDING was in the second filter, leaving APPROVED stages
-			// with isCurrentIteration=true and causing doubled stages on the next iteration.
-			await tx.stageInstance.updateMany({
-				where: {
-					workflowId: workflow.id,
-					isCurrentIteration: true,
-					status: "IN_PROGRESS",
-				},
-				data: { isCurrentIteration: false, status: "REJECTED" },
-			});
-			await tx.stageInstance.updateMany({
-				where: {
-					workflowId: workflow.id,
-					isCurrentIteration: true,
-					status: { in: ["PENDING", "APPROVED"] },
-				},
-				data: { isCurrentIteration: false },
-			});
+      // ── Step 4: Archive ALL current iteration stages ──────────────────────
+      // Two calls because IN_PROGRESS needs status flipped to REJECTED (interrupted),
+      // while PENDING + APPROVED keep their status — only isCurrentIteration clears.
+      // Previously only PENDING was in the second filter, leaving APPROVED stages
+      // with isCurrentIteration=true and causing doubled stages on the next iteration.
+      await tx.stageInstance.updateMany({
+        where: {
+          workflowId: workflow.id,
+          isCurrentIteration: true,
+          status: "IN_PROGRESS",
+        },
+        data: { isCurrentIteration: false, status: "REJECTED" },
+      });
+      await tx.stageInstance.updateMany({
+        where: {
+          workflowId: workflow.id,
+          isCurrentIteration: true,
+          status: { in: ["PENDING", "APPROVED"] },
+        },
+        data: { isCurrentIteration: false },
+      });
 
-			// ── Step 5: Build new stages for iteration N+1 ────────────────────────
-			const newIteration = workflow.iteration + 1;
+      // ── Step 5: Build new stages for iteration N+1 ────────────────────────
+      const newIteration = workflow.iteration + 1;
 
-			for (const templateStage of workflow.template.stages) {
-				await tx.stageInstance.create({
-					data: {
-						stageName: templateStage.name,
-						workflowId: workflow.id,
-						stageOrder: templateStage.stageOrder,
-						iteration: newIteration, // ← belongs to the new run
-						isCurrentIteration: true, // ← these are now the live stages
-						strategy: templateStage.strategy,
-						minApprovals: templateStage.minApprovals,
-						// Only stage 1 starts immediately
-						status: templateStage.stageOrder === 1 ? "IN_PROGRESS" : "PENDING",
-						startedAt: templateStage.stageOrder === 1 ? new Date() : null,
-						approvals: {
-							create: templateStage.approvers.map((a) => ({
-								approverId: a.userId,
-								status: "PENDING",
-							})),
-						},
-					},
-				});
-			}
+      for (const templateStage of workflow.template.stages) {
+        await tx.stageInstance.create({
+          data: {
+            stageName: templateStage.name,
+            workflowId: workflow.id,
+            stageOrder: templateStage.stageOrder,
+            iteration: newIteration, // ← belongs to the new run
+            isCurrentIteration: true, // ← these are now the live stages
+            strategy: templateStage.strategy,
+            minApprovals: templateStage.minApprovals,
+            // Make all stages to pending
+            status: "PENDING",
+            startedAt: null,
+            approvals: {
+              create: templateStage.approvers.map((a) => ({
+                approverId: a.userId,
+                status: "PENDING",
+              })),
+            },
+          },
+        });
+      }
 
-			// ── Step 6: Advance the workflow's iteration counter ──────────────────
-			await tx.workflowInstance.update({
-				where: { id: workflow.id },
-				data: {
-					iteration: newIteration,
-					currentStage: 1,
-					// Status stays IN_PROGRESS — the workflow is still running
-				},
-			});
+      // ── Step 6: Advance the workflow's iteration counter ──────────────────
+      await tx.workflowInstance.update({
+        where: { id: workflow.id },
+        data: {
+          iteration: newIteration,
+          currentStage: 1,
+          // Status stays IN_PROGRESS — the workflow is still running
+        },
+      });
 
-			// ── Step 7: Update EPC to pending ────────────────────────────────────────
-			await tx.eventProposal.update({
-				where: { id: workflow.eventProposalId },
-				data: { status: "PENDING" },
-			});
+      // ── Step 7: Update EPC to pending ────────────────────────────────────────
+      await tx.eventProposal.update({
+        where: { id: workflow.eventProposalId },
+        data: { status: "PENDING" },
+      });
 
-			// ── Step 8: Write audit record ────────────────────────────────────────
-			await tx.approvalAudit.create({
-				data: {
-					workflowId: workflow.id,
-					stageId: stageId as string,
-					approverId: userId,
-					action: "CLARIFY",
-					reason: reason.trim(),
-				},
-			});
-		});
+      // ── Step 8: Write audit record ────────────────────────────────────────
+      await tx.approvalAudit.create({
+        data: {
+          workflowId: workflow.id,
+          stageId: stageId as string,
+          approverId: userId,
+          action: "CLARIFY",
+          reason: reason.trim(),
+        },
+      });
+    });
 
-		res.status(200).json({
-			success: true,
-			message:
-				"Clarification requested. Workflow has been restarted from stage 1. " +
-				"Previous iteration data is preserved for audit.",
-		});
-	} catch (error) {
-		next(error);
-	}
+    res.status(200).json({
+      success: true,
+      message:
+        "Clarification requested. Workflow has been restarted from stage 1. " +
+        "Previous iteration data is preserved for audit.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /workflows/activate-stage
+//
+// Activates stage 1 of the current iteration for a given workflow.
+// This is used to formally "start" a workflow after it has been assigned —
+// setting stage 1 to IN_PROGRESS so approvers can act on it.
+//
+// Body: { workflowId: string }
+//
+// Guards:
+//   1. Workflow must exist and be active (not superseded)
+//   2. Workflow must be IN_PROGRESS
+//   3. There must be no IN_PROGRESS stage already in the current iteration
+//      (prevents double-activation)
+//   4. Stage with stageOrder=1 must exist in the current iteration
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const activateFirstStageController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    const { workflowId } = req.body;
+
+    if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!workflowId) throw new ApiError(400, "workflowId is required");
+
+    await prisma.$transaction(async (tx) => {
+      // ── Step 1: Load the workflow ─────────────────────────────────────────
+      const workflow = await tx.workflowInstance.findUnique({
+        where: { id: workflowId },
+        include: {
+          stages: {
+            where: { isCurrentIteration: true },
+            orderBy: { stageOrder: "asc" },
+          },
+        },
+      });
+
+      if (!workflow) throw new ApiError(404, "Workflow not found");
+
+      // ── Guard 1: workflow must be active ──────────────────────────────────
+      if (!workflow.isActive) {
+        throw new ApiError(
+          400,
+          "This workflow has been superseded and is no longer active",
+        );
+      }
+
+      // ── Guard 2: workflow must be IN_PROGRESS ─────────────────────────────
+      if (workflow.status !== "IN_PROGRESS") {
+        throw new ApiError(
+          400,
+          `Workflow is not in progress (current status: ${workflow.status})`,
+        );
+      }
+
+      // ── Guard 3: no stage already IN_PROGRESS in the current iteration ────
+      const alreadyActive = workflow.stages.find(
+        (s) => s.status === "IN_PROGRESS",
+      );
+      if (alreadyActive) {
+        throw new ApiError(
+          409,
+          `Stage ${alreadyActive.stageOrder} is already IN_PROGRESS for this iteration`,
+        );
+      }
+
+      // ── Guard 4: stage 1 must exist in the current iteration ─────────────
+      const firstStage = workflow.stages.find((s) => s.stageOrder === 1);
+      if (!firstStage) {
+        throw new ApiError(
+          404,
+          "Stage 1 not found in the current iteration for this workflow",
+        );
+      }
+
+      // ── Activate stage 1 ──────────────────────────────────────────────────
+      await tx.stageInstance.update({
+        where: { id: firstStage.id },
+        data: {
+          status: "IN_PROGRESS",
+          startedAt: new Date(),
+        },
+      });
+
+      // ── Keep currentStage in sync on the workflow ─────────────────────────
+      await tx.workflowInstance.update({
+        where: { id: workflowId },
+        data: { currentStage: 1 },
+      });
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Stage 1 is now IN_PROGRESS",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -513,179 +617,179 @@ export const clarifyStageController = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const triggerDeviationController = async (
-	req: Request,
-	res: Response,
-	next: NextFunction,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ) => {
-	try {
-		const userId = req.user?.id;
-		const { eventProposalId, workspaceId, appId, newBudget, reason } = req.body;
+  try {
+    const userId = req.user?.id;
+    const { eventProposalId, workspaceId, appId, newBudget, reason } = req.body;
 
-		if (!userId) throw new ApiError(401, "Unauthorized");
-		if (!eventProposalId || !workspaceId || !appId || newBudget === undefined) {
-			throw new ApiError(
-				400,
-				"eventProposalId, workspaceId, appId, and newBudget are required",
-			);
-		}
-		if (!reason || String(reason).trim().length < 3) {
-			throw new ApiError(
-				400,
-				"A reason of at least 3 characters is required for deviation",
-			);
-		}
+    if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!eventProposalId || !workspaceId || !appId || newBudget === undefined) {
+      throw new ApiError(
+        400,
+        "eventProposalId, workspaceId, appId, and newBudget are required",
+      );
+    }
+    if (!reason || String(reason).trim().length < 3) {
+      throw new ApiError(
+        400,
+        "A reason of at least 3 characters is required for deviation",
+      );
+    }
 
-		// ── Step 1: Find the active workflow for this EPC ─────────────────────
-		const activeWorkflow = await prisma.workflowInstance.findFirst({
-			where: { eventProposalId, isActive: true },
-		});
+    // ── Step 1: Find the active workflow for this EPC ─────────────────────
+    const activeWorkflow = await prisma.workflowInstance.findFirst({
+      where: { eventProposalId, isActive: true },
+    });
 
-		if (!activeWorkflow) {
-			throw new ApiError(
-				404,
-				"No active workflow found for this event proposal",
-			);
-		}
-		if (activeWorkflow.status !== "IN_PROGRESS") {
-			throw new ApiError(
-				400,
-				"Deviation can only be triggered on an IN_PROGRESS workflow. " +
-					`Current status: ${activeWorkflow.status}`,
-			);
-		}
+    if (!activeWorkflow) {
+      throw new ApiError(
+        404,
+        "No active workflow found for this event proposal",
+      );
+    }
+    if (activeWorkflow.status !== "IN_PROGRESS") {
+      throw new ApiError(
+        400,
+        "Deviation can only be triggered on an IN_PROGRESS workflow. " +
+          `Current status: ${activeWorkflow.status}`,
+      );
+    }
 
-		// ── Step 2: Find a template matching the new budget ───────────────────
-		const templates = await prisma.workflowTemplate.findMany({
-			where: {
-				workspaceId,
-				appId,
-				isActive: true,
-				workFlowUsers: { some: { userId } },
-			},
-			include: {
-				stages: {
-					include: { approvers: true },
-					orderBy: { stageOrder: "asc" },
-				},
-			},
-		});
+    // ── Step 2: Find a template matching the new budget ───────────────────
+    const templates = await prisma.workflowTemplate.findMany({
+      where: {
+        workspaceId,
+        appId,
+        isActive: true,
+        workFlowUsers: { some: { userId } },
+      },
+      include: {
+        stages: {
+          include: { approvers: true },
+          orderBy: { stageOrder: "asc" },
+        },
+      },
+    });
 
-		if (!templates.length) {
-			throw new ApiError(
-				404,
-				"No workflow templates found for this workspace/app",
-			);
-		}
+    if (!templates.length) {
+      throw new ApiError(
+        404,
+        "No workflow templates found for this workspace/app",
+      );
+    }
 
-		const matchedTemplate = templates.find((t) =>
-			evaluateBudget(t.metaData_1 || "", Number(newBudget)),
-		);
-		if (!matchedTemplate) {
-			throw new ApiError(
-				400,
-				"No matching workflow template found for the new budget amount",
-			);
-		}
+    const matchedTemplate = templates.find((t) =>
+      evaluateBudget(t.metaData_1 || "", Number(newBudget)),
+    );
+    if (!matchedTemplate) {
+      throw new ApiError(
+        400,
+        "No matching workflow template found for the new budget amount",
+      );
+    }
 
-		// ── Step 3: Atomic swap — deactivate old, create new ─────────────────
-		const newWorkflow = await prisma.$transaction(async (tx) => {
-			// 3a. Deactivate the existing workflow
-			await tx.workflowInstance.update({
-				where: { id: activeWorkflow.id },
-				data: {
-					isActive: false,
-					status: "SUPERSEDED", // ← new enum value; clearly not a normal rejection
-				},
-			});
+    // ── Step 3: Atomic swap — deactivate old, create new ─────────────────
+    const newWorkflow = await prisma.$transaction(async (tx) => {
+      // 3a. Deactivate the existing workflow
+      await tx.workflowInstance.update({
+        where: { id: activeWorkflow.id },
+        data: {
+          isActive: false,
+          status: "SUPERSEDED", // ← new enum value; clearly not a normal rejection
+        },
+      });
 
-			// 3b. Archive the current iteration's stages on the old workflow.
-			//     Their approvals and comments remain fully intact for audit.
-			await tx.stageInstance.updateMany({
-				where: { workflowId: activeWorkflow.id, isCurrentIteration: true },
-				data: { isCurrentIteration: false },
-			});
+      // 3b. Archive the current iteration's stages on the old workflow.
+      //     Their approvals and comments remain fully intact for audit.
+      await tx.stageInstance.updateMany({
+        where: { workflowId: activeWorkflow.id, isCurrentIteration: true },
+        data: { isCurrentIteration: false },
+      });
 
-			// 3c + 3d. Create the new deviation workflow with fresh stages
-			const created = await tx.workflowInstance.create({
-				data: {
-					templateId: matchedTemplate.id,
-					workspaceId,
-					eventProposalId,
-					workflowType: "DEVIATION", // ← clearly marks this as a budget-change run
-					isActive: true,
-					iteration: 1, // ← deviation starts its own iteration counter at 1
-					currentStage: 1,
+      // 3c + 3d. Create the new deviation workflow with fresh stages
+      const created = await tx.workflowInstance.create({
+        data: {
+          templateId: matchedTemplate.id,
+          workspaceId,
+          eventProposalId,
+          workflowType: "DEVIATION", // ← clearly marks this as a budget-change run
+          isActive: true,
+          iteration: 1, // ← deviation starts its own iteration counter at 1
+          currentStage: 1,
 
-					stages: {
-						create: matchedTemplate.stages.map((stage) => ({
-							stageOrder: stage.stageOrder,
-							strategy: stage.strategy,
-							minApprovals: stage.minApprovals,
-							iteration: 1,
-							isCurrentIteration: true,
-							status: stage.stageOrder === 1 ? "IN_PROGRESS" : "PENDING",
-							startedAt: stage.stageOrder === 1 ? new Date() : null,
-							approvals: {
-								create: stage.approvers.map((a) => ({
-									approverId: a.userId,
-									status: "PENDING",
-								})),
-							},
-						})),
-					},
-				},
-				include: {
-					template: { select: { id: true, name: true } },
-					stages: {
-						where: { isCurrentIteration: true },
-						orderBy: { stageOrder: "asc" },
-						include: {
-							approvals: {
-								include: {
-									approver: {
-										select: {
-											id: true,
-											first_name: true,
-											last_name: true,
-											email: true,
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			});
+          stages: {
+            create: matchedTemplate.stages.map((stage) => ({
+              stageOrder: stage.stageOrder,
+              strategy: stage.strategy,
+              minApprovals: stage.minApprovals,
+              iteration: 1,
+              isCurrentIteration: true,
+              status: stage.stageOrder === 1 ? "IN_PROGRESS" : "PENDING",
+              startedAt: stage.stageOrder === 1 ? new Date() : null,
+              approvals: {
+                create: stage.approvers.map((a) => ({
+                  approverId: a.userId,
+                  status: "PENDING",
+                })),
+              },
+            })),
+          },
+        },
+        include: {
+          template: { select: { id: true, name: true } },
+          stages: {
+            where: { isCurrentIteration: true },
+            orderBy: { stageOrder: "asc" },
+            include: {
+              approvals: {
+                include: {
+                  approver: {
+                    select: {
+                      id: true,
+                      first_name: true,
+                      last_name: true,
+                      email: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
 
-			// 3e. Audit record — uses AuditAction.DEVIATION
-			//     stageId stores the superseded workflow's id as a reference point
-			//     since there is no single "triggering stage" for a deviation.
-			await tx.approvalAudit.create({
-				data: {
-					workflowId: activeWorkflow.id, // the workflow that was replaced
-					stageId: null, // no specific stage; use workflow id as reference
-					approverId: userId,
-					action: "DEVIATION",
-					reason: `${reason.trim()} | New budget: ${newBudget} | New template: ${matchedTemplate.name}`,
-				},
-			});
+      // 3e. Audit record — uses AuditAction.DEVIATION
+      //     stageId stores the superseded workflow's id as a reference point
+      //     since there is no single "triggering stage" for a deviation.
+      await tx.approvalAudit.create({
+        data: {
+          workflowId: activeWorkflow.id, // the workflow that was replaced
+          stageId: null, // no specific stage; use workflow id as reference
+          approverId: userId,
+          action: "DEVIATION",
+          reason: `${reason.trim()} | New budget: ${newBudget} | New template: ${matchedTemplate.name}`,
+        },
+      });
 
-			return created;
-		});
+      return created;
+    });
 
-		res.status(201).json({
-			success: true,
-			message:
-				"Deviation workflow created. The previous workflow has been superseded. " +
-				"All its history (approvals, comments) is preserved.",
-			data: {
-				previousWorkflowId: activeWorkflow.id,
-				newWorkflow,
-			},
-		});
-	} catch (error) {
-		next(error);
-	}
+    res.status(201).json({
+      success: true,
+      message:
+        "Deviation workflow created. The previous workflow has been superseded. " +
+        "All its history (approvals, comments) is preserved.",
+      data: {
+        previousWorkflowId: activeWorkflow.id,
+        newWorkflow,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -696,41 +800,41 @@ export const triggerDeviationController = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getWorkflowController = async (
-	req: Request,
-	res: Response,
-	next: NextFunction,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ) => {
-	try {
-		const { workflowId } = req.params;
-		if (!workflowId) throw new ApiError(400, "workflowId is required");
+  try {
+    const { workflowId } = req.params;
+    if (!workflowId) throw new ApiError(400, "workflowId is required");
 
-		const workflow = await prisma.workflowInstance.findUnique({
-			where: { id: workflowId as string },
-			include: {
-				template: { select: { id: true, name: true, description: true } },
-				stages: {
-					where: { isCurrentIteration: true }, // ← only live stages
-					orderBy: { stageOrder: "asc" },
-					include: {
-						approvals: {
-							include: {
-								approver: {
-									select: { id: true, first_name: true, last_name: true },
-								},
-								comments: { orderBy: { createdAt: "asc" } },
-							},
-						},
-					},
-				},
-			},
-		});
+    const workflow = await prisma.workflowInstance.findUnique({
+      where: { id: workflowId as string },
+      include: {
+        template: { select: { id: true, name: true, description: true } },
+        stages: {
+          where: { isCurrentIteration: true }, // ← only live stages
+          orderBy: { stageOrder: "asc" },
+          include: {
+            approvals: {
+              include: {
+                approver: {
+                  select: { id: true, first_name: true, last_name: true },
+                },
+                comments: { orderBy: { createdAt: "asc" } },
+              },
+            },
+          },
+        },
+      },
+    });
 
-		if (!workflow) throw new ApiError(404, "Workflow not found");
+    if (!workflow) throw new ApiError(404, "Workflow not found");
 
-		res.status(200).json({ success: true, data: workflow });
-	} catch (error) {
-		next(error);
-	}
+    res.status(200).json({ success: true, data: workflow });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -741,61 +845,61 @@ export const getWorkflowController = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getWorkflowHistoryController = async (
-	req: Request,
-	res: Response,
-	next: NextFunction,
+  req: Request,
+  res: Response,
+  next: NextFunction,
 ) => {
-	try {
-		const { workflowId } = req.params;
-		if (!workflowId) throw new ApiError(400, "workflowId is required");
+  try {
+    const { workflowId } = req.params;
+    if (!workflowId) throw new ApiError(400, "workflowId is required");
 
-		const workflow = await prisma.workflowInstance.findUnique({
-			where: { id: workflowId as string },
-			include: {
-				template: { select: { id: true, name: true, description: true } },
-				stages: {
-					// No isCurrentIteration filter — return everything
-					orderBy: [
-						{ iteration: "asc" }, // group by iteration
-						{ stageOrder: "asc" }, // then by stage within each iteration
-					],
-					include: {
-						approvals: {
-							include: {
-								approver: {
-									select: { id: true, first_name: true, last_name: true },
-								},
-								comments: { orderBy: { createdAt: "asc" } },
-							},
-						},
-					},
-				},
-			},
-		});
+    const workflow = await prisma.workflowInstance.findUnique({
+      where: { id: workflowId as string },
+      include: {
+        template: { select: { id: true, name: true, description: true } },
+        stages: {
+          // No isCurrentIteration filter — return everything
+          orderBy: [
+            { iteration: "asc" }, // group by iteration
+            { stageOrder: "asc" }, // then by stage within each iteration
+          ],
+          include: {
+            approvals: {
+              include: {
+                approver: {
+                  select: { id: true, first_name: true, last_name: true },
+                },
+                comments: { orderBy: { createdAt: "asc" } },
+              },
+            },
+          },
+        },
+      },
+    });
 
-		if (!workflow) throw new ApiError(404, "Workflow not found");
+    if (!workflow) throw new ApiError(404, "Workflow not found");
 
-		// Group stages by iteration number for easier frontend consumption
-		const iterationsMap = new Map<number, typeof workflow.stages>();
-		for (const stage of workflow.stages) {
-			const group = iterationsMap.get(stage.iteration) ?? [];
-			group.push(stage);
-			iterationsMap.set(stage.iteration, group);
-		}
+    // Group stages by iteration number for easier frontend consumption
+    const iterationsMap = new Map<number, typeof workflow.stages>();
+    for (const stage of workflow.stages) {
+      const group = iterationsMap.get(stage.iteration) ?? [];
+      group.push(stage);
+      iterationsMap.set(stage.iteration, group);
+    }
 
-		const iterations = Array.from(iterationsMap.entries()).map(
-			([iteration, stages]) => ({ iteration, stages }),
-		);
+    const iterations = Array.from(iterationsMap.entries()).map(
+      ([iteration, stages]) => ({ iteration, stages }),
+    );
 
-		res.status(200).json({
-			success: true,
-			data: {
-				...workflow,
-				stages: undefined, // replaced by the grouped structure below
-				iterations, // [ { iteration: 1, stages: [...] }, { iteration: 2, ... } ]
-			},
-		});
-	} catch (error) {
-		next(error);
-	}
+    res.status(200).json({
+      success: true,
+      data: {
+        ...workflow,
+        stages: undefined, // replaced by the grouped structure below
+        iterations, // [ { iteration: 1, stages: [...] }, { iteration: 2, ... } ]
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
