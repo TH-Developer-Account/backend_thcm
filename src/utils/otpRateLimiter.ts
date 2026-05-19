@@ -1,4 +1,4 @@
-import redis from "../config/redis";
+import { redis } from "../config/redis";
 import { COOLDOWN_SECONDS, MAX_ATTEMPTS, WINDOW_SECONDS } from "./contants";
 
 export const checkOtpLimit = async (mobile: string) => {

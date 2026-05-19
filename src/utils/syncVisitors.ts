@@ -1,5 +1,5 @@
 // jobs/syncVisitors.ts
-import redis from "../config/redis";
+import { redis } from "../config/redis";
 import { prisma } from "../config/prisma";
 
 const LOCK_KEY = "lock:daily_active_users_sync";

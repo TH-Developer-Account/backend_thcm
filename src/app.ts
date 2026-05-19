@@ -17,6 +17,7 @@ import leadRoutes from "./routes/leads.routes";
 import errorHandler from "./middleware/error.middleware";
 import ApiError from "./utils/apiError";
 import { startJobs } from "./jobs/scheduler";
+import "./services/mail.queue"; // boots the BullMQ worker
 
 const corsOptions = {
   origin: process.env.FRONTEND_URL, // frontend URL
