@@ -71,14 +71,21 @@ export const WorkflowType = {
 export type WorkflowType = (typeof WorkflowType)[keyof typeof WorkflowType]
 
 
-export const AuditAction = {
+export const ActivityAction = {
+  EPC_CREATED: 'EPC_CREATED',
+  EPC_UPDATED: 'EPC_UPDATED',
+  EPF_CREATED: 'EPF_CREATED',
+  EPF_UPDATED: 'EPF_UPDATED',
+  CRF_CREATED: 'CRF_CREATED',
+  CRF_UPDATED: 'CRF_UPDATED',
+  EPC_RESUBMITTED: 'EPC_RESUBMITTED',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
   CLARIFY: 'CLARIFY',
-  DEVIATION: 'DEVIATION'
+  DEVIATION_RAISED: 'DEVIATION_RAISED'
 } as const
 
-export type AuditAction = (typeof AuditAction)[keyof typeof AuditAction]
+export type ActivityAction = (typeof ActivityAction)[keyof typeof ActivityAction]
 
 
 export const ProductType = {

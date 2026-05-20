@@ -89,6 +89,19 @@ export const createEPF = async (
         data: { status: "SUBMITTED" },
       });
 
+      await tx.activityLog.create({
+        data: {
+          epcId: proposal.id,
+          actorId: req.user?.id as string,
+          action: "EPF_CREATED",
+          workflowId: null,
+          stageId: null,
+          metadata: {
+            reason: "EPF is Created.",
+          },
+        },
+      });
+
       return epf;
     });
 
@@ -176,6 +189,19 @@ export const updateEPF = async (
 
       await tx.lineItem.createMany({
         data: newItems,
+      });
+
+      await tx.activityLog.create({
+        data: {
+          epcId: epf.epcId,
+          actorId: req.user?.id as string,
+          action: "EPF_UPDATED",
+          workflowId: null,
+          stageId: null,
+          metadata: {
+            reason: "EPF is Updated.",
+          },
+        },
       });
 
       return epf;

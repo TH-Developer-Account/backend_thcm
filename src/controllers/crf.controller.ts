@@ -24,36 +24,32 @@ export const createCRF = async (
   next: NextFunction,
 ) => {
   try {
+    const userId = req?.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
     const { epcId, lineItems } = req.body;
-
-    const proposal = await prisma.eventProposal.findUnique({
-      where: { id: epcId },
-    });
-
-    if (!proposal) {
-      throw new ApiError(404, "Event Proposal not found");
-    }
 
     if (!lineItems || lineItems.length === 0) {
       throw new ApiError(400, "Line items required");
     }
 
     const result = await prisma.$transaction(async (tx) => {
-      // 1️⃣ Prevent duplicate CRF
-      const existing = await tx.cRF.findUnique({
-        where: { epcId },
+      // 1️⃣ Validate EPC exists
+      const proposal = await tx.eventProposal.findUnique({
+        where: { id: epcId },
       });
+      if (!proposal) throw new ApiError(404, "Event Proposal not found");
 
-      if (existing) {
-        throw new ApiError(400, "CRF already exists for this EPC");
-      }
+      // 2️⃣ Prevent duplicate CRF
+      const existing = await tx.cRF.findUnique({ where: { epcId } });
+      if (existing) throw new ApiError(400, "CRF already exists for this EPC");
 
-      // 2️⃣ Create CRF
+      // 3️⃣ Create CRF
       const crf = await tx.cRF.create({
         data: { epcId },
       });
 
-      // 3️⃣ Fetch products
+      // 4️⃣ Fetch products
       const products = await tx.productMaster.findMany({
         where: {
           id: {
@@ -64,12 +60,10 @@ export const createCRF = async (
 
       const productMap = new Map(products.map((p) => [p.id, p]));
 
-      // 4️⃣ Prepare line items
+      // 5️⃣ Prepare line items
       const items = lineItems.map((item: Record<string, string>) => {
         const product = productMap.get(item.productId);
-
         if (!product) throw new ApiError(400, "Invalid product");
-
         if (product.productType !== "CRF") {
           throw new ApiError(400, "Invalid product for CRF");
         }
@@ -88,9 +82,19 @@ export const createCRF = async (
         };
       });
 
-      // 5️⃣ Insert line items
-      await tx.lineItem.createMany({
-        data: items,
+      // 6️⃣ Insert line items
+      await tx.lineItem.createMany({ data: items });
+
+      // 7️⃣ Log activity
+      await tx.activityLog.create({
+        data: {
+          epcId,
+          actorId: userId,
+          action: "CRF_CREATED",
+          workflowId: null,
+          stageId: null,
+          metadata: { reason: "CRF created." },
+        },
       });
 
       return crf;
@@ -181,6 +185,19 @@ export const updateCRF = async (
 
       await tx.lineItem.createMany({
         data: items,
+      });
+
+      await tx.activityLog.create({
+        data: {
+          epcId: existing.epcId,
+          actorId: req.user?.id as string,
+          action: "CRF_UPDATED",
+          workflowId: null,
+          stageId: null,
+          metadata: {
+            reason: "CRF is Updated.",
+          },
+        },
       });
 
       return { id: crfId };

@@ -118,10 +118,10 @@ export type Approval = Prisma.ApprovalModel
  */
 export type WorkFlowTemplateUser = Prisma.WorkFlowTemplateUserModel
 /**
- * Model ApprovalAudit
+ * Model ActivityLog
  * 
  */
-export type ApprovalAudit = Prisma.ApprovalAuditModel
+export type ActivityLog = Prisma.ActivityLogModel
 /**
  * Model Department
  * 
