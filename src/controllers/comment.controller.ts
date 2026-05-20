@@ -247,6 +247,7 @@ export const getEPCActivityTimeline = async (
         totalEntries: 0,
         data: [],
       });
+      return;
     }
 
     const workflowIds = epc.workflows.map((w) => w.id);
