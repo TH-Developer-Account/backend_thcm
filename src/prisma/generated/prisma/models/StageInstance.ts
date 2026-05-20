@@ -282,7 +282,7 @@ export type StageInstanceWhereInput = {
   status?: Prisma.EnumStageStatusFilter<"StageInstance"> | $Enums.StageStatus
   workflow?: Prisma.XOR<Prisma.WorkflowInstanceScalarRelationFilter, Prisma.WorkflowInstanceWhereInput>
   approvals?: Prisma.ApprovalListRelationFilter
-  approvalAudits?: Prisma.ApprovalAuditListRelationFilter
+  activityLogs?: Prisma.ActivityLogListRelationFilter
 }
 
 export type StageInstanceOrderByWithRelationInput = {
@@ -300,7 +300,7 @@ export type StageInstanceOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   workflow?: Prisma.WorkflowInstanceOrderByWithRelationInput
   approvals?: Prisma.ApprovalOrderByRelationAggregateInput
-  approvalAudits?: Prisma.ApprovalAuditOrderByRelationAggregateInput
+  activityLogs?: Prisma.ActivityLogOrderByRelationAggregateInput
 }
 
 export type StageInstanceWhereUniqueInput = Prisma.AtLeast<{
@@ -322,7 +322,7 @@ export type StageInstanceWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumStageStatusFilter<"StageInstance"> | $Enums.StageStatus
   workflow?: Prisma.XOR<Prisma.WorkflowInstanceScalarRelationFilter, Prisma.WorkflowInstanceWhereInput>
   approvals?: Prisma.ApprovalListRelationFilter
-  approvalAudits?: Prisma.ApprovalAuditListRelationFilter
+  activityLogs?: Prisma.ActivityLogListRelationFilter
 }, "id" | "workflowId_stageOrder_iteration">
 
 export type StageInstanceOrderByWithAggregationInput = {
@@ -377,7 +377,7 @@ export type StageInstanceCreateInput = {
   status?: $Enums.StageStatus
   workflow: Prisma.WorkflowInstanceCreateNestedOneWithoutStagesInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutStageInput
-  approvalAudits?: Prisma.ApprovalAuditCreateNestedManyWithoutStageInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutStageInput
 }
 
 export type StageInstanceUncheckedCreateInput = {
@@ -394,7 +394,7 @@ export type StageInstanceUncheckedCreateInput = {
   escalatedTo?: string | null
   status?: $Enums.StageStatus
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutStageInput
-  approvalAudits?: Prisma.ApprovalAuditUncheckedCreateNestedManyWithoutStageInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutStageInput
 }
 
 export type StageInstanceUpdateInput = {
@@ -411,7 +411,7 @@ export type StageInstanceUpdateInput = {
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
   workflow?: Prisma.WorkflowInstanceUpdateOneRequiredWithoutStagesNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutStageNestedInput
-  approvalAudits?: Prisma.ApprovalAuditUpdateManyWithoutStageNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutStageNestedInput
 }
 
 export type StageInstanceUncheckedUpdateInput = {
@@ -428,7 +428,7 @@ export type StageInstanceUncheckedUpdateInput = {
   escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutStageNestedInput
-  approvalAudits?: Prisma.ApprovalAuditUncheckedUpdateManyWithoutStageNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutStageNestedInput
 }
 
 export type StageInstanceCreateManyInput = {
@@ -622,20 +622,20 @@ export type StageInstanceUpdateOneRequiredWithoutApprovalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.StageInstanceUpdateToOneWithWhereWithoutApprovalsInput, Prisma.StageInstanceUpdateWithoutApprovalsInput>, Prisma.StageInstanceUncheckedUpdateWithoutApprovalsInput>
 }
 
-export type StageInstanceCreateNestedOneWithoutApprovalAuditsInput = {
-  create?: Prisma.XOR<Prisma.StageInstanceCreateWithoutApprovalAuditsInput, Prisma.StageInstanceUncheckedCreateWithoutApprovalAuditsInput>
-  connectOrCreate?: Prisma.StageInstanceCreateOrConnectWithoutApprovalAuditsInput
+export type StageInstanceCreateNestedOneWithoutActivityLogsInput = {
+  create?: Prisma.XOR<Prisma.StageInstanceCreateWithoutActivityLogsInput, Prisma.StageInstanceUncheckedCreateWithoutActivityLogsInput>
+  connectOrCreate?: Prisma.StageInstanceCreateOrConnectWithoutActivityLogsInput
   connect?: Prisma.StageInstanceWhereUniqueInput
 }
 
-export type StageInstanceUpdateOneWithoutApprovalAuditsNestedInput = {
-  create?: Prisma.XOR<Prisma.StageInstanceCreateWithoutApprovalAuditsInput, Prisma.StageInstanceUncheckedCreateWithoutApprovalAuditsInput>
-  connectOrCreate?: Prisma.StageInstanceCreateOrConnectWithoutApprovalAuditsInput
-  upsert?: Prisma.StageInstanceUpsertWithoutApprovalAuditsInput
+export type StageInstanceUpdateOneWithoutActivityLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.StageInstanceCreateWithoutActivityLogsInput, Prisma.StageInstanceUncheckedCreateWithoutActivityLogsInput>
+  connectOrCreate?: Prisma.StageInstanceCreateOrConnectWithoutActivityLogsInput
+  upsert?: Prisma.StageInstanceUpsertWithoutActivityLogsInput
   disconnect?: Prisma.StageInstanceWhereInput | boolean
   delete?: Prisma.StageInstanceWhereInput | boolean
   connect?: Prisma.StageInstanceWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.StageInstanceUpdateToOneWithWhereWithoutApprovalAuditsInput, Prisma.StageInstanceUpdateWithoutApprovalAuditsInput>, Prisma.StageInstanceUncheckedUpdateWithoutApprovalAuditsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StageInstanceUpdateToOneWithWhereWithoutActivityLogsInput, Prisma.StageInstanceUpdateWithoutActivityLogsInput>, Prisma.StageInstanceUncheckedUpdateWithoutActivityLogsInput>
 }
 
 export type StageInstanceCreateWithoutWorkflowInput = {
@@ -651,7 +651,7 @@ export type StageInstanceCreateWithoutWorkflowInput = {
   escalatedTo?: string | null
   status?: $Enums.StageStatus
   approvals?: Prisma.ApprovalCreateNestedManyWithoutStageInput
-  approvalAudits?: Prisma.ApprovalAuditCreateNestedManyWithoutStageInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutStageInput
 }
 
 export type StageInstanceUncheckedCreateWithoutWorkflowInput = {
@@ -667,7 +667,7 @@ export type StageInstanceUncheckedCreateWithoutWorkflowInput = {
   escalatedTo?: string | null
   status?: $Enums.StageStatus
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutStageInput
-  approvalAudits?: Prisma.ApprovalAuditUncheckedCreateNestedManyWithoutStageInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutStageInput
 }
 
 export type StageInstanceCreateOrConnectWithoutWorkflowInput = {
@@ -727,7 +727,7 @@ export type StageInstanceCreateWithoutApprovalsInput = {
   escalatedTo?: string | null
   status?: $Enums.StageStatus
   workflow: Prisma.WorkflowInstanceCreateNestedOneWithoutStagesInput
-  approvalAudits?: Prisma.ApprovalAuditCreateNestedManyWithoutStageInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutStageInput
 }
 
 export type StageInstanceUncheckedCreateWithoutApprovalsInput = {
@@ -743,7 +743,7 @@ export type StageInstanceUncheckedCreateWithoutApprovalsInput = {
   dueAt?: Date | string | null
   escalatedTo?: string | null
   status?: $Enums.StageStatus
-  approvalAudits?: Prisma.ApprovalAuditUncheckedCreateNestedManyWithoutStageInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutStageInput
 }
 
 export type StageInstanceCreateOrConnectWithoutApprovalsInput = {
@@ -775,7 +775,7 @@ export type StageInstanceUpdateWithoutApprovalsInput = {
   escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
   workflow?: Prisma.WorkflowInstanceUpdateOneRequiredWithoutStagesNestedInput
-  approvalAudits?: Prisma.ApprovalAuditUpdateManyWithoutStageNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutStageNestedInput
 }
 
 export type StageInstanceUncheckedUpdateWithoutApprovalsInput = {
@@ -791,10 +791,10 @@ export type StageInstanceUncheckedUpdateWithoutApprovalsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
-  approvalAudits?: Prisma.ApprovalAuditUncheckedUpdateManyWithoutStageNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutStageNestedInput
 }
 
-export type StageInstanceCreateWithoutApprovalAuditsInput = {
+export type StageInstanceCreateWithoutActivityLogsInput = {
   id?: string
   stageOrder: number
   stageName?: string | null
@@ -810,7 +810,7 @@ export type StageInstanceCreateWithoutApprovalAuditsInput = {
   approvals?: Prisma.ApprovalCreateNestedManyWithoutStageInput
 }
 
-export type StageInstanceUncheckedCreateWithoutApprovalAuditsInput = {
+export type StageInstanceUncheckedCreateWithoutActivityLogsInput = {
   id?: string
   workflowId: string
   stageOrder: number
@@ -826,23 +826,23 @@ export type StageInstanceUncheckedCreateWithoutApprovalAuditsInput = {
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutStageInput
 }
 
-export type StageInstanceCreateOrConnectWithoutApprovalAuditsInput = {
+export type StageInstanceCreateOrConnectWithoutActivityLogsInput = {
   where: Prisma.StageInstanceWhereUniqueInput
-  create: Prisma.XOR<Prisma.StageInstanceCreateWithoutApprovalAuditsInput, Prisma.StageInstanceUncheckedCreateWithoutApprovalAuditsInput>
+  create: Prisma.XOR<Prisma.StageInstanceCreateWithoutActivityLogsInput, Prisma.StageInstanceUncheckedCreateWithoutActivityLogsInput>
 }
 
-export type StageInstanceUpsertWithoutApprovalAuditsInput = {
-  update: Prisma.XOR<Prisma.StageInstanceUpdateWithoutApprovalAuditsInput, Prisma.StageInstanceUncheckedUpdateWithoutApprovalAuditsInput>
-  create: Prisma.XOR<Prisma.StageInstanceCreateWithoutApprovalAuditsInput, Prisma.StageInstanceUncheckedCreateWithoutApprovalAuditsInput>
+export type StageInstanceUpsertWithoutActivityLogsInput = {
+  update: Prisma.XOR<Prisma.StageInstanceUpdateWithoutActivityLogsInput, Prisma.StageInstanceUncheckedUpdateWithoutActivityLogsInput>
+  create: Prisma.XOR<Prisma.StageInstanceCreateWithoutActivityLogsInput, Prisma.StageInstanceUncheckedCreateWithoutActivityLogsInput>
   where?: Prisma.StageInstanceWhereInput
 }
 
-export type StageInstanceUpdateToOneWithWhereWithoutApprovalAuditsInput = {
+export type StageInstanceUpdateToOneWithWhereWithoutActivityLogsInput = {
   where?: Prisma.StageInstanceWhereInput
-  data: Prisma.XOR<Prisma.StageInstanceUpdateWithoutApprovalAuditsInput, Prisma.StageInstanceUncheckedUpdateWithoutApprovalAuditsInput>
+  data: Prisma.XOR<Prisma.StageInstanceUpdateWithoutActivityLogsInput, Prisma.StageInstanceUncheckedUpdateWithoutActivityLogsInput>
 }
 
-export type StageInstanceUpdateWithoutApprovalAuditsInput = {
+export type StageInstanceUpdateWithoutActivityLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
   stageName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -858,7 +858,7 @@ export type StageInstanceUpdateWithoutApprovalAuditsInput = {
   approvals?: Prisma.ApprovalUpdateManyWithoutStageNestedInput
 }
 
-export type StageInstanceUncheckedUpdateWithoutApprovalAuditsInput = {
+export type StageInstanceUncheckedUpdateWithoutActivityLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workflowId?: Prisma.StringFieldUpdateOperationsInput | string
   stageOrder?: Prisma.IntFieldUpdateOperationsInput | number
@@ -901,7 +901,7 @@ export type StageInstanceUpdateWithoutWorkflowInput = {
   escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
   approvals?: Prisma.ApprovalUpdateManyWithoutStageNestedInput
-  approvalAudits?: Prisma.ApprovalAuditUpdateManyWithoutStageNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutStageNestedInput
 }
 
 export type StageInstanceUncheckedUpdateWithoutWorkflowInput = {
@@ -917,7 +917,7 @@ export type StageInstanceUncheckedUpdateWithoutWorkflowInput = {
   escalatedTo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumStageStatusFieldUpdateOperationsInput | $Enums.StageStatus
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutStageNestedInput
-  approvalAudits?: Prisma.ApprovalAuditUncheckedUpdateManyWithoutStageNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutStageNestedInput
 }
 
 export type StageInstanceUncheckedUpdateManyWithoutWorkflowInput = {
@@ -941,12 +941,12 @@ export type StageInstanceUncheckedUpdateManyWithoutWorkflowInput = {
 
 export type StageInstanceCountOutputType = {
   approvals: number
-  approvalAudits: number
+  activityLogs: number
 }
 
 export type StageInstanceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   approvals?: boolean | StageInstanceCountOutputTypeCountApprovalsArgs
-  approvalAudits?: boolean | StageInstanceCountOutputTypeCountApprovalAuditsArgs
+  activityLogs?: boolean | StageInstanceCountOutputTypeCountActivityLogsArgs
 }
 
 /**
@@ -969,8 +969,8 @@ export type StageInstanceCountOutputTypeCountApprovalsArgs<ExtArgs extends runti
 /**
  * StageInstanceCountOutputType without action
  */
-export type StageInstanceCountOutputTypeCountApprovalAuditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ApprovalAuditWhereInput
+export type StageInstanceCountOutputTypeCountActivityLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityLogWhereInput
 }
 
 
@@ -989,7 +989,7 @@ export type StageInstanceSelect<ExtArgs extends runtime.Types.Extensions.Interna
   status?: boolean
   workflow?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
   approvals?: boolean | Prisma.StageInstance$approvalsArgs<ExtArgs>
-  approvalAudits?: boolean | Prisma.StageInstance$approvalAuditsArgs<ExtArgs>
+  activityLogs?: boolean | Prisma.StageInstance$activityLogsArgs<ExtArgs>
   _count?: boolean | Prisma.StageInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["stageInstance"]>
 
@@ -1044,7 +1044,7 @@ export type StageInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalA
 export type StageInstanceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workflow?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
   approvals?: boolean | Prisma.StageInstance$approvalsArgs<ExtArgs>
-  approvalAudits?: boolean | Prisma.StageInstance$approvalAuditsArgs<ExtArgs>
+  activityLogs?: boolean | Prisma.StageInstance$activityLogsArgs<ExtArgs>
   _count?: boolean | Prisma.StageInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type StageInstanceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1059,7 +1059,7 @@ export type $StageInstancePayload<ExtArgs extends runtime.Types.Extensions.Inter
   objects: {
     workflow: Prisma.$WorkflowInstancePayload<ExtArgs>
     approvals: Prisma.$ApprovalPayload<ExtArgs>[]
-    approvalAudits: Prisma.$ApprovalAuditPayload<ExtArgs>[]
+    activityLogs: Prisma.$ActivityLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1470,7 +1470,7 @@ export interface Prisma__StageInstanceClient<T, Null = never, ExtArgs extends ru
   readonly [Symbol.toStringTag]: "PrismaPromise"
   workflow<T extends Prisma.WorkflowInstanceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkflowInstanceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkflowInstanceClient<runtime.Types.Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   approvals<T extends Prisma.StageInstance$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StageInstance$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  approvalAudits<T extends Prisma.StageInstance$approvalAuditsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StageInstance$approvalAuditsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApprovalAuditPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  activityLogs<T extends Prisma.StageInstance$activityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StageInstance$activityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1932,27 +1932,27 @@ export type StageInstance$approvalsArgs<ExtArgs extends runtime.Types.Extensions
 }
 
 /**
- * StageInstance.approvalAudits
+ * StageInstance.activityLogs
  */
-export type StageInstance$approvalAuditsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type StageInstance$activityLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the ApprovalAudit
+   * Select specific fields to fetch from the ActivityLog
    */
-  select?: Prisma.ApprovalAuditSelect<ExtArgs> | null
+  select?: Prisma.ActivityLogSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the ApprovalAudit
+   * Omit specific fields from the ActivityLog
    */
-  omit?: Prisma.ApprovalAuditOmit<ExtArgs> | null
+  omit?: Prisma.ActivityLogOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.ApprovalAuditInclude<ExtArgs> | null
-  where?: Prisma.ApprovalAuditWhereInput
-  orderBy?: Prisma.ApprovalAuditOrderByWithRelationInput | Prisma.ApprovalAuditOrderByWithRelationInput[]
-  cursor?: Prisma.ApprovalAuditWhereUniqueInput
+  include?: Prisma.ActivityLogInclude<ExtArgs> | null
+  where?: Prisma.ActivityLogWhereInput
+  orderBy?: Prisma.ActivityLogOrderByWithRelationInput | Prisma.ActivityLogOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityLogWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.ApprovalAuditScalarFieldEnum | Prisma.ApprovalAuditScalarFieldEnum[]
+  distinct?: Prisma.ActivityLogScalarFieldEnum | Prisma.ActivityLogScalarFieldEnum[]
 }
 
 /**
