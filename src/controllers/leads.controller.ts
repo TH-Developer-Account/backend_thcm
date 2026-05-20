@@ -143,6 +143,16 @@ export const getLeads = async (
     // ── Build where clause ────────────────────────────────────────────────
     const where: Record<string, any> = {};
 
+    // ── Add this near the top of the file, after imports ──────────────────────
+    const epcSummarySelect = {
+      select: {
+        id: true,
+        proposal_number: true,
+        location: true,
+        event_name: { select: { id: true, title: true } },
+      },
+    } as const;
+
     if (search) {
       const term = String(search).trim();
       where.OR = [
@@ -159,6 +169,7 @@ export const getLeads = async (
         skip,
         take,
         orderBy: { created_at: "desc" },
+        include: { epc: epcSummarySelect },
       }),
       prisma.lead.count({ where }),
     ]);
