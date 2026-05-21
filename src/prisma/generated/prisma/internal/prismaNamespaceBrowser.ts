@@ -458,6 +458,7 @@ export const ProductMasterScalarFieldEnum = {
   name: 'name',
   description: 'description',
   unitRate: 'unitRate',
+  dimensions: 'dimensions',
   isActive: 'isActive',
   created_at: 'created_at',
   updated_at: 'updated_at'

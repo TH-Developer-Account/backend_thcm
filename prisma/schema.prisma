@@ -575,7 +575,8 @@ model ProductMaster {
   partNumber  String          @unique
   name        String
   description String?
-  unitRate    Decimal         @db.Decimal(10, 2)
+  unitRate    Decimal?         @db.Decimal(10, 2)
+  dimensions   String?
   isActive    Boolean         @default(true)
   created_at  DateTime        @default(now())
   updated_at  DateTime        @updatedAt
@@ -623,9 +624,9 @@ model LineItem {
   crfId     String?
   productId String
 
-  quantity Decimal @db.Decimal(10, 2)
-  rate     Decimal @db.Decimal(10, 2)
-  amount   Decimal @db.Decimal(12, 2)
+  quantity Decimal? @db.Decimal(10, 2)
+  rate     Decimal? @db.Decimal(10, 2)
+  amount   Decimal? @db.Decimal(12, 2)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
