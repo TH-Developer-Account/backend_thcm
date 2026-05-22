@@ -8,7 +8,9 @@ import {
   regionData,
   budgetCodeData,
   verticalsData,
+  products,
 } from "./constants";
+import { ProductMasterCreateManyInput } from "./generated/prisma/models";
 
 async function main() {
   console.log("🌱 Seeding database...");
@@ -33,6 +35,13 @@ async function main() {
   await prisma.module.deleteMany();
   await prisma.app.deleteMany();
   await prisma.workspace.deleteMany();
+  await prisma.lineItem.deleteMany();
+  await prisma.productMaster.deleteMany();
+  await prisma.cRF.deleteMany();
+  await prisma.ePF.deleteMany();
+  await prisma.activityLog.deleteMany();
+  await prisma.lead.deleteMany();
+  await prisma.comment.deleteMany();
 
   await prisma.eventProposal.deleteMany();
   await prisma.branch.deleteMany();
@@ -816,51 +825,9 @@ async function main() {
   // 1️⃣ Create Sample Products
   // --------------------------------------------------
 
-  const products = await prisma.productMaster.createMany({
-    data: [
-      {
-        partNumber: "EPF-001",
-        name: "Venue Booking",
-        description: "Hall and venue charges",
-        unitRate: Math.floor(Math.random() * 50000),
-        productType: "EPF",
-        category: "EVENT_OVERHEAD",
-      },
-      {
-        partNumber: "EPF-002",
-        name: "Catering",
-        description: "Food and beverages",
-        unitRate: Math.floor(Math.random() * 1200),
-        productType: "EPF",
-        category: "EVENT_OVERHEAD",
-      },
-
-      // CRF Products
-      {
-        partNumber: "CRF-001",
-        name: "Brochure Printing",
-        description: "Product brochures",
-        unitRate: Math.floor(Math.random() * 5000),
-        productType: "CRF",
-        category: "PRINTED_MATERIAL",
-      },
-      {
-        partNumber: "CRF-002",
-        name: "Gift Hampers",
-        description: "Customer souvenirs",
-        unitRate: Math.floor(Math.random() * 2500),
-        productType: "CRF",
-        category: "SOUVENIR",
-      },
-      {
-        partNumber: "CRF-003",
-        name: "Standee Design",
-        description: "Artwork for banners",
-        unitRate: Math.floor(Math.random() * 2000),
-        productType: "CRF",
-        category: "ARTWORK",
-      },
-    ],
+  await prisma.productMaster.createMany({
+    data: products as ProductMasterCreateManyInput[],
+    skipDuplicates: true, // idempotent — safe to re-run without blowing up on existing rows
   });
 
   console.log("✅ Products created");

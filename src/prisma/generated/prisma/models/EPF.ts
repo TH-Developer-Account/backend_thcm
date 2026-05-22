@@ -635,14 +635,6 @@ export type EPFUncheckedUpdateOneWithoutEpcNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EPFUpdateToOneWithWhereWithoutEpcInput, Prisma.EPFUpdateWithoutEpcInput>, Prisma.EPFUncheckedUpdateWithoutEpcInput>
 }
 
-export type NullableDecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
-}
-
 export type EPFCreateNestedOneWithoutLineItemsInput = {
   create?: Prisma.XOR<Prisma.EPFCreateWithoutLineItemsInput, Prisma.EPFUncheckedCreateWithoutLineItemsInput>
   connectOrCreate?: Prisma.EPFCreateOrConnectWithoutLineItemsInput

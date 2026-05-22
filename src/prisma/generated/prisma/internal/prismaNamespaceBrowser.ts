@@ -71,7 +71,7 @@ export const ModelName = {
   StageInstance: 'StageInstance',
   Approval: 'Approval',
   WorkFlowTemplateUser: 'WorkFlowTemplateUser',
-  ApprovalAudit: 'ApprovalAudit',
+  ActivityLog: 'ActivityLog',
   Department: 'Department',
   Vertical: 'Vertical',
   Region: 'Region',
@@ -367,17 +367,18 @@ export const WorkFlowTemplateUserScalarFieldEnum = {
 export type WorkFlowTemplateUserScalarFieldEnum = (typeof WorkFlowTemplateUserScalarFieldEnum)[keyof typeof WorkFlowTemplateUserScalarFieldEnum]
 
 
-export const ApprovalAuditScalarFieldEnum = {
+export const ActivityLogScalarFieldEnum = {
   id: 'id',
+  epcId: 'epcId',
+  actorId: 'actorId',
+  action: 'action',
   workflowId: 'workflowId',
   stageId: 'stageId',
-  approverId: 'approverId',
-  action: 'action',
-  reason: 'reason',
+  metadata: 'metadata',
   createdAt: 'createdAt'
 } as const
 
-export type ApprovalAuditScalarFieldEnum = (typeof ApprovalAuditScalarFieldEnum)[keyof typeof ApprovalAuditScalarFieldEnum]
+export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
 
 
 export const DepartmentScalarFieldEnum = {
@@ -457,6 +458,7 @@ export const ProductMasterScalarFieldEnum = {
   name: 'name',
   description: 'description',
   unitRate: 'unitRate',
+  dimensions: 'dimensions',
   isActive: 'isActive',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -560,6 +562,14 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
 export const QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -574,4 +584,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

@@ -10,8 +10,8 @@ import {
 
 const router = Router();
 
-// router.use(requireAuth); // sets req.user
-// router.use(firstAuthRequestPerDay);
+router.use(requireAuth); // sets req.user
+router.use(firstAuthRequestPerDay);
 
 // router.post(
 //   "/",

@@ -144,6 +144,19 @@ export const createEventProposal = async (
       },
     });
 
+    await prisma.activityLog.create({
+      data: {
+        epcId: proposal.id,
+        actorId: userId,
+        action: "EPC_CREATED",
+        workflowId: null,
+        stageId: null,
+        metadata: {
+          reason: "EPC is Created.",
+        },
+      },
+    });
+
     res.status(201).json({
       success: true,
       message: "EPC created successfully",

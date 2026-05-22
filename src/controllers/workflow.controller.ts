@@ -467,13 +467,16 @@ export const clarifyStageController = async (
       });
 
       // ── Step 8: Write audit record ────────────────────────────────────────
-      await tx.approvalAudit.create({
+      await tx.activityLog.create({
         data: {
+          epcId: workflow.eventProposalId,
+          actorId: userId,
+          action: "CLARIFY",
           workflowId: workflow.id,
           stageId: stageId as string,
-          approverId: userId,
-          action: "CLARIFY",
-          reason: reason.trim(),
+          metadata: {
+            reason: reason.trim(),
+          },
         },
       });
     });
@@ -581,6 +584,19 @@ export const activateFirstStageController = async (
       await tx.workflowInstance.update({
         where: { id: workflowId },
         data: { currentStage: 1 },
+      });
+
+      await tx.activityLog.create({
+        data: {
+          epcId: workflow.eventProposalId,
+          actorId: req.user?.id as string,
+          action: "CRF_UPDATED",
+          workflowId: workflow.id,
+          stageId: firstStage.id,
+          metadata: {
+            reason: "Proposer resubmitted the EPC.",
+          },
+        },
       });
     });
 
@@ -764,13 +780,16 @@ export const triggerDeviationController = async (
       // 3e. Audit record — uses AuditAction.DEVIATION
       //     stageId stores the superseded workflow's id as a reference point
       //     since there is no single "triggering stage" for a deviation.
-      await tx.approvalAudit.create({
+      await tx.activityLog.create({
         data: {
-          workflowId: activeWorkflow.id, // the workflow that was replaced
-          stageId: null, // no specific stage; use workflow id as reference
-          approverId: userId,
-          action: "DEVIATION",
-          reason: `${reason.trim()} | New budget: ${newBudget} | New template: ${matchedTemplate.name}`,
+          epcId: activeWorkflow.eventProposalId,
+          actorId: userId,
+          action: "DEVIATION_RAISED",
+          workflowId: activeWorkflow.id,
+          stageId: null,
+          metadata: {
+            reason: reason.trim(),
+          },
         },
       });
 

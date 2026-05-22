@@ -216,9 +216,9 @@ export type LineItemGroupByOutputType = {
   epfId: string | null
   crfId: string | null
   productId: string
-  quantity: runtime.Decimal
-  rate: runtime.Decimal
-  amount: runtime.Decimal
+  quantity: runtime.Decimal | null
+  rate: runtime.Decimal | null
+  amount: runtime.Decimal | null
   created_at: Date
   updated_at: Date
   _count: LineItemCountAggregateOutputType | null
@@ -251,9 +251,9 @@ export type LineItemWhereInput = {
   epfId?: Prisma.StringNullableFilter<"LineItem"> | string | null
   crfId?: Prisma.StringNullableFilter<"LineItem"> | string | null
   productId?: Prisma.StringFilter<"LineItem"> | string
-  quantity?: Prisma.DecimalFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.DecimalNullableFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.DecimalNullableFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.DecimalNullableFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFilter<"LineItem"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"LineItem"> | Date | string
   epf?: Prisma.XOR<Prisma.EPFNullableScalarRelationFilter, Prisma.EPFWhereInput> | null
@@ -266,9 +266,9 @@ export type LineItemOrderByWithRelationInput = {
   epfId?: Prisma.SortOrderInput | Prisma.SortOrder
   crfId?: Prisma.SortOrderInput | Prisma.SortOrder
   productId?: Prisma.SortOrder
-  quantity?: Prisma.SortOrder
-  rate?: Prisma.SortOrder
-  amount?: Prisma.SortOrder
+  quantity?: Prisma.SortOrderInput | Prisma.SortOrder
+  rate?: Prisma.SortOrderInput | Prisma.SortOrder
+  amount?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   epf?: Prisma.EPFOrderByWithRelationInput
@@ -284,9 +284,9 @@ export type LineItemWhereUniqueInput = Prisma.AtLeast<{
   epfId?: Prisma.StringNullableFilter<"LineItem"> | string | null
   crfId?: Prisma.StringNullableFilter<"LineItem"> | string | null
   productId?: Prisma.StringFilter<"LineItem"> | string
-  quantity?: Prisma.DecimalFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.DecimalNullableFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.DecimalNullableFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.DecimalNullableFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFilter<"LineItem"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"LineItem"> | Date | string
   epf?: Prisma.XOR<Prisma.EPFNullableScalarRelationFilter, Prisma.EPFWhereInput> | null
@@ -299,9 +299,9 @@ export type LineItemOrderByWithAggregationInput = {
   epfId?: Prisma.SortOrderInput | Prisma.SortOrder
   crfId?: Prisma.SortOrderInput | Prisma.SortOrder
   productId?: Prisma.SortOrder
-  quantity?: Prisma.SortOrder
-  rate?: Prisma.SortOrder
-  amount?: Prisma.SortOrder
+  quantity?: Prisma.SortOrderInput | Prisma.SortOrder
+  rate?: Prisma.SortOrderInput | Prisma.SortOrder
+  amount?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.LineItemCountOrderByAggregateInput
@@ -319,18 +319,18 @@ export type LineItemScalarWhereWithAggregatesInput = {
   epfId?: Prisma.StringNullableWithAggregatesFilter<"LineItem"> | string | null
   crfId?: Prisma.StringNullableWithAggregatesFilter<"LineItem"> | string | null
   productId?: Prisma.StringWithAggregatesFilter<"LineItem"> | string
-  quantity?: Prisma.DecimalWithAggregatesFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalWithAggregatesFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalWithAggregatesFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.DecimalNullableWithAggregatesFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.DecimalNullableWithAggregatesFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.DecimalNullableWithAggregatesFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"LineItem"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"LineItem"> | Date | string
 }
 
 export type LineItemCreateInput = {
   id?: string
-  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Date | string
   updated_at?: Date | string
   epf?: Prisma.EPFCreateNestedOneWithoutLineItemsInput
@@ -343,18 +343,18 @@ export type LineItemUncheckedCreateInput = {
   epfId?: string | null
   crfId?: string | null
   productId: string
-  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type LineItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUpdateOneWithoutLineItemsNestedInput
@@ -367,9 +367,9 @@ export type LineItemUncheckedUpdateInput = {
   epfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   crfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   productId?: Prisma.StringFieldUpdateOperationsInput | string
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -379,18 +379,18 @@ export type LineItemCreateManyInput = {
   epfId?: string | null
   crfId?: string | null
   productId: string
-  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type LineItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -400,9 +400,9 @@ export type LineItemUncheckedUpdateManyInput = {
   epfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   crfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   productId?: Prisma.StringFieldUpdateOperationsInput | string
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -593,9 +593,9 @@ export type LineItemUncheckedUpdateManyWithoutCrfNestedInput = {
 
 export type LineItemCreateWithoutProductInput = {
   id?: string
-  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Date | string
   updated_at?: Date | string
   epf?: Prisma.EPFCreateNestedOneWithoutLineItemsInput
@@ -606,9 +606,9 @@ export type LineItemUncheckedCreateWithoutProductInput = {
   id?: string
   epfId?: string | null
   crfId?: string | null
-  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -647,18 +647,18 @@ export type LineItemScalarWhereInput = {
   epfId?: Prisma.StringNullableFilter<"LineItem"> | string | null
   crfId?: Prisma.StringNullableFilter<"LineItem"> | string | null
   productId?: Prisma.StringFilter<"LineItem"> | string
-  quantity?: Prisma.DecimalFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.DecimalNullableFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.DecimalNullableFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.DecimalNullableFilter<"LineItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFilter<"LineItem"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"LineItem"> | Date | string
 }
 
 export type LineItemCreateWithoutEpfInput = {
   id?: string
-  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Date | string
   updated_at?: Date | string
   crf?: Prisma.CRFCreateNestedOneWithoutLineItemsInput
@@ -669,9 +669,9 @@ export type LineItemUncheckedCreateWithoutEpfInput = {
   id?: string
   crfId?: string | null
   productId: string
-  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -704,9 +704,9 @@ export type LineItemUpdateManyWithWhereWithoutEpfInput = {
 
 export type LineItemCreateWithoutCrfInput = {
   id?: string
-  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Date | string
   updated_at?: Date | string
   epf?: Prisma.EPFCreateNestedOneWithoutLineItemsInput
@@ -717,9 +717,9 @@ export type LineItemUncheckedCreateWithoutCrfInput = {
   id?: string
   epfId?: string | null
   productId: string
-  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -754,18 +754,18 @@ export type LineItemCreateManyProductInput = {
   id?: string
   epfId?: string | null
   crfId?: string | null
-  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type LineItemUpdateWithoutProductInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUpdateOneWithoutLineItemsNestedInput
@@ -776,9 +776,9 @@ export type LineItemUncheckedUpdateWithoutProductInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   crfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -787,9 +787,9 @@ export type LineItemUncheckedUpdateManyWithoutProductInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   crfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -798,18 +798,18 @@ export type LineItemCreateManyEpfInput = {
   id?: string
   crfId?: string | null
   productId: string
-  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type LineItemUpdateWithoutEpfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   crf?: Prisma.CRFUpdateOneWithoutLineItemsNestedInput
@@ -820,9 +820,9 @@ export type LineItemUncheckedUpdateWithoutEpfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   crfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   productId?: Prisma.StringFieldUpdateOperationsInput | string
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -831,9 +831,9 @@ export type LineItemUncheckedUpdateManyWithoutEpfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   crfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   productId?: Prisma.StringFieldUpdateOperationsInput | string
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -842,18 +842,18 @@ export type LineItemCreateManyCrfInput = {
   id?: string
   epfId?: string | null
   productId: string
-  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate: runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type LineItemUpdateWithoutCrfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUpdateOneWithoutLineItemsNestedInput
@@ -864,9 +864,9 @@ export type LineItemUncheckedUpdateWithoutCrfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   productId?: Prisma.StringFieldUpdateOperationsInput | string
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -875,9 +875,9 @@ export type LineItemUncheckedUpdateManyWithoutCrfInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epfId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   productId?: Prisma.StringFieldUpdateOperationsInput | string
-  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  rate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quantity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  rate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -970,9 +970,9 @@ export type $LineItemPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     epfId: string | null
     crfId: string | null
     productId: string
-    quantity: runtime.Decimal
-    rate: runtime.Decimal
-    amount: runtime.Decimal
+    quantity: runtime.Decimal | null
+    rate: runtime.Decimal | null
+    amount: runtime.Decimal | null
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["lineItem"]>
