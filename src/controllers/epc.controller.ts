@@ -18,6 +18,13 @@ import { createEventProposalWithWorkflow } from "../services/workflow.service";
 // the workflow controller instead — it keeps EPC queries lean.
 // ─────────────────────────────────────────────────────────────────────────────
 
+function toStringArray(value: unknown): string[] | undefined {
+  if (value === undefined || value === null) return undefined;
+  const arr = Array.isArray(value) ? value : [value];
+  const result = arr.filter((v): v is string => typeof v === "string");
+  return result.length > 0 ? result : undefined;
+}
+
 const activeWorkflowInclude = {
   where: { isActive: true },
   include: {
@@ -199,12 +206,6 @@ export const getAllEventProposals = async (
     const pageNumber = Number(page);
     const take = Number(pageSize);
 
-    const eventTypeArray = Array.isArray(eventType)
-      ? eventType.filter((item): item is string => typeof item === "string")
-      : typeof eventType === "string"
-        ? [eventType]
-        : undefined;
-
     // NOTE FOR searchEventProposals HELPER:
     // When building the `pendingOnMe` query, the where clause should be:
     //
@@ -244,7 +245,7 @@ export const getAllEventProposals = async (
       approvedByMe: approvedByMe === "true",
       pendingOnMe: pendingOnMe === "true",
       search: search as string,
-      status: status as string,
+      status: toStringArray(status),
       departmentId: departmentId ? String(departmentId) : undefined,
       startDate: eventDateFrom ? new Date(eventDateFrom as string) : undefined,
       endDate: eventDateTo ? new Date(eventDateTo as string) : undefined,
@@ -252,8 +253,8 @@ export const getAllEventProposals = async (
       pageSize: take,
       sortBy: sortBy as any,
       sortOrder: sortOrder === "asc" ? "asc" : "desc",
-      zone: zone ? String(zone) : undefined,
-      eventType: eventTypeArray,
+      zone: toStringArray(zone),
+      eventType: toStringArray(eventType),
       createdDate: createdDate ? new Date(createdDate as string) : undefined,
     });
 
