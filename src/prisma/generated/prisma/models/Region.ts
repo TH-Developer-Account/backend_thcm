@@ -191,6 +191,7 @@ export type RegionWhereInput = {
   created_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
+  orgUnits?: Prisma.OrgUnitListRelationFilter
 }
 
 export type RegionOrderByWithRelationInput = {
@@ -201,6 +202,7 @@ export type RegionOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
+  orgUnits?: Prisma.OrgUnitOrderByRelationAggregateInput
 }
 
 export type RegionWhereUniqueInput = Prisma.AtLeast<{
@@ -214,6 +216,7 @@ export type RegionWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Region"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
+  orgUnits?: Prisma.OrgUnitListRelationFilter
 }, "id" | "region_code">
 
 export type RegionOrderByWithAggregationInput = {
@@ -248,6 +251,7 @@ export type RegionCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalCreateNestedManyWithoutRegionInput
+  orgUnits?: Prisma.OrgUnitCreateNestedManyWithoutRegionInput
 }
 
 export type RegionUncheckedCreateInput = {
@@ -258,6 +262,7 @@ export type RegionUncheckedCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutRegionInput
+  orgUnits?: Prisma.OrgUnitUncheckedCreateNestedManyWithoutRegionInput
 }
 
 export type RegionUpdateInput = {
@@ -268,6 +273,7 @@ export type RegionUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUpdateManyWithoutRegionNestedInput
+  orgUnits?: Prisma.OrgUnitUpdateManyWithoutRegionNestedInput
 }
 
 export type RegionUncheckedUpdateInput = {
@@ -278,6 +284,7 @@ export type RegionUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutRegionNestedInput
+  orgUnits?: Prisma.OrgUnitUncheckedUpdateManyWithoutRegionNestedInput
 }
 
 export type RegionCreateManyInput = {
@@ -339,6 +346,11 @@ export type RegionMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
+export type RegionNullableScalarRelationFilter = {
+  is?: Prisma.RegionWhereInput | null
+  isNot?: Prisma.RegionWhereInput | null
+}
+
 export type RegionCreateNestedOneWithoutEvent_proposalsInput = {
   create?: Prisma.XOR<Prisma.RegionCreateWithoutEvent_proposalsInput, Prisma.RegionUncheckedCreateWithoutEvent_proposalsInput>
   connectOrCreate?: Prisma.RegionCreateOrConnectWithoutEvent_proposalsInput
@@ -353,6 +365,22 @@ export type RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RegionUpdateToOneWithWhereWithoutEvent_proposalsInput, Prisma.RegionUpdateWithoutEvent_proposalsInput>, Prisma.RegionUncheckedUpdateWithoutEvent_proposalsInput>
 }
 
+export type RegionCreateNestedOneWithoutOrgUnitsInput = {
+  create?: Prisma.XOR<Prisma.RegionCreateWithoutOrgUnitsInput, Prisma.RegionUncheckedCreateWithoutOrgUnitsInput>
+  connectOrCreate?: Prisma.RegionCreateOrConnectWithoutOrgUnitsInput
+  connect?: Prisma.RegionWhereUniqueInput
+}
+
+export type RegionUpdateOneWithoutOrgUnitsNestedInput = {
+  create?: Prisma.XOR<Prisma.RegionCreateWithoutOrgUnitsInput, Prisma.RegionUncheckedCreateWithoutOrgUnitsInput>
+  connectOrCreate?: Prisma.RegionCreateOrConnectWithoutOrgUnitsInput
+  upsert?: Prisma.RegionUpsertWithoutOrgUnitsInput
+  disconnect?: Prisma.RegionWhereInput | boolean
+  delete?: Prisma.RegionWhereInput | boolean
+  connect?: Prisma.RegionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RegionUpdateToOneWithWhereWithoutOrgUnitsInput, Prisma.RegionUpdateWithoutOrgUnitsInput>, Prisma.RegionUncheckedUpdateWithoutOrgUnitsInput>
+}
+
 export type RegionCreateWithoutEvent_proposalsInput = {
   id?: string
   region_code: string
@@ -360,6 +388,7 @@ export type RegionCreateWithoutEvent_proposalsInput = {
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  orgUnits?: Prisma.OrgUnitCreateNestedManyWithoutRegionInput
 }
 
 export type RegionUncheckedCreateWithoutEvent_proposalsInput = {
@@ -369,6 +398,7 @@ export type RegionUncheckedCreateWithoutEvent_proposalsInput = {
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  orgUnits?: Prisma.OrgUnitUncheckedCreateNestedManyWithoutRegionInput
 }
 
 export type RegionCreateOrConnectWithoutEvent_proposalsInput = {
@@ -394,6 +424,7 @@ export type RegionUpdateWithoutEvent_proposalsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orgUnits?: Prisma.OrgUnitUpdateManyWithoutRegionNestedInput
 }
 
 export type RegionUncheckedUpdateWithoutEvent_proposalsInput = {
@@ -403,6 +434,63 @@ export type RegionUncheckedUpdateWithoutEvent_proposalsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orgUnits?: Prisma.OrgUnitUncheckedUpdateManyWithoutRegionNestedInput
+}
+
+export type RegionCreateWithoutOrgUnitsInput = {
+  id?: string
+  region_code: string
+  region_name: string
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  event_proposals?: Prisma.EventProposalCreateNestedManyWithoutRegionInput
+}
+
+export type RegionUncheckedCreateWithoutOrgUnitsInput = {
+  id?: string
+  region_code: string
+  region_name: string
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutRegionInput
+}
+
+export type RegionCreateOrConnectWithoutOrgUnitsInput = {
+  where: Prisma.RegionWhereUniqueInput
+  create: Prisma.XOR<Prisma.RegionCreateWithoutOrgUnitsInput, Prisma.RegionUncheckedCreateWithoutOrgUnitsInput>
+}
+
+export type RegionUpsertWithoutOrgUnitsInput = {
+  update: Prisma.XOR<Prisma.RegionUpdateWithoutOrgUnitsInput, Prisma.RegionUncheckedUpdateWithoutOrgUnitsInput>
+  create: Prisma.XOR<Prisma.RegionCreateWithoutOrgUnitsInput, Prisma.RegionUncheckedCreateWithoutOrgUnitsInput>
+  where?: Prisma.RegionWhereInput
+}
+
+export type RegionUpdateToOneWithWhereWithoutOrgUnitsInput = {
+  where?: Prisma.RegionWhereInput
+  data: Prisma.XOR<Prisma.RegionUpdateWithoutOrgUnitsInput, Prisma.RegionUncheckedUpdateWithoutOrgUnitsInput>
+}
+
+export type RegionUpdateWithoutOrgUnitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_code?: Prisma.StringFieldUpdateOperationsInput | string
+  region_name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_proposals?: Prisma.EventProposalUpdateManyWithoutRegionNestedInput
+}
+
+export type RegionUncheckedUpdateWithoutOrgUnitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_code?: Prisma.StringFieldUpdateOperationsInput | string
+  region_name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutRegionNestedInput
 }
 
 
@@ -412,10 +500,12 @@ export type RegionUncheckedUpdateWithoutEvent_proposalsInput = {
 
 export type RegionCountOutputType = {
   event_proposals: number
+  orgUnits: number
 }
 
 export type RegionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event_proposals?: boolean | RegionCountOutputTypeCountEvent_proposalsArgs
+  orgUnits?: boolean | RegionCountOutputTypeCountOrgUnitsArgs
 }
 
 /**
@@ -435,6 +525,13 @@ export type RegionCountOutputTypeCountEvent_proposalsArgs<ExtArgs extends runtim
   where?: Prisma.EventProposalWhereInput
 }
 
+/**
+ * RegionCountOutputType without action
+ */
+export type RegionCountOutputTypeCountOrgUnitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrgUnitWhereInput
+}
+
 
 export type RegionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -444,6 +541,7 @@ export type RegionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   created_at?: boolean
   updated_at?: boolean
   event_proposals?: boolean | Prisma.Region$event_proposalsArgs<ExtArgs>
+  orgUnits?: boolean | Prisma.Region$orgUnitsArgs<ExtArgs>
   _count?: boolean | Prisma.RegionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["region"]>
 
@@ -477,6 +575,7 @@ export type RegionSelectScalar = {
 export type RegionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "region_code" | "region_name" | "isActive" | "created_at" | "updated_at", ExtArgs["result"]["region"]>
 export type RegionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event_proposals?: boolean | Prisma.Region$event_proposalsArgs<ExtArgs>
+  orgUnits?: boolean | Prisma.Region$orgUnitsArgs<ExtArgs>
   _count?: boolean | Prisma.RegionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RegionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -486,6 +585,7 @@ export type $RegionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Region"
   objects: {
     event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
+    orgUnits: Prisma.$OrgUnitPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -889,6 +989,7 @@ readonly fields: RegionFieldRefs;
 export interface Prisma__RegionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   event_proposals<T extends Prisma.Region$event_proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Region$event_proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  orgUnits<T extends Prisma.Region$orgUnitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Region$orgUnitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrgUnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1333,6 +1434,30 @@ export type Region$event_proposalsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.EventProposalScalarFieldEnum | Prisma.EventProposalScalarFieldEnum[]
+}
+
+/**
+ * Region.orgUnits
+ */
+export type Region$orgUnitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrgUnit
+   */
+  select?: Prisma.OrgUnitSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OrgUnit
+   */
+  omit?: Prisma.OrgUnitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrgUnitInclude<ExtArgs> | null
+  where?: Prisma.OrgUnitWhereInput
+  orderBy?: Prisma.OrgUnitOrderByWithRelationInput | Prisma.OrgUnitOrderByWithRelationInput[]
+  cursor?: Prisma.OrgUnitWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrgUnitScalarFieldEnum | Prisma.OrgUnitScalarFieldEnum[]
 }
 
 /**

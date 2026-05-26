@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { Prisma } from "../prisma/generated/prisma/client";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
+import { setPeerToPeer } from "../services/orgHierarchy.services";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // rbac.controller.ts
@@ -146,6 +147,28 @@ function validateApps(apps: AppInput[]) {
     }
   }
 }
+
+export const getWorkspaceSettings = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { workspaceId } = req.params;
+
+    const workspace = await prisma.workspace.findUnique({
+      where: { id: workspaceId as string },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Workspace settings fetched successfully`,
+      data: workspace,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SHARED TRANSACTION HELPER
@@ -414,3 +437,52 @@ export async function updateWorkspaceRBAC(req: Request, res: Response) {
       .json({ message: "Workspace update failed", error: error.message });
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PATCH /workspace-settings/peer-to-peer
+//
+// Enables or disables peer-to-peer visibility for the workspace.
+// Super admin only.
+//
+// Payload:
+// { "enabled": true }
+//
+// When enabled:
+//   Users with DEPT_HEAD / ZONAL_HEAD / AREA_HEAD designation can see
+//   EPCs of peers who share the same designation and department.
+//   Zone filter is relaxed for peers — they see each other's EPCs
+//   regardless of which zone those EPCs were created in.
+//
+// When disabled:
+//   Visibility reverts to own EPCs + subordinates only (existing behaviour).
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const togglePeerToPeer = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req?.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const { enabled, workspaceId } = req.body;
+
+    if (typeof enabled !== "boolean") {
+      throw new ApiError(400, "enabled must be a boolean (true or false)");
+    }
+
+    const newState = await setPeerToPeer(workspaceId, enabled);
+
+    res.status(200).json({
+      success: true,
+      message: `Peer-to-peer visibility ${newState ? "enabled" : "disabled"} successfully`,
+      data: {
+        workspaceId,
+        peerToPeerEnabled: newState,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

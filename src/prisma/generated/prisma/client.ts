@@ -207,3 +207,18 @@ export type Operator = Prisma.OperatorModel
  * 
  */
 export type Lead = Prisma.LeadModel
+/**
+ * Model OrgUnit
+ * 
+ */
+export type OrgUnit = Prisma.OrgUnitModel
+/**
+ * Model OrgUnitMember
+ * 
+ */
+export type OrgUnitMember = Prisma.OrgUnitMemberModel
+/**
+ * Model OrgUnitClosure
+ * 
+ */
+export type OrgUnitClosure = Prisma.OrgUnitClosureModel

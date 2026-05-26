@@ -460,6 +460,40 @@ export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDecimalNullableFilter<$PrismaModel>
 }
 
+export type EnumOrgMemberRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.OrgMemberRole | Prisma.EnumOrgMemberRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.OrgMemberRole[] | Prisma.ListEnumOrgMemberRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OrgMemberRole[] | Prisma.ListEnumOrgMemberRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOrgMemberRoleFilter<$PrismaModel> | $Enums.OrgMemberRole
+}
+
+export type EnumDesignationLevelFilter<$PrismaModel = never> = {
+  equals?: $Enums.DesignationLevel | Prisma.EnumDesignationLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.DesignationLevel[] | Prisma.ListEnumDesignationLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DesignationLevel[] | Prisma.ListEnumDesignationLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDesignationLevelFilter<$PrismaModel> | $Enums.DesignationLevel
+}
+
+export type EnumOrgMemberRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OrgMemberRole | Prisma.EnumOrgMemberRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.OrgMemberRole[] | Prisma.ListEnumOrgMemberRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OrgMemberRole[] | Prisma.ListEnumOrgMemberRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOrgMemberRoleWithAggregatesFilter<$PrismaModel> | $Enums.OrgMemberRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOrgMemberRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOrgMemberRoleFilter<$PrismaModel>
+}
+
+export type EnumDesignationLevelWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DesignationLevel | Prisma.EnumDesignationLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.DesignationLevel[] | Prisma.ListEnumDesignationLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DesignationLevel[] | Prisma.ListEnumDesignationLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDesignationLevelWithAggregatesFilter<$PrismaModel> | $Enums.DesignationLevel
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDesignationLevelFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDesignationLevelFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -890,6 +924,40 @@ export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedDecimalNullableFilter<$PrismaModel>
   _min?: Prisma.NestedDecimalNullableFilter<$PrismaModel>
   _max?: Prisma.NestedDecimalNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumOrgMemberRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.OrgMemberRole | Prisma.EnumOrgMemberRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.OrgMemberRole[] | Prisma.ListEnumOrgMemberRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OrgMemberRole[] | Prisma.ListEnumOrgMemberRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOrgMemberRoleFilter<$PrismaModel> | $Enums.OrgMemberRole
+}
+
+export type NestedEnumDesignationLevelFilter<$PrismaModel = never> = {
+  equals?: $Enums.DesignationLevel | Prisma.EnumDesignationLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.DesignationLevel[] | Prisma.ListEnumDesignationLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DesignationLevel[] | Prisma.ListEnumDesignationLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDesignationLevelFilter<$PrismaModel> | $Enums.DesignationLevel
+}
+
+export type NestedEnumOrgMemberRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.OrgMemberRole | Prisma.EnumOrgMemberRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.OrgMemberRole[] | Prisma.ListEnumOrgMemberRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.OrgMemberRole[] | Prisma.ListEnumOrgMemberRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumOrgMemberRoleWithAggregatesFilter<$PrismaModel> | $Enums.OrgMemberRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumOrgMemberRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumOrgMemberRoleFilter<$PrismaModel>
+}
+
+export type NestedEnumDesignationLevelWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DesignationLevel | Prisma.EnumDesignationLevelFieldRefInput<$PrismaModel>
+  in?: $Enums.DesignationLevel[] | Prisma.ListEnumDesignationLevelFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DesignationLevel[] | Prisma.ListEnumDesignationLevelFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDesignationLevelWithAggregatesFilter<$PrismaModel> | $Enums.DesignationLevel
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDesignationLevelFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDesignationLevelFilter<$PrismaModel>
 }
 
 

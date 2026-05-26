@@ -104,3 +104,22 @@ export const ProductCategory = {
 } as const
 
 export type ProductCategory = (typeof ProductCategory)[keyof typeof ProductCategory]
+
+
+export const DesignationLevel = {
+  HEAD: 'HEAD',
+  DEPT_HEAD: 'DEPT_HEAD',
+  ZONAL_HEAD: 'ZONAL_HEAD',
+  AREA_HEAD: 'AREA_HEAD',
+  MEMBER: 'MEMBER'
+} as const
+
+export type DesignationLevel = (typeof DesignationLevel)[keyof typeof DesignationLevel]
+
+
+export const OrgMemberRole = {
+  MANAGER: 'MANAGER',
+  MEMBER: 'MEMBER'
+} as const
+
+export type OrgMemberRole = (typeof OrgMemberRole)[keyof typeof OrgMemberRole]

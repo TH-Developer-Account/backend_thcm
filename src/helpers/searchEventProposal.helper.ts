@@ -1,5 +1,6 @@
 import { Prisma } from "../prisma/generated/prisma/client";
 import { prisma } from "../config/prisma";
+import { getPeerUserIds } from "../services/orgHierarchy.services";
 
 interface SearchEventProposalInput {
   userId: string;
@@ -17,6 +18,20 @@ interface SearchEventProposalInput {
   pageSize?: number;
   sortBy?: "created_at" | "proposal_number" | "status";
   sortOrder?: "asc" | "desc";
+  // ── Org hierarchy scoping ──────────────────────────────────────────────────
+  // createdByIds: own ID + all subordinate IDs from getSubtreeUserIds.
+  // When present, replaces the default "created_by_id = userId" filter.
+  createdByIds?: string[];
+  // scopingFilter: dept/zone restriction from getEpcScopingFilter.
+  //   {}                                            HEAD — no extra filter
+  //   { department_id: "uuid" }                     DEPT_HEAD
+  //   { department_id: "uuid", region_id: "uuid" }  ZONAL/AREA_HEAD
+  // Applied to the subordinates slice ONLY — peers bypass this intentionally.
+  scopingFilter?: Record<string, string>;
+  // p2pEnabled: when true, the helper resolves peer user IDs itself
+  // and adds them as a second OR slice with no dept/zone filter.
+  // The controller passes the raw boolean from isPeerToPeerEnabled().
+  p2pEnabled?: boolean;
 }
 
 export async function searchEventProposals(filters: SearchEventProposalInput) {
@@ -33,6 +48,9 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
     pageSize = 10,
     sortBy = "created_at",
     sortOrder = "desc",
+    createdByIds,
+    scopingFilter,
+    p2pEnabled,
   } = filters;
 
   const skip = (page - 1) * pageSize;
@@ -151,10 +169,86 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
     }
 
     // ─────────────────────────────────────────────────────────
-    // MODE 3: default — created by me
+    // MODE 3: default visibility — org hierarchy + peer-to-peer
+    //
+    // When createdByIds is provided the user is under org hierarchy
+    // scoping. Visibility is built as two OR slices:
+    //
+    //   Slice A — subordinates (with dept/zone filter from scopingFilter):
+    //     ep.created_by_id IN (createdByIds)
+    //     AND ep.department_id = <dept>   ← only if scopingFilter has it
+    //     AND ep.region_id    = <zone>    ← only if scopingFilter has it
+    //
+    //   Slice B — peers (p2pEnabled = true only):
+    //     ep.created_by_id IN (peerUserIds)
+    //     ← NO dept/zone filter — zone is intentionally relaxed for peers.
+    //        e.g. Marketing Zonal Head South can see Marketing Zonal Head
+    //        North's EPCs without zone restriction.
+    //     peerUserIds is resolved here by calling getPeerUserIds(userId).
+    //     getPeerUserIds returns [] for HEAD and MEMBER designations so
+    //     no extra guard is needed.
+    //
+    // When createdByIds is NOT provided (no org tree configured), falls
+    // back to the original "created by me only" behaviour unchanged.
     // ─────────────────────────────────────────────────────────
     else {
-      conditions.push(Prisma.sql`ep.created_by_id = ${userId}`);
+      if (createdByIds && createdByIds.length > 0) {
+        // ── Slice A: subordinates + scoping filter ────────────────────────
+
+        // Translate the plain scopingFilter object into SQL conditions.
+        // scopingFilter is one of:
+        //   {}                               → no extra SQL (HEAD level)
+        //   { department_id }                → one condition
+        //   { department_id, region_id }     → two conditions
+        const scopingConditions: Prisma.Sql[] = [];
+
+        if (scopingFilter?.department_id) {
+          scopingConditions.push(
+            Prisma.sql`ep.department_id = ${scopingFilter.department_id}`,
+          );
+        }
+        if (scopingFilter?.region_id) {
+          scopingConditions.push(
+            Prisma.sql`ep.region_id = ${scopingFilter.region_id}`,
+          );
+        }
+
+        // ANY($1::text[]) — created_by_id is stored as text in Postgres
+        // (Prisma String → text). Casting to uuid[] causes operator mismatch.
+        const subtreeSlice =
+          scopingConditions.length > 0
+            ? Prisma.sql`(
+                ep.created_by_id = ANY(${createdByIds}::text[])
+                AND ${Prisma.join(scopingConditions, " AND ")}
+              )`
+            : Prisma.sql`ep.created_by_id = ANY(${createdByIds}::text[])`;
+
+        // ── Slice B: peers (no zone filter) ──────────────────────────────
+        // Only resolved when p2pEnabled is true.
+        // getPeerUserIds returns [] for HEAD (already sees all) and MEMBER
+        // (excluded from P2P) so the result is always safe to use directly.
+        let peerSlice: Prisma.Sql | null = null;
+
+        if (p2pEnabled) {
+          const peerUserIds = await getPeerUserIds(userId);
+          if (peerUserIds.length > 0) {
+            peerSlice = Prisma.sql`ep.created_by_id = ANY(${peerUserIds}::text[])`;
+          }
+        }
+
+        // ── Combine slices with OR ────────────────────────────────────────
+        // The outer parentheses are critical — without them the OR would
+        // bind loosely against the surrounding AND conditions (status,
+        // search, dates) and return incorrect results.
+        if (peerSlice) {
+          conditions.push(Prisma.sql`(${subtreeSlice} OR ${peerSlice})`);
+        } else {
+          conditions.push(subtreeSlice);
+        }
+      } else {
+        // ── No org hierarchy configured — original "created by me" ────────
+        conditions.push(Prisma.sql`ep.created_by_id = ${userId}`);
+      }
     }
   }
 

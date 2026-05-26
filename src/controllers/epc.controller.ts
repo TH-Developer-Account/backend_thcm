@@ -5,6 +5,11 @@ import ApiError from "../utils/apiError";
 import { epcFullInfoSelect } from "../utils/contants";
 import { searchEventProposals } from "../helpers/searchEventProposal.helper";
 import { createEventProposalWithWorkflow } from "../services/workflow.service";
+import {
+  getEpcScopingFilter,
+  getSubtreeUserIds,
+  isPeerToPeerEnabled,
+} from "../services/orgHierarchy.services";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Reusable select for the active workflow's current state.
@@ -188,6 +193,7 @@ export const getAllEventProposals = async (
       endDate,
       approvedByMe,
       pendingOnMe,
+      workspaceId,
     } = req.query;
 
     const userId = req?.user?.id;
@@ -195,6 +201,19 @@ export const getAllEventProposals = async (
 
     const pageNumber = Number(page);
     const take = Number(pageSize);
+
+    // ── Org hierarchy scoping (v3) ────────────────────────────────────────────
+    //
+    // Three independent reads — run in parallel:
+    //   getSubtreeUserIds   → WHO is in my reporting tree?
+    //   getEpcScopingFilter → WHAT dept/zone filter applies to my subordinates?
+    //   isPeerToPeerEnabled → Is peer visibility on for this workspace?
+    //
+    const [subtreeUserIds, scopingFilter, p2pEnabled] = await Promise.all([
+      getSubtreeUserIds(userId),
+      getEpcScopingFilter(userId),
+      isPeerToPeerEnabled(workspaceId as string),
+    ]);
 
     // NOTE FOR searchEventProposals HELPER:
     // When building the `pendingOnMe` query, the where clause should be:
@@ -243,6 +262,9 @@ export const getAllEventProposals = async (
       pageSize: take,
       sortBy: sortBy as any,
       sortOrder: sortOrder === "asc" ? "asc" : "desc",
+      createdByIds: subtreeUserIds,
+      scopingFilter,
+      p2pEnabled,
     });
 
     res.status(200).json({

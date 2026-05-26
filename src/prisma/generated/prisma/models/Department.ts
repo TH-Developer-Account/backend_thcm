@@ -192,6 +192,7 @@ export type DepartmentWhereInput = {
   updated_at?: Prisma.DateTimeFilter<"Department"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
   verticals?: Prisma.VerticalListRelationFilter
+  orgUnits?: Prisma.OrgUnitListRelationFilter
 }
 
 export type DepartmentOrderByWithRelationInput = {
@@ -203,6 +204,7 @@ export type DepartmentOrderByWithRelationInput = {
   updated_at?: Prisma.SortOrder
   event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
   verticals?: Prisma.VerticalOrderByRelationAggregateInput
+  orgUnits?: Prisma.OrgUnitOrderByRelationAggregateInput
 }
 
 export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
@@ -217,6 +219,7 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   updated_at?: Prisma.DateTimeFilter<"Department"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
   verticals?: Prisma.VerticalListRelationFilter
+  orgUnits?: Prisma.OrgUnitListRelationFilter
 }, "id" | "department_code">
 
 export type DepartmentOrderByWithAggregationInput = {
@@ -252,6 +255,7 @@ export type DepartmentCreateInput = {
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalCreateNestedManyWithoutDepartmentInput
   verticals?: Prisma.VerticalCreateNestedManyWithoutDepartmentInput
+  orgUnits?: Prisma.OrgUnitCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateInput = {
@@ -263,6 +267,7 @@ export type DepartmentUncheckedCreateInput = {
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutDepartmentInput
   verticals?: Prisma.VerticalUncheckedCreateNestedManyWithoutDepartmentInput
+  orgUnits?: Prisma.OrgUnitUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUpdateInput = {
@@ -274,6 +279,7 @@ export type DepartmentUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUpdateManyWithoutDepartmentNestedInput
   verticals?: Prisma.VerticalUpdateManyWithoutDepartmentNestedInput
+  orgUnits?: Prisma.OrgUnitUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateInput = {
@@ -285,6 +291,7 @@ export type DepartmentUncheckedUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutDepartmentNestedInput
   verticals?: Prisma.VerticalUncheckedUpdateManyWithoutDepartmentNestedInput
+  orgUnits?: Prisma.OrgUnitUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateManyInput = {
@@ -346,6 +353,11 @@ export type DepartmentMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
+export type DepartmentNullableScalarRelationFilter = {
+  is?: Prisma.DepartmentWhereInput | null
+  isNot?: Prisma.DepartmentWhereInput | null
+}
+
 export type DepartmentCreateNestedOneWithoutEvent_proposalsInput = {
   create?: Prisma.XOR<Prisma.DepartmentCreateWithoutEvent_proposalsInput, Prisma.DepartmentUncheckedCreateWithoutEvent_proposalsInput>
   connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutEvent_proposalsInput
@@ -374,6 +386,22 @@ export type DepartmentUpdateOneRequiredWithoutVerticalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutVerticalsInput, Prisma.DepartmentUpdateWithoutVerticalsInput>, Prisma.DepartmentUncheckedUpdateWithoutVerticalsInput>
 }
 
+export type DepartmentCreateNestedOneWithoutOrgUnitsInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutOrgUnitsInput, Prisma.DepartmentUncheckedCreateWithoutOrgUnitsInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutOrgUnitsInput
+  connect?: Prisma.DepartmentWhereUniqueInput
+}
+
+export type DepartmentUpdateOneWithoutOrgUnitsNestedInput = {
+  create?: Prisma.XOR<Prisma.DepartmentCreateWithoutOrgUnitsInput, Prisma.DepartmentUncheckedCreateWithoutOrgUnitsInput>
+  connectOrCreate?: Prisma.DepartmentCreateOrConnectWithoutOrgUnitsInput
+  upsert?: Prisma.DepartmentUpsertWithoutOrgUnitsInput
+  disconnect?: Prisma.DepartmentWhereInput | boolean
+  delete?: Prisma.DepartmentWhereInput | boolean
+  connect?: Prisma.DepartmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DepartmentUpdateToOneWithWhereWithoutOrgUnitsInput, Prisma.DepartmentUpdateWithoutOrgUnitsInput>, Prisma.DepartmentUncheckedUpdateWithoutOrgUnitsInput>
+}
+
 export type DepartmentCreateWithoutEvent_proposalsInput = {
   id?: string
   department_code: string
@@ -382,6 +410,7 @@ export type DepartmentCreateWithoutEvent_proposalsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   verticals?: Prisma.VerticalCreateNestedManyWithoutDepartmentInput
+  orgUnits?: Prisma.OrgUnitCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutEvent_proposalsInput = {
@@ -392,6 +421,7 @@ export type DepartmentUncheckedCreateWithoutEvent_proposalsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   verticals?: Prisma.VerticalUncheckedCreateNestedManyWithoutDepartmentInput
+  orgUnits?: Prisma.OrgUnitUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutEvent_proposalsInput = {
@@ -418,6 +448,7 @@ export type DepartmentUpdateWithoutEvent_proposalsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verticals?: Prisma.VerticalUpdateManyWithoutDepartmentNestedInput
+  orgUnits?: Prisma.OrgUnitUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutEvent_proposalsInput = {
@@ -428,6 +459,7 @@ export type DepartmentUncheckedUpdateWithoutEvent_proposalsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verticals?: Prisma.VerticalUncheckedUpdateManyWithoutDepartmentNestedInput
+  orgUnits?: Prisma.OrgUnitUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentCreateWithoutVerticalsInput = {
@@ -438,6 +470,7 @@ export type DepartmentCreateWithoutVerticalsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalCreateNestedManyWithoutDepartmentInput
+  orgUnits?: Prisma.OrgUnitCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentUncheckedCreateWithoutVerticalsInput = {
@@ -448,6 +481,7 @@ export type DepartmentUncheckedCreateWithoutVerticalsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutDepartmentInput
+  orgUnits?: Prisma.OrgUnitUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DepartmentCreateOrConnectWithoutVerticalsInput = {
@@ -474,6 +508,7 @@ export type DepartmentUpdateWithoutVerticalsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUpdateManyWithoutDepartmentNestedInput
+  orgUnits?: Prisma.OrgUnitUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DepartmentUncheckedUpdateWithoutVerticalsInput = {
@@ -484,6 +519,67 @@ export type DepartmentUncheckedUpdateWithoutVerticalsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutDepartmentNestedInput
+  orgUnits?: Prisma.OrgUnitUncheckedUpdateManyWithoutDepartmentNestedInput
+}
+
+export type DepartmentCreateWithoutOrgUnitsInput = {
+  id?: string
+  department_code: string
+  department_name: string
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  event_proposals?: Prisma.EventProposalCreateNestedManyWithoutDepartmentInput
+  verticals?: Prisma.VerticalCreateNestedManyWithoutDepartmentInput
+}
+
+export type DepartmentUncheckedCreateWithoutOrgUnitsInput = {
+  id?: string
+  department_code: string
+  department_name: string
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutDepartmentInput
+  verticals?: Prisma.VerticalUncheckedCreateNestedManyWithoutDepartmentInput
+}
+
+export type DepartmentCreateOrConnectWithoutOrgUnitsInput = {
+  where: Prisma.DepartmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutOrgUnitsInput, Prisma.DepartmentUncheckedCreateWithoutOrgUnitsInput>
+}
+
+export type DepartmentUpsertWithoutOrgUnitsInput = {
+  update: Prisma.XOR<Prisma.DepartmentUpdateWithoutOrgUnitsInput, Prisma.DepartmentUncheckedUpdateWithoutOrgUnitsInput>
+  create: Prisma.XOR<Prisma.DepartmentCreateWithoutOrgUnitsInput, Prisma.DepartmentUncheckedCreateWithoutOrgUnitsInput>
+  where?: Prisma.DepartmentWhereInput
+}
+
+export type DepartmentUpdateToOneWithWhereWithoutOrgUnitsInput = {
+  where?: Prisma.DepartmentWhereInput
+  data: Prisma.XOR<Prisma.DepartmentUpdateWithoutOrgUnitsInput, Prisma.DepartmentUncheckedUpdateWithoutOrgUnitsInput>
+}
+
+export type DepartmentUpdateWithoutOrgUnitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_code?: Prisma.StringFieldUpdateOperationsInput | string
+  department_name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_proposals?: Prisma.EventProposalUpdateManyWithoutDepartmentNestedInput
+  verticals?: Prisma.VerticalUpdateManyWithoutDepartmentNestedInput
+}
+
+export type DepartmentUncheckedUpdateWithoutOrgUnitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_code?: Prisma.StringFieldUpdateOperationsInput | string
+  department_name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutDepartmentNestedInput
+  verticals?: Prisma.VerticalUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 
@@ -494,11 +590,13 @@ export type DepartmentUncheckedUpdateWithoutVerticalsInput = {
 export type DepartmentCountOutputType = {
   event_proposals: number
   verticals: number
+  orgUnits: number
 }
 
 export type DepartmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event_proposals?: boolean | DepartmentCountOutputTypeCountEvent_proposalsArgs
   verticals?: boolean | DepartmentCountOutputTypeCountVerticalsArgs
+  orgUnits?: boolean | DepartmentCountOutputTypeCountOrgUnitsArgs
 }
 
 /**
@@ -525,6 +623,13 @@ export type DepartmentCountOutputTypeCountVerticalsArgs<ExtArgs extends runtime.
   where?: Prisma.VerticalWhereInput
 }
 
+/**
+ * DepartmentCountOutputType without action
+ */
+export type DepartmentCountOutputTypeCountOrgUnitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrgUnitWhereInput
+}
+
 
 export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -535,6 +640,7 @@ export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   updated_at?: boolean
   event_proposals?: boolean | Prisma.Department$event_proposalsArgs<ExtArgs>
   verticals?: boolean | Prisma.Department$verticalsArgs<ExtArgs>
+  orgUnits?: boolean | Prisma.Department$orgUnitsArgs<ExtArgs>
   _count?: boolean | Prisma.DepartmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["department"]>
 
@@ -569,6 +675,7 @@ export type DepartmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type DepartmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event_proposals?: boolean | Prisma.Department$event_proposalsArgs<ExtArgs>
   verticals?: boolean | Prisma.Department$verticalsArgs<ExtArgs>
+  orgUnits?: boolean | Prisma.Department$orgUnitsArgs<ExtArgs>
   _count?: boolean | Prisma.DepartmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DepartmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -579,6 +686,7 @@ export type $DepartmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
     verticals: Prisma.$VerticalPayload<ExtArgs>[]
+    orgUnits: Prisma.$OrgUnitPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -983,6 +1091,7 @@ export interface Prisma__DepartmentClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   event_proposals<T extends Prisma.Department$event_proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$event_proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   verticals<T extends Prisma.Department$verticalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$verticalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerticalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  orgUnits<T extends Prisma.Department$orgUnitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Department$orgUnitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrgUnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1451,6 +1560,30 @@ export type Department$verticalsArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.VerticalScalarFieldEnum | Prisma.VerticalScalarFieldEnum[]
+}
+
+/**
+ * Department.orgUnits
+ */
+export type Department$orgUnitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrgUnit
+   */
+  select?: Prisma.OrgUnitSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OrgUnit
+   */
+  omit?: Prisma.OrgUnitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrgUnitInclude<ExtArgs> | null
+  where?: Prisma.OrgUnitWhereInput
+  orderBy?: Prisma.OrgUnitOrderByWithRelationInput | Prisma.OrgUnitOrderByWithRelationInput[]
+  cursor?: Prisma.OrgUnitWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrgUnitScalarFieldEnum | Prisma.OrgUnitScalarFieldEnum[]
 }
 
 /**

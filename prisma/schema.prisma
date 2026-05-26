@@ -81,6 +81,30 @@ enum ProductCategory {
   ARTWORK
 }
 
+enum DesignationLevel {
+  // MD, VP — company-wide. No dept filter, no zone filter.
+  // Sees ALL EPCs across all departments and all zones.
+  HEAD
+
+  // Marketing Head, Sales Head, Service Head.
+  // Scoped to their department only. No zone filter — sees all zones within dept.
+  DEPT_HEAD
+
+  // Zonal Head — scoped to their department AND their zone.
+  ZONAL_HEAD
+
+  // Area Head — same filter mechanism as ZONAL_HEAD, tighter geography.
+  AREA_HEAD
+
+  // Field Engineer, Executive — no managed units. Sees own EPCs only.
+  MEMBER
+}
+
+enum OrgMemberRole {
+  MANAGER
+  MEMBER
+}
+
 // ─────────────────────────────────────────────
 // AUTH MODELS
 // ─────────────────────────────────────────────
@@ -113,6 +137,7 @@ model User {
 
   // ✅ Back-relation for ActivityLog.actor
   activityLogs   ActivityLog[]
+  orgUnitMemberships OrgUnitMember[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -158,6 +183,12 @@ model DailyVisitors {
 model Workspace {
   id   String @id @default(uuid())
   name String
+   // When true: users with the same designationLevel in the same department
+  // can see each other's EPCs regardless of zone.
+  // Only applies to MANAGER-role designations (DEPT_HEAD, ZONAL_HEAD, AREA_HEAD).
+  // HEAD designation bypasses this (they already see everything).
+  // MEMBER designation is excluded (would expose too many records).
+  peerToPeerEnabled Boolean   @default(false)
 
   users        WorkspaceUser[]
   apps         WorkspaceApp[]
@@ -166,6 +197,7 @@ model Workspace {
 
   workflowTemplates WorkflowTemplate[]
   workflows         WorkflowInstance[]
+  orgUnits           OrgUnit[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -516,6 +548,7 @@ model Department {
   isActive        Boolean         @default(true)
   event_proposals EventProposal[]
   verticals       Vertical[]
+  orgUnits        OrgUnit[]       // for filtering which units (DEPT_HEAD / ZONAL_HEAD / AREA_HEAD) belong to this dept
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
 }
@@ -537,6 +570,7 @@ model Region {
   region_name     String
   isActive        Boolean         @default(true)
   event_proposals EventProposal[]
+  orgUnits         OrgUnit[]       // for filtering which units (ZONAL_HEAD / AREA_HEAD) belong to this region
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
 }
@@ -684,5 +718,66 @@ model Lead {
 
   @@index([epcId])
 }
+
+
+
+model OrgUnit {
+  id           String  @id @default(uuid())
+  workspaceId  String
+  name         String
+  description  String?
+  parentId     String?
+  regionId     String?
+  departmentId String?
+
+  workspace    Workspace        @relation(fields: [workspaceId], references: [id])
+  parent       OrgUnit?         @relation("OrgUnitChildren", fields: [parentId], references: [id])
+  children     OrgUnit[]        @relation("OrgUnitChildren")
+  members      OrgUnitMember[]
+  region       Region?          @relation(fields: [regionId], references: [id])
+  department   Department?      @relation(fields: [departmentId], references: [id])
+  asAncestor   OrgUnitClosure[] @relation("ClosureAncestor")
+  asDescendant OrgUnitClosure[] @relation("ClosureDescendant")
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId])
+  @@index([parentId])
+  @@index([regionId])
+  @@index([departmentId])
+}
+
+model OrgUnitMember {
+  id               String           @id @default(uuid())
+  orgUnitId        String
+  userId           String
+  role             OrgMemberRole    @default(MEMBER)
+  designationLevel DesignationLevel @default(MEMBER)
+
+  orgUnit    OrgUnit  @relation(fields: [orgUnitId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+
+  @@unique([orgUnitId, userId])
+  @@index([userId])
+  @@index([orgUnitId])
+}
+
+model OrgUnitClosure {
+  ancestorId   String
+  descendantId String
+  depth        Int
+
+  ancestor   OrgUnit @relation("ClosureAncestor",  fields: [ancestorId],   references: [id], onDelete: Cascade)
+  descendant OrgUnit @relation("ClosureDescendant", fields: [descendantId], references: [id], onDelete: Cascade)
+
+  @@id([ancestorId, descendantId])
+  @@index([ancestorId])
+  @@index([descendantId])
+}
+
 
 

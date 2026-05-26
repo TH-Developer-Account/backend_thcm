@@ -27,6 +27,7 @@ export type AggregateWorkspace = {
 export type WorkspaceMinAggregateOutputType = {
   id: string | null
   name: string | null
+  peerToPeerEnabled: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -34,6 +35,7 @@ export type WorkspaceMinAggregateOutputType = {
 export type WorkspaceMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  peerToPeerEnabled: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -41,6 +43,7 @@ export type WorkspaceMaxAggregateOutputType = {
 export type WorkspaceCountAggregateOutputType = {
   id: number
   name: number
+  peerToPeerEnabled: number
   created_at: number
   updated_at: number
   _all: number
@@ -50,6 +53,7 @@ export type WorkspaceCountAggregateOutputType = {
 export type WorkspaceMinAggregateInputType = {
   id?: true
   name?: true
+  peerToPeerEnabled?: true
   created_at?: true
   updated_at?: true
 }
@@ -57,6 +61,7 @@ export type WorkspaceMinAggregateInputType = {
 export type WorkspaceMaxAggregateInputType = {
   id?: true
   name?: true
+  peerToPeerEnabled?: true
   created_at?: true
   updated_at?: true
 }
@@ -64,6 +69,7 @@ export type WorkspaceMaxAggregateInputType = {
 export type WorkspaceCountAggregateInputType = {
   id?: true
   name?: true
+  peerToPeerEnabled?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -144,6 +150,7 @@ export type WorkspaceGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 export type WorkspaceGroupByOutputType = {
   id: string
   name: string
+  peerToPeerEnabled: boolean
   created_at: Date
   updated_at: Date
   _count: WorkspaceCountAggregateOutputType | null
@@ -172,6 +179,7 @@ export type WorkspaceWhereInput = {
   NOT?: Prisma.WorkspaceWhereInput | Prisma.WorkspaceWhereInput[]
   id?: Prisma.StringFilter<"Workspace"> | string
   name?: Prisma.StringFilter<"Workspace"> | string
+  peerToPeerEnabled?: Prisma.BoolFilter<"Workspace"> | boolean
   created_at?: Prisma.DateTimeFilter<"Workspace"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Workspace"> | Date | string
   users?: Prisma.WorkspaceUserListRelationFilter
@@ -180,11 +188,13 @@ export type WorkspaceWhereInput = {
   userProfiles?: Prisma.UserProfileListRelationFilter
   workflowTemplates?: Prisma.WorkflowTemplateListRelationFilter
   workflows?: Prisma.WorkflowInstanceListRelationFilter
+  orgUnits?: Prisma.OrgUnitListRelationFilter
 }
 
 export type WorkspaceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  peerToPeerEnabled?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   users?: Prisma.WorkspaceUserOrderByRelationAggregateInput
@@ -193,6 +203,7 @@ export type WorkspaceOrderByWithRelationInput = {
   userProfiles?: Prisma.UserProfileOrderByRelationAggregateInput
   workflowTemplates?: Prisma.WorkflowTemplateOrderByRelationAggregateInput
   workflows?: Prisma.WorkflowInstanceOrderByRelationAggregateInput
+  orgUnits?: Prisma.OrgUnitOrderByRelationAggregateInput
 }
 
 export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
@@ -201,6 +212,7 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.WorkspaceWhereInput[]
   NOT?: Prisma.WorkspaceWhereInput | Prisma.WorkspaceWhereInput[]
   name?: Prisma.StringFilter<"Workspace"> | string
+  peerToPeerEnabled?: Prisma.BoolFilter<"Workspace"> | boolean
   created_at?: Prisma.DateTimeFilter<"Workspace"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Workspace"> | Date | string
   users?: Prisma.WorkspaceUserListRelationFilter
@@ -209,11 +221,13 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   userProfiles?: Prisma.UserProfileListRelationFilter
   workflowTemplates?: Prisma.WorkflowTemplateListRelationFilter
   workflows?: Prisma.WorkflowInstanceListRelationFilter
+  orgUnits?: Prisma.OrgUnitListRelationFilter
 }, "id">
 
 export type WorkspaceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  peerToPeerEnabled?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.WorkspaceCountOrderByAggregateInput
@@ -227,6 +241,7 @@ export type WorkspaceScalarWhereWithAggregatesInput = {
   NOT?: Prisma.WorkspaceScalarWhereWithAggregatesInput | Prisma.WorkspaceScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Workspace"> | string
   name?: Prisma.StringWithAggregatesFilter<"Workspace"> | string
+  peerToPeerEnabled?: Prisma.BoolWithAggregatesFilter<"Workspace"> | boolean
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Workspace"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Workspace"> | Date | string
 }
@@ -234,6 +249,7 @@ export type WorkspaceScalarWhereWithAggregatesInput = {
 export type WorkspaceCreateInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
@@ -242,11 +258,13 @@ export type WorkspaceCreateInput = {
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -255,11 +273,13 @@ export type WorkspaceUncheckedCreateInput = {
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
@@ -268,11 +288,13 @@ export type WorkspaceUpdateInput = {
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -281,11 +303,13 @@ export type WorkspaceUncheckedUpdateInput = {
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateManyInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -293,6 +317,7 @@ export type WorkspaceCreateManyInput = {
 export type WorkspaceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -300,6 +325,7 @@ export type WorkspaceUpdateManyMutationInput = {
 export type WorkspaceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -307,6 +333,7 @@ export type WorkspaceUncheckedUpdateManyInput = {
 export type WorkspaceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  peerToPeerEnabled?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -314,6 +341,7 @@ export type WorkspaceCountOrderByAggregateInput = {
 export type WorkspaceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  peerToPeerEnabled?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -321,6 +349,7 @@ export type WorkspaceMaxOrderByAggregateInput = {
 export type WorkspaceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  peerToPeerEnabled?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -414,9 +443,24 @@ export type WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutWorkflowsInput, Prisma.WorkspaceUpdateWithoutWorkflowsInput>, Prisma.WorkspaceUncheckedUpdateWithoutWorkflowsInput>
 }
 
+export type WorkspaceCreateNestedOneWithoutOrgUnitsInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutOrgUnitsInput, Prisma.WorkspaceUncheckedCreateWithoutOrgUnitsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutOrgUnitsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutOrgUnitsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutOrgUnitsInput, Prisma.WorkspaceUncheckedCreateWithoutOrgUnitsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutOrgUnitsInput
+  upsert?: Prisma.WorkspaceUpsertWithoutOrgUnitsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutOrgUnitsInput, Prisma.WorkspaceUpdateWithoutOrgUnitsInput>, Prisma.WorkspaceUncheckedUpdateWithoutOrgUnitsInput>
+}
+
 export type WorkspaceCreateWithoutUsersInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   apps?: Prisma.WorkspaceAppCreateNestedManyWithoutWorkspaceInput
@@ -424,11 +468,13 @@ export type WorkspaceCreateWithoutUsersInput = {
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutUsersInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   apps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -436,6 +482,7 @@ export type WorkspaceUncheckedCreateWithoutUsersInput = {
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutUsersInput = {
@@ -457,6 +504,7 @@ export type WorkspaceUpdateToOneWithWhereWithoutUsersInput = {
 export type WorkspaceUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   apps?: Prisma.WorkspaceAppUpdateManyWithoutWorkspaceNestedInput
@@ -464,11 +512,13 @@ export type WorkspaceUpdateWithoutUsersInput = {
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   apps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -476,11 +526,13 @@ export type WorkspaceUncheckedUpdateWithoutUsersInput = {
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutAppsInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
@@ -488,11 +540,13 @@ export type WorkspaceCreateWithoutAppsInput = {
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutAppsInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -500,6 +554,7 @@ export type WorkspaceUncheckedCreateWithoutAppsInput = {
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutAppsInput = {
@@ -521,6 +576,7 @@ export type WorkspaceUpdateToOneWithWhereWithoutAppsInput = {
 export type WorkspaceUpdateWithoutAppsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
@@ -528,11 +584,13 @@ export type WorkspaceUpdateWithoutAppsInput = {
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutAppsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -540,11 +598,13 @@ export type WorkspaceUncheckedUpdateWithoutAppsInput = {
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutProfilesInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
@@ -552,11 +612,13 @@ export type WorkspaceCreateWithoutProfilesInput = {
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutProfilesInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -564,6 +626,7 @@ export type WorkspaceUncheckedCreateWithoutProfilesInput = {
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutProfilesInput = {
@@ -585,6 +648,7 @@ export type WorkspaceUpdateToOneWithWhereWithoutProfilesInput = {
 export type WorkspaceUpdateWithoutProfilesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
@@ -592,11 +656,13 @@ export type WorkspaceUpdateWithoutProfilesInput = {
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutProfilesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -604,11 +670,13 @@ export type WorkspaceUncheckedUpdateWithoutProfilesInput = {
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutUserProfilesInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
@@ -616,11 +684,13 @@ export type WorkspaceCreateWithoutUserProfilesInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutUserProfilesInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -628,6 +698,7 @@ export type WorkspaceUncheckedCreateWithoutUserProfilesInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutUserProfilesInput = {
@@ -649,6 +720,7 @@ export type WorkspaceUpdateToOneWithWhereWithoutUserProfilesInput = {
 export type WorkspaceUpdateWithoutUserProfilesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
@@ -656,11 +728,13 @@ export type WorkspaceUpdateWithoutUserProfilesInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutUserProfilesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -668,11 +742,13 @@ export type WorkspaceUncheckedUpdateWithoutUserProfilesInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWorkflowTemplatesInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
@@ -680,11 +756,13 @@ export type WorkspaceCreateWithoutWorkflowTemplatesInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWorkflowTemplatesInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -692,6 +770,7 @@ export type WorkspaceUncheckedCreateWithoutWorkflowTemplatesInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWorkflowTemplatesInput = {
@@ -713,6 +792,7 @@ export type WorkspaceUpdateToOneWithWhereWithoutWorkflowTemplatesInput = {
 export type WorkspaceUpdateWithoutWorkflowTemplatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
@@ -720,11 +800,13 @@ export type WorkspaceUpdateWithoutWorkflowTemplatesInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWorkflowTemplatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -732,11 +814,13 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowTemplatesInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWorkflowsInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
@@ -744,11 +828,13 @@ export type WorkspaceCreateWithoutWorkflowsInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
   id?: string
   name: string
+  peerToPeerEnabled?: boolean
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -756,6 +842,7 @@ export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  orgUnits?: Prisma.OrgUnitUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWorkflowsInput = {
@@ -777,6 +864,7 @@ export type WorkspaceUpdateToOneWithWhereWithoutWorkflowsInput = {
 export type WorkspaceUpdateWithoutWorkflowsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
@@ -784,11 +872,13 @@ export type WorkspaceUpdateWithoutWorkflowsInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -796,6 +886,79 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  orgUnits?: Prisma.OrgUnitUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutOrgUnitsInput = {
+  id?: string
+  name: string
+  peerToPeerEnabled?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
+  apps?: Prisma.WorkspaceAppCreateNestedManyWithoutWorkspaceInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
+  workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutOrgUnitsInput = {
+  id?: string
+  name: string
+  peerToPeerEnabled?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
+  apps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutWorkspaceInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutOrgUnitsInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutOrgUnitsInput, Prisma.WorkspaceUncheckedCreateWithoutOrgUnitsInput>
+}
+
+export type WorkspaceUpsertWithoutOrgUnitsInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutOrgUnitsInput, Prisma.WorkspaceUncheckedUpdateWithoutOrgUnitsInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutOrgUnitsInput, Prisma.WorkspaceUncheckedCreateWithoutOrgUnitsInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutOrgUnitsInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutOrgUnitsInput, Prisma.WorkspaceUncheckedUpdateWithoutOrgUnitsInput>
+}
+
+export type WorkspaceUpdateWithoutOrgUnitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
+  apps?: Prisma.WorkspaceAppUpdateManyWithoutWorkspaceNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
+  workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutOrgUnitsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  peerToPeerEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
+  apps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutWorkspaceNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 
@@ -810,6 +973,7 @@ export type WorkspaceCountOutputType = {
   userProfiles: number
   workflowTemplates: number
   workflows: number
+  orgUnits: number
 }
 
 export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -819,6 +983,7 @@ export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   userProfiles?: boolean | WorkspaceCountOutputTypeCountUserProfilesArgs
   workflowTemplates?: boolean | WorkspaceCountOutputTypeCountWorkflowTemplatesArgs
   workflows?: boolean | WorkspaceCountOutputTypeCountWorkflowsArgs
+  orgUnits?: boolean | WorkspaceCountOutputTypeCountOrgUnitsArgs
 }
 
 /**
@@ -873,10 +1038,18 @@ export type WorkspaceCountOutputTypeCountWorkflowsArgs<ExtArgs extends runtime.T
   where?: Prisma.WorkflowInstanceWhereInput
 }
 
+/**
+ * WorkspaceCountOutputType without action
+ */
+export type WorkspaceCountOutputTypeCountOrgUnitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrgUnitWhereInput
+}
+
 
 export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  peerToPeerEnabled?: boolean
   created_at?: boolean
   updated_at?: boolean
   users?: boolean | Prisma.Workspace$usersArgs<ExtArgs>
@@ -885,12 +1058,14 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   userProfiles?: boolean | Prisma.Workspace$userProfilesArgs<ExtArgs>
   workflowTemplates?: boolean | Prisma.Workspace$workflowTemplatesArgs<ExtArgs>
   workflows?: boolean | Prisma.Workspace$workflowsArgs<ExtArgs>
+  orgUnits?: boolean | Prisma.Workspace$orgUnitsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspace"]>
 
 export type WorkspaceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  peerToPeerEnabled?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["workspace"]>
@@ -898,6 +1073,7 @@ export type WorkspaceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type WorkspaceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  peerToPeerEnabled?: boolean
   created_at?: boolean
   updated_at?: boolean
 }, ExtArgs["result"]["workspace"]>
@@ -905,11 +1081,12 @@ export type WorkspaceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
 export type WorkspaceSelectScalar = {
   id?: boolean
   name?: boolean
+  peerToPeerEnabled?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type WorkspaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "created_at" | "updated_at", ExtArgs["result"]["workspace"]>
+export type WorkspaceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "peerToPeerEnabled" | "created_at" | "updated_at", ExtArgs["result"]["workspace"]>
 export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Workspace$usersArgs<ExtArgs>
   apps?: boolean | Prisma.Workspace$appsArgs<ExtArgs>
@@ -917,6 +1094,7 @@ export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   userProfiles?: boolean | Prisma.Workspace$userProfilesArgs<ExtArgs>
   workflowTemplates?: boolean | Prisma.Workspace$workflowTemplatesArgs<ExtArgs>
   workflows?: boolean | Prisma.Workspace$workflowsArgs<ExtArgs>
+  orgUnits?: boolean | Prisma.Workspace$orgUnitsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkspaceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -931,10 +1109,12 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     userProfiles: Prisma.$UserProfilePayload<ExtArgs>[]
     workflowTemplates: Prisma.$WorkflowTemplatePayload<ExtArgs>[]
     workflows: Prisma.$WorkflowInstancePayload<ExtArgs>[]
+    orgUnits: Prisma.$OrgUnitPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    peerToPeerEnabled: boolean
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["workspace"]>
@@ -1337,6 +1517,7 @@ export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtim
   userProfiles<T extends Prisma.Workspace$userProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$userProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflowTemplates<T extends Prisma.Workspace$workflowTemplatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$workflowTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflows<T extends Prisma.Workspace$workflowsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$workflowsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  orgUnits<T extends Prisma.Workspace$orgUnitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$orgUnitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrgUnitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1368,6 +1549,7 @@ export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtim
 export interface WorkspaceFieldRefs {
   readonly id: Prisma.FieldRef<"Workspace", 'String'>
   readonly name: Prisma.FieldRef<"Workspace", 'String'>
+  readonly peerToPeerEnabled: Prisma.FieldRef<"Workspace", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"Workspace", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Workspace", 'DateTime'>
 }
@@ -1899,6 +2081,30 @@ export type Workspace$workflowsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.WorkflowInstanceScalarFieldEnum | Prisma.WorkflowInstanceScalarFieldEnum[]
+}
+
+/**
+ * Workspace.orgUnits
+ */
+export type Workspace$orgUnitsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrgUnit
+   */
+  select?: Prisma.OrgUnitSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OrgUnit
+   */
+  omit?: Prisma.OrgUnitOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrgUnitInclude<ExtArgs> | null
+  where?: Prisma.OrgUnitWhereInput
+  orderBy?: Prisma.OrgUnitOrderByWithRelationInput | Prisma.OrgUnitOrderByWithRelationInput[]
+  cursor?: Prisma.OrgUnitWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrgUnitScalarFieldEnum | Prisma.OrgUnitScalarFieldEnum[]
 }
 
 /**

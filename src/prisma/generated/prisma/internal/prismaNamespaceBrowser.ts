@@ -84,7 +84,10 @@ export const ModelName = {
   LineItem: 'LineItem',
   Comment: 'Comment',
   Operator: 'Operator',
-  Lead: 'Lead'
+  Lead: 'Lead',
+  OrgUnit: 'OrgUnit',
+  OrgUnitMember: 'OrgUnitMember',
+  OrgUnitClosure: 'OrgUnitClosure'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -160,6 +163,7 @@ export type DailyVisitorsScalarFieldEnum = (typeof DailyVisitorsScalarFieldEnum)
 export const WorkspaceScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  peerToPeerEnabled: 'peerToPeerEnabled',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -552,6 +556,42 @@ export const LeadScalarFieldEnum = {
 } as const
 
 export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
+
+
+export const OrgUnitScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  name: 'name',
+  description: 'description',
+  parentId: 'parentId',
+  regionId: 'regionId',
+  departmentId: 'departmentId',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type OrgUnitScalarFieldEnum = (typeof OrgUnitScalarFieldEnum)[keyof typeof OrgUnitScalarFieldEnum]
+
+
+export const OrgUnitMemberScalarFieldEnum = {
+  id: 'id',
+  orgUnitId: 'orgUnitId',
+  userId: 'userId',
+  role: 'role',
+  designationLevel: 'designationLevel',
+  created_at: 'created_at'
+} as const
+
+export type OrgUnitMemberScalarFieldEnum = (typeof OrgUnitMemberScalarFieldEnum)[keyof typeof OrgUnitMemberScalarFieldEnum]
+
+
+export const OrgUnitClosureScalarFieldEnum = {
+  ancestorId: 'ancestorId',
+  descendantId: 'descendantId',
+  depth: 'depth'
+} as const
+
+export type OrgUnitClosureScalarFieldEnum = (typeof OrgUnitClosureScalarFieldEnum)[keyof typeof OrgUnitClosureScalarFieldEnum]
 
 
 export const SortOrder = {
