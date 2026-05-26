@@ -17,6 +17,9 @@ interface SearchEventProposalInput {
   pageSize?: number;
   sortBy?: "created_at" | "proposal_number" | "status";
   sortOrder?: "asc" | "desc";
+  zone?: string;
+  eventType?: string[];
+  createdDate?: Date;
 }
 
 export async function searchEventProposals(filters: SearchEventProposalInput) {
@@ -33,6 +36,9 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
     pageSize = 10,
     sortBy = "created_at",
     sortOrder = "desc",
+    zone,
+    eventType,
+    createdDate,
   } = filters;
 
   const skip = (page - 1) * pageSize;
@@ -56,11 +62,25 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
   }
 
   if (startDate) {
-    conditions.push(Prisma.sql`ep.created_at >= ${startDate}`);
+    conditions.push(Prisma.sql`ep.event_from_date >= ${startDate}`);
   }
 
   if (endDate) {
-    conditions.push(Prisma.sql`ep.created_at <= ${endDate}`);
+    conditions.push(Prisma.sql`ep.event_to_date <= ${endDate}`);
+  }
+
+  if (createdDate) {
+    conditions.push(Prisma.sql`DATE(ep.created_at) = ${createdDate}`);
+  }
+
+  if (zone) {
+    conditions.push(Prisma.sql`ep.region_id = ${zone}`);
+  }
+
+  if (eventType?.length) {
+    conditions.push(
+      Prisma.sql`en.event_name_id IN (${Prisma.join(eventType)})`,
+    );
   }
 
   // ============================================================

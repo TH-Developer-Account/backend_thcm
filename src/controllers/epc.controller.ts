@@ -184,10 +184,13 @@ export const getAllEventProposals = async (
       sortOrder = "desc",
       status,
       departmentId,
-      startDate,
-      endDate,
       approvedByMe,
       pendingOnMe,
+      zone,
+      eventType,
+      eventDateFrom,
+      eventDateTo,
+      createdDate,
     } = req.query;
 
     const userId = req?.user?.id;
@@ -195,6 +198,12 @@ export const getAllEventProposals = async (
 
     const pageNumber = Number(page);
     const take = Number(pageSize);
+
+    const eventTypeArray = Array.isArray(eventType)
+      ? eventType.filter((item): item is string => typeof item === "string")
+      : typeof eventType === "string"
+        ? [eventType]
+        : undefined;
 
     // NOTE FOR searchEventProposals HELPER:
     // When building the `pendingOnMe` query, the where clause should be:
@@ -237,12 +246,15 @@ export const getAllEventProposals = async (
       search: search as string,
       status: status as string,
       departmentId: departmentId ? String(departmentId) : undefined,
-      startDate: startDate ? new Date(startDate as string) : undefined,
-      endDate: endDate ? new Date(endDate as string) : undefined,
+      startDate: eventDateFrom ? new Date(eventDateFrom as string) : undefined,
+      endDate: eventDateTo ? new Date(eventDateTo as string) : undefined,
       page: pageNumber,
       pageSize: take,
       sortBy: sortBy as any,
       sortOrder: sortOrder === "asc" ? "asc" : "desc",
+      zone: zone ? String(zone) : undefined,
+      eventType: eventTypeArray,
+      createdDate: createdDate ? new Date(createdDate as string) : undefined,
     });
 
     res.status(200).json({
