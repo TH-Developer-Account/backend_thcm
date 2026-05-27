@@ -207,3 +207,8 @@ export type Operator = Prisma.OperatorModel
  * 
  */
 export type Lead = Prisma.LeadModel
+/**
+ * Model Pincode
+ * 
+ */
+export type Pincode = Prisma.PincodeModel
