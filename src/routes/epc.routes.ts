@@ -8,7 +8,7 @@ import {
   getEventProposalById,
   updateEventProposal,
   deleteEventProposal,
-  createEPCController,
+  updateEventProposalOutcome,
 } from "../controllers/epc.controller";
 
 const router = Router();
@@ -25,5 +25,6 @@ router.get("/", asyncHandler(getAllEventProposals));
 router.get("/:id", asyncHandler(getEventProposalById));
 router.put("/:id", asyncHandler(updateEventProposal));
 router.delete("/:id", asyncHandler(deleteEventProposal));
+router.patch("/:id/event-outcome", asyncHandler(updateEventProposalOutcome));
 
 export default router;

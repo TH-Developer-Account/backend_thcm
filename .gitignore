@@ -28,6 +28,8 @@ dist-ssr
 
 /src/generated/prisma
 
+/src/scripts
+
 /generated/prisma
 
 /src/scripts

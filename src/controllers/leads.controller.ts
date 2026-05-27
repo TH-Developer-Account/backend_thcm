@@ -3,6 +3,37 @@ import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
 
 // ─────────────────────────────────────────────────────────────────────────────
+// How many months back from today an event's end date must fall for its
+// lead to be considered an attributed source (not DIRECT).
+// ─────────────────────────────────────────────────────────────────────────────
+const LEAD_SOURCE_PERIOD_MONTHS = 4;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Returns true when the given date falls within the attribution window,
+// i.e. it is not older than LEAD_SOURCE_PERIOD_MONTHS from today.
+// Pure function — no side effects, easy to unit-test.
+// ─────────────────────────────────────────────────────────────────────────────
+const isWithinAttributionPeriod = (eventToDate: Date): boolean => {
+  const cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth() - LEAD_SOURCE_PERIOD_MONTHS);
+  return eventToDate >= cutoff;
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Formats the originSource string for an attributed lead.
+// Shape: eventConductedDate_eventName_location
+// Date format: YYYY-MM-DD (ISO date, locale-independent)
+// ─────────────────────────────────────────────────────────────────────────────
+const formatOriginSource = (
+  eventToDate: Date,
+  eventName: string,
+  location: string,
+): string => {
+  const datePart = eventToDate.toISOString().slice(0, 10);
+  return `${datePart}_${eventName}_${location}`;
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // POST /leads
 //
 // Bulk-creates leads for a given EPC.
@@ -331,29 +362,21 @@ export const deleteLead = async (
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /external/leads?phone=9876543210
 //
-// Called by an external service. Looks up all leads matching the given phone
-// number and returns each one with its full EPC context.
+// Called by an external service to determine the origin source of a caller.
 //
-// If multiple leads share the same phone number (same person attended multiple
-// events) they are all returned as an array.
+// Logic:
+//   1. Find all leads matching the phone number.
+//   2. Filter to those whose EPC event_to_date falls within the last
+//      LEAD_SOURCE_PERIOD_MONTHS months.
+//   3. If no valid leads exist → originSource: "DIRECT"
+//   4. If valid leads exist → pick the one with the latest event_to_date
+//      and return originSource: "eventConductedDate_eventName_location"
 //
 // Response shape:
-// {
-//   "success": true,
-//   "phone": "9876543210",
-//   "totalMatches": 2,
-//   "data": [
-//     {
-//       "lead": { id, name, email, phone, company, designation, source, status, notes, ... },
-//       "epc":  { id, proposal_number, event_name, event_from_date, event_to_date,
-//                 location, event_description, event_objective, status, department,
-//                 region, branch, vertical }
-//     },
-//     ...
-//   ]
-// }
+// { "originSource": "2025-01-15_Dealer Meet_Pune" }
+//   or
+// { "originSource": "DIRECT" }
 //
-// Returns 404 if no leads are found for the given phone number.
 // Returns 400 if the phone query param is missing or blank.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -371,41 +394,38 @@ export const getLeadsByPhone = async (
 
     const leads = await prisma.lead.findMany({
       where: { phone },
-      orderBy: { created_at: "desc" },
       include: {
         epc: {
           include: {
-            event_name: { select: { id: true, title: true } },
+            event_name: { select: { title: true } },
           },
         },
       },
     });
 
-    if (leads.length === 0) {
-      throw new ApiError(404, `No leads found for phone number: ${phone}`);
+    // ── Filter to leads whose event ended within the attribution window ────
+    const attributableLeads = leads.filter((lead) =>
+      isWithinAttributionPeriod(lead.epc.event_to_date),
+    );
+
+    if (attributableLeads.length === 0) {
+      // No leads at all, or all events are outside the attribution period
+      res.status(200).json({ originSource: "DIRECT" });
+      return;
     }
 
-    // ── Shape the response — lead and epc side by side ────────────────────
-    const data = leads.map(({ epc, ...lead }) => ({
-      lead: {
-        name: lead.name,
-        phone: lead.phone,
-        email: lead.email,
-      },
-      epc: {
-        id: epc.id,
-        event_name: epc.event_name.title,
-        event_description: epc.event_description,
-        proposal_number: epc.proposal_number,
-      },
-    }));
+    // ── Pick the lead with the most recent event_to_date ──────────────────
+    const latestLead = attributableLeads.reduce((newest, current) =>
+      current.epc.event_to_date > newest.epc.event_to_date ? current : newest,
+    );
 
-    res.status(200).json({
-      success: true,
-      phone,
-      totalMatches: data.length,
-      data,
-    });
+    const originSource = formatOriginSource(
+      latestLead.epc.event_to_date,
+      latestLead.epc.event_name.title,
+      latestLead.epc.location,
+    );
+
+    res.status(200).json({ originSource });
   } catch (error) {
     next(error);
   }

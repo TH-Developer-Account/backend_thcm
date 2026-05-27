@@ -418,3 +418,106 @@ export const deleteEventProposal = async (
     next(error);
   }
 };
+
+const OUTCOME_STATUSES = new Set(["CONDUCTED", "CANCELLED"]);
+
+export const updateEventProposalOutcome = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = String(req.params.id);
+    const userId = req?.user?.id;
+
+    if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!id) throw new ApiError(400, "Invalid EPC ID");
+
+    const { status, reason } = req.body as {
+      status: string;
+      reason?: string;
+    };
+
+    // ── Guard 1: valid target status ─────────────────────────────────────────
+    if (!status || !OUTCOME_STATUSES.has(status)) {
+      throw new ApiError(400, "status must be either CONDUCTED or CANCELLED");
+    }
+
+    // ── Load EPC — only the fields needed for guards ──────────────────────────
+    const epc = await prisma.eventProposal.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        status: true,
+        created_by_id: true,
+      },
+    });
+
+    if (!epc) throw new ApiError(404, "Event Proposal not found");
+
+    // ── Guard 2: only the original proposer can call this ─────────────────────
+    if (epc.created_by_id !== userId) {
+      throw new ApiError(
+        403,
+        "Only the original proposer can update the event outcome",
+      );
+    }
+
+    // ── Guard 3: EPC must be in APPROVED state ────────────────────────────────
+    if (epc.status !== "APPROVED") {
+      throw new ApiError(
+        400,
+        `Event outcome can only be set on an APPROVED proposal. Current status: ${epc.status}`,
+      );
+    }
+
+    // ── Guard 4: no active IN_PROGRESS workflow ───────────────────────────────
+    // Workflow must be fully resolved before the proposer can record an outcome.
+    const activeWorkflow = await prisma.workflowInstance.findFirst({
+      where: { eventProposalId: id, isActive: true, status: "IN_PROGRESS" },
+      select: { id: true },
+    });
+
+    if (activeWorkflow) {
+      throw new ApiError(
+        409,
+        "Cannot update outcome while a workflow is still IN_PROGRESS. " +
+          "The workflow must be fully resolved first.",
+      );
+    }
+
+    // ── Determine the ActivityAction for the log ──────────────────────────────
+    const activityAction =
+      status === "CONDUCTED" ? "EPC_CONDUCTED" : "EPC_CANCELLED";
+
+    // ── Atomic update + activity log ──────────────────────────────────────────
+    const updated = await prisma.$transaction(async (tx) => {
+      const proposal = await tx.eventProposal.update({
+        where: { id },
+        data: {
+          status,
+          updated_by_id: userId,
+        },
+      });
+
+      await tx.activityLog.create({
+        data: {
+          epcId: id,
+          actorId: userId,
+          action: activityAction,
+          metadata: reason ? { reason } : {},
+        },
+      });
+
+      return proposal;
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Event Proposal marked as ${status} successfully`,
+      data: updated,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
