@@ -417,7 +417,8 @@ export const ModelName = {
   LineItem: 'LineItem',
   Comment: 'Comment',
   Operator: 'Operator',
-  Lead: 'Lead'
+  Lead: 'Lead',
+  Pincode: 'Pincode'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -433,7 +434,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2953,6 +2954,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Pincode: {
+      payload: Prisma.$PincodePayload<ExtArgs>
+      fields: Prisma.PincodeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PincodeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PincodePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PincodeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PincodePayload>
+        }
+        findFirst: {
+          args: Prisma.PincodeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PincodePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PincodeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PincodePayload>
+        }
+        findMany: {
+          args: Prisma.PincodeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PincodePayload>[]
+        }
+        create: {
+          args: Prisma.PincodeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PincodePayload>
+        }
+        createMany: {
+          args: Prisma.PincodeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PincodeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PincodePayload>[]
+        }
+        delete: {
+          args: Prisma.PincodeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PincodePayload>
+        }
+        update: {
+          args: Prisma.PincodeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PincodePayload>
+        }
+        deleteMany: {
+          args: Prisma.PincodeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PincodeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PincodeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PincodePayload>[]
+        }
+        upsert: {
+          args: Prisma.PincodeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PincodePayload>
+        }
+        aggregate: {
+          args: Prisma.PincodeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePincode>
+        }
+        groupBy: {
+          args: Prisma.PincodeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PincodeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PincodeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PincodeCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3152,6 +3227,7 @@ export const EventProposalScalarFieldEnum = {
   budget_master_id: 'budget_master_id',
   event_name_id: 'event_name_id',
   vertical_id: 'vertical_id',
+  locationMeta: 'locationMeta',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -3443,6 +3519,24 @@ export const LeadScalarFieldEnum = {
 export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
 
 
+export const PincodeScalarFieldEnum = {
+  id: 'id',
+  pincode: 'pincode',
+  officeName: 'officeName',
+  officeType: 'officeType',
+  delivery: 'delivery',
+  district: 'district',
+  stateName: 'stateName',
+  circleName: 'circleName',
+  regionName: 'regionName',
+  divisionName: 'divisionName',
+  latitude: 'latitude',
+  longitude: 'longitude'
+} as const
+
+export type PincodeScalarFieldEnum = (typeof PincodeScalarFieldEnum)[keyof typeof PincodeScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3554,6 +3648,20 @@ export type ListEnumPermissionActionFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'StrategyType'
  */
 export type EnumStrategyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StrategyType'>
@@ -3634,20 +3742,6 @@ export type EnumActivityActionFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'ActivityAction[]'
  */
 export type ListEnumActivityActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActivityAction[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -3835,6 +3929,7 @@ export type GlobalOmitConfig = {
   comment?: Prisma.CommentOmit
   operator?: Prisma.OperatorOmit
   lead?: Prisma.LeadOmit
+  pincode?: Prisma.PincodeOmit
 }
 
 /* Types for Logging */
