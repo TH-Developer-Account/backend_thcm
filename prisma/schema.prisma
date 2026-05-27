@@ -60,7 +60,9 @@ enum ActivityAction {
   EPF_UPDATED
   CRF_CREATED
   CRF_UPDATED
-  EPC_RESUBMITTED       // after a CLARIFY round
+  EPC_RESUBMITTED
+  EPC_CONDUCTED
+  EPC_CANCELLED
 
   // Approval/workflow domain (replaces AuditAction)
   APPROVED
