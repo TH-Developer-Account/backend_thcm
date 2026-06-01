@@ -6,10 +6,7 @@ interface SearchEventProposalInput {
   approvedByMe?: boolean;
   pendingOnMe?: boolean;
   search?: string;
-  status?: string;
-  // ✅ FIX 1: departmentId type changed from number → string
-  // The schema stores department_id as a UUID string (String @id @default(uuid())).
-  // The original `number` type would cause a Postgres type mismatch at runtime.
+  status?: string[];
   departmentId?: string;
   startDate?: Date;
   endDate?: Date;
@@ -17,6 +14,9 @@ interface SearchEventProposalInput {
   pageSize?: number;
   sortBy?: "created_at" | "proposal_number" | "status";
   sortOrder?: "asc" | "desc";
+  zone?: string[];
+  eventType?: string[];
+  createdDate?: Date;
 }
 
 export async function searchEventProposals(filters: SearchEventProposalInput) {
@@ -33,6 +33,9 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
     pageSize = 10,
     sortBy = "created_at",
     sortOrder = "desc",
+    zone,
+    eventType,
+    createdDate,
   } = filters;
 
   const skip = (page - 1) * pageSize;
@@ -48,7 +51,7 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
 
   // 📌 Basic filters — all prefixed with `ep.` to avoid ambiguity with JOINs
   if (status) {
-    conditions.push(Prisma.sql`ep.status = ${status}`);
+    conditions.push(Prisma.sql`ep.status IN (${Prisma.join(status)})`);
   }
 
   if (departmentId) {
@@ -56,11 +59,25 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
   }
 
   if (startDate) {
-    conditions.push(Prisma.sql`ep.created_at >= ${startDate}`);
+    conditions.push(Prisma.sql`ep.event_from_date >= ${startDate}`);
   }
 
   if (endDate) {
-    conditions.push(Prisma.sql`ep.created_at <= ${endDate}`);
+    conditions.push(Prisma.sql`ep.event_to_date <= ${endDate}`);
+  }
+
+  if (createdDate) {
+    conditions.push(Prisma.sql`DATE(ep.created_at) = ${createdDate}`);
+  }
+
+  if (zone) {
+    conditions.push(Prisma.sql`ep.region_id IN (${Prisma.join(zone)})`);
+  }
+
+  if (eventType?.length) {
+    conditions.push(
+      Prisma.sql`ep.event_name_id IN (${Prisma.join(eventType)})`,
+    );
   }
 
   // ============================================================

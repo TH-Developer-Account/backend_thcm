@@ -84,7 +84,8 @@ export const ModelName = {
   LineItem: 'LineItem',
   Comment: 'Comment',
   Operator: 'Operator',
-  Lead: 'Lead'
+  Lead: 'Lead',
+  Pincode: 'Pincode'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -263,6 +264,7 @@ export const EventProposalScalarFieldEnum = {
   budget_master_id: 'budget_master_id',
   event_name_id: 'event_name_id',
   vertical_id: 'vertical_id',
+  locationMeta: 'locationMeta',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -554,6 +556,24 @@ export const LeadScalarFieldEnum = {
 } as const
 
 export type LeadScalarFieldEnum = (typeof LeadScalarFieldEnum)[keyof typeof LeadScalarFieldEnum]
+
+
+export const PincodeScalarFieldEnum = {
+  id: 'id',
+  pincode: 'pincode',
+  officeName: 'officeName',
+  officeType: 'officeType',
+  delivery: 'delivery',
+  district: 'district',
+  stateName: 'stateName',
+  circleName: 'circleName',
+  regionName: 'regionName',
+  divisionName: 'divisionName',
+  latitude: 'latitude',
+  longitude: 'longitude'
+} as const
+
+export type PincodeScalarFieldEnum = (typeof PincodeScalarFieldEnum)[keyof typeof PincodeScalarFieldEnum]
 
 
 export const SortOrder = {

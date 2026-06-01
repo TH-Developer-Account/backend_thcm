@@ -126,6 +126,11 @@ export const approveStage = async ({
           where: { id: stage!.workflowId },
           data: { status: WorkflowStatus.APPROVED },
         });
+
+        await tx.eventProposal.update({
+          where: { id: stage!.workflow.eventProposalId },
+          data: { status: WorkflowStatus.APPROVED },
+        });
       }
 
       await tx.activityLog.create({

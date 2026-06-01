@@ -60,7 +60,9 @@ enum ActivityAction {
   EPF_UPDATED
   CRF_CREATED
   CRF_UPDATED
-  EPC_RESUBMITTED       // after a CLARIFY round
+  EPC_RESUBMITTED
+  EPC_CONDUCTED
+  EPC_CANCELLED
 
   // Approval/workflow domain (replaces AuditAction)
   APPROVED
@@ -301,6 +303,7 @@ model EventProposal {
   budget_master_id String
   event_name_id    String
   vertical_id      String
+  locationMeta     Json?    
 
   department    Department   @relation(fields: [department_id], references: [id])
   vertical      Vertical     @relation(fields: [vertical_id], references: [id])
@@ -686,5 +689,29 @@ model Lead {
 
   @@index([epcId])
 }
+
+model Pincode {
+  id           String  @id @default(uuid())
+  pincode      String
+  officeName   String
+  officeType   String  // BO | SO | HO
+  delivery     String
+  district     String
+  stateName    String
+  circleName   String
+  regionName   String
+  divisionName String
+  latitude     Float
+  longitude    Float
+
+  // Full-text search vector — weighted combination of all searchable fields.
+  // Populated and kept fresh by trigger: pincode_search_vector_update
+  searchVector Unsupported("tsvector")?
+
+  @@index([pincode])           // fast exact pincode lookups
+  @@index([stateName])         // reporting: group by state
+  @@index([district])          // reporting: group by district
+}
+
 
 

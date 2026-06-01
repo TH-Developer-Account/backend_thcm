@@ -19,6 +19,13 @@ import { addMailJob } from "../services/mail.service";
 // the workflow controller instead — it keeps EPC queries lean.
 // ─────────────────────────────────────────────────────────────────────────────
 
+function toStringArray(value: unknown): string[] | undefined {
+  if (value === undefined || value === null) return undefined;
+  const arr = Array.isArray(value) ? value : [value];
+  const result = arr.filter((v): v is string => typeof v === "string");
+  return result.length > 0 ? result : undefined;
+}
+
 const activeWorkflowInclude = {
   where: { isActive: true },
   include: {
@@ -81,6 +88,7 @@ export const createEventProposal = async (
       event_to_date,
       event_description,
       location,
+      locationMeta,
       event_objective,
       department,
       vertical,
@@ -117,6 +125,7 @@ export const createEventProposal = async (
         event_to_date: new Date(event_to_date),
         event_description,
         location,
+        locationMeta,
         event_objective,
         department_id: department,
         vertical_id: vertical,
@@ -200,10 +209,13 @@ export const getAllEventProposals = async (
       sortOrder = "desc",
       status,
       departmentId,
-      startDate,
-      endDate,
       approvedByMe,
       pendingOnMe,
+      zone,
+      eventType,
+      eventDateFrom,
+      eventDateTo,
+      createdDate,
     } = req.query;
 
     const userId = req?.user?.id;
@@ -251,14 +263,17 @@ export const getAllEventProposals = async (
       approvedByMe: approvedByMe === "true",
       pendingOnMe: pendingOnMe === "true",
       search: search as string,
-      status: status as string,
+      status: toStringArray(status),
       departmentId: departmentId ? String(departmentId) : undefined,
-      startDate: startDate ? new Date(startDate as string) : undefined,
-      endDate: endDate ? new Date(endDate as string) : undefined,
+      startDate: eventDateFrom ? new Date(eventDateFrom as string) : undefined,
+      endDate: eventDateTo ? new Date(eventDateTo as string) : undefined,
       page: pageNumber,
       pageSize: take,
       sortBy: sortBy as any,
       sortOrder: sortOrder === "asc" ? "asc" : "desc",
+      zone: toStringArray(zone),
+      eventType: toStringArray(eventType),
+      createdDate: createdDate ? new Date(createdDate as string) : undefined,
     });
 
     res.status(200).json({
@@ -413,6 +428,109 @@ export const deleteEventProposal = async (
     res.status(200).json({
       success: true,
       message: "Event Proposal deleted successfully",
+      data: updated,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const OUTCOME_STATUSES = new Set(["CONDUCTED", "CANCELLED"]);
+
+export const updateEventProposalOutcome = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = String(req.params.id);
+    const userId = req?.user?.id;
+
+    if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!id) throw new ApiError(400, "Invalid EPC ID");
+
+    const { status, reason } = req.body as {
+      status: string;
+      reason?: string;
+    };
+
+    // ── Guard 1: valid target status ─────────────────────────────────────────
+    if (!status || !OUTCOME_STATUSES.has(status)) {
+      throw new ApiError(400, "status must be either CONDUCTED or CANCELLED");
+    }
+
+    // ── Load EPC — only the fields needed for guards ──────────────────────────
+    const epc = await prisma.eventProposal.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        status: true,
+        created_by_id: true,
+      },
+    });
+
+    if (!epc) throw new ApiError(404, "Event Proposal not found");
+
+    // ── Guard 2: only the original proposer can call this ─────────────────────
+    if (epc.created_by_id !== userId) {
+      throw new ApiError(
+        403,
+        "Only the original proposer can update the event outcome",
+      );
+    }
+
+    // ── Guard 3: EPC must be in APPROVED state ────────────────────────────────
+    if (epc.status !== "APPROVED") {
+      throw new ApiError(
+        400,
+        `Event outcome can only be set on an APPROVED proposal. Current status: ${epc.status}`,
+      );
+    }
+
+    // ── Guard 4: no active IN_PROGRESS workflow ───────────────────────────────
+    // Workflow must be fully resolved before the proposer can record an outcome.
+    const activeWorkflow = await prisma.workflowInstance.findFirst({
+      where: { eventProposalId: id, isActive: true, status: "IN_PROGRESS" },
+      select: { id: true },
+    });
+
+    if (activeWorkflow) {
+      throw new ApiError(
+        409,
+        "Cannot update outcome while a workflow is still IN_PROGRESS. " +
+          "The workflow must be fully resolved first.",
+      );
+    }
+
+    // ── Determine the ActivityAction for the log ──────────────────────────────
+    const activityAction =
+      status === "CONDUCTED" ? "EPC_CONDUCTED" : "EPC_CANCELLED";
+
+    // ── Atomic update + activity log ──────────────────────────────────────────
+    const updated = await prisma.$transaction(async (tx) => {
+      const proposal = await tx.eventProposal.update({
+        where: { id },
+        data: {
+          status,
+          updated_by_id: userId,
+        },
+      });
+
+      await tx.activityLog.create({
+        data: {
+          epcId: id,
+          actorId: userId,
+          action: activityAction,
+          metadata: reason ? { reason } : {},
+        },
+      });
+
+      return proposal;
+    });
+
+    res.status(200).json({
+      success: true,
+      message: `Event Proposal marked as ${status} successfully`,
       data: updated,
     });
   } catch (error) {
