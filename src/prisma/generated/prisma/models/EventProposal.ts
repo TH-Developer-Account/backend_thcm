@@ -342,6 +342,7 @@ export type EventProposalWhereInput = {
   updated_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   epf?: Prisma.XOR<Prisma.EPFNullableScalarRelationFilter, Prisma.EPFWhereInput> | null
   crf?: Prisma.XOR<Prisma.CRFNullableScalarRelationFilter, Prisma.CRFWhereInput> | null
+  report?: Prisma.XOR<Prisma.EventReportNullableScalarRelationFilter, Prisma.EventReportWhereInput> | null
   workflows?: Prisma.WorkflowInstanceListRelationFilter
   activityLogs?: Prisma.ActivityLogListRelationFilter
   leads?: Prisma.LeadListRelationFilter
@@ -378,6 +379,7 @@ export type EventProposalOrderByWithRelationInput = {
   updated_by?: Prisma.UserOrderByWithRelationInput
   epf?: Prisma.EPFOrderByWithRelationInput
   crf?: Prisma.CRFOrderByWithRelationInput
+  report?: Prisma.EventReportOrderByWithRelationInput
   workflows?: Prisma.WorkflowInstanceOrderByRelationAggregateInput
   activityLogs?: Prisma.ActivityLogOrderByRelationAggregateInput
   leads?: Prisma.LeadOrderByRelationAggregateInput
@@ -417,6 +419,7 @@ export type EventProposalWhereUniqueInput = Prisma.AtLeast<{
   updated_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   epf?: Prisma.XOR<Prisma.EPFNullableScalarRelationFilter, Prisma.EPFWhereInput> | null
   crf?: Prisma.XOR<Prisma.CRFNullableScalarRelationFilter, Prisma.CRFWhereInput> | null
+  report?: Prisma.XOR<Prisma.EventReportNullableScalarRelationFilter, Prisma.EventReportWhereInput> | null
   workflows?: Prisma.WorkflowInstanceListRelationFilter
   activityLogs?: Prisma.ActivityLogListRelationFilter
   leads?: Prisma.LeadListRelationFilter
@@ -499,6 +502,7 @@ export type EventProposalCreateInput = {
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
@@ -527,6 +531,7 @@ export type EventProposalUncheckedCreateInput = {
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
@@ -555,6 +560,7 @@ export type EventProposalUpdateInput = {
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
@@ -583,6 +589,7 @@ export type EventProposalUncheckedUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
@@ -1145,6 +1152,20 @@ export type EventProposalUpdateOneRequiredWithoutLeadsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EventProposalUpdateToOneWithWhereWithoutLeadsInput, Prisma.EventProposalUpdateWithoutLeadsInput>, Prisma.EventProposalUncheckedUpdateWithoutLeadsInput>
 }
 
+export type EventProposalCreateNestedOneWithoutReportInput = {
+  create?: Prisma.XOR<Prisma.EventProposalCreateWithoutReportInput, Prisma.EventProposalUncheckedCreateWithoutReportInput>
+  connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutReportInput
+  connect?: Prisma.EventProposalWhereUniqueInput
+}
+
+export type EventProposalUpdateOneRequiredWithoutReportNestedInput = {
+  create?: Prisma.XOR<Prisma.EventProposalCreateWithoutReportInput, Prisma.EventProposalUncheckedCreateWithoutReportInput>
+  connectOrCreate?: Prisma.EventProposalCreateOrConnectWithoutReportInput
+  upsert?: Prisma.EventProposalUpsertWithoutReportInput
+  connect?: Prisma.EventProposalWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventProposalUpdateToOneWithWhereWithoutReportInput, Prisma.EventProposalUpdateWithoutReportInput>, Prisma.EventProposalUncheckedUpdateWithoutReportInput>
+}
+
 export type EventProposalCreateWithoutCreated_byInput = {
   id?: string
   proposal_number: string
@@ -1167,6 +1188,7 @@ export type EventProposalCreateWithoutCreated_byInput = {
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
@@ -1194,6 +1216,7 @@ export type EventProposalUncheckedCreateWithoutCreated_byInput = {
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
@@ -1231,6 +1254,7 @@ export type EventProposalCreateWithoutUpdated_byInput = {
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
@@ -1258,6 +1282,7 @@ export type EventProposalUncheckedCreateWithoutUpdated_byInput = {
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
@@ -1354,6 +1379,7 @@ export type EventProposalCreateWithoutWorkflowsInput = {
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
 }
@@ -1381,6 +1407,7 @@ export type EventProposalUncheckedCreateWithoutWorkflowsInput = {
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
 }
@@ -1424,6 +1451,7 @@ export type EventProposalUpdateWithoutWorkflowsInput = {
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
 }
@@ -1451,6 +1479,7 @@ export type EventProposalUncheckedUpdateWithoutWorkflowsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
 }
@@ -1478,6 +1507,7 @@ export type EventProposalCreateWithoutActivityLogsInput = {
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
 }
@@ -1505,6 +1535,7 @@ export type EventProposalUncheckedCreateWithoutActivityLogsInput = {
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
 }
@@ -1548,6 +1579,7 @@ export type EventProposalUpdateWithoutActivityLogsInput = {
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
 }
@@ -1575,6 +1607,7 @@ export type EventProposalUncheckedUpdateWithoutActivityLogsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
 }
@@ -1601,6 +1634,7 @@ export type EventProposalCreateWithoutDepartmentInput = {
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
@@ -1628,6 +1662,7 @@ export type EventProposalUncheckedCreateWithoutDepartmentInput = {
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
@@ -1681,6 +1716,7 @@ export type EventProposalCreateWithoutVerticalInput = {
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
@@ -1708,6 +1744,7 @@ export type EventProposalUncheckedCreateWithoutVerticalInput = {
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
@@ -1761,6 +1798,7 @@ export type EventProposalCreateWithoutRegionInput = {
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
@@ -1788,6 +1826,7 @@ export type EventProposalUncheckedCreateWithoutRegionInput = {
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
@@ -1841,6 +1880,7 @@ export type EventProposalCreateWithoutBranchInput = {
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
@@ -1868,6 +1908,7 @@ export type EventProposalUncheckedCreateWithoutBranchInput = {
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
@@ -1921,6 +1962,7 @@ export type EventProposalCreateWithoutBudget_masterInput = {
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
@@ -1948,6 +1990,7 @@ export type EventProposalUncheckedCreateWithoutBudget_masterInput = {
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
@@ -2001,6 +2044,7 @@ export type EventProposalCreateWithoutEvent_nameInput = {
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
@@ -2028,6 +2072,7 @@ export type EventProposalUncheckedCreateWithoutEvent_nameInput = {
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
@@ -2081,6 +2126,7 @@ export type EventProposalCreateWithoutEpfInput = {
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
@@ -2108,6 +2154,7 @@ export type EventProposalUncheckedCreateWithoutEpfInput = {
   created_at?: Date | string
   updated_at?: Date | string
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
@@ -2151,6 +2198,7 @@ export type EventProposalUpdateWithoutEpfInput = {
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
@@ -2178,6 +2226,7 @@ export type EventProposalUncheckedUpdateWithoutEpfInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
@@ -2205,6 +2254,7 @@ export type EventProposalCreateWithoutCrfInput = {
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
@@ -2232,6 +2282,7 @@ export type EventProposalUncheckedCreateWithoutCrfInput = {
   created_at?: Date | string
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
   leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
@@ -2275,6 +2326,7 @@ export type EventProposalUpdateWithoutCrfInput = {
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
@@ -2302,6 +2354,7 @@ export type EventProposalUncheckedUpdateWithoutCrfInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
@@ -2330,6 +2383,7 @@ export type EventProposalCreateWithoutLeadsInput = {
   updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
   epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
 }
@@ -2357,6 +2411,7 @@ export type EventProposalUncheckedCreateWithoutLeadsInput = {
   updated_at?: Date | string
   epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
   crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  report?: Prisma.EventReportUncheckedCreateNestedOneWithoutEpcInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
 }
@@ -2400,6 +2455,7 @@ export type EventProposalUpdateWithoutLeadsInput = {
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
 }
@@ -2427,8 +2483,137 @@ export type EventProposalUncheckedUpdateWithoutLeadsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
+}
+
+export type EventProposalCreateWithoutReportInput = {
+  id?: string
+  proposal_number: string
+  event_from_date: Date | string
+  event_to_date: Date | string
+  event_description: string
+  location: string
+  event_objective: string
+  status?: string
+  event_scale: number
+  locationMeta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
+  vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
+  budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
+  event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
+  updated_by: Prisma.UserCreateNestedOneWithoutUpdated_event_proposalsInput
+  epf?: Prisma.EPFCreateNestedOneWithoutEpcInput
+  crf?: Prisma.CRFCreateNestedOneWithoutEpcInput
+  workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutEventInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutEpcInput
+  leads?: Prisma.LeadCreateNestedManyWithoutEpcInput
+}
+
+export type EventProposalUncheckedCreateWithoutReportInput = {
+  id?: string
+  proposal_number: string
+  event_from_date: Date | string
+  event_to_date: Date | string
+  event_description: string
+  location: string
+  event_objective: string
+  status?: string
+  created_by_id: string
+  updated_by_id: string
+  department_id: string
+  region_id: string
+  branch_id: string
+  event_scale: number
+  budget_master_id: string
+  event_name_id: string
+  vertical_id: string
+  locationMeta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  epf?: Prisma.EPFUncheckedCreateNestedOneWithoutEpcInput
+  crf?: Prisma.CRFUncheckedCreateNestedOneWithoutEpcInput
+  workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutEventInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutEpcInput
+  leads?: Prisma.LeadUncheckedCreateNestedManyWithoutEpcInput
+}
+
+export type EventProposalCreateOrConnectWithoutReportInput = {
+  where: Prisma.EventProposalWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventProposalCreateWithoutReportInput, Prisma.EventProposalUncheckedCreateWithoutReportInput>
+}
+
+export type EventProposalUpsertWithoutReportInput = {
+  update: Prisma.XOR<Prisma.EventProposalUpdateWithoutReportInput, Prisma.EventProposalUncheckedUpdateWithoutReportInput>
+  create: Prisma.XOR<Prisma.EventProposalCreateWithoutReportInput, Prisma.EventProposalUncheckedCreateWithoutReportInput>
+  where?: Prisma.EventProposalWhereInput
+}
+
+export type EventProposalUpdateToOneWithWhereWithoutReportInput = {
+  where?: Prisma.EventProposalWhereInput
+  data: Prisma.XOR<Prisma.EventProposalUpdateWithoutReportInput, Prisma.EventProposalUncheckedUpdateWithoutReportInput>
+}
+
+export type EventProposalUpdateWithoutReportInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
+  event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_description?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  event_objective?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale?: Prisma.IntFieldUpdateOperationsInput | number
+  locationMeta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
+  updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
+  epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
+  crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
+  leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
+}
+
+export type EventProposalUncheckedUpdateWithoutReportInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  proposal_number?: Prisma.StringFieldUpdateOperationsInput | string
+  event_from_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_to_date?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_description?: Prisma.StringFieldUpdateOperationsInput | string
+  location?: Prisma.StringFieldUpdateOperationsInput | string
+  event_objective?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  department_id?: Prisma.StringFieldUpdateOperationsInput | string
+  region_id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_scale?: Prisma.IntFieldUpdateOperationsInput | number
+  budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
+  event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
+  vertical_id?: Prisma.StringFieldUpdateOperationsInput | string
+  locationMeta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
+  crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
+  leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
 }
 
 export type EventProposalCreateManyCreated_byInput = {
@@ -2497,6 +2682,7 @@ export type EventProposalUpdateWithoutCreated_byInput = {
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
@@ -2524,6 +2710,7 @@ export type EventProposalUncheckedUpdateWithoutCreated_byInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
@@ -2573,6 +2760,7 @@ export type EventProposalUpdateWithoutUpdated_byInput = {
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
@@ -2600,6 +2788,7 @@ export type EventProposalUncheckedUpdateWithoutUpdated_byInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
@@ -2671,6 +2860,7 @@ export type EventProposalUpdateWithoutDepartmentInput = {
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
@@ -2698,6 +2888,7 @@ export type EventProposalUncheckedUpdateWithoutDepartmentInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
@@ -2769,6 +2960,7 @@ export type EventProposalUpdateWithoutVerticalInput = {
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
@@ -2796,6 +2988,7 @@ export type EventProposalUncheckedUpdateWithoutVerticalInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
@@ -2867,6 +3060,7 @@ export type EventProposalUpdateWithoutRegionInput = {
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
@@ -2894,6 +3088,7 @@ export type EventProposalUncheckedUpdateWithoutRegionInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
@@ -2965,6 +3160,7 @@ export type EventProposalUpdateWithoutBranchInput = {
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
@@ -2992,6 +3188,7 @@ export type EventProposalUncheckedUpdateWithoutBranchInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
@@ -3063,6 +3260,7 @@ export type EventProposalUpdateWithoutBudget_masterInput = {
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
@@ -3090,6 +3288,7 @@ export type EventProposalUncheckedUpdateWithoutBudget_masterInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
@@ -3161,6 +3360,7 @@ export type EventProposalUpdateWithoutEvent_nameInput = {
   updated_by?: Prisma.UserUpdateOneRequiredWithoutUpdated_event_proposalsNestedInput
   epf?: Prisma.EPFUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUpdateManyWithoutEpcNestedInput
@@ -3188,6 +3388,7 @@ export type EventProposalUncheckedUpdateWithoutEvent_nameInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epf?: Prisma.EPFUncheckedUpdateOneWithoutEpcNestedInput
   crf?: Prisma.CRFUncheckedUpdateOneWithoutEpcNestedInput
+  report?: Prisma.EventReportUncheckedUpdateOneWithoutEpcNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutEventNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutEpcNestedInput
   leads?: Prisma.LeadUncheckedUpdateManyWithoutEpcNestedInput
@@ -3295,6 +3496,7 @@ export type EventProposalSelect<ExtArgs extends runtime.Types.Extensions.Interna
   updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   epf?: boolean | Prisma.EventProposal$epfArgs<ExtArgs>
   crf?: boolean | Prisma.EventProposal$crfArgs<ExtArgs>
+  report?: boolean | Prisma.EventProposal$reportArgs<ExtArgs>
   workflows?: boolean | Prisma.EventProposal$workflowsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.EventProposal$activityLogsArgs<ExtArgs>
   leads?: boolean | Prisma.EventProposal$leadsArgs<ExtArgs>
@@ -3398,6 +3600,7 @@ export type EventProposalInclude<ExtArgs extends runtime.Types.Extensions.Intern
   updated_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   epf?: boolean | Prisma.EventProposal$epfArgs<ExtArgs>
   crf?: boolean | Prisma.EventProposal$crfArgs<ExtArgs>
+  report?: boolean | Prisma.EventProposal$reportArgs<ExtArgs>
   workflows?: boolean | Prisma.EventProposal$workflowsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.EventProposal$activityLogsArgs<ExtArgs>
   leads?: boolean | Prisma.EventProposal$leadsArgs<ExtArgs>
@@ -3437,6 +3640,7 @@ export type $EventProposalPayload<ExtArgs extends runtime.Types.Extensions.Inter
     updated_by: Prisma.$UserPayload<ExtArgs>
     epf: Prisma.$EPFPayload<ExtArgs> | null
     crf: Prisma.$CRFPayload<ExtArgs> | null
+    report: Prisma.$EventReportPayload<ExtArgs> | null
     workflows: Prisma.$WorkflowInstancePayload<ExtArgs>[]
     activityLogs: Prisma.$ActivityLogPayload<ExtArgs>[]
     leads: Prisma.$LeadPayload<ExtArgs>[]
@@ -3866,6 +4070,7 @@ export interface Prisma__EventProposalClient<T, Null = never, ExtArgs extends ru
   updated_by<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   epf<T extends Prisma.EventProposal$epfArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventProposal$epfArgs<ExtArgs>>): Prisma.Prisma__EPFClient<runtime.Types.Result.GetResult<Prisma.$EPFPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   crf<T extends Prisma.EventProposal$crfArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventProposal$crfArgs<ExtArgs>>): Prisma.Prisma__CRFClient<runtime.Types.Result.GetResult<Prisma.$CRFPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  report<T extends Prisma.EventProposal$reportArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventProposal$reportArgs<ExtArgs>>): Prisma.Prisma__EventReportClient<runtime.Types.Result.GetResult<Prisma.$EventReportPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   workflows<T extends Prisma.EventProposal$workflowsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventProposal$workflowsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activityLogs<T extends Prisma.EventProposal$activityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventProposal$activityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leads<T extends Prisma.EventProposal$leadsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventProposal$leadsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4349,6 +4554,25 @@ export type EventProposal$crfArgs<ExtArgs extends runtime.Types.Extensions.Inter
    */
   include?: Prisma.CRFInclude<ExtArgs> | null
   where?: Prisma.CRFWhereInput
+}
+
+/**
+ * EventProposal.report
+ */
+export type EventProposal$reportArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventReport
+   */
+  select?: Prisma.EventReportSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EventReport
+   */
+  omit?: Prisma.EventReportOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventReportInclude<ExtArgs> | null
+  where?: Prisma.EventReportWhereInput
 }
 
 /**

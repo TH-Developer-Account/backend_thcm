@@ -85,7 +85,8 @@ export const ModelName = {
   Comment: 'Comment',
   Operator: 'Operator',
   Lead: 'Lead',
-  Pincode: 'Pincode'
+  Pincode: 'Pincode',
+  EventReport: 'EventReport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -572,6 +573,27 @@ export const PincodeScalarFieldEnum = {
 } as const
 
 export type PincodeScalarFieldEnum = (typeof PincodeScalarFieldEnum)[keyof typeof PincodeScalarFieldEnum]
+
+
+export const EventReportScalarFieldEnum = {
+  id: 'id',
+  epcId: 'epcId',
+  s3Key: 's3Key',
+  fileUrl: 'fileUrl',
+  description: 'description',
+  notes: 'notes',
+  actualSpend: 'actualSpend',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
+  submittedAt: 'submittedAt',
+  resubmittedAt: 'resubmittedAt',
+  validatedAt: 'validatedAt',
+  validatorId: 'validatorId',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type EventReportScalarFieldEnum = (typeof EventReportScalarFieldEnum)[keyof typeof EventReportScalarFieldEnum]
 
 
 export const SortOrder = {

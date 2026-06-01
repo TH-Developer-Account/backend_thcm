@@ -81,6 +81,11 @@ export const ActivityAction = {
   EPC_RESUBMITTED: 'EPC_RESUBMITTED',
   EPC_CONDUCTED: 'EPC_CONDUCTED',
   EPC_CANCELLED: 'EPC_CANCELLED',
+  REPORT_SUBMITTED: 'REPORT_SUBMITTED',
+  REPORT_RESUBMITTED: 'REPORT_RESUBMITTED',
+  REPORT_VALIDATED: 'REPORT_VALIDATED',
+  REPORT_REJECTED: 'REPORT_REJECTED',
+  EPC_CLOSED: 'EPC_CLOSED',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
   CLARIFY: 'CLARIFY',
@@ -106,3 +111,12 @@ export const ProductCategory = {
 } as const
 
 export type ProductCategory = (typeof ProductCategory)[keyof typeof ProductCategory]
+
+
+export const ReportStatus = {
+  SUBMITTED: 'SUBMITTED',
+  VALIDATED: 'VALIDATED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]

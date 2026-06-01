@@ -418,7 +418,8 @@ export const ModelName = {
   Comment: 'Comment',
   Operator: 'Operator',
   Lead: 'Lead',
-  Pincode: 'Pincode'
+  Pincode: 'Pincode',
+  EventReport: 'EventReport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -434,7 +435,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3028,6 +3029,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    EventReport: {
+      payload: Prisma.$EventReportPayload<ExtArgs>
+      fields: Prisma.EventReportFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EventReportFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EventReportFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportPayload>
+        }
+        findFirst: {
+          args: Prisma.EventReportFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EventReportFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportPayload>
+        }
+        findMany: {
+          args: Prisma.EventReportFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportPayload>[]
+        }
+        create: {
+          args: Prisma.EventReportCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportPayload>
+        }
+        createMany: {
+          args: Prisma.EventReportCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EventReportCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportPayload>[]
+        }
+        delete: {
+          args: Prisma.EventReportDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportPayload>
+        }
+        update: {
+          args: Prisma.EventReportUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportPayload>
+        }
+        deleteMany: {
+          args: Prisma.EventReportDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EventReportUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EventReportUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportPayload>[]
+        }
+        upsert: {
+          args: Prisma.EventReportUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportPayload>
+        }
+        aggregate: {
+          args: Prisma.EventReportAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEventReport>
+        }
+        groupBy: {
+          args: Prisma.EventReportGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventReportGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EventReportCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventReportCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3537,6 +3612,27 @@ export const PincodeScalarFieldEnum = {
 export type PincodeScalarFieldEnum = (typeof PincodeScalarFieldEnum)[keyof typeof PincodeScalarFieldEnum]
 
 
+export const EventReportScalarFieldEnum = {
+  id: 'id',
+  epcId: 'epcId',
+  s3Key: 's3Key',
+  fileUrl: 'fileUrl',
+  description: 'description',
+  notes: 'notes',
+  actualSpend: 'actualSpend',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
+  submittedAt: 'submittedAt',
+  resubmittedAt: 'resubmittedAt',
+  validatedAt: 'validatedAt',
+  validatorId: 'validatorId',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type EventReportScalarFieldEnum = (typeof EventReportScalarFieldEnum)[keyof typeof EventReportScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3800,6 +3896,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
+
+/**
+ * Reference to a field of type 'ReportStatus'
+ */
+export type EnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ReportStatus[]'
+ */
+export type ListEnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -3930,6 +4040,7 @@ export type GlobalOmitConfig = {
   operator?: Prisma.OperatorOmit
   lead?: Prisma.LeadOmit
   pincode?: Prisma.PincodeOmit
+  eventReport?: Prisma.EventReportOmit
 }
 
 /* Types for Logging */
