@@ -2,10 +2,9 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
+  GetObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { v4 as uuidv4 } from "uuid";
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION!,
@@ -15,47 +14,52 @@ const s3Client = new S3Client({
   },
 });
 
-const BUCKET_NAME = process.env.S3_BUCKET_NAME!;
+const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME!;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
 // ─────────────────────────────────────────────────────────────────────────────
 
-export interface UploadResult {
-  s3Key: string; // stored in DB — used to delete the object later
-  fileUrl: string; // the full S3 URL — stored in DB for access
+export interface ImageUploadResult {
+  s3Key: string; // stored in DB — used to delete the object on selective replace
+  fileUrl: string; // full S3 URL — stored in DB, used to build pre-signed URL
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// buildS3Key
+// buildImageS3Key
 //
-// Deterministic key structure: reports/<epcId>/<uuid>.pdf
-// Scoping by epcId makes it easy to list or purge all files for an EPC.
+// Deterministic key: report-images/<epcId>/<position>.jpg
+//
+// Position-keyed (not uuid) so uploading to position 2 again
+// overwrites the same S3 object — no orphaned files, no cleanup needed
+// on selective replace.
 // ─────────────────────────────────────────────────────────────────────────────
 
-function buildS3Key(epcId: string): string {
-  return `reports/${epcId}/${uuidv4()}.pdf`;
+function buildImageS3Key(epcId: string, position: number): string {
+  return `report-images/${epcId}/${position}.jpg`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// uploadReportPdf
+// uploadReportImage
 //
-// Uploads a PDF buffer to S3 under the reports/<epcId>/ prefix.
-// Returns the s3Key (for future deletion) and the fileUrl (for access).
+// Uploads a single image buffer to S3 at the position-keyed path.
+// Idempotent — re-uploading to the same position overwrites the old object.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export async function uploadReportPdf(
+export async function uploadReportImage(
   epcId: string,
+  position: number,
   fileBuffer: Buffer,
-): Promise<UploadResult> {
-  const s3Key = buildS3Key(epcId);
+  mimeType: string,
+): Promise<ImageUploadResult> {
+  const s3Key = buildImageS3Key(epcId, position);
 
   await s3Client.send(
     new PutObjectCommand({
       Bucket: BUCKET_NAME,
       Key: s3Key,
       Body: fileBuffer,
-      ContentType: "application/pdf",
+      ContentType: mimeType,
     }),
   );
 
@@ -65,14 +69,14 @@ export async function uploadReportPdf(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// deleteReportPdf
+// deleteReportImage
 //
-// Deletes an S3 object by its key.
-// Called before uploading a replacement file on resubmission.
-// Does not throw if the object is already gone (idempotent).
+// Deletes a single image by its S3 key.
+// Idempotent — does not throw if the object is already gone.
+// Called on selective replace before uploading the new image.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export async function deleteReportPdf(s3Key: string): Promise<void> {
+export async function deleteReportImage(s3Key: string): Promise<void> {
   await s3Client.send(
     new DeleteObjectCommand({
       Bucket: BUCKET_NAME,
@@ -82,14 +86,13 @@ export async function deleteReportPdf(s3Key: string): Promise<void> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// getSignedReportUrl
+// getSignedImageUrl
 //
 // Generates a pre-signed GET URL valid for `expiresInSeconds` (default 1 hour).
-// Use this if your bucket is private and you want time-limited access.
-// If your bucket is public, use fileUrl directly and skip this.
+// Always use this for image access — the bucket is private.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export async function getSignedReportUrl(
+export async function getSignedImageUrl(
   s3Key: string,
   expiresInSeconds = 3600,
 ): Promise<string> {

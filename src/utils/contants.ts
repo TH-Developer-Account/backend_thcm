@@ -191,4 +191,26 @@ export const epcFullInfoSelect = {
       },
     },
   },
+  report: {
+    select: {
+      id: true,
+      epcId: true,
+      status: true,
+      remarks: true,
+      outcomeStatus: true,
+      totalLeadsGenerated: true,
+      approvedEventCost: true,
+      expectedConversion: true,
+      validatorId: true,
+      images: {
+        select: {
+          id: true,
+          reportId: true,
+          position: true,
+          s3Key: true,
+          fileUrl: true,
+        },
+      },
+    },
+  },
 } as const;

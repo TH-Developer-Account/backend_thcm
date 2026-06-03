@@ -1,15 +1,34 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
-import { uploadReportPdf, deleteReportPdf } from "../services/aws-s3.services";
+import {
+  uploadReportImage,
+  deleteReportImage,
+  getSignedImageUrl,
+} from "../services/aws-s3.services";
 import { getValidatorForApp } from "../utils/validators.constant";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+const REQUIRED_IMAGE_COUNT = 4;
+const VALID_IMAGE_POSITIONS = [1, 2, 3, 4] as const;
+const ALLOWED_IMAGE_MIME_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+]);
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+
+type ImagePosition = (typeof VALID_IMAGE_POSITIONS)[number];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Resolves the app key for a given EPC by walking EPC → active workflow → template → app.
-// We need the app key to look up the correct validator from APP_VALIDATORS.
+// Resolves the app key for an EPC by walking EPC → active workflow → template → app.
+// Needed to look up the correct validator from APP_VALIDATORS.
 async function resolveAppKeyForEpc(epcId: string): Promise<string> {
   const workflow = await prisma.workflowInstance.findFirst({
     where: { eventProposalId: epcId, isActive: true },
@@ -27,33 +46,75 @@ async function resolveAppKeyForEpc(epcId: string): Promise<string> {
   return workflow.template.app.key;
 }
 
-// Extracts the PDF buffer from the multipart request.
-// Assumes multer (or similar) middleware has attached `req.file`.
-function extractPdfBuffer(req: Request): Buffer {
-  if (!req.file) {
-    throw new ApiError(400, "PDF file is required");
+// Extracts and validates a named image file from the multipart request.
+// multer stores named fields in req.files as a Record<fieldName, Express.Multer.File[]>.
+function extractImageFile(
+  files: Record<string, Express.Multer.File[]>,
+  position: ImagePosition,
+): Express.Multer.File {
+  const fieldName = `image_${position}`;
+  const fileArr = files[fieldName];
+
+  if (!fileArr || fileArr.length === 0) {
+    throw new ApiError(400, `image_${position} is required`);
   }
-  if (req.file.mimetype !== "application/pdf") {
-    throw new ApiError(400, "Only PDF files are accepted");
+
+  const file = fileArr[0];
+
+  if (!ALLOWED_IMAGE_MIME_TYPES.has(file.mimetype)) {
+    throw new ApiError(
+      400,
+      `image_${position}: only JPEG, PNG, and WebP images are accepted`,
+    );
   }
-  return req.file.buffer;
+
+  if (file.size > MAX_IMAGE_SIZE_BYTES) {
+    throw new ApiError(
+      400,
+      `image_${position}: file size must not exceed 5 MB`,
+    );
+  }
+
+  return file;
+}
+
+// Hydrates pre-signed URLs for all images on a report.
+// Returns images sorted by position for consistent response shape.
+async function hydrateImageUrls(
+  images: { id: string; position: number; s3Key: string; fileUrl: string }[],
+): Promise<{ id: string; position: number; url: string }[]> {
+  const sorted = [...images].sort((a, b) => a.position - b.position);
+
+  return Promise.all(
+    sorted.map(async (img) => ({
+      id: img.id,
+      position: img.position,
+      url: await getSignedImageUrl(img.s3Key),
+    })),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// POST /epc/:id/report
+// POST /report/:epcId/submit
 //
-// Proposer submits the event report PDF after marking the EPC as CONDUCTED.
+// Proposer submits the event report after the EPC is marked CONDUCTED.
+// Exactly 4 images are required (fields: image_1, image_2, image_3, image_4).
+//
+// Multipart fields:
+//   image_1..image_4     — image files (JPEG/PNG/WebP, max 5 MB each, required)
+//   outcomeStatus        — "SUCCESSFUL" | "PARTIALLY_SUCCESSFUL" | "UNSUCCESSFUL" (required)
+//   totalLeadsGenerated  — integer (required)
+//   approvedEventCost    — decimal (required)
+//   expectedConversion   — string (optional)
+//   remarks              — string (optional)
 //
 // Guards:
 //   - Caller must be the EPC creator
 //   - EPC must be in CONDUCTED status
-//   - Report must not already exist (one report per EPC)
+//   - Report must not already exist
 //
-// Multipart body fields:
-//   file         — PDF file (required)
-//   description  — string (optional)
-//   notes        — string (optional)
-//   actualSpend  — number (required)
+// Transitions:
+//   - EPC → REPORT_SUBMITTED
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const submitReport = async (
@@ -66,13 +127,52 @@ export const submitReport = async (
     if (!userId) throw new ApiError(401, "Unauthorized");
 
     const epcId = String(req.params.epcId);
-    const { description, notes, actualSpend } = req.body;
+    const files = req.files as Record<string, Express.Multer.File[]>;
 
-    if (!actualSpend || isNaN(Number(actualSpend))) {
-      throw new ApiError(400, "actualSpend is required and must be a number");
+    const {
+      outcomeStatus,
+      totalLeadsGenerated,
+      approvedEventCost,
+      expectedConversion,
+      remarks,
+    } = req.body;
+
+    // ── Validate required scalar fields ───────────────────────────────────
+    if (!outcomeStatus) {
+      throw new ApiError(400, "outcomeStatus is required");
+    }
+    if (
+      !["SUCCESSFUL", "PARTIALLY_SUCCESSFUL", "UNSUCCESSFUL"].includes(
+        outcomeStatus,
+      )
+    ) {
+      throw new ApiError(
+        400,
+        "outcomeStatus must be SUCCESSFUL, PARTIALLY_SUCCESSFUL, or UNSUCCESSFUL",
+      );
+    }
+    if (
+      totalLeadsGenerated === undefined ||
+      isNaN(Number(totalLeadsGenerated))
+    ) {
+      throw new ApiError(
+        400,
+        "totalLeadsGenerated is required and must be a number",
+      );
+    }
+    if (!approvedEventCost || isNaN(Number(approvedEventCost))) {
+      throw new ApiError(
+        400,
+        "approvedEventCost is required and must be a number",
+      );
     }
 
-    // ── Load EPC ──────────────────────────────────────────────────────────
+    // ── Validate all 4 image files up front before any DB/S3 work ─────────
+    const imageFiles = VALID_IMAGE_POSITIONS.map((pos) =>
+      extractImageFile(files ?? {}, pos),
+    );
+
+    // ── Load and guard EPC ────────────────────────────────────────────────
     const epc = await prisma.eventProposal.findUnique({
       where: { id: epcId },
       select: { id: true, status: true, created_by_id: true },
@@ -98,48 +198,68 @@ export const submitReport = async (
     });
 
     if (existing) {
-      throw new ApiError(409, "A report already exists for this EPC.");
+      throw new ApiError(409, "A report already exists for this EPC");
     }
 
-    // ── Resolve validator for this EPC's app ──────────────────────────────
+    // ── Resolve validator ─────────────────────────────────────────────────
     const appKey = await resolveAppKeyForEpc(epcId);
     const validatorId = getValidatorForApp(appKey);
 
-    // ── Upload PDF to S3 ──────────────────────────────────────────────────
-    const pdfBuffer = extractPdfBuffer(req);
-    const { s3Key, fileUrl } = await uploadReportPdf(epcId, pdfBuffer);
+    if (!validatorId) {
+      throw new ApiError(500, `No validator configured for app "${appKey}"`);
+    }
 
-    // ── Create report + transition EPC status atomically ─────────────────
-    const [report] = await prisma.$transaction([
-      prisma.eventReport.create({
+    // ── Upload all 4 images to S3 ─────────────────────────────────────────
+    // Upload before DB write — if any upload fails, nothing is persisted.
+    const uploadResults = await Promise.all(
+      imageFiles.map((file, index) =>
+        uploadReportImage(epcId, index + 1, file.buffer, file.mimetype),
+      ),
+    );
+
+    // ── Create report + images + transition EPC status atomically ─────────
+    const report = await prisma.$transaction(async (tx) => {
+      const created = await tx.eventReport.create({
         data: {
           epcId,
-          s3Key,
-          fileUrl,
-          description: description?.trim() ?? null,
-          notes: notes?.trim() ?? null,
-          actualSpend: Number(actualSpend),
+          outcomeStatus,
+          totalLeadsGenerated: Number(totalLeadsGenerated),
+          approvedEventCost: Number(approvedEventCost),
+          expectedConversion: expectedConversion?.trim() ?? null,
+          remarks: remarks?.trim() ?? null,
           validatorId,
           status: "SUBMITTED",
+          images: {
+            create: uploadResults.map((result, index) => ({
+              position: index + 1,
+              s3Key: result.s3Key,
+              fileUrl: result.fileUrl,
+            })),
+          },
         },
-      }),
-      prisma.eventProposal.update({
+        include: { images: true },
+      });
+
+      await tx.eventProposal.update({
         where: { id: epcId },
         data: { status: "REPORT_SUBMITTED" },
-      }),
-      prisma.activityLog.create({
+      });
+
+      await tx.activityLog.create({
         data: {
           epcId,
           actorId: userId,
           action: "REPORT_SUBMITTED",
         },
-      }),
-    ]);
+      });
+
+      return created;
+    });
 
     res.status(201).json({
       success: true,
       message: "Report submitted successfully",
-      data: report,
+      data: { ...report, images: await hydrateImageUrls(report.images) },
     });
   } catch (error) {
     next(error);
@@ -147,15 +267,28 @@ export const submitReport = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PATCH /epc/:id/report
+// PATCH /report/:epcId/resubmit
 //
-// Proposer resubmits the report after validator rejection.
-// The old PDF is deleted from S3 and replaced with the new one.
+// Proposer resubmits after validator rejection.
+// All scalar fields are optional — only supplied ones are updated.
+// Images are selectively replaced — send only the positions you want to swap.
+//
+// Multipart fields:
+//   image_1..image_4     — optional; only sent positions are replaced
+//   outcomeStatus        — optional
+//   totalLeadsGenerated  — optional
+//   approvedEventCost    — optional
+//   expectedConversion   — optional
+//   remarks              — optional
 //
 // Guards:
 //   - Caller must be the EPC creator
 //   - EPC must be in REPORT_REJECTED status
 //   - Report must exist
+//
+// Transitions:
+//   - Report → SUBMITTED (resets for re-review)
+//   - EPC    → REPORT_SUBMITTED
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const resubmitReport = async (
@@ -168,9 +301,17 @@ export const resubmitReport = async (
     if (!userId) throw new ApiError(401, "Unauthorized");
 
     const epcId = String(req.params.epcId);
-    const { description, notes, actualSpend } = req.body;
+    const files = req.files as Record<string, Express.Multer.File[]>;
 
-    // ── Load EPC ──────────────────────────────────────────────────────────
+    const {
+      outcomeStatus,
+      totalLeadsGenerated,
+      approvedEventCost,
+      expectedConversion,
+      remarks,
+    } = req.body;
+
+    // ── Load and guard EPC ────────────────────────────────────────────────
     const epc = await prisma.eventProposal.findUnique({
       where: { id: epcId },
       select: { id: true, status: true, created_by_id: true },
@@ -182,67 +323,148 @@ export const resubmitReport = async (
       throw new ApiError(403, "Only the EPC creator can resubmit the report");
     }
 
-    if (epc.status !== "REPORT_REJECTED") {
+    if (epc.status !== "CLARIFY_REPORT") {
       throw new ApiError(
         400,
-        "Report can only be resubmitted after it has been rejected",
+        "Report can only be resubmitted after it has been requested for clarification",
       );
     }
 
-    // ── Load existing report ──────────────────────────────────────────────
+    // ── Load existing report + images ─────────────────────────────────────
     const existingReport = await prisma.eventReport.findUnique({
       where: { epcId },
-      select: { id: true, s3Key: true },
+      select: {
+        id: true,
+        images: { select: { id: true, position: true, s3Key: true } },
+      },
     });
 
     if (!existingReport) throw new ApiError(404, "Report not found");
 
-    // ── Upload new PDF, then delete old one ───────────────────────────────
-    // Upload first — if upload fails, the old file is still intact.
-    const pdfBuffer = extractPdfBuffer(req);
-    const { s3Key: newS3Key, fileUrl: newFileUrl } = await uploadReportPdf(
-      epcId,
-      pdfBuffer,
+    // ── Determine which positions are being replaced ───────────────────────
+    // Only validate files that were actually sent — other positions untouched.
+    const positionsToReplace = VALID_IMAGE_POSITIONS.filter(
+      (pos) => files?.[`image_${pos}`]?.length > 0,
     );
 
-    await deleteReportPdf(existingReport.s3Key);
+    const replacementFiles = positionsToReplace.map(
+      (pos) => extractImageFile(files, pos), // validates mime + size
+    );
 
-    // ── Build update payload (only supplied fields) ───────────────────────
-    const updateData: Record<string, any> = {
-      s3Key: newS3Key,
-      fileUrl: newFileUrl,
+    // ── Validate optional scalar fields ───────────────────────────────────
+    if (
+      outcomeStatus !== undefined &&
+      !["SUCCESSFUL", "PARTIALLY_SUCCESSFUL", "UNSUCCESSFUL"].includes(
+        outcomeStatus,
+      )
+    ) {
+      throw new ApiError(
+        400,
+        "outcomeStatus must be SUCCESSFUL, PARTIALLY_SUCCESSFUL, or UNSUCCESSFUL",
+      );
+    }
+    if (
+      totalLeadsGenerated !== undefined &&
+      isNaN(Number(totalLeadsGenerated))
+    ) {
+      throw new ApiError(400, "totalLeadsGenerated must be a number");
+    }
+    if (approvedEventCost !== undefined && isNaN(Number(approvedEventCost))) {
+      throw new ApiError(400, "approvedEventCost must be a number");
+    }
+
+    // ── Upload replacements first — old files still intact if any fail ─────
+    const uploadResults = await Promise.all(
+      positionsToReplace.map((pos, index) =>
+        uploadReportImage(
+          epcId,
+          pos,
+          replacementFiles[index].buffer,
+          replacementFiles[index].mimetype,
+        ),
+      ),
+    );
+
+    // ── Delete old S3 objects for replaced positions ───────────────────────
+    // Fire-and-forget deletions after successful uploads — stale S3 objects
+    // are preferable to a partially failed state where nothing was updated.
+    const existingImageMap = new Map(
+      existingReport.images.map((img) => [img.position, img.s3Key]),
+    );
+
+    await Promise.allSettled(
+      positionsToReplace.map((pos) => {
+        const oldKey = existingImageMap.get(pos);
+        return oldKey ? deleteReportImage(oldKey) : Promise.resolve();
+      }),
+    );
+
+    // ── Build scalar update payload — only supplied fields ────────────────
+    const scalarUpdate: Record<string, unknown> = {
       status: "SUBMITTED",
       rejectionReason: null,
       resubmittedAt: new Date(),
     };
 
-    if (description !== undefined) updateData.description = description.trim();
-    if (notes !== undefined) updateData.notes = notes.trim();
-    if (actualSpend !== undefined) updateData.actualSpend = Number(actualSpend);
+    if (outcomeStatus !== undefined) scalarUpdate.outcomeStatus = outcomeStatus;
+    if (totalLeadsGenerated !== undefined)
+      scalarUpdate.totalLeadsGenerated = Number(totalLeadsGenerated);
+    if (approvedEventCost !== undefined)
+      scalarUpdate.approvedEventCost = Number(approvedEventCost);
+    if (expectedConversion !== undefined)
+      scalarUpdate.expectedConversion = expectedConversion.trim();
+    if (remarks !== undefined) scalarUpdate.remarks = remarks.trim();
 
-    // ── Update report + transition EPC status atomically ──────────────────
-    const [report] = await prisma.$transaction([
-      prisma.eventReport.update({
+    // ── Update report + upsert replaced images + transition EPC atomically ─
+    const report = await prisma.$transaction(async (tx) => {
+      const updated = await tx.eventReport.update({
         where: { epcId },
-        data: updateData,
-      }),
-      prisma.eventProposal.update({
+        data: {
+          ...scalarUpdate,
+          images: {
+            // upsert each replaced position — creates if missing, updates if exists
+            upsert: positionsToReplace.map((pos, index) => ({
+              where: {
+                reportId_position: {
+                  reportId: existingReport.id,
+                  position: pos,
+                },
+              },
+              create: {
+                position: pos,
+                s3Key: uploadResults[index].s3Key,
+                fileUrl: uploadResults[index].fileUrl,
+              },
+              update: {
+                s3Key: uploadResults[index].s3Key,
+                fileUrl: uploadResults[index].fileUrl,
+              },
+            })),
+          },
+        },
+        include: { images: true },
+      });
+
+      await tx.eventProposal.update({
         where: { id: epcId },
         data: { status: "REPORT_SUBMITTED" },
-      }),
-      prisma.activityLog.create({
+      });
+
+      await tx.activityLog.create({
         data: {
           epcId,
           actorId: userId,
           action: "REPORT_RESUBMITTED",
         },
-      }),
-    ]);
+      });
+
+      return updated;
+    });
 
     res.status(200).json({
       success: true,
       message: "Report resubmitted successfully",
-      data: report,
+      data: { ...report, images: await hydrateImageUrls(report.images) },
     });
   } catch (error) {
     next(error);
@@ -250,9 +472,9 @@ export const resubmitReport = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /epc/:id/report
+// GET /report/:epcId
 //
-// Returns the event report for a given EPC.
+// Returns the event report with pre-signed image URLs ordered by position.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getReport = async (
@@ -272,12 +494,21 @@ export const getReport = async (
         validator: {
           select: { id: true, first_name: true, last_name: true, email: true },
         },
+        images: true,
       },
     });
 
     if (!report) throw new ApiError(404, "Report not found");
 
-    res.status(200).json({ success: true, data: report });
+    const { images, ...reportData } = report;
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ...reportData,
+        images: await hydrateImageUrls(images),
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -308,15 +539,9 @@ export const validateReport = async (
 
     const { reportId } = req.params;
 
-    // ── Load report with EPC context ──────────────────────────────────────
     const report = await prisma.eventReport.findUnique({
       where: { id: reportId as string },
-      select: {
-        id: true,
-        epcId: true,
-        status: true,
-        validatorId: true,
-      },
+      select: { id: true, epcId: true, status: true, validatorId: true },
     });
 
     if (!report) throw new ApiError(404, "Report not found");
@@ -332,7 +557,6 @@ export const validateReport = async (
       );
     }
 
-    // ── Validate report + transition EPC atomically ───────────────────────
     await prisma.$transaction([
       prisma.eventReport.update({
         where: { id: reportId as string },
@@ -368,7 +592,7 @@ export const validateReport = async (
 // POST /report/:reportId/reject
 //
 // Validator rejects the report with a mandatory reason.
-// The proposer must then resubmit via PATCH /epc/:id/report.
+// The proposer must then resubmit via PATCH /report/:epcId/resubmit.
 //
 // Guards:
 //   - Caller must be the configured validator for this EPC's app
@@ -379,7 +603,7 @@ export const validateReport = async (
 //   - EPC    → REPORT_REJECTED
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const rejectReport = async (
+export const requestReportClarification = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -394,7 +618,7 @@ export const rejectReport = async (
     if (!reason || String(reason).trim().length < 5) {
       throw new ApiError(
         400,
-        "A rejection reason of at least 5 characters is required",
+        "A clarification reason of at least 5 characters is required",
       );
     }
 
@@ -418,28 +642,28 @@ export const rejectReport = async (
     if (report.status !== "SUBMITTED") {
       throw new ApiError(
         400,
-        `Report cannot be rejected — current status is ${report.status}`,
+        `Clarification can only be requested on a SUBMITTED report. Current status: ${report.status}`,
       );
     }
 
-    // ── Reject report + transition EPC atomically ─────────────────────────
+    // ── Request clarification + transition EPC atomically ─────────────────
     await prisma.$transaction([
       prisma.eventReport.update({
         where: { id: reportId as string },
         data: {
-          status: "REJECTED",
-          rejectionReason: String(reason).trim(),
+          status: "CLARIFICATION_REQUESTED",
+          clarificationReason: String(reason).trim(),
         },
       }),
       prisma.eventProposal.update({
         where: { id: report.epcId },
-        data: { status: "REPORT_REJECTED" },
+        data: { status: "CLARIFY_REPORT" },
       }),
       prisma.activityLog.create({
         data: {
           epcId: report.epcId,
           actorId: userId,
-          action: "REPORT_REJECTED",
+          action: "REPORT_CLARIFICATION_REQUESTED",
           metadata: { reason: String(reason).trim() },
         },
       }),
@@ -447,7 +671,8 @@ export const rejectReport = async (
 
     res.status(200).json({
       success: true,
-      message: "Report rejected. The proposer has been notified to resubmit.",
+      message:
+        "Clarification requested. The proposer has been notified to resubmit.",
     });
   } catch (error) {
     next(error);

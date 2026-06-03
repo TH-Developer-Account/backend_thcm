@@ -5,6 +5,8 @@ interface SearchEventProposalInput {
   userId: string;
   approvedByMe?: boolean;
   pendingOnMe?: boolean;
+  pendingReportValidation?: boolean;
+  reportValidatedByMe?: boolean;
   search?: string;
   status?: string[];
   departmentId?: string;
@@ -41,6 +43,8 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
     userId,
     approvedByMe,
     pendingOnMe,
+    pendingReportValidation,
+    reportValidatedByMe,
     search = "",
     status,
     departmentId,
@@ -98,94 +102,111 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
   }
 
   // ============================================================
-  // 🎯 USER-BASED FILTERING — three modes
+  // 🎯 USER-BASED FILTERING
+  //
+  // Two combined modes using OR logic:
+  //
+  //   pendingOnMe + pendingValidation    → workflow pending OR report pending
+  //   approvedByMe + reportValidatedByMe → workflow approved OR report validated
+  //
+  // Both flags can be passed simultaneously so a user who is both
+  // an approver and a validator sees everything relevant in one list.
   // ============================================================
 
   if (userId) {
-    // ─────────────────────────────────────────────────────────
-    // MODE 1: pendingOnMe
-    //
-    // Show EPCs where the current user has a PENDING approval
-    // waiting for their action RIGHT NOW.
-    //
-    // Three new conditions vs original:
-    //
-    //   ✅ FIX 2a: wf."isActive" = true
-    //      Without this, the query would match approvals on SUPERSEDED
-    //      workflows (ones replaced by a Deviation). Those approvals are
-    //      read-only historical records — they should never surface as
-    //      "pending on me".
-    //
-    //   ✅ FIX 2b: si."isCurrentIteration" = true
-    //      Without this, old clarify-iteration stages (isCurrentIteration=false)
-    //      would match. An approver who was assigned in iteration 1 but got
-    //      bypassed by a CLARIFY should NOT see their old approval as pending.
-    //
-    //   ✅ FIX 2c: si.status = 'IN_PROGRESS' (was 'PENDING')
-    //      Stage status is 'IN_PROGRESS' while it is actively awaiting
-    //      approvals. 'PENDING' means the stage hasn't started yet (it's
-    //      waiting for the previous stage to finish). Matching 'PENDING'
-    //      stages would never return results for the *current* stage.
-    // ─────────────────────────────────────────────────────────
     if (pendingOnMe) {
-      conditions.push(
+      const subConditions: Prisma.Sql[] = [];
+
+      // ─────────────────────────────────────────────────────────
+      // PENDING WORKFLOW APPROVAL
+      // User has a PENDING approval on the active workflow's
+      // current iteration stage right now.
+      // ─────────────────────────────────────────────────────────
+      subConditions.push(
         Prisma.sql`
-          EXISTS (
-            SELECT 1
-            FROM "WorkflowInstance" wf
-            JOIN "StageInstance" si
-              ON wf.id = si."workflowId"
-            JOIN "Approval" ap
-              ON si.id = ap."stageId"
-            WHERE wf."eventProposalId" = ep.id
-              AND wf."isActive" = true
-              AND si."isCurrentIteration" = true
-              AND si.status = 'IN_PROGRESS'
-              AND ap."approverId" = ${userId}
-              AND ap.status = 'PENDING'
-          )
-        `,
+            EXISTS (
+              SELECT 1
+              FROM "WorkflowInstance" wf
+              JOIN "StageInstance" si ON wf.id = si."workflowId"
+              JOIN "Approval" ap ON si.id = ap."stageId"
+              WHERE wf."eventProposalId" = ep.id
+                AND wf."isActive" = true
+                AND si."isCurrentIteration" = true
+                AND si.status = 'IN_PROGRESS'
+                AND ap."approverId" = ${userId}
+                AND ap.status = 'PENDING'
+            )
+          `,
       );
+
+      // ─────────────────────────────────────────────────────────
+      // PENDING REPORT VALIDATION
+      // User is the validator and the report is awaiting review.
+      // ─────────────────────────────────────────────────────────
+      if (pendingReportValidation) {
+        subConditions.push(
+          Prisma.sql`
+            EXISTS (
+              SELECT 1
+              FROM "EventReport" er
+              WHERE er."epcId" = ep.id
+                AND er."validatorId" = ${userId}
+                AND er.status = 'SUBMITTED'
+            )
+          `,
+        );
+      }
+
+      conditions.push(Prisma.sql`(${Prisma.join(subConditions, " OR ")})`);
+    } else if (approvedByMe) {
+      const subConditions: Prisma.Sql[] = [];
+
+      // ─────────────────────────────────────────────────────────
+      // APPROVED IN WORKFLOW
+      // User has approved at any point in the active workflow's
+      // history (any iteration). No isCurrentIteration filter —
+      // intentional, past approvals are still real history.
+      // ─────────────────────────────────────────────────────────
+      subConditions.push(
+        Prisma.sql`
+            EXISTS (
+              SELECT 1
+              FROM "WorkflowInstance" wf
+              JOIN "StageInstance" si ON wf.id = si."workflowId"
+              JOIN "Approval" ap ON si.id = ap."stageId"
+              WHERE wf."eventProposalId" = ep.id
+                AND wf."isActive" = true
+                AND ap."approverId" = ${userId}
+                AND ap.status = 'APPROVED'
+            )
+          `,
+      );
+
+      // ─────────────────────────────────────────────────────────
+      // REPORT VALIDATED
+      // User has validated the report.
+      // CLARIFICATION_REQUESTED intentionally excluded — those
+      // are still in-flight and belong in pendingValidation.
+      // ─────────────────────────────────────────────────────────
+      if (reportValidatedByMe) {
+        subConditions.push(
+          Prisma.sql`
+            EXISTS (
+              SELECT 1
+              FROM "EventReport" er
+              WHERE er."epcId" = ep.id
+                AND er."validatorId" = ${userId}
+                AND er.status = 'VALIDATED'
+            )
+          `,
+        );
+      }
+
+      conditions.push(Prisma.sql`(${Prisma.join(subConditions, " OR ")})`);
     }
 
     // ─────────────────────────────────────────────────────────
-    // MODE 2: approvedByMe
-    //
-    // Show EPCs where the current user has approved at any point
-    // in the ACTIVE workflow's history (any iteration).
-    //
-    //   ✅ FIX 3a: wf."isActive" = true
-    //      We scope to the active workflow only, so superseded workflows
-    //      from past Deviations don't pollute this list. If the old
-    //      workflow was replaced, its approvals belong to history.
-    //
-    //   NOTE: No isCurrentIteration filter here — intentional.
-    //      If the user approved in iteration 1 and then someone triggered
-    //      a CLARIFY (creating iteration 2), the user's iteration-1 approval
-    //      is still a real approval that happened. They should still see
-    //      the EPC in their "approved by me" list as historical participation.
-    // ─────────────────────────────────────────────────────────
-    else if (approvedByMe) {
-      conditions.push(
-        Prisma.sql`
-          EXISTS (
-            SELECT 1
-            FROM "WorkflowInstance" wf
-            JOIN "StageInstance" si
-              ON wf.id = si."workflowId"
-            JOIN "Approval" ap
-              ON si.id = ap."stageId"
-            WHERE wf."eventProposalId" = ep.id
-              AND wf."isActive" = true
-              AND ap."approverId" = ${userId}
-              AND ap.status = 'APPROVED'
-          )
-        `,
-      );
-    }
-
-    // ─────────────────────────────────────────────────────────
-    // MODE 3: default — created by me
+    // DEFAULT — created by me
     // ─────────────────────────────────────────────────────────
     else {
       conditions.push(Prisma.sql`ep.created_by_id = ${userId}`);

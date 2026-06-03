@@ -217,3 +217,8 @@ export type Pincode = Prisma.PincodeModel
  * 
  */
 export type EventReport = Prisma.EventReportModel
+/**
+ * Model EventReportImage
+ * 
+ */
+export type EventReportImage = Prisma.EventReportImageModel

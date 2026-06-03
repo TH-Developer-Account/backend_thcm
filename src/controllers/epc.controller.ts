@@ -5,6 +5,7 @@ import ApiError from "../utils/apiError";
 import { epcFullInfoSelect } from "../utils/contants";
 import { searchEventProposals } from "../helpers/searchEventProposal.helper";
 import { createEventProposalWithWorkflow } from "../services/workflow.service";
+import { getValidatorForApp } from "../utils/validators.constant";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Reusable select for the active workflow's current state.
@@ -246,6 +247,9 @@ export const getAllEventProposals = async (
       userId,
       approvedByMe: approvedByMe === "true",
       pendingOnMe: pendingOnMe === "true",
+      pendingReportValidation:
+        getValidatorForApp("MAP") === userId ? true : false,
+      reportValidatedByMe: getValidatorForApp("MAP") === userId ? true : false,
       search: search as string,
       status: toStringArray(status),
       departmentId: departmentId ? String(departmentId) : undefined,

@@ -419,7 +419,8 @@ export const ModelName = {
   Operator: 'Operator',
   Lead: 'Lead',
   Pincode: 'Pincode',
-  EventReport: 'EventReport'
+  EventReport: 'EventReport',
+  EventReportImage: 'EventReportImage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -435,7 +436,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3103,6 +3104,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    EventReportImage: {
+      payload: Prisma.$EventReportImagePayload<ExtArgs>
+      fields: Prisma.EventReportImageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EventReportImageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EventReportImageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>
+        }
+        findFirst: {
+          args: Prisma.EventReportImageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EventReportImageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>
+        }
+        findMany: {
+          args: Prisma.EventReportImageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>[]
+        }
+        create: {
+          args: Prisma.EventReportImageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>
+        }
+        createMany: {
+          args: Prisma.EventReportImageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EventReportImageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>[]
+        }
+        delete: {
+          args: Prisma.EventReportImageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>
+        }
+        update: {
+          args: Prisma.EventReportImageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>
+        }
+        deleteMany: {
+          args: Prisma.EventReportImageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EventReportImageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EventReportImageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>[]
+        }
+        upsert: {
+          args: Prisma.EventReportImageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>
+        }
+        aggregate: {
+          args: Prisma.EventReportImageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEventReportImage>
+        }
+        groupBy: {
+          args: Prisma.EventReportImageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventReportImageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EventReportImageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventReportImageCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3615,13 +3690,14 @@ export type PincodeScalarFieldEnum = (typeof PincodeScalarFieldEnum)[keyof typeo
 export const EventReportScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
-  s3Key: 's3Key',
-  fileUrl: 'fileUrl',
-  description: 'description',
-  notes: 'notes',
-  actualSpend: 'actualSpend',
+  outcomeStatus: 'outcomeStatus',
+  totalLeadsGenerated: 'totalLeadsGenerated',
+  approvedEventCost: 'approvedEventCost',
+  expectedConversion: 'expectedConversion',
+  remarks: 'remarks',
   status: 'status',
   rejectionReason: 'rejectionReason',
+  clarificationReason: 'clarificationReason',
   submittedAt: 'submittedAt',
   resubmittedAt: 'resubmittedAt',
   validatedAt: 'validatedAt',
@@ -3631,6 +3707,17 @@ export const EventReportScalarFieldEnum = {
 } as const
 
 export type EventReportScalarFieldEnum = (typeof EventReportScalarFieldEnum)[keyof typeof EventReportScalarFieldEnum]
+
+
+export const EventReportImageScalarFieldEnum = {
+  id: 'id',
+  reportId: 'reportId',
+  position: 'position',
+  s3Key: 's3Key',
+  fileUrl: 'fileUrl'
+} as const
+
+export type EventReportImageScalarFieldEnum = (typeof EventReportImageScalarFieldEnum)[keyof typeof EventReportImageScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3898,6 +3985,20 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
+ * Reference to a field of type 'OutcomeStatus'
+ */
+export type EnumOutcomeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutcomeStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'OutcomeStatus[]'
+ */
+export type ListEnumOutcomeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutcomeStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'ReportStatus'
  */
 export type EnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportStatus'>
@@ -4041,6 +4142,7 @@ export type GlobalOmitConfig = {
   lead?: Prisma.LeadOmit
   pincode?: Prisma.PincodeOmit
   eventReport?: Prisma.EventReportOmit
+  eventReportImage?: Prisma.EventReportImageOmit
 }
 
 /* Types for Logging */

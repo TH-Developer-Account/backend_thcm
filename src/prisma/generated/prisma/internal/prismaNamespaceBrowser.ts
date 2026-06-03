@@ -86,7 +86,8 @@ export const ModelName = {
   Operator: 'Operator',
   Lead: 'Lead',
   Pincode: 'Pincode',
-  EventReport: 'EventReport'
+  EventReport: 'EventReport',
+  EventReportImage: 'EventReportImage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -578,13 +579,14 @@ export type PincodeScalarFieldEnum = (typeof PincodeScalarFieldEnum)[keyof typeo
 export const EventReportScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
-  s3Key: 's3Key',
-  fileUrl: 'fileUrl',
-  description: 'description',
-  notes: 'notes',
-  actualSpend: 'actualSpend',
+  outcomeStatus: 'outcomeStatus',
+  totalLeadsGenerated: 'totalLeadsGenerated',
+  approvedEventCost: 'approvedEventCost',
+  expectedConversion: 'expectedConversion',
+  remarks: 'remarks',
   status: 'status',
   rejectionReason: 'rejectionReason',
+  clarificationReason: 'clarificationReason',
   submittedAt: 'submittedAt',
   resubmittedAt: 'resubmittedAt',
   validatedAt: 'validatedAt',
@@ -594,6 +596,17 @@ export const EventReportScalarFieldEnum = {
 } as const
 
 export type EventReportScalarFieldEnum = (typeof EventReportScalarFieldEnum)[keyof typeof EventReportScalarFieldEnum]
+
+
+export const EventReportImageScalarFieldEnum = {
+  id: 'id',
+  reportId: 'reportId',
+  position: 'position',
+  s3Key: 's3Key',
+  fileUrl: 'fileUrl'
+} as const
+
+export type EventReportImageScalarFieldEnum = (typeof EventReportImageScalarFieldEnum)[keyof typeof EventReportImageScalarFieldEnum]
 
 
 export const SortOrder = {
