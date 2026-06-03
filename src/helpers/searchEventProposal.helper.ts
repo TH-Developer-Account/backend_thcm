@@ -169,17 +169,19 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
       // ─────────────────────────────────────────────────────────
       subConditions.push(
         Prisma.sql`
-            EXISTS (
-              SELECT 1
-              FROM "WorkflowInstance" wf
-              JOIN "StageInstance" si ON wf.id = si."workflowId"
-              JOIN "Approval" ap ON si.id = ap."stageId"
-              WHERE wf."eventProposalId" = ep.id
-                AND wf."isActive" = true
-                AND ap."approverId" = ${userId}
-                AND ap.status = 'APPROVED'
-            )
-          `,
+          EXISTS (
+            SELECT 1
+            FROM "WorkflowInstance" wf
+            JOIN "StageInstance" si
+              ON wf.id = si."workflowId"
+            JOIN "Approval" ap
+              ON si.id = ap."stageId"
+            WHERE wf."eventProposalId" = ep.id
+              AND wf."isActive" = true
+              AND ap."approverId" = ${userId}
+              AND ap.status = 'APPROVED'
+          )
+        `,
       );
 
       // ─────────────────────────────────────────────────────────
