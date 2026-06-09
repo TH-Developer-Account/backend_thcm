@@ -660,10 +660,10 @@ export const triggerDeviationController = async (
         "No active workflow found for this event proposal",
       );
     }
-    if (activeWorkflow.status !== "IN_PROGRESS") {
+    if (activeWorkflow.status === "IN_PROGRESS") {
       throw new ApiError(
         400,
-        "Deviation can only be triggered on an IN_PROGRESS workflow. " +
+        "Deviation can only be triggered on an Approved workflow. " +
           `Current status: ${activeWorkflow.status}`,
       );
     }
