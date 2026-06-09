@@ -266,6 +266,10 @@ export const EventProposalScalarFieldEnum = {
   budget_master_id: 'budget_master_id',
   event_name_id: 'event_name_id',
   vertical_id: 'vertical_id',
+  deviationReason: 'deviationReason',
+  deviationAmount: 'deviationAmount',
+  deviationDocUrl: 'deviationDocUrl',
+  deviationDocS3Key: 'deviationDocS3Key',
   locationMeta: 'locationMeta',
   created_at: 'created_at',
   updated_at: 'updated_at'

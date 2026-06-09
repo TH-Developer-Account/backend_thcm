@@ -325,6 +325,10 @@ model EventProposal {
   budget_master_id String
   event_name_id    String
   vertical_id      String
+  deviationReason String?
+  deviationAmount Decimal? @db.Decimal(12, 2)
+  deviationDocUrl String?
+  deviationDocS3Key String?
   locationMeta     Json?    
 
   department    Department   @relation(fields: [department_id], references: [id])

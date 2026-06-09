@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
 import { epcFullInfoSelect } from "../utils/contants";
+import { uploadDeviationDoc } from "../services/aws-s3.services";
 import { searchEventProposals } from "../helpers/searchEventProposal.helper";
 import { createEventProposalWithWorkflow } from "../services/workflow.service";
 import { getValidatorForApp } from "../utils/validators.constant";
@@ -616,6 +617,90 @@ export const closeEpc = async (
     res.status(200).json({
       success: true,
       message: "EPC closed successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const initiateDeviation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const id = String(req.params.id);
+    const { reason, deviatedAmount } = req.body;
+
+    if (!reason || String(reason).trim().length < 3) {
+      throw new ApiError(400, "A reason of at least 3 characters is required");
+    }
+
+    if (!deviatedAmount || isNaN(Number(deviatedAmount))) {
+      throw new ApiError(
+        400,
+        "deviatedAmount is required and must be a number",
+      );
+    }
+
+    if (!req.file) {
+      throw new ApiError(400, "A supporting PDF document is required");
+    }
+    if (req.file.mimetype !== "application/pdf") {
+      throw new ApiError(400, "Only PDF files are accepted");
+    }
+
+    const epc = await prisma.eventProposal.findUnique({
+      where: { id },
+      select: { id: true, status: true, created_by_id: true },
+    });
+
+    if (!epc) throw new ApiError(404, "EPC not found");
+
+    if (epc.created_by_id !== userId) {
+      throw new ApiError(403, "Only the EPC creator can initiate a deviation");
+    }
+
+    if (epc.status !== "VALIDATED") {
+      throw new ApiError(
+        400,
+        `Deviation can only be initiated from VALIDATED status. Current status: ${epc.status}`,
+      );
+    }
+
+    const { s3Key, fileUrl } = await uploadDeviationDoc(id, req.file.buffer);
+
+    await prisma.$transaction([
+      prisma.eventProposal.update({
+        where: { id },
+        data: {
+          status: "DEVIATION_IN_PROGRESS",
+          updated_by_id: userId,
+          deviationReason: String(reason).trim(),
+          deviationAmount: Number(deviatedAmount),
+          deviationDocS3Key: s3Key,
+          deviationDocUrl: fileUrl,
+        },
+      }),
+      prisma.activityLog.create({
+        data: {
+          epcId: id,
+          actorId: userId,
+          action: "DEVIATION_RAISED",
+          metadata: {
+            reason: String(reason).trim(),
+            deviatedAmount: Number(deviatedAmount),
+          },
+        },
+      }),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      message: "Deviation initiated. EPC is now in DEVIATION_IN_PROGRESS.",
     });
   } catch (error) {
     next(error);

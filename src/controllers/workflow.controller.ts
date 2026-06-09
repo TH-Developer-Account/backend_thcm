@@ -639,19 +639,13 @@ export const triggerDeviationController = async (
 ) => {
   try {
     const userId = req.user?.id;
-    const { eventProposalId, workspaceId, appId, newBudget, reason } = req.body;
+    const { eventProposalId, workspaceId, appId, newBudget } = req.body;
 
     if (!userId) throw new ApiError(401, "Unauthorized");
     if (!eventProposalId || !workspaceId || !appId || newBudget === undefined) {
       throw new ApiError(
         400,
         "eventProposalId, workspaceId, appId, and newBudget are required",
-      );
-    }
-    if (!reason || String(reason).trim().length < 3) {
-      throw new ApiError(
-        400,
-        "A reason of at least 3 characters is required for deviation",
       );
     }
 
@@ -787,9 +781,6 @@ export const triggerDeviationController = async (
           action: "DEVIATION_RAISED",
           workflowId: activeWorkflow.id,
           stageId: null,
-          metadata: {
-            reason: reason.trim(),
-          },
         },
       });
 
