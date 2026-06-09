@@ -732,6 +732,7 @@ export const triggerDeviationController = async (
 
           stages: {
             create: matchedTemplate.stages.map((stage) => ({
+              stageName: stage.name,
               stageOrder: stage.stageOrder,
               strategy: stage.strategy,
               minApprovals: stage.minApprovals,
