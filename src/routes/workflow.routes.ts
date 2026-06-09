@@ -27,7 +27,7 @@ router.post(
   asyncHandler(activateFirstStageController),
 );
 router.post(
-  "/stages/:stageId/trigger-deviation",
+  "/stages/trigger-deviation",
   asyncHandler(triggerDeviationController),
 );
 router.get("/workflow-instance/:id", asyncHandler(getWorkflowController));
