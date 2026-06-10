@@ -567,19 +567,19 @@ export const closeEpc = async (
       throw new ApiError(403, "Only the EPC creator can close it");
     }
 
-    const allowedStatuses = ["VALIDATED", "DEVIATION_IN_PROGRESS"];
+    const allowedStatuses = ["VALIDATED", "APPROVED"];
     if (!allowedStatuses.includes(epc.status)) {
       throw new ApiError(
         400,
         `EPC cannot be closed from status "${epc.status}". ` +
-          "It must be VALIDATED or DEVIATION_IN_PROGRESS with an approved deviation workflow.",
+          "It must be VALIDATED or with an APPROVED deviation workflow.",
       );
     }
 
     // ── Extra guard for deviation path ────────────────────────────────────
     // If the EPC is in DEVIATION_IN_PROGRESS, the deviation workflow must
     // be fully APPROVED before the proposer is allowed to close.
-    if (epc.status === "DEVIATION_IN_PROGRESS") {
+    if (epc.status === "APPROVED") {
       const deviationWorkflow = await prisma.workflowInstance.findFirst({
         where: {
           eventProposalId: id,
