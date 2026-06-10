@@ -779,7 +779,7 @@ export const triggerDeviationController = async (
         data: {
           epcId: activeWorkflow.eventProposalId,
           actorId: userId,
-          action: "DEVIATION_RAISED",
+          action: "EPC_RESUBMITTED",
           workflowId: activeWorkflow.id,
           stageId: null,
         },
