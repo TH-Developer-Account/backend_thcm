@@ -54,9 +54,7 @@ function formatLogForListing(log: {
   totalRecords: number | null;
   successRecords: number | null;
   failedRecords: number | null;
-  fileS3Key: string | null;
   errorFileS3Key: string | null;
-  failureReason: string | null;
   created_at: Date;
   triggeredBy: {
     id: string;
@@ -72,9 +70,8 @@ function formatLogForListing(log: {
     totalRecords: log.totalRecords,
     successRecords: log.successRecords,
     failedRecords: log.failedRecords,
-    hasOutputFile: !!log.fileS3Key,
     hasErrorFile: !!log.errorFileS3Key,
-    failureReason: log.failureReason,
+    errorFileS3Key: log.errorFileS3Key,
     createdAt: log.created_at,
     triggeredBy: log.triggeredBy,
   };

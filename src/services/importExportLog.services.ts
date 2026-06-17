@@ -142,6 +142,9 @@ export async function listLogsForEpc(
       triggeredBy: {
         select: { id: true, first_name: true, last_name: true, email: true },
       },
+      epc: {
+        select: { id: true, proposal_number: true },
+      },
     },
   });
 }
