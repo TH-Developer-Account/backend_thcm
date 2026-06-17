@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 import {
-  listLogsForEpc,
+  listLogs,
   listLogsForWorkspace,
   findLogById,
 } from "../services/importExportLog.services";
@@ -62,6 +62,10 @@ function formatLogForListing(log: {
     last_name: string;
     email: string;
   };
+  epc: {
+    id: string;
+    proposal_number: string;
+  } | null;
 }) {
   return {
     id: log.id,
@@ -74,6 +78,7 @@ function formatLogForListing(log: {
     errorFileS3Key: log.errorFileS3Key,
     createdAt: log.created_at,
     triggeredBy: log.triggeredBy,
+    epc: log.epc,
   };
 }
 
@@ -89,7 +94,7 @@ export const getLeadImportHistory = async (
     if (!userId) throw new ApiError(401, "Unauthorized");
 
     const { isAdmin } = await resolveUserContext(userId);
-    const logs = await listLogsForEpc("LEAD_IMPORT", userId, isAdmin);
+    const logs = await listLogs("LEAD_IMPORT", userId, isAdmin);
     res.status(200).json({
       success: true,
       data: logs.map(formatLogForListing),
@@ -111,7 +116,7 @@ export const getLeadExportHistory = async (
     if (!userId) throw new ApiError(401, "Unauthorized");
 
     const { isAdmin } = await resolveUserContext(userId);
-    const logs = await listLogsForEpc("LEAD_EXPORT", userId, isAdmin);
+    const logs = await listLogs("LEAD_EXPORT", userId, isAdmin);
 
     res.status(200).json({
       success: true,

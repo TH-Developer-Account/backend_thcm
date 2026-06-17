@@ -116,7 +116,7 @@ export async function findLogById(logId: string) {
 }
 
 // Listing scoped to an EPC — for LEAD_IMPORT and LEAD_EXPORT history
-export async function listLogsForEpc(
+export async function listLogs(
   type: ImportExportType,
   requestingUserId: string,
   isAdmin: boolean,
@@ -175,6 +175,9 @@ export async function listLogsForWorkspace(
       created_at: true,
       triggeredBy: {
         select: { id: true, first_name: true, last_name: true, email: true },
+      },
+      epc: {
+        select: { id: true, proposal_number: true },
       },
     },
   });
