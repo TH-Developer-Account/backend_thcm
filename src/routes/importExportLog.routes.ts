@@ -15,11 +15,8 @@ const router = Router();
 router.use(requireAuth); // sets req.user
 router.use(firstAuthRequestPerDay);
 
-router.post(
-  " /leads/import/history?epcId=",
-  asyncHandler(getLeadImportHistory),
-);
-router.post("/leads/export/history?epcId=", asyncHandler(getLeadExportHistory));
+router.post("/leads/import/history", asyncHandler(getLeadImportHistory));
+router.post("/leads/export/history", asyncHandler(getLeadExportHistory));
 router.post("/epc/export/history", asyncHandler(getEpcExportHistory));
 router.post("/import-export/:logId/file ", asyncHandler(getOutputFileUrl));
 router.post("/import-export/:logId/errors", asyncHandler(getErrorFileUrl));
