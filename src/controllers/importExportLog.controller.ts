@@ -90,57 +90,12 @@ export const getLeadImportHistory = async (
   next: NextFunction,
 ) => {
   try {
+    const { type } = req.body;
     const userId = req.user?.id;
     if (!userId) throw new ApiError(401, "Unauthorized");
 
     const { isAdmin } = await resolveUserContext(userId);
-    const logs = await listLogs("LEAD_IMPORT", userId, isAdmin);
-    res.status(200).json({
-      success: true,
-      data: logs.map(formatLogForListing),
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// ── GET /leads/export/history ─────────────────────────────────────────────────
-
-export const getLeadExportHistory = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const userId = req.user?.id;
-    if (!userId) throw new ApiError(401, "Unauthorized");
-
-    const { isAdmin } = await resolveUserContext(userId);
-    const logs = await listLogs("LEAD_EXPORT", userId, isAdmin);
-
-    res.status(200).json({
-      success: true,
-      data: logs.map(formatLogForListing),
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// ── GET /epc/export/history ───────────────────────────────────────────────────
-
-export const getEpcExportHistory = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const userId = req.user?.id;
-    if (!userId) throw new ApiError(401, "Unauthorized");
-
-    const { workspaceId, isAdmin } = await resolveUserContext(userId);
-    const logs = await listLogsForWorkspace(workspaceId, userId, isAdmin);
-
+    const logs = await listLogs(type, userId, isAdmin);
     res.status(200).json({
       success: true,
       data: logs.map(formatLogForListing),
