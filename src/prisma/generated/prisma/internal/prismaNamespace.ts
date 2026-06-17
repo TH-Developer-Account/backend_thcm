@@ -420,7 +420,8 @@ export const ModelName = {
   Lead: 'Lead',
   Pincode: 'Pincode',
   EventReport: 'EventReport',
-  EventReportImage: 'EventReportImage'
+  EventReportImage: 'EventReportImage',
+  ImportExportLog: 'ImportExportLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -436,7 +437,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3178,6 +3179,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ImportExportLog: {
+      payload: Prisma.$ImportExportLogPayload<ExtArgs>
+      fields: Prisma.ImportExportLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ImportExportLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ImportExportLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>
+        }
+        findFirst: {
+          args: Prisma.ImportExportLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ImportExportLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>
+        }
+        findMany: {
+          args: Prisma.ImportExportLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>[]
+        }
+        create: {
+          args: Prisma.ImportExportLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>
+        }
+        createMany: {
+          args: Prisma.ImportExportLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ImportExportLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>[]
+        }
+        delete: {
+          args: Prisma.ImportExportLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>
+        }
+        update: {
+          args: Prisma.ImportExportLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.ImportExportLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ImportExportLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ImportExportLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.ImportExportLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>
+        }
+        aggregate: {
+          args: Prisma.ImportExportLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateImportExportLog>
+        }
+        groupBy: {
+          args: Prisma.ImportExportLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImportExportLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ImportExportLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImportExportLogCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3720,6 +3795,27 @@ export const EventReportImageScalarFieldEnum = {
 export type EventReportImageScalarFieldEnum = (typeof EventReportImageScalarFieldEnum)[keyof typeof EventReportImageScalarFieldEnum]
 
 
+export const ImportExportLogScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  status: 'status',
+  triggeredById: 'triggeredById',
+  workspaceId: 'workspaceId',
+  epcId: 'epcId',
+  jobId: 'jobId',
+  totalRecords: 'totalRecords',
+  successRecords: 'successRecords',
+  failedRecords: 'failedRecords',
+  fileS3Key: 'fileS3Key',
+  errorFileS3Key: 'errorFileS3Key',
+  failureReason: 'failureReason',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type ImportExportLogScalarFieldEnum = (typeof ImportExportLogScalarFieldEnum)[keyof typeof ImportExportLogScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4011,6 +4107,34 @@ export type EnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
 export type ListEnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'ImportExportType'
+ */
+export type EnumImportExportTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportExportType'>
+    
+
+
+/**
+ * Reference to a field of type 'ImportExportType[]'
+ */
+export type ListEnumImportExportTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportExportType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ImportExportStatus'
+ */
+export type EnumImportExportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportExportStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ImportExportStatus[]'
+ */
+export type ListEnumImportExportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportExportStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -4143,6 +4267,7 @@ export type GlobalOmitConfig = {
   pincode?: Prisma.PincodeOmit
   eventReport?: Prisma.EventReportOmit
   eventReportImage?: Prisma.EventReportImageOmit
+  importExportLog?: Prisma.ImportExportLogOmit
 }
 
 /* Types for Logging */

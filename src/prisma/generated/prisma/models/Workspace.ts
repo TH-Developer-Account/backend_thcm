@@ -180,6 +180,7 @@ export type WorkspaceWhereInput = {
   userProfiles?: Prisma.UserProfileListRelationFilter
   workflowTemplates?: Prisma.WorkflowTemplateListRelationFilter
   workflows?: Prisma.WorkflowInstanceListRelationFilter
+  importExportLogs?: Prisma.ImportExportLogListRelationFilter
 }
 
 export type WorkspaceOrderByWithRelationInput = {
@@ -193,6 +194,7 @@ export type WorkspaceOrderByWithRelationInput = {
   userProfiles?: Prisma.UserProfileOrderByRelationAggregateInput
   workflowTemplates?: Prisma.WorkflowTemplateOrderByRelationAggregateInput
   workflows?: Prisma.WorkflowInstanceOrderByRelationAggregateInput
+  importExportLogs?: Prisma.ImportExportLogOrderByRelationAggregateInput
 }
 
 export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
@@ -209,6 +211,7 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   userProfiles?: Prisma.UserProfileListRelationFilter
   workflowTemplates?: Prisma.WorkflowTemplateListRelationFilter
   workflows?: Prisma.WorkflowInstanceListRelationFilter
+  importExportLogs?: Prisma.ImportExportLogListRelationFilter
 }, "id">
 
 export type WorkspaceOrderByWithAggregationInput = {
@@ -242,6 +245,7 @@ export type WorkspaceCreateInput = {
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateInput = {
@@ -255,6 +259,7 @@ export type WorkspaceUncheckedCreateInput = {
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUpdateInput = {
@@ -268,6 +273,7 @@ export type WorkspaceUpdateInput = {
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateInput = {
@@ -281,6 +287,7 @@ export type WorkspaceUncheckedUpdateInput = {
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateManyInput = {
@@ -414,6 +421,20 @@ export type WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutWorkflowsInput, Prisma.WorkspaceUpdateWithoutWorkflowsInput>, Prisma.WorkspaceUncheckedUpdateWithoutWorkflowsInput>
 }
 
+export type WorkspaceCreateNestedOneWithoutImportExportLogsInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutImportExportLogsInput, Prisma.WorkspaceUncheckedCreateWithoutImportExportLogsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutImportExportLogsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutImportExportLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutImportExportLogsInput, Prisma.WorkspaceUncheckedCreateWithoutImportExportLogsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutImportExportLogsInput
+  upsert?: Prisma.WorkspaceUpsertWithoutImportExportLogsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutImportExportLogsInput, Prisma.WorkspaceUpdateWithoutImportExportLogsInput>, Prisma.WorkspaceUncheckedUpdateWithoutImportExportLogsInput>
+}
+
 export type WorkspaceCreateWithoutUsersInput = {
   id?: string
   name: string
@@ -424,6 +445,7 @@ export type WorkspaceCreateWithoutUsersInput = {
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutUsersInput = {
@@ -436,6 +458,7 @@ export type WorkspaceUncheckedCreateWithoutUsersInput = {
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutUsersInput = {
@@ -464,6 +487,7 @@ export type WorkspaceUpdateWithoutUsersInput = {
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutUsersInput = {
@@ -476,6 +500,7 @@ export type WorkspaceUncheckedUpdateWithoutUsersInput = {
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutAppsInput = {
@@ -488,6 +513,7 @@ export type WorkspaceCreateWithoutAppsInput = {
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutAppsInput = {
@@ -500,6 +526,7 @@ export type WorkspaceUncheckedCreateWithoutAppsInput = {
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutAppsInput = {
@@ -528,6 +555,7 @@ export type WorkspaceUpdateWithoutAppsInput = {
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutAppsInput = {
@@ -540,6 +568,7 @@ export type WorkspaceUncheckedUpdateWithoutAppsInput = {
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutProfilesInput = {
@@ -552,6 +581,7 @@ export type WorkspaceCreateWithoutProfilesInput = {
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutProfilesInput = {
@@ -564,6 +594,7 @@ export type WorkspaceUncheckedCreateWithoutProfilesInput = {
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutProfilesInput = {
@@ -592,6 +623,7 @@ export type WorkspaceUpdateWithoutProfilesInput = {
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutProfilesInput = {
@@ -604,6 +636,7 @@ export type WorkspaceUncheckedUpdateWithoutProfilesInput = {
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutUserProfilesInput = {
@@ -616,6 +649,7 @@ export type WorkspaceCreateWithoutUserProfilesInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutUserProfilesInput = {
@@ -628,6 +662,7 @@ export type WorkspaceUncheckedCreateWithoutUserProfilesInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutUserProfilesInput = {
@@ -656,6 +691,7 @@ export type WorkspaceUpdateWithoutUserProfilesInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutUserProfilesInput = {
@@ -668,6 +704,7 @@ export type WorkspaceUncheckedUpdateWithoutUserProfilesInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWorkflowTemplatesInput = {
@@ -680,6 +717,7 @@ export type WorkspaceCreateWithoutWorkflowTemplatesInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWorkflowTemplatesInput = {
@@ -692,6 +730,7 @@ export type WorkspaceUncheckedCreateWithoutWorkflowTemplatesInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWorkflowTemplatesInput = {
@@ -720,6 +759,7 @@ export type WorkspaceUpdateWithoutWorkflowTemplatesInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWorkflowTemplatesInput = {
@@ -732,6 +772,7 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowTemplatesInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceCreateWithoutWorkflowsInput = {
@@ -744,6 +785,7 @@ export type WorkspaceCreateWithoutWorkflowsInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
@@ -756,6 +798,7 @@ export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
 }
 
 export type WorkspaceCreateOrConnectWithoutWorkflowsInput = {
@@ -784,6 +827,7 @@ export type WorkspaceUpdateWithoutWorkflowsInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
 }
 
 export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
@@ -796,6 +840,75 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutImportExportLogsInput = {
+  id?: string
+  name: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
+  apps?: Prisma.WorkspaceAppCreateNestedManyWithoutWorkspaceInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
+  workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutImportExportLogsInput = {
+  id?: string
+  name: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
+  apps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutWorkspaceInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutImportExportLogsInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutImportExportLogsInput, Prisma.WorkspaceUncheckedCreateWithoutImportExportLogsInput>
+}
+
+export type WorkspaceUpsertWithoutImportExportLogsInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutImportExportLogsInput, Prisma.WorkspaceUncheckedUpdateWithoutImportExportLogsInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutImportExportLogsInput, Prisma.WorkspaceUncheckedCreateWithoutImportExportLogsInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutImportExportLogsInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutImportExportLogsInput, Prisma.WorkspaceUncheckedUpdateWithoutImportExportLogsInput>
+}
+
+export type WorkspaceUpdateWithoutImportExportLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
+  apps?: Prisma.WorkspaceAppUpdateManyWithoutWorkspaceNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
+  workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutImportExportLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
+  apps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutWorkspaceNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
 }
 
 
@@ -810,6 +923,7 @@ export type WorkspaceCountOutputType = {
   userProfiles: number
   workflowTemplates: number
   workflows: number
+  importExportLogs: number
 }
 
 export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -819,6 +933,7 @@ export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   userProfiles?: boolean | WorkspaceCountOutputTypeCountUserProfilesArgs
   workflowTemplates?: boolean | WorkspaceCountOutputTypeCountWorkflowTemplatesArgs
   workflows?: boolean | WorkspaceCountOutputTypeCountWorkflowsArgs
+  importExportLogs?: boolean | WorkspaceCountOutputTypeCountImportExportLogsArgs
 }
 
 /**
@@ -873,6 +988,13 @@ export type WorkspaceCountOutputTypeCountWorkflowsArgs<ExtArgs extends runtime.T
   where?: Prisma.WorkflowInstanceWhereInput
 }
 
+/**
+ * WorkspaceCountOutputType without action
+ */
+export type WorkspaceCountOutputTypeCountImportExportLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ImportExportLogWhereInput
+}
+
 
 export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -885,6 +1007,7 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   userProfiles?: boolean | Prisma.Workspace$userProfilesArgs<ExtArgs>
   workflowTemplates?: boolean | Prisma.Workspace$workflowTemplatesArgs<ExtArgs>
   workflows?: boolean | Prisma.Workspace$workflowsArgs<ExtArgs>
+  importExportLogs?: boolean | Prisma.Workspace$importExportLogsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workspace"]>
 
@@ -917,6 +1040,7 @@ export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   userProfiles?: boolean | Prisma.Workspace$userProfilesArgs<ExtArgs>
   workflowTemplates?: boolean | Prisma.Workspace$workflowTemplatesArgs<ExtArgs>
   workflows?: boolean | Prisma.Workspace$workflowsArgs<ExtArgs>
+  importExportLogs?: boolean | Prisma.Workspace$importExportLogsArgs<ExtArgs>
   _count?: boolean | Prisma.WorkspaceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkspaceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -931,6 +1055,7 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     userProfiles: Prisma.$UserProfilePayload<ExtArgs>[]
     workflowTemplates: Prisma.$WorkflowTemplatePayload<ExtArgs>[]
     workflows: Prisma.$WorkflowInstancePayload<ExtArgs>[]
+    importExportLogs: Prisma.$ImportExportLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1337,6 +1462,7 @@ export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtim
   userProfiles<T extends Prisma.Workspace$userProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$userProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflowTemplates<T extends Prisma.Workspace$workflowTemplatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$workflowTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflows<T extends Prisma.Workspace$workflowsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$workflowsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  importExportLogs<T extends Prisma.Workspace$importExportLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$importExportLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImportExportLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1899,6 +2025,30 @@ export type Workspace$workflowsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.WorkflowInstanceScalarFieldEnum | Prisma.WorkflowInstanceScalarFieldEnum[]
+}
+
+/**
+ * Workspace.importExportLogs
+ */
+export type Workspace$importExportLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ImportExportLog
+   */
+  select?: Prisma.ImportExportLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ImportExportLog
+   */
+  omit?: Prisma.ImportExportLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImportExportLogInclude<ExtArgs> | null
+  where?: Prisma.ImportExportLogWhereInput
+  orderBy?: Prisma.ImportExportLogOrderByWithRelationInput | Prisma.ImportExportLogOrderByWithRelationInput[]
+  cursor?: Prisma.ImportExportLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ImportExportLogScalarFieldEnum | Prisma.ImportExportLogScalarFieldEnum[]
 }
 
 /**

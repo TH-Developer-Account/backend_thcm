@@ -19,12 +19,14 @@ export type LeadImportJobData = {
   fileS3Key: string; // S3 key of uploaded CSV/XLSX
   fileMimeType: string;
   requestedBy: string; // userId who triggered import
+  logId: string; // ImportExportLog record ID
 };
 
 export type LeadExportJobData = {
   epcId?: string; // undefined = export all leads (admin)
   format: "csv" | "xlsx";
   requestedBy: string;
+  logId: string; // ImportExportLog record ID
 };
 
 // ── Queue instances ───────────────────────────────────────────────────────────

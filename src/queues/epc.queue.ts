@@ -23,6 +23,7 @@ export type EpcExportJobData = {
   };
   format: "csv" | "xlsx";
   requestedBy: string;
+  logId: string; // ImportExportLog record ID
 };
 
 // ── Queue instances ───────────────────────────────────────────────────────────

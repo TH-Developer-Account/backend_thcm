@@ -87,7 +87,8 @@ export const ModelName = {
   Lead: 'Lead',
   Pincode: 'Pincode',
   EventReport: 'EventReport',
-  EventReportImage: 'EventReportImage'
+  EventReportImage: 'EventReportImage',
+  ImportExportLog: 'ImportExportLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -607,6 +608,27 @@ export const EventReportImageScalarFieldEnum = {
 } as const
 
 export type EventReportImageScalarFieldEnum = (typeof EventReportImageScalarFieldEnum)[keyof typeof EventReportImageScalarFieldEnum]
+
+
+export const ImportExportLogScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  status: 'status',
+  triggeredById: 'triggeredById',
+  workspaceId: 'workspaceId',
+  epcId: 'epcId',
+  jobId: 'jobId',
+  totalRecords: 'totalRecords',
+  successRecords: 'successRecords',
+  failedRecords: 'failedRecords',
+  fileS3Key: 'fileS3Key',
+  errorFileS3Key: 'errorFileS3Key',
+  failureReason: 'failureReason',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type ImportExportLogScalarFieldEnum = (typeof ImportExportLogScalarFieldEnum)[keyof typeof ImportExportLogScalarFieldEnum]
 
 
 export const SortOrder = {

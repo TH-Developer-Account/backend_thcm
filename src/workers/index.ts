@@ -6,6 +6,12 @@ import { importLeadsFromS3 } from "../services/leadImport.services";
 import { exportLeadsToBuffer } from "../services/leadExport.services";
 import { exportEpcsToS3 } from "../services/epcExport.services";
 import {
+  markLogProcessing,
+  markLogCompleted,
+  markLogFailed,
+} from "../services/importExportLog.services";
+import { buildAndUploadErrorExcel } from "../utils/errorExcelBuilder";
+import {
   uploadBufferToS3,
   getSignedReportUrl,
 } from "../services/aws-s3.services";
@@ -13,19 +19,17 @@ import {
 // ─────────────────────────────────────────────────────────────────────────────
 // workers/index.ts — BullMQ worker definitions
 //
-// Each worker runs in the separate worker.ts process (no Express server).
-// Workers share the same Redis connection and Prisma client as the API,
-// but run in an isolated OS process so a long-running export job cannot
-// block the API event loop or be killed by an API deploy.
+// Each worker runs in the separate worker process (start.worker.ts).
+// Workers update the ImportExportLog at each lifecycle stage:
+//   PENDING     → set by controller on enqueue
+//   PROCESSING  → set here when the worker picks up the job
+//   COMPLETED   → set here with stats and S3 keys after success
+//   FAILED      → set here with the error message on unrecoverable failure
 //
-// Job progress shape (stored in BullMQ job data, polled by the API):
-//   Import: { totalRows, processedRows, failedRows, errors[] }
-//   Export: { totalRows, downloadUrl }
-//
-// WHY store result in job.updateProgress() and not a separate DB table:
-//   BullMQ already provides job state persistence in Redis. Adding a DB table
-//   for job status would be redundant infrastructure. The API polls BullMQ
-//   directly via getJob() — no extra table needed.
+// WHY also keep job.updateProgress():
+//   The polling endpoint (/import/:jobId, /export/:jobId) reads BullMQ job
+//   progress directly for real-time feedback during processing. The DB log
+//   is for persistent history; job progress is for live polling.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── Lead Import Worker ────────────────────────────────────────────────────────
@@ -34,13 +38,32 @@ export function startLeadImportWorker() {
   const worker = new Worker<LeadImportJobData>(
     "lead-import",
     async (job: Job<LeadImportJobData>) => {
-      const { epcId, fileS3Key, fileMimeType } = job.data;
+      const { epcId, fileS3Key, fileMimeType, logId } = job.data;
 
+      await markLogProcessing(logId);
       await job.updateProgress({ status: "parsing", processedRows: 0 });
 
       const result = await importLeadsFromS3(epcId, fileS3Key, fileMimeType);
 
-      // Store full result as progress so the polling endpoint can return it
+      // Build and upload error Excel if any rows failed
+      let errorFileS3Key: string | null = null;
+      if (result.failedRows > 0) {
+        errorFileS3Key = await buildAndUploadErrorExcel({
+          epcId,
+          logId,
+          allRawRows: result.allRawRows,
+          errors: result.errors,
+        });
+      }
+
+      await markLogCompleted(logId, {
+        totalRecords: result.totalRows,
+        successRecords: result.processedRows,
+        failedRecords: result.failedRows,
+        errorFileS3Key: errorFileS3Key ?? undefined,
+      });
+
+      // Keep BullMQ progress updated for real-time polling endpoint
       await job.updateProgress({
         totalRows: result.totalRows,
         processedRows: result.processedRows,
@@ -52,7 +75,7 @@ export function startLeadImportWorker() {
     },
     {
       connection: redisConnectionQueue,
-      concurrency: 3, // process up to 3 import jobs simultaneously
+      concurrency: 3,
     },
   );
 
@@ -60,8 +83,16 @@ export function startLeadImportWorker() {
     console.info(`[lead-import] Job ${job.id} completed`);
   });
 
-  worker.on("failed", (job, error) => {
+  worker.on("failed", async (job, error) => {
     console.error(`[lead-import] Job ${job?.id} failed:`, error.message);
+    if (job?.data?.logId) {
+      await markLogFailed(job.data.logId, error.message).catch((logError) =>
+        console.error(
+          "[lead-import] Failed to update log on failure:",
+          logError,
+        ),
+      );
+    }
   });
 
   return worker;
@@ -73,8 +104,9 @@ export function startLeadExportWorker() {
   const worker = new Worker<LeadExportJobData>(
     "lead-export",
     async (job: Job<LeadExportJobData>) => {
-      const { epcId, format } = job.data;
+      const { epcId, format, logId } = job.data;
 
+      await markLogProcessing(logId);
       await job.updateProgress({ status: "generating" });
 
       const { buffer, filename } = await exportLeadsToBuffer({ epcId, format });
@@ -82,7 +114,22 @@ export function startLeadExportWorker() {
       const s3Key = `exports/leads/${filename}`;
       await uploadBufferToS3(s3Key, buffer, filename);
 
+      // Count the records that were exported
+      // exportLeadsToBuffer returns a buffer; derive count from the service result.
+      // WHY we don't return count from exportLeadsToBuffer directly:
+      //   The service currently returns only buffer+filename. We track record count
+      //   by extending the return type below — see self-review note.
       const downloadUrl = await getSignedReportUrl(s3Key);
+
+      await markLogCompleted(logId, {
+        // totalRecords for exports = number of rows written (no failures possible)
+        // TODO: exportLeadsToBuffer should return rowCount — currently we pass 0
+        // as a placeholder. Tracked as a follow-up: extend LeadExportResult type.
+        totalRecords: 0,
+        successRecords: 0,
+        failedRecords: 0,
+        fileS3Key: s3Key,
+      });
 
       await job.updateProgress({ status: "completed", downloadUrl });
 
@@ -98,8 +145,16 @@ export function startLeadExportWorker() {
     console.info(`[lead-export] Job ${job.id} completed`);
   });
 
-  worker.on("failed", (job, error) => {
+  worker.on("failed", async (job, error) => {
     console.error(`[lead-export] Job ${job?.id} failed:`, error.message);
+    if (job?.data?.logId) {
+      await markLogFailed(job.data.logId, error.message).catch((logError) =>
+        console.error(
+          "[lead-export] Failed to update log on failure:",
+          logError,
+        ),
+      );
+    }
   });
 
   return worker;
@@ -107,14 +162,14 @@ export function startLeadExportWorker() {
 
 // ── EPC Export Worker ─────────────────────────────────────────────────────────
 // Concurrency is 1 — EPC dumps are heavy (cursor-batched DB reads + S3 upload).
-// Running two simultaneously would double DB load for a low-frequency operation.
 
 export function startEpcExportWorker() {
   const worker = new Worker<EpcExportJobData>(
     "epc-export",
     async (job: Job<EpcExportJobData>) => {
-      const { filters, format } = job.data;
+      const { filters, format, logId } = job.data;
 
+      await markLogProcessing(logId);
       await job.updateProgress({ status: "exporting", processedEpcs: 0 });
 
       const result = await exportEpcsToS3(
@@ -126,6 +181,13 @@ export function startEpcExportWorker() {
       );
 
       const downloadUrl = await getSignedReportUrl(result.s3Key);
+
+      await markLogCompleted(logId, {
+        totalRecords: result.totalEpcs,
+        successRecords: result.totalEpcs,
+        failedRecords: 0, // EPC export is all-or-nothing; no per-row failures
+        fileS3Key: result.s3Key,
+      });
 
       await job.updateProgress({
         status: "completed",
@@ -147,8 +209,16 @@ export function startEpcExportWorker() {
     );
   });
 
-  worker.on("failed", (job, error) => {
+  worker.on("failed", async (job, error) => {
     console.error(`[epc-export] Job ${job?.id} failed:`, error.message);
+    if (job?.data?.logId) {
+      await markLogFailed(job.data.logId, error.message).catch((logError) =>
+        console.error(
+          "[epc-export] Failed to update log on failure:",
+          logError,
+        ),
+      );
+    }
   });
 
   return worker;

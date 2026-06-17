@@ -33,6 +33,9 @@ export type ImportResult = {
   processedRows: number;
   failedRows: number;
   errors: RowError[];
+  // Returned so the worker can build the error Excel without re-downloading the file.
+  // Only populated when failedRows > 0 to avoid holding raw data in memory unnecessarily.
+  allRawRows: RawRow[];
 };
 
 type ValidLead = {
@@ -136,7 +139,13 @@ export async function importLeadsFromS3(
   const { rows, totalRows } = parseFile(fileBuffer, fileMimeType);
 
   if (totalRows === 0) {
-    return { totalRows: 0, processedRows: 0, failedRows: 0, errors: [] };
+    return {
+      totalRows: 0,
+      processedRows: 0,
+      failedRows: 0,
+      errors: [],
+      allRawRows: [],
+    };
   }
 
   // 4. Validate all rows, collect errors without aborting
@@ -163,5 +172,7 @@ export async function importLeadsFromS3(
     processedRows: validLeads.length,
     failedRows: totalRows - validLeads.length,
     errors: allErrors,
+    // Pass raw rows back so worker can build the error Excel without re-fetching from S3
+    allRawRows: allErrors.length > 0 ? rows : [],
   };
 }

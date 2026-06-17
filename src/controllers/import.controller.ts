@@ -1,20 +1,20 @@
 import { Request, Response, NextFunction } from "express";
+import { prisma } from "../config/prisma";
 import { leadImportQueue } from "../queues/lead.queue";
 import { uploadToS3 } from "../services/aws-s3.services";
+import { createPendingLog } from "../services/importExportLog.services";
 import ApiError from "../utils/apiError";
 import { isSupportedMimeType } from "../utils/fileParser";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// leadImportExport.controller.ts
+// leadImport.controller.ts
 //
-// Thin controller layer — validates input, enqueues jobs, returns jobId.
-// All heavy lifting is in the service layer (called by workers).
+// Thin controller layer — validates input, creates an ImportExportLog record,
+// enqueues the job, returns jobId and logId.
 //
 // Endpoints:
 //   POST  /leads/import              → upload file to S3, enqueue import job
 //   GET   /leads/import/:jobId       → poll import job status
-//   POST  /leads/export              → enqueue export job
-//   GET   /leads/export/:jobId       → poll export job status + download URL
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ── POST /leads/import ────────────────────────────────────────────────────────
@@ -45,23 +45,47 @@ export const enqueueLeadImport = async (
       );
     }
 
-    // Upload file to S3 before enqueuing — the worker process downloads it
-    // from S3 directly. We never pass large buffers through Redis.
+    // Resolve workspaceId from DB — JWT only carries userId
+    const workspaceUser = await prisma.workspaceUser.findFirst({
+      where: { userId },
+      select: { workspaceId: true },
+    });
+    if (!workspaceUser)
+      throw new ApiError(403, "User not part of any workspace");
+
+    // Upload file to S3 before enqueuing — the worker downloads it from S3.
+    // Never pass large buffers through Redis.
     const timestamp = Date.now();
     const s3Key = `imports/leads/${epcId}/${timestamp}-${file.originalname}`;
     await uploadToS3(s3Key, file.buffer, file.mimetype);
 
+    // Enqueue first to get the BullMQ jobId, then create the log with it.
+    // WHY enqueue before log creation: BullMQ assigns the jobId; we need it
+    // to correlate the log with the queue job for status polling.
     const job = await leadImportQueue.add("import", {
       epcId,
       fileS3Key: s3Key,
       fileMimeType: file.mimetype,
       requestedBy: userId,
+      logId: "", // placeholder — updated below after log creation
     });
+
+    const logId = await createPendingLog({
+      type: "LEAD_IMPORT",
+      triggeredById: userId,
+      workspaceId: workspaceUser.workspaceId,
+      jobId: job.id!,
+      epcId,
+    });
+
+    // Update job data to carry the real logId so the worker can update the log
+    await job.updateData({ ...job.data, logId });
 
     res.status(202).json({
       success: true,
       message: "Import job queued",
       jobId: job.id,
+      logId,
       pollUrl: `/api/v1/leads/import/${job.id}`,
     });
   } catch (error) {

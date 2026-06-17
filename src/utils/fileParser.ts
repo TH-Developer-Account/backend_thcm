@@ -84,7 +84,7 @@ export type SupportedMimeType =
   | "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   | "application/vnd.ms-excel";
 
-const SUPPORTED_MIME_TYPES = new Set<string>([
+export const SUPPORTED_MIME_TYPES = new Set<string>([
   "text/csv",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "application/vnd.ms-excel",
