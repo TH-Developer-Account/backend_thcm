@@ -213,4 +213,13 @@ export const epcFullInfoSelect = {
       },
     },
   },
+  createdBy: {
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+      phone_number: true,
+    },
+  },
 } as const;

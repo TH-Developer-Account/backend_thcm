@@ -360,6 +360,19 @@ export const updateEventProposal = async (
       },
     });
 
+    await prisma.activityLog.create({
+      data: {
+        epcId: id,
+        actorId: userId,
+        action: "EPC_UPDATED",
+        workflowId: null,
+        stageId: null,
+        metadata: {
+          reason: "EPC is Updated.",
+        },
+      },
+    });
+
     res.status(200).json({ success: true, data: updated });
   } catch (error: any) {
     if (error.code === "P2025") {
