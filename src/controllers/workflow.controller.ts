@@ -639,19 +639,13 @@ export const triggerDeviationController = async (
 ) => {
   try {
     const userId = req.user?.id;
-    const { eventProposalId, workspaceId, appId, newBudget, reason } = req.body;
+    const { eventProposalId, workspaceId, appId, newBudget } = req.body;
 
     if (!userId) throw new ApiError(401, "Unauthorized");
     if (!eventProposalId || !workspaceId || !appId || newBudget === undefined) {
       throw new ApiError(
         400,
         "eventProposalId, workspaceId, appId, and newBudget are required",
-      );
-    }
-    if (!reason || String(reason).trim().length < 3) {
-      throw new ApiError(
-        400,
-        "A reason of at least 3 characters is required for deviation",
       );
     }
 
@@ -666,10 +660,10 @@ export const triggerDeviationController = async (
         "No active workflow found for this event proposal",
       );
     }
-    if (activeWorkflow.status !== "IN_PROGRESS") {
+    if (activeWorkflow.status === "IN_PROGRESS") {
       throw new ApiError(
         400,
-        "Deviation can only be triggered on an IN_PROGRESS workflow. " +
+        "Deviation can only be triggered on an Approved workflow. " +
           `Current status: ${activeWorkflow.status}`,
       );
     }
@@ -738,6 +732,7 @@ export const triggerDeviationController = async (
 
           stages: {
             create: matchedTemplate.stages.map((stage) => ({
+              stageName: stage.name,
               stageOrder: stage.stageOrder,
               strategy: stage.strategy,
               minApprovals: stage.minApprovals,
@@ -784,12 +779,9 @@ export const triggerDeviationController = async (
         data: {
           epcId: activeWorkflow.eventProposalId,
           actorId: userId,
-          action: "DEVIATION_RAISED",
+          action: "EPC_RESUBMITTED",
           workflowId: activeWorkflow.id,
           stageId: null,
-          metadata: {
-            reason: reason.trim(),
-          },
         },
       });
 

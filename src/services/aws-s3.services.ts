@@ -39,6 +39,28 @@ function buildImageS3Key(epcId: string, position: number): string {
   return `report-images/${epcId}/${position}.jpg`;
 }
 
+export async function uploadDeviationDoc(
+  epcId: string,
+  buffer: Buffer,
+): Promise<{ s3Key: string; fileUrl: string }> {
+  const s3Key = `deviation-docs/${epcId}.pdf`;
+
+  await s3Client.send(
+    new PutObjectCommand({
+      // Bucket: process.env.S3_DEVIATION_DOCS_BUCKET_NAME!,
+      Bucket: BUCKET_NAME,
+      Key: s3Key,
+      Body: buffer,
+      ContentType: "application/pdf",
+    }),
+  );
+
+  // const fileUrl = `https://${process.env.S3_DEVIATION_DOCS_BUCKET_NAME}.s3.amazonaws.com/${s3Key}`;
+  const fileUrl = `https://${BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Key}`;
+
+  return { s3Key, fileUrl };
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // uploadReportImage
 //

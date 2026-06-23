@@ -106,6 +106,15 @@ export const epcFullInfoSelect = {
       value: true,
     },
   },
+  created_by: {
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+      phone_number: true,
+    },
+  },
   epf: {
     select: {
       id: true,

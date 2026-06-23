@@ -3452,6 +3452,10 @@ export const EventProposalScalarFieldEnum = {
   budget_master_id: 'budget_master_id',
   event_name_id: 'event_name_id',
   vertical_id: 'vertical_id',
+  deviationReason: 'deviationReason',
+  deviationAmount: 'deviationAmount',
+  deviationDocUrl: 'deviationDocUrl',
+  deviationDocS3Key: 'deviationDocS3Key',
   locationMeta: 'locationMeta',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -3929,6 +3933,20 @@ export type ListEnumPermissionActionFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'Decimal'
+ */
+export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+/**
+ * Reference to a field of type 'Decimal[]'
+ */
+export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
+    
+
+
+/**
  * Reference to a field of type 'Json'
  */
 export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
@@ -4023,20 +4041,6 @@ export type EnumActivityActionFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'ActivityAction[]'
  */
 export type ListEnumActivityActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActivityAction[]'>
-    
-
-
-/**
- * Reference to a field of type 'Decimal'
- */
-export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
-    
-
-
-/**
- * Reference to a field of type 'Decimal[]'
- */
-export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 
