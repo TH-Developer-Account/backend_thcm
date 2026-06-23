@@ -206,7 +206,7 @@ export type BudgetMasterGroupByOutputType = {
   _max: BudgetMasterMaxAggregateOutputType | null
 }
 
-type GetBudgetMasterGroupByPayload<T extends BudgetMasterGroupByArgs> = Prisma.PrismaPromise<
+export type GetBudgetMasterGroupByPayload<T extends BudgetMasterGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<BudgetMasterGroupByOutputType, T['by']> &
       {
@@ -1204,6 +1204,11 @@ export type BudgetMasterFindManyArgs<ExtArgs extends runtime.Types.Extensions.In
    * Skip the first `n` BudgetMasters.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of BudgetMasters.
+   */
   distinct?: Prisma.BudgetMasterScalarFieldEnum | Prisma.BudgetMasterScalarFieldEnum[]
 }
 

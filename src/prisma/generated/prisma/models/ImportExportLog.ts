@@ -270,7 +270,7 @@ export type ImportExportLogGroupByOutputType = {
   _max: ImportExportLogMaxAggregateOutputType | null
 }
 
-type GetImportExportLogGroupByPayload<T extends ImportExportLogGroupByArgs> = Prisma.PrismaPromise<
+export type GetImportExportLogGroupByPayload<T extends ImportExportLogGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ImportExportLogGroupByOutputType, T['by']> &
       {
@@ -1896,6 +1896,11 @@ export type ImportExportLogFindManyArgs<ExtArgs extends runtime.Types.Extensions
    * Skip the first `n` ImportExportLogs.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of ImportExportLogs.
+   */
   distinct?: Prisma.ImportExportLogScalarFieldEnum | Prisma.ImportExportLogScalarFieldEnum[]
 }
 

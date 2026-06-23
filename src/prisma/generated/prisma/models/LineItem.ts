@@ -249,7 +249,7 @@ export type LineItemGroupByOutputType = {
   _max: LineItemMaxAggregateOutputType | null
 }
 
-type GetLineItemGroupByPayload<T extends LineItemGroupByArgs> = Prisma.PrismaPromise<
+export type GetLineItemGroupByPayload<T extends LineItemGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<LineItemGroupByOutputType, T['by']> &
       {
@@ -1747,6 +1747,11 @@ export type LineItemFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Skip the first `n` LineItems.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of LineItems.
+   */
   distinct?: Prisma.LineItemScalarFieldEnum | Prisma.LineItemScalarFieldEnum[]
 }
 

@@ -192,7 +192,7 @@ export type EventReportImageGroupByOutputType = {
   _max: EventReportImageMaxAggregateOutputType | null
 }
 
-type GetEventReportImageGroupByPayload<T extends EventReportImageGroupByArgs> = Prisma.PrismaPromise<
+export type GetEventReportImageGroupByPayload<T extends EventReportImageGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<EventReportImageGroupByOutputType, T['by']> &
       {
@@ -1172,6 +1172,11 @@ export type EventReportImageFindManyArgs<ExtArgs extends runtime.Types.Extension
    * Skip the first `n` EventReportImages.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of EventReportImages.
+   */
   distinct?: Prisma.EventReportImageScalarFieldEnum | Prisma.EventReportImageScalarFieldEnum[]
 }
 

@@ -293,7 +293,7 @@ export type EventProposalGroupByOutputType = {
   _max: EventProposalMaxAggregateOutputType | null
 }
 
-type GetEventProposalGroupByPayload<T extends EventProposalGroupByArgs> = Prisma.PrismaPromise<
+export type GetEventProposalGroupByPayload<T extends EventProposalGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<EventProposalGroupByOutputType, T['by']> &
       {
@@ -4548,6 +4548,11 @@ export type EventProposalFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Skip the first `n` EventProposals.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of EventProposals.
+   */
   distinct?: Prisma.EventProposalScalarFieldEnum | Prisma.EventProposalScalarFieldEnum[]
 }
 

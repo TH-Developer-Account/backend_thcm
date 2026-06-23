@@ -151,7 +151,7 @@ export type CRFGroupByOutputType = {
   _max: CRFMaxAggregateOutputType | null
 }
 
-type GetCRFGroupByPayload<T extends CRFGroupByArgs> = Prisma.PrismaPromise<
+export type GetCRFGroupByPayload<T extends CRFGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<CRFGroupByOutputType, T['by']> &
       {
@@ -1146,6 +1146,11 @@ export type CRFFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Skip the first `n` CRFS.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of CRFS.
+   */
   distinct?: Prisma.CRFScalarFieldEnum | Prisma.CRFScalarFieldEnum[]
 }
 
