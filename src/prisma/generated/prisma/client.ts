@@ -212,3 +212,8 @@ export type Lead = Prisma.LeadModel
  * 
  */
 export type Pincode = Prisma.PincodeModel
+/**
+ * Model EventReport
+ * 
+ */
+export type EventReport = Prisma.EventReportModel

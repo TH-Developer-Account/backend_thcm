@@ -12,19 +12,36 @@ interface SearchEventProposalInput {
   endDate?: Date;
   page?: number;
   pageSize?: number;
-  sortBy?: "created_at" | "proposal_number" | "status";
+  sortBy?: "created_at" | "proposal_number" | "status" | "event_name";
   sortOrder?: "asc" | "desc";
   zone?: string[];
   eventType?: string[];
   createdDate?: Date;
 }
 
+// Maps each valid sortBy key to its actual SQL expression.
+//
+// Why a map instead of string interpolation:
+//   1. Some sort columns are JOIN aliases (e.g. event_name lives on `en.title`,
+//      not on `ep`), so prefixing blindly with `ep.` would produce invalid SQL.
+//   2. Eliminates SQL injection risk from user-controlled sortBy values —
+//      unknown keys fall back to the default safely.
+const SORT_COLUMN_MAP: Record<
+  NonNullable<SearchEventProposalInput["sortBy"]>,
+  Prisma.Sql
+> = {
+  created_at: Prisma.sql`ep.created_at`,
+  proposal_number: Prisma.sql`ep.proposal_number`,
+  status: Prisma.sql`ep.status`,
+  event_name: Prisma.sql`en.title`,
+};
+
 export async function searchEventProposals(filters: SearchEventProposalInput) {
   const {
     userId,
     approvedByMe,
     pendingOnMe,
-    search,
+    search = "",
     status,
     departmentId,
     startDate,
@@ -184,17 +201,21 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
 
   const direction = sortOrder === "desc" ? Prisma.sql`DESC` : Prisma.sql`ASC`;
 
+  // Resolve the sort column from the whitelist; fall back to created_at if
+  // an unrecognised key somehow slips through (e.g. future refactor drift).
+  const sortColumn = SORT_COLUMN_MAP[sortBy] ?? Prisma.sql`ep.created_at`;
+
   let orderByClause: Prisma.Sql;
 
   if (search) {
     orderByClause = Prisma.sql`
       ORDER BY
         ts_rank(ep.search_vector, plainto_tsquery('english', ${search})) DESC,
-        ${Prisma.raw(`ep."${sortBy}"`)} ${direction}
+        ${sortColumn} ${direction}
     `;
   } else {
     orderByClause = Prisma.sql`
-      ORDER BY ${Prisma.raw(`ep."${sortBy}"`)} ${direction}
+      ORDER BY ${sortColumn} ${direction}
     `;
   }
 

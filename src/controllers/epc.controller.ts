@@ -537,3 +537,99 @@ export const updateEventProposalOutcome = async (
     next(error);
   }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PATCH /epc/:id/close
+//
+// Proposer manually closes the EPC. Allowed in two scenarios:
+//
+//   1. VALIDATED with no deviation triggered yet
+//      → straight close, no workflow check needed
+//
+//   2. DEVIATION_IN_PROGRESS with the deviation workflow APPROVED
+//      → guard that the deviation WorkflowInstance.status === APPROVED
+//        before allowing close
+//
+// Guards:
+//   - Caller must be the EPC creator
+//   - EPC must be in VALIDATED or DEVIATION_IN_PROGRESS status
+//   - If DEVIATION_IN_PROGRESS, the deviation workflow must be APPROVED
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const closeEpc = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const id = String(req.params.id);
+
+    const epc = await prisma.eventProposal.findUnique({
+      where: { id },
+      select: { id: true, status: true, created_by_id: true },
+    });
+
+    if (!epc) throw new ApiError(404, "EPC not found");
+
+    if (epc.created_by_id !== userId) {
+      throw new ApiError(403, "Only the EPC creator can close it");
+    }
+
+    const allowedStatuses = ["VALIDATED", "DEVIATION_IN_PROGRESS"];
+    if (!allowedStatuses.includes(epc.status)) {
+      throw new ApiError(
+        400,
+        `EPC cannot be closed from status "${epc.status}". ` +
+          "It must be VALIDATED or DEVIATION_IN_PROGRESS with an approved deviation workflow.",
+      );
+    }
+
+    // ── Extra guard for deviation path ────────────────────────────────────
+    // If the EPC is in DEVIATION_IN_PROGRESS, the deviation workflow must
+    // be fully APPROVED before the proposer is allowed to close.
+    if (epc.status === "DEVIATION_IN_PROGRESS") {
+      const deviationWorkflow = await prisma.workflowInstance.findFirst({
+        where: {
+          eventProposalId: id,
+          workflowType: "DEVIATION",
+          isActive: true,
+        },
+        select: { status: true },
+      });
+
+      if (!deviationWorkflow) {
+        throw new ApiError(
+          400,
+          "No active deviation workflow found for this EPC",
+        );
+      }
+
+      if (deviationWorkflow.status !== "APPROVED") {
+        throw new ApiError(
+          400,
+          "The deviation workflow has not been fully approved yet",
+        );
+      }
+    }
+
+    await prisma.$transaction([
+      prisma.eventProposal.update({
+        where: { id },
+        data: { status: "CLOSED", updated_by_id: userId },
+      }),
+      prisma.activityLog.create({
+        data: { epcId: id, actorId: userId, action: "EPC_CLOSED" },
+      }),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      message: "EPC closed successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
