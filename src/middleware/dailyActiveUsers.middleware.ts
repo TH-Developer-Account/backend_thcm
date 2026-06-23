@@ -1,6 +1,6 @@
 // middleware/firstAuthRequestPerDay.ts
 import { Request, Response, NextFunction } from "express";
-import redis from "../config/redis";
+import { redis } from "../config/redis";
 
 export const firstAuthRequestPerDay = async (
   req: Request,
