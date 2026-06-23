@@ -15,5 +15,4 @@ redis.on("error", (err) => {
   console.error("Redis error", JSON.stringify(err, null, 2));
 });
 
-// Used by BullMQ Queue and Worker — they manage their own ioredis connections
-export const bullmqConnection = { url: REDIS_URL };
+export const redisConnectionQueue = { url: REDIS_URL };

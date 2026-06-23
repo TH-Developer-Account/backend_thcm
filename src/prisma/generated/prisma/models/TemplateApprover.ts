@@ -144,7 +144,7 @@ export type TemplateApproverGroupByOutputType = {
   _max: TemplateApproverMaxAggregateOutputType | null
 }
 
-type GetTemplateApproverGroupByPayload<T extends TemplateApproverGroupByArgs> = Prisma.PrismaPromise<
+export type GetTemplateApproverGroupByPayload<T extends TemplateApproverGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<TemplateApproverGroupByOutputType, T['by']> &
       {
@@ -1166,6 +1166,11 @@ export type TemplateApproverFindManyArgs<ExtArgs extends runtime.Types.Extension
    * Skip the first `n` TemplateApprovers.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of TemplateApprovers.
+   */
   distinct?: Prisma.TemplateApproverScalarFieldEnum | Prisma.TemplateApproverScalarFieldEnum[]
 }
 

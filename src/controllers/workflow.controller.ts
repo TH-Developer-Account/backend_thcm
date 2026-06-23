@@ -590,7 +590,7 @@ export const activateFirstStageController = async (
         data: {
           epcId: workflow.eventProposalId,
           actorId: req.user?.id as string,
-          action: "CRF_UPDATED",
+          action: "EPC_RESUBMITTED",
           workflowId: workflow.id,
           stageId: firstStage.id,
           metadata: {

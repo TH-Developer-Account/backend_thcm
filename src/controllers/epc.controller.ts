@@ -5,6 +5,7 @@ import ApiError from "../utils/apiError";
 import { epcFullInfoSelect } from "../utils/contants";
 import { searchEventProposals } from "../helpers/searchEventProposal.helper";
 import { createEventProposalWithWorkflow } from "../services/workflow.service";
+import { getValidatorForApp } from "../utils/validators.constant";
 import { addMailJob } from "../services/mail.service";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -262,6 +263,9 @@ export const getAllEventProposals = async (
       userId,
       approvedByMe: approvedByMe === "true",
       pendingOnMe: pendingOnMe === "true",
+      pendingReportValidation:
+        getValidatorForApp("MAP") === userId ? true : false,
+      reportValidatedByMe: getValidatorForApp("MAP") === userId ? true : false,
       search: search as string,
       status: toStringArray(status),
       departmentId: departmentId ? String(departmentId) : undefined,
@@ -369,6 +373,19 @@ export const updateEventProposal = async (
       data: {
         ...data,
         updated_by_id: userId, // ✅ also fixed field name (was `updated_by`)
+      },
+    });
+
+    await prisma.activityLog.create({
+      data: {
+        epcId: id,
+        actorId: userId,
+        action: "EPC_UPDATED",
+        workflowId: null,
+        stageId: null,
+        metadata: {
+          reason: "EPC is Updated.",
+        },
       },
     });
 

@@ -85,6 +85,7 @@ export const ActivityAction = {
   REPORT_RESUBMITTED: 'REPORT_RESUBMITTED',
   REPORT_VALIDATED: 'REPORT_VALIDATED',
   REPORT_REJECTED: 'REPORT_REJECTED',
+  REPORT_CLARIFICATION_REQUESTED: 'REPORT_CLARIFICATION_REQUESTED',
   EPC_CLOSED: 'EPC_CLOSED',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
@@ -116,7 +117,36 @@ export type ProductCategory = (typeof ProductCategory)[keyof typeof ProductCateg
 export const ReportStatus = {
   SUBMITTED: 'SUBMITTED',
   VALIDATED: 'VALIDATED',
-  REJECTED: 'REJECTED'
+  REJECTED: 'REJECTED',
+  CLARIFICATION_REQUESTED: 'CLARIFICATION_REQUESTED'
 } as const
 
 export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
+
+
+export const OutcomeStatus = {
+  SUCCESSFUL: 'SUCCESSFUL',
+  PARTIALLY_SUCCESSFUL: 'PARTIALLY_SUCCESSFUL',
+  UNSUCCESSFUL: 'UNSUCCESSFUL'
+} as const
+
+export type OutcomeStatus = (typeof OutcomeStatus)[keyof typeof OutcomeStatus]
+
+
+export const ImportExportType = {
+  LEAD_IMPORT: 'LEAD_IMPORT',
+  LEAD_EXPORT: 'LEAD_EXPORT',
+  EPC_EXPORT: 'EPC_EXPORT'
+} as const
+
+export type ImportExportType = (typeof ImportExportType)[keyof typeof ImportExportType]
+
+
+export const ImportExportStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type ImportExportStatus = (typeof ImportExportStatus)[keyof typeof ImportExportStatus]

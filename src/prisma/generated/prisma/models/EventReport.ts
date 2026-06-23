@@ -27,23 +27,26 @@ export type AggregateEventReport = {
 }
 
 export type EventReportAvgAggregateOutputType = {
-  actualSpend: runtime.Decimal | null
+  totalLeadsGenerated: number | null
+  approvedEventCost: runtime.Decimal | null
 }
 
 export type EventReportSumAggregateOutputType = {
-  actualSpend: runtime.Decimal | null
+  totalLeadsGenerated: number | null
+  approvedEventCost: runtime.Decimal | null
 }
 
 export type EventReportMinAggregateOutputType = {
   id: string | null
   epcId: string | null
-  s3Key: string | null
-  fileUrl: string | null
-  description: string | null
-  notes: string | null
-  actualSpend: runtime.Decimal | null
+  outcomeStatus: $Enums.OutcomeStatus | null
+  totalLeadsGenerated: number | null
+  approvedEventCost: runtime.Decimal | null
+  expectedConversion: string | null
+  remarks: string | null
   status: $Enums.ReportStatus | null
   rejectionReason: string | null
+  clarificationReason: string | null
   submittedAt: Date | null
   resubmittedAt: Date | null
   validatedAt: Date | null
@@ -55,13 +58,14 @@ export type EventReportMinAggregateOutputType = {
 export type EventReportMaxAggregateOutputType = {
   id: string | null
   epcId: string | null
-  s3Key: string | null
-  fileUrl: string | null
-  description: string | null
-  notes: string | null
-  actualSpend: runtime.Decimal | null
+  outcomeStatus: $Enums.OutcomeStatus | null
+  totalLeadsGenerated: number | null
+  approvedEventCost: runtime.Decimal | null
+  expectedConversion: string | null
+  remarks: string | null
   status: $Enums.ReportStatus | null
   rejectionReason: string | null
+  clarificationReason: string | null
   submittedAt: Date | null
   resubmittedAt: Date | null
   validatedAt: Date | null
@@ -73,13 +77,14 @@ export type EventReportMaxAggregateOutputType = {
 export type EventReportCountAggregateOutputType = {
   id: number
   epcId: number
-  s3Key: number
-  fileUrl: number
-  description: number
-  notes: number
-  actualSpend: number
+  outcomeStatus: number
+  totalLeadsGenerated: number
+  approvedEventCost: number
+  expectedConversion: number
+  remarks: number
   status: number
   rejectionReason: number
+  clarificationReason: number
   submittedAt: number
   resubmittedAt: number
   validatedAt: number
@@ -91,23 +96,26 @@ export type EventReportCountAggregateOutputType = {
 
 
 export type EventReportAvgAggregateInputType = {
-  actualSpend?: true
+  totalLeadsGenerated?: true
+  approvedEventCost?: true
 }
 
 export type EventReportSumAggregateInputType = {
-  actualSpend?: true
+  totalLeadsGenerated?: true
+  approvedEventCost?: true
 }
 
 export type EventReportMinAggregateInputType = {
   id?: true
   epcId?: true
-  s3Key?: true
-  fileUrl?: true
-  description?: true
-  notes?: true
-  actualSpend?: true
+  outcomeStatus?: true
+  totalLeadsGenerated?: true
+  approvedEventCost?: true
+  expectedConversion?: true
+  remarks?: true
   status?: true
   rejectionReason?: true
+  clarificationReason?: true
   submittedAt?: true
   resubmittedAt?: true
   validatedAt?: true
@@ -119,13 +127,14 @@ export type EventReportMinAggregateInputType = {
 export type EventReportMaxAggregateInputType = {
   id?: true
   epcId?: true
-  s3Key?: true
-  fileUrl?: true
-  description?: true
-  notes?: true
-  actualSpend?: true
+  outcomeStatus?: true
+  totalLeadsGenerated?: true
+  approvedEventCost?: true
+  expectedConversion?: true
+  remarks?: true
   status?: true
   rejectionReason?: true
+  clarificationReason?: true
   submittedAt?: true
   resubmittedAt?: true
   validatedAt?: true
@@ -137,13 +146,14 @@ export type EventReportMaxAggregateInputType = {
 export type EventReportCountAggregateInputType = {
   id?: true
   epcId?: true
-  s3Key?: true
-  fileUrl?: true
-  description?: true
-  notes?: true
-  actualSpend?: true
+  outcomeStatus?: true
+  totalLeadsGenerated?: true
+  approvedEventCost?: true
+  expectedConversion?: true
+  remarks?: true
   status?: true
   rejectionReason?: true
+  clarificationReason?: true
   submittedAt?: true
   resubmittedAt?: true
   validatedAt?: true
@@ -242,13 +252,14 @@ export type EventReportGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 export type EventReportGroupByOutputType = {
   id: string
   epcId: string
-  s3Key: string
-  fileUrl: string
-  description: string | null
-  notes: string | null
-  actualSpend: runtime.Decimal
+  outcomeStatus: $Enums.OutcomeStatus
+  totalLeadsGenerated: number
+  approvedEventCost: runtime.Decimal
+  expectedConversion: string | null
+  remarks: string | null
   status: $Enums.ReportStatus
   rejectionReason: string | null
+  clarificationReason: string | null
   submittedAt: Date
   resubmittedAt: Date | null
   validatedAt: Date | null
@@ -262,7 +273,7 @@ export type EventReportGroupByOutputType = {
   _max: EventReportMaxAggregateOutputType | null
 }
 
-type GetEventReportGroupByPayload<T extends EventReportGroupByArgs> = Prisma.PrismaPromise<
+export type GetEventReportGroupByPayload<T extends EventReportGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<EventReportGroupByOutputType, T['by']> &
       {
@@ -283,13 +294,14 @@ export type EventReportWhereInput = {
   NOT?: Prisma.EventReportWhereInput | Prisma.EventReportWhereInput[]
   id?: Prisma.StringFilter<"EventReport"> | string
   epcId?: Prisma.StringFilter<"EventReport"> | string
-  s3Key?: Prisma.StringFilter<"EventReport"> | string
-  fileUrl?: Prisma.StringFilter<"EventReport"> | string
-  description?: Prisma.StringNullableFilter<"EventReport"> | string | null
-  notes?: Prisma.StringNullableFilter<"EventReport"> | string | null
-  actualSpend?: Prisma.DecimalFilter<"EventReport"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFilter<"EventReport"> | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFilter<"EventReport"> | number
+  approvedEventCost?: Prisma.DecimalFilter<"EventReport"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.StringNullableFilter<"EventReport"> | string | null
+  remarks?: Prisma.StringNullableFilter<"EventReport"> | string | null
   status?: Prisma.EnumReportStatusFilter<"EventReport"> | $Enums.ReportStatus
   rejectionReason?: Prisma.StringNullableFilter<"EventReport"> | string | null
+  clarificationReason?: Prisma.StringNullableFilter<"EventReport"> | string | null
   submittedAt?: Prisma.DateTimeFilter<"EventReport"> | Date | string
   resubmittedAt?: Prisma.DateTimeNullableFilter<"EventReport"> | Date | string | null
   validatedAt?: Prisma.DateTimeNullableFilter<"EventReport"> | Date | string | null
@@ -298,18 +310,20 @@ export type EventReportWhereInput = {
   updated_at?: Prisma.DateTimeFilter<"EventReport"> | Date | string
   epc?: Prisma.XOR<Prisma.EventProposalScalarRelationFilter, Prisma.EventProposalWhereInput>
   validator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  images?: Prisma.EventReportImageListRelationFilter
 }
 
 export type EventReportOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
-  s3Key?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
-  description?: Prisma.SortOrderInput | Prisma.SortOrder
-  notes?: Prisma.SortOrderInput | Prisma.SortOrder
-  actualSpend?: Prisma.SortOrder
+  outcomeStatus?: Prisma.SortOrder
+  totalLeadsGenerated?: Prisma.SortOrder
+  approvedEventCost?: Prisma.SortOrder
+  expectedConversion?: Prisma.SortOrderInput | Prisma.SortOrder
+  remarks?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  clarificationReason?: Prisma.SortOrderInput | Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
   resubmittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   validatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -318,6 +332,7 @@ export type EventReportOrderByWithRelationInput = {
   updated_at?: Prisma.SortOrder
   epc?: Prisma.EventProposalOrderByWithRelationInput
   validator?: Prisma.UserOrderByWithRelationInput
+  images?: Prisma.EventReportImageOrderByRelationAggregateInput
 }
 
 export type EventReportWhereUniqueInput = Prisma.AtLeast<{
@@ -326,13 +341,14 @@ export type EventReportWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.EventReportWhereInput | Prisma.EventReportWhereInput[]
   OR?: Prisma.EventReportWhereInput[]
   NOT?: Prisma.EventReportWhereInput | Prisma.EventReportWhereInput[]
-  s3Key?: Prisma.StringFilter<"EventReport"> | string
-  fileUrl?: Prisma.StringFilter<"EventReport"> | string
-  description?: Prisma.StringNullableFilter<"EventReport"> | string | null
-  notes?: Prisma.StringNullableFilter<"EventReport"> | string | null
-  actualSpend?: Prisma.DecimalFilter<"EventReport"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFilter<"EventReport"> | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFilter<"EventReport"> | number
+  approvedEventCost?: Prisma.DecimalFilter<"EventReport"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.StringNullableFilter<"EventReport"> | string | null
+  remarks?: Prisma.StringNullableFilter<"EventReport"> | string | null
   status?: Prisma.EnumReportStatusFilter<"EventReport"> | $Enums.ReportStatus
   rejectionReason?: Prisma.StringNullableFilter<"EventReport"> | string | null
+  clarificationReason?: Prisma.StringNullableFilter<"EventReport"> | string | null
   submittedAt?: Prisma.DateTimeFilter<"EventReport"> | Date | string
   resubmittedAt?: Prisma.DateTimeNullableFilter<"EventReport"> | Date | string | null
   validatedAt?: Prisma.DateTimeNullableFilter<"EventReport"> | Date | string | null
@@ -341,18 +357,20 @@ export type EventReportWhereUniqueInput = Prisma.AtLeast<{
   updated_at?: Prisma.DateTimeFilter<"EventReport"> | Date | string
   epc?: Prisma.XOR<Prisma.EventProposalScalarRelationFilter, Prisma.EventProposalWhereInput>
   validator?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  images?: Prisma.EventReportImageListRelationFilter
 }, "id" | "epcId">
 
 export type EventReportOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
-  s3Key?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
-  description?: Prisma.SortOrderInput | Prisma.SortOrder
-  notes?: Prisma.SortOrderInput | Prisma.SortOrder
-  actualSpend?: Prisma.SortOrder
+  outcomeStatus?: Prisma.SortOrder
+  totalLeadsGenerated?: Prisma.SortOrder
+  approvedEventCost?: Prisma.SortOrder
+  expectedConversion?: Prisma.SortOrderInput | Prisma.SortOrder
+  remarks?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  clarificationReason?: Prisma.SortOrderInput | Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
   resubmittedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   validatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -372,13 +390,14 @@ export type EventReportScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EventReportScalarWhereWithAggregatesInput | Prisma.EventReportScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"EventReport"> | string
   epcId?: Prisma.StringWithAggregatesFilter<"EventReport"> | string
-  s3Key?: Prisma.StringWithAggregatesFilter<"EventReport"> | string
-  fileUrl?: Prisma.StringWithAggregatesFilter<"EventReport"> | string
-  description?: Prisma.StringNullableWithAggregatesFilter<"EventReport"> | string | null
-  notes?: Prisma.StringNullableWithAggregatesFilter<"EventReport"> | string | null
-  actualSpend?: Prisma.DecimalWithAggregatesFilter<"EventReport"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusWithAggregatesFilter<"EventReport"> | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntWithAggregatesFilter<"EventReport"> | number
+  approvedEventCost?: Prisma.DecimalWithAggregatesFilter<"EventReport"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.StringNullableWithAggregatesFilter<"EventReport"> | string | null
+  remarks?: Prisma.StringNullableWithAggregatesFilter<"EventReport"> | string | null
   status?: Prisma.EnumReportStatusWithAggregatesFilter<"EventReport"> | $Enums.ReportStatus
   rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"EventReport"> | string | null
+  clarificationReason?: Prisma.StringNullableWithAggregatesFilter<"EventReport"> | string | null
   submittedAt?: Prisma.DateTimeWithAggregatesFilter<"EventReport"> | Date | string
   resubmittedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EventReport"> | Date | string | null
   validatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"EventReport"> | Date | string | null
@@ -389,13 +408,14 @@ export type EventReportScalarWhereWithAggregatesInput = {
 
 export type EventReportCreateInput = {
   id?: string
-  s3Key: string
-  fileUrl: string
-  description?: string | null
-  notes?: string | null
-  actualSpend: runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus: $Enums.OutcomeStatus
+  totalLeadsGenerated: number
+  approvedEventCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: string | null
+  remarks?: string | null
   status?: $Enums.ReportStatus
   rejectionReason?: string | null
+  clarificationReason?: string | null
   submittedAt?: Date | string
   resubmittedAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -403,35 +423,39 @@ export type EventReportCreateInput = {
   updated_at?: Date | string
   epc: Prisma.EventProposalCreateNestedOneWithoutReportInput
   validator: Prisma.UserCreateNestedOneWithoutReportValidationsInput
+  images?: Prisma.EventReportImageCreateNestedManyWithoutReportInput
 }
 
 export type EventReportUncheckedCreateInput = {
   id?: string
   epcId: string
-  s3Key: string
-  fileUrl: string
-  description?: string | null
-  notes?: string | null
-  actualSpend: runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus: $Enums.OutcomeStatus
+  totalLeadsGenerated: number
+  approvedEventCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: string | null
+  remarks?: string | null
   status?: $Enums.ReportStatus
   rejectionReason?: string | null
+  clarificationReason?: string | null
   submittedAt?: Date | string
   resubmittedAt?: Date | string | null
   validatedAt?: Date | string | null
   validatorId: string
   created_at?: Date | string
   updated_at?: Date | string
+  images?: Prisma.EventReportImageUncheckedCreateNestedManyWithoutReportInput
 }
 
 export type EventReportUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actualSpend?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  approvedEventCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clarificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -439,36 +463,40 @@ export type EventReportUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epc?: Prisma.EventProposalUpdateOneRequiredWithoutReportNestedInput
   validator?: Prisma.UserUpdateOneRequiredWithoutReportValidationsNestedInput
+  images?: Prisma.EventReportImageUpdateManyWithoutReportNestedInput
 }
 
 export type EventReportUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epcId?: Prisma.StringFieldUpdateOperationsInput | string
-  s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actualSpend?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  approvedEventCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clarificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatorId?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.EventReportImageUncheckedUpdateManyWithoutReportNestedInput
 }
 
 export type EventReportCreateManyInput = {
   id?: string
   epcId: string
-  s3Key: string
-  fileUrl: string
-  description?: string | null
-  notes?: string | null
-  actualSpend: runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus: $Enums.OutcomeStatus
+  totalLeadsGenerated: number
+  approvedEventCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: string | null
+  remarks?: string | null
   status?: $Enums.ReportStatus
   rejectionReason?: string | null
+  clarificationReason?: string | null
   submittedAt?: Date | string
   resubmittedAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -479,13 +507,14 @@ export type EventReportCreateManyInput = {
 
 export type EventReportUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actualSpend?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  approvedEventCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clarificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -496,13 +525,14 @@ export type EventReportUpdateManyMutationInput = {
 export type EventReportUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epcId?: Prisma.StringFieldUpdateOperationsInput | string
-  s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actualSpend?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  approvedEventCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clarificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -529,13 +559,14 @@ export type EventReportNullableScalarRelationFilter = {
 export type EventReportCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
-  s3Key?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  notes?: Prisma.SortOrder
-  actualSpend?: Prisma.SortOrder
+  outcomeStatus?: Prisma.SortOrder
+  totalLeadsGenerated?: Prisma.SortOrder
+  approvedEventCost?: Prisma.SortOrder
+  expectedConversion?: Prisma.SortOrder
+  remarks?: Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
+  clarificationReason?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
   resubmittedAt?: Prisma.SortOrder
   validatedAt?: Prisma.SortOrder
@@ -545,19 +576,21 @@ export type EventReportCountOrderByAggregateInput = {
 }
 
 export type EventReportAvgOrderByAggregateInput = {
-  actualSpend?: Prisma.SortOrder
+  totalLeadsGenerated?: Prisma.SortOrder
+  approvedEventCost?: Prisma.SortOrder
 }
 
 export type EventReportMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
-  s3Key?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  notes?: Prisma.SortOrder
-  actualSpend?: Prisma.SortOrder
+  outcomeStatus?: Prisma.SortOrder
+  totalLeadsGenerated?: Prisma.SortOrder
+  approvedEventCost?: Prisma.SortOrder
+  expectedConversion?: Prisma.SortOrder
+  remarks?: Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
+  clarificationReason?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
   resubmittedAt?: Prisma.SortOrder
   validatedAt?: Prisma.SortOrder
@@ -569,13 +602,14 @@ export type EventReportMaxOrderByAggregateInput = {
 export type EventReportMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
-  s3Key?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
-  description?: Prisma.SortOrder
-  notes?: Prisma.SortOrder
-  actualSpend?: Prisma.SortOrder
+  outcomeStatus?: Prisma.SortOrder
+  totalLeadsGenerated?: Prisma.SortOrder
+  approvedEventCost?: Prisma.SortOrder
+  expectedConversion?: Prisma.SortOrder
+  remarks?: Prisma.SortOrder
   status?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
+  clarificationReason?: Prisma.SortOrder
   submittedAt?: Prisma.SortOrder
   resubmittedAt?: Prisma.SortOrder
   validatedAt?: Prisma.SortOrder
@@ -585,7 +619,13 @@ export type EventReportMinOrderByAggregateInput = {
 }
 
 export type EventReportSumOrderByAggregateInput = {
-  actualSpend?: Prisma.SortOrder
+  totalLeadsGenerated?: Prisma.SortOrder
+  approvedEventCost?: Prisma.SortOrder
+}
+
+export type EventReportScalarRelationFilter = {
+  is?: Prisma.EventReportWhereInput
+  isNot?: Prisma.EventReportWhereInput
 }
 
 export type EventReportCreateNestedManyWithoutValidatorInput = {
@@ -662,42 +702,64 @@ export type EventReportUncheckedUpdateOneWithoutEpcNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EventReportUpdateToOneWithWhereWithoutEpcInput, Prisma.EventReportUpdateWithoutEpcInput>, Prisma.EventReportUncheckedUpdateWithoutEpcInput>
 }
 
+export type EnumOutcomeStatusFieldUpdateOperationsInput = {
+  set?: $Enums.OutcomeStatus
+}
+
 export type EnumReportStatusFieldUpdateOperationsInput = {
   set?: $Enums.ReportStatus
 }
 
+export type EventReportCreateNestedOneWithoutImagesInput = {
+  create?: Prisma.XOR<Prisma.EventReportCreateWithoutImagesInput, Prisma.EventReportUncheckedCreateWithoutImagesInput>
+  connectOrCreate?: Prisma.EventReportCreateOrConnectWithoutImagesInput
+  connect?: Prisma.EventReportWhereUniqueInput
+}
+
+export type EventReportUpdateOneRequiredWithoutImagesNestedInput = {
+  create?: Prisma.XOR<Prisma.EventReportCreateWithoutImagesInput, Prisma.EventReportUncheckedCreateWithoutImagesInput>
+  connectOrCreate?: Prisma.EventReportCreateOrConnectWithoutImagesInput
+  upsert?: Prisma.EventReportUpsertWithoutImagesInput
+  connect?: Prisma.EventReportWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventReportUpdateToOneWithWhereWithoutImagesInput, Prisma.EventReportUpdateWithoutImagesInput>, Prisma.EventReportUncheckedUpdateWithoutImagesInput>
+}
+
 export type EventReportCreateWithoutValidatorInput = {
   id?: string
-  s3Key: string
-  fileUrl: string
-  description?: string | null
-  notes?: string | null
-  actualSpend: runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus: $Enums.OutcomeStatus
+  totalLeadsGenerated: number
+  approvedEventCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: string | null
+  remarks?: string | null
   status?: $Enums.ReportStatus
   rejectionReason?: string | null
+  clarificationReason?: string | null
   submittedAt?: Date | string
   resubmittedAt?: Date | string | null
   validatedAt?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
   epc: Prisma.EventProposalCreateNestedOneWithoutReportInput
+  images?: Prisma.EventReportImageCreateNestedManyWithoutReportInput
 }
 
 export type EventReportUncheckedCreateWithoutValidatorInput = {
   id?: string
   epcId: string
-  s3Key: string
-  fileUrl: string
-  description?: string | null
-  notes?: string | null
-  actualSpend: runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus: $Enums.OutcomeStatus
+  totalLeadsGenerated: number
+  approvedEventCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: string | null
+  remarks?: string | null
   status?: $Enums.ReportStatus
   rejectionReason?: string | null
+  clarificationReason?: string | null
   submittedAt?: Date | string
   resubmittedAt?: Date | string | null
   validatedAt?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  images?: Prisma.EventReportImageUncheckedCreateNestedManyWithoutReportInput
 }
 
 export type EventReportCreateOrConnectWithoutValidatorInput = {
@@ -732,13 +794,14 @@ export type EventReportScalarWhereInput = {
   NOT?: Prisma.EventReportScalarWhereInput | Prisma.EventReportScalarWhereInput[]
   id?: Prisma.StringFilter<"EventReport"> | string
   epcId?: Prisma.StringFilter<"EventReport"> | string
-  s3Key?: Prisma.StringFilter<"EventReport"> | string
-  fileUrl?: Prisma.StringFilter<"EventReport"> | string
-  description?: Prisma.StringNullableFilter<"EventReport"> | string | null
-  notes?: Prisma.StringNullableFilter<"EventReport"> | string | null
-  actualSpend?: Prisma.DecimalFilter<"EventReport"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFilter<"EventReport"> | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFilter<"EventReport"> | number
+  approvedEventCost?: Prisma.DecimalFilter<"EventReport"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.StringNullableFilter<"EventReport"> | string | null
+  remarks?: Prisma.StringNullableFilter<"EventReport"> | string | null
   status?: Prisma.EnumReportStatusFilter<"EventReport"> | $Enums.ReportStatus
   rejectionReason?: Prisma.StringNullableFilter<"EventReport"> | string | null
+  clarificationReason?: Prisma.StringNullableFilter<"EventReport"> | string | null
   submittedAt?: Prisma.DateTimeFilter<"EventReport"> | Date | string
   resubmittedAt?: Prisma.DateTimeNullableFilter<"EventReport"> | Date | string | null
   validatedAt?: Prisma.DateTimeNullableFilter<"EventReport"> | Date | string | null
@@ -749,36 +812,40 @@ export type EventReportScalarWhereInput = {
 
 export type EventReportCreateWithoutEpcInput = {
   id?: string
-  s3Key: string
-  fileUrl: string
-  description?: string | null
-  notes?: string | null
-  actualSpend: runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus: $Enums.OutcomeStatus
+  totalLeadsGenerated: number
+  approvedEventCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: string | null
+  remarks?: string | null
   status?: $Enums.ReportStatus
   rejectionReason?: string | null
+  clarificationReason?: string | null
   submittedAt?: Date | string
   resubmittedAt?: Date | string | null
   validatedAt?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
   validator: Prisma.UserCreateNestedOneWithoutReportValidationsInput
+  images?: Prisma.EventReportImageCreateNestedManyWithoutReportInput
 }
 
 export type EventReportUncheckedCreateWithoutEpcInput = {
   id?: string
-  s3Key: string
-  fileUrl: string
-  description?: string | null
-  notes?: string | null
-  actualSpend: runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus: $Enums.OutcomeStatus
+  totalLeadsGenerated: number
+  approvedEventCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: string | null
+  remarks?: string | null
   status?: $Enums.ReportStatus
   rejectionReason?: string | null
+  clarificationReason?: string | null
   submittedAt?: Date | string
   resubmittedAt?: Date | string | null
   validatedAt?: Date | string | null
   validatorId: string
   created_at?: Date | string
   updated_at?: Date | string
+  images?: Prisma.EventReportImageUncheckedCreateNestedManyWithoutReportInput
 }
 
 export type EventReportCreateOrConnectWithoutEpcInput = {
@@ -799,30 +866,126 @@ export type EventReportUpdateToOneWithWhereWithoutEpcInput = {
 
 export type EventReportUpdateWithoutEpcInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actualSpend?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  approvedEventCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clarificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   validator?: Prisma.UserUpdateOneRequiredWithoutReportValidationsNestedInput
+  images?: Prisma.EventReportImageUpdateManyWithoutReportNestedInput
 }
 
 export type EventReportUncheckedUpdateWithoutEpcInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actualSpend?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  approvedEventCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clarificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  validatorId?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.EventReportImageUncheckedUpdateManyWithoutReportNestedInput
+}
+
+export type EventReportCreateWithoutImagesInput = {
+  id?: string
+  outcomeStatus: $Enums.OutcomeStatus
+  totalLeadsGenerated: number
+  approvedEventCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: string | null
+  remarks?: string | null
+  status?: $Enums.ReportStatus
+  rejectionReason?: string | null
+  clarificationReason?: string | null
+  submittedAt?: Date | string
+  resubmittedAt?: Date | string | null
+  validatedAt?: Date | string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  epc: Prisma.EventProposalCreateNestedOneWithoutReportInput
+  validator: Prisma.UserCreateNestedOneWithoutReportValidationsInput
+}
+
+export type EventReportUncheckedCreateWithoutImagesInput = {
+  id?: string
+  epcId: string
+  outcomeStatus: $Enums.OutcomeStatus
+  totalLeadsGenerated: number
+  approvedEventCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: string | null
+  remarks?: string | null
+  status?: $Enums.ReportStatus
+  rejectionReason?: string | null
+  clarificationReason?: string | null
+  submittedAt?: Date | string
+  resubmittedAt?: Date | string | null
+  validatedAt?: Date | string | null
+  validatorId: string
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type EventReportCreateOrConnectWithoutImagesInput = {
+  where: Prisma.EventReportWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventReportCreateWithoutImagesInput, Prisma.EventReportUncheckedCreateWithoutImagesInput>
+}
+
+export type EventReportUpsertWithoutImagesInput = {
+  update: Prisma.XOR<Prisma.EventReportUpdateWithoutImagesInput, Prisma.EventReportUncheckedUpdateWithoutImagesInput>
+  create: Prisma.XOR<Prisma.EventReportCreateWithoutImagesInput, Prisma.EventReportUncheckedCreateWithoutImagesInput>
+  where?: Prisma.EventReportWhereInput
+}
+
+export type EventReportUpdateToOneWithWhereWithoutImagesInput = {
+  where?: Prisma.EventReportWhereInput
+  data: Prisma.XOR<Prisma.EventReportUpdateWithoutImagesInput, Prisma.EventReportUncheckedUpdateWithoutImagesInput>
+}
+
+export type EventReportUpdateWithoutImagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  approvedEventCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clarificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  resubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  epc?: Prisma.EventProposalUpdateOneRequiredWithoutReportNestedInput
+  validator?: Prisma.UserUpdateOneRequiredWithoutReportValidationsNestedInput
+}
+
+export type EventReportUncheckedUpdateWithoutImagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  epcId?: Prisma.StringFieldUpdateOperationsInput | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  approvedEventCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clarificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -834,13 +997,14 @@ export type EventReportUncheckedUpdateWithoutEpcInput = {
 export type EventReportCreateManyValidatorInput = {
   id?: string
   epcId: string
-  s3Key: string
-  fileUrl: string
-  description?: string | null
-  notes?: string | null
-  actualSpend: runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus: $Enums.OutcomeStatus
+  totalLeadsGenerated: number
+  approvedEventCost: runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: string | null
+  remarks?: string | null
   status?: $Enums.ReportStatus
   rejectionReason?: string | null
+  clarificationReason?: string | null
   submittedAt?: Date | string
   resubmittedAt?: Date | string | null
   validatedAt?: Date | string | null
@@ -850,48 +1014,53 @@ export type EventReportCreateManyValidatorInput = {
 
 export type EventReportUpdateWithoutValidatorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actualSpend?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  approvedEventCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clarificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epc?: Prisma.EventProposalUpdateOneRequiredWithoutReportNestedInput
+  images?: Prisma.EventReportImageUpdateManyWithoutReportNestedInput
 }
 
 export type EventReportUncheckedUpdateWithoutValidatorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epcId?: Prisma.StringFieldUpdateOperationsInput | string
-  s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actualSpend?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  approvedEventCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clarificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  images?: Prisma.EventReportImageUncheckedUpdateManyWithoutReportNestedInput
 }
 
 export type EventReportUncheckedUpdateManyWithoutValidatorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epcId?: Prisma.StringFieldUpdateOperationsInput | string
-  s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  actualSpend?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  outcomeStatus?: Prisma.EnumOutcomeStatusFieldUpdateOperationsInput | $Enums.OutcomeStatus
+  totalLeadsGenerated?: Prisma.IntFieldUpdateOperationsInput | number
+  approvedEventCost?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  expectedConversion?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumReportStatusFieldUpdateOperationsInput | $Enums.ReportStatus
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  clarificationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   submittedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   resubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   validatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -900,17 +1069,47 @@ export type EventReportUncheckedUpdateManyWithoutValidatorInput = {
 }
 
 
+/**
+ * Count Type EventReportCountOutputType
+ */
+
+export type EventReportCountOutputType = {
+  images: number
+}
+
+export type EventReportCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  images?: boolean | EventReportCountOutputTypeCountImagesArgs
+}
+
+/**
+ * EventReportCountOutputType without action
+ */
+export type EventReportCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventReportCountOutputType
+   */
+  select?: Prisma.EventReportCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * EventReportCountOutputType without action
+ */
+export type EventReportCountOutputTypeCountImagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventReportImageWhereInput
+}
+
 
 export type EventReportSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   epcId?: boolean
-  s3Key?: boolean
-  fileUrl?: boolean
-  description?: boolean
-  notes?: boolean
-  actualSpend?: boolean
+  outcomeStatus?: boolean
+  totalLeadsGenerated?: boolean
+  approvedEventCost?: boolean
+  expectedConversion?: boolean
+  remarks?: boolean
   status?: boolean
   rejectionReason?: boolean
+  clarificationReason?: boolean
   submittedAt?: boolean
   resubmittedAt?: boolean
   validatedAt?: boolean
@@ -919,18 +1118,21 @@ export type EventReportSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   updated_at?: boolean
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
   validator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  images?: boolean | Prisma.EventReport$imagesArgs<ExtArgs>
+  _count?: boolean | Prisma.EventReportCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["eventReport"]>
 
 export type EventReportSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   epcId?: boolean
-  s3Key?: boolean
-  fileUrl?: boolean
-  description?: boolean
-  notes?: boolean
-  actualSpend?: boolean
+  outcomeStatus?: boolean
+  totalLeadsGenerated?: boolean
+  approvedEventCost?: boolean
+  expectedConversion?: boolean
+  remarks?: boolean
   status?: boolean
   rejectionReason?: boolean
+  clarificationReason?: boolean
   submittedAt?: boolean
   resubmittedAt?: boolean
   validatedAt?: boolean
@@ -944,13 +1146,14 @@ export type EventReportSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
 export type EventReportSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   epcId?: boolean
-  s3Key?: boolean
-  fileUrl?: boolean
-  description?: boolean
-  notes?: boolean
-  actualSpend?: boolean
+  outcomeStatus?: boolean
+  totalLeadsGenerated?: boolean
+  approvedEventCost?: boolean
+  expectedConversion?: boolean
+  remarks?: boolean
   status?: boolean
   rejectionReason?: boolean
+  clarificationReason?: boolean
   submittedAt?: boolean
   resubmittedAt?: boolean
   validatedAt?: boolean
@@ -964,13 +1167,14 @@ export type EventReportSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
 export type EventReportSelectScalar = {
   id?: boolean
   epcId?: boolean
-  s3Key?: boolean
-  fileUrl?: boolean
-  description?: boolean
-  notes?: boolean
-  actualSpend?: boolean
+  outcomeStatus?: boolean
+  totalLeadsGenerated?: boolean
+  approvedEventCost?: boolean
+  expectedConversion?: boolean
+  remarks?: boolean
   status?: boolean
   rejectionReason?: boolean
+  clarificationReason?: boolean
   submittedAt?: boolean
   resubmittedAt?: boolean
   validatedAt?: boolean
@@ -979,10 +1183,12 @@ export type EventReportSelectScalar = {
   updated_at?: boolean
 }
 
-export type EventReportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "epcId" | "s3Key" | "fileUrl" | "description" | "notes" | "actualSpend" | "status" | "rejectionReason" | "submittedAt" | "resubmittedAt" | "validatedAt" | "validatorId" | "created_at" | "updated_at", ExtArgs["result"]["eventReport"]>
+export type EventReportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "epcId" | "outcomeStatus" | "totalLeadsGenerated" | "approvedEventCost" | "expectedConversion" | "remarks" | "status" | "rejectionReason" | "clarificationReason" | "submittedAt" | "resubmittedAt" | "validatedAt" | "validatorId" | "created_at" | "updated_at", ExtArgs["result"]["eventReport"]>
 export type EventReportInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
   validator?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  images?: boolean | Prisma.EventReport$imagesArgs<ExtArgs>
+  _count?: boolean | Prisma.EventReportCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EventReportIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
@@ -998,17 +1204,19 @@ export type $EventReportPayload<ExtArgs extends runtime.Types.Extensions.Interna
   objects: {
     epc: Prisma.$EventProposalPayload<ExtArgs>
     validator: Prisma.$UserPayload<ExtArgs>
+    images: Prisma.$EventReportImagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     epcId: string
-    s3Key: string
-    fileUrl: string
-    description: string | null
-    notes: string | null
-    actualSpend: runtime.Decimal
+    outcomeStatus: $Enums.OutcomeStatus
+    totalLeadsGenerated: number
+    approvedEventCost: runtime.Decimal
+    expectedConversion: string | null
+    remarks: string | null
     status: $Enums.ReportStatus
     rejectionReason: string | null
+    clarificationReason: string | null
     submittedAt: Date
     resubmittedAt: Date | null
     validatedAt: Date | null
@@ -1411,6 +1619,7 @@ export interface Prisma__EventReportClient<T, Null = never, ExtArgs extends runt
   readonly [Symbol.toStringTag]: "PrismaPromise"
   epc<T extends Prisma.EventProposalDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventProposalDefaultArgs<ExtArgs>>): Prisma.Prisma__EventProposalClient<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   validator<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  images<T extends Prisma.EventReport$imagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventReport$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventReportImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1442,13 +1651,14 @@ export interface Prisma__EventReportClient<T, Null = never, ExtArgs extends runt
 export interface EventReportFieldRefs {
   readonly id: Prisma.FieldRef<"EventReport", 'String'>
   readonly epcId: Prisma.FieldRef<"EventReport", 'String'>
-  readonly s3Key: Prisma.FieldRef<"EventReport", 'String'>
-  readonly fileUrl: Prisma.FieldRef<"EventReport", 'String'>
-  readonly description: Prisma.FieldRef<"EventReport", 'String'>
-  readonly notes: Prisma.FieldRef<"EventReport", 'String'>
-  readonly actualSpend: Prisma.FieldRef<"EventReport", 'Decimal'>
+  readonly outcomeStatus: Prisma.FieldRef<"EventReport", 'OutcomeStatus'>
+  readonly totalLeadsGenerated: Prisma.FieldRef<"EventReport", 'Int'>
+  readonly approvedEventCost: Prisma.FieldRef<"EventReport", 'Decimal'>
+  readonly expectedConversion: Prisma.FieldRef<"EventReport", 'String'>
+  readonly remarks: Prisma.FieldRef<"EventReport", 'String'>
   readonly status: Prisma.FieldRef<"EventReport", 'ReportStatus'>
   readonly rejectionReason: Prisma.FieldRef<"EventReport", 'String'>
+  readonly clarificationReason: Prisma.FieldRef<"EventReport", 'String'>
   readonly submittedAt: Prisma.FieldRef<"EventReport", 'DateTime'>
   readonly resubmittedAt: Prisma.FieldRef<"EventReport", 'DateTime'>
   readonly validatedAt: Prisma.FieldRef<"EventReport", 'DateTime'>
@@ -1651,6 +1861,11 @@ export type EventReportFindManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Skip the first `n` EventReports.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of EventReports.
+   */
   distinct?: Prisma.EventReportScalarFieldEnum | Prisma.EventReportScalarFieldEnum[]
 }
 
@@ -1848,6 +2063,30 @@ export type EventReportDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many EventReports to delete.
    */
   limit?: number
+}
+
+/**
+ * EventReport.images
+ */
+export type EventReport$imagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventReportImage
+   */
+  select?: Prisma.EventReportImageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EventReportImage
+   */
+  omit?: Prisma.EventReportImageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventReportImageInclude<ExtArgs> | null
+  where?: Prisma.EventReportImageWhereInput
+  orderBy?: Prisma.EventReportImageOrderByWithRelationInput | Prisma.EventReportImageOrderByWithRelationInput[]
+  cursor?: Prisma.EventReportImageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventReportImageScalarFieldEnum | Prisma.EventReportImageScalarFieldEnum[]
 }
 
 /**

@@ -151,7 +151,7 @@ export type WorkFlowTemplateUserGroupByOutputType = {
   _max: WorkFlowTemplateUserMaxAggregateOutputType | null
 }
 
-type GetWorkFlowTemplateUserGroupByPayload<T extends WorkFlowTemplateUserGroupByArgs> = Prisma.PrismaPromise<
+export type GetWorkFlowTemplateUserGroupByPayload<T extends WorkFlowTemplateUserGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<WorkFlowTemplateUserGroupByOutputType, T['by']> &
       {
@@ -1207,6 +1207,11 @@ export type WorkFlowTemplateUserFindManyArgs<ExtArgs extends runtime.Types.Exten
    * Skip the first `n` WorkFlowTemplateUsers.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of WorkFlowTemplateUsers.
+   */
   distinct?: Prisma.WorkFlowTemplateUserScalarFieldEnum | Prisma.WorkFlowTemplateUserScalarFieldEnum[]
 }
 

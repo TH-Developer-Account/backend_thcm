@@ -245,7 +245,7 @@ export type PincodeGroupByOutputType = {
   _max: PincodeMaxAggregateOutputType | null
 }
 
-type GetPincodeGroupByPayload<T extends PincodeGroupByArgs> = Prisma.PrismaPromise<
+export type GetPincodeGroupByPayload<T extends PincodeGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<PincodeGroupByOutputType, T['by']> &
       {
@@ -1208,6 +1208,11 @@ export type PincodeFindManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Skip the first `n` Pincodes.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Pincodes.
+   */
   distinct?: Prisma.PincodeScalarFieldEnum | Prisma.PincodeScalarFieldEnum[]
 }
 

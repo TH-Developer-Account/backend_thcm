@@ -249,7 +249,7 @@ export type StageInstanceGroupByOutputType = {
   _max: StageInstanceMaxAggregateOutputType | null
 }
 
-type GetStageInstanceGroupByPayload<T extends StageInstanceGroupByArgs> = Prisma.PrismaPromise<
+export type GetStageInstanceGroupByPayload<T extends StageInstanceGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<StageInstanceGroupByOutputType, T['by']> &
       {
@@ -1708,6 +1708,11 @@ export type StageInstanceFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Skip the first `n` StageInstances.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of StageInstances.
+   */
   distinct?: Prisma.StageInstanceScalarFieldEnum | Prisma.StageInstanceScalarFieldEnum[]
 }
 

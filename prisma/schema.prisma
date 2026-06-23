@@ -69,6 +69,7 @@ enum ActivityAction {
   REPORT_RESUBMITTED      // proposer resubmits after rejection
   REPORT_VALIDATED        // validator approves report
   REPORT_REJECTED         // validator rejects report
+  REPORT_CLARIFICATION_REQUESTED // validator requests clarification on report
   EPC_CLOSED              // proposer closes after validation or deviation approval
 
   // Approval/workflow domain
@@ -94,6 +95,26 @@ enum ReportStatus {
   SUBMITTED
   VALIDATED
   REJECTED
+  CLARIFICATION_REQUESTED
+}
+
+enum OutcomeStatus {
+  SUCCESSFUL
+  PARTIALLY_SUCCESSFUL
+  UNSUCCESSFUL
+}
+
+enum ImportExportType {
+  LEAD_IMPORT
+  LEAD_EXPORT
+  EPC_EXPORT
+}
+
+enum ImportExportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
 }
 
 // ─────────────────────────────────────────────
@@ -129,6 +150,7 @@ model User {
 
   // ✅ Back-relation for ActivityLog.actor
   activityLogs   ActivityLog[]
+  importExportLogs ImportExportLog[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -182,6 +204,7 @@ model Workspace {
 
   workflowTemplates WorkflowTemplate[]
   workflows         WorkflowInstance[]
+  importExportLogs  ImportExportLog[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -335,6 +358,7 @@ model EventProposal {
   workflows WorkflowInstance[]
   activityLogs ActivityLog[]
   leads     Lead[]
+  importExportLogs ImportExportLog[]
 
   search_vector Unsupported("tsvector")?
   created_at    DateTime                 @default(now())
@@ -732,34 +756,108 @@ model Pincode {
 // POST-EVENT REPORT
 //
 // Submitted by the proposer after the event is CONDUCTED.
-// Contains a PDF (stored on S3) with images, description, and notes.
-// A validator reviews it and either approves (VALIDATED) or rejects (REJECTED).
-// On rejection the proposer resubmits — old S3 object is deleted, new one stored.
+// Contains 4 event images (stored on S3), structured outcome data,
+// and spend information. A validator reviews and either approves
+// (VALIDATED) or rejects (REJECTED) with a mandatory reason.
 //
-// actualSpend is entered manually by the proposer and is used to determine
-// whether a deviation workflow needs to be triggered.
+// On rejection the proposer can resubmit — individual images can be
+// selectively replaced (delete old S3 object, upload new one at same
+// position key). Scalar fields can also be updated on resubmit.
 // ─────────────────────────────────────────────
 
 model EventReport {
-  id              String       @id @default(uuid())
-  epcId           String       @unique
-  s3Key           String                        // S3 object key — used to delete old file on resubmit
-  fileUrl         String                        // publicly accessible or pre-signed URL
-  description     String?
-  notes           String?
-  actualSpend     Decimal      @db.Decimal(12, 2)
-  status          ReportStatus @default(SUBMITTED)
-  rejectionReason String?
-  submittedAt     DateTime     @default(now())
-  resubmittedAt   DateTime?
-  validatedAt     DateTime?
-  validatorId     String
+  id                   String        @id @default(uuid())
+  epcId                String        @unique
+  outcomeStatus        OutcomeStatus
+  totalLeadsGenerated  Int
+  approvedEventCost    Decimal       @db.Decimal(12, 2)
+  expectedConversion   String?
+  remarks              String?
+  status               ReportStatus  @default(SUBMITTED)
+  rejectionReason      String?
+  clarificationReason  String?
+  submittedAt          DateTime      @default(now())
+  resubmittedAt        DateTime?
+  validatedAt          DateTime?
+  validatorId          String
 
-  epc       EventProposal @relation(fields: [epcId], references: [id], onDelete: Cascade)
-  validator User          @relation("ReportValidator", fields: [validatorId], references: [id])
+  epc       EventProposal      @relation(fields: [epcId], references: [id], onDelete: Cascade)
+  validator User               @relation("ReportValidator", fields: [validatorId], references: [id])
+  images    EventReportImage[]
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// EVENT REPORT IMAGE
+//
+// Exactly 4 images per report (position 1–4).
+// Each image is stored independently in S3 so the proposer can
+// selectively replace individual positions on resubmit without
+// touching the others.
+//
+// S3 key pattern: report-images/{epcId}/{position}.jpg
+// Position-keyed (not uuid) so the key is deterministic — uploading
+// to the same position automatically shadows the old object in S3.
+// ─────────────────────────────────────────────
+
+model EventReportImage {
+  id       String @id @default(uuid())
+  reportId String
+  position Int    // 1 | 2 | 3 | 4
+  s3Key    String
+  fileUrl  String
+
+  report EventReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@unique([reportId, position])
+  @@index([reportId])
+}
+
+// ─────────────────────────────────────────────
+// IMPORT / EXPORT LOG
+//
+// Tracks every lead import, lead export, and EPC export job.
+// Created on enqueue (PENDING), updated as the worker progresses.
+//
+// epcId is nullable — populated for LEAD_IMPORT and LEAD_EXPORT
+// (which are always scoped to an EPC), null for EPC_EXPORT (workspace-wide).
+//
+// fileS3Key        — output file (exports) or original input file (import)
+// errorFileS3Key   — XLSX of failed rows, only set for LEAD_IMPORT with errors
+//
+// WHY store only S3 keys and not pre-signed URLs:
+//   Pre-signed URLs have a hard AWS cap of 7 days. We generate a fresh
+//   URL on every download/error-file GET request instead, so access
+//   never expires.
+// ─────────────────────────────────────────────
+
+model ImportExportLog {
+  id               String             @id @default(uuid())
+  type             ImportExportType
+  status           ImportExportStatus @default(PENDING)
+  triggeredById    String
+  workspaceId      String
+  epcId            String?            // null for EPC_EXPORT
+  jobId            String             // BullMQ job ID
+  totalRecords     Int?               // null until job completes
+  successRecords   Int?
+  failedRecords    Int?
+  fileS3Key        String?            // output file key
+  errorFileS3Key   String?            // failed-rows XLSX key (LEAD_IMPORT only)
+  failureReason    String?            // top-level job failure message
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+
+  triggeredBy User           @relation(fields: [triggeredById], references: [id])
+  workspace   Workspace      @relation(fields: [workspaceId], references: [id])
+  epc         EventProposal? @relation(fields: [epcId], references: [id])
+
+  @@index([workspaceId, type])
+  @@index([triggeredById])
+  @@index([epcId])
+  @@index([jobId])
 }
 
 

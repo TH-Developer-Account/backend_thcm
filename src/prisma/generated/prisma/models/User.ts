@@ -193,7 +193,7 @@ export type UserGroupByOutputType = {
   _max: UserMaxAggregateOutputType | null
 }
 
-type GetUserGroupByPayload<T extends UserGroupByArgs> = Prisma.PrismaPromise<
+export type GetUserGroupByPayload<T extends UserGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<UserGroupByOutputType, T['by']> &
       {
@@ -236,6 +236,7 @@ export type UserWhereInput = {
   comments?: Prisma.CommentListRelationFilter
   reportValidations?: Prisma.EventReportListRelationFilter
   activityLogs?: Prisma.ActivityLogListRelationFilter
+  importExportLogs?: Prisma.ImportExportLogListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -263,6 +264,7 @@ export type UserOrderByWithRelationInput = {
   comments?: Prisma.CommentOrderByRelationAggregateInput
   reportValidations?: Prisma.EventReportOrderByRelationAggregateInput
   activityLogs?: Prisma.ActivityLogOrderByRelationAggregateInput
+  importExportLogs?: Prisma.ImportExportLogOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -293,6 +295,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   comments?: Prisma.CommentListRelationFilter
   reportValidations?: Prisma.EventReportListRelationFilter
   activityLogs?: Prisma.ActivityLogListRelationFilter
+  importExportLogs?: Prisma.ImportExportLogListRelationFilter
 }, "id" | "email" | "phone_number">
 
 export type UserOrderByWithAggregationInput = {
@@ -352,6 +355,7 @@ export type UserCreateInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -379,6 +383,7 @@ export type UserUncheckedCreateInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUpdateInput = {
@@ -406,6 +411,7 @@ export type UserUpdateInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -433,6 +439,7 @@ export type UserUncheckedUpdateInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -726,6 +733,20 @@ export type UserUpdateOneRequiredWithoutReportValidationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReportValidationsInput, Prisma.UserUpdateWithoutReportValidationsInput>, Prisma.UserUncheckedUpdateWithoutReportValidationsInput>
 }
 
+export type UserCreateNestedOneWithoutImportExportLogsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutImportExportLogsInput, Prisma.UserUncheckedCreateWithoutImportExportLogsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutImportExportLogsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutImportExportLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutImportExportLogsInput, Prisma.UserUncheckedCreateWithoutImportExportLogsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutImportExportLogsInput
+  upsert?: Prisma.UserUpsertWithoutImportExportLogsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutImportExportLogsInput, Prisma.UserUpdateWithoutImportExportLogsInput>, Prisma.UserUncheckedUpdateWithoutImportExportLogsInput>
+}
+
 export type UserCreateWithoutPassword_reset_tokensInput = {
   id?: string
   first_name: string
@@ -750,6 +771,7 @@ export type UserCreateWithoutPassword_reset_tokensInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
@@ -776,6 +798,7 @@ export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutPassword_reset_tokensInput = {
@@ -818,6 +841,7 @@ export type UserUpdateWithoutPassword_reset_tokensInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
@@ -844,6 +868,7 @@ export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserCreateWithoutRefresh_tokensInput = {
@@ -870,6 +895,7 @@ export type UserCreateWithoutRefresh_tokensInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutRefresh_tokensInput = {
@@ -896,6 +922,7 @@ export type UserUncheckedCreateWithoutRefresh_tokensInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutRefresh_tokensInput = {
@@ -938,6 +965,7 @@ export type UserUpdateWithoutRefresh_tokensInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
@@ -964,6 +992,7 @@ export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserCreateWithoutWorkspaceUsersInput = {
@@ -990,6 +1019,7 @@ export type UserCreateWithoutWorkspaceUsersInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
@@ -1016,6 +1046,7 @@ export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutWorkspaceUsersInput = {
@@ -1058,6 +1089,7 @@ export type UserUpdateWithoutWorkspaceUsersInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
@@ -1084,6 +1116,7 @@ export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserCreateWithoutUserProfilesInput = {
@@ -1110,6 +1143,7 @@ export type UserCreateWithoutUserProfilesInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutUserProfilesInput = {
@@ -1136,6 +1170,7 @@ export type UserUncheckedCreateWithoutUserProfilesInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutUserProfilesInput = {
@@ -1178,6 +1213,7 @@ export type UserUpdateWithoutUserProfilesInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserProfilesInput = {
@@ -1204,6 +1240,7 @@ export type UserUncheckedUpdateWithoutUserProfilesInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserCreateWithoutCreated_event_proposalsInput = {
@@ -1230,6 +1267,7 @@ export type UserCreateWithoutCreated_event_proposalsInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
@@ -1256,6 +1294,7 @@ export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutCreated_event_proposalsInput = {
@@ -1287,6 +1326,7 @@ export type UserCreateWithoutUpdated_event_proposalsInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
@@ -1313,6 +1353,7 @@ export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutUpdated_event_proposalsInput = {
@@ -1355,6 +1396,7 @@ export type UserUpdateWithoutCreated_event_proposalsInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
@@ -1381,6 +1423,7 @@ export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUpsertWithoutUpdated_event_proposalsInput = {
@@ -1418,6 +1461,7 @@ export type UserUpdateWithoutUpdated_event_proposalsInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
@@ -1444,6 +1488,7 @@ export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserCreateWithoutCreated_workflowInput = {
@@ -1470,6 +1515,7 @@ export type UserCreateWithoutCreated_workflowInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutCreated_workflowInput = {
@@ -1496,6 +1542,7 @@ export type UserUncheckedCreateWithoutCreated_workflowInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutCreated_workflowInput = {
@@ -1527,6 +1574,7 @@ export type UserCreateWithoutUpdated_workflowInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutUpdated_workflowInput = {
@@ -1553,6 +1601,7 @@ export type UserUncheckedCreateWithoutUpdated_workflowInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutUpdated_workflowInput = {
@@ -1595,6 +1644,7 @@ export type UserUpdateWithoutCreated_workflowInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreated_workflowInput = {
@@ -1621,6 +1671,7 @@ export type UserUncheckedUpdateWithoutCreated_workflowInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUpsertWithoutUpdated_workflowInput = {
@@ -1658,6 +1709,7 @@ export type UserUpdateWithoutUpdated_workflowInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
@@ -1684,6 +1736,7 @@ export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserCreateWithoutTemplateApprovalsInput = {
@@ -1710,6 +1763,7 @@ export type UserCreateWithoutTemplateApprovalsInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
@@ -1736,6 +1790,7 @@ export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutTemplateApprovalsInput = {
@@ -1778,6 +1833,7 @@ export type UserUpdateWithoutTemplateApprovalsInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
@@ -1804,6 +1860,7 @@ export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserCreateWithoutApprovalsInput = {
@@ -1830,6 +1887,7 @@ export type UserCreateWithoutApprovalsInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutApprovalsInput = {
@@ -1856,6 +1914,7 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutApprovalsInput = {
@@ -1898,6 +1957,7 @@ export type UserUpdateWithoutApprovalsInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovalsInput = {
@@ -1924,6 +1984,7 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserCreateWithoutWorkFlowUsersInput = {
@@ -1950,6 +2011,7 @@ export type UserCreateWithoutWorkFlowUsersInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
@@ -1976,6 +2038,7 @@ export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutWorkFlowUsersInput = {
@@ -2018,6 +2081,7 @@ export type UserUpdateWithoutWorkFlowUsersInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
@@ -2044,6 +2108,7 @@ export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserCreateWithoutActivityLogsInput = {
@@ -2070,6 +2135,7 @@ export type UserCreateWithoutActivityLogsInput = {
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutActivityLogsInput = {
@@ -2096,6 +2162,7 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutActivityLogsInput = {
@@ -2138,6 +2205,7 @@ export type UserUpdateWithoutActivityLogsInput = {
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivityLogsInput = {
@@ -2164,6 +2232,7 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -2190,6 +2259,7 @@ export type UserCreateWithoutCommentsInput = {
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -2216,6 +2286,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -2258,6 +2329,7 @@ export type UserUpdateWithoutCommentsInput = {
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -2284,6 +2356,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserCreateWithoutReportValidationsInput = {
@@ -2310,6 +2383,7 @@ export type UserCreateWithoutReportValidationsInput = {
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserUncheckedCreateWithoutReportValidationsInput = {
@@ -2336,6 +2410,7 @@ export type UserUncheckedCreateWithoutReportValidationsInput = {
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
 }
 
 export type UserCreateOrConnectWithoutReportValidationsInput = {
@@ -2378,6 +2453,7 @@ export type UserUpdateWithoutReportValidationsInput = {
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportValidationsInput = {
@@ -2404,6 +2480,131 @@ export type UserUncheckedUpdateWithoutReportValidationsInput = {
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+}
+
+export type UserCreateWithoutImportExportLogsInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+}
+
+export type UserUncheckedCreateWithoutImportExportLogsInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+}
+
+export type UserCreateOrConnectWithoutImportExportLogsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutImportExportLogsInput, Prisma.UserUncheckedCreateWithoutImportExportLogsInput>
+}
+
+export type UserUpsertWithoutImportExportLogsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutImportExportLogsInput, Prisma.UserUncheckedUpdateWithoutImportExportLogsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutImportExportLogsInput, Prisma.UserUncheckedCreateWithoutImportExportLogsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutImportExportLogsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutImportExportLogsInput, Prisma.UserUncheckedUpdateWithoutImportExportLogsInput>
+}
+
+export type UserUpdateWithoutImportExportLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutImportExportLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
 }
 
 
@@ -2426,6 +2627,7 @@ export type UserCountOutputType = {
   comments: number
   reportValidations: number
   activityLogs: number
+  importExportLogs: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2443,6 +2645,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
   reportValidations?: boolean | UserCountOutputTypeCountReportValidationsArgs
   activityLogs?: boolean | UserCountOutputTypeCountActivityLogsArgs
+  importExportLogs?: boolean | UserCountOutputTypeCountImportExportLogsArgs
 }
 
 /**
@@ -2553,6 +2756,13 @@ export type UserCountOutputTypeCountActivityLogsArgs<ExtArgs extends runtime.Typ
   where?: Prisma.ActivityLogWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountImportExportLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ImportExportLogWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2579,6 +2789,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   reportValidations?: boolean | Prisma.User$reportValidationsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.User$activityLogsArgs<ExtArgs>
+  importExportLogs?: boolean | Prisma.User$importExportLogsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2637,6 +2848,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   reportValidations?: boolean | Prisma.User$reportValidationsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.User$activityLogsArgs<ExtArgs>
+  importExportLogs?: boolean | Prisma.User$importExportLogsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2659,6 +2871,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     comments: Prisma.$CommentPayload<ExtArgs>[]
     reportValidations: Prisma.$EventReportPayload<ExtArgs>[]
     activityLogs: Prisma.$ActivityLogPayload<ExtArgs>[]
+    importExportLogs: Prisma.$ImportExportLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3079,6 +3292,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reportValidations<T extends Prisma.User$reportValidationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reportValidationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activityLogs<T extends Prisma.User$activityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  importExportLogs<T extends Prisma.User$importExportLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$importExportLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImportExportLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3314,6 +3528,11 @@ export type UserFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
    * Skip the first `n` Users.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Users.
+   */
   distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
 }
 
@@ -3839,6 +4058,30 @@ export type User$activityLogsArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.ActivityLogScalarFieldEnum | Prisma.ActivityLogScalarFieldEnum[]
+}
+
+/**
+ * User.importExportLogs
+ */
+export type User$importExportLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ImportExportLog
+   */
+  select?: Prisma.ImportExportLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ImportExportLog
+   */
+  omit?: Prisma.ImportExportLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ImportExportLogInclude<ExtArgs> | null
+  where?: Prisma.ImportExportLogWhereInput
+  orderBy?: Prisma.ImportExportLogOrderByWithRelationInput | Prisma.ImportExportLogOrderByWithRelationInput[]
+  cursor?: Prisma.ImportExportLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ImportExportLogScalarFieldEnum | Prisma.ImportExportLogScalarFieldEnum[]
 }
 
 /**

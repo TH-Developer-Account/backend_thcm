@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.3.0
- * Query Engine version: 9d6ad21cbbceab97458517b147a6a09ff43aa735
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.3.0",
-  engine: "9d6ad21cbbceab97458517b147a6a09ff43aa735"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 /**
@@ -419,7 +419,9 @@ export const ModelName = {
   Operator: 'Operator',
   Lead: 'Lead',
   Pincode: 'Pincode',
-  EventReport: 'EventReport'
+  EventReport: 'EventReport',
+  EventReportImage: 'EventReportImage',
+  ImportExportLog: 'ImportExportLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -435,7 +437,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3103,6 +3105,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    EventReportImage: {
+      payload: Prisma.$EventReportImagePayload<ExtArgs>
+      fields: Prisma.EventReportImageFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EventReportImageFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EventReportImageFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>
+        }
+        findFirst: {
+          args: Prisma.EventReportImageFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EventReportImageFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>
+        }
+        findMany: {
+          args: Prisma.EventReportImageFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>[]
+        }
+        create: {
+          args: Prisma.EventReportImageCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>
+        }
+        createMany: {
+          args: Prisma.EventReportImageCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EventReportImageCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>[]
+        }
+        delete: {
+          args: Prisma.EventReportImageDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>
+        }
+        update: {
+          args: Prisma.EventReportImageUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>
+        }
+        deleteMany: {
+          args: Prisma.EventReportImageDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EventReportImageUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EventReportImageUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>[]
+        }
+        upsert: {
+          args: Prisma.EventReportImageUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventReportImagePayload>
+        }
+        aggregate: {
+          args: Prisma.EventReportImageAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEventReportImage>
+        }
+        groupBy: {
+          args: Prisma.EventReportImageGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventReportImageGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EventReportImageCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventReportImageCountAggregateOutputType> | number
+        }
+      }
+    }
+    ImportExportLog: {
+      payload: Prisma.$ImportExportLogPayload<ExtArgs>
+      fields: Prisma.ImportExportLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ImportExportLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ImportExportLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>
+        }
+        findFirst: {
+          args: Prisma.ImportExportLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ImportExportLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>
+        }
+        findMany: {
+          args: Prisma.ImportExportLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>[]
+        }
+        create: {
+          args: Prisma.ImportExportLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>
+        }
+        createMany: {
+          args: Prisma.ImportExportLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ImportExportLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>[]
+        }
+        delete: {
+          args: Prisma.ImportExportLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>
+        }
+        update: {
+          args: Prisma.ImportExportLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.ImportExportLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ImportExportLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ImportExportLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.ImportExportLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ImportExportLogPayload>
+        }
+        aggregate: {
+          args: Prisma.ImportExportLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateImportExportLog>
+        }
+        groupBy: {
+          args: Prisma.ImportExportLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImportExportLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ImportExportLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ImportExportLogCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3617,13 +3767,14 @@ export type PincodeScalarFieldEnum = (typeof PincodeScalarFieldEnum)[keyof typeo
 export const EventReportScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
-  s3Key: 's3Key',
-  fileUrl: 'fileUrl',
-  description: 'description',
-  notes: 'notes',
-  actualSpend: 'actualSpend',
+  outcomeStatus: 'outcomeStatus',
+  totalLeadsGenerated: 'totalLeadsGenerated',
+  approvedEventCost: 'approvedEventCost',
+  expectedConversion: 'expectedConversion',
+  remarks: 'remarks',
   status: 'status',
   rejectionReason: 'rejectionReason',
+  clarificationReason: 'clarificationReason',
   submittedAt: 'submittedAt',
   resubmittedAt: 'resubmittedAt',
   validatedAt: 'validatedAt',
@@ -3633,6 +3784,38 @@ export const EventReportScalarFieldEnum = {
 } as const
 
 export type EventReportScalarFieldEnum = (typeof EventReportScalarFieldEnum)[keyof typeof EventReportScalarFieldEnum]
+
+
+export const EventReportImageScalarFieldEnum = {
+  id: 'id',
+  reportId: 'reportId',
+  position: 'position',
+  s3Key: 's3Key',
+  fileUrl: 'fileUrl'
+} as const
+
+export type EventReportImageScalarFieldEnum = (typeof EventReportImageScalarFieldEnum)[keyof typeof EventReportImageScalarFieldEnum]
+
+
+export const ImportExportLogScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  status: 'status',
+  triggeredById: 'triggeredById',
+  workspaceId: 'workspaceId',
+  epcId: 'epcId',
+  jobId: 'jobId',
+  totalRecords: 'totalRecords',
+  successRecords: 'successRecords',
+  failedRecords: 'failedRecords',
+  fileS3Key: 'fileS3Key',
+  errorFileS3Key: 'errorFileS3Key',
+  failureReason: 'failureReason',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type ImportExportLogScalarFieldEnum = (typeof ImportExportLogScalarFieldEnum)[keyof typeof ImportExportLogScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -3900,6 +4083,20 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
+ * Reference to a field of type 'OutcomeStatus'
+ */
+export type EnumOutcomeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutcomeStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'OutcomeStatus[]'
+ */
+export type ListEnumOutcomeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutcomeStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'ReportStatus'
  */
 export type EnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportStatus'>
@@ -3910,6 +4107,34 @@ export type EnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'ReportStatus[]'
  */
 export type ListEnumReportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ReportStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ImportExportType'
+ */
+export type EnumImportExportTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportExportType'>
+    
+
+
+/**
+ * Reference to a field of type 'ImportExportType[]'
+ */
+export type ListEnumImportExportTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportExportType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ImportExportStatus'
+ */
+export type EnumImportExportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportExportStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ImportExportStatus[]'
+ */
+export type ListEnumImportExportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportExportStatus[]'>
     
 
 /**
@@ -4005,6 +4230,21 @@ export type PrismaClientOptions = ({
    * ```
    */
   comments?: runtime.SqlCommenterPlugin[]
+  /**
+   * Optional maximum size for the query plan cache. If not provided, a default size will be used.
+   * A value of `0` can be used to disable the cache entirely. A higher cache size can improve
+   * performance for applications that execute a large number of unique queries, while a smaller
+   * cache size can reduce memory usage.
+   * 
+   * @example
+   * ```
+   * const prisma = new PrismaClient({
+   *   adapter,
+   *   queryPlanCacheMaxSize: 100,
+   * })
+   * ```
+   */
+  queryPlanCacheMaxSize?: number
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
@@ -4043,6 +4283,8 @@ export type GlobalOmitConfig = {
   lead?: Prisma.LeadOmit
   pincode?: Prisma.PincodeOmit
   eventReport?: Prisma.EventReportOmit
+  eventReportImage?: Prisma.EventReportImageOmit
+  importExportLog?: Prisma.ImportExportLogOmit
 }
 
 /* Types for Logging */

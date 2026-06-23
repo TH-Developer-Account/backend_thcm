@@ -2,7 +2,7 @@ import { Queue, Worker, Job } from "bullmq";
 import transporter from "../config/mail.config";
 import { compileTemplate } from "./mail.template";
 import logger from "../config/logger";
-import { bullmqConnection } from "../config/redis";
+import { redisConnectionQueue } from "../config/redis";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MailJobPayload — everything a job needs to send one email.
@@ -33,7 +33,7 @@ const QUEUE_NAME = "mail-queue";
 // Controllers only import addMailJob — they never touch the queue directly.
 
 export const mailQueue = new Queue<MailJobPayload>(QUEUE_NAME, {
-  connection: bullmqConnection,
+  connection: redisConnectionQueue,
   defaultJobOptions: {
     attempts: 3,
     backoff: {
@@ -73,7 +73,7 @@ const mailWorker = new Worker<MailJobPayload>(
     );
   },
   {
-    connection: bullmqConnection,
+    connection: redisConnectionQueue,
     concurrency: 1,
   },
 );

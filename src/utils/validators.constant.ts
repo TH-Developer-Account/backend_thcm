@@ -18,7 +18,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const APP_VALIDATORS: Record<string, string> = {
-  MAP: "5c61c004-c30b-41e9-b76b-a3dd5261a07b",
+  MAP: process.env.MAP_VALIDATOR_ID || "",
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -31,10 +31,7 @@ export function getValidatorForApp(appKey: string): string {
   const validatorId = APP_VALIDATORS[appKey];
 
   if (!validatorId) {
-    throw new Error(
-      `No validator configured for app "${appKey}". ` +
-        `Set the corresponding env var (e.g. ${appKey}_VALIDATOR_ID) and restart.`,
-    );
+    return "";
   }
 
   return validatorId;

@@ -17,7 +17,10 @@ import commentRoutes from "./routes/comments.routes";
 import operatorRoutes from "./routes/operator.routes";
 import leadRoutes from "./routes/leads.routes";
 import reportRoutes from "./routes/report.routes";
+import importRoutes from "./routes/import.routes";
+import exportRoutes from "./routes/export.routes";
 import pincodeRoutes from "./routes/pincode.routes";
+import importExportLogRoutes from "./routes/importExportLog.routes";
 
 import errorHandler from "./middleware/error.middleware";
 import ApiError from "./utils/apiError";
@@ -54,6 +57,9 @@ app.use("/api/v1/operator", operatorRoutes);
 app.use("/api/v1/leads", leadRoutes);
 app.use("/api/v1/pincodes", pincodeRoutes);
 app.use("/api/v1/report", reportRoutes);
+app.use("/api/v1/import", importRoutes);
+app.use("/api/v1/export", exportRoutes);
+app.use("/api/v1/import-export-logs", importExportLogRoutes);
 
 // Scheduler
 startJobs();
