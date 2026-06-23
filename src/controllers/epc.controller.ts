@@ -6,6 +6,7 @@ import { epcFullInfoSelect } from "../utils/contants";
 import { searchEventProposals } from "../helpers/searchEventProposal.helper";
 import { createEventProposalWithWorkflow } from "../services/workflow.service";
 import { getValidatorForApp } from "../utils/validators.constant";
+import { addMailJob } from "../services/mail.service";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Reusable select for the active workflow's current state.
@@ -135,6 +136,21 @@ export const createEventProposal = async (
         budget_master_id,
         created_by_id: userId,
         updated_by_id: userId,
+      },
+    });
+
+    await addMailJob({
+      to: "hepi465@gmail.com",
+      cc: ["syedfazal113@gmail.com"], // optional
+      subject: `Approved`,
+      templateName: "approval-approved",
+      templateData: {
+        appName: "Marketing Activity Planner",
+        approverName: `Syed Fazal`,
+        epcName: "test-epc",
+        stageName: "Recommender",
+        workflowName: "test workflow",
+        dashboardUrl: `www.google.com`,
       },
     });
 

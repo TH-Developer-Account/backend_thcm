@@ -40,7 +40,7 @@ export const createRefreshToken = async ({
       token_id: tokenId,
       token_hash: tokenHash,
       token: `${tokenId}.${rawToken}`,
-      user_id: userId,
+      user_id: userId as string,
       user_agent: userAgent,
       ip_address: ipAddress,
       expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
