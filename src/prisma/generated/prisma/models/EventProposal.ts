@@ -2960,6 +2960,10 @@ export type EventProposalCreateWithoutImportExportLogsInput = {
   event_objective: string
   status?: string
   event_scale: number
+  deviationReason?: string | null
+  deviationAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deviationDocUrl?: string | null
+  deviationDocS3Key?: string | null
   locationMeta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -2997,6 +3001,10 @@ export type EventProposalUncheckedCreateWithoutImportExportLogsInput = {
   budget_master_id: string
   event_name_id: string
   vertical_id: string
+  deviationReason?: string | null
+  deviationAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deviationDocUrl?: string | null
+  deviationDocS3Key?: string | null
   locationMeta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -3034,6 +3042,10 @@ export type EventProposalUpdateWithoutImportExportLogsInput = {
   event_objective?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   event_scale?: Prisma.IntFieldUpdateOperationsInput | number
+  deviationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deviationAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deviationDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deviationDocS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationMeta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3071,6 +3083,10 @@ export type EventProposalUncheckedUpdateWithoutImportExportLogsInput = {
   budget_master_id?: Prisma.StringFieldUpdateOperationsInput | string
   event_name_id?: Prisma.StringFieldUpdateOperationsInput | string
   vertical_id?: Prisma.StringFieldUpdateOperationsInput | string
+  deviationReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deviationAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deviationDocUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deviationDocS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locationMeta?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
