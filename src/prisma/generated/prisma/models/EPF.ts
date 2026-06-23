@@ -283,7 +283,7 @@ export type EPFGroupByOutputType = {
   _max: EPFMaxAggregateOutputType | null
 }
 
-type GetEPFGroupByPayload<T extends EPFGroupByArgs> = Prisma.PrismaPromise<
+export type GetEPFGroupByPayload<T extends EPFGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<EPFGroupByOutputType, T['by']> &
       {
@@ -1592,6 +1592,11 @@ export type EPFFindManyArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
    * Skip the first `n` EPFS.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of EPFS.
+   */
   distinct?: Prisma.EPFScalarFieldEnum | Prisma.EPFScalarFieldEnum[]
 }
 

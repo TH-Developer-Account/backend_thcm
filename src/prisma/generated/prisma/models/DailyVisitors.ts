@@ -185,7 +185,7 @@ export type DailyVisitorsGroupByOutputType = {
   _max: DailyVisitorsMaxAggregateOutputType | null
 }
 
-type GetDailyVisitorsGroupByPayload<T extends DailyVisitorsGroupByArgs> = Prisma.PrismaPromise<
+export type GetDailyVisitorsGroupByPayload<T extends DailyVisitorsGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<DailyVisitorsGroupByOutputType, T['by']> &
       {
@@ -978,6 +978,11 @@ export type DailyVisitorsFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Skip the first `n` DailyVisitors.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of DailyVisitors.
+   */
   distinct?: Prisma.DailyVisitorsScalarFieldEnum | Prisma.DailyVisitorsScalarFieldEnum[]
 }
 

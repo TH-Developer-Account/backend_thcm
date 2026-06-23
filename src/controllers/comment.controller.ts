@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
+import { addMailJob } from "../services/mail.service";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /comments
@@ -30,11 +31,12 @@ export const addComment = async (
     const userId = req?.user?.id;
     if (!userId) throw new ApiError(401, "Unauthorized");
 
-    const { approvalId, message, type = "COMMENT" } = req.body;
+    const { approvalId, message, type = "COMMENT", to, cc } = req.body;
 
     if (!approvalId || !message) {
       throw new ApiError(400, "approvalId and message are required");
     }
+
     if (String(message).trim().length < 3) {
       throw new ApiError(400, "Comment must be at least 3 characters");
     }
@@ -47,6 +49,9 @@ export const addComment = async (
           include: {
             workflow: true,
           },
+        },
+        approver: {
+          select: { id: true, first_name: true, last_name: true },
         },
       },
     });
@@ -110,6 +115,22 @@ export const addComment = async (
         },
       },
     });
+
+    if (to && Array.isArray(to) && to.length) {
+      await addMailJob({
+        to,
+        cc: cc && Array.isArray(cc) && cc.length ? cc : undefined,
+        subject: `Please check someone has mentioned you in a comment..!!`,
+        templateName: "comment-mentioned",
+        templateData: {
+          appName: "Marketing Activity Planner",
+          epcName: "test-epc",
+          comment: message,
+          approverName: `${approval.approver.first_name} ${approval.approver.last_name}`,
+          dashboardUrl: `www.google.com`,
+        },
+      });
+    }
 
     res.status(201).json({
       success: true,
@@ -239,6 +260,16 @@ export const getEPCActivityTimeline = async (
     });
 
     if (!epc) throw new ApiError(404, "EPC not found");
+
+    if (!epc.workflows.length) {
+      res.status(200).json({
+        success: true,
+        epcId,
+        totalEntries: 0,
+        data: [],
+      });
+      return;
+    }
 
     const workflowIds = epc.workflows.map((w) => w.id);
 

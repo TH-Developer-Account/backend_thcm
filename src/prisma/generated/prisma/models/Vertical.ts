@@ -165,7 +165,7 @@ export type VerticalGroupByOutputType = {
   _max: VerticalMaxAggregateOutputType | null
 }
 
-type GetVerticalGroupByPayload<T extends VerticalGroupByArgs> = Prisma.PrismaPromise<
+export type GetVerticalGroupByPayload<T extends VerticalGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<VerticalGroupByOutputType, T['by']> &
       {
@@ -1274,6 +1274,11 @@ export type VerticalFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Skip the first `n` Verticals.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of Verticals.
+   */
   distinct?: Prisma.VerticalScalarFieldEnum | Prisma.VerticalScalarFieldEnum[]
 }
 

@@ -131,3 +131,22 @@ export const OutcomeStatus = {
 } as const
 
 export type OutcomeStatus = (typeof OutcomeStatus)[keyof typeof OutcomeStatus]
+
+
+export const ImportExportType = {
+  LEAD_IMPORT: 'LEAD_IMPORT',
+  LEAD_EXPORT: 'LEAD_EXPORT',
+  EPC_EXPORT: 'EPC_EXPORT'
+} as const
+
+export type ImportExportType = (typeof ImportExportType)[keyof typeof ImportExportType]
+
+
+export const ImportExportStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type ImportExportStatus = (typeof ImportExportStatus)[keyof typeof ImportExportStatus]

@@ -42,7 +42,6 @@ export type ProductMasterMinAggregateOutputType = {
   name: string | null
   description: string | null
   unitRate: runtime.Decimal | null
-  dimensions: string | null
   isActive: boolean | null
   created_at: Date | null
   updated_at: Date | null
@@ -56,7 +55,6 @@ export type ProductMasterMaxAggregateOutputType = {
   name: string | null
   description: string | null
   unitRate: runtime.Decimal | null
-  dimensions: string | null
   isActive: boolean | null
   created_at: Date | null
   updated_at: Date | null
@@ -70,7 +68,6 @@ export type ProductMasterCountAggregateOutputType = {
   name: number
   description: number
   unitRate: number
-  dimensions: number
   isActive: number
   created_at: number
   updated_at: number
@@ -94,7 +91,6 @@ export type ProductMasterMinAggregateInputType = {
   name?: true
   description?: true
   unitRate?: true
-  dimensions?: true
   isActive?: true
   created_at?: true
   updated_at?: true
@@ -108,7 +104,6 @@ export type ProductMasterMaxAggregateInputType = {
   name?: true
   description?: true
   unitRate?: true
-  dimensions?: true
   isActive?: true
   created_at?: true
   updated_at?: true
@@ -122,7 +117,6 @@ export type ProductMasterCountAggregateInputType = {
   name?: true
   description?: true
   unitRate?: true
-  dimensions?: true
   isActive?: true
   created_at?: true
   updated_at?: true
@@ -223,7 +217,6 @@ export type ProductMasterGroupByOutputType = {
   name: string
   description: string | null
   unitRate: runtime.Decimal | null
-  dimensions: string | null
   isActive: boolean
   created_at: Date
   updated_at: Date
@@ -234,7 +227,7 @@ export type ProductMasterGroupByOutputType = {
   _max: ProductMasterMaxAggregateOutputType | null
 }
 
-type GetProductMasterGroupByPayload<T extends ProductMasterGroupByArgs> = Prisma.PrismaPromise<
+export type GetProductMasterGroupByPayload<T extends ProductMasterGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ProductMasterGroupByOutputType, T['by']> &
       {
@@ -260,7 +253,6 @@ export type ProductMasterWhereInput = {
   name?: Prisma.StringFilter<"ProductMaster"> | string
   description?: Prisma.StringNullableFilter<"ProductMaster"> | string | null
   unitRate?: Prisma.DecimalNullableFilter<"ProductMaster"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: Prisma.StringNullableFilter<"ProductMaster"> | string | null
   isActive?: Prisma.BoolFilter<"ProductMaster"> | boolean
   created_at?: Prisma.DateTimeFilter<"ProductMaster"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"ProductMaster"> | Date | string
@@ -275,7 +267,6 @@ export type ProductMasterOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   unitRate?: Prisma.SortOrderInput | Prisma.SortOrder
-  dimensions?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -293,7 +284,6 @@ export type ProductMasterWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"ProductMaster"> | string
   description?: Prisma.StringNullableFilter<"ProductMaster"> | string | null
   unitRate?: Prisma.DecimalNullableFilter<"ProductMaster"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: Prisma.StringNullableFilter<"ProductMaster"> | string | null
   isActive?: Prisma.BoolFilter<"ProductMaster"> | boolean
   created_at?: Prisma.DateTimeFilter<"ProductMaster"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"ProductMaster"> | Date | string
@@ -308,7 +298,6 @@ export type ProductMasterOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   unitRate?: Prisma.SortOrderInput | Prisma.SortOrder
-  dimensions?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -330,7 +319,6 @@ export type ProductMasterScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"ProductMaster"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"ProductMaster"> | string | null
   unitRate?: Prisma.DecimalNullableWithAggregatesFilter<"ProductMaster"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: Prisma.StringNullableWithAggregatesFilter<"ProductMaster"> | string | null
   isActive?: Prisma.BoolWithAggregatesFilter<"ProductMaster"> | boolean
   created_at?: Prisma.DateTimeWithAggregatesFilter<"ProductMaster"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"ProductMaster"> | Date | string
@@ -344,7 +332,6 @@ export type ProductMasterCreateInput = {
   name: string
   description?: string | null
   unitRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: string | null
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -359,7 +346,6 @@ export type ProductMasterUncheckedCreateInput = {
   name: string
   description?: string | null
   unitRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: string | null
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -374,7 +360,6 @@ export type ProductMasterUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -389,7 +374,6 @@ export type ProductMasterUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -404,7 +388,6 @@ export type ProductMasterCreateManyInput = {
   name: string
   description?: string | null
   unitRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: string | null
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -418,7 +401,6 @@ export type ProductMasterUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -432,7 +414,6 @@ export type ProductMasterUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -446,7 +427,6 @@ export type ProductMasterCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   unitRate?: Prisma.SortOrder
-  dimensions?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -464,7 +444,6 @@ export type ProductMasterMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   unitRate?: Prisma.SortOrder
-  dimensions?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -478,7 +457,6 @@ export type ProductMasterMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   unitRate?: Prisma.SortOrder
-  dimensions?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -523,7 +501,6 @@ export type ProductMasterCreateWithoutLineItemsInput = {
   name: string
   description?: string | null
   unitRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: string | null
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -537,7 +514,6 @@ export type ProductMasterUncheckedCreateWithoutLineItemsInput = {
   name: string
   description?: string | null
   unitRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: string | null
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -567,7 +543,6 @@ export type ProductMasterUpdateWithoutLineItemsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -581,7 +556,6 @@ export type ProductMasterUncheckedUpdateWithoutLineItemsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unitRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  dimensions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -626,7 +600,6 @@ export type ProductMasterSelect<ExtArgs extends runtime.Types.Extensions.Interna
   name?: boolean
   description?: boolean
   unitRate?: boolean
-  dimensions?: boolean
   isActive?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -642,7 +615,6 @@ export type ProductMasterSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   name?: boolean
   description?: boolean
   unitRate?: boolean
-  dimensions?: boolean
   isActive?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -656,7 +628,6 @@ export type ProductMasterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   name?: boolean
   description?: boolean
   unitRate?: boolean
-  dimensions?: boolean
   isActive?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -670,13 +641,12 @@ export type ProductMasterSelectScalar = {
   name?: boolean
   description?: boolean
   unitRate?: boolean
-  dimensions?: boolean
   isActive?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type ProductMasterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productType" | "category" | "partNumber" | "name" | "description" | "unitRate" | "dimensions" | "isActive" | "created_at" | "updated_at", ExtArgs["result"]["productMaster"]>
+export type ProductMasterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productType" | "category" | "partNumber" | "name" | "description" | "unitRate" | "isActive" | "created_at" | "updated_at", ExtArgs["result"]["productMaster"]>
 export type ProductMasterInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lineItems?: boolean | Prisma.ProductMaster$lineItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductMasterCountOutputTypeDefaultArgs<ExtArgs>
@@ -697,7 +667,6 @@ export type $ProductMasterPayload<ExtArgs extends runtime.Types.Extensions.Inter
     name: string
     description: string | null
     unitRate: runtime.Decimal | null
-    dimensions: string | null
     isActive: boolean
     created_at: Date
     updated_at: Date
@@ -1132,7 +1101,6 @@ export interface ProductMasterFieldRefs {
   readonly name: Prisma.FieldRef<"ProductMaster", 'String'>
   readonly description: Prisma.FieldRef<"ProductMaster", 'String'>
   readonly unitRate: Prisma.FieldRef<"ProductMaster", 'Decimal'>
-  readonly dimensions: Prisma.FieldRef<"ProductMaster", 'String'>
   readonly isActive: Prisma.FieldRef<"ProductMaster", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"ProductMaster", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"ProductMaster", 'DateTime'>
@@ -1332,6 +1300,11 @@ export type ProductMasterFindManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Skip the first `n` ProductMasters.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of ProductMasters.
+   */
   distinct?: Prisma.ProductMasterScalarFieldEnum | Prisma.ProductMasterScalarFieldEnum[]
 }
 

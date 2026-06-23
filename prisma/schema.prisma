@@ -104,6 +104,19 @@ enum OutcomeStatus {
   UNSUCCESSFUL
 }
 
+enum ImportExportType {
+  LEAD_IMPORT
+  LEAD_EXPORT
+  EPC_EXPORT
+}
+
+enum ImportExportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 // ─────────────────────────────────────────────
 // AUTH MODELS
 // ─────────────────────────────────────────────
@@ -137,6 +150,7 @@ model User {
 
   // ✅ Back-relation for ActivityLog.actor
   activityLogs   ActivityLog[]
+  importExportLogs ImportExportLog[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -190,6 +204,7 @@ model Workspace {
 
   workflowTemplates WorkflowTemplate[]
   workflows         WorkflowInstance[]
+  importExportLogs  ImportExportLog[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -347,6 +362,7 @@ model EventProposal {
   workflows WorkflowInstance[]
   activityLogs ActivityLog[]
   leads     Lead[]
+  importExportLogs ImportExportLog[]
 
   search_vector Unsupported("tsvector")?
   created_at    DateTime                 @default(now())
@@ -606,7 +622,6 @@ model ProductMaster {
   name        String
   description String?
   unitRate    Decimal?         @db.Decimal(10, 2)
-  dimensions   String?
   isActive    Boolean         @default(true)
   created_at  DateTime        @default(now())
   updated_at  DateTime        @updatedAt
@@ -657,6 +672,9 @@ model LineItem {
   quantity Decimal? @db.Decimal(10, 2)
   rate     Decimal? @db.Decimal(10, 2)
   amount   Decimal? @db.Decimal(12, 2)
+  height   String?
+  width    String?
+  unit     String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -799,6 +817,51 @@ model EventReportImage {
 
   @@unique([reportId, position])
   @@index([reportId])
+}
+
+// ─────────────────────────────────────────────
+// IMPORT / EXPORT LOG
+//
+// Tracks every lead import, lead export, and EPC export job.
+// Created on enqueue (PENDING), updated as the worker progresses.
+//
+// epcId is nullable — populated for LEAD_IMPORT and LEAD_EXPORT
+// (which are always scoped to an EPC), null for EPC_EXPORT (workspace-wide).
+//
+// fileS3Key        — output file (exports) or original input file (import)
+// errorFileS3Key   — XLSX of failed rows, only set for LEAD_IMPORT with errors
+//
+// WHY store only S3 keys and not pre-signed URLs:
+//   Pre-signed URLs have a hard AWS cap of 7 days. We generate a fresh
+//   URL on every download/error-file GET request instead, so access
+//   never expires.
+// ─────────────────────────────────────────────
+
+model ImportExportLog {
+  id               String             @id @default(uuid())
+  type             ImportExportType
+  status           ImportExportStatus @default(PENDING)
+  triggeredById    String
+  workspaceId      String
+  epcId            String?            // null for EPC_EXPORT
+  jobId            String             // BullMQ job ID
+  totalRecords     Int?               // null until job completes
+  successRecords   Int?
+  failedRecords    Int?
+  fileS3Key        String?            // output file key
+  errorFileS3Key   String?            // failed-rows XLSX key (LEAD_IMPORT only)
+  failureReason    String?            // top-level job failure message
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+
+  triggeredBy User           @relation(fields: [triggeredById], references: [id])
+  workspace   Workspace      @relation(fields: [workspaceId], references: [id])
+  epc         EventProposal? @relation(fields: [epcId], references: [id])
+
+  @@index([workspaceId, type])
+  @@index([triggeredById])
+  @@index([epcId])
+  @@index([jobId])
 }
 
 

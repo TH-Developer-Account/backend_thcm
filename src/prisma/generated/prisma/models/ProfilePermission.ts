@@ -151,7 +151,7 @@ export type ProfilePermissionGroupByOutputType = {
   _max: ProfilePermissionMaxAggregateOutputType | null
 }
 
-type GetProfilePermissionGroupByPayload<T extends ProfilePermissionGroupByArgs> = Prisma.PrismaPromise<
+export type GetProfilePermissionGroupByPayload<T extends ProfilePermissionGroupByArgs> = Prisma.PrismaPromise<
   Array<
     Prisma.PickEnumerable<ProfilePermissionGroupByOutputType, T['by']> &
       {
@@ -1212,6 +1212,11 @@ export type ProfilePermissionFindManyArgs<ExtArgs extends runtime.Types.Extensio
    * Skip the first `n` ProfilePermissions.
    */
   skip?: number
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   * 
+   * Filter by unique combinations of ProfilePermissions.
+   */
   distinct?: Prisma.ProfilePermissionScalarFieldEnum | Prisma.ProfilePermissionScalarFieldEnum[]
 }
 

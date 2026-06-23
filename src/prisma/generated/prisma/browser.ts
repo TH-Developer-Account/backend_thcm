@@ -202,3 +202,8 @@ export type EventReport = Prisma.EventReportModel
  * 
  */
 export type EventReportImage = Prisma.EventReportImageModel
+/**
+ * Model ImportExportLog
+ * 
+ */
+export type ImportExportLog = Prisma.ImportExportLogModel
