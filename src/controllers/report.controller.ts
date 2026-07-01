@@ -31,7 +31,7 @@ type ImagePosition = (typeof VALID_IMAGE_POSITIONS)[number];
 // Needed to look up the correct validator from APP_VALIDATORS.
 async function resolveAppKeyForEpc(epcId: string): Promise<string> {
   const workflow = await prisma.workflowInstance.findFirst({
-    where: { eventProposalId: epcId, isActive: true },
+    where: { subjectType: "EVENT_PROPOSAL", subjectId: epcId, isActive: true },
     select: {
       template: {
         select: { app: { select: { key: true } } },
@@ -247,7 +247,8 @@ export const submitReport = async (
 
       await tx.activityLog.create({
         data: {
-          epcId,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: epcId,
           actorId: userId,
           action: "REPORT_SUBMITTED",
         },
@@ -452,7 +453,8 @@ export const resubmitReport = async (
 
       await tx.activityLog.create({
         data: {
-          epcId,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: epcId,
           actorId: userId,
           action: "REPORT_RESUBMITTED",
         },
@@ -572,7 +574,8 @@ export const validateReport = async (
       }),
       prisma.activityLog.create({
         data: {
-          epcId: report.epcId,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: report.epcId,
           actorId: userId,
           action: "REPORT_VALIDATED",
         },
@@ -661,7 +664,8 @@ export const requestReportClarification = async (
       }),
       prisma.activityLog.create({
         data: {
-          epcId: report.epcId,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: report.epcId,
           actorId: userId,
           action: "REPORT_CLARIFICATION_REQUESTED",
           metadata: { reason: String(reason).trim() },

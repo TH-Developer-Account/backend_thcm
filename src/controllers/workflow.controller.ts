@@ -55,7 +55,11 @@ export const assignWorkflowController = async (
     // Guard: reject if an active workflow already exists for this EPC.
     // Only the Deviation controller is allowed to create a second workflow.
     const existing = await prisma.workflowInstance.findFirst({
-      where: { eventProposalId, isActive: true },
+      where: {
+        subjectType: "EVENT_PROPOSAL",
+        subjectId: eventProposalId,
+        isActive: true,
+      },
     });
     if (existing) {
       throw new ApiError(
@@ -104,7 +108,9 @@ export const assignWorkflowController = async (
       data: {
         templateId: matchedTemplate.id,
         workspaceId,
-        eventProposalId,
+        appId,
+        subjectType: "EVENT_PROPOSAL",
+        subjectId: eventProposalId,
         currentStage: 1,
         iteration: 1, // ✅ NEW: first iteration
         isActive: true, // ✅ NEW: this is the active workflow
@@ -462,14 +468,15 @@ export const clarifyStageController = async (
 
       // ── Step 7: Update EPC to pending ────────────────────────────────────────
       await tx.eventProposal.update({
-        where: { id: workflow.eventProposalId },
+        where: { id: workflow.subjectId },
         data: { status: "PENDING" },
       });
 
       // ── Step 8: Write audit record ────────────────────────────────────────
       await tx.activityLog.create({
         data: {
-          epcId: workflow.eventProposalId,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: workflow.subjectId,
           actorId: userId,
           action: "CLARIFY",
           workflowId: workflow.id,
@@ -588,7 +595,8 @@ export const activateFirstStageController = async (
 
       await tx.activityLog.create({
         data: {
-          epcId: workflow.eventProposalId,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: workflow.subjectId,
           actorId: req.user?.id as string,
           action: "EPC_RESUBMITTED",
           workflowId: workflow.id,
@@ -651,7 +659,11 @@ export const triggerDeviationController = async (
 
     // ── Step 1: Find the active workflow for this EPC ─────────────────────
     const activeWorkflow = await prisma.workflowInstance.findFirst({
-      where: { eventProposalId, isActive: true },
+      where: {
+        subjectType: "EVENT_PROPOSAL",
+        subjectId: eventProposalId,
+        isActive: true,
+      },
     });
 
     if (!activeWorkflow) {
@@ -724,7 +736,9 @@ export const triggerDeviationController = async (
         data: {
           templateId: matchedTemplate.id,
           workspaceId,
-          eventProposalId,
+          appId,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: eventProposalId,
           workflowType: "DEVIATION", // ← clearly marks this as a budget-change run
           isActive: true,
           iteration: 1, // ← deviation starts its own iteration counter at 1
@@ -777,7 +791,8 @@ export const triggerDeviationController = async (
       //     since there is no single "triggering stage" for a deviation.
       await tx.activityLog.create({
         data: {
-          epcId: activeWorkflow.eventProposalId,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: activeWorkflow.subjectId,
           actorId: userId,
           action: "EPC_RESUBMITTED",
           workflowId: activeWorkflow.id,

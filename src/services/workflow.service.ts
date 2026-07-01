@@ -29,8 +29,10 @@ export const createEventProposalWithWorkflow = async (input: any) => {
       data: {
         templateId: template.id,
         workspaceId: input.workspaceId,
-        eventProposalId: epc.id,
+        subjectType: "EVENT_PROPOSAL",
+        subjectId: epc.id,
         currentStage: 1,
+        appId: input.appId,
 
         stages: {
           create: stages,
@@ -128,14 +130,15 @@ export const approveStage = async ({
         });
 
         await tx.eventProposal.update({
-          where: { id: stage!.workflow.eventProposalId },
+          where: { id: stage!.workflow.subjectId },
           data: { status: WorkflowStatus.APPROVED },
         });
       }
 
       await tx.activityLog.create({
         data: {
-          epcId: stage!.workflow.eventProposalId,
+          subjectType: stage!.workflow.subjectType,
+          subjectId: stage!.workflow.subjectId,
           actorId: userId,
           action: "APPROVED",
           workflowId: stage!.workflowId,
@@ -195,7 +198,7 @@ export const rejectStage = async ({
 
     // (optional) update EPC status
     await tx.eventProposal.update({
-      where: { id: stage!.workflow.eventProposalId },
+      where: { id: stage!.workflow.subjectId },
       data: { status: "REJECTED" },
     });
   });

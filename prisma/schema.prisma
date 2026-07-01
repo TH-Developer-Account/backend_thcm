@@ -117,6 +117,11 @@ enum ImportExportStatus {
   FAILED
 }
 
+enum WorkflowSubjectType {
+  EVENT_PROPOSAL
+  AUDIT_INSTANCE
+}
+
 // ─────────────────────────────────────────────
 // AUTH MODELS
 // ─────────────────────────────────────────────
@@ -359,8 +364,6 @@ model EventProposal {
   crf CRF?
   report EventReport?
 
-  workflows WorkflowInstance[]
-  activityLogs ActivityLog[]
   leads     Lead[]
   importExportLogs ImportExportLog[]
 
@@ -433,16 +436,17 @@ model WorkflowInstance {
   id              String @id @default(uuid())
   templateId      String
   workspaceId     String
-  eventProposalId String
   iteration       Int    @default(1)
   isActive        Boolean      @default(true)
   workflowType    WorkflowType @default(STANDARD)
   status          WorkflowStatus @default(IN_PROGRESS)
   currentStage    Int
+  appId       String             
+  subjectType WorkflowSubjectType 
+  subjectId   String              
 
   template  WorkflowTemplate @relation(fields: [templateId], references: [id])
   workspace Workspace        @relation(fields: [workspaceId], references: [id])
-  event     EventProposal    @relation(fields: [eventProposalId], references: [id])
   stages    StageInstance[]
   comments  Comment[]
 
@@ -452,7 +456,8 @@ model WorkflowInstance {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  @@index([eventProposalId, isActive])
+  @@index([subjectType, subjectId, isActive])
+  @@index([appId, isActive])
 }
 
 model StageInstance {
@@ -533,20 +538,20 @@ model WorkFlowTemplateUser {
 
 model ActivityLog {
   id         String         @id @default(uuid())
-  epcId      String                         // always present — anchor for timeline query
   actorId    String                         // who performed the action
   action     ActivityAction
   workflowId String?                        // set for approval-domain actions
   stageId    String?                        // set for stage-level actions, null for DEVIATION_RAISED
   metadata   Json?                          // typed in app layer (reason, budget delta, etc.)
   createdAt  DateTime       @default(now())
+  subjectType WorkflowSubjectType
+  subjectId String                       
 
-  epc      EventProposal     @relation(fields: [epcId], references: [id])
   actor    User              @relation(fields: [actorId], references: [id])
   workflow WorkflowInstance? @relation(fields: [workflowId], references: [id])
   stage    StageInstance?    @relation(fields: [stageId], references: [id])
 
-  @@index([epcId])           // primary timeline query
+  @@index([subjectId])           // primary timeline query
   @@index([actorId])         // "what did this user do" query
   @@index([workflowId])      // workflow-scoped audit query
 }

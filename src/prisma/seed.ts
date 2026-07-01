@@ -779,10 +779,12 @@ async function main() {
 
     await prisma.workflowInstance.create({
       data: {
+        subjectType: "EVENT_PROPOSAL",
+        subjectId: epc.id,
         templateId: template.id,
         workspaceId: workspace.id,
-        eventProposalId: epc.id,
         currentStage: activeStageOrder,
+        appId: mapApp.id,
 
         stages: {
           create: templateWithStages.stages.map((stage) => {

@@ -88,7 +88,8 @@ export const createCRF = async (
       // 7️⃣ Log activity
       await tx.activityLog.create({
         data: {
-          epcId,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: epcId,
           actorId: userId,
           action: "CRF_CREATED",
           workflowId: null,
@@ -189,7 +190,8 @@ export const updateCRF = async (
 
       await tx.activityLog.create({
         data: {
-          epcId: existing.epcId,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: existing.epcId,
           actorId: req.user?.id as string,
           action: "CRF_UPDATED",
           workflowId: null,

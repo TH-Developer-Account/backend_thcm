@@ -5,21 +5,11 @@ import ApiError from "../utils/apiError";
 import { epcFullInfoSelect } from "../utils/contants";
 import { uploadDeviationDoc } from "../services/aws-s3.services";
 import { searchEventProposals } from "../helpers/searchEventProposal.helper";
-import { createEventProposalWithWorkflow } from "../services/workflow.service";
 import { getValidatorForApp } from "../utils/validators.constant";
 import { addMailJob } from "../services/mail.service";
+import { getActiveWorkflowForSubject } from "../helpers/workflowSubject.helper";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Reusable select for the active workflow's current state.
-// Used in getEventProposalById and anywhere you need EPC + live workflow data.
-//
-// Pattern:
-//   workflows: { where: { isActive: true } }          ← only the active workflow
-//   stages:    { where: { isCurrentIteration: true } } ← only the current run's stages
-//
-// For full history (all workflows, all iterations) use the history endpoint on
-// the workflow controller instead — it keeps EPC queries lean.
-// ─────────────────────────────────────────────────────────────────────────────
+const OUTCOME_STATUSES = new Set(["CONDUCTED", "CANCELLED"]);
 
 function toStringArray(value: unknown): string[] | undefined {
   if (value === undefined || value === null) return undefined;
@@ -27,50 +17,6 @@ function toStringArray(value: unknown): string[] | undefined {
   const result = arr.filter((v): v is string => typeof v === "string");
   return result.length > 0 ? result : undefined;
 }
-
-const activeWorkflowInclude = {
-  where: { isActive: true },
-  include: {
-    template: {
-      select: { id: true, name: true, description: true },
-    },
-    stages: {
-      where: { isCurrentIteration: true }, // ✅ only current iteration stages
-      orderBy: { stageOrder: "asc" as const },
-      include: {
-        approvals: {
-          include: {
-            approver: {
-              select: {
-                id: true,
-                first_name: true,
-                last_name: true,
-                email: true,
-              },
-            },
-            comments: {
-              orderBy: { createdAt: "asc" as const },
-            },
-          },
-        },
-      },
-    },
-  },
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /epc/with-workflow
-// Creates an EPC together with its initial workflow in a single service call.
-// ─────────────────────────────────────────────────────────────────────────────
-
-export const createEPCController = async (req: Request, res: Response) => {
-  try {
-    const result = await createEventProposalWithWorkflow(req.body);
-    res.status(201).json({ success: true, data: result });
-  } catch (err: any) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /epc
@@ -157,7 +103,8 @@ export const createEventProposal = async (
 
     await prisma.activityLog.create({
       data: {
-        epcId: proposal.id,
+        subjectType: "EVENT_PROPOSAL",
+        subjectId: proposal.id,
         actorId: userId,
         action: "EPC_CREATED",
         workflowId: null,
@@ -226,40 +173,6 @@ export const getAllEventProposals = async (
     const pageNumber = Number(page);
     const take = Number(pageSize);
 
-    // NOTE FOR searchEventProposals HELPER:
-    // When building the `pendingOnMe` query, the where clause should be:
-    //
-    //   workflows: {
-    //     some: {
-    //       isActive: true,          ← active workflow only
-    //       stages: {
-    //         some: {
-    //           isCurrentIteration: true,  ← current run only
-    //           status: 'IN_PROGRESS',
-    //           approvals: {
-    //             some: {
-    //               approverId: userId,
-    //               status: 'PENDING'
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    //
-    // For `approvedByMe`:
-    //   workflows: {
-    //     some: {
-    //       stages: {
-    //         some: {
-    //           approvals: {
-    //             some: { approverId: userId, status: 'APPROVED' }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-
     const { data, total } = await searchEventProposals({
       userId,
       approvedByMe: approvedByMe === "true",
@@ -317,25 +230,19 @@ export const getEventProposalById = async (
 
     const epc = await prisma.eventProposal.findUnique({
       where: { id },
-      include: {
-        ...epcFullInfoSelect,
-
-        // ✅ CHANGE: was `workflow: { ... }` (singular, optional)
-        // Now `workflows` (plural) filtered to isActive=true.
-        // Result is an array — take [0] if you need a single object,
-        // or present it as-is to the client (max 1 element in normal operation).
-        workflows: activeWorkflowInclude,
-      },
+      include: epcFullInfoSelect,
     });
 
     if (!epc) throw new ApiError(404, "EPC not found");
 
-    // Flatten for convenience: expose `activeWorkflow` directly rather than
-    // making the client pick from the array.
-    const { workflows, ...epcData } = epc;
+    const activeWorkflow = await getActiveWorkflowForSubject(
+      "EVENT_PROPOSAL",
+      id,
+    );
+
     const response = {
-      ...epcData,
-      activeWorkflow: workflows[0] ?? null,
+      ...epc,
+      activeWorkflow: activeWorkflow ?? null,
     };
 
     res.status(200).json({ success: true, data: response });
@@ -366,7 +273,6 @@ export const updateEventProposal = async (
 
     if (!userId) throw new ApiError(401, "Unauthorized");
 
-    // ✅ BUG FIX: was `if (id)` — inverted condition caused every request to fail
     if (!id) throw new ApiError(400, "Invalid ID");
 
     const updated = await prisma.eventProposal.update({
@@ -379,7 +285,8 @@ export const updateEventProposal = async (
 
     await prisma.activityLog.create({
       data: {
-        epcId: id,
+        subjectType: "EVENT_PROPOSAL",
+        subjectId: id,
         actorId: userId,
         action: "EPC_UPDATED",
         workflowId: null,
@@ -418,12 +325,11 @@ export const deleteEventProposal = async (
 
     if (!userId) throw new ApiError(401, "Unauthorized");
 
-    // ✅ BUG FIX: was `if (id)` — inverted condition caused every request to fail
     if (!id) throw new ApiError(400, "Invalid ID");
 
     // Guard: do not allow deletion while an active workflow is IN_PROGRESS
     const activeWorkflow = await prisma.workflowInstance.findFirst({
-      where: { eventProposalId: id, isActive: true },
+      where: { subjectType: "EVENT_PROPOSAL", subjectId: id, isActive: true },
       select: { id: true, status: true },
     });
 
@@ -452,8 +358,6 @@ export const deleteEventProposal = async (
     next(error);
   }
 };
-
-const OUTCOME_STATUSES = new Set(["CONDUCTED", "CANCELLED"]);
 
 export const updateEventProposalOutcome = async (
   req: Request,
@@ -508,7 +412,12 @@ export const updateEventProposalOutcome = async (
     // ── Guard 4: no active IN_PROGRESS workflow ───────────────────────────────
     // Workflow must be fully resolved before the proposer can record an outcome.
     const activeWorkflow = await prisma.workflowInstance.findFirst({
-      where: { eventProposalId: id, isActive: true, status: "IN_PROGRESS" },
+      where: {
+        subjectType: "EVENT_PROPOSAL",
+        subjectId: id,
+        isActive: true,
+        status: "IN_PROGRESS",
+      },
       select: { id: true },
     });
 
@@ -536,7 +445,8 @@ export const updateEventProposalOutcome = async (
 
       await tx.activityLog.create({
         data: {
-          epcId: id,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: id,
           actorId: userId,
           action: activityAction,
           metadata: reason ? { reason } : {},
@@ -611,7 +521,8 @@ export const closeEpc = async (
     if (epc.status === "APPROVED") {
       const deviationWorkflow = await prisma.workflowInstance.findFirst({
         where: {
-          eventProposalId: id,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: id,
           workflowType: "DEVIATION",
           isActive: true,
         },
@@ -639,7 +550,12 @@ export const closeEpc = async (
         data: { status: "CLOSED", updated_by_id: userId },
       }),
       prisma.activityLog.create({
-        data: { epcId: id, actorId: userId, action: "EPC_CLOSED" },
+        data: {
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: id,
+          actorId: userId,
+          action: "EPC_CLOSED",
+        },
       }),
     ]);
 
@@ -716,7 +632,8 @@ export const initiateDeviation = async (
       }),
       prisma.activityLog.create({
         data: {
-          epcId: id,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: id,
           actorId: userId,
           action: "DEVIATION_RAISED",
           metadata: {
