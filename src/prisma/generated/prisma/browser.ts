@@ -207,3 +207,13 @@ export type EventReportImage = Prisma.EventReportImageModel
  * 
  */
 export type ImportExportLog = Prisma.ImportExportLogModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
+ * Model PushSubscription
+ * 
+ */
+export type PushSubscription = Prisma.PushSubscriptionModel

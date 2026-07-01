@@ -99,10 +99,13 @@ function extractLineItemRows(epc: EpcWithRelations): XlsxRow[] {
   return rows;
 }
 
-function extractWorkflowRows(epc: EpcWithRelations): XlsxRow[] {
+function extractWorkflowRows(
+  epc: EpcWithRelations,
+  workflows: WorkflowForExport[],
+): XlsxRow[] {
   const rows: XlsxRow[] = [];
 
-  for (const workflow of epc.workflows) {
+  for (const workflow of workflows) {
     for (const stage of workflow.stages) {
       for (const approval of stage.approvals) {
         rows.push({
@@ -182,21 +185,58 @@ async function fetchEpcBatch(filters: EpcExportFilters, cursor?: string) {
           },
         },
       },
-      workflows: {
+      // workflows relation removed — WorkflowInstance no longer has a direct
+      // FK to EventProposal (it's polymorphic via subjectType/subjectId).
+      // Fetched separately per-batch in fetchWorkflowsForBatch() below.
+    },
+  });
+}
+
+// ── Workflow lookup (per-batch) ───────────────────────────────────────────────
+//
+// WorkflowInstance has no direct Prisma relation to EventProposal anymore —
+// it's linked via subjectType/subjectId. One query per batch (not per EPC)
+// keeps this within the same memory-bounded design the rest of the file uses:
+// at most BATCH_SIZE EPCs' worth of workflow data in memory at a time.
+
+type WorkflowForExport = {
+  subjectId: string;
+  workflowType: string;
+  status: string;
+  stages: {
+    stageOrder: number;
+    stageName: string | null;
+    strategy: string;
+    approvals: {
+      status: string;
+      actedAt: Date | null;
+      reason: string | null;
+      approver: { first_name: string; last_name: string; email: string };
+    }[];
+  }[];
+};
+
+async function fetchWorkflowsForBatch(
+  epcIds: string[],
+): Promise<Map<string, WorkflowForExport[]>> {
+  const workflows = await prisma.workflowInstance.findMany({
+    where: { subjectType: "EVENT_PROPOSAL", subjectId: { in: epcIds } },
+    select: {
+      subjectId: true,
+      workflowType: true,
+      status: true,
+      stages: {
         select: {
-          workflowType: true,
-          status: true,
-          stages: {
+          stageOrder: true,
+          stageName: true,
+          strategy: true,
+          approvals: {
             select: {
-              stageOrder: true,
-              stageName: true,
-              strategy: true,
-              approvals: {
-                include: {
-                  approver: {
-                    select: { first_name: true, last_name: true, email: true },
-                  },
-                },
+              status: true,
+              actedAt: true,
+              reason: true,
+              approver: {
+                select: { first_name: true, last_name: true, email: true },
               },
             },
           },
@@ -204,6 +244,14 @@ async function fetchEpcBatch(filters: EpcExportFilters, cursor?: string) {
       },
     },
   });
+
+  const byEpcId = new Map<string, WorkflowForExport[]>();
+  for (const wf of workflows) {
+    const existing = byEpcId.get(wf.subjectId) ?? [];
+    existing.push(wf);
+    byEpcId.set(wf.subjectId, existing);
+  }
+  return byEpcId;
 }
 
 // ── Sheet config builder ──────────────────────────────────────────────────────
@@ -278,10 +326,16 @@ export async function exportEpcsToS3(
     const batch = await fetchEpcBatch(filters, cursor);
     if (batch.length === 0) break;
 
+    const workflowsByEpcId = await fetchWorkflowsForBatch(
+      batch.map((epc) => epc.id),
+    );
+
     for (const epc of batch) {
       epcRows.push(extractEpcRow(epc));
       lineItemRows.push(...extractLineItemRows(epc));
-      workflowRows.push(...extractWorkflowRows(epc));
+      workflowRows.push(
+        ...extractWorkflowRows(epc, workflowsByEpcId.get(epc.id) ?? []),
+      );
     }
 
     totalEpcs += batch.length;

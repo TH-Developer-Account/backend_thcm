@@ -15,6 +15,8 @@ import {
   uploadBufferToS3,
   getSignedReportUrl,
 } from "../services/aws-s3.services";
+import { deliverNotification } from "../services/notification.services";
+import { NotificationDeliveryJobData } from "../queues/notification.queue";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // workers/index.ts — BullMQ worker definitions
@@ -219,6 +221,36 @@ export function startEpcExportWorker() {
         ),
       );
     }
+  });
+
+  return worker;
+}
+
+// ── Notification Delivery Worker ──────────────────────────────────────────────
+// Concurrency 5 — each job is lightweight (a few HTTP calls to push services
+// + one Redis publish), no heavy DB/S3 work like the export workers above.
+
+export function startNotificationDeliveryWorker() {
+  const worker = new Worker<NotificationDeliveryJobData>(
+    "notification-delivery",
+    async (job: Job<NotificationDeliveryJobData>) => {
+      await deliverNotification(job.data.notificationId);
+    },
+    {
+      connection: redisConnectionQueue,
+      concurrency: 5,
+    },
+  );
+
+  worker.on("completed", (job) => {
+    console.info(`[notification-delivery] Job ${job.id} completed`);
+  });
+
+  worker.on("failed", (job, error) => {
+    console.error(
+      `[notification-delivery] Job ${job?.id} failed:`,
+      error.message,
+    );
   });
 
   return worker;
