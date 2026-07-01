@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
 import { addMailJob } from "../services/mail.service";
+import { getActiveWorkflowForSubject } from "../helpers/workflowSubject.helper";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /comments
@@ -165,14 +166,15 @@ export const addCreatorComment = async (
       select: {
         id: true,
         created_by_id: true,
-        workflows: {
-          select: { id: true, isActive: true },
-          orderBy: { created_at: "desc" }, // most recent first
-        },
       },
     });
 
     if (!epc) throw new ApiError(404, "EPC not found");
+
+    const activeWorkflow = await getActiveWorkflowForSubject(
+      "EVENT_PROPOSAL",
+      epc.id,
+    );
 
     // ── Guard: only the EPC creator can use this endpoint ────────────────────
     if (epc.created_by_id !== userId) {
@@ -185,25 +187,19 @@ export const addCreatorComment = async (
     // ── Guard: at least one workflow must exist ───────────────────────────────
     // A comment must anchor to a WorkflowInstance (for timeline context).
     // If no workflow has been assigned yet, there is nothing to attach to.
-    if (!epc.workflows.length) {
+    if (!activeWorkflow) {
       throw new ApiError(
         400,
         "No workflow has been assigned to this EPC yet. Comments can be added once a workflow is assigned.",
       );
     }
 
-    // ── Pick the best workflowId to attach to ────────────────────────────────
-    // Prefer the active workflow. Fall back to the most recently created one
-    // (first in the desc-ordered list) if all workflows are superseded.
-    const targetWorkflow =
-      epc.workflows.find((w) => w.isActive) ?? epc.workflows[0];
-
     const comment = await prisma.comment.create({
       data: {
         message: String(message).trim(),
         type,
         userId,
-        workflowId: targetWorkflow.id,
+        workflowId: activeWorkflow.id,
         approvalId: undefined,
       },
       include: {
@@ -253,15 +249,17 @@ export const getEPCActivityTimeline = async (
       where: { id: epcId },
       select: {
         id: true,
-        workflows: {
-          select: { id: true, workflowType: true, isActive: true },
-        },
       },
     });
 
     if (!epc) throw new ApiError(404, "EPC not found");
 
-    if (!epc.workflows.length) {
+    const workflows = await prisma.workflowInstance.findMany({
+      where: { subjectType: "EVENT_PROPOSAL", subjectId: epcId },
+      select: { id: true, workflowType: true, isActive: true },
+    });
+
+    if (!workflows.length) {
       res.status(200).json({
         success: true,
         epcId,
@@ -271,11 +269,11 @@ export const getEPCActivityTimeline = async (
       return;
     }
 
-    const workflowIds = epc.workflows.map((w) => w.id);
+    const workflowIds = workflows.map((w) => w.id);
 
     // O(1) annotation lookup — still needed for comment enrichment
     const workflowMeta = new Map(
-      epc.workflows.map((w) => [
+      workflows.map((w) => [
         w.id,
         { workflowType: w.workflowType, isActive: w.isActive },
       ]),
@@ -336,7 +334,7 @@ export const getEPCActivityTimeline = async (
     // EPF_SUBMITTED …) and approval actions (APPROVED, CLARIFIED …).
     // No workflowIds filter needed here — epcId is the anchor.
     const activityLogs = await prisma.activityLog.findMany({
-      where: { epcId },
+      where: { subjectType: "EVENT_PROPOSAL", subjectId: epcId },
       select: {
         id: true,
         action: true,

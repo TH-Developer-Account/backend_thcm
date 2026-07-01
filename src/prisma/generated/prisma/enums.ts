@@ -150,3 +150,11 @@ export const ImportExportStatus = {
 } as const
 
 export type ImportExportStatus = (typeof ImportExportStatus)[keyof typeof ImportExportStatus]
+
+
+export const WorkflowSubjectType = {
+  EVENT_PROPOSAL: 'EVENT_PROPOSAL',
+  AUDIT_INSTANCE: 'AUDIT_INSTANCE'
+} as const
+
+export type WorkflowSubjectType = (typeof WorkflowSubjectType)[keyof typeof WorkflowSubjectType]

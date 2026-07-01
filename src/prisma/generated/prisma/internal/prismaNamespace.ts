@@ -3508,12 +3508,14 @@ export const WorkflowInstanceScalarFieldEnum = {
   id: 'id',
   templateId: 'templateId',
   workspaceId: 'workspaceId',
-  eventProposalId: 'eventProposalId',
   iteration: 'iteration',
   isActive: 'isActive',
   workflowType: 'workflowType',
   status: 'status',
   currentStage: 'currentStage',
+  appId: 'appId',
+  subjectType: 'subjectType',
+  subjectId: 'subjectId',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -3563,13 +3565,14 @@ export type WorkFlowTemplateUserScalarFieldEnum = (typeof WorkFlowTemplateUserSc
 
 export const ActivityLogScalarFieldEnum = {
   id: 'id',
-  epcId: 'epcId',
   actorId: 'actorId',
   action: 'action',
   workflowId: 'workflowId',
   stageId: 'stageId',
   metadata: 'metadata',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  subjectType: 'subjectType',
+  subjectId: 'subjectId'
 } as const
 
 export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
@@ -3999,6 +4002,20 @@ export type EnumWorkflowStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$P
  * Reference to a field of type 'WorkflowStatus[]'
  */
 export type ListEnumWorkflowStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkflowStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'WorkflowSubjectType'
+ */
+export type EnumWorkflowSubjectTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkflowSubjectType'>
+    
+
+
+/**
+ * Reference to a field of type 'WorkflowSubjectType[]'
+ */
+export type ListEnumWorkflowSubjectTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'WorkflowSubjectType[]'>
     
 
 

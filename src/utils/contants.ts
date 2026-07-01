@@ -167,39 +167,6 @@ export const epcFullInfoSelect = {
       },
     },
   },
-  workflows: {
-    where: { isActive: true },
-    orderBy: { createdAt: "desc" },
-    take: 1, // 👈 only latest active workflow
-    include: {
-      template: {
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          metaData_1: true,
-        },
-      },
-      stages: {
-        orderBy: { stageOrder: "asc" },
-        include: {
-          approvals: {
-            include: {
-              approver: {
-                select: {
-                  id: true,
-                  first_name: true,
-                  last_name: true,
-                  email: true,
-                  phone_number: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
   report: {
     select: {
       id: true,
@@ -218,6 +185,30 @@ export const epcFullInfoSelect = {
           position: true,
           s3Key: true,
           fileUrl: true,
+        },
+      },
+    },
+  },
+} as const;
+
+export const activeWorkflowInclude = {
+  template: {
+    select: { id: true, name: true, description: true, metaData_1: true },
+  },
+  stages: {
+    orderBy: { stageOrder: "asc" as const },
+    include: {
+      approvals: {
+        include: {
+          approver: {
+            select: {
+              id: true,
+              first_name: true,
+              last_name: true,
+              email: true,
+              phone_number: true,
+            },
+          },
         },
       },
     },

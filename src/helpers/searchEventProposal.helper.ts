@@ -129,8 +129,8 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
               FROM "WorkflowInstance" wf
               JOIN "StageInstance" si ON wf.id = si."workflowId"
               JOIN "Approval" ap ON si.id = ap."stageId"
-              WHERE wf."eventProposalId" = ep.id
-                AND wf."isActive" = true
+               WHERE wf."subjectType" = 'EVENT_PROPOSAL'
+                AND wf."subjectId" = ep.id
                 AND si."isCurrentIteration" = true
                 AND si.status = 'IN_PROGRESS'
                 AND ap."approverId" = ${userId}
@@ -176,7 +176,8 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
               ON wf.id = si."workflowId"
             JOIN "Approval" ap
               ON si.id = ap."stageId"
-            WHERE wf."eventProposalId" = ep.id
+            WHERE wf."subjectType" = 'EVENT_PROPOSAL'
+              AND wf."subjectId" = ep.id
               AND wf."isActive" = true
               AND ap."approverId" = ${userId}
               AND ap.status = 'APPROVED'
@@ -307,8 +308,9 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
     LEFT JOIN "CRF" crf
       ON ep.id = crf."epcId"
     LEFT JOIN "WorkflowInstance" wf
-      ON ep.id = wf."eventProposalId"
-      AND wf."isActive" = true
+      ON wf."subjectType" = 'EVENT_PROPOSAL'
+        AND wf."subjectId" = ep.id
+        AND wf."isActive" = true
     ${whereClause}
     ${orderByClause}
     LIMIT ${pageSize}

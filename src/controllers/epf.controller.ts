@@ -91,7 +91,8 @@ export const createEPF = async (
 
       await tx.activityLog.create({
         data: {
-          epcId: proposal.id,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: epcId,
           actorId: req.user?.id as string,
           action: "EPF_CREATED",
           workflowId: null,
@@ -193,7 +194,8 @@ export const updateEPF = async (
 
       await tx.activityLog.create({
         data: {
-          epcId: epf.epcId,
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: epf.epcId,
           actorId: req.user?.id as string,
           action: "EPF_UPDATED",
           workflowId: null,
