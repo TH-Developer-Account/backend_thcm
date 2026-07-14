@@ -41,7 +41,7 @@ export const initiateVendorOnboarding = async (
         },
       });
 
-      const tokenRecord = await issueVendorAccessToken(created.id);
+      const tokenRecord = await issueVendorAccessToken(created.id, tx);
 
       await tx.activityLog.create({
         data: {
@@ -413,7 +413,7 @@ export const submitVendorForm = async (
         });
       }
 
-      await markVendorAccessTokenUsed(tokenId);
+      await markVendorAccessTokenUsed(tokenId, tx);
 
       await tx.activityLog.create({
         data: {
