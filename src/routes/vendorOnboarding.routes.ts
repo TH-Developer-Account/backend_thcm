@@ -3,13 +3,13 @@ import multer from "multer";
 import asyncHandler from "../middleware/async.middleware";
 import { requireAuth, authorize } from "../middleware/auth.middleware";
 import {
-  initiateVendorOnboarding,
-  resendVendorLink,
-  updateEmployeeFields,
-  sendForApproval,
-  closeVendorOnboarding,
-  getVendorFormByToken,
-  submitVendorForm,
+	initiateVendorOnboarding,
+	resendVendorLink,
+	updateEmployeeFields,
+	sendForApproval,
+	closeVendorOnboarding,
+	getVendorFormByToken,
+	submitVendorForm,
 } from "../controllers/vendorOnboarding.controller";
 import { requireVendorAccessToken } from "../middleware/vendorAccessToken.middleware";
 
@@ -28,63 +28,63 @@ const upload = multer({ storage: multer.memoryStorage() });
 // lets submitVendorForm validate presence per REQUIRED_VENDOR_DOCUMENT_TYPES
 // via req.files[documentType], no parsing an arbitrary file array.
 const documentUploadFields = REQUIRED_VENDOR_DOCUMENT_TYPES.map((name) => ({
-  name,
-  maxCount: 1,
+	name,
+	maxCount: 1,
 }));
 
 // POST /api/v1/vendor-onboarding
 router.post(
-  "/",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "write"),
-  asyncHandler(initiateVendorOnboarding),
+	"/",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "write"),
+	asyncHandler(initiateVendorOnboarding),
 );
 
 // POST /api/v1/vendor-onboarding/:id/resend-link
 router.post(
-  "/:id/resend-link",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "write"),
-  asyncHandler(resendVendorLink),
+	"/:id/resend-link",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "write"),
+	asyncHandler(resendVendorLink),
 );
 
 // PATCH /api/v1/vendor-onboarding/:id
 router.patch(
-  "/:id",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "write"),
-  asyncHandler(updateEmployeeFields),
+	"/:id",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "write"),
+	asyncHandler(updateEmployeeFields),
 );
 
 // POST /api/v1/vendor-onboarding/:id/send-for-approval
 router.post(
-  "/:id/send-for-approval",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "write"),
-  asyncHandler(sendForApproval),
+	"/:id/send-for-approval",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "write"),
+	asyncHandler(sendForApproval),
 );
 
 // POST /api/v1/vendor-onboarding/:id/close
 router.post(
-  "/:id/close",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "write"),
-  asyncHandler(closeVendorOnboarding),
+	"/:id/close",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "write"),
+	asyncHandler(closeVendorOnboarding),
 );
 
-// GET /api/v1/public/vendor-onboarding/:token
+// GET /api/v1/vendor-onboarding/public/:token
 router.get(
-  "/:token",
-  requireVendorAccessToken,
-  asyncHandler(getVendorFormByToken),
+	"/:token",
+	requireVendorAccessToken,
+	asyncHandler(getVendorFormByToken),
 );
 
-// POST /api/v1/public/vendor-onboarding/:token/submit
+// POST /api/v1/vendor-onboarding/public/:token/submit
 router.post(
-  "/:token/submit",
-  requireVendorAccessToken,
-  upload.fields(documentUploadFields),
-  asyncHandler(submitVendorForm),
+	"/:token/submit",
+	requireVendorAccessToken,
+	upload.fields(documentUploadFields),
+	asyncHandler(submitVendorForm),
 );
 
 export default router;
