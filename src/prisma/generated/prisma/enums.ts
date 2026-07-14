@@ -162,3 +162,13 @@ export const WorkflowSubjectType = {
 } as const
 
 export type WorkflowSubjectType = (typeof WorkflowSubjectType)[keyof typeof WorkflowSubjectType]
+
+
+export const NotificationType = {
+  APPROVAL_PENDING: 'APPROVAL_PENDING',
+  APPROVAL_DECISION: 'APPROVAL_DECISION',
+  REPORT_STATUS: 'REPORT_STATUS',
+  GENERIC: 'GENERIC'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

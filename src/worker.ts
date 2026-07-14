@@ -5,6 +5,7 @@ import {
   startLeadImportWorker,
   startLeadExportWorker,
   startEpcExportWorker,
+  startNotificationDeliveryWorker,
 } from "./workers";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -27,6 +28,7 @@ const workers = [
   startLeadImportWorker(),
   startLeadExportWorker(),
   startEpcExportWorker(),
+  startNotificationDeliveryWorker(),
 ];
 
 console.info(`[Worker] ${workers.length} workers running`);

@@ -21,6 +21,7 @@ import importRoutes from "./routes/import.routes";
 import exportRoutes from "./routes/export.routes";
 import pincodeRoutes from "./routes/pincode.routes";
 import importExportLogRoutes from "./routes/importExportLog.routes";
+import notificationRoutes from "./routes/notification.routes";
 import vendorOnboardRoutes from "./routes/vendorOnboarding.routes";
 
 import errorHandler from "./middleware/error.middleware";
@@ -30,10 +31,10 @@ import { startJobs } from "./jobs/scheduler";
 import "./services/mail.queue"; // boots the BullMQ worker
 
 const corsOptions = {
-	origin: process.env.FRONTEND_URL, // frontend URL
-	methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-	allowedHeaders: ["Content-Type", "Authorization"],
-	credentials: true, // allow cookies / auth headers
+  origin: process.env.FRONTEND_URL, // frontend URL
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true, // allow cookies / auth headers
 };
 
 const app = express();
@@ -61,6 +62,7 @@ app.use("/api/v1/report", reportRoutes);
 app.use("/api/v1/import", importRoutes);
 app.use("/api/v1/export", exportRoutes);
 app.use("/api/v1/import-export-logs", importExportLogRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/vendor-onboarding", vendorOnboardRoutes);
 
 // Scheduler
@@ -68,7 +70,7 @@ startJobs();
 
 /* 404 */
 app.use((req, res, next) => {
-	next(new ApiError(404, `Route not found: ${req.originalUrl}`));
+  next(new ApiError(404, `Route not found: ${req.originalUrl}`));
 });
 
 /* Global error handler */

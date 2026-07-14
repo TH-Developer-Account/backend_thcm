@@ -130,6 +130,13 @@ enum WorkflowSubjectType {
   VENDOR_ONBOARDING 
 }
 
+enum NotificationType {
+  APPROVAL_PENDING   // a workflow stage now requires this user's approval
+  APPROVAL_DECISION  // an approval/rejection/clarify happened on something this user owns
+  REPORT_STATUS      // event report validated/rejected/clarification requested
+  GENERIC            // catch-all for future apps that don't fit the above
+}
+
 // ─────────────────────────────────────────────
 // AUTH MODELS
 // ─────────────────────────────────────────────
@@ -148,6 +155,9 @@ model User {
 
   workspaceUsers WorkspaceUser[]
   userProfiles   UserProfile[]
+
+  notifications     Notification[]
+  pushSubscriptions PushSubscription[]
 
   created_event_proposals EventProposal[] @relation("EventCreatedBy")
   updated_event_proposals EventProposal[] @relation("EventUpdatedBy")
@@ -221,6 +231,7 @@ model Workspace {
   workflowTemplates WorkflowTemplate[]
   workflows         WorkflowInstance[]
   importExportLogs  ImportExportLog[]
+  notifications Notification[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -881,6 +892,64 @@ model ImportExportLog {
 }
 
 // ─────────────────────────────────────────────
+// NOTIFICATION SYSTEM
+//
+// Generic, cross-app notification pipeline. Any app (MAP, DIA, Dealer Claims,
+// future apps) writes a Notification row via notificationService.notify().
+// Delivery (Web Push, SSE) happens asynchronously via a BullMQ worker —
+// this table is the source of truth for the in-app notification list,
+// independent of whether real-time delivery succeeded.
+//
+// appKey/entityType/entityId live in `metadata` (Json) rather than as typed
+// columns — keeps this model app-agnostic. Apps that need to query/filter
+// by their own entity types do so via metadata, not by adding columns here.
+// ─────────────────────────────────────────────
+
+model Notification {
+  id          String            @id @default(uuid())
+  workspaceId String
+  recipientId String
+  type        NotificationType
+  title       String
+  body        String
+  link        String?           // deep link, e.g. /map/epc/:id
+  metadata    Json?             // { appKey, epcId, ... } — typed in app layer
+  isRead      Boolean           @default(false)
+  readAt      DateTime?
+  createdAt   DateTime          @default(now())
+
+  recipient User      @relation(fields: [recipientId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  // Primary query: "give me this user's notifications, newest first"
+  @@index([recipientId, createdAt])
+  // Unread-count query: "how many unread does this user have"
+  @@index([recipientId, isRead])
+}
+
+// ─────────────────────────────────────────────
+// PUSH SUBSCRIPTION
+//
+// One row per browser/device subscription (Web Push API, VAPID).
+// A user can have multiple active subscriptions (multiple devices/browsers).
+// endpoint is unique per the Push API spec — re-subscribing with the same
+// endpoint (e.g. browser re-registers service worker) upserts in place.
+// ─────────────────────────────────────────────
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
 // VENDOR ONBOARDING
 //
 // Two-phase lifecycle:

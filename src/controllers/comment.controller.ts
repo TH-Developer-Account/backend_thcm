@@ -7,6 +7,7 @@ import {
   getActiveWorkflowForSubject,
 } from "../helpers/workflowSubject.helper";
 import { addMailJob } from "../services/mail.service";
+import { notify } from "../services/notification.services";
 import { WorkflowSubjectType } from "../prisma/generated/prisma/client";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -111,6 +112,14 @@ export const addComment = async (
         },
       });
     }
+
+    await notify({
+      workspaceId: "5c4474e9-2efb-4707-9a3d-2f4c0bd842f0",
+      recipientId: "c166229c-c85e-4e7d-be6b-3079412ebbdf",
+      type: "APPROVAL_DECISION",
+      title: "Event proposal rejected",
+      body: "Comment from approver: " + message,
+    });
 
     res.status(201).json({
       success: true,

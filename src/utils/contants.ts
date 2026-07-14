@@ -196,6 +196,7 @@ export const activeWorkflowInclude = {
     select: { id: true, name: true, description: true, metaData_1: true },
   },
   stages: {
+    where: { isCurrentIteration: true },
     orderBy: { stageOrder: "asc" as const },
     include: {
       approvals: {

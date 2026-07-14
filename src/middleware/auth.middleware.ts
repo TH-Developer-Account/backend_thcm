@@ -22,11 +22,14 @@ export const requireAuth = async (req, res, next) => {
   try {
     // ── Step 1: Extract and verify JWT ──────────────────────────────────────
     const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith("Bearer ")) {
+    const token = authHeader?.startsWith("Bearer ")
+      ? authHeader.split(" ")[1]
+      : (req.query.token as string | undefined); // EventSource fallback
+
+    if (!token) {
       throw new ApiError(401, "No token provided");
     }
 
-    const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as {
       sub: string;
     };
