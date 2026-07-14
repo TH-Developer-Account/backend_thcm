@@ -215,10 +215,32 @@ export const previewWorkflowController = async (
       throw new ApiError(404, "No workflow templates found");
     }
 
-    // 2. Match template
-    const matchedTemplate = templates.find((t) =>
-      evaluateBudget(t.metaData_1 || "", Number(budget)),
-    );
+    // 2. Match template.
+    //
+    // metaData_1 is the differentiator, not the app: a template with a
+    // populated metaData_1 (e.g. ">20000") needs a budget match; a
+    // template with an empty metaData_1 (Vendor Onboarding's single
+    // template, or any app with no tiering) matches unconditionally.
+    // This reads the rule off the template's own data instead of
+    // hardcoding "MAP does X, everyone else does Y" — a new app with its
+    // own tiering just needs metaData_1 populated, no controller change.
+    const untieredTemplate = templates.find((t) => !t.metaData_1?.trim());
+
+    let matchedTemplate;
+
+    if (untieredTemplate) {
+      matchedTemplate = untieredTemplate;
+    } else {
+      if (budget === undefined) {
+        throw new ApiError(
+          400,
+          "budget is required to match a workflow template for this app",
+        );
+      }
+      matchedTemplate = templates.find((t) =>
+        evaluateBudget(t.metaData_1 || "", Number(budget)),
+      );
+    }
 
     if (!matchedTemplate) {
       throw new ApiError(
