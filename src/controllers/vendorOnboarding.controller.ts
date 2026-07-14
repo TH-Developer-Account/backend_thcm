@@ -61,7 +61,7 @@ export const initiateVendorOnboarding = async (
       templateName: "vendor-onboarding",
       templateData: {
         vendorName,
-        formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${onboarding.tokenRecord.token}`,
+        formUrl: `${process.env.FRONTEND_URL}/vendor-form/${onboarding.tokenRecord.token}`,
       },
     });
 
