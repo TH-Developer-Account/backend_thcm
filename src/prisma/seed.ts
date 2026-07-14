@@ -2,6 +2,7 @@ import { prisma } from "../config/prisma";
 import { faker } from "@faker-js/faker";
 import {
   MARKETING_ACTIVITY_PLANNER,
+  VENDOR_ONBOARDING,
   EVENT_PLANNING_CALENDAR,
   branchData,
   eventNameData,
@@ -19,7 +20,6 @@ async function main() {
   // STEP 1: CLEAN ALL TABLES
   // ─────────────────────────────────────────────
 
-  // ✅ WORKFLOW CLEANUP (ADDED)
   await prisma.approval.deleteMany();
   await prisma.stageInstance.deleteMany();
   await prisma.workflowInstance.deleteMany();
@@ -43,6 +43,11 @@ async function main() {
   await prisma.lead.deleteMany();
   await prisma.comment.deleteMany();
 
+  // ✅ NEW — clean vendor onboarding tables too
+  await prisma.vendorAccessToken.deleteMany();
+  await prisma.vendorOnboardingDocument.deleteMany();
+  await prisma.vendorOnboarding.deleteMany();
+
   await prisma.eventProposal.deleteMany();
   await prisma.branch.deleteMany();
   await prisma.region.deleteMany();
@@ -62,43 +67,31 @@ async function main() {
   console.log("✅ Workspace created:", workspace.name);
 
   // ─────────────────────────────────────────────────────────────────────────
-  // STEP 3: APPS
-  // Think of these as the big products your company uses.
-  // They are global (not tied to a workspace) — the WorkspaceApp table
-  // is what "installs" them into a workspace.
+  // STEP 3: APPS — only MAP and Vendor Onboarding
   // ─────────────────────────────────────────────────────────────────────────
 
   const mapApp = await prisma.app.create({
     data: { key: "MAP", name: MARKETING_ACTIVITY_PLANNER },
   });
 
-  const cmdApp = await prisma.app.create({
-    data: { key: "CUSTOMER_MASTER_DATA", name: "Customer Master Data" },
+  const vendorApp = await prisma.app.create({
+    data: { key: "VENDOR_ONBOARDING", name: VENDOR_ONBOARDING },
   });
 
-  const dcApp = await prisma.app.create({
-    data: { key: "DEALER_CLAIMS", name: "Dealer Claims" },
-  });
-
-  // Enable all three apps for the workspace
   await prisma.workspaceApp.createMany({
     data: [
       { workspaceId: workspace.id, appId: mapApp.id },
-      { workspaceId: workspace.id, appId: cmdApp.id },
-      { workspaceId: workspace.id, appId: dcApp.id },
+      { workspaceId: workspace.id, appId: vendorApp.id },
     ],
   });
-  console.log("✅ Apps enabled: MAP, HR, CRM");
+  console.log("✅ Apps enabled: MAP, Vendor Onboarding");
 
   // ─────────────────────────────────────────────────────────────────────────
   // STEP 4: MODULES
-  // Each module is a feature area within an app.
   // MAP has: EPC, EPF, CRF
-  // HR has:  Payroll, Employee Management
-  // CRM has: Leads, Deals
+  // Vendor Onboarding has: a single WORKFLOW_TEMPLATE module (per design)
   // ─────────────────────────────────────────────────────────────────────────
 
-  // MAP modules
   const epcModule = await prisma.module.create({
     data: { key: "EPC", name: EVENT_PLANNING_CALENDAR, appId: mapApp.id },
   });
@@ -109,46 +102,31 @@ async function main() {
     data: { key: "CRF", name: "Customer Response Form", appId: mapApp.id },
   });
 
-  // HR modules
-  const payrollModule = await prisma.module.create({
-    data: { key: "PAYROLL", name: "Payroll Management", appId: cmdApp.id },
-  });
-  const employeeModule = await prisma.module.create({
-    data: { key: "EMP_MGMT", name: "Employee Management", appId: cmdApp.id },
-  });
-
-  // CRM modules
-  const leadsModule = await prisma.module.create({
-    data: { key: "LEADS", name: "Leads", appId: dcApp.id },
-  });
-  const dealsModule = await prisma.module.create({
-    data: { key: "DEALS", name: "Deals", appId: dcApp.id },
+  const vendorOnboardingModule = await prisma.module.create({
+    data: {
+      key: "VENDOR_INITIATION",
+      name: "Vendor Initiation",
+      appId: vendorApp.id,
+    },
   });
 
-  console.log("✅ Modules created for MAP, HR, CRM");
+  console.log("✅ Modules created for MAP and Vendor Onboarding");
 
   // ─────────────────────────────────────────────────────────────────────────
   // STEP 5: PROFILES
   //
-  // This is the core of the redesign. Each profile is a NAMED BUNDLE
-  // of scoped permission rows. The scope (WORKSPACE / APP / MODULE)
-  // lives on each permission row — NOT on the profile itself.
-  //
-  // Profile summary:
-  //
-  //  ┌─────────────────────┬──────────────────────────────────────────────┐
-  //  │ Profile             │ What it grants                               │
-  //  ├─────────────────────┼──────────────────────────────────────────────┤
-  //  │ Workspace Admin     │ read + write on EVERYTHING                   │
-  //  │ Field Engineer      │ read everywhere + write on all of MAP        │
-  //  │ HR Admin            │ read everywhere + write on all of HR         │
-  //  │ EPC Specialist      │ read everywhere + write on MAP→EPC only      │
-  //  │ Read-Only User      │ read on everything, no write at all          │
-  //  └─────────────────────┴──────────────────────────────────────────────┘
+  //  ┌─────────────────────────┬───────────────────────────────────────────┐
+  //  │ Profile                 │ What it grants                            │
+  //  ├─────────────────────────┼───────────────────────────────────────────┤
+  //  │ Workspace Admin         │ read + write on everything                │
+  //  │ Field Engineer          │ read everywhere + write on all of MAP     │
+  //  │ EPC Specialist          │ read everywhere + write on MAP→EPC only   │
+  //  │ Vendor Onboarding Mgr   │ read everywhere + write on Vendor Onbrdng │
+  //  │ Read-Only User          │ read on everything, no write at all       │
+  //  └─────────────────────────┴───────────────────────────────────────────┘
   // ─────────────────────────────────────────────────────────────────────────
 
   // ── Profile 1: Workspace Admin ────────────────────────────────────────────
-  // READ + WRITE on every module across all apps.
   const adminProfile = await prisma.profile.create({
     data: {
       name: "Workspace Admin",
@@ -157,87 +135,42 @@ async function main() {
       isSystemProfile: true,
       permissions: {
         create: [
-          // MAP
           { action: "read", moduleId: epcModule.id },
           { action: "write", moduleId: epcModule.id },
           { action: "read", moduleId: epfModule.id },
           { action: "write", moduleId: epfModule.id },
           { action: "read", moduleId: crfModule.id },
           { action: "write", moduleId: crfModule.id },
-          // HR
-          { action: "read", moduleId: payrollModule.id },
-          { action: "write", moduleId: payrollModule.id },
-          { action: "read", moduleId: employeeModule.id },
-          { action: "write", moduleId: employeeModule.id },
-          // CRM
-          { action: "read", moduleId: leadsModule.id },
-          { action: "write", moduleId: leadsModule.id },
-          { action: "read", moduleId: dealsModule.id },
-          { action: "write", moduleId: dealsModule.id },
+          { action: "read", moduleId: vendorOnboardingModule.id },
+          { action: "write", moduleId: vendorOnboardingModule.id },
         ],
       },
     },
   });
 
   // ── Profile 2: Field Engineer ─────────────────────────────────────────────
-  // READ + WRITE on all MAP modules.
-  // READ on HR and CRM modules.
-  // No access to anything not listed here.
+  // WRITE + READ on all MAP modules. READ only on Vendor Onboarding.
   const fieldEngineerProfile = await prisma.profile.create({
     data: {
       name: "Field Engineer",
-      description: "Read+write on MAP, read on HR and CRM",
+      description: "Read+write on MAP, read on Vendor Onboarding",
       workspaceId: workspace.id,
       permissions: {
         create: [
-          // MAP — full access
           { action: "read", moduleId: epcModule.id },
           { action: "write", moduleId: epcModule.id },
           { action: "read", moduleId: epfModule.id },
           { action: "write", moduleId: epfModule.id },
           { action: "read", moduleId: crfModule.id },
           { action: "write", moduleId: crfModule.id },
-          // HR — read only
-          { action: "read", moduleId: payrollModule.id },
-          { action: "read", moduleId: employeeModule.id },
-          // CRM — read only
-          { action: "read", moduleId: leadsModule.id },
-          { action: "read", moduleId: dealsModule.id },
+          { action: "read", moduleId: vendorOnboardingModule.id },
         ],
       },
     },
   });
 
-  // ── Profile 3: HR Admin ───────────────────────────────────────────────────
-  // READ + WRITE on all HR modules.
-  // READ on MAP and CRM modules.
-  const hrAdminProfile = await prisma.profile.create({
-    data: {
-      name: "HR Admin",
-      description: "Read+write on HR, read on MAP and CRM",
-      workspaceId: workspace.id,
-      permissions: {
-        create: [
-          // MAP — read only
-          { action: "read", moduleId: epcModule.id },
-          { action: "read", moduleId: epfModule.id },
-          { action: "read", moduleId: crfModule.id },
-          // HR — full access
-          { action: "read", moduleId: payrollModule.id },
-          { action: "write", moduleId: payrollModule.id },
-          { action: "read", moduleId: employeeModule.id },
-          { action: "write", moduleId: employeeModule.id },
-          // CRM — read only
-          { action: "read", moduleId: leadsModule.id },
-          { action: "read", moduleId: dealsModule.id },
-        ],
-      },
-    },
-  });
-
-  // ── Profile 4: EPC Specialist ─────────────────────────────────────────────
-  // READ + WRITE on MAP→EPC only.
-  // READ on everything else.
+  // ── Profile 3: EPC Specialist ─────────────────────────────────────────────
+  // WRITE + READ on MAP→EPC only. READ on everything else.
   const epcSpecialistProfile = await prisma.profile.create({
     data: {
       name: "EPC Specialist",
@@ -245,24 +178,36 @@ async function main() {
       workspaceId: workspace.id,
       permissions: {
         create: [
-          // MAP
           { action: "read", moduleId: epcModule.id },
-          { action: "write", moduleId: epcModule.id }, // only EPC gets write
+          { action: "write", moduleId: epcModule.id },
           { action: "read", moduleId: epfModule.id },
           { action: "read", moduleId: crfModule.id },
-          // HR
-          { action: "read", moduleId: payrollModule.id },
-          { action: "read", moduleId: employeeModule.id },
-          // CRM
-          { action: "read", moduleId: leadsModule.id },
-          { action: "read", moduleId: dealsModule.id },
+          { action: "read", moduleId: vendorOnboardingModule.id },
+        ],
+      },
+    },
+  });
+
+  // ── Profile 4: Vendor Onboarding Manager ──────────────────────────────────
+  // WRITE + READ on Vendor Onboarding. READ only on MAP.
+  const vendorOnboardingManagerProfile = await prisma.profile.create({
+    data: {
+      name: "Vendor Onboarding Manager",
+      description: "Read+write on Vendor Onboarding, read on MAP",
+      workspaceId: workspace.id,
+      permissions: {
+        create: [
+          { action: "read", moduleId: epcModule.id },
+          { action: "read", moduleId: epfModule.id },
+          { action: "read", moduleId: crfModule.id },
+          { action: "read", moduleId: vendorOnboardingModule.id },
+          { action: "write", moduleId: vendorOnboardingModule.id },
         ],
       },
     },
   });
 
   // ── Profile 5: Read-Only User ─────────────────────────────────────────────
-  // READ on every module. No write anywhere.
   const readOnlyProfile = await prisma.profile.create({
     data: {
       name: "Read-Only User",
@@ -273,44 +218,14 @@ async function main() {
           { action: "read", moduleId: epcModule.id },
           { action: "read", moduleId: epfModule.id },
           { action: "read", moduleId: crfModule.id },
-          { action: "read", moduleId: payrollModule.id },
-          { action: "read", moduleId: employeeModule.id },
-          { action: "read", moduleId: leadsModule.id },
-          { action: "read", moduleId: dealsModule.id },
-        ],
-      },
-    },
-  });
-
-  // ── Profile 6: CRM Restricted ─────────────────────────────────────────────
-  // READ + WRITE on MAP. READ on HR. NO access to CRM at all.
-  // This profile demonstrates the key point: CRM modules are simply
-  // not listed, so hasPermission() returns false for any CRM path.
-  const crmRestrictedProfile = await prisma.profile.create({
-    data: {
-      name: "CRM Restricted",
-      description: "Full MAP access, HR read, no CRM access",
-      workspaceId: workspace.id,
-      permissions: {
-        create: [
-          // MAP — full access
-          { action: "read", moduleId: epcModule.id },
-          { action: "write", moduleId: epcModule.id },
-          { action: "read", moduleId: epfModule.id },
-          { action: "write", moduleId: epfModule.id },
-          { action: "read", moduleId: crfModule.id },
-          { action: "write", moduleId: crfModule.id },
-          // HR — read only
-          { action: "read", moduleId: payrollModule.id },
-          { action: "read", moduleId: employeeModule.id },
-          // CRM — intentionally omitted → no access at all
+          { action: "read", moduleId: vendorOnboardingModule.id },
         ],
       },
     },
   });
 
   console.log(
-    "✅ Profiles created: Admin, Field Engineer, HR Admin, EPC Specialist, Read-Only, CRM Restricted",
+    "✅ Profiles created: Admin, Field Engineer, EPC Specialist, Vendor Onboarding Manager, Read-Only",
   );
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -342,7 +257,7 @@ async function main() {
       data: {
         userId: users[i].id,
         workspaceId: workspace.id,
-        isSuperAdmin: i === 0, // only the first user is superadmin
+        isSuperAdmin: i === 0,
       },
     });
   }
@@ -350,19 +265,13 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
   // STEP 8: PROFILE ASSIGNMENTS
   //
-  // This shows the power of the new design:
-  //
-  //   User 0 (superadmin) → Workspace Admin profile
-  //   Users 1–3           → Field Engineer  (WRITE on MAP, READ elsewhere)
-  //   Users 4–5           → HR Admin        (WRITE on HR, READ elsewhere)
-  //   User 6              → EPC Specialist  (WRITE on EPC only, READ elsewhere)
-  //   User 7              → TWO profiles simultaneously:
-  //                           Field Engineer + HR Admin
-  //                           → WRITE on MAP + WRITE on HR + READ elsewhere
-  //   Users 8–9           → Read-Only User
+  //   User 0     → Workspace Admin
+  //   Users 1–3  → Field Engineer
+  //   Users 4–5  → EPC Specialist / Vendor Onboarding Manager (one each)
+  //   User 6     → BOTH Field Engineer + Vendor Onboarding Manager
+  //   Users 7–9  → Read-Only
   // ─────────────────────────────────────────────────────────────────────────
 
-  // User 0 — Workspace Admin
   await prisma.userProfile.create({
     data: {
       userId: users[0].id,
@@ -371,7 +280,6 @@ async function main() {
     },
   });
 
-  // Users 1–3 — Field Engineer
   for (let i = 1; i <= 3; i++) {
     await prisma.userProfile.create({
       data: {
@@ -382,46 +290,39 @@ async function main() {
     });
   }
 
-  // Users 4–5 — HR Admin
-  for (let i = 4; i <= 5; i++) {
-    await prisma.userProfile.create({
-      data: {
-        userId: users[i].id,
-        workspaceId: workspace.id,
-        profileId: hrAdminProfile.id,
-      },
-    });
-  }
-
-  // User 6 — EPC Specialist
   await prisma.userProfile.create({
     data: {
-      userId: users[6].id,
+      userId: users[4].id,
       workspaceId: workspace.id,
       profileId: epcSpecialistProfile.id,
     },
   });
 
-  // User 7 — BOTH Field Engineer AND HR Admin (multiple profiles!)
-  // This user gets WRITE on MAP + WRITE on HR + READ everywhere.
-  // The permission check will pass if ANY profile grants the action.
+  await prisma.userProfile.create({
+    data: {
+      userId: users[5].id,
+      workspaceId: workspace.id,
+      profileId: vendorOnboardingManagerProfile.id,
+    },
+  });
+
+  // User 6 — BOTH Field Engineer AND Vendor Onboarding Manager
   await prisma.userProfile.createMany({
     data: [
       {
-        userId: users[7].id,
+        userId: users[6].id,
         workspaceId: workspace.id,
         profileId: fieldEngineerProfile.id,
       },
       {
-        userId: users[7].id,
+        userId: users[6].id,
         workspaceId: workspace.id,
-        profileId: hrAdminProfile.id,
+        profileId: vendorOnboardingManagerProfile.id,
       },
     ],
   });
 
-  // Users 8–9 — Read-Only
-  for (let i = 8; i <= 9; i++) {
+  for (let i = 7; i <= 9; i++) {
     await prisma.userProfile.create({
       data: {
         userId: users[i].id,
@@ -432,19 +333,21 @@ async function main() {
   }
 
   console.log("✅ Profile assignments complete");
+  console.log("   User 0:    Workspace Admin");
   console.log(
-    "   User 0:   Workspace Admin  (superadmin bypass + admin profile)",
+    "   Users 1–3: Field Engineer (WRITE MAP + READ Vendor Onboarding)",
   );
-  console.log("   Users 1–3: Field Engineer  (WRITE on MAP + READ everywhere)");
-  console.log("   Users 4–5: HR Admin        (WRITE on HR  + READ everywhere)");
-  console.log("   User 6:    EPC Specialist  (WRITE on EPC + READ everywhere)");
+  console.log("   User 4:    EPC Specialist (WRITE EPC only)");
   console.log(
-    "   User 7:    Field Engineer + HR Admin  (WRITE MAP+HR + READ everywhere)",
+    "   User 5:    Vendor Onboarding Manager (WRITE Vendor Onboarding)",
   );
-  console.log("   Users 8–9: Read-Only       (READ everywhere, no WRITE)");
+  console.log(
+    "   User 6:    Field Engineer + Vendor Onboarding Manager (both writes)",
+  );
+  console.log("   Users 7–9: Read-Only");
 
   // ─────────────────────────────────────────────────────────────────────────
-  // STEP 9: MASTER DATA (unchanged from original)
+  // STEP 9: MASTER DATA (unchanged)
   // ─────────────────────────────────────────────────────────────────────────
 
   const departments = await Promise.all(
@@ -469,7 +372,6 @@ async function main() {
     const dept = departments.find(
       (d) => d.department_name === item.departmentName,
     );
-
     if (!dept) continue;
 
     await prisma.vertical.createMany({
@@ -500,7 +402,7 @@ async function main() {
   const eventNames = await prisma.eventName.findMany();
 
   // ─────────────────────────────────────────────────────────────────────────
-  // STEP 10: EVENT PROPOSALS (unchanged from original)
+  // STEP 10: EVENT PROPOSALS (unchanged)
   // ─────────────────────────────────────────────────────────────────────────
 
   for (let i = 0; i < 50; i++) {
@@ -512,7 +414,7 @@ async function main() {
       console.warn(
         `No verticals found for department ${department.department_name}`,
       );
-      continue; // skip this iteration
+      continue;
     }
     const vertical = faker.helpers.arrayElement(verticals);
     const region = faker.helpers.arrayElement(regions);
@@ -558,18 +460,14 @@ async function main() {
   }
 
   console.log("✅ 50 event proposals created");
-  console.log("\n🎉 Seeding completed successfully\n");
 
   // ─────────────────────────────────────────────────────────────────────────
-  // PERMISSION CHECK DEMO
-  // Run this after seeding to verify the logic works correctly.
+  // PERMISSION CHECK DEMO — MAP + Vendor Onboarding only
   // ─────────────────────────────────────────────────────────────────────────
   console.log(
     "── Permission check demo ──────────────────────────────────────────",
   );
 
-  // Matches the new schema exactly — no scopeType, no appId on ProfilePermission.
-  // Just action + moduleId. That's the whole check.
   async function can(
     userId: string,
     action: "read" | "write",
@@ -594,66 +492,31 @@ async function main() {
   }
 
   const fieldEngineerUser = users[1];
-  const hrAdminUser = users[4];
-  const epcSpecialist = users[6];
-  const readOnlyUser = users[8];
-  const crmRestrictedUser = users[3]; // also a Field Engineer — has no CRM rows
+  const epcSpecialist = users[4];
+  const vendorOnboardingManager = users[5];
+  const readOnlyUser = users[7];
 
   const check = async (label: string, result: boolean, expected: boolean) => {
     const icon = result === expected ? "✅" : "❌";
     console.log(`${icon} ${label}: ${result} (expected ${expected})`);
   };
 
-  // Field Engineer: WRITE on MAP, READ on HR, no WRITE on HR
   await check(
     "FieldEng → WRITE EPC",
     await can(fieldEngineerUser.id, "write", epcModule.id),
     true,
   );
   await check(
-    "FieldEng → WRITE EPF",
-    await can(fieldEngineerUser.id, "write", epfModule.id),
+    "FieldEng → READ  Vendor Onboarding",
+    await can(fieldEngineerUser.id, "read", vendorOnboardingModule.id),
     true,
   );
   await check(
-    "FieldEng → READ  Payroll",
-    await can(fieldEngineerUser.id, "read", payrollModule.id),
-    true,
-  );
-  await check(
-    "FieldEng → WRITE Payroll",
-    await can(fieldEngineerUser.id, "write", payrollModule.id),
-    false,
-  );
-  await check(
-    "FieldEng → READ  Leads",
-    await can(fieldEngineerUser.id, "read", leadsModule.id),
-    true,
-  );
-  await check(
-    "FieldEng → WRITE Leads",
-    await can(fieldEngineerUser.id, "write", leadsModule.id),
+    "FieldEng → WRITE Vendor Onboarding",
+    await can(fieldEngineerUser.id, "write", vendorOnboardingModule.id),
     false,
   );
 
-  // HR Admin: WRITE on HR, READ on MAP, no WRITE on MAP
-  await check(
-    "HRAdmin  → WRITE Payroll",
-    await can(hrAdminUser.id, "write", payrollModule.id),
-    true,
-  );
-  await check(
-    "HRAdmin  → READ  EPC",
-    await can(hrAdminUser.id, "read", epcModule.id),
-    true,
-  );
-  await check(
-    "HRAdmin  → WRITE EPC",
-    await can(hrAdminUser.id, "write", epcModule.id),
-    false,
-  );
-
-  // EPC Specialist: WRITE on EPC only
   await check(
     "EPCSpec  → WRITE EPC",
     await can(epcSpecialist.id, "write", epcModule.id),
@@ -664,13 +527,18 @@ async function main() {
     await can(epcSpecialist.id, "write", epfModule.id),
     false,
   );
+
   await check(
-    "EPCSpec  → READ  Payroll",
-    await can(epcSpecialist.id, "read", payrollModule.id),
+    "VendorMgr → WRITE Vendor Onboarding",
+    await can(vendorOnboardingManager.id, "write", vendorOnboardingModule.id),
     true,
   );
+  await check(
+    "VendorMgr → WRITE EPC",
+    await can(vendorOnboardingManager.id, "write", epcModule.id),
+    false,
+  );
 
-  // Read-Only: can read, cannot write
   await check(
     "ReadOnly → READ  EPC",
     await can(readOnlyUser.id, "read", epcModule.id),
@@ -682,24 +550,12 @@ async function main() {
     false,
   );
 
-  // CRM Restricted (Field Engineer with no CRM rows): no access to CRM at all
-  await check(
-    "CRMRestricted → READ  Leads",
-    await can(crmRestrictedUser.id, "read", leadsModule.id),
-    false,
-  );
-  await check(
-    "CRMRestricted → WRITE Leads",
-    await can(crmRestrictedUser.id, "write", leadsModule.id),
-    false,
-  );
-
   console.log(
     "────────────────────────────────────────────────────────────────────\n",
   );
 
   // ─────────────────────────────────────────────
-  // STEP 11: WORKFLOW TEMPLATE (ADDED)
+  // STEP 11: WORKFLOW TEMPLATE — MAP (unchanged)
   // ─────────────────────────────────────────────
 
   const template = await prisma.workflowTemplate.create({
@@ -713,7 +569,6 @@ async function main() {
       metaData_1: ">20000",
       metaData_2: "",
       metaData_3: "",
-
       stages: {
         create: [
           {
@@ -750,31 +605,64 @@ async function main() {
     },
   });
 
-  console.log("✅ Workflow template created");
+  console.log("✅ MAP workflow template created");
 
   // ─────────────────────────────────────────────
-  // STEP 12: WORKFLOW INSTANCES (ADDED)
+  // STEP 11b: WORKFLOW TEMPLATE — Vendor Onboarding ✅ NEW
+  // Single template across workspace, per design decision.
+  // ─────────────────────────────────────────────
+
+  const vendorTemplate = await prisma.workflowTemplate.create({
+    data: {
+      name: "Standard Vendor Onboarding Approval",
+      description: "Two-stage approval for vendor onboarding requests",
+      workspaceId: workspace.id,
+      created_by_id: users[0].id,
+      updated_by_id: users[0].id,
+      appId: vendorApp.id,
+      metaData_1: "",
+      metaData_2: "",
+      metaData_3: "",
+      stages: {
+        create: [
+          {
+            name: "Approver",
+            stageOrder: 1,
+            strategy: "ANY",
+            approvers: {
+              create: [{ userId: users[4].id }, { userId: users[5].id }],
+            },
+          },
+          {
+            name: "Final Reviewer",
+            stageOrder: 2,
+            strategy: "ANY",
+            approvers: {
+              create: [{ userId: users[6].id }],
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  console.log("✅ Vendor Onboarding workflow template created");
+
+  // ─────────────────────────────────────────────
+  // STEP 12: WORKFLOW INSTANCES — MAP (unchanged)
   // ─────────────────────────────────────────────
 
   const proposals = await prisma.eventProposal.findMany({ take: 10 });
 
   const templateWithStages = await prisma.workflowTemplate.findUnique({
     where: { id: template.id },
-    include: {
-      stages: {
-        include: {
-          approvers: true,
-        },
-      },
-    },
+    include: { stages: { include: { approvers: true } } },
   });
 
   if (!templateWithStages) throw new Error("Template not found");
 
   for (let i = 0; i < proposals.length; i++) {
     const epc = proposals[i];
-
-    // 👇 distribute stage (1,2,3,1,2,3...)
     const activeStageOrder = (i % templateWithStages.stages.length) + 1;
 
     await prisma.workflowInstance.create({
@@ -785,33 +673,25 @@ async function main() {
         workspaceId: workspace.id,
         currentStage: activeStageOrder,
         appId: mapApp.id,
-
         stages: {
           create: templateWithStages.stages.map((stage) => {
             let status: "PENDING" | "IN_PROGRESS" | "APPROVED" = "PENDING";
-
-            if (stage.stageOrder < activeStageOrder) {
-              status = "APPROVED";
-            } else if (stage.stageOrder === activeStageOrder) {
+            if (stage.stageOrder < activeStageOrder) status = "APPROVED";
+            else if (stage.stageOrder === activeStageOrder)
               status = "IN_PROGRESS";
-            }
 
             return {
               stageOrder: stage.stageOrder,
               strategy: stage.strategy,
               minApprovals: stage.minApprovals,
               status,
-
               approvals: {
                 create: stage.approvers.map((a) => ({
                   approverId: a.userId,
-
-                  // 👇 mark approvals done for past stages
                   status:
                     stage.stageOrder < activeStageOrder
                       ? "APPROVED"
                       : "PENDING",
-
                   actedAt:
                     stage.stageOrder < activeStageOrder ? new Date() : null,
                 })),
@@ -823,19 +703,18 @@ async function main() {
     });
   }
 
-  // --------------------------------------------------
-  // 1️⃣ Create Sample Products
-  // --------------------------------------------------
+  // ─────────────────────────────────────────────
+  // 1️⃣ Products, EPF/CRF (unchanged)
+  // ─────────────────────────────────────────────
 
   await prisma.productMaster.createMany({
     data: products as ProductMasterCreateManyInput[],
-    skipDuplicates: true, // idempotent — safe to re-run without blowing up on existing rows
+    skipDuplicates: true,
   });
 
   console.log("✅ Products created");
 
   const allProducts = await prisma.productMaster.findMany();
-
   const epfProducts = allProducts.filter((p) => p.productType === "EPF");
   const crfProducts = allProducts.filter((p) => p.productType === "CRF");
 
@@ -845,63 +724,47 @@ async function main() {
     const epf = await prisma.ePF.create({
       data: {
         epcId: epc.id,
-
-        // 👥 Participants
         externalParticipants: Math.floor(Math.random() * 50) + 10,
         internalParticipants: Math.floor(Math.random() * 30) + 5,
-
-        // 💰 Budget
         eventBudget: Math.floor(Math.random() * (30000 - 20000 + 1)) + 20000,
         annualBudget:
           Math.floor(Math.random() * (500000 - 200000 + 1)) + 200000,
         availableBudget:
           Math.floor(Math.random() * (100000 - 50000 + 1)) + 50000,
-
-        // 🤝 Dealer Contribution
         dealerName: "Sample Dealer",
         dealerPercent: Math.floor(Math.random() * 50) + 1,
         dealerShare: Math.floor(Math.random() * 20000) + 5000,
         tataHitachiPoAmount: Math.floor(Math.random() * 30000) + 10000,
-
-        // optional
         status: "ACTIVE",
       },
     });
 
-    const crf = await prisma.cRF.create({
-      data: {
-        epcId: epc.id,
-      },
-    });
+    const crf = await prisma.cRF.create({ data: { epcId: epc.id } });
 
     for (const product of epfProducts) {
-      const quantity = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
+      const quantity = Math.floor(Math.random() * 3) + 1;
       const rate = product.unitRate;
-      const amount = quantity * Number(rate);
-
       await prisma.lineItem.create({
         data: {
           epfId: epf.id,
           productId: product.id,
           quantity,
           rate,
-          amount,
+          amount: quantity * Number(rate),
         },
       });
     }
 
     for (const product of crfProducts) {
-      const quantity = Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+      const quantity = Math.floor(Math.random() * 10) + 1;
       const rate = product.unitRate;
-      const amount = quantity * Number(rate);
-
       await prisma.lineItem.create({
         data: {
           crfId: crf.id,
           productId: product.id,
           quantity,
           rate,
-          amount,
+          amount: quantity * Number(rate),
         },
       });
     }
@@ -909,7 +772,24 @@ async function main() {
 
   console.log("✅ EPF and CRF created");
 
-  console.log("✅ Workflow instances created with distributed stages");
+  // ─────────────────────────────────────────────
+  // STEP 13: SAMPLE VENDOR ONBOARDING RECORD ✅ NEW
+  // One seeded record so the frontend has something to render immediately.
+  // ─────────────────────────────────────────────
+
+  await prisma.vendorOnboarding.create({
+    data: {
+      workspaceId: workspace.id,
+      initiatedById: users[1].id, // a Field Engineer, matches "employee initiates" flow
+      status: "AWAITING_VENDOR",
+      vendorName: faker.company.name(),
+      mobile: `9${faker.string.numeric(9)}`,
+      email: faker.internet.email().toLowerCase(),
+    },
+  });
+
+  console.log("✅ Sample vendor onboarding record created");
+  console.log("\n🎉 Seeding completed successfully\n");
 }
 
 main()

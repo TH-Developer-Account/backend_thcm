@@ -72,11 +72,18 @@ enum ActivityAction {
   REPORT_CLARIFICATION_REQUESTED // validator requests clarification on report
   EPC_CLOSED              // proposer closes after validation or deviation approval
 
+  // Vendor Onboarding
+  VENDOR_ONBOARDING_INITIATED
+  VENDOR_FORM_SUBMITTED
+  VENDOR_ONBOARDING_SENT_FOR_APPROVAL
+  VENDOR_ONBOARDING_CLOSED
+
   // Approval/workflow domain
   APPROVED
   REJECTED
   CLARIFY
   DEVIATION_RAISED   
+
 }
 
 enum ProductType {
@@ -119,7 +126,8 @@ enum ImportExportStatus {
 
 enum WorkflowSubjectType {
   EVENT_PROPOSAL
-  AUDIT_INSTANCE
+  // AUDIT_INSTANCE
+  VENDOR_ONBOARDING 
 }
 
 enum NotificationType {
@@ -156,6 +164,8 @@ model User {
 
   created_workflow WorkflowTemplate[] @relation("WorkFlowCreatedBy")
   updated_workflow WorkflowTemplate[] @relation("WorkFlowUpdatedBy")
+
+  initiated_vendor_onboardings VendorOnboarding[] @relation("VendorOnboardingInitiatedBy")
 
   approvals         Approval[]
   templateApprovals TemplateApprover[]
@@ -216,6 +226,7 @@ model Workspace {
   apps         WorkspaceApp[]
   profiles     Profile[]
   userProfiles UserProfile[]
+  vendorOnboardings VendorOnboarding[]
 
   workflowTemplates WorkflowTemplate[]
   workflows         WorkflowInstance[]
@@ -939,6 +950,100 @@ model PushSubscription {
   @@index([userId])
 }
 
+// VENDOR ONBOARDING
+//
+// Two-phase lifecycle:
+//   Phase 1 (no WorkflowInstance yet): AWAITING_VENDOR → VENDOR_SUBMITTED → IN_REVIEW
+//   Phase 2 (WorkflowInstance drives it): IN_PROGRESS → APPROVED → CLOSED
+//
+// Vendor never becomes a User — access is via VendorAccessToken, not JWT.
+// Status is a plain string (same convention as EventProposal.status).
+// ─────────────────────────────────────────────
+
+model VendorOnboarding {
+  id            String   @id @default(uuid())
+  workspaceId   String
+  initiatedById String
+  status        String   @default("AWAITING_VENDOR")
+
+  // ── Vendor-filled (Phase 1) ──
+  vendorName        String?
+  state             String?
+  city              String?
+  pinCode           String?
+  address           String?
+  mobile            String?
+  email             String?
+  msmeVendor        Boolean?
+  msmeCertAttached  Boolean?
+  bankName          String?
+  bankBranch        String?
+  ifscCode          String?
+  bankAddress       String?
+  accountNumber     String?
+  gstin             String?
+  pan               String?
+  entityRegNo       String?
+  dpdpConsentedAt   DateTime?
+  dpdpConsentIp     String?
+  vendorSubmittedAt DateTime?
+
+  // ── Employee-filled (after vendor submission, before approval) ──
+  vendorCode                String?
+  vendorType                String?
+  companyCode               String?
+  purchaseOrg               String?
+  paymentTerm               String?
+  tds                       String?
+  vendorCategory            String?
+  materialType              String?
+  materialSubType           String?
+  selfAssessmentObtained    Boolean?
+  ndaObtained               Boolean?
+  gpaObtained               Boolean?
+  isRelatedParty            Boolean?
+  vendorAuditReportPrepared Boolean?
+  natureOfService           String?
+  onboardingReason          String?
+
+  workspace   Workspace                  @relation(fields: [workspaceId], references: [id])
+  initiatedBy User                       @relation("VendorOnboardingInitiatedBy", fields: [initiatedById], references: [id])
+  documents   VendorOnboardingDocument[]
+  accessTokens VendorAccessToken[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([workspaceId, status])
+}
+
+model VendorOnboardingDocument {
+  id           String   @id @default(uuid())
+  onboardingId String
+  documentType String   // GST_CERTIFICATE | PAN_DOCUMENT | CANCELLED_CHEQUE
+                         // | INCORPORATION_CERTIFICATE | MSME_CERTIFICATE | NDA_CERTIFICATE
+  s3Key        String
+  fileUrl      String
+  uploadedAt   DateTime @default(now())
+
+  onboarding VendorOnboarding @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
+
+  @@unique([onboardingId, documentType])
+  @@index([onboardingId])
+}
+
+model VendorAccessToken {
+  id           String    @id @default(uuid())
+  onboardingId String
+  token        String    @unique
+  used         Boolean   @default(false)
+  usedAt       DateTime?
+  created_at   DateTime  @default(now())
+
+  onboarding VendorOnboarding @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
+
+  @@index([onboardingId])
+}
 
 
 

@@ -21,9 +21,7 @@
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
 import { activeWorkflowInclude } from "../utils/contants";
-
-// export type WorkflowSubjectType = "EVENT_PROPOSAL" | "AUDIT_INSTANCE";
-export type WorkflowSubjectType = "EVENT_PROPOSAL";
+import { Prisma, WorkflowSubjectType } from "../prisma/generated/prisma/client";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // getSubjectOwnerId
@@ -45,6 +43,13 @@ const ownerIdResolvers: Record<
       select: { created_by_id: true },
     });
     return epc?.created_by_id ?? null;
+  },
+  VENDOR_ONBOARDING: async (subjectId) => {
+    const onboarding = await prisma.vendorOnboarding.findUnique({
+      where: { id: subjectId },
+      select: { initiatedById: true },
+    });
+    return onboarding?.initiatedById ?? null;
   },
 
   // AUDIT_INSTANCE: async (subjectId) => {
@@ -93,6 +98,9 @@ const subjectResolvers: Record<
   EVENT_PROPOSAL: (subjectId) =>
     prisma.eventProposal.findUnique({ where: { id: subjectId } }),
 
+  VENDOR_ONBOARDING: (subjectId) =>
+    prisma.vendorOnboarding.findUnique({ where: { id: subjectId } }),
+
   // AUDIT_INSTANCE: (subjectId) =>
   //   prisma.auditInstance.findUnique({ where: { id: subjectId } }),
 };
@@ -123,4 +131,57 @@ export async function getActiveWorkflowForSubject(
     orderBy: { created_at: "desc" },
     include: activeWorkflowInclude,
   });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// updateSubjectStatus  ✅ NEW
+//
+// The third thing this file needs to know about each subject type: how to
+// write its status back. Used by approveStage (final stage), rejectStage,
+// and clarifyStage — the only thing that varies per call site is which
+// status string gets passed in.
+// ─────────────────────────────────────────────────────────────────────────────
+
+type Tx = Prisma.TransactionClient;
+
+const statusUpdaters: Record<
+  WorkflowSubjectType,
+  (tx: Tx, subjectId: string, status: string) => Promise<unknown>
+> = {
+  EVENT_PROPOSAL: (tx, subjectId, status) =>
+    tx.eventProposal.update({ where: { id: subjectId }, data: { status } }),
+
+  VENDOR_ONBOARDING: (tx, subjectId, status) =>
+    tx.vendorOnboarding.update({ where: { id: subjectId }, data: { status } }),
+};
+
+export async function updateSubjectStatus(
+  tx: Tx,
+  subjectType: WorkflowSubjectType,
+  subjectId: string,
+  status: string,
+): Promise<void> {
+  const updater = statusUpdaters[subjectType];
+  if (!updater) return; // unwired subject type — no-op, same as commented-out AUDIT_INSTANCE branches above
+  await updater(tx, subjectId, status);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// clarifyResetStatus  ✅ NEW
+//
+// Clarify doesn't reuse a pass-through status like APPROVED/REJECTED — each
+// subject resets to a different "who does this go back to" status.
+// EVENT_PROPOSAL → PENDING (back to proposer)
+// VENDOR_ONBOARDING → IN_REVIEW (back to initiating employee, not the vendor)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const clarifyResetStatus: Record<WorkflowSubjectType, string> = {
+  EVENT_PROPOSAL: "PENDING",
+  VENDOR_ONBOARDING: "IN_REVIEW",
+};
+
+export function getClarifyResetStatus(
+  subjectType: WorkflowSubjectType,
+): string {
+  return clarifyResetStatus[subjectType] ?? "PENDING";
 }

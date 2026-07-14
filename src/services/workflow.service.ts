@@ -2,6 +2,7 @@ import { prisma } from "../config/prisma";
 import { selectTemplate } from "./template.service";
 import { buildWorkflowStages } from "../helpers/workflow.helper";
 import { notify } from "../services/notification.services";
+import { updateSubjectStatus } from "../helpers/workflowSubject.helper";
 import {
   ApprovalStatus,
   StageStatus,
@@ -143,10 +144,12 @@ export const approveStage = async ({
           data: { status: WorkflowStatus.APPROVED },
         });
 
-        await tx.eventProposal.update({
-          where: { id: stage!.workflow.subjectId },
-          data: { status: WorkflowStatus.APPROVED },
-        });
+        await updateSubjectStatus(
+          tx,
+          stage!.workflow.subjectType,
+          stage!.workflow.subjectId,
+          "APPROVED",
+        );
 
         outcome = {
           kind: "final_approved",
@@ -275,13 +278,13 @@ export const rejectStage = async ({
       data: { status: "REJECTED" },
     });
 
-    // (optional) update EPC status — UNCHANGED
-    await tx.eventProposal.update({
-      where: { id: stage!.workflow.subjectId },
-      data: { status: "REJECTED" },
-    });
+    await updateSubjectStatus(
+      tx,
+      stage!.workflow.subjectType,
+      stage!.workflow.subjectId,
+      "REJECTED",
+    );
 
-    // ✅ NEW — just returning identifiers, no extra queries inside the tx
     return {
       workflowId: stage!.workflowId,
       epcId: stage!.workflow.subjectId,

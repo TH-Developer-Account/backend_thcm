@@ -4,7 +4,7 @@ import { requireAuth, authorize } from "../middleware/auth.middleware";
 import { firstAuthRequestPerDay } from "../middleware/dailyActiveUsers.middleware";
 import {
   addComment,
-  getEPCActivityTimeline,
+  getActivityFeed,
   addCreatorComment,
 } from "../controllers/comment.controller";
 
@@ -14,7 +14,10 @@ router.use(requireAuth); // sets req.user
 router.use(firstAuthRequestPerDay);
 
 router.post("/", asyncHandler(addComment));
-router.post("/creator-comment", asyncHandler(addCreatorComment));
-router.get("/:epcId", asyncHandler(getEPCActivityTimeline));
+router.post(
+  "/:subjectType/:subjectId/creator-comment",
+  asyncHandler(addCreatorComment),
+);
+router.get("/:subjectType/:subjectId/activity", asyncHandler(getActivityFeed));
 
 export default router;

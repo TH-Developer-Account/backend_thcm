@@ -22,6 +22,7 @@ import exportRoutes from "./routes/export.routes";
 import pincodeRoutes from "./routes/pincode.routes";
 import importExportLogRoutes from "./routes/importExportLog.routes";
 import notificationRoutes from "./routes/notification.routes";
+import vendorOnboardRoutes from "./routes/vendorOnboarding.routes";
 
 import errorHandler from "./middleware/error.middleware";
 import ApiError from "./utils/apiError";
@@ -62,6 +63,7 @@ app.use("/api/v1/import", importRoutes);
 app.use("/api/v1/export", exportRoutes);
 app.use("/api/v1/import-export-logs", importExportLogRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
+app.use("/api/v1/vendor-onboarding", vendorOnboardRoutes);
 
 // Scheduler
 startJobs();

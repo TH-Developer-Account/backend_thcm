@@ -422,8 +422,14 @@ export const ModelName = {
   EventReport: 'EventReport',
   EventReportImage: 'EventReportImage',
   ImportExportLog: 'ImportExportLog',
+<<<<<<< HEAD
   Notification: 'Notification',
   PushSubscription: 'PushSubscription'
+=======
+  VendorOnboarding: 'VendorOnboarding',
+  VendorOnboardingDocument: 'VendorOnboardingDocument',
+  VendorAccessToken: 'VendorAccessToken'
+>>>>>>> bba51e75ba44898d7e076f7059f0b406b0a32027
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
