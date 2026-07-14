@@ -7,5 +7,14 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "exclude": ["node_modules", "dist", "generated", "prisma.config.ts", "prisma"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "generated",
+    "prisma.config.ts",
+    "prisma"
+  ],
+  "ts-node": {
+    "files": true
+  }
 }
