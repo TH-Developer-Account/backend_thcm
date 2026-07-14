@@ -422,14 +422,11 @@ export const ModelName = {
   EventReport: 'EventReport',
   EventReportImage: 'EventReportImage',
   ImportExportLog: 'ImportExportLog',
-<<<<<<< HEAD
   Notification: 'Notification',
-  PushSubscription: 'PushSubscription'
-=======
+  PushSubscription: 'PushSubscription',
   VendorOnboarding: 'VendorOnboarding',
   VendorOnboardingDocument: 'VendorOnboardingDocument',
   VendorAccessToken: 'VendorAccessToken'
->>>>>>> bba51e75ba44898d7e076f7059f0b406b0a32027
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -445,7 +442,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "vendorAccessToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3409,6 +3406,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    VendorOnboarding: {
+      payload: Prisma.$VendorOnboardingPayload<ExtArgs>
+      fields: Prisma.VendorOnboardingFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VendorOnboardingFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VendorOnboardingFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingPayload>
+        }
+        findFirst: {
+          args: Prisma.VendorOnboardingFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VendorOnboardingFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingPayload>
+        }
+        findMany: {
+          args: Prisma.VendorOnboardingFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingPayload>[]
+        }
+        create: {
+          args: Prisma.VendorOnboardingCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingPayload>
+        }
+        createMany: {
+          args: Prisma.VendorOnboardingCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VendorOnboardingCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingPayload>[]
+        }
+        delete: {
+          args: Prisma.VendorOnboardingDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingPayload>
+        }
+        update: {
+          args: Prisma.VendorOnboardingUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingPayload>
+        }
+        deleteMany: {
+          args: Prisma.VendorOnboardingDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VendorOnboardingUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VendorOnboardingUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingPayload>[]
+        }
+        upsert: {
+          args: Prisma.VendorOnboardingUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingPayload>
+        }
+        aggregate: {
+          args: Prisma.VendorOnboardingAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVendorOnboarding>
+        }
+        groupBy: {
+          args: Prisma.VendorOnboardingGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorOnboardingGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VendorOnboardingCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorOnboardingCountAggregateOutputType> | number
+        }
+      }
+    }
+    VendorOnboardingDocument: {
+      payload: Prisma.$VendorOnboardingDocumentPayload<ExtArgs>
+      fields: Prisma.VendorOnboardingDocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VendorOnboardingDocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingDocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VendorOnboardingDocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingDocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.VendorOnboardingDocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingDocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VendorOnboardingDocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingDocumentPayload>
+        }
+        findMany: {
+          args: Prisma.VendorOnboardingDocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingDocumentPayload>[]
+        }
+        create: {
+          args: Prisma.VendorOnboardingDocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingDocumentPayload>
+        }
+        createMany: {
+          args: Prisma.VendorOnboardingDocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VendorOnboardingDocumentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingDocumentPayload>[]
+        }
+        delete: {
+          args: Prisma.VendorOnboardingDocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingDocumentPayload>
+        }
+        update: {
+          args: Prisma.VendorOnboardingDocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingDocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.VendorOnboardingDocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VendorOnboardingDocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VendorOnboardingDocumentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingDocumentPayload>[]
+        }
+        upsert: {
+          args: Prisma.VendorOnboardingDocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorOnboardingDocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.VendorOnboardingDocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVendorOnboardingDocument>
+        }
+        groupBy: {
+          args: Prisma.VendorOnboardingDocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorOnboardingDocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VendorOnboardingDocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorOnboardingDocumentCountAggregateOutputType> | number
+        }
+      }
+    }
+    VendorAccessToken: {
+      payload: Prisma.$VendorAccessTokenPayload<ExtArgs>
+      fields: Prisma.VendorAccessTokenFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VendorAccessTokenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VendorAccessTokenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>
+        }
+        findFirst: {
+          args: Prisma.VendorAccessTokenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VendorAccessTokenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>
+        }
+        findMany: {
+          args: Prisma.VendorAccessTokenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>[]
+        }
+        create: {
+          args: Prisma.VendorAccessTokenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>
+        }
+        createMany: {
+          args: Prisma.VendorAccessTokenCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VendorAccessTokenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>[]
+        }
+        delete: {
+          args: Prisma.VendorAccessTokenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>
+        }
+        update: {
+          args: Prisma.VendorAccessTokenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>
+        }
+        deleteMany: {
+          args: Prisma.VendorAccessTokenDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VendorAccessTokenUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VendorAccessTokenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>[]
+        }
+        upsert: {
+          args: Prisma.VendorAccessTokenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>
+        }
+        aggregate: {
+          args: Prisma.VendorAccessTokenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVendorAccessToken>
+        }
+        groupBy: {
+          args: Prisma.VendorAccessTokenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorAccessTokenGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VendorAccessTokenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorAccessTokenCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4011,6 +4230,78 @@ export const PushSubscriptionScalarFieldEnum = {
 export type PushSubscriptionScalarFieldEnum = (typeof PushSubscriptionScalarFieldEnum)[keyof typeof PushSubscriptionScalarFieldEnum]
 
 
+export const VendorOnboardingScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  initiatedById: 'initiatedById',
+  status: 'status',
+  vendorName: 'vendorName',
+  state: 'state',
+  city: 'city',
+  pinCode: 'pinCode',
+  address: 'address',
+  mobile: 'mobile',
+  email: 'email',
+  msmeVendor: 'msmeVendor',
+  msmeCertAttached: 'msmeCertAttached',
+  bankName: 'bankName',
+  bankBranch: 'bankBranch',
+  ifscCode: 'ifscCode',
+  bankAddress: 'bankAddress',
+  accountNumber: 'accountNumber',
+  gstin: 'gstin',
+  pan: 'pan',
+  entityRegNo: 'entityRegNo',
+  dpdpConsentedAt: 'dpdpConsentedAt',
+  dpdpConsentIp: 'dpdpConsentIp',
+  vendorSubmittedAt: 'vendorSubmittedAt',
+  vendorCode: 'vendorCode',
+  vendorType: 'vendorType',
+  companyCode: 'companyCode',
+  purchaseOrg: 'purchaseOrg',
+  paymentTerm: 'paymentTerm',
+  tds: 'tds',
+  vendorCategory: 'vendorCategory',
+  materialType: 'materialType',
+  materialSubType: 'materialSubType',
+  selfAssessmentObtained: 'selfAssessmentObtained',
+  ndaObtained: 'ndaObtained',
+  gpaObtained: 'gpaObtained',
+  isRelatedParty: 'isRelatedParty',
+  vendorAuditReportPrepared: 'vendorAuditReportPrepared',
+  natureOfService: 'natureOfService',
+  onboardingReason: 'onboardingReason',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type VendorOnboardingScalarFieldEnum = (typeof VendorOnboardingScalarFieldEnum)[keyof typeof VendorOnboardingScalarFieldEnum]
+
+
+export const VendorOnboardingDocumentScalarFieldEnum = {
+  id: 'id',
+  onboardingId: 'onboardingId',
+  documentType: 'documentType',
+  s3Key: 's3Key',
+  fileUrl: 'fileUrl',
+  uploadedAt: 'uploadedAt'
+} as const
+
+export type VendorOnboardingDocumentScalarFieldEnum = (typeof VendorOnboardingDocumentScalarFieldEnum)[keyof typeof VendorOnboardingDocumentScalarFieldEnum]
+
+
+export const VendorAccessTokenScalarFieldEnum = {
+  id: 'id',
+  onboardingId: 'onboardingId',
+  token: 'token',
+  used: 'used',
+  usedAt: 'usedAt',
+  created_at: 'created_at'
+} as const
+
+export type VendorAccessTokenScalarFieldEnum = (typeof VendorAccessTokenScalarFieldEnum)[keyof typeof VendorAccessTokenScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4508,6 +4799,9 @@ export type GlobalOmitConfig = {
   importExportLog?: Prisma.ImportExportLogOmit
   notification?: Prisma.NotificationOmit
   pushSubscription?: Prisma.PushSubscriptionOmit
+  vendorOnboarding?: Prisma.VendorOnboardingOmit
+  vendorOnboardingDocument?: Prisma.VendorOnboardingDocumentOmit
+  vendorAccessToken?: Prisma.VendorAccessTokenOmit
 }
 
 /* Types for Logging */
