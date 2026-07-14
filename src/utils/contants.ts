@@ -214,3 +214,23 @@ export const activeWorkflowInclude = {
     },
   },
 } as const;
+
+export const REQUIRED_VENDOR_DOCUMENT_TYPES = [
+  "GST_CERTIFICATE",
+  "PAN_DOCUMENT",
+  "CANCELLED_CHEQUE",
+  "INCORPORATION_CERTIFICATE",
+  "MSME_CERTIFICATE",
+  "NDA_CERTIFICATE",
+] as const;
+
+export type VendorDocumentType =
+  (typeof REQUIRED_VENDOR_DOCUMENT_TYPES)[number];
+
+// MaterialType → valid MaterialSubType values. Enums can't express this
+// relationship, so it's validated here rather than at the DB layer.
+// Dummy values — fill in once real MaterialType/MaterialSubType enums are set.
+export const MATERIAL_SUBTYPES_BY_TYPE: Record<string, string[]> = {
+  RAW_MATERIAL: ["SUB_TYPE_1"],
+  SERVICE: ["SUB_TYPE_2"],
+};

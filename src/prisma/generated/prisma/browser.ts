@@ -207,3 +207,18 @@ export type EventReportImage = Prisma.EventReportImageModel
  * 
  */
 export type ImportExportLog = Prisma.ImportExportLogModel
+/**
+ * Model VendorOnboarding
+ * 
+ */
+export type VendorOnboarding = Prisma.VendorOnboardingModel
+/**
+ * Model VendorOnboardingDocument
+ * 
+ */
+export type VendorOnboardingDocument = Prisma.VendorOnboardingDocumentModel
+/**
+ * Model VendorAccessToken
+ * 
+ */
+export type VendorAccessToken = Prisma.VendorAccessTokenModel

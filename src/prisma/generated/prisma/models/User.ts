@@ -230,6 +230,7 @@ export type UserWhereInput = {
   updated_event_proposals?: Prisma.EventProposalListRelationFilter
   created_workflow?: Prisma.WorkflowTemplateListRelationFilter
   updated_workflow?: Prisma.WorkflowTemplateListRelationFilter
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingListRelationFilter
   approvals?: Prisma.ApprovalListRelationFilter
   templateApprovals?: Prisma.TemplateApproverListRelationFilter
   workFlowUsers?: Prisma.WorkFlowTemplateUserListRelationFilter
@@ -258,6 +259,7 @@ export type UserOrderByWithRelationInput = {
   updated_event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
   created_workflow?: Prisma.WorkflowTemplateOrderByRelationAggregateInput
   updated_workflow?: Prisma.WorkflowTemplateOrderByRelationAggregateInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingOrderByRelationAggregateInput
   approvals?: Prisma.ApprovalOrderByRelationAggregateInput
   templateApprovals?: Prisma.TemplateApproverOrderByRelationAggregateInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserOrderByRelationAggregateInput
@@ -289,6 +291,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updated_event_proposals?: Prisma.EventProposalListRelationFilter
   created_workflow?: Prisma.WorkflowTemplateListRelationFilter
   updated_workflow?: Prisma.WorkflowTemplateListRelationFilter
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingListRelationFilter
   approvals?: Prisma.ApprovalListRelationFilter
   templateApprovals?: Prisma.TemplateApproverListRelationFilter
   workFlowUsers?: Prisma.WorkFlowTemplateUserListRelationFilter
@@ -349,6 +352,7 @@ export type UserCreateInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -377,6 +381,7 @@ export type UserUncheckedCreateInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -405,6 +410,7 @@ export type UserUpdateInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -433,6 +439,7 @@ export type UserUncheckedUpdateInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -747,6 +754,20 @@ export type UserUpdateOneRequiredWithoutImportExportLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutImportExportLogsInput, Prisma.UserUpdateWithoutImportExportLogsInput>, Prisma.UserUncheckedUpdateWithoutImportExportLogsInput>
 }
 
+export type UserCreateNestedOneWithoutInitiated_vendor_onboardingsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInitiated_vendor_onboardingsInput, Prisma.UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInitiated_vendor_onboardingsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutInitiated_vendor_onboardingsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInitiated_vendor_onboardingsInput, Prisma.UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInitiated_vendor_onboardingsInput
+  upsert?: Prisma.UserUpsertWithoutInitiated_vendor_onboardingsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInitiated_vendor_onboardingsInput, Prisma.UserUpdateWithoutInitiated_vendor_onboardingsInput>, Prisma.UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput>
+}
+
 export type UserCreateWithoutPassword_reset_tokensInput = {
   id?: string
   first_name: string
@@ -765,6 +786,7 @@ export type UserCreateWithoutPassword_reset_tokensInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -792,6 +814,7 @@ export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -835,6 +858,7 @@ export type UserUpdateWithoutPassword_reset_tokensInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -862,6 +886,7 @@ export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -889,6 +914,7 @@ export type UserCreateWithoutRefresh_tokensInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -916,6 +942,7 @@ export type UserUncheckedCreateWithoutRefresh_tokensInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -959,6 +986,7 @@ export type UserUpdateWithoutRefresh_tokensInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -986,6 +1014,7 @@ export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1013,6 +1042,7 @@ export type UserCreateWithoutWorkspaceUsersInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -1040,6 +1070,7 @@ export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1083,6 +1114,7 @@ export type UserUpdateWithoutWorkspaceUsersInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1110,6 +1142,7 @@ export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1137,6 +1170,7 @@ export type UserCreateWithoutUserProfilesInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -1164,6 +1198,7 @@ export type UserUncheckedCreateWithoutUserProfilesInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1207,6 +1242,7 @@ export type UserUpdateWithoutUserProfilesInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1234,6 +1270,7 @@ export type UserUncheckedUpdateWithoutUserProfilesInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1261,6 +1298,7 @@ export type UserCreateWithoutCreated_event_proposalsInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -1288,6 +1326,7 @@ export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1320,6 +1359,7 @@ export type UserCreateWithoutUpdated_event_proposalsInput = {
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -1347,6 +1387,7 @@ export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1390,6 +1431,7 @@ export type UserUpdateWithoutCreated_event_proposalsInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1417,6 +1459,7 @@ export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1455,6 +1498,7 @@ export type UserUpdateWithoutUpdated_event_proposalsInput = {
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1482,6 +1526,7 @@ export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1509,6 +1554,7 @@ export type UserCreateWithoutCreated_workflowInput = {
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -1536,6 +1582,7 @@ export type UserUncheckedCreateWithoutCreated_workflowInput = {
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1568,6 +1615,7 @@ export type UserCreateWithoutUpdated_workflowInput = {
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -1595,6 +1643,7 @@ export type UserUncheckedCreateWithoutUpdated_workflowInput = {
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1638,6 +1687,7 @@ export type UserUpdateWithoutCreated_workflowInput = {
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1665,6 +1715,7 @@ export type UserUncheckedUpdateWithoutCreated_workflowInput = {
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1703,6 +1754,7 @@ export type UserUpdateWithoutUpdated_workflowInput = {
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1730,6 +1782,7 @@ export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1758,6 +1811,7 @@ export type UserCreateWithoutTemplateApprovalsInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
@@ -1785,6 +1839,7 @@ export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
@@ -1828,6 +1883,7 @@ export type UserUpdateWithoutTemplateApprovalsInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
@@ -1855,6 +1911,7 @@ export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
@@ -1882,6 +1939,7 @@ export type UserCreateWithoutApprovalsInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
@@ -1909,6 +1967,7 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
@@ -1952,6 +2011,7 @@ export type UserUpdateWithoutApprovalsInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
@@ -1979,6 +2039,7 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
@@ -2006,6 +2067,7 @@ export type UserCreateWithoutWorkFlowUsersInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
@@ -2033,6 +2095,7 @@ export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
@@ -2076,6 +2139,7 @@ export type UserUpdateWithoutWorkFlowUsersInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
@@ -2103,6 +2167,7 @@ export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
@@ -2130,6 +2195,7 @@ export type UserCreateWithoutActivityLogsInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -2157,6 +2223,7 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -2200,6 +2267,7 @@ export type UserUpdateWithoutActivityLogsInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -2227,6 +2295,7 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -2254,6 +2323,7 @@ export type UserCreateWithoutCommentsInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -2281,6 +2351,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -2324,6 +2395,7 @@ export type UserUpdateWithoutCommentsInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -2351,6 +2423,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -2378,6 +2451,7 @@ export type UserCreateWithoutReportValidationsInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -2405,6 +2479,7 @@ export type UserUncheckedCreateWithoutReportValidationsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -2448,6 +2523,7 @@ export type UserUpdateWithoutReportValidationsInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -2475,6 +2551,7 @@ export type UserUncheckedUpdateWithoutReportValidationsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -2502,6 +2579,7 @@ export type UserCreateWithoutImportExportLogsInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -2529,6 +2607,7 @@ export type UserUncheckedCreateWithoutImportExportLogsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -2572,6 +2651,7 @@ export type UserUpdateWithoutImportExportLogsInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -2599,12 +2679,141 @@ export type UserUncheckedUpdateWithoutImportExportLogsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+}
+
+export type UserCreateWithoutInitiated_vendor_onboardingsInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+}
+
+export type UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+}
+
+export type UserCreateOrConnectWithoutInitiated_vendor_onboardingsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutInitiated_vendor_onboardingsInput, Prisma.UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput>
+}
+
+export type UserUpsertWithoutInitiated_vendor_onboardingsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutInitiated_vendor_onboardingsInput, Prisma.UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutInitiated_vendor_onboardingsInput, Prisma.UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutInitiated_vendor_onboardingsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutInitiated_vendor_onboardingsInput, Prisma.UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput>
+}
+
+export type UserUpdateWithoutInitiated_vendor_onboardingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
 }
 
 
@@ -2621,6 +2830,7 @@ export type UserCountOutputType = {
   updated_event_proposals: number
   created_workflow: number
   updated_workflow: number
+  initiated_vendor_onboardings: number
   approvals: number
   templateApprovals: number
   workFlowUsers: number
@@ -2639,6 +2849,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   updated_event_proposals?: boolean | UserCountOutputTypeCountUpdated_event_proposalsArgs
   created_workflow?: boolean | UserCountOutputTypeCountCreated_workflowArgs
   updated_workflow?: boolean | UserCountOutputTypeCountUpdated_workflowArgs
+  initiated_vendor_onboardings?: boolean | UserCountOutputTypeCountInitiated_vendor_onboardingsArgs
   approvals?: boolean | UserCountOutputTypeCountApprovalsArgs
   templateApprovals?: boolean | UserCountOutputTypeCountTemplateApprovalsArgs
   workFlowUsers?: boolean | UserCountOutputTypeCountWorkFlowUsersArgs
@@ -2717,6 +2928,13 @@ export type UserCountOutputTypeCountUpdated_workflowArgs<ExtArgs extends runtime
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountInitiated_vendor_onboardingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorOnboardingWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ApprovalWhereInput
 }
@@ -2783,6 +3001,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updated_event_proposals?: boolean | Prisma.User$updated_event_proposalsArgs<ExtArgs>
   created_workflow?: boolean | Prisma.User$created_workflowArgs<ExtArgs>
   updated_workflow?: boolean | Prisma.User$updated_workflowArgs<ExtArgs>
+  initiated_vendor_onboardings?: boolean | Prisma.User$initiated_vendor_onboardingsArgs<ExtArgs>
   approvals?: boolean | Prisma.User$approvalsArgs<ExtArgs>
   templateApprovals?: boolean | Prisma.User$templateApprovalsArgs<ExtArgs>
   workFlowUsers?: boolean | Prisma.User$workFlowUsersArgs<ExtArgs>
@@ -2842,6 +3061,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   updated_event_proposals?: boolean | Prisma.User$updated_event_proposalsArgs<ExtArgs>
   created_workflow?: boolean | Prisma.User$created_workflowArgs<ExtArgs>
   updated_workflow?: boolean | Prisma.User$updated_workflowArgs<ExtArgs>
+  initiated_vendor_onboardings?: boolean | Prisma.User$initiated_vendor_onboardingsArgs<ExtArgs>
   approvals?: boolean | Prisma.User$approvalsArgs<ExtArgs>
   templateApprovals?: boolean | Prisma.User$templateApprovalsArgs<ExtArgs>
   workFlowUsers?: boolean | Prisma.User$workFlowUsersArgs<ExtArgs>
@@ -2865,6 +3085,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     updated_event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
     created_workflow: Prisma.$WorkflowTemplatePayload<ExtArgs>[]
     updated_workflow: Prisma.$WorkflowTemplatePayload<ExtArgs>[]
+    initiated_vendor_onboardings: Prisma.$VendorOnboardingPayload<ExtArgs>[]
     approvals: Prisma.$ApprovalPayload<ExtArgs>[]
     templateApprovals: Prisma.$TemplateApproverPayload<ExtArgs>[]
     workFlowUsers: Prisma.$WorkFlowTemplateUserPayload<ExtArgs>[]
@@ -3286,6 +3507,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   updated_event_proposals<T extends Prisma.User$updated_event_proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updated_event_proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   created_workflow<T extends Prisma.User$created_workflowArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$created_workflowArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   updated_workflow<T extends Prisma.User$updated_workflowArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updated_workflowArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  initiated_vendor_onboardings<T extends Prisma.User$initiated_vendor_onboardingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$initiated_vendor_onboardingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorOnboardingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   approvals<T extends Prisma.User$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   templateApprovals<T extends Prisma.User$templateApprovalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$templateApprovalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TemplateApproverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workFlowUsers<T extends Prisma.User$workFlowUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workFlowUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkFlowTemplateUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3914,6 +4136,30 @@ export type User$updated_workflowArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.WorkflowTemplateScalarFieldEnum | Prisma.WorkflowTemplateScalarFieldEnum[]
+}
+
+/**
+ * User.initiated_vendor_onboardings
+ */
+export type User$initiated_vendor_onboardingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorOnboarding
+   */
+  select?: Prisma.VendorOnboardingSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorOnboarding
+   */
+  omit?: Prisma.VendorOnboardingOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorOnboardingInclude<ExtArgs> | null
+  where?: Prisma.VendorOnboardingWhereInput
+  orderBy?: Prisma.VendorOnboardingOrderByWithRelationInput | Prisma.VendorOnboardingOrderByWithRelationInput[]
+  cursor?: Prisma.VendorOnboardingWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorOnboardingScalarFieldEnum | Prisma.VendorOnboardingScalarFieldEnum[]
 }
 
 /**

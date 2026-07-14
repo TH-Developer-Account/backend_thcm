@@ -88,7 +88,10 @@ export const ModelName = {
   Pincode: 'Pincode',
   EventReport: 'EventReport',
   EventReportImage: 'EventReportImage',
-  ImportExportLog: 'ImportExportLog'
+  ImportExportLog: 'ImportExportLog',
+  VendorOnboarding: 'VendorOnboarding',
+  VendorOnboardingDocument: 'VendorOnboardingDocument',
+  VendorAccessToken: 'VendorAccessToken'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -638,6 +641,78 @@ export const ImportExportLogScalarFieldEnum = {
 } as const
 
 export type ImportExportLogScalarFieldEnum = (typeof ImportExportLogScalarFieldEnum)[keyof typeof ImportExportLogScalarFieldEnum]
+
+
+export const VendorOnboardingScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  initiatedById: 'initiatedById',
+  status: 'status',
+  vendorName: 'vendorName',
+  state: 'state',
+  city: 'city',
+  pinCode: 'pinCode',
+  address: 'address',
+  mobile: 'mobile',
+  email: 'email',
+  msmeVendor: 'msmeVendor',
+  msmeCertAttached: 'msmeCertAttached',
+  bankName: 'bankName',
+  bankBranch: 'bankBranch',
+  ifscCode: 'ifscCode',
+  bankAddress: 'bankAddress',
+  accountNumber: 'accountNumber',
+  gstin: 'gstin',
+  pan: 'pan',
+  entityRegNo: 'entityRegNo',
+  dpdpConsentedAt: 'dpdpConsentedAt',
+  dpdpConsentIp: 'dpdpConsentIp',
+  vendorSubmittedAt: 'vendorSubmittedAt',
+  vendorCode: 'vendorCode',
+  vendorType: 'vendorType',
+  companyCode: 'companyCode',
+  purchaseOrg: 'purchaseOrg',
+  paymentTerm: 'paymentTerm',
+  tds: 'tds',
+  vendorCategory: 'vendorCategory',
+  materialType: 'materialType',
+  materialSubType: 'materialSubType',
+  selfAssessmentObtained: 'selfAssessmentObtained',
+  ndaObtained: 'ndaObtained',
+  gpaObtained: 'gpaObtained',
+  isRelatedParty: 'isRelatedParty',
+  vendorAuditReportPrepared: 'vendorAuditReportPrepared',
+  natureOfService: 'natureOfService',
+  onboardingReason: 'onboardingReason',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type VendorOnboardingScalarFieldEnum = (typeof VendorOnboardingScalarFieldEnum)[keyof typeof VendorOnboardingScalarFieldEnum]
+
+
+export const VendorOnboardingDocumentScalarFieldEnum = {
+  id: 'id',
+  onboardingId: 'onboardingId',
+  documentType: 'documentType',
+  s3Key: 's3Key',
+  fileUrl: 'fileUrl',
+  uploadedAt: 'uploadedAt'
+} as const
+
+export type VendorOnboardingDocumentScalarFieldEnum = (typeof VendorOnboardingDocumentScalarFieldEnum)[keyof typeof VendorOnboardingDocumentScalarFieldEnum]
+
+
+export const VendorAccessTokenScalarFieldEnum = {
+  id: 'id',
+  onboardingId: 'onboardingId',
+  token: 'token',
+  used: 'used',
+  usedAt: 'usedAt',
+  created_at: 'created_at'
+} as const
+
+export type VendorAccessTokenScalarFieldEnum = (typeof VendorAccessTokenScalarFieldEnum)[keyof typeof VendorAccessTokenScalarFieldEnum]
 
 
 export const SortOrder = {

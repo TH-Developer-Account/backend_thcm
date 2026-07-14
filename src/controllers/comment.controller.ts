@@ -5,9 +5,9 @@ import {
   getSubjectOwnerId,
   findSubjectById,
   getActiveWorkflowForSubject,
-  WorkflowSubjectType,
 } from "../helpers/workflowSubject.helper";
 import { addMailJob } from "../services/mail.service";
+import { WorkflowSubjectType } from "../prisma/generated/prisma/client";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /comments

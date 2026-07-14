@@ -24,7 +24,7 @@ import { ImportExportType } from "../services/importExportLog.services";
 // Resolves workspaceId for the requesting user.
 // workspaceId comes from DB, not JWT — consistent with the rest of the codebase.
 
-async function resolveWorkspaceId(userId: string): Promise<string> {
+export async function resolveWorkspaceId(userId: string): Promise<string> {
   const workspaceUser = await prisma.workspaceUser.findFirst({
     where: { userId },
     select: { workspaceId: true },

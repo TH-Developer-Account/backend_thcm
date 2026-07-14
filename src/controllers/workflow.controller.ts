@@ -4,6 +4,10 @@ import { approveStage } from "../services/workflow.service";
 import { Prisma } from "../prisma/generated/prisma/client";
 import { budgetMap } from "../utils/contants";
 import ApiError from "../utils/apiError";
+import {
+  updateSubjectStatus,
+  getClarifyResetStatus,
+} from "../helpers/workflowSubject.helper";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS
@@ -467,10 +471,12 @@ export const clarifyStageController = async (
       });
 
       // ── Step 7: Update EPC to pending ────────────────────────────────────────
-      await tx.eventProposal.update({
-        where: { id: workflow.subjectId },
-        data: { status: "PENDING" },
-      });
+      await updateSubjectStatus(
+        tx,
+        workflow.subjectType,
+        workflow.subjectId,
+        getClarifyResetStatus(workflow.subjectType),
+      );
 
       // ── Step 8: Write audit record ────────────────────────────────────────
       await tx.activityLog.create({
