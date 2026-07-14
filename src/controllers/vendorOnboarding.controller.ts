@@ -58,7 +58,7 @@ export const initiateVendorOnboarding = async (
     await addMailJob({
       to: email,
       subject: "Vendor Onboarding — Action Required",
-      templateName: "vendor-onboarding-link",
+      templateName: "vendor-onboarding",
       templateData: {
         vendorName,
         formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${onboarding.tokenRecord.token}`,
