@@ -74,14 +74,14 @@ router.post(
 
 // GET /api/v1/vendor-onboarding/public/:token
 router.get(
-	"/:token",
+	"/public/:token",
 	requireVendorAccessToken,
 	asyncHandler(getVendorFormByToken),
 );
 
 // POST /api/v1/vendor-onboarding/public/:token/submit
 router.post(
-	"/:token/submit",
+	"/public/:token/submit",
 	requireVendorAccessToken,
 	upload.fields(documentUploadFields),
 	asyncHandler(submitVendorForm),
