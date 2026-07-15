@@ -6,12 +6,15 @@ import {
   issueVendorAccessToken,
   markVendorAccessTokenUsed,
 } from "../services/vendorAccessToken.services";
-import {
-  REQUIRED_VENDOR_DOCUMENT_TYPES,
-  MATERIAL_SUBTYPES_BY_TYPE,
-} from "../utils/contants";
+import { REQUIRED_VENDOR_DOCUMENT_TYPES } from "../utils/contants";
 import { resolveWorkspaceId } from "./export.controller";
+import { getActiveWorkflowForSubject } from "../helpers/workflowSubject.helper";
 import { uploadToS3 } from "../services/aws-s3.services"; // to add, mirrors uploadDeviationDoc
+import {
+  buildVendorOnboardingWhereClause,
+  parseVendorListingPaginationParams,
+  VendorListingTab,
+} from "../helpers/vendorOnboarding.helper";
 
 // POST /vendor-onboarding
 // Employee kicks off a request: name/number/email + mail trigger.
@@ -76,6 +79,111 @@ export const initiateVendorOnboarding = async (
   }
 };
 
+// controllers/vendorOnboarding.controller.ts
+
+// GET /vendor-onboarding
+// Defaults to "mine" (matches "forms initiated by the employee"). Workspace
+// admins/superadmins can pass ?scope=workspace to see everyone's requests —
+// same pattern as most list endpoints distinguishing "my items" vs "all items".
+export const listVendorOnboardings = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    const workspaceId = await resolveWorkspaceId(userId as string);
+
+    const { tab, search, pageSize, pageIndex } = req.query;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const vendorTab: VendorListingTab =
+      tab === "onboarding" ? "onboarding" : "initiation";
+    const vendorSearch = typeof search === "string" ? search.trim() : "";
+    const { reqPageIndex, reqPageSize } = parseVendorListingPaginationParams(
+      pageIndex as string,
+      pageSize as string,
+    );
+
+    const where = buildVendorOnboardingWhereClause(
+      workspaceId,
+      userId,
+      vendorTab,
+      vendorSearch,
+    );
+
+    const [rows, totalCount] = await Promise.all([
+      prisma.vendorOnboarding.findMany({
+        where,
+        orderBy: { created_at: "desc" },
+        skip: reqPageIndex * reqPageSize,
+        take: reqPageSize,
+        select: {
+          id: true,
+          vendorName: true,
+          mobile: true,
+          email: true,
+          vendorCode: true,
+          vendorType: true,
+          companyCode: true,
+          status: true,
+          created_at: true,
+          updated_at: true,
+          initiatedBy: {
+            select: { first_name: true, last_name: true },
+          },
+        },
+      }),
+      prisma.vendorOnboarding.count({ where }),
+    ]);
+
+    res.status(200).json({
+      success: true,
+      data: { rows, totalCount, pageIndex, pageSize },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /vendor-onboarding/:id
+// Flattens the onboarding record + its documents + active workflow into
+// one response — same shape philosophy as getEventProposalById.
+export const getVendorOnboardingById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    const { id } = req.params;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const onboarding = await prisma.vendorOnboarding.findUnique({
+      where: { id: id as string },
+      include: { documents: true },
+    });
+    if (!onboarding) throw new ApiError(404, "Vendor onboarding not found");
+
+    // ── Guard: only the initiator or a superadmin can view ──────────────────
+    if (onboarding.initiatedById !== userId) {
+      throw new ApiError(403, "You do not have access to this request");
+    }
+
+    const activeWorkflow = await getActiveWorkflowForSubject(
+      "VENDOR_ONBOARDING",
+      id as string,
+    );
+
+    res.status(200).json({
+      success: true,
+      data: { ...onboarding, activeWorkflow },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // POST /vendor-onboarding/:id/resend-link
 // Only valid while still AWAITING_VENDOR. Old unused tokens are simply
 // orphaned once a new one is issued — no explicit revoke needed since
@@ -115,7 +223,8 @@ export const resendVendorLink = async (
 };
 
 // PATCH /vendor-onboarding/:id
-// Employee fills in their fields after vendor submission (IN_REVIEW state).
+// Employee fills in their own fields AND can correct the vendor's submitted
+// details, in one call, after vendor submission (IN_REVIEW state).
 // Deliberately does NOT touch status — separate endpoint below moves it forward,
 // mirroring EPC's separate "resubmit" vs "advance" actions.
 export const updateEmployeeFields = async (
@@ -124,8 +233,31 @@ export const updateEmployeeFields = async (
   next: NextFunction,
 ) => {
   try {
+    const userId = req.user?.id;
     const { id } = req.params;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
     const {
+      // ── vendor-filled fields (employee corrections) ──
+      vendorName,
+      state,
+      city,
+      pinCode,
+      address,
+      mobile,
+      email,
+      msmeVendor,
+      msmeCertAttached,
+      bankName,
+      bankBranch,
+      ifscCode,
+      bankAddress,
+      accountNumber,
+      gstin,
+      pan,
+      entityRegNo,
+
+      // ── employee-owned fields ──
       vendorCode,
       vendorType,
       companyCode,
@@ -158,6 +290,12 @@ export const updateEmployeeFields = async (
       where: { id: id as string },
     });
     if (!onboarding) throw new ApiError(404, "Vendor onboarding not found");
+
+    // ── Guard: only the initiator or a superadmin can edit ───────────────────
+    if (onboarding.initiatedById !== userId) {
+      throw new ApiError(403, "You do not have access to this request");
+    }
+
     if (
       onboarding.status !== "VENDOR_SUBMITTED" &&
       onboarding.status !== "IN_REVIEW"
@@ -169,6 +307,25 @@ export const updateEmployeeFields = async (
       where: { id: id as string },
       data: {
         status: "IN_REVIEW",
+        vendorName,
+        state,
+        city,
+        pinCode,
+        address,
+        mobile,
+        email,
+        msmeVendor,
+        msmeCertAttached,
+        bankName,
+        bankBranch,
+        ifscCode,
+        bankAddress,
+        accountNumber,
+        gstin,
+        pan,
+        entityRegNo,
+
+        // employee-owned fields
         vendorCode,
         vendorType,
         companyCode,
