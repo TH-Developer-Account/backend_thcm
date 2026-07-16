@@ -2,25 +2,86 @@ import { prisma } from "../config/prisma";
 import { selectTemplate } from "./template.service";
 import { buildWorkflowStages } from "../helpers/workflow.helper";
 import { notify } from "../services/notification.services";
-import { updateSubjectStatus } from "../helpers/workflowSubject.helper";
+import type { NotificationType } from "../services/notification.services";
+
+import {
+  updateSubjectStatus,
+  getSubjectNotificationMeta,
+  SubjectNotificationMeta,
+} from "../helpers/workflowSubject.helper";
 import {
   ApprovalStatus,
   StageStatus,
   StrategyType,
   WorkflowStatus,
+  WorkflowSubjectType,
 } from "../prisma/generated/prisma/client";
 
 type ApproveStageResult =
   | {
       kind: "advanced";
       workflowId: string;
-      epcId: string;
+      subjectType: WorkflowSubjectType;
+      subjectId: string;
       appId: string;
       nextStageId: string;
       nextStageApproverIds: string[];
     }
-  | { kind: "final_approved"; workflowId: string; epcId: string; appId: string }
+  | {
+      kind: "final_approved";
+      workflowId: string;
+      subjectType: WorkflowSubjectType;
+      subjectId: string;
+      appId: string;
+    }
   | { kind: "no_change" }; // stage strategy not yet satisfied — nothing to notify
+
+// ─────────────────────────────────────────────────────────────────────────────
+// notifyAboutWorkflowEvent
+//
+// Shared by approveStage's two notify sites and rejectStage's one — all three
+// do the same thing: look up the app key, resolve subject metadata, and fire
+// a notify() call shaped from that metadata. Extracted so a change to what a
+// workflow notification looks like happens in one place, not three.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const notifyAboutWorkflowEvent = ({
+  workspaceId,
+  recipientId,
+  appKey,
+  subjectType,
+  subjectId,
+  subjectMeta,
+  type,
+  title,
+  body,
+  extraMetadata = {},
+}: {
+  workspaceId: string;
+  recipientId: string;
+  appKey: string | undefined;
+  subjectType: WorkflowSubjectType;
+  subjectId: string;
+  subjectMeta: SubjectNotificationMeta;
+  type: NotificationType;
+  title: string;
+  body: string;
+  extraMetadata?: Record<string, unknown>;
+}) =>
+  notify({
+    workspaceId,
+    recipientId,
+    type,
+    title,
+    body,
+    link: subjectMeta.link,
+    metadata: {
+      appKey: appKey ?? "GENERIC",
+      subjectType,
+      subjectId,
+      ...extraMetadata,
+    },
+  });
 
 export const createEventProposalWithWorkflow = async (input: any) => {
   return prisma.$transaction(async (tx) => {
@@ -132,7 +193,8 @@ export const approveStage = async ({
         outcome = {
           kind: "advanced",
           workflowId: stage!.workflowId,
-          epcId: stage!.workflow.subjectId,
+          subjectType: stage!.workflow.subjectType as WorkflowSubjectType,
+          subjectId: stage!.workflow.subjectId,
           appId: stage!.workflow.appId,
           nextStageId: nextStage.id,
           nextStageApproverIds: nextStage.approvals.map((a) => a.approverId),
@@ -154,7 +216,8 @@ export const approveStage = async ({
         outcome = {
           kind: "final_approved",
           workflowId: stage!.workflowId,
-          epcId: stage!.workflow.subjectId,
+          subjectType: stage!.workflow.subjectType as WorkflowSubjectType,
+          subjectId: stage!.workflow.subjectId,
           appId: stage!.workflow.appId,
         };
       }
@@ -182,31 +245,29 @@ export const approveStage = async ({
       where: { id: result.appId },
       select: { key: true },
     });
-    const epc = await prisma.eventProposal.findUnique({
-      where: { id: result.epcId },
-      select: { proposal_number: true, created_by_id: true },
+    const subjectMeta = await getSubjectNotificationMeta(
+      result.subjectType,
+      result.subjectId,
+    );
+    const workflow = await prisma.workflowInstance.findUnique({
+      where: { id: result.workflowId },
+      select: { workspaceId: true },
     });
 
     if (result.kind === "advanced") {
-      const workflow = await prisma.workflowInstance.findUnique({
-        where: { id: result.workflowId },
-        select: { workspaceId: true },
-      });
-
       await Promise.all(
         result.nextStageApproverIds.map((approverId) =>
-          notify({
+          notifyAboutWorkflowEvent({
             workspaceId: workflow!.workspaceId,
             recipientId: approverId,
+            appKey: app?.key,
+            subjectType: result.subjectType,
+            subjectId: result.subjectId,
+            subjectMeta,
             type: "APPROVAL_PENDING",
             title: "Approval required",
-            body: epc
-              ? `EPC ${epc.proposal_number} is waiting on your approval.`
-              : "An EPC is waiting on your approval.",
-            link: `/map/epc/${result.epcId}`,
-            metadata: {
-              appKey: app?.key ?? "GENERIC",
-              epcId: result.epcId,
+            body: `${subjectMeta.displayLabel} is waiting on your approval.`,
+            extraMetadata: {
               workflowId: result.workflowId,
               stageId: result.nextStageId,
             },
@@ -215,35 +276,24 @@ export const approveStage = async ({
       );
     }
 
-    if (result.kind === "final_approved" && epc?.created_by_id) {
-      const workflow = await prisma.workflowInstance.findUnique({
-        where: { id: result.workflowId },
-        select: { workspaceId: true },
-      });
-
-      await notify({
+    if (result.kind === "final_approved" && subjectMeta.ownerId) {
+      await notifyAboutWorkflowEvent({
         workspaceId: workflow!.workspaceId,
-        recipientId: epc.created_by_id,
+        recipientId: subjectMeta.ownerId,
+        appKey: app?.key,
+        subjectType: result.subjectType,
+        subjectId: result.subjectId,
+        subjectMeta,
         type: "APPROVAL_DECISION",
-        title: "Event proposal approved",
-        body: epc.proposal_number
-          ? `EPC ${epc.proposal_number} has been fully approved.`
-          : "Your event proposal has been fully approved.",
-        link: `/map/epc/${result.epcId}`,
-        metadata: {
-          appKey: app?.key ?? "GENERIC",
-          epcId: result.epcId,
-          workflowId: result.workflowId,
-        },
+        title: "Approved",
+        body: `${subjectMeta.displayLabel} has been fully approved.`,
+        extraMetadata: { workflowId: result.workflowId },
       });
     }
   } catch (error) {
     throw error;
   }
 };
-
-// 3. Replace rejectStage() entirely with the version below.
-//    Same pattern: capture what's needed inside the tx, notify after commit.
 
 export const rejectStage = async ({
   stageId,
@@ -287,37 +337,35 @@ export const rejectStage = async ({
 
     return {
       workflowId: stage!.workflowId,
-      epcId: stage!.workflow.subjectId,
+      subjectType: stage!.workflow.subjectType as WorkflowSubjectType,
+      subjectId: stage!.workflow.subjectId,
       appId: stage!.workflow.appId,
       workspaceId: stage!.workflow.workspaceId,
     };
   });
 
-  // ── Notify the proposer — strictly after the transaction has committed ──
+  // ── Notify the subject owner — strictly after the transaction has committed ──
   const app = await prisma.app.findUnique({
     where: { id: result.appId },
     select: { key: true },
   });
-  const epc = await prisma.eventProposal.findUnique({
-    where: { id: result.epcId },
-    select: { proposal_number: true, created_by_id: true },
-  });
+  const subjectMeta = await getSubjectNotificationMeta(
+    result.subjectType,
+    result.subjectId,
+  );
 
-  if (epc?.created_by_id) {
-    await notify({
+  if (subjectMeta.ownerId) {
+    await notifyAboutWorkflowEvent({
       workspaceId: result.workspaceId,
-      recipientId: epc.created_by_id,
+      recipientId: subjectMeta.ownerId,
+      appKey: app?.key,
+      subjectType: result.subjectType,
+      subjectId: result.subjectId,
+      subjectMeta,
       type: "APPROVAL_DECISION",
-      title: "Event proposal rejected",
-      body: epc.proposal_number
-        ? `EPC ${epc.proposal_number} was rejected.${reason ? ` Reason: ${reason}` : ""}`
-        : `Your event proposal was rejected.${reason ? ` Reason: ${reason}` : ""}`,
-      link: `/map/epc/${result.epcId}`,
-      metadata: {
-        appKey: app?.key ?? "GENERIC",
-        epcId: result.epcId,
-        workflowId: result.workflowId,
-      },
+      title: "Rejected",
+      body: `${subjectMeta.displayLabel} was rejected.${reason ? ` Reason: ${reason}` : ""}`,
+      extraMetadata: { workflowId: result.workflowId },
     });
   }
 

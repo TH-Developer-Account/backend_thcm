@@ -26,7 +26,7 @@ import { Prisma } from "../prisma/generated/prisma/browser";
 
 // ── 1. Write side ────────────────────────────────────────────────────────────
 
-type NotificationType =
+export type NotificationType =
   | "APPROVAL_PENDING"
   | "APPROVAL_DECISION"
   | "REPORT_STATUS"

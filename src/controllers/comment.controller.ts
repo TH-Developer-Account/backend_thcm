@@ -5,10 +5,78 @@ import {
   getSubjectOwnerId,
   findSubjectById,
   getActiveWorkflowForSubject,
+  getSubjectNotificationMeta,
 } from "../helpers/workflowSubject.helper";
 import { addMailJob } from "../services/mail.service";
 import { notify } from "../services/notification.services";
 import { WorkflowSubjectType } from "../prisma/generated/prisma/client";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// notifyCommentRecipients  ✅ NEW
+//
+// Shared by addComment and addCreatorComment — both need the same thing:
+// given a set of recipient user ids and the subject a comment was posted
+// against, look up that subject's display label/link once and fire one
+// notification per recipient. Extracted so "what a comment notification
+// looks like" lives in one place rather than being duplicated per endpoint.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const notifyCommentRecipients = async ({
+  recipientIds,
+  workspaceId,
+  subjectType,
+  subjectId,
+  commenterName,
+  message,
+}: {
+  recipientIds: string[];
+  workspaceId: string;
+  subjectType: WorkflowSubjectType;
+  subjectId: string;
+  commenterName: string;
+  message: string;
+}) => {
+  if (!recipientIds.length) return;
+
+  const subjectMeta = await getSubjectNotificationMeta(subjectType, subjectId);
+
+  await Promise.all(
+    recipientIds.map((recipientId) =>
+      notify({
+        workspaceId,
+        recipientId,
+        type: "GENERIC",
+        title: "New comment",
+        body: `${commenterName} commented on ${subjectMeta.displayLabel}: ${message}`,
+        link: subjectMeta.link,
+        metadata: { subjectType, subjectId },
+      }),
+    ),
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// resolveUserIdsByEmail
+//
+// Mentions are captured as emails today (the `to`/`cc` fields, reused from
+// the mail job payload) rather than user ids. This is the one place that
+// translates email → User.id for notification purposes, so if mentions
+// switch to carrying user ids directly later, only this function changes.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const resolveUserIdsByEmail = async (
+  emails: string[],
+  excludeUserId: string,
+): Promise<string[]> => {
+  if (!emails.length) return [];
+
+  const users = await prisma.user.findMany({
+    where: { email: { in: emails } },
+    select: { id: true },
+  });
+
+  return users.map((u) => u.id).filter((id) => id !== excludeUserId);
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /comments
@@ -17,11 +85,6 @@ import { WorkflowSubjectType } from "../prisma/generated/prisma/client";
 // Approval's chain (approval → stage → workflow) carries its own
 // subjectType/subjectId via the WorkflowInstance, so no subject lookup
 // is needed here at all.
-//
-// NOTE: the previous version sent a mention-email and a notification here
-// with a hardcoded app name / recipient / dashboard URL. That's app-specific
-// wiring this generic controller shouldn't own, so it's removed pending a
-// decision on how notify/mail should be parameterized per app.
 // ─────────────────────────────────────────────────────────────────────────────
 export const addComment = async (
   req: Request,
@@ -97,7 +160,12 @@ export const addComment = async (
       },
     });
 
-    if (to && Array.isArray(to) && to.length) {
+    const mentionedEmails = [
+      ...(Array.isArray(to) ? to : []),
+      ...(Array.isArray(cc) ? cc : []),
+    ];
+
+    if (mentionedEmails.length) {
       await addMailJob({
         to,
         cc: cc && Array.isArray(cc) && cc.length ? cc : undefined,
@@ -111,15 +179,21 @@ export const addComment = async (
           dashboardUrl: `www.google.com`,
         },
       });
-    }
 
-    await notify({
-      workspaceId: "5c4474e9-2efb-4707-9a3d-2f4c0bd842f0",
-      recipientId: "c166229c-c85e-4e7d-be6b-3079412ebbdf",
-      type: "APPROVAL_DECISION",
-      title: "Event proposal rejected",
-      body: "Comment from approver: " + message,
-    });
+      const mentionedUserIds = await resolveUserIdsByEmail(
+        mentionedEmails,
+        userId,
+      );
+
+      await notifyCommentRecipients({
+        recipientIds: mentionedUserIds,
+        workspaceId: workflow.workspaceId,
+        subjectType: workflow.subjectType,
+        subjectId: workflow.subjectId,
+        commenterName: `${approval.approver.first_name} ${approval.approver.last_name}`,
+        message: String(message).trim(),
+      });
+    }
 
     res.status(201).json({
       success: true,
@@ -141,6 +215,9 @@ export const addComment = async (
 // getSubjectOwnerId does double duty here: it 404s if the subject doesn't
 // exist, and returns the owning user id in the same round trip — no
 // separate existence check needed before the ownership guard.
+//
+// Notifies the current stage's approvers, since they're the ones waiting
+// to act and wouldn't otherwise see that the creator has responded.
 // ─────────────────────────────────────────────────────────────────────────────
 export const addCreatorComment = async (
   req: Request,
@@ -191,6 +268,26 @@ export const addCreatorComment = async (
       include: {
         user: { select: { id: true, first_name: true, last_name: true } },
       },
+    });
+
+    const currentStage = await prisma.stageInstance.findFirst({
+      where: {
+        workflowId: activeWorkflow.id,
+        stageOrder: activeWorkflow.currentStage,
+        isCurrentIteration: true,
+      },
+      include: { approvals: true },
+    });
+
+    const approverIds = currentStage?.approvals.map((a) => a.approverId) ?? [];
+
+    await notifyCommentRecipients({
+      recipientIds: approverIds.filter((id) => id !== userId),
+      workspaceId: activeWorkflow.workspaceId,
+      subjectType,
+      subjectId: subjectId as string,
+      commenterName: `${comment.user.first_name} ${comment.user.last_name}`,
+      message: String(message).trim(),
     });
 
     res.status(201).json({

@@ -1,13 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "../config/prisma";
 import { approveStage } from "../services/workflow.service";
-import { Prisma } from "../prisma/generated/prisma/client";
+import { Prisma, WorkflowSubjectType } from "../prisma/generated/prisma/client";
 import { budgetMap } from "../utils/contants";
 import ApiError from "../utils/apiError";
-import {
-  updateSubjectStatus,
-  getClarifyResetStatus,
-} from "../helpers/workflowSubject.helper";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS
@@ -25,18 +21,52 @@ const evaluateBudget = (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// templateMatchResolvers  ✅ NEW
+//
+// assignWorkflowController used to hardcode budget-based matching, but budget
+// only means something for EVENT_PROPOSAL. This is the single place that
+// knows how each subject type picks a template out of the candidate list —
+// same strategy-map shape as workflowSubject.helper.ts, so adding a new app's
+// matching rule means adding one entry here, not touching the controller.
+//
+// EVENT_PROPOSAL    → budget range match against template.metaData_1
+// VENDOR_ONBOARDING → STUB: first active template, no criteria yet
+// ─────────────────────────────────────────────────────────────────────────────
+
+type CandidateTemplate = Prisma.WorkflowTemplateGetPayload<{
+  include: {
+    stages: { include: { approvers: true } };
+  };
+}>;
+
+const templateMatchResolvers: Record<
+  WorkflowSubjectType,
+  (
+    templates: CandidateTemplate[],
+    criteria: Record<string, unknown> | undefined,
+  ) => CandidateTemplate | undefined
+> = {
+  EVENT_PROPOSAL: (templates, criteria) => {
+    const budget = criteria?.budget;
+    if (budget === undefined) return undefined;
+    return templates.find((t) =>
+      evaluateBudget(t.metaData_1 || "", Number(budget)),
+    );
+  },
+
+  // STUB — no matching criteria decided yet for Vendor Onboarding.
+  // Replace with a real resolver once that's defined; until then this
+  // just takes the first active template configured for the workspace/app.
+  VENDOR_ONBOARDING: (templates) => templates[0],
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // POST /workflows/assign
 //
-// Creates a WorkflowInstance for an EPC.
-// Matches the correct template based on budget (metaData_1).
-// All stages and approvals are seeded from the matched template.
-//
-// CHANGES from original:
-//   - Added `iteration: 1` on the WorkflowInstance (tracks clarify re-runs)
-//   - Added `isActive: true`  (only one workflow active per EPC at a time)
-//   - Added `workflowType: "STANDARD"` (vs DEVIATION for budget-change re-runs)
-//   - Added `iteration: 1` and `isCurrentIteration: true` on every StageInstance
-//   - Added `startedAt: new Date()` for the first stage
+// Creates a WorkflowInstance for any registered subject type. Template
+// selection criteria is app-specific (see templateMatchResolvers above);
+// everything else — duplicate-active-workflow guard, stage/approval seeding —
+// is already generic and unchanged.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const assignWorkflowController = async (
@@ -46,29 +76,35 @@ export const assignWorkflowController = async (
 ) => {
   try {
     const userId = req.user?.id;
-    const { eventProposalId, workspaceId, appId, budget } = req.body;
+    const { subjectType, subjectId, workspaceId, appId, criteria } = req.body;
 
     if (!userId) throw new ApiError(401, "Unauthorized");
-    if (!eventProposalId || !workspaceId || !appId || budget === undefined) {
+    if (!subjectType || !subjectId || !workspaceId || !appId) {
       throw new ApiError(
         400,
-        "eventProposalId, workspaceId, appId and budget are required",
+        "subjectType, subjectId, workspaceId and appId are required",
       );
     }
 
-    // Guard: reject if an active workflow already exists for this EPC.
+    const matchResolver =
+      templateMatchResolvers[subjectType as WorkflowSubjectType];
+    if (!matchResolver) {
+      throw new ApiError(400, `Unknown workflow subject type "${subjectType}"`);
+    }
+
+    // Guard: reject if an active workflow already exists for this subject.
     // Only the Deviation controller is allowed to create a second workflow.
     const existing = await prisma.workflowInstance.findFirst({
       where: {
-        subjectType: "EVENT_PROPOSAL",
-        subjectId: eventProposalId,
+        subjectType,
+        subjectId,
         isActive: true,
       },
     });
     if (existing) {
       throw new ApiError(
         409,
-        "An active workflow already exists for this event proposal. " +
+        "An active workflow already exists for this record. " +
           "Use the deviation endpoint to replace it.",
       );
     }
@@ -96,14 +132,12 @@ export const assignWorkflowController = async (
       );
     }
 
-    // 2. Pick the template whose budget range covers the submitted budget
-    const matchedTemplate = templates.find((t) =>
-      evaluateBudget(t.metaData_1 || "", Number(budget)),
-    );
+    // 2. Pick the template using the subject type's own matching rule
+    const matchedTemplate = matchResolver(templates, criteria);
     if (!matchedTemplate) {
       throw new ApiError(
         400,
-        "No matching workflow template found for the given budget",
+        "No matching workflow template found for the given criteria",
       );
     }
 
@@ -113,8 +147,8 @@ export const assignWorkflowController = async (
         templateId: matchedTemplate.id,
         workspaceId,
         appId,
-        subjectType: "EVENT_PROPOSAL",
-        subjectId: eventProposalId,
+        subjectType,
+        subjectId,
         currentStage: 1,
         iteration: 1, // ✅ NEW: first iteration
         isActive: true, // ✅ NEW: this is the active workflow
@@ -175,6 +209,15 @@ export const assignWorkflowController = async (
   }
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /workflows/preview
+//
+// Same template-matching logic as assignWorkflowController, minus the DB
+// write — lets the frontend show "here's the workflow you'd get" before
+// committing. Uses the same templateMatchResolvers strategy map, so any
+// subject type wired up for assign automatically works here too.
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const previewWorkflowController = async (
   req: Request,
   res: Response,
@@ -182,11 +225,20 @@ export const previewWorkflowController = async (
 ) => {
   try {
     const userId = req.user?.id;
-    const { workspaceId, appId, budget } = req.body;
+    const { subjectType, workspaceId, appId, criteria } = req.body;
 
     if (!userId) throw new ApiError(401, "Unauthorized");
-    if (!workspaceId || !appId || budget === undefined) {
-      throw new ApiError(400, "workspaceId, appId and budget are required");
+    if (!subjectType || !workspaceId || !appId) {
+      throw new ApiError(
+        400,
+        "subjectType, workspaceId and appId are required",
+      );
+    }
+
+    const matchResolver =
+      templateMatchResolvers[subjectType as WorkflowSubjectType];
+    if (!matchResolver) {
+      throw new ApiError(400, `Unknown workflow subject type "${subjectType}"`);
     }
 
     // 1. Get templates
@@ -215,37 +267,13 @@ export const previewWorkflowController = async (
       throw new ApiError(404, "No workflow templates found");
     }
 
-    // 2. Match template.
-    //
-    // metaData_1 is the differentiator, not the app: a template with a
-    // populated metaData_1 (e.g. ">20000") needs a budget match; a
-    // template with an empty metaData_1 (Vendor Onboarding's single
-    // template, or any app with no tiering) matches unconditionally.
-    // This reads the rule off the template's own data instead of
-    // hardcoding "MAP does X, everyone else does Y" — a new app with its
-    // own tiering just needs metaData_1 populated, no controller change.
-    const untieredTemplate = templates.find((t) => !t.metaData_1?.trim());
-
-    let matchedTemplate;
-
-    if (untieredTemplate) {
-      matchedTemplate = untieredTemplate;
-    } else {
-      if (budget === undefined) {
-        throw new ApiError(
-          400,
-          "budget is required to match a workflow template for this app",
-        );
-      }
-      matchedTemplate = templates.find((t) =>
-        evaluateBudget(t.metaData_1 || "", Number(budget)),
-      );
-    }
+    // 2. Match template using the subject type's own matching rule
+    const matchedTemplate = matchResolver(templates, criteria);
 
     if (!matchedTemplate) {
       throw new ApiError(
         400,
-        "No matching workflow template found for given budget",
+        "No matching workflow template found for the given criteria",
       );
     }
 
@@ -493,12 +521,10 @@ export const clarifyStageController = async (
       });
 
       // ── Step 7: Update EPC to pending ────────────────────────────────────────
-      await updateSubjectStatus(
-        tx,
-        workflow.subjectType,
-        workflow.subjectId,
-        getClarifyResetStatus(workflow.subjectType),
-      );
+      await tx.eventProposal.update({
+        where: { id: workflow.subjectId },
+        data: { status: "PENDING" },
+      });
 
       // ── Step 8: Write audit record ────────────────────────────────────────
       await tx.activityLog.create({
