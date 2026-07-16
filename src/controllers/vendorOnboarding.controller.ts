@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
 import { addMailJob } from "../services/mail.service";
+import { notify } from "../services/notification.services";
+import { getSignedImageUrl } from "../services/aws-s3.services";
 import {
   issueVendorAccessToken,
   markVendorAccessTokenUsed,
@@ -175,9 +177,20 @@ export const getVendorOnboardingById = async (
       id as string,
     );
 
+    const documentsWithSignedUrls = await Promise.all(
+      onboarding.documents.map(async (doc) => ({
+        ...doc,
+        fileUrl: await getSignedImageUrl(doc.s3Key),
+      })),
+    );
+
     res.status(200).json({
       success: true,
-      data: { ...onboarding, activeWorkflow },
+      data: {
+        ...onboarding,
+        documents: documentsWithSignedUrls,
+        activeWorkflow,
+      },
     });
   } catch (error) {
     next(error);
@@ -345,7 +358,11 @@ export const updateEmployeeFields = async (
       },
     });
 
-    res.status(200).json({ success: true, data: updated });
+    res.status(200).json({
+      success: true,
+      message: "The fields have been updated",
+      data: updated,
+    });
   } catch (error) {
     next(error);
   }
@@ -564,9 +581,8 @@ export const submitVendorForm = async (
 
         const s3Key = `vendor-onboarding-docs/${onboarding.id}/${documentType}.pdf`;
         await uploadToS3(s3Key, file.buffer, file.mimetype);
-        const fileUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${s3Key}`;
         await tx.vendorOnboardingDocument.create({
-          data: { onboardingId: onboarding.id, documentType, s3Key, fileUrl },
+          data: { onboardingId: onboarding.id, documentType, s3Key },
         });
       }
 
@@ -579,6 +595,14 @@ export const submitVendorForm = async (
           actorId: onboarding.initiatedById, // no vendor User to attribute to
           action: "VENDOR_FORM_SUBMITTED",
         },
+      });
+
+      await notify({
+        workspaceId: onboarding.workspaceId,
+        recipientId: onboarding.initiatedById,
+        type: "APPROVAL_PENDING",
+        title: "Vendor Form Submitted",
+        body: "Vendor has Submitted the form, Please check.",
       });
     });
 

@@ -29,7 +29,6 @@ export type VendorOnboardingDocumentMinAggregateOutputType = {
   onboardingId: string | null
   documentType: string | null
   s3Key: string | null
-  fileUrl: string | null
   uploadedAt: Date | null
 }
 
@@ -38,7 +37,6 @@ export type VendorOnboardingDocumentMaxAggregateOutputType = {
   onboardingId: string | null
   documentType: string | null
   s3Key: string | null
-  fileUrl: string | null
   uploadedAt: Date | null
 }
 
@@ -47,7 +45,6 @@ export type VendorOnboardingDocumentCountAggregateOutputType = {
   onboardingId: number
   documentType: number
   s3Key: number
-  fileUrl: number
   uploadedAt: number
   _all: number
 }
@@ -58,7 +55,6 @@ export type VendorOnboardingDocumentMinAggregateInputType = {
   onboardingId?: true
   documentType?: true
   s3Key?: true
-  fileUrl?: true
   uploadedAt?: true
 }
 
@@ -67,7 +63,6 @@ export type VendorOnboardingDocumentMaxAggregateInputType = {
   onboardingId?: true
   documentType?: true
   s3Key?: true
-  fileUrl?: true
   uploadedAt?: true
 }
 
@@ -76,7 +71,6 @@ export type VendorOnboardingDocumentCountAggregateInputType = {
   onboardingId?: true
   documentType?: true
   s3Key?: true
-  fileUrl?: true
   uploadedAt?: true
   _all?: true
 }
@@ -158,7 +152,6 @@ export type VendorOnboardingDocumentGroupByOutputType = {
   onboardingId: string
   documentType: string
   s3Key: string
-  fileUrl: string
   uploadedAt: Date
   _count: VendorOnboardingDocumentCountAggregateOutputType | null
   _min: VendorOnboardingDocumentMinAggregateOutputType | null
@@ -188,7 +181,6 @@ export type VendorOnboardingDocumentWhereInput = {
   onboardingId?: Prisma.StringFilter<"VendorOnboardingDocument"> | string
   documentType?: Prisma.StringFilter<"VendorOnboardingDocument"> | string
   s3Key?: Prisma.StringFilter<"VendorOnboardingDocument"> | string
-  fileUrl?: Prisma.StringFilter<"VendorOnboardingDocument"> | string
   uploadedAt?: Prisma.DateTimeFilter<"VendorOnboardingDocument"> | Date | string
   onboarding?: Prisma.XOR<Prisma.VendorOnboardingScalarRelationFilter, Prisma.VendorOnboardingWhereInput>
 }
@@ -198,7 +190,6 @@ export type VendorOnboardingDocumentOrderByWithRelationInput = {
   onboardingId?: Prisma.SortOrder
   documentType?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
   onboarding?: Prisma.VendorOnboardingOrderByWithRelationInput
 }
@@ -212,7 +203,6 @@ export type VendorOnboardingDocumentWhereUniqueInput = Prisma.AtLeast<{
   onboardingId?: Prisma.StringFilter<"VendorOnboardingDocument"> | string
   documentType?: Prisma.StringFilter<"VendorOnboardingDocument"> | string
   s3Key?: Prisma.StringFilter<"VendorOnboardingDocument"> | string
-  fileUrl?: Prisma.StringFilter<"VendorOnboardingDocument"> | string
   uploadedAt?: Prisma.DateTimeFilter<"VendorOnboardingDocument"> | Date | string
   onboarding?: Prisma.XOR<Prisma.VendorOnboardingScalarRelationFilter, Prisma.VendorOnboardingWhereInput>
 }, "id" | "onboardingId_documentType">
@@ -222,7 +212,6 @@ export type VendorOnboardingDocumentOrderByWithAggregationInput = {
   onboardingId?: Prisma.SortOrder
   documentType?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
   _count?: Prisma.VendorOnboardingDocumentCountOrderByAggregateInput
   _max?: Prisma.VendorOnboardingDocumentMaxOrderByAggregateInput
@@ -237,7 +226,6 @@ export type VendorOnboardingDocumentScalarWhereWithAggregatesInput = {
   onboardingId?: Prisma.StringWithAggregatesFilter<"VendorOnboardingDocument"> | string
   documentType?: Prisma.StringWithAggregatesFilter<"VendorOnboardingDocument"> | string
   s3Key?: Prisma.StringWithAggregatesFilter<"VendorOnboardingDocument"> | string
-  fileUrl?: Prisma.StringWithAggregatesFilter<"VendorOnboardingDocument"> | string
   uploadedAt?: Prisma.DateTimeWithAggregatesFilter<"VendorOnboardingDocument"> | Date | string
 }
 
@@ -245,7 +233,6 @@ export type VendorOnboardingDocumentCreateInput = {
   id?: string
   documentType: string
   s3Key: string
-  fileUrl: string
   uploadedAt?: Date | string
   onboarding: Prisma.VendorOnboardingCreateNestedOneWithoutDocumentsInput
 }
@@ -255,7 +242,6 @@ export type VendorOnboardingDocumentUncheckedCreateInput = {
   onboardingId: string
   documentType: string
   s3Key: string
-  fileUrl: string
   uploadedAt?: Date | string
 }
 
@@ -263,7 +249,6 @@ export type VendorOnboardingDocumentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   documentType?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   onboarding?: Prisma.VendorOnboardingUpdateOneRequiredWithoutDocumentsNestedInput
 }
@@ -273,7 +258,6 @@ export type VendorOnboardingDocumentUncheckedUpdateInput = {
   onboardingId?: Prisma.StringFieldUpdateOperationsInput | string
   documentType?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -282,7 +266,6 @@ export type VendorOnboardingDocumentCreateManyInput = {
   onboardingId: string
   documentType: string
   s3Key: string
-  fileUrl: string
   uploadedAt?: Date | string
 }
 
@@ -290,7 +273,6 @@ export type VendorOnboardingDocumentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   documentType?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -299,7 +281,6 @@ export type VendorOnboardingDocumentUncheckedUpdateManyInput = {
   onboardingId?: Prisma.StringFieldUpdateOperationsInput | string
   documentType?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -323,7 +304,6 @@ export type VendorOnboardingDocumentCountOrderByAggregateInput = {
   onboardingId?: Prisma.SortOrder
   documentType?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
 }
 
@@ -332,7 +312,6 @@ export type VendorOnboardingDocumentMaxOrderByAggregateInput = {
   onboardingId?: Prisma.SortOrder
   documentType?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
 }
 
@@ -341,7 +320,6 @@ export type VendorOnboardingDocumentMinOrderByAggregateInput = {
   onboardingId?: Prisma.SortOrder
   documentType?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
-  fileUrl?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
 }
 
@@ -391,7 +369,6 @@ export type VendorOnboardingDocumentCreateWithoutOnboardingInput = {
   id?: string
   documentType: string
   s3Key: string
-  fileUrl: string
   uploadedAt?: Date | string
 }
 
@@ -399,7 +376,6 @@ export type VendorOnboardingDocumentUncheckedCreateWithoutOnboardingInput = {
   id?: string
   documentType: string
   s3Key: string
-  fileUrl: string
   uploadedAt?: Date | string
 }
 
@@ -437,7 +413,6 @@ export type VendorOnboardingDocumentScalarWhereInput = {
   onboardingId?: Prisma.StringFilter<"VendorOnboardingDocument"> | string
   documentType?: Prisma.StringFilter<"VendorOnboardingDocument"> | string
   s3Key?: Prisma.StringFilter<"VendorOnboardingDocument"> | string
-  fileUrl?: Prisma.StringFilter<"VendorOnboardingDocument"> | string
   uploadedAt?: Prisma.DateTimeFilter<"VendorOnboardingDocument"> | Date | string
 }
 
@@ -445,7 +420,6 @@ export type VendorOnboardingDocumentCreateManyOnboardingInput = {
   id?: string
   documentType: string
   s3Key: string
-  fileUrl: string
   uploadedAt?: Date | string
 }
 
@@ -453,7 +427,6 @@ export type VendorOnboardingDocumentUpdateWithoutOnboardingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   documentType?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -461,7 +434,6 @@ export type VendorOnboardingDocumentUncheckedUpdateWithoutOnboardingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   documentType?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -469,7 +441,6 @@ export type VendorOnboardingDocumentUncheckedUpdateManyWithoutOnboardingInput = 
   id?: Prisma.StringFieldUpdateOperationsInput | string
   documentType?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
-  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -480,7 +451,6 @@ export type VendorOnboardingDocumentSelect<ExtArgs extends runtime.Types.Extensi
   onboardingId?: boolean
   documentType?: boolean
   s3Key?: boolean
-  fileUrl?: boolean
   uploadedAt?: boolean
   onboarding?: boolean | Prisma.VendorOnboardingDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vendorOnboardingDocument"]>
@@ -490,7 +460,6 @@ export type VendorOnboardingDocumentSelectCreateManyAndReturn<ExtArgs extends ru
   onboardingId?: boolean
   documentType?: boolean
   s3Key?: boolean
-  fileUrl?: boolean
   uploadedAt?: boolean
   onboarding?: boolean | Prisma.VendorOnboardingDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vendorOnboardingDocument"]>
@@ -500,7 +469,6 @@ export type VendorOnboardingDocumentSelectUpdateManyAndReturn<ExtArgs extends ru
   onboardingId?: boolean
   documentType?: boolean
   s3Key?: boolean
-  fileUrl?: boolean
   uploadedAt?: boolean
   onboarding?: boolean | Prisma.VendorOnboardingDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vendorOnboardingDocument"]>
@@ -510,11 +478,10 @@ export type VendorOnboardingDocumentSelectScalar = {
   onboardingId?: boolean
   documentType?: boolean
   s3Key?: boolean
-  fileUrl?: boolean
   uploadedAt?: boolean
 }
 
-export type VendorOnboardingDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "onboardingId" | "documentType" | "s3Key" | "fileUrl" | "uploadedAt", ExtArgs["result"]["vendorOnboardingDocument"]>
+export type VendorOnboardingDocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "onboardingId" | "documentType" | "s3Key" | "uploadedAt", ExtArgs["result"]["vendorOnboardingDocument"]>
 export type VendorOnboardingDocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   onboarding?: boolean | Prisma.VendorOnboardingDefaultArgs<ExtArgs>
 }
@@ -535,7 +502,6 @@ export type $VendorOnboardingDocumentPayload<ExtArgs extends runtime.Types.Exten
     onboardingId: string
     documentType: string
     s3Key: string
-    fileUrl: string
     uploadedAt: Date
   }, ExtArgs["result"]["vendorOnboardingDocument"]>
   composites: {}
@@ -965,7 +931,6 @@ export interface VendorOnboardingDocumentFieldRefs {
   readonly onboardingId: Prisma.FieldRef<"VendorOnboardingDocument", 'String'>
   readonly documentType: Prisma.FieldRef<"VendorOnboardingDocument", 'String'>
   readonly s3Key: Prisma.FieldRef<"VendorOnboardingDocument", 'String'>
-  readonly fileUrl: Prisma.FieldRef<"VendorOnboardingDocument", 'String'>
   readonly uploadedAt: Prisma.FieldRef<"VendorOnboardingDocument", 'DateTime'>
 }
     

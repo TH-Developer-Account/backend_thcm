@@ -1023,7 +1023,6 @@ model VendorOnboardingDocument {
   documentType String   // GST_CERTIFICATE | PAN_DOCUMENT | CANCELLED_CHEQUE
                          // | INCORPORATION_CERTIFICATE | MSME_CERTIFICATE | NDA_CERTIFICATE
   s3Key        String
-  fileUrl      String
   uploadedAt   DateTime @default(now())
 
   onboarding VendorOnboarding @relation(fields: [onboardingId], references: [id], onDelete: Cascade)

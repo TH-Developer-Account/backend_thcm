@@ -728,7 +728,6 @@ export const VendorOnboardingDocumentScalarFieldEnum = {
   onboardingId: 'onboardingId',
   documentType: 'documentType',
   s3Key: 's3Key',
-  fileUrl: 'fileUrl',
   uploadedAt: 'uploadedAt'
 } as const
 
