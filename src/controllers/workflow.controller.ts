@@ -539,7 +539,7 @@ export const clarifyStageController = async (
       // ── Step 8: Write audit record ────────────────────────────────────────
       await tx.activityLog.create({
         data: {
-          subjectType: "EVENT_PROPOSAL",
+          subjectType: workflow.subjectType,
           subjectId: workflow.subjectId,
           actorId: userId,
           action: "CLARIFY",
