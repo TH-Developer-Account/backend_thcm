@@ -659,7 +659,7 @@ export const activateFirstStageController = async (
 
       await tx.activityLog.create({
         data: {
-          subjectType: "EVENT_PROPOSAL",
+          subjectType: workflow.subjectType,
           subjectId: workflow.subjectId,
           actorId: req.user?.id as string,
           action: "EPC_RESUBMITTED",
