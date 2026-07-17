@@ -4,6 +4,10 @@ import { approveStage } from "../services/workflow.service";
 import { Prisma, WorkflowSubjectType } from "../prisma/generated/prisma/client";
 import { budgetMap } from "../utils/contants";
 import ApiError from "../utils/apiError";
+import {
+  updateSubjectStatus,
+  getClarifyResetStatus,
+} from "../helpers/workflowSubject.helper";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS
@@ -520,11 +524,17 @@ export const clarifyStageController = async (
         },
       });
 
-      // ── Step 7: Update EPC to pending ────────────────────────────────────────
-      await tx.eventProposal.update({
-        where: { id: workflow.subjectId },
-        data: { status: "PENDING" },
-      });
+      // ── Step 7: Reset the subject's status (subject-type-agnostic) ────────
+      // Was hardcoded to tx.eventProposal.update — now resolved via the
+      // registry in workflowSubject.helper.ts. EPC resets to PENDING,
+      // Vendor Onboarding resets to IN_REVIEW (back to the initiating
+      // employee, not the vendor).
+      await updateSubjectStatus(
+        tx,
+        workflow.subjectType,
+        workflow.subjectId,
+        getClarifyResetStatus(workflow.subjectType),
+      );
 
       // ── Step 8: Write audit record ────────────────────────────────────────
       await tx.activityLog.create({
