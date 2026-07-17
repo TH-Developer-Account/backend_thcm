@@ -16,6 +16,7 @@ import {
   buildVendorOnboardingWhereClause,
   parseVendorListingPaginationParams,
   VendorListingTab,
+  resolveSubjectIdsForApprovalTab,
 } from "../helpers/vendorOnboarding.helper";
 
 // POST /vendor-onboarding
@@ -99,19 +100,33 @@ export const listVendorOnboardings = async (
     const { tab, search, pageSize, pageIndex } = req.query;
     if (!userId) throw new ApiError(401, "Unauthorized");
 
-    const vendorTab: VendorListingTab =
-      tab === "onboarding" ? "onboarding" : "initiation";
+    const vendorTab: VendorListingTab = [
+      "onboarding",
+      "pendingOnMe",
+      "approvedByMe",
+    ].includes(tab as string)
+      ? (tab as VendorListingTab)
+      : "initiation";
+
     const vendorSearch = typeof search === "string" ? search.trim() : "";
     const { reqPageIndex, reqPageSize } = parseVendorListingPaginationParams(
       pageIndex as string,
       pageSize as string,
     );
 
+    // Only resolve approval-based subject ids when actually needed —
+    // no point running an extra query for the initiation/onboarding tabs.
+    const approvalSubjectIds =
+      vendorTab === "pendingOnMe" || vendorTab === "approvedByMe"
+        ? await resolveSubjectIdsForApprovalTab(userId, vendorTab)
+        : undefined;
+
     const where = buildVendorOnboardingWhereClause(
       workspaceId,
       userId,
       vendorTab,
       vendorSearch,
+      approvalSubjectIds,
     );
 
     const [rows, totalCount] = await Promise.all([
@@ -147,7 +162,6 @@ export const listVendorOnboardings = async (
     next(error);
   }
 };
-
 // GET /vendor-onboarding/:id
 // Flattens the onboarding record + its documents + active workflow into
 // one response — same shape philosophy as getEventProposalById.
@@ -166,11 +180,6 @@ export const getVendorOnboardingById = async (
       include: { documents: true },
     });
     if (!onboarding) throw new ApiError(404, "Vendor onboarding not found");
-
-    // ── Guard: only the initiator or a superadmin can view ──────────────────
-    if (onboarding.initiatedById !== userId) {
-      throw new ApiError(403, "You do not have access to this request");
-    }
 
     const activeWorkflow = await getActiveWorkflowForSubject(
       "VENDOR_ONBOARDING",

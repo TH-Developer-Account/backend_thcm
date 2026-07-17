@@ -1,3 +1,5 @@
+import { prisma } from "../config/prisma";
+
 // ── constants ──────────────────────────────────────────────────────────────
 const VENDOR_INITIATION_STATUS = "AWAITING_VENDOR";
 
@@ -9,23 +11,66 @@ const ONBOARDING_SEARCH_FIELDS = [
   "companyCode",
 ] as const;
 
-export type VendorListingTab = "initiation" | "onboarding";
+export type VendorListingTab =
+  | "initiation"
+  | "onboarding"
+  | "pendingOnMe"
+  | "approvedByMe";
 
 // ── pure helpers ─────────────────────────────────────────────────────────────
 
-// Builds the Prisma `where` clause for either listing tab. Kept pure (no req/res)
+// ─────────────────────────────────────────────────────────────────────────────
+// resolveSubjectIdsForApprovalTab
+//
+// Mirrors searchEventProposal.helper's pendingOnMe/approvedByMe EXISTS logic,
+// just expressed as "find matching subjectIds, then filter by id: { in }"
+// instead of raw SQL — VendorOnboarding has no direct Prisma relation to
+// WorkflowInstance (same loose subjectType/subjectId pairing as everywhere
+// else), so this is the Prisma-native equivalent of that EXISTS subquery.
+//
+// pendingOnMe   → PENDING approval, current iteration, stage IN_PROGRESS
+// approvedByMe  → APPROVED approval, any iteration (past approvals are still
+//                 real history — same reasoning as EPC's version)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function resolveSubjectIdsForApprovalTab(
+  userId: string,
+  tab: Extract<VendorListingTab, "pendingOnMe" | "approvedByMe">,
+): Promise<string[]> {
+  const approvals = await prisma.approval.findMany({
+    where: {
+      approverId: userId,
+      status: tab === "pendingOnMe" ? "PENDING" : "APPROVED",
+      stage: {
+        workflow: { subjectType: "VENDOR_ONBOARDING", isActive: true },
+        ...(tab === "pendingOnMe"
+          ? { isCurrentIteration: true, status: "IN_PROGRESS" }
+          : {}),
+      },
+    },
+    select: {
+      stage: { select: { workflow: { select: { subjectId: true } } } },
+    },
+  });
+
+  // dedupe — a subject could theoretically surface more than once across
+  // stages/iterations for approvedByMe
+  return [...new Set(approvals.map((a) => a.stage.workflow.subjectId))];
+}
+
+// Builds the Prisma `where` clause for any listing tab. Kept pure (no req/res)
 // so the filtering rules can be unit-tested without mocking Express or Prisma.
+//
+// approvalSubjectIds is only populated by the controller for
+// pendingOnMe/approvedByMe — passed in rather than queried here, so this
+// function stays synchronous and side-effect-free like the rest of the file.
 export const buildVendorOnboardingWhereClause = (
   workspaceId: string,
   userId: string,
   tab: VendorListingTab,
   search: string,
+  approvalSubjectIds?: string[],
 ) => {
-  const statusFilter =
-    tab === "initiation"
-      ? { status: VENDOR_INITIATION_STATUS }
-      : { status: { not: VENDOR_INITIATION_STATUS } };
-
   const searchableFields =
     tab === "initiation" ? INITIATION_SEARCH_FIELDS : ONBOARDING_SEARCH_FIELDS;
 
@@ -36,6 +81,19 @@ export const buildVendorOnboardingWhereClause = (
         })),
       }
     : {};
+
+  if (tab === "pendingOnMe" || tab === "approvedByMe") {
+    return {
+      workspaceId,
+      id: { in: approvalSubjectIds ?? [] },
+      ...searchFilter,
+    };
+  }
+
+  const statusFilter =
+    tab === "initiation"
+      ? { status: VENDOR_INITIATION_STATUS }
+      : { status: { not: VENDOR_INITIATION_STATUS } };
 
   return {
     workspaceId,
