@@ -20,7 +20,7 @@ import { REQUIRED_VENDOR_DOCUMENT_TYPES } from "../utils/contants";
 const router = Router();
 
 const APP_KEY = "VENDOR_ONBOARDING";
-const MODULE = "Vendor Initiation"; // per your single-module decision
+const MODULE = "VENDOR_INITIATION"; // per your single-module decision
 
 // In-memory storage — matches uploadDeviationDoc's use of req.file.buffer
 // elsewhere, so uploadToS3 keeps receiving a Buffer, not a disk path.

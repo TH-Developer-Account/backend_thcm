@@ -23,7 +23,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 router.post(
   "/",
-  authorize("MAP", "Event Proposal Form", "write"),
+  authorize("MAP", "EPC", "write"),
   asyncHandler(createEventProposal),
 );
 router.get("/", asyncHandler(getAllEventProposals));
