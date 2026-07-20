@@ -523,7 +523,7 @@ export const getVendorFormByToken = async (
         action: "CLARIFY",
       },
       orderBy: { createdAt: "desc" },
-      select: { metadata: true, createdt: true },
+      select: { metadata: true, createdAt: true },
     });
 
     const existingDocuments = await prisma.vendorOnboardingDocument.findMany({
