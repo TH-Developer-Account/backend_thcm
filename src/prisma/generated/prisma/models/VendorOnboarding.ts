@@ -26,6 +26,7 @@ export type AggregateVendorOnboarding = {
 
 export type VendorOnboardingMinAggregateOutputType = {
   id: string | null
+  referenceNumber: string | null
   workspaceId: string | null
   initiatedById: string | null
   status: string | null
@@ -71,6 +72,7 @@ export type VendorOnboardingMinAggregateOutputType = {
 
 export type VendorOnboardingMaxAggregateOutputType = {
   id: string | null
+  referenceNumber: string | null
   workspaceId: string | null
   initiatedById: string | null
   status: string | null
@@ -116,6 +118,7 @@ export type VendorOnboardingMaxAggregateOutputType = {
 
 export type VendorOnboardingCountAggregateOutputType = {
   id: number
+  referenceNumber: number
   workspaceId: number
   initiatedById: number
   status: number
@@ -163,6 +166,7 @@ export type VendorOnboardingCountAggregateOutputType = {
 
 export type VendorOnboardingMinAggregateInputType = {
   id?: true
+  referenceNumber?: true
   workspaceId?: true
   initiatedById?: true
   status?: true
@@ -208,6 +212,7 @@ export type VendorOnboardingMinAggregateInputType = {
 
 export type VendorOnboardingMaxAggregateInputType = {
   id?: true
+  referenceNumber?: true
   workspaceId?: true
   initiatedById?: true
   status?: true
@@ -253,6 +258,7 @@ export type VendorOnboardingMaxAggregateInputType = {
 
 export type VendorOnboardingCountAggregateInputType = {
   id?: true
+  referenceNumber?: true
   workspaceId?: true
   initiatedById?: true
   status?: true
@@ -371,6 +377,7 @@ export type VendorOnboardingGroupByArgs<ExtArgs extends runtime.Types.Extensions
 
 export type VendorOnboardingGroupByOutputType = {
   id: string
+  referenceNumber: string
   workspaceId: string
   initiatedById: string
   status: string
@@ -437,6 +444,7 @@ export type VendorOnboardingWhereInput = {
   OR?: Prisma.VendorOnboardingWhereInput[]
   NOT?: Prisma.VendorOnboardingWhereInput | Prisma.VendorOnboardingWhereInput[]
   id?: Prisma.StringFilter<"VendorOnboarding"> | string
+  referenceNumber?: Prisma.StringFilter<"VendorOnboarding"> | string
   workspaceId?: Prisma.StringFilter<"VendorOnboarding"> | string
   initiatedById?: Prisma.StringFilter<"VendorOnboarding"> | string
   status?: Prisma.StringFilter<"VendorOnboarding"> | string
@@ -486,6 +494,7 @@ export type VendorOnboardingWhereInput = {
 
 export type VendorOnboardingOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  referenceNumber?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   initiatedById?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -535,6 +544,7 @@ export type VendorOnboardingOrderByWithRelationInput = {
 
 export type VendorOnboardingWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  referenceNumber?: string
   AND?: Prisma.VendorOnboardingWhereInput | Prisma.VendorOnboardingWhereInput[]
   OR?: Prisma.VendorOnboardingWhereInput[]
   NOT?: Prisma.VendorOnboardingWhereInput | Prisma.VendorOnboardingWhereInput[]
@@ -583,10 +593,11 @@ export type VendorOnboardingWhereUniqueInput = Prisma.AtLeast<{
   initiatedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   documents?: Prisma.VendorOnboardingDocumentListRelationFilter
   accessTokens?: Prisma.VendorAccessTokenListRelationFilter
-}, "id">
+}, "id" | "referenceNumber">
 
 export type VendorOnboardingOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  referenceNumber?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   initiatedById?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -638,6 +649,7 @@ export type VendorOnboardingScalarWhereWithAggregatesInput = {
   OR?: Prisma.VendorOnboardingScalarWhereWithAggregatesInput[]
   NOT?: Prisma.VendorOnboardingScalarWhereWithAggregatesInput | Prisma.VendorOnboardingScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"VendorOnboarding"> | string
+  referenceNumber?: Prisma.StringWithAggregatesFilter<"VendorOnboarding"> | string
   workspaceId?: Prisma.StringWithAggregatesFilter<"VendorOnboarding"> | string
   initiatedById?: Prisma.StringWithAggregatesFilter<"VendorOnboarding"> | string
   status?: Prisma.StringWithAggregatesFilter<"VendorOnboarding"> | string
@@ -683,6 +695,7 @@ export type VendorOnboardingScalarWhereWithAggregatesInput = {
 
 export type VendorOnboardingCreateInput = {
   id?: string
+  referenceNumber: string
   status?: string
   vendorName?: string | null
   state?: string | null
@@ -730,6 +743,7 @@ export type VendorOnboardingCreateInput = {
 
 export type VendorOnboardingUncheckedCreateInput = {
   id?: string
+  referenceNumber: string
   workspaceId: string
   initiatedById: string
   status?: string
@@ -777,6 +791,7 @@ export type VendorOnboardingUncheckedCreateInput = {
 
 export type VendorOnboardingUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   vendorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -824,6 +839,7 @@ export type VendorOnboardingUpdateInput = {
 
 export type VendorOnboardingUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   initiatedById?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -871,6 +887,7 @@ export type VendorOnboardingUncheckedUpdateInput = {
 
 export type VendorOnboardingCreateManyInput = {
   id?: string
+  referenceNumber: string
   workspaceId: string
   initiatedById: string
   status?: string
@@ -916,6 +933,7 @@ export type VendorOnboardingCreateManyInput = {
 
 export type VendorOnboardingUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   vendorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -959,6 +977,7 @@ export type VendorOnboardingUpdateManyMutationInput = {
 
 export type VendorOnboardingUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   initiatedById?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1014,6 +1033,7 @@ export type VendorOnboardingOrderByRelationAggregateInput = {
 
 export type VendorOnboardingCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  referenceNumber?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   initiatedById?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -1059,6 +1079,7 @@ export type VendorOnboardingCountOrderByAggregateInput = {
 
 export type VendorOnboardingMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  referenceNumber?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   initiatedById?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -1104,6 +1125,7 @@ export type VendorOnboardingMaxOrderByAggregateInput = {
 
 export type VendorOnboardingMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  referenceNumber?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   initiatedById?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -1270,6 +1292,7 @@ export type VendorOnboardingUpdateOneRequiredWithoutAccessTokensNestedInput = {
 
 export type VendorOnboardingCreateWithoutInitiatedByInput = {
   id?: string
+  referenceNumber: string
   status?: string
   vendorName?: string | null
   state?: string | null
@@ -1316,6 +1339,7 @@ export type VendorOnboardingCreateWithoutInitiatedByInput = {
 
 export type VendorOnboardingUncheckedCreateWithoutInitiatedByInput = {
   id?: string
+  referenceNumber: string
   workspaceId: string
   status?: string
   vendorName?: string | null
@@ -1391,6 +1415,7 @@ export type VendorOnboardingScalarWhereInput = {
   OR?: Prisma.VendorOnboardingScalarWhereInput[]
   NOT?: Prisma.VendorOnboardingScalarWhereInput | Prisma.VendorOnboardingScalarWhereInput[]
   id?: Prisma.StringFilter<"VendorOnboarding"> | string
+  referenceNumber?: Prisma.StringFilter<"VendorOnboarding"> | string
   workspaceId?: Prisma.StringFilter<"VendorOnboarding"> | string
   initiatedById?: Prisma.StringFilter<"VendorOnboarding"> | string
   status?: Prisma.StringFilter<"VendorOnboarding"> | string
@@ -1436,6 +1461,7 @@ export type VendorOnboardingScalarWhereInput = {
 
 export type VendorOnboardingCreateWithoutWorkspaceInput = {
   id?: string
+  referenceNumber: string
   status?: string
   vendorName?: string | null
   state?: string | null
@@ -1482,6 +1508,7 @@ export type VendorOnboardingCreateWithoutWorkspaceInput = {
 
 export type VendorOnboardingUncheckedCreateWithoutWorkspaceInput = {
   id?: string
+  referenceNumber: string
   initiatedById: string
   status?: string
   vendorName?: string | null
@@ -1554,6 +1581,7 @@ export type VendorOnboardingUpdateManyWithWhereWithoutWorkspaceInput = {
 
 export type VendorOnboardingCreateWithoutDocumentsInput = {
   id?: string
+  referenceNumber: string
   status?: string
   vendorName?: string | null
   state?: string | null
@@ -1600,6 +1628,7 @@ export type VendorOnboardingCreateWithoutDocumentsInput = {
 
 export type VendorOnboardingUncheckedCreateWithoutDocumentsInput = {
   id?: string
+  referenceNumber: string
   workspaceId: string
   initiatedById: string
   status?: string
@@ -1662,6 +1691,7 @@ export type VendorOnboardingUpdateToOneWithWhereWithoutDocumentsInput = {
 
 export type VendorOnboardingUpdateWithoutDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   vendorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1708,6 +1738,7 @@ export type VendorOnboardingUpdateWithoutDocumentsInput = {
 
 export type VendorOnboardingUncheckedUpdateWithoutDocumentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   initiatedById?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1754,6 +1785,7 @@ export type VendorOnboardingUncheckedUpdateWithoutDocumentsInput = {
 
 export type VendorOnboardingCreateWithoutAccessTokensInput = {
   id?: string
+  referenceNumber: string
   status?: string
   vendorName?: string | null
   state?: string | null
@@ -1800,6 +1832,7 @@ export type VendorOnboardingCreateWithoutAccessTokensInput = {
 
 export type VendorOnboardingUncheckedCreateWithoutAccessTokensInput = {
   id?: string
+  referenceNumber: string
   workspaceId: string
   initiatedById: string
   status?: string
@@ -1862,6 +1895,7 @@ export type VendorOnboardingUpdateToOneWithWhereWithoutAccessTokensInput = {
 
 export type VendorOnboardingUpdateWithoutAccessTokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   vendorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1908,6 +1942,7 @@ export type VendorOnboardingUpdateWithoutAccessTokensInput = {
 
 export type VendorOnboardingUncheckedUpdateWithoutAccessTokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   initiatedById?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1954,6 +1989,7 @@ export type VendorOnboardingUncheckedUpdateWithoutAccessTokensInput = {
 
 export type VendorOnboardingCreateManyInitiatedByInput = {
   id?: string
+  referenceNumber: string
   workspaceId: string
   status?: string
   vendorName?: string | null
@@ -1998,6 +2034,7 @@ export type VendorOnboardingCreateManyInitiatedByInput = {
 
 export type VendorOnboardingUpdateWithoutInitiatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   vendorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2044,6 +2081,7 @@ export type VendorOnboardingUpdateWithoutInitiatedByInput = {
 
 export type VendorOnboardingUncheckedUpdateWithoutInitiatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   vendorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2090,6 +2128,7 @@ export type VendorOnboardingUncheckedUpdateWithoutInitiatedByInput = {
 
 export type VendorOnboardingUncheckedUpdateManyWithoutInitiatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   vendorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2134,6 +2173,7 @@ export type VendorOnboardingUncheckedUpdateManyWithoutInitiatedByInput = {
 
 export type VendorOnboardingCreateManyWorkspaceInput = {
   id?: string
+  referenceNumber: string
   initiatedById: string
   status?: string
   vendorName?: string | null
@@ -2178,6 +2218,7 @@ export type VendorOnboardingCreateManyWorkspaceInput = {
 
 export type VendorOnboardingUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   vendorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2224,6 +2265,7 @@ export type VendorOnboardingUpdateWithoutWorkspaceInput = {
 
 export type VendorOnboardingUncheckedUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   initiatedById?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   vendorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2270,6 +2312,7 @@ export type VendorOnboardingUncheckedUpdateWithoutWorkspaceInput = {
 
 export type VendorOnboardingUncheckedUpdateManyWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
   initiatedById?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   vendorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2354,6 +2397,7 @@ export type VendorOnboardingCountOutputTypeCountAccessTokensArgs<ExtArgs extends
 
 export type VendorOnboardingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  referenceNumber?: boolean
   workspaceId?: boolean
   initiatedById?: boolean
   status?: boolean
@@ -2404,6 +2448,7 @@ export type VendorOnboardingSelect<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type VendorOnboardingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  referenceNumber?: boolean
   workspaceId?: boolean
   initiatedById?: boolean
   status?: boolean
@@ -2451,6 +2496,7 @@ export type VendorOnboardingSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
 
 export type VendorOnboardingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  referenceNumber?: boolean
   workspaceId?: boolean
   initiatedById?: boolean
   status?: boolean
@@ -2498,6 +2544,7 @@ export type VendorOnboardingSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
 
 export type VendorOnboardingSelectScalar = {
   id?: boolean
+  referenceNumber?: boolean
   workspaceId?: boolean
   initiatedById?: boolean
   status?: boolean
@@ -2541,7 +2588,7 @@ export type VendorOnboardingSelectScalar = {
   updated_at?: boolean
 }
 
-export type VendorOnboardingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "initiatedById" | "status" | "vendorName" | "state" | "city" | "pinCode" | "address" | "mobile" | "email" | "msmeVendor" | "msmeCertAttached" | "bankName" | "bankBranch" | "ifscCode" | "bankAddress" | "accountNumber" | "gstin" | "pan" | "entityRegNo" | "dpdpConsentedAt" | "dpdpConsentIp" | "vendorSubmittedAt" | "vendorCode" | "vendorType" | "companyCode" | "purchaseOrg" | "paymentTerm" | "tds" | "vendorCategory" | "materialType" | "materialSubType" | "selfAssessmentObtained" | "ndaObtained" | "gpaObtained" | "isRelatedParty" | "vendorAuditReportPrepared" | "natureOfService" | "onboardingReason" | "created_at" | "updated_at", ExtArgs["result"]["vendorOnboarding"]>
+export type VendorOnboardingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceNumber" | "workspaceId" | "initiatedById" | "status" | "vendorName" | "state" | "city" | "pinCode" | "address" | "mobile" | "email" | "msmeVendor" | "msmeCertAttached" | "bankName" | "bankBranch" | "ifscCode" | "bankAddress" | "accountNumber" | "gstin" | "pan" | "entityRegNo" | "dpdpConsentedAt" | "dpdpConsentIp" | "vendorSubmittedAt" | "vendorCode" | "vendorType" | "companyCode" | "purchaseOrg" | "paymentTerm" | "tds" | "vendorCategory" | "materialType" | "materialSubType" | "selfAssessmentObtained" | "ndaObtained" | "gpaObtained" | "isRelatedParty" | "vendorAuditReportPrepared" | "natureOfService" | "onboardingReason" | "created_at" | "updated_at", ExtArgs["result"]["vendorOnboarding"]>
 export type VendorOnboardingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   initiatedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2568,6 +2615,7 @@ export type $VendorOnboardingPayload<ExtArgs extends runtime.Types.Extensions.In
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    referenceNumber: string
     workspaceId: string
     initiatedById: string
     status: string
@@ -3037,6 +3085,7 @@ export interface Prisma__VendorOnboardingClient<T, Null = never, ExtArgs extends
  */
 export interface VendorOnboardingFieldRefs {
   readonly id: Prisma.FieldRef<"VendorOnboarding", 'String'>
+  readonly referenceNumber: Prisma.FieldRef<"VendorOnboarding", 'String'>
   readonly workspaceId: Prisma.FieldRef<"VendorOnboarding", 'String'>
   readonly initiatedById: Prisma.FieldRef<"VendorOnboarding", 'String'>
   readonly status: Prisma.FieldRef<"VendorOnboarding", 'String'>

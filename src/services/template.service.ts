@@ -13,7 +13,7 @@ type CreateTemplateInput = {
     stageOrder: number;
     strategy: "ALL" | "ANY" | "SOME";
     minApprovals?: number;
-    approverIds: string[];
+    approverIds: { userId: string; isExternalApprover?: boolean }[];
   }[];
 };
 
@@ -41,8 +41,9 @@ export const createWorkflowTemplate = async (
           minApprovals: stage.minApprovals,
 
           approvers: {
-            create: stage.approverIds.map((userId) => ({
-              userId,
+            create: stage.approverIds.map((user) => ({
+              userId: user.userId,
+              isExternalApprover: user.isExternalApprover ?? false,
             })),
           },
         })),
@@ -127,10 +128,13 @@ export const updateTemplate = async (
 
       if (stage.approverIds?.length) {
         await tx.templateApprover.createMany({
-          data: stage.approverIds.map((userId: string) => ({
-            stageId: createdStage.id,
-            userId,
-          })),
+          data: stage.approverIds.map(
+            (approver: { userId: string; isExternalApprover?: boolean }) => ({
+              stageId: createdStage.id,
+              userId: approver.userId,
+              isExternalApprover: approver.isExternalApprover ?? false,
+            }),
+          ),
         });
       }
     }

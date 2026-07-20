@@ -12,6 +12,7 @@ import {
   products,
 } from "./constants";
 import { ProductMasterCreateManyInput } from "./generated/prisma/models";
+import { generateVendorOnboardingReferenceNumber } from "../helpers/vendorOnboarding.helper";
 
 async function main() {
   console.log("🌱 Seeding database...");
@@ -782,6 +783,9 @@ async function main() {
       workspaceId: workspace.id,
       initiatedById: users[1].id, // a Field Engineer, matches "employee initiates" flow
       status: "AWAITING_VENDOR",
+      referenceNumber: generateVendorOnboardingReferenceNumber(
+        faker.company.name(),
+      ),
       vendorName: faker.company.name(),
       mobile: `9${faker.string.numeric(9)}`,
       email: faker.internet.email().toLowerCase(),

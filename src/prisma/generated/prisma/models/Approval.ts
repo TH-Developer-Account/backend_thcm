@@ -31,6 +31,7 @@ export type ApprovalMinAggregateOutputType = {
   status: $Enums.ApprovalStatus | null
   actedAt: Date | null
   reason: string | null
+  isExternalApprover: boolean | null
 }
 
 export type ApprovalMaxAggregateOutputType = {
@@ -40,6 +41,7 @@ export type ApprovalMaxAggregateOutputType = {
   status: $Enums.ApprovalStatus | null
   actedAt: Date | null
   reason: string | null
+  isExternalApprover: boolean | null
 }
 
 export type ApprovalCountAggregateOutputType = {
@@ -49,6 +51,7 @@ export type ApprovalCountAggregateOutputType = {
   status: number
   actedAt: number
   reason: number
+  isExternalApprover: number
   _all: number
 }
 
@@ -60,6 +63,7 @@ export type ApprovalMinAggregateInputType = {
   status?: true
   actedAt?: true
   reason?: true
+  isExternalApprover?: true
 }
 
 export type ApprovalMaxAggregateInputType = {
@@ -69,6 +73,7 @@ export type ApprovalMaxAggregateInputType = {
   status?: true
   actedAt?: true
   reason?: true
+  isExternalApprover?: true
 }
 
 export type ApprovalCountAggregateInputType = {
@@ -78,6 +83,7 @@ export type ApprovalCountAggregateInputType = {
   status?: true
   actedAt?: true
   reason?: true
+  isExternalApprover?: true
   _all?: true
 }
 
@@ -160,6 +166,7 @@ export type ApprovalGroupByOutputType = {
   status: $Enums.ApprovalStatus
   actedAt: Date | null
   reason: string | null
+  isExternalApprover: boolean
   _count: ApprovalCountAggregateOutputType | null
   _min: ApprovalMinAggregateOutputType | null
   _max: ApprovalMaxAggregateOutputType | null
@@ -190,6 +197,7 @@ export type ApprovalWhereInput = {
   status?: Prisma.EnumApprovalStatusFilter<"Approval"> | $Enums.ApprovalStatus
   actedAt?: Prisma.DateTimeNullableFilter<"Approval"> | Date | string | null
   reason?: Prisma.StringNullableFilter<"Approval"> | string | null
+  isExternalApprover?: Prisma.BoolFilter<"Approval"> | boolean
   stage?: Prisma.XOR<Prisma.StageInstanceScalarRelationFilter, Prisma.StageInstanceWhereInput>
   approver?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   comments?: Prisma.CommentListRelationFilter
@@ -202,6 +210,7 @@ export type ApprovalOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   actedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   reason?: Prisma.SortOrderInput | Prisma.SortOrder
+  isExternalApprover?: Prisma.SortOrder
   stage?: Prisma.StageInstanceOrderByWithRelationInput
   approver?: Prisma.UserOrderByWithRelationInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
@@ -218,6 +227,7 @@ export type ApprovalWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumApprovalStatusFilter<"Approval"> | $Enums.ApprovalStatus
   actedAt?: Prisma.DateTimeNullableFilter<"Approval"> | Date | string | null
   reason?: Prisma.StringNullableFilter<"Approval"> | string | null
+  isExternalApprover?: Prisma.BoolFilter<"Approval"> | boolean
   stage?: Prisma.XOR<Prisma.StageInstanceScalarRelationFilter, Prisma.StageInstanceWhereInput>
   approver?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   comments?: Prisma.CommentListRelationFilter
@@ -230,6 +240,7 @@ export type ApprovalOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   actedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   reason?: Prisma.SortOrderInput | Prisma.SortOrder
+  isExternalApprover?: Prisma.SortOrder
   _count?: Prisma.ApprovalCountOrderByAggregateInput
   _max?: Prisma.ApprovalMaxOrderByAggregateInput
   _min?: Prisma.ApprovalMinOrderByAggregateInput
@@ -245,6 +256,7 @@ export type ApprovalScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumApprovalStatusWithAggregatesFilter<"Approval"> | $Enums.ApprovalStatus
   actedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Approval"> | Date | string | null
   reason?: Prisma.StringNullableWithAggregatesFilter<"Approval"> | string | null
+  isExternalApprover?: Prisma.BoolWithAggregatesFilter<"Approval"> | boolean
 }
 
 export type ApprovalCreateInput = {
@@ -252,6 +264,7 @@ export type ApprovalCreateInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  isExternalApprover?: boolean
   stage: Prisma.StageInstanceCreateNestedOneWithoutApprovalsInput
   approver: Prisma.UserCreateNestedOneWithoutApprovalsInput
   comments?: Prisma.CommentCreateNestedManyWithoutApprovalInput
@@ -264,6 +277,7 @@ export type ApprovalUncheckedCreateInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  isExternalApprover?: boolean
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutApprovalInput
 }
 
@@ -272,6 +286,7 @@ export type ApprovalUpdateInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stage?: Prisma.StageInstanceUpdateOneRequiredWithoutApprovalsNestedInput
   approver?: Prisma.UserUpdateOneRequiredWithoutApprovalsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutApprovalNestedInput
@@ -284,6 +299,7 @@ export type ApprovalUncheckedUpdateInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   comments?: Prisma.CommentUncheckedUpdateManyWithoutApprovalNestedInput
 }
 
@@ -294,6 +310,7 @@ export type ApprovalCreateManyInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  isExternalApprover?: boolean
 }
 
 export type ApprovalUpdateManyMutationInput = {
@@ -301,6 +318,7 @@ export type ApprovalUpdateManyMutationInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ApprovalUncheckedUpdateManyInput = {
@@ -310,6 +328,7 @@ export type ApprovalUncheckedUpdateManyInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ApprovalListRelationFilter = {
@@ -334,6 +353,7 @@ export type ApprovalCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   actedAt?: Prisma.SortOrder
   reason?: Prisma.SortOrder
+  isExternalApprover?: Prisma.SortOrder
 }
 
 export type ApprovalMaxOrderByAggregateInput = {
@@ -343,6 +363,7 @@ export type ApprovalMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   actedAt?: Prisma.SortOrder
   reason?: Prisma.SortOrder
+  isExternalApprover?: Prisma.SortOrder
 }
 
 export type ApprovalMinOrderByAggregateInput = {
@@ -352,6 +373,7 @@ export type ApprovalMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   actedAt?: Prisma.SortOrder
   reason?: Prisma.SortOrder
+  isExternalApprover?: Prisma.SortOrder
 }
 
 export type ApprovalNullableScalarRelationFilter = {
@@ -468,6 +490,7 @@ export type ApprovalCreateWithoutApproverInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  isExternalApprover?: boolean
   stage: Prisma.StageInstanceCreateNestedOneWithoutApprovalsInput
   comments?: Prisma.CommentCreateNestedManyWithoutApprovalInput
 }
@@ -478,6 +501,7 @@ export type ApprovalUncheckedCreateWithoutApproverInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  isExternalApprover?: boolean
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutApprovalInput
 }
 
@@ -517,6 +541,7 @@ export type ApprovalScalarWhereInput = {
   status?: Prisma.EnumApprovalStatusFilter<"Approval"> | $Enums.ApprovalStatus
   actedAt?: Prisma.DateTimeNullableFilter<"Approval"> | Date | string | null
   reason?: Prisma.StringNullableFilter<"Approval"> | string | null
+  isExternalApprover?: Prisma.BoolFilter<"Approval"> | boolean
 }
 
 export type ApprovalCreateWithoutStageInput = {
@@ -524,6 +549,7 @@ export type ApprovalCreateWithoutStageInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  isExternalApprover?: boolean
   approver: Prisma.UserCreateNestedOneWithoutApprovalsInput
   comments?: Prisma.CommentCreateNestedManyWithoutApprovalInput
 }
@@ -534,6 +560,7 @@ export type ApprovalUncheckedCreateWithoutStageInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  isExternalApprover?: boolean
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutApprovalInput
 }
 
@@ -568,6 +595,7 @@ export type ApprovalCreateWithoutCommentsInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  isExternalApprover?: boolean
   stage: Prisma.StageInstanceCreateNestedOneWithoutApprovalsInput
   approver: Prisma.UserCreateNestedOneWithoutApprovalsInput
 }
@@ -579,6 +607,7 @@ export type ApprovalUncheckedCreateWithoutCommentsInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  isExternalApprover?: boolean
 }
 
 export type ApprovalCreateOrConnectWithoutCommentsInput = {
@@ -602,6 +631,7 @@ export type ApprovalUpdateWithoutCommentsInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stage?: Prisma.StageInstanceUpdateOneRequiredWithoutApprovalsNestedInput
   approver?: Prisma.UserUpdateOneRequiredWithoutApprovalsNestedInput
 }
@@ -613,6 +643,7 @@ export type ApprovalUncheckedUpdateWithoutCommentsInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ApprovalCreateManyApproverInput = {
@@ -621,6 +652,7 @@ export type ApprovalCreateManyApproverInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  isExternalApprover?: boolean
 }
 
 export type ApprovalUpdateWithoutApproverInput = {
@@ -628,6 +660,7 @@ export type ApprovalUpdateWithoutApproverInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stage?: Prisma.StageInstanceUpdateOneRequiredWithoutApprovalsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutApprovalNestedInput
 }
@@ -638,6 +671,7 @@ export type ApprovalUncheckedUpdateWithoutApproverInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   comments?: Prisma.CommentUncheckedUpdateManyWithoutApprovalNestedInput
 }
 
@@ -647,6 +681,7 @@ export type ApprovalUncheckedUpdateManyWithoutApproverInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ApprovalCreateManyStageInput = {
@@ -655,6 +690,7 @@ export type ApprovalCreateManyStageInput = {
   status?: $Enums.ApprovalStatus
   actedAt?: Date | string | null
   reason?: string | null
+  isExternalApprover?: boolean
 }
 
 export type ApprovalUpdateWithoutStageInput = {
@@ -662,6 +698,7 @@ export type ApprovalUpdateWithoutStageInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   approver?: Prisma.UserUpdateOneRequiredWithoutApprovalsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutApprovalNestedInput
 }
@@ -672,6 +709,7 @@ export type ApprovalUncheckedUpdateWithoutStageInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   comments?: Prisma.CommentUncheckedUpdateManyWithoutApprovalNestedInput
 }
 
@@ -681,6 +719,7 @@ export type ApprovalUncheckedUpdateManyWithoutStageInput = {
   status?: Prisma.EnumApprovalStatusFieldUpdateOperationsInput | $Enums.ApprovalStatus
   actedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   reason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -721,6 +760,7 @@ export type ApprovalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   status?: boolean
   actedAt?: boolean
   reason?: boolean
+  isExternalApprover?: boolean
   stage?: boolean | Prisma.StageInstanceDefaultArgs<ExtArgs>
   approver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   comments?: boolean | Prisma.Approval$commentsArgs<ExtArgs>
@@ -734,6 +774,7 @@ export type ApprovalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   actedAt?: boolean
   reason?: boolean
+  isExternalApprover?: boolean
   stage?: boolean | Prisma.StageInstanceDefaultArgs<ExtArgs>
   approver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["approval"]>
@@ -745,6 +786,7 @@ export type ApprovalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   actedAt?: boolean
   reason?: boolean
+  isExternalApprover?: boolean
   stage?: boolean | Prisma.StageInstanceDefaultArgs<ExtArgs>
   approver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["approval"]>
@@ -756,9 +798,10 @@ export type ApprovalSelectScalar = {
   status?: boolean
   actedAt?: boolean
   reason?: boolean
+  isExternalApprover?: boolean
 }
 
-export type ApprovalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stageId" | "approverId" | "status" | "actedAt" | "reason", ExtArgs["result"]["approval"]>
+export type ApprovalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stageId" | "approverId" | "status" | "actedAt" | "reason" | "isExternalApprover", ExtArgs["result"]["approval"]>
 export type ApprovalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   stage?: boolean | Prisma.StageInstanceDefaultArgs<ExtArgs>
   approver?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -788,6 +831,7 @@ export type $ApprovalPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     status: $Enums.ApprovalStatus
     actedAt: Date | null
     reason: string | null
+    isExternalApprover: boolean
   }, ExtArgs["result"]["approval"]>
   composites: {}
 }
@@ -1220,6 +1264,7 @@ export interface ApprovalFieldRefs {
   readonly status: Prisma.FieldRef<"Approval", 'ApprovalStatus'>
   readonly actedAt: Prisma.FieldRef<"Approval", 'DateTime'>
   readonly reason: Prisma.FieldRef<"Approval", 'String'>
+  readonly isExternalApprover: Prisma.FieldRef<"Approval", 'Boolean'>
 }
     
 

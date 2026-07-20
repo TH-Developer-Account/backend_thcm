@@ -443,6 +443,7 @@ model TemplateApprover {
   id      String @id @default(uuid())
   stageId String
   userId  String
+  isExternalApprover Boolean @default(false)
 
   stage TemplateStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
   user  User          @relation(fields: [userId], references: [id])
@@ -514,6 +515,7 @@ model Approval {
   status     ApprovalStatus @default(PENDING)
   actedAt    DateTime?
   reason     String?
+  isExternalApprover Boolean @default(false)
 
   stage    StageInstance @relation(fields: [stageId], references: [id])
   approver User          @relation(fields: [approverId], references: [id])
@@ -962,6 +964,7 @@ model PushSubscription {
 
 model VendorOnboarding {
   id            String   @id @default(uuid())
+  referenceNumber String @unique 
   workspaceId   String
   initiatedById String
   status        String   @default("AWAITING_VENDOR")

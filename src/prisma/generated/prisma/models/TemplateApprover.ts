@@ -28,18 +28,21 @@ export type TemplateApproverMinAggregateOutputType = {
   id: string | null
   stageId: string | null
   userId: string | null
+  isExternalApprover: boolean | null
 }
 
 export type TemplateApproverMaxAggregateOutputType = {
   id: string | null
   stageId: string | null
   userId: string | null
+  isExternalApprover: boolean | null
 }
 
 export type TemplateApproverCountAggregateOutputType = {
   id: number
   stageId: number
   userId: number
+  isExternalApprover: number
   _all: number
 }
 
@@ -48,18 +51,21 @@ export type TemplateApproverMinAggregateInputType = {
   id?: true
   stageId?: true
   userId?: true
+  isExternalApprover?: true
 }
 
 export type TemplateApproverMaxAggregateInputType = {
   id?: true
   stageId?: true
   userId?: true
+  isExternalApprover?: true
 }
 
 export type TemplateApproverCountAggregateInputType = {
   id?: true
   stageId?: true
   userId?: true
+  isExternalApprover?: true
   _all?: true
 }
 
@@ -139,6 +145,7 @@ export type TemplateApproverGroupByOutputType = {
   id: string
   stageId: string
   userId: string
+  isExternalApprover: boolean
   _count: TemplateApproverCountAggregateOutputType | null
   _min: TemplateApproverMinAggregateOutputType | null
   _max: TemplateApproverMaxAggregateOutputType | null
@@ -166,6 +173,7 @@ export type TemplateApproverWhereInput = {
   id?: Prisma.StringFilter<"TemplateApprover"> | string
   stageId?: Prisma.StringFilter<"TemplateApprover"> | string
   userId?: Prisma.StringFilter<"TemplateApprover"> | string
+  isExternalApprover?: Prisma.BoolFilter<"TemplateApprover"> | boolean
   stage?: Prisma.XOR<Prisma.TemplateStageScalarRelationFilter, Prisma.TemplateStageWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -174,6 +182,7 @@ export type TemplateApproverOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   stageId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isExternalApprover?: Prisma.SortOrder
   stage?: Prisma.TemplateStageOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
 }
@@ -186,6 +195,7 @@ export type TemplateApproverWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.TemplateApproverWhereInput | Prisma.TemplateApproverWhereInput[]
   stageId?: Prisma.StringFilter<"TemplateApprover"> | string
   userId?: Prisma.StringFilter<"TemplateApprover"> | string
+  isExternalApprover?: Prisma.BoolFilter<"TemplateApprover"> | boolean
   stage?: Prisma.XOR<Prisma.TemplateStageScalarRelationFilter, Prisma.TemplateStageWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "stageId_userId">
@@ -194,6 +204,7 @@ export type TemplateApproverOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   stageId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isExternalApprover?: Prisma.SortOrder
   _count?: Prisma.TemplateApproverCountOrderByAggregateInput
   _max?: Prisma.TemplateApproverMaxOrderByAggregateInput
   _min?: Prisma.TemplateApproverMinOrderByAggregateInput
@@ -206,10 +217,12 @@ export type TemplateApproverScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"TemplateApprover"> | string
   stageId?: Prisma.StringWithAggregatesFilter<"TemplateApprover"> | string
   userId?: Prisma.StringWithAggregatesFilter<"TemplateApprover"> | string
+  isExternalApprover?: Prisma.BoolWithAggregatesFilter<"TemplateApprover"> | boolean
 }
 
 export type TemplateApproverCreateInput = {
   id?: string
+  isExternalApprover?: boolean
   stage: Prisma.TemplateStageCreateNestedOneWithoutApproversInput
   user: Prisma.UserCreateNestedOneWithoutTemplateApprovalsInput
 }
@@ -218,10 +231,12 @@ export type TemplateApproverUncheckedCreateInput = {
   id?: string
   stageId: string
   userId: string
+  isExternalApprover?: boolean
 }
 
 export type TemplateApproverUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stage?: Prisma.TemplateStageUpdateOneRequiredWithoutApproversNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutTemplateApprovalsNestedInput
 }
@@ -230,22 +245,26 @@ export type TemplateApproverUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type TemplateApproverCreateManyInput = {
   id?: string
   stageId: string
   userId: string
+  isExternalApprover?: boolean
 }
 
 export type TemplateApproverUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type TemplateApproverUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type TemplateApproverListRelationFilter = {
@@ -267,18 +286,21 @@ export type TemplateApproverCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   stageId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isExternalApprover?: Prisma.SortOrder
 }
 
 export type TemplateApproverMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   stageId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isExternalApprover?: Prisma.SortOrder
 }
 
 export type TemplateApproverMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   stageId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isExternalApprover?: Prisma.SortOrder
 }
 
 export type TemplateApproverCreateNestedManyWithoutUserInput = {
@@ -367,12 +389,14 @@ export type TemplateApproverUncheckedUpdateManyWithoutStageNestedInput = {
 
 export type TemplateApproverCreateWithoutUserInput = {
   id?: string
+  isExternalApprover?: boolean
   stage: Prisma.TemplateStageCreateNestedOneWithoutApproversInput
 }
 
 export type TemplateApproverUncheckedCreateWithoutUserInput = {
   id?: string
   stageId: string
+  isExternalApprover?: boolean
 }
 
 export type TemplateApproverCreateOrConnectWithoutUserInput = {
@@ -408,16 +432,19 @@ export type TemplateApproverScalarWhereInput = {
   id?: Prisma.StringFilter<"TemplateApprover"> | string
   stageId?: Prisma.StringFilter<"TemplateApprover"> | string
   userId?: Prisma.StringFilter<"TemplateApprover"> | string
+  isExternalApprover?: Prisma.BoolFilter<"TemplateApprover"> | boolean
 }
 
 export type TemplateApproverCreateWithoutStageInput = {
   id?: string
+  isExternalApprover?: boolean
   user: Prisma.UserCreateNestedOneWithoutTemplateApprovalsInput
 }
 
 export type TemplateApproverUncheckedCreateWithoutStageInput = {
   id?: string
   userId: string
+  isExternalApprover?: boolean
 }
 
 export type TemplateApproverCreateOrConnectWithoutStageInput = {
@@ -449,41 +476,49 @@ export type TemplateApproverUpdateManyWithWhereWithoutStageInput = {
 export type TemplateApproverCreateManyUserInput = {
   id?: string
   stageId: string
+  isExternalApprover?: boolean
 }
 
 export type TemplateApproverUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   stage?: Prisma.TemplateStageUpdateOneRequiredWithoutApproversNestedInput
 }
 
 export type TemplateApproverUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageId?: Prisma.StringFieldUpdateOperationsInput | string
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type TemplateApproverUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   stageId?: Prisma.StringFieldUpdateOperationsInput | string
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type TemplateApproverCreateManyStageInput = {
   id?: string
   userId: string
+  isExternalApprover?: boolean
 }
 
 export type TemplateApproverUpdateWithoutStageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   user?: Prisma.UserUpdateOneRequiredWithoutTemplateApprovalsNestedInput
 }
 
 export type TemplateApproverUncheckedUpdateWithoutStageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type TemplateApproverUncheckedUpdateManyWithoutStageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  isExternalApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -492,6 +527,7 @@ export type TemplateApproverSelect<ExtArgs extends runtime.Types.Extensions.Inte
   id?: boolean
   stageId?: boolean
   userId?: boolean
+  isExternalApprover?: boolean
   stage?: boolean | Prisma.TemplateStageDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["templateApprover"]>
@@ -500,6 +536,7 @@ export type TemplateApproverSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   id?: boolean
   stageId?: boolean
   userId?: boolean
+  isExternalApprover?: boolean
   stage?: boolean | Prisma.TemplateStageDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["templateApprover"]>
@@ -508,6 +545,7 @@ export type TemplateApproverSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   id?: boolean
   stageId?: boolean
   userId?: boolean
+  isExternalApprover?: boolean
   stage?: boolean | Prisma.TemplateStageDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["templateApprover"]>
@@ -516,9 +554,10 @@ export type TemplateApproverSelectScalar = {
   id?: boolean
   stageId?: boolean
   userId?: boolean
+  isExternalApprover?: boolean
 }
 
-export type TemplateApproverOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stageId" | "userId", ExtArgs["result"]["templateApprover"]>
+export type TemplateApproverOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "stageId" | "userId" | "isExternalApprover", ExtArgs["result"]["templateApprover"]>
 export type TemplateApproverInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   stage?: boolean | Prisma.TemplateStageDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -542,6 +581,7 @@ export type $TemplateApproverPayload<ExtArgs extends runtime.Types.Extensions.In
     id: string
     stageId: string
     userId: string
+    isExternalApprover: boolean
   }, ExtArgs["result"]["templateApprover"]>
   composites: {}
 }
@@ -970,6 +1010,7 @@ export interface TemplateApproverFieldRefs {
   readonly id: Prisma.FieldRef<"TemplateApprover", 'String'>
   readonly stageId: Prisma.FieldRef<"TemplateApprover", 'String'>
   readonly userId: Prisma.FieldRef<"TemplateApprover", 'String'>
+  readonly isExternalApprover: Prisma.FieldRef<"TemplateApprover", 'Boolean'>
 }
     
 

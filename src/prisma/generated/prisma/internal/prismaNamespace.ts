@@ -3873,7 +3873,8 @@ export type TemplateStageScalarFieldEnum = (typeof TemplateStageScalarFieldEnum)
 export const TemplateApproverScalarFieldEnum = {
   id: 'id',
   stageId: 'stageId',
-  userId: 'userId'
+  userId: 'userId',
+  isExternalApprover: 'isExternalApprover'
 } as const
 
 export type TemplateApproverScalarFieldEnum = (typeof TemplateApproverScalarFieldEnum)[keyof typeof TemplateApproverScalarFieldEnum]
@@ -3922,7 +3923,8 @@ export const ApprovalScalarFieldEnum = {
   approverId: 'approverId',
   status: 'status',
   actedAt: 'actedAt',
-  reason: 'reason'
+  reason: 'reason',
+  isExternalApprover: 'isExternalApprover'
 } as const
 
 export type ApprovalScalarFieldEnum = (typeof ApprovalScalarFieldEnum)[keyof typeof ApprovalScalarFieldEnum]
@@ -4232,6 +4234,7 @@ export type PushSubscriptionScalarFieldEnum = (typeof PushSubscriptionScalarFiel
 
 export const VendorOnboardingScalarFieldEnum = {
   id: 'id',
+  referenceNumber: 'referenceNumber',
   workspaceId: 'workspaceId',
   initiatedById: 'initiatedById',
   status: 'status',

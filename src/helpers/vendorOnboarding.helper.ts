@@ -117,3 +117,32 @@ export const parseVendorListingPaginationParams = (
 
   return { reqPageIndex, reqPageSize };
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// generateVendorOnboardingReferenceNumber
+//
+// Format: VON-<4-letter vendor code>-<timestamp>
+//   e.g. VON-RAJE-20260720143205
+//
+// The 4-letter segment is derived from vendorName (letters only, uppercased,
+// padded with X if the name is shorter than 4 letters) — purely cosmetic,
+// NOT the uniqueness guarantee. Uniqueness comes from the timestamp +
+// the referenceNumber's @unique constraint on VendorOnboarding; a same-
+// millisecond collision is practically impossible for this app's traffic,
+// but the DB constraint means a theoretical collision fails loudly (P2002)
+// rather than silently overwriting/duplicating.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function generateVendorOnboardingReferenceNumber(
+  vendorName: string,
+): string {
+  const letters = vendorName.replace(/[^a-zA-Z]/g, "").toUpperCase();
+  const vendorCode = (letters + "XXXX").slice(0, 4);
+
+  const timestamp = new Date()
+    .toISOString()
+    .replace(/[-:T.]/g, "")
+    .slice(0, 14); // YYYYMMDDHHmmss
+
+  return `VON-${vendorCode}-${timestamp}`;
+}

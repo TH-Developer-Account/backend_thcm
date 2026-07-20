@@ -174,6 +174,7 @@ export const assignWorkflowController = async (
               create: stage.approvers.map((a) => ({
                 approverId: a.userId,
                 status: "PENDING",
+                isExternalApprover: a.isExternalApprover,
               })),
             },
           })),
@@ -187,7 +188,10 @@ export const assignWorkflowController = async (
           orderBy: { stageOrder: "asc" },
           include: {
             approvals: {
-              include: {
+              select: {
+                id: true,
+                status: true,
+                isExternalApprover: true,
                 approver: {
                   select: {
                     id: true,
@@ -508,6 +512,7 @@ export const clarifyStageController = async (
               create: templateStage.approvers.map((a) => ({
                 approverId: a.userId,
                 status: "PENDING",
+                isExternalApprover: a.isExternalApprover,
               })),
             },
           },
@@ -822,6 +827,7 @@ export const triggerDeviationController = async (
                 create: stage.approvers.map((a) => ({
                   approverId: a.userId,
                   status: "PENDING",
+                  isExternalApprover: a.isExternalApprover,
                 })),
               },
             })),
@@ -834,7 +840,10 @@ export const triggerDeviationController = async (
             orderBy: { stageOrder: "asc" },
             include: {
               approvals: {
-                include: {
+                select: {
+                  id: true,
+                  status: true,
+                  isExternalApprover: true,
                   approver: {
                     select: {
                       id: true,

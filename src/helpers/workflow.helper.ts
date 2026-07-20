@@ -15,6 +15,7 @@ export const buildWorkflowStages = (templateStages: any[]) => {
       create: stage.approvers.map((a: any) => ({
         approverId: a.userId,
         status: ApprovalStatus.PENDING,
+        isExternalApprover: a.isExternalApprover,
       })),
     },
   }));

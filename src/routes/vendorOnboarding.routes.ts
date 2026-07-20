@@ -14,8 +14,7 @@ import {
   getVendorOnboardingById,
 } from "../controllers/vendorOnboarding.controller";
 import { requireVendorAccessToken } from "../middleware/vendorAccessToken.middleware";
-
-import { REQUIRED_VENDOR_DOCUMENT_TYPES } from "../utils/contants";
+import { ALL_VENDOR_DOCUMENT_TYPES } from "../utils/contants";
 
 const router = Router();
 
@@ -29,7 +28,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 // Each fixed document type becomes its own named multipart field —
 // lets submitVendorForm validate presence per REQUIRED_VENDOR_DOCUMENT_TYPES
 // via req.files[documentType], no parsing an arbitrary file array.
-const documentUploadFields = REQUIRED_VENDOR_DOCUMENT_TYPES.map((name) => ({
+const documentUploadFields = ALL_VENDOR_DOCUMENT_TYPES.map((name) => ({
   name,
   maxCount: 1,
 }));

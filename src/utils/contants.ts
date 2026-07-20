@@ -208,6 +208,7 @@ export const activeWorkflowInclude = {
               last_name: true,
               email: true,
               phone_number: true,
+              isExternalApprover: true,
             },
           },
         },
@@ -225,8 +226,18 @@ export const REQUIRED_VENDOR_DOCUMENT_TYPES = [
   "NDA_CERTIFICATE",
 ] as const;
 
-export type VendorDocumentType =
-  (typeof REQUIRED_VENDOR_DOCUMENT_TYPES)[number];
+export const OPTIONAL_VENDOR_DOCUMENT_TYPES = [
+  "GENERAL_PURPOSE_AGREEMENT",
+  "VENDOR_SELF_ASSESSMENT_FORM",
+  // add more here as needed — no other code changes required
+] as const;
+
+export const ALL_VENDOR_DOCUMENT_TYPES = [
+  ...REQUIRED_VENDOR_DOCUMENT_TYPES,
+  ...OPTIONAL_VENDOR_DOCUMENT_TYPES,
+] as const;
+
+export type VendorDocumentType = (typeof ALL_VENDOR_DOCUMENT_TYPES)[number];
 
 // MaterialType → valid MaterialSubType values. Enums can't express this
 // relationship, so it's validated here rather than at the DB layer.

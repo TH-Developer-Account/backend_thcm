@@ -8,7 +8,10 @@ import {
   issueVendorAccessToken,
   markVendorAccessTokenUsed,
 } from "../services/vendorAccessToken.services";
-import { REQUIRED_VENDOR_DOCUMENT_TYPES } from "../utils/contants";
+import {
+  REQUIRED_VENDOR_DOCUMENT_TYPES,
+  ALL_VENDOR_DOCUMENT_TYPES,
+} from "../utils/contants";
 import { resolveWorkspaceId } from "./export.controller";
 import { getActiveWorkflowForSubject } from "../helpers/workflowSubject.helper";
 import { uploadToS3 } from "../services/aws-s3.services"; // to add, mirrors uploadDeviationDoc
@@ -17,6 +20,7 @@ import {
   parseVendorListingPaginationParams,
   VendorListingTab,
   resolveSubjectIdsForApprovalTab,
+  generateVendorOnboardingReferenceNumber,
 } from "../helpers/vendorOnboarding.helper";
 
 // POST /vendor-onboarding
@@ -37,10 +41,13 @@ export const initiateVendorOnboarding = async (
     }
 
     const onboarding = await prisma.$transaction(async (tx) => {
+      const referenceNumber =
+        generateVendorOnboardingReferenceNumber(vendorName);
       const created = await tx.vendorOnboarding.create({
         data: {
           workspaceId,
           initiatedById: userId,
+          referenceNumber,
           vendorName,
           mobile,
           email,
@@ -137,6 +144,7 @@ export const listVendorOnboardings = async (
         take: reqPageSize,
         select: {
           id: true,
+          referenceNumber: true,
           vendorName: true,
           mobile: true,
           email: true,
@@ -585,7 +593,7 @@ export const submitVendorForm = async (
         },
       });
 
-      for (const documentType of REQUIRED_VENDOR_DOCUMENT_TYPES) {
+      for (const documentType of ALL_VENDOR_DOCUMENT_TYPES) {
         const file = files![documentType][0];
 
         const s3Key = `vendor-onboarding-docs/${onboarding.id}/${documentType}.pdf`;
