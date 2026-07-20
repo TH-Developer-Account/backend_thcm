@@ -12,6 +12,7 @@ import {
   submitVendorForm,
   listVendorOnboardings,
   getVendorOnboardingById,
+  sendBackToVendor,
 } from "../controllers/vendorOnboarding.controller";
 import { requireVendorAccessToken } from "../middleware/vendorAccessToken.middleware";
 import { ALL_VENDOR_DOCUMENT_TYPES } from "../utils/contants";
@@ -103,6 +104,12 @@ router.post(
   requireVendorAccessToken,
   upload.fields(documentUploadFields),
   asyncHandler(submitVendorForm),
+);
+
+router.post(
+  "/:id/send-back-to-vendor",
+  authorize(APP_KEY, MODULE, "write"),
+  asyncHandler(sendBackToVendor),
 );
 
 export default router;

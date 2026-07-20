@@ -510,12 +510,62 @@ export const getVendorFormByToken = async (
   res: Response,
   next: NextFunction,
 ) => {
-  // req.vendorAccessToken.onboarding set by requireVendorAccessToken middleware
-  const { onboarding } = req.vendorAccessToken!;
-  res.status(200).json({
-    success: true,
-    data: { id: onboarding.id, vendorName: onboarding.vendorName },
-  });
+  try {
+    const { onboarding } = req.vendorAccessToken!;
+
+    // Latest clarify reason, if any — shown to the vendor so they know
+    // exactly what to fix. Ordered desc since only the most recent
+    // clarification is relevant on a reopened form.
+    const latestClarification = await prisma.activityLog.findFirst({
+      where: {
+        subjectType: "VENDOR_ONBOARDING",
+        subjectId: onboarding.id,
+        action: "CLARIFY",
+      },
+      orderBy: { createdAt: "desc" },
+      select: { metadata: true, createdt: true },
+    });
+
+    const existingDocuments = await prisma.vendorOnboardingDocument.findMany({
+      where: { onboardingId: onboarding.id },
+      select: { documentType: true },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        id: onboarding.id,
+        referenceNumber: onboarding.referenceNumber,
+        vendorName: onboarding.vendorName,
+        mobile: onboarding.mobile,
+        email: onboarding.email,
+        state: onboarding.state,
+        city: onboarding.city,
+        pinCode: onboarding.pinCode,
+        address: onboarding.address,
+        msmeVendor: onboarding.msmeVendor,
+        msmeCertAttached: onboarding.msmeCertAttached,
+        bankName: onboarding.bankName,
+        bankBranch: onboarding.bankBranch,
+        ifscCode: onboarding.ifscCode,
+        bankAddress: onboarding.bankAddress,
+        accountNumber: onboarding.accountNumber,
+        gstin: onboarding.gstin,
+        pan: onboarding.pan,
+        entityRegNo: onboarding.entityRegNo,
+        // lets the frontend show "already uploaded ✓" per document type
+        // instead of asking for all 6 again
+        alreadyUploadedDocumentTypes: existingDocuments.map(
+          (d) => d.documentType,
+        ),
+        correctionReason:
+          (latestClarification?.metadata as { reason?: string } | null)
+            ?.reason ?? null,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 // POST /public/vendor-onboarding/:token/submit
@@ -555,8 +605,19 @@ export const submitVendorForm = async (
     const files = req.files as
       | Record<string, Express.Multer.File[]>
       | undefined;
+
+    // A required document is only "missing" if there's neither an existing
+    // record for it NOR a new file provided now — covers both first-time
+    // submission (nothing exists yet) and correction (most types already
+    // exist, only the flagged ones need a new file).
+    const existingDocuments = await prisma.vendorOnboardingDocument.findMany({
+      where: { onboardingId: onboarding.id },
+      select: { documentType: true },
+    });
+    const existingTypes = new Set(existingDocuments.map((d) => d.documentType));
+
     const missing = REQUIRED_VENDOR_DOCUMENT_TYPES.filter(
-      (t) => !files?.[t]?.[0],
+      (t) => !existingTypes.has(t) && !files?.[t]?.[0],
     );
     if (missing.length > 0) {
       throw new ApiError(
@@ -593,13 +654,26 @@ export const submitVendorForm = async (
         },
       });
 
+      // Only touch document types that actually got a new file this time —
+      // re-uploading to the same deterministic s3Key overwrites the old
+      // object, so a plain upsert on (onboardingId, documentType) is
+      // sufficient; no separate delete step needed.
       for (const documentType of ALL_VENDOR_DOCUMENT_TYPES) {
-        const file = files![documentType][0];
+        const file = files?.[documentType]?.[0];
+        if (!file) continue; // untouched — keep whatever's already there, if anything
 
         const s3Key = `vendor-onboarding-docs/${onboarding.id}/${documentType}.pdf`;
         await uploadToS3(s3Key, file.buffer, file.mimetype);
-        await tx.vendorOnboardingDocument.create({
-          data: { onboardingId: onboarding.id, documentType, s3Key },
+
+        await tx.vendorOnboardingDocument.upsert({
+          where: {
+            onboardingId_documentType: {
+              onboardingId: onboarding.id,
+              documentType,
+            },
+          },
+          create: { onboardingId: onboarding.id, documentType, s3Key },
+          update: { s3Key, uploadedAt: new Date() },
         });
       }
 
@@ -609,7 +683,7 @@ export const submitVendorForm = async (
         data: {
           subjectType: "VENDOR_ONBOARDING",
           subjectId: onboarding.id,
-          actorId: onboarding.initiatedById, // no vendor User to attribute to
+          actorId: onboarding.initiatedById,
           action: "VENDOR_FORM_SUBMITTED",
         },
       });
@@ -617,15 +691,88 @@ export const submitVendorForm = async (
       await notify({
         workspaceId: onboarding.workspaceId,
         recipientId: onboarding.initiatedById,
-        type: "APPROVAL_PENDING",
-        title: "Vendor Form Submitted",
-        body: "Vendor has Submitted the form, Please check.",
+        type: "GENERIC",
+        title: "Vendor onboarding form submitted",
+        body: `${onboarding.vendorName ?? "The vendor"} has submitted their onboarding form. Please review.`,
       });
     });
 
     res
       .status(200)
       .json({ success: true, message: "Form submitted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// controllers/vendorOnboarding.controller.ts
+
+// POST /vendor-onboarding/:id/send-back-to-vendor
+// Reopens vendor access after a clarify (approver comment → employee →
+// vendor). Reuses AWAITING_VENDOR rather than a new status, per your call —
+// the token middleware's existing status guard already works unmodified.
+export const sendBackToVendor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    const { id } = req.params;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const onboarding = await prisma.vendorOnboarding.findUnique({
+      where: { id: id as string },
+    });
+    if (!onboarding) throw new ApiError(404, "Vendor onboarding not found");
+
+    if (onboarding.initiatedById !== userId) {
+      throw new ApiError(403, "You do not have access to this request");
+    }
+
+    // Only meaningful post-clarify — before that, the vendor never had
+    // anything to correct yet.
+    if (onboarding.status !== "IN_REVIEW") {
+      throw new ApiError(
+        400,
+        "This request must be in review (post-clarification) to send back to the vendor",
+      );
+    }
+
+    const tokenRecord = await prisma.$transaction(async (tx) => {
+      const token = await issueVendorAccessToken(onboarding.id, tx);
+
+      await tx.vendorOnboarding.update({
+        where: { id: onboarding.id },
+        data: { status: "AWAITING_VENDOR" },
+      });
+
+      await tx.activityLog.create({
+        data: {
+          subjectType: "VENDOR_ONBOARDING",
+          subjectId: onboarding.id,
+          actorId: userId,
+          action: "CLARIFY",
+        },
+      });
+
+      return token;
+    });
+
+    await addMailJob({
+      to: onboarding.email as string,
+      subject: "Vendor Onboarding — Correction Required",
+      templateName: "vendor-onboarding-link",
+      templateData: {
+        vendorName: onboarding.vendorName,
+        formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
+        currentYear: new Date().getFullYear(),
+      },
+    });
+
+    res
+      .status(200)
+      .json({ success: true, message: "Sent back to vendor for correction" });
   } catch (error) {
     next(error);
   }
