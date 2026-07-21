@@ -229,8 +229,8 @@ export const REQUIRED_VENDOR_DOCUMENT_TYPES = [
 ] as const;
 
 export const OPTIONAL_VENDOR_DOCUMENT_TYPES = [
-  "GENERAL_PURPOSE_AGREEMENT",
-  "VENDOR_SELF_ASSESSMENT_FORM",
+  "ADDITIONAL_DOC_1",
+  "ADDITIONAL_DOC_2",
   // add more here as needed — no other code changes required
 ] as const;
 
