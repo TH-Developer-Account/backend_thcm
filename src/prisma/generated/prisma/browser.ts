@@ -232,3 +232,8 @@ export type VendorOnboardingDocument = Prisma.VendorOnboardingDocumentModel
  * 
  */
 export type VendorAccessToken = Prisma.VendorAccessTokenModel
+/**
+ * Model BankBranch
+ * 
+ */
+export type BankBranch = Prisma.BankBranchModel

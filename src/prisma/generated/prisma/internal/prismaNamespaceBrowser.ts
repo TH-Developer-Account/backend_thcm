@@ -93,7 +93,8 @@ export const ModelName = {
   PushSubscription: 'PushSubscription',
   VendorOnboarding: 'VendorOnboarding',
   VendorOnboardingDocument: 'VendorOnboardingDocument',
-  VendorAccessToken: 'VendorAccessToken'
+  VendorAccessToken: 'VendorAccessToken',
+  BankBranch: 'BankBranch'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -747,6 +748,22 @@ export const VendorAccessTokenScalarFieldEnum = {
 } as const
 
 export type VendorAccessTokenScalarFieldEnum = (typeof VendorAccessTokenScalarFieldEnum)[keyof typeof VendorAccessTokenScalarFieldEnum]
+
+
+export const BankBranchScalarFieldEnum = {
+  id: 'id',
+  ifsc: 'ifsc',
+  bankName: 'bankName',
+  branchName: 'branchName',
+  address: 'address',
+  city: 'city',
+  district: 'district',
+  state: 'state',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type BankBranchScalarFieldEnum = (typeof BankBranchScalarFieldEnum)[keyof typeof BankBranchScalarFieldEnum]
 
 
 export const SortOrder = {

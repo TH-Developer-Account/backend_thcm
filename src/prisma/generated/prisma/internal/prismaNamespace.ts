@@ -426,7 +426,8 @@ export const ModelName = {
   PushSubscription: 'PushSubscription',
   VendorOnboarding: 'VendorOnboarding',
   VendorOnboardingDocument: 'VendorOnboardingDocument',
-  VendorAccessToken: 'VendorAccessToken'
+  VendorAccessToken: 'VendorAccessToken',
+  BankBranch: 'BankBranch'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -442,7 +443,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "vendorAccessToken"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "vendorAccessToken" | "bankBranch"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3628,6 +3629,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BankBranch: {
+      payload: Prisma.$BankBranchPayload<ExtArgs>
+      fields: Prisma.BankBranchFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BankBranchFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankBranchPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BankBranchFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankBranchPayload>
+        }
+        findFirst: {
+          args: Prisma.BankBranchFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankBranchPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BankBranchFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankBranchPayload>
+        }
+        findMany: {
+          args: Prisma.BankBranchFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankBranchPayload>[]
+        }
+        create: {
+          args: Prisma.BankBranchCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankBranchPayload>
+        }
+        createMany: {
+          args: Prisma.BankBranchCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BankBranchCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankBranchPayload>[]
+        }
+        delete: {
+          args: Prisma.BankBranchDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankBranchPayload>
+        }
+        update: {
+          args: Prisma.BankBranchUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankBranchPayload>
+        }
+        deleteMany: {
+          args: Prisma.BankBranchDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BankBranchUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BankBranchUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankBranchPayload>[]
+        }
+        upsert: {
+          args: Prisma.BankBranchUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BankBranchPayload>
+        }
+        aggregate: {
+          args: Prisma.BankBranchAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBankBranch>
+        }
+        groupBy: {
+          args: Prisma.BankBranchGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BankBranchGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BankBranchCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BankBranchCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4304,6 +4379,22 @@ export const VendorAccessTokenScalarFieldEnum = {
 export type VendorAccessTokenScalarFieldEnum = (typeof VendorAccessTokenScalarFieldEnum)[keyof typeof VendorAccessTokenScalarFieldEnum]
 
 
+export const BankBranchScalarFieldEnum = {
+  id: 'id',
+  ifsc: 'ifsc',
+  bankName: 'bankName',
+  branchName: 'branchName',
+  address: 'address',
+  city: 'city',
+  district: 'district',
+  state: 'state',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type BankBranchScalarFieldEnum = (typeof BankBranchScalarFieldEnum)[keyof typeof BankBranchScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4804,6 +4895,7 @@ export type GlobalOmitConfig = {
   vendorOnboarding?: Prisma.VendorOnboardingOmit
   vendorOnboardingDocument?: Prisma.VendorOnboardingDocumentOmit
   vendorAccessToken?: Prisma.VendorAccessTokenOmit
+  bankBranch?: Prisma.BankBranchOmit
 }
 
 /* Types for Logging */

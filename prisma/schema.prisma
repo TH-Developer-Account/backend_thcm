@@ -1047,5 +1047,31 @@ model VendorAccessToken {
   @@index([onboardingId])
 }
 
+// ─────────────────────────────────────────────
+// BANK BRANCH
+//
+// One row per IFSC, sourced from Razorpay's maintained IFSC dataset.
+// Mirrors the Pincode model's search strategy: tsvector column,
+// populated in bulk after COPY import (trigger bypassed during COPY).
+// ─────────────────────────────────────────────
+
+model BankBranch {
+  id           String                       @id @default(uuid())
+  ifsc         String                       @unique @db.VarChar(11)
+  bankName     String
+  branchName   String
+  address      String?
+  city         String?
+  district     String?
+  state        String?
+  searchVector Unsupported("tsvector")?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([bankName])
+  @@index([searchVector], type: Gin)
+}
+
 
 

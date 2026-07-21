@@ -2,6 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
 
+type BranchSearchRow = {
+  ifsc: string;
+  branchName: string;
+  address: string | null;
+  city: string | null;
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /api/v1/pincodes/search?q=560034&limit=10
 //
@@ -122,6 +129,79 @@ export const searchPincodes = async (
     }));
 
     res.status(200).json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const searchBank = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const query = String(req.query.search ?? "").trim();
+
+    if (!query) {
+      return res.json([]);
+    }
+
+    const rows = await prisma.$queryRaw<Array<{ bankName: string }>>`
+			SELECT DISTINCT "bankName"
+			FROM "BankBranch"
+			WHERE "searchVector" @@ plainto_tsquery('english', ${query})
+			ORDER BY "bankName"
+			LIMIT ${MAX_RESULTS}
+		`;
+
+    res.json(rows.map((row) => row.bankName));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const searchBankBranches = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { bankName } = req.params;
+    const query = String(req.query.search ?? "").trim();
+
+    let rows: BranchSearchRow[];
+
+    if (query) {
+      // Assigned separately (not inline in the ternary) — TS's tagged-template
+      // generic inference breaks when $queryRaw<T>`...` sits inside a
+      // conditional expression's branch.
+      rows = await prisma.$queryRaw<BranchSearchRow[]>`
+				SELECT ifsc, "branchName", address, city
+				FROM "BankBranch"
+				WHERE "bankName" = ${bankName}
+					AND "searchVector" @@ plainto_tsquery('english', ${query})
+				ORDER BY "branchName"
+				LIMIT ${MAX_RESULTS}
+			`;
+    } else {
+      // No search term yet — return an initial page for the chosen bank
+      // rather than nothing, since react-select opens the menu on focus.
+      rows = await prisma.bankBranch.findMany({
+        where: { bankName: bankName as string },
+        select: { ifsc: true, branchName: true, address: true, city: true },
+        orderBy: { branchName: "asc" },
+        take: MAX_RESULTS,
+      });
+    }
+
+    res.json(
+      rows.map((row) => ({
+        ifsc: row.ifsc,
+        branch_name: row.branchName,
+        address: row.address,
+        city: row.city,
+      })),
+    );
   } catch (error) {
     next(error);
   }
