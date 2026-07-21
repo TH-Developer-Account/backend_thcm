@@ -200,7 +200,10 @@ export const activeWorkflowInclude = {
     orderBy: { stageOrder: "asc" as const },
     include: {
       approvals: {
-        include: {
+        select: {
+          id: true,
+          status: true,
+          isExternalApprover: true,
           approver: {
             select: {
               id: true,
@@ -208,7 +211,6 @@ export const activeWorkflowInclude = {
               last_name: true,
               email: true,
               phone_number: true,
-              isExternalApprover: true,
             },
           },
         },
