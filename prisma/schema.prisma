@@ -16,6 +16,11 @@ enum PermissionAction {
   write
 }
 
+enum VendorAccessTokenPurpose {
+  FORM_ACCESS
+  VIEW_PDF
+}
+
 enum ScopeType {
   MODULE
 }
@@ -1039,6 +1044,7 @@ model VendorAccessToken {
   onboardingId String
   token        String    @unique
   used         Boolean   @default(false)
+  purpose      VendorAccessTokenPurpose @default(FORM_ACCESS)
   usedAt       DateTime?
   created_at   DateTime  @default(now())
 

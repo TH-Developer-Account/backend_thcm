@@ -3,6 +3,7 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   GetObjectCommand,
+  HeadObjectCommand,
 } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
@@ -214,5 +215,19 @@ export async function downloadFromS3(s3Key: string): Promise<Buffer> {
 // Alias of getSignedImageUrl — same pre-signed GET logic, named separately
 // so export workers can import it without coupling to image-specific naming.
 // ─────────────────────────────────────────────────────────────────────────────
+
+export async function objectExistsInS3(s3Key: string): Promise<boolean> {
+  try {
+    await s3Client.send(
+      new HeadObjectCommand({ Bucket: BUCKET_NAME, Key: s3Key }),
+    );
+    return true;
+  } catch (error) {
+    // AWS SDK v3 throws with name "NotFound" for a missing key — anything
+    // else (permissions, network) should surface, not be swallowed as "missing".
+    if ((error as { name?: string }).name === "NotFound") return false;
+    throw error;
+  }
+}
 
 export const getSignedReportUrl = getSignedImageUrl;

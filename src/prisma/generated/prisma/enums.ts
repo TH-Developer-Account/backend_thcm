@@ -17,6 +17,14 @@ export const PermissionAction = {
 export type PermissionAction = (typeof PermissionAction)[keyof typeof PermissionAction]
 
 
+export const VendorAccessTokenPurpose = {
+  FORM_ACCESS: 'FORM_ACCESS',
+  VIEW_PDF: 'VIEW_PDF'
+} as const
+
+export type VendorAccessTokenPurpose = (typeof VendorAccessTokenPurpose)[keyof typeof VendorAccessTokenPurpose]
+
+
 export const ScopeType = {
   MODULE: 'MODULE'
 } as const

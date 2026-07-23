@@ -13,6 +13,7 @@ import {
   listVendorOnboardings,
   getVendorOnboardingById,
   sendBackToVendor,
+  getVendorOnboardingPdfByToken,
 } from "../controllers/vendorOnboarding.controller";
 import { requireVendorAccessToken } from "../middleware/vendorAccessToken.middleware";
 import { ALL_VENDOR_DOCUMENT_TYPES } from "../utils/contants";
@@ -105,6 +106,8 @@ router.post(
   upload.fields(documentUploadFields),
   asyncHandler(submitVendorForm),
 );
+
+router.get("/public/pdf/:token", asyncHandler(getVendorOnboardingPdfByToken));
 
 router.post(
   "/:id/send-back-to-vendor",

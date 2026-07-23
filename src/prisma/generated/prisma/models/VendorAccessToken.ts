@@ -29,6 +29,7 @@ export type VendorAccessTokenMinAggregateOutputType = {
   onboardingId: string | null
   token: string | null
   used: boolean | null
+  purpose: $Enums.VendorAccessTokenPurpose | null
   usedAt: Date | null
   created_at: Date | null
 }
@@ -38,6 +39,7 @@ export type VendorAccessTokenMaxAggregateOutputType = {
   onboardingId: string | null
   token: string | null
   used: boolean | null
+  purpose: $Enums.VendorAccessTokenPurpose | null
   usedAt: Date | null
   created_at: Date | null
 }
@@ -47,6 +49,7 @@ export type VendorAccessTokenCountAggregateOutputType = {
   onboardingId: number
   token: number
   used: number
+  purpose: number
   usedAt: number
   created_at: number
   _all: number
@@ -58,6 +61,7 @@ export type VendorAccessTokenMinAggregateInputType = {
   onboardingId?: true
   token?: true
   used?: true
+  purpose?: true
   usedAt?: true
   created_at?: true
 }
@@ -67,6 +71,7 @@ export type VendorAccessTokenMaxAggregateInputType = {
   onboardingId?: true
   token?: true
   used?: true
+  purpose?: true
   usedAt?: true
   created_at?: true
 }
@@ -76,6 +81,7 @@ export type VendorAccessTokenCountAggregateInputType = {
   onboardingId?: true
   token?: true
   used?: true
+  purpose?: true
   usedAt?: true
   created_at?: true
   _all?: true
@@ -158,6 +164,7 @@ export type VendorAccessTokenGroupByOutputType = {
   onboardingId: string
   token: string
   used: boolean
+  purpose: $Enums.VendorAccessTokenPurpose
   usedAt: Date | null
   created_at: Date
   _count: VendorAccessTokenCountAggregateOutputType | null
@@ -188,6 +195,7 @@ export type VendorAccessTokenWhereInput = {
   onboardingId?: Prisma.StringFilter<"VendorAccessToken"> | string
   token?: Prisma.StringFilter<"VendorAccessToken"> | string
   used?: Prisma.BoolFilter<"VendorAccessToken"> | boolean
+  purpose?: Prisma.EnumVendorAccessTokenPurposeFilter<"VendorAccessToken"> | $Enums.VendorAccessTokenPurpose
   usedAt?: Prisma.DateTimeNullableFilter<"VendorAccessToken"> | Date | string | null
   created_at?: Prisma.DateTimeFilter<"VendorAccessToken"> | Date | string
   onboarding?: Prisma.XOR<Prisma.VendorOnboardingScalarRelationFilter, Prisma.VendorOnboardingWhereInput>
@@ -198,6 +206,7 @@ export type VendorAccessTokenOrderByWithRelationInput = {
   onboardingId?: Prisma.SortOrder
   token?: Prisma.SortOrder
   used?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   onboarding?: Prisma.VendorOnboardingOrderByWithRelationInput
@@ -211,6 +220,7 @@ export type VendorAccessTokenWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.VendorAccessTokenWhereInput | Prisma.VendorAccessTokenWhereInput[]
   onboardingId?: Prisma.StringFilter<"VendorAccessToken"> | string
   used?: Prisma.BoolFilter<"VendorAccessToken"> | boolean
+  purpose?: Prisma.EnumVendorAccessTokenPurposeFilter<"VendorAccessToken"> | $Enums.VendorAccessTokenPurpose
   usedAt?: Prisma.DateTimeNullableFilter<"VendorAccessToken"> | Date | string | null
   created_at?: Prisma.DateTimeFilter<"VendorAccessToken"> | Date | string
   onboarding?: Prisma.XOR<Prisma.VendorOnboardingScalarRelationFilter, Prisma.VendorOnboardingWhereInput>
@@ -221,6 +231,7 @@ export type VendorAccessTokenOrderByWithAggregationInput = {
   onboardingId?: Prisma.SortOrder
   token?: Prisma.SortOrder
   used?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   _count?: Prisma.VendorAccessTokenCountOrderByAggregateInput
@@ -236,6 +247,7 @@ export type VendorAccessTokenScalarWhereWithAggregatesInput = {
   onboardingId?: Prisma.StringWithAggregatesFilter<"VendorAccessToken"> | string
   token?: Prisma.StringWithAggregatesFilter<"VendorAccessToken"> | string
   used?: Prisma.BoolWithAggregatesFilter<"VendorAccessToken"> | boolean
+  purpose?: Prisma.EnumVendorAccessTokenPurposeWithAggregatesFilter<"VendorAccessToken"> | $Enums.VendorAccessTokenPurpose
   usedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VendorAccessToken"> | Date | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"VendorAccessToken"> | Date | string
 }
@@ -244,6 +256,7 @@ export type VendorAccessTokenCreateInput = {
   id?: string
   token: string
   used?: boolean
+  purpose?: $Enums.VendorAccessTokenPurpose
   usedAt?: Date | string | null
   created_at?: Date | string
   onboarding: Prisma.VendorOnboardingCreateNestedOneWithoutAccessTokensInput
@@ -254,6 +267,7 @@ export type VendorAccessTokenUncheckedCreateInput = {
   onboardingId: string
   token: string
   used?: boolean
+  purpose?: $Enums.VendorAccessTokenPurpose
   usedAt?: Date | string | null
   created_at?: Date | string
 }
@@ -262,6 +276,7 @@ export type VendorAccessTokenUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  purpose?: Prisma.EnumVendorAccessTokenPurposeFieldUpdateOperationsInput | $Enums.VendorAccessTokenPurpose
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   onboarding?: Prisma.VendorOnboardingUpdateOneRequiredWithoutAccessTokensNestedInput
@@ -272,6 +287,7 @@ export type VendorAccessTokenUncheckedUpdateInput = {
   onboardingId?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  purpose?: Prisma.EnumVendorAccessTokenPurposeFieldUpdateOperationsInput | $Enums.VendorAccessTokenPurpose
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -281,6 +297,7 @@ export type VendorAccessTokenCreateManyInput = {
   onboardingId: string
   token: string
   used?: boolean
+  purpose?: $Enums.VendorAccessTokenPurpose
   usedAt?: Date | string | null
   created_at?: Date | string
 }
@@ -289,6 +306,7 @@ export type VendorAccessTokenUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  purpose?: Prisma.EnumVendorAccessTokenPurposeFieldUpdateOperationsInput | $Enums.VendorAccessTokenPurpose
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -298,6 +316,7 @@ export type VendorAccessTokenUncheckedUpdateManyInput = {
   onboardingId?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  purpose?: Prisma.EnumVendorAccessTokenPurposeFieldUpdateOperationsInput | $Enums.VendorAccessTokenPurpose
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -317,6 +336,7 @@ export type VendorAccessTokenCountOrderByAggregateInput = {
   onboardingId?: Prisma.SortOrder
   token?: Prisma.SortOrder
   used?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
 }
@@ -326,6 +346,7 @@ export type VendorAccessTokenMaxOrderByAggregateInput = {
   onboardingId?: Prisma.SortOrder
   token?: Prisma.SortOrder
   used?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
 }
@@ -335,6 +356,7 @@ export type VendorAccessTokenMinOrderByAggregateInput = {
   onboardingId?: Prisma.SortOrder
   token?: Prisma.SortOrder
   used?: Prisma.SortOrder
+  purpose?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
 }
@@ -381,10 +403,15 @@ export type VendorAccessTokenUncheckedUpdateManyWithoutOnboardingNestedInput = {
   deleteMany?: Prisma.VendorAccessTokenScalarWhereInput | Prisma.VendorAccessTokenScalarWhereInput[]
 }
 
+export type EnumVendorAccessTokenPurposeFieldUpdateOperationsInput = {
+  set?: $Enums.VendorAccessTokenPurpose
+}
+
 export type VendorAccessTokenCreateWithoutOnboardingInput = {
   id?: string
   token: string
   used?: boolean
+  purpose?: $Enums.VendorAccessTokenPurpose
   usedAt?: Date | string | null
   created_at?: Date | string
 }
@@ -393,6 +420,7 @@ export type VendorAccessTokenUncheckedCreateWithoutOnboardingInput = {
   id?: string
   token: string
   used?: boolean
+  purpose?: $Enums.VendorAccessTokenPurpose
   usedAt?: Date | string | null
   created_at?: Date | string
 }
@@ -431,6 +459,7 @@ export type VendorAccessTokenScalarWhereInput = {
   onboardingId?: Prisma.StringFilter<"VendorAccessToken"> | string
   token?: Prisma.StringFilter<"VendorAccessToken"> | string
   used?: Prisma.BoolFilter<"VendorAccessToken"> | boolean
+  purpose?: Prisma.EnumVendorAccessTokenPurposeFilter<"VendorAccessToken"> | $Enums.VendorAccessTokenPurpose
   usedAt?: Prisma.DateTimeNullableFilter<"VendorAccessToken"> | Date | string | null
   created_at?: Prisma.DateTimeFilter<"VendorAccessToken"> | Date | string
 }
@@ -439,6 +468,7 @@ export type VendorAccessTokenCreateManyOnboardingInput = {
   id?: string
   token: string
   used?: boolean
+  purpose?: $Enums.VendorAccessTokenPurpose
   usedAt?: Date | string | null
   created_at?: Date | string
 }
@@ -447,6 +477,7 @@ export type VendorAccessTokenUpdateWithoutOnboardingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  purpose?: Prisma.EnumVendorAccessTokenPurposeFieldUpdateOperationsInput | $Enums.VendorAccessTokenPurpose
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -455,6 +486,7 @@ export type VendorAccessTokenUncheckedUpdateWithoutOnboardingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  purpose?: Prisma.EnumVendorAccessTokenPurposeFieldUpdateOperationsInput | $Enums.VendorAccessTokenPurpose
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -463,6 +495,7 @@ export type VendorAccessTokenUncheckedUpdateManyWithoutOnboardingInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   token?: Prisma.StringFieldUpdateOperationsInput | string
   used?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  purpose?: Prisma.EnumVendorAccessTokenPurposeFieldUpdateOperationsInput | $Enums.VendorAccessTokenPurpose
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -474,6 +507,7 @@ export type VendorAccessTokenSelect<ExtArgs extends runtime.Types.Extensions.Int
   onboardingId?: boolean
   token?: boolean
   used?: boolean
+  purpose?: boolean
   usedAt?: boolean
   created_at?: boolean
   onboarding?: boolean | Prisma.VendorOnboardingDefaultArgs<ExtArgs>
@@ -484,6 +518,7 @@ export type VendorAccessTokenSelectCreateManyAndReturn<ExtArgs extends runtime.T
   onboardingId?: boolean
   token?: boolean
   used?: boolean
+  purpose?: boolean
   usedAt?: boolean
   created_at?: boolean
   onboarding?: boolean | Prisma.VendorOnboardingDefaultArgs<ExtArgs>
@@ -494,6 +529,7 @@ export type VendorAccessTokenSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   onboardingId?: boolean
   token?: boolean
   used?: boolean
+  purpose?: boolean
   usedAt?: boolean
   created_at?: boolean
   onboarding?: boolean | Prisma.VendorOnboardingDefaultArgs<ExtArgs>
@@ -504,11 +540,12 @@ export type VendorAccessTokenSelectScalar = {
   onboardingId?: boolean
   token?: boolean
   used?: boolean
+  purpose?: boolean
   usedAt?: boolean
   created_at?: boolean
 }
 
-export type VendorAccessTokenOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "onboardingId" | "token" | "used" | "usedAt" | "created_at", ExtArgs["result"]["vendorAccessToken"]>
+export type VendorAccessTokenOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "onboardingId" | "token" | "used" | "purpose" | "usedAt" | "created_at", ExtArgs["result"]["vendorAccessToken"]>
 export type VendorAccessTokenInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   onboarding?: boolean | Prisma.VendorOnboardingDefaultArgs<ExtArgs>
 }
@@ -529,6 +566,7 @@ export type $VendorAccessTokenPayload<ExtArgs extends runtime.Types.Extensions.I
     onboardingId: string
     token: string
     used: boolean
+    purpose: $Enums.VendorAccessTokenPurpose
     usedAt: Date | null
     created_at: Date
   }, ExtArgs["result"]["vendorAccessToken"]>
@@ -959,6 +997,7 @@ export interface VendorAccessTokenFieldRefs {
   readonly onboardingId: Prisma.FieldRef<"VendorAccessToken", 'String'>
   readonly token: Prisma.FieldRef<"VendorAccessToken", 'String'>
   readonly used: Prisma.FieldRef<"VendorAccessToken", 'Boolean'>
+  readonly purpose: Prisma.FieldRef<"VendorAccessToken", 'VendorAccessTokenPurpose'>
   readonly usedAt: Prisma.FieldRef<"VendorAccessToken", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"VendorAccessToken", 'DateTime'>
 }

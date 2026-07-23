@@ -8,11 +8,13 @@ import {
   issueVendorAccessToken,
   markVendorAccessTokenUsed,
 } from "../services/vendorAccessToken.services";
+import { getOrGeneratePdfUrl } from "../services/pdf.services";
 import {
   REQUIRED_VENDOR_DOCUMENT_TYPES,
   ALL_VENDOR_DOCUMENT_TYPES,
 } from "../utils/contants";
 import { resolveWorkspaceId } from "./export.controller";
+
 import { getActiveWorkflowForSubject } from "../helpers/workflowSubject.helper";
 import { uploadToS3 } from "../services/aws-s3.services"; // to add, mirrors uploadDeviationDoc
 import {
@@ -697,6 +699,22 @@ export const submitVendorForm = async (
       });
     });
 
+    const viewToken = await issueVendorAccessToken(
+      onboarding.id,
+      prisma,
+      "VIEW_PDF",
+    );
+
+    await addMailJob({
+      to: onboarding.email as string,
+      subject: "Vendor Onboarding — Submission Received",
+      templateName: "vendor-onboarding-submitted",
+      templateData: {
+        vendorName: onboarding.vendorName,
+        pdfViewUrl: `${process.env.BACKEND_URL}/api/v1/vendor-onboarding/public/pdf/${viewToken.token}`,
+      },
+    });
+
     res
       .status(200)
       .json({ success: true, message: "Form submitted successfully" });
@@ -773,6 +791,35 @@ export const sendBackToVendor = async (
     res
       .status(200)
       .json({ success: true, message: "Sent back to vendor for correction" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /public/vendor-onboarding/pdf/:token
+// Long-lived view link — never marked "used", so it works indefinitely.
+export const getVendorOnboardingPdfByToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { token } = req.params;
+
+    const tokenRecord = await prisma.vendorAccessToken.findUnique({
+      where: { token: token as string },
+    });
+
+    if (!tokenRecord || tokenRecord.purpose !== "VIEW_PDF") {
+      throw new ApiError(404, "Invalid or expired link");
+    }
+
+    const url = await getOrGeneratePdfUrl(
+      "VENDOR_ONBOARDING",
+      tokenRecord.onboardingId,
+    );
+
+    res.redirect(url);
   } catch (error) {
     next(error);
   }
