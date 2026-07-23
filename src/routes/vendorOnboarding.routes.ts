@@ -108,6 +108,7 @@ router.post(
 
 router.post(
   "/:id/send-back-to-vendor",
+  requireAuth,
   authorize(APP_KEY, MODULE, "write"),
   asyncHandler(sendBackToVendor),
 );
