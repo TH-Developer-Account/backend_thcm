@@ -14,6 +14,8 @@ import {
   getVendorOnboardingById,
   sendBackToVendor,
   getVendorOnboardingPdfByToken,
+  exportVendorOnboardingById,
+  saveVendorFormDraft,
 } from "../controllers/vendorOnboarding.controller";
 import { requireVendorAccessToken } from "../middleware/vendorAccessToken.middleware";
 import { ALL_VENDOR_DOCUMENT_TYPES } from "../utils/contants";
@@ -50,6 +52,13 @@ router.get(
   requireAuth,
   authorize(APP_KEY, MODULE, "read"),
   asyncHandler(getVendorOnboardingById),
+);
+
+router.get(
+  "/export/:id",
+  requireAuth,
+  authorize(APP_KEY, MODULE, "read"),
+  asyncHandler(exportVendorOnboardingById),
 );
 
 // POST /api/v1/vendor-onboarding
@@ -114,6 +123,13 @@ router.post(
   requireAuth,
   authorize(APP_KEY, MODULE, "write"),
   asyncHandler(sendBackToVendor),
+);
+
+router.patch(
+  "/public/:token/draft",
+  requireVendorAccessToken,
+  upload.fields(documentUploadFields),
+  asyncHandler(saveVendorFormDraft),
 );
 
 export default router;
