@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { Prisma } from "../prisma/generated/prisma/client";
 import { prisma } from "../config/prisma";
 import ApiError from "../utils/apiError";
 import { addMailJob } from "../services/mail.service";
@@ -8,11 +9,13 @@ import {
   issueVendorAccessToken,
   markVendorAccessTokenUsed,
 } from "../services/vendorAccessToken.services";
+import { getOrGeneratePdfUrl } from "../services/pdf.services";
 import {
   REQUIRED_VENDOR_DOCUMENT_TYPES,
   ALL_VENDOR_DOCUMENT_TYPES,
 } from "../utils/contants";
 import { resolveWorkspaceId } from "./export.controller";
+
 import { getActiveWorkflowForSubject } from "../helpers/workflowSubject.helper";
 import { uploadToS3 } from "../services/aws-s3.services"; // to add, mirrors uploadDeviationDoc
 import {
@@ -22,6 +25,29 @@ import {
   resolveSubjectIdsForApprovalTab,
   generateVendorOnboardingReferenceNumber,
 } from "../helpers/vendorOnboarding.helper";
+import { buildXlsxBuffer, XlsxRow } from "../utils/xlsxWriter";
+
+async function persistVendorDocuments(
+  tx: Prisma.TransactionClient,
+  onboardingId: string,
+  files: Record<string, Express.Multer.File[]> | undefined,
+) {
+  for (const documentType of ALL_VENDOR_DOCUMENT_TYPES) {
+    const file = files?.[documentType]?.[0];
+    if (!file) continue; // untouched — keep whatever's already there, if anything
+
+    const s3Key = `vendor-onboarding-docs/${onboardingId}/${documentType}.pdf`;
+    await uploadToS3(s3Key, file.buffer, file.mimetype);
+
+    await tx.vendorOnboardingDocument.upsert({
+      where: {
+        onboardingId_documentType: { onboardingId, documentType },
+      },
+      create: { onboardingId, documentType, s3Key },
+      update: { s3Key, uploadedAt: new Date() },
+    });
+  }
+}
 
 // POST /vendor-onboarding
 // Employee kicks off a request: name/number/email + mail trigger.
@@ -654,28 +680,7 @@ export const submitVendorForm = async (
         },
       });
 
-      // Only touch document types that actually got a new file this time —
-      // re-uploading to the same deterministic s3Key overwrites the old
-      // object, so a plain upsert on (onboardingId, documentType) is
-      // sufficient; no separate delete step needed.
-      for (const documentType of ALL_VENDOR_DOCUMENT_TYPES) {
-        const file = files?.[documentType]?.[0];
-        if (!file) continue; // untouched — keep whatever's already there, if anything
-
-        const s3Key = `vendor-onboarding-docs/${onboarding.id}/${documentType}.pdf`;
-        await uploadToS3(s3Key, file.buffer, file.mimetype);
-
-        await tx.vendorOnboardingDocument.upsert({
-          where: {
-            onboardingId_documentType: {
-              onboardingId: onboarding.id,
-              documentType,
-            },
-          },
-          create: { onboardingId: onboarding.id, documentType, s3Key },
-          update: { s3Key, uploadedAt: new Date() },
-        });
-      }
+      await persistVendorDocuments(tx, onboarding.id, files);
 
       await markVendorAccessTokenUsed(tokenId, tx);
 
@@ -695,6 +700,22 @@ export const submitVendorForm = async (
         title: "Vendor onboarding form submitted",
         body: `${onboarding.vendorName ?? "The vendor"} has submitted their onboarding form. Please review.`,
       });
+    });
+
+    const viewToken = await issueVendorAccessToken(
+      onboarding.id,
+      prisma,
+      "VIEW_PDF",
+    );
+
+    await addMailJob({
+      to: onboarding.email as string,
+      subject: "Vendor Onboarding — Submission Received",
+      templateName: "vendor-onboarding-submitted",
+      templateData: {
+        vendorName: onboarding.vendorName,
+        pdfViewUrl: `${process.env.BACKEND_URL}/api/v1/vendor-onboarding/public/pdf/${viewToken.token}`,
+      },
     });
 
     res
@@ -773,6 +794,187 @@ export const sendBackToVendor = async (
     res
       .status(200)
       .json({ success: true, message: "Sent back to vendor for correction" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /public/vendor-onboarding/pdf/:token
+// Long-lived view link — never marked "used", so it works indefinitely.
+export const getVendorOnboardingPdfByToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { token } = req.params;
+
+    const tokenRecord = await prisma.vendorAccessToken.findUnique({
+      where: { token: token as string },
+    });
+
+    if (!tokenRecord || tokenRecord.purpose !== "VIEW_PDF") {
+      throw new ApiError(404, "Invalid or expired link");
+    }
+
+    const url = await getOrGeneratePdfUrl(
+      "VENDOR_ONBOARDING",
+      tokenRecord.onboardingId,
+    );
+
+    res.redirect(url);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const saveVendorFormDraft = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const {
+      vendorName,
+      state,
+      city,
+      pinCode,
+      address,
+      mobile,
+      email,
+      msmeVendor,
+      msmeCertAttached,
+      bankName,
+      bankBranch,
+      ifscCode,
+      bankAddress,
+      accountNumber,
+      gstin,
+      pan,
+      entityRegNo,
+    } = req.body;
+    const { onboarding } = req.vendorAccessToken!;
+    const files = req.files as
+      | Record<string, Express.Multer.File[]>
+      | undefined;
+
+    // No dpdpConsent requirement and no missing-document check — a draft
+    // is allowed to be partial. Status and access token are untouched so
+    // the vendor can return and finish later with the same link. No
+    // activityLog / notify / email — draft saves are silent.
+    await prisma.$transaction(async (tx) => {
+      await tx.vendorOnboarding.update({
+        where: { id: onboarding.id },
+        data: {
+          vendorName,
+          state,
+          city,
+          pinCode,
+          address,
+          mobile,
+          email,
+          msmeVendor:
+            msmeVendor === undefined ? undefined : msmeVendor === "true",
+          msmeCertAttached:
+            msmeCertAttached === undefined
+              ? undefined
+              : msmeCertAttached === "true",
+          bankName,
+          bankBranch,
+          ifscCode,
+          bankAddress,
+          accountNumber,
+          gstin,
+          pan,
+          entityRegNo,
+        },
+      });
+
+      await persistVendorDocuments(tx, onboarding.id, files);
+    });
+
+    res.status(200).json({ success: true, message: "Draft saved" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const exportVendorOnboardingById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    const { id } = req.params;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const workspaceId = await resolveWorkspaceId(userId);
+
+    const onboarding = await prisma.vendorOnboarding.findUnique({
+      where: { id: id as string },
+    });
+    if (!onboarding) throw new ApiError(404, "Vendor onboarding not found");
+    if (onboarding.workspaceId !== workspaceId) {
+      throw new ApiError(
+        403,
+        "Vendor onboarding does not belong to your workspace",
+      );
+    }
+
+    const row: XlsxRow = {
+      "Reference Number": onboarding.referenceNumber,
+      Status: onboarding.status,
+      "Vendor Name": onboarding.vendorName ?? "",
+      State: onboarding.state ?? "",
+      City: onboarding.city ?? "",
+      "Pin Code": onboarding.pinCode ?? "",
+      Address: onboarding.address ?? "",
+      Mobile: onboarding.mobile ?? "",
+      Email: onboarding.email ?? "",
+      "MSME Vendor": onboarding.msmeVendor ?? "",
+      "MSME Cert Attached": onboarding.msmeCertAttached ?? "",
+      "Bank Name": onboarding.bankName ?? "",
+      "Bank Branch": onboarding.bankBranch ?? "",
+      "IFSC Code": onboarding.ifscCode ?? "",
+      "Bank Address": onboarding.bankAddress ?? "",
+      "Account Number": onboarding.accountNumber ?? "",
+      GSTIN: onboarding.gstin ?? "",
+      PAN: onboarding.pan ?? "",
+      "Entity Reg No": onboarding.entityRegNo ?? "",
+      "Vendor Submitted At": onboarding.vendorSubmittedAt?.toISOString() ?? "",
+      "Vendor Code": onboarding.vendorCode ?? "",
+      "Vendor Type": onboarding.vendorType ?? "",
+      "Company Code": onboarding.companyCode ?? "",
+      "Purchase Org": onboarding.purchaseOrg ?? "",
+      "Payment Term": onboarding.paymentTerm ?? "",
+      TDS: onboarding.tds ?? "",
+      "Vendor Category": onboarding.vendorCategory ?? "",
+      "Material Type": onboarding.materialType ?? "",
+      "Material Sub Type": onboarding.materialSubType ?? "",
+      "Self Assessment Obtained": onboarding.selfAssessmentObtained ?? "",
+      "NDA Obtained": onboarding.ndaObtained ?? "",
+      "GPA Obtained": onboarding.gpaObtained ?? "",
+      "Is Related Party": onboarding.isRelatedParty ?? "",
+      "Vendor Audit Report Prepared":
+        onboarding.vendorAuditReportPrepared ?? "",
+      "Nature Of Service": onboarding.natureOfService ?? "",
+      "Onboarding Reason": onboarding.onboardingReason ?? "",
+      "Created At": onboarding.created_at.toISOString(),
+      "Updated At": onboarding.updated_at.toISOString(),
+    };
+
+    const buffer = buildXlsxBuffer([{ name: "VendorOnboarding", rows: [row] }]);
+
+    const filename = `vendor-onboarding-${onboarding.referenceNumber}.xlsx`;
+
+    res.status(200);
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    );
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.send(buffer);
   } catch (error) {
     next(error);
   }

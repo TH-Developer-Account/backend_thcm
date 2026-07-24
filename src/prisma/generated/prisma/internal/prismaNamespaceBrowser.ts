@@ -742,6 +742,7 @@ export const VendorAccessTokenScalarFieldEnum = {
   onboardingId: 'onboardingId',
   token: 'token',
   used: 'used',
+  purpose: 'purpose',
   usedAt: 'usedAt',
   created_at: 'created_at'
 } as const

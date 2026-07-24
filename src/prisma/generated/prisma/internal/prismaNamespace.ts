@@ -4297,6 +4297,7 @@ export const VendorAccessTokenScalarFieldEnum = {
   onboardingId: 'onboardingId',
   token: 'token',
   used: 'used',
+  purpose: 'purpose',
   usedAt: 'usedAt',
   created_at: 'created_at'
 } as const
@@ -4649,6 +4650,20 @@ export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
  * Reference to a field of type 'NotificationType[]'
  */
 export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'VendorAccessTokenPurpose'
+ */
+export type EnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VendorAccessTokenPurpose'>
+    
+
+
+/**
+ * Reference to a field of type 'VendorAccessTokenPurpose[]'
+ */
+export type ListEnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VendorAccessTokenPurpose[]'>
     
 
 /**
