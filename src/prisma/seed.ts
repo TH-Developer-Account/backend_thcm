@@ -12,7 +12,7 @@ import {
   products,
 } from "./constants";
 import { ProductMasterCreateManyInput } from "./generated/prisma/models";
-import { generateVendorOnboardingReferenceNumber } from "../helpers/vendorOnboarding.helper";
+import { generateVendorOnboardingReferenceNumber } from "../modules/vendor-onboarding/vendorOnboarding.helper";
 
 async function main() {
   console.log("🌱 Seeding database...");

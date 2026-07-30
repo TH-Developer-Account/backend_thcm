@@ -3,33 +3,31 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 
 // Import routes
-import userRoutes from "./routes/user.routes";
-import authRoutes from "./routes/auth.routes";
-import epcRoutes from "./routes/epc.routes";
-import workspaceRoutes from "./routes/workspace.routes";
-import profileRoutes from "./routes/profile.routes";
-import masterDataRoutes from "./routes/masterData.routes";
-import workflowTemplateRoutes from "./routes/workflowTemplate.routes";
-import workflowRoutes from "./routes/workflow.routes";
-import efpRoutes from "./routes/epf.routes";
-import crfRoutes from "./routes/crf.routes";
-import commentRoutes from "./routes/comments.routes";
-import operatorRoutes from "./routes/operator.routes";
-import leadRoutes from "./routes/leads.routes";
-import reportRoutes from "./routes/report.routes";
-import importRoutes from "./routes/import.routes";
-import exportRoutes from "./routes/export.routes";
-import pincodeRoutes from "./routes/pincode.routes";
-import importExportLogRoutes from "./routes/importExportLog.routes";
-import notificationRoutes from "./routes/notification.routes";
-import vendorOnboardRoutes from "./routes/vendorOnboarding.routes";
-import pdfRoutes from "./routes/pdf.routes";
-
-import errorHandler from "./middleware/error.middleware";
-import ApiError from "./utils/apiError";
-
-import { startJobs } from "./jobs/scheduler";
-import "./services/mail.queue"; // boots the BullMQ worker
+import userRoutes from "@users/user.routes";
+import authRoutes from "@auth/auth.routes";
+import workspaceRoutes from "@rbac/workspace.routes";
+import profileRoutes from "@rbac/profile.routes";
+import pdfRoutes from "@pdf/pdf.routes";
+import notificationRoutes from "@notifications/notification.routes";
+import pincodeRoutes from "@reference-data/pincode.routes";
+import masterDataRoutes from "@reference-data/masterData.routes";
+import operatorRoutes from "@reference-data/operator.routes";
+import importRoutes from "@import-export/import.routes";
+import exportRoutes from "@import-export/export.routes";
+import importExportLogRoutes from "@import-export/importExportLog.routes";
+import workflowTemplateRoutes from "@workflow/workflowTemplate.routes";
+import workflowRoutes from "@workflow/workflow.routes";
+import "@mail/mail.queue"; // boots the BullMQ worker
+import commentRoutes from "@comments/comments.routes";
+import vendorOnboardRoutes from "@vendor-onboarding/vendorOnboarding.routes";
+import leadRoutes from "@leads/leads.routes";
+import reportRoutes from "@map/report.routes";
+import epcRoutes from "@map/epc.routes";
+import efpRoutes from "@map/epf.routes";
+import crfRoutes from "@map/crf.routes";
+import errorHandler from "@shared/middleware/error.middleware";
+import ApiError from "@shared/utils/apiError";
+import { startJobs } from "@shared/jobs/scheduler";
 
 const corsOptions = {
   origin: process.env.FRONTEND_URL, // frontend URL

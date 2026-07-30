@@ -1,4 +1,4 @@
-import { ResolvedPermission } from "../utils/userPermission";
+import { ResolvedPermission } from "../kernel/rbac/userPermission";
 import {
   VendorAccessToken,
   VendorOnboarding,
