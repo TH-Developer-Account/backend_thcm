@@ -1,9 +1,44 @@
 import { Request, Response } from "express";
-
 import { prisma } from "@shared/config/prisma";
+import * as service from "@workflow/template.service";
 import ApiError from "@shared/utils/apiError";
+import { hasPermission } from "@kernel/rbac/userPermission";
+import { AuthenticatedUser } from "../../types/express";
 
-import * as service from "./template.service";
+type AuthedRequest = Request & { user?: AuthenticatedUser };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// resolveOwnerType
+//
+// ownerType is NEVER trusted from the client — it's derived server-side from
+// the caller's own permission grant. isSuperAdmin short-circuits true inside
+// hasPermission itself, so a super admin always gets ADMIN without a separate
+// branch here. Everyone else falls through to USER — self-service template
+// creation is unconditional; the permission only decides which kind they get.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const resolveOwnerType = async (
+  req: AuthedRequest,
+  appId: string,
+): Promise<"ADMIN" | "USER"> => {
+  const app = await prisma.app.findUnique({
+    where: { id: appId },
+    select: { key: true },
+  });
+  if (!app) throw new ApiError(404, "App not found");
+
+  const isAdmin = hasPermission(
+    {
+      isSuperAdmin: req.user?.isSuperAdmin ?? false,
+      permissions: req.user?.permissions ?? [],
+    },
+    "write",
+    app.key,
+    "WORKFLOW_TEMPLATE",
+  );
+
+  return isAdmin ? "ADMIN" : "USER";
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /workflow-templates
@@ -18,6 +53,8 @@ import * as service from "./template.service";
 //   "metaData_1": "0-1000000",   ← budget range key (used by evaluateBudget)
 //   "metaData_2": "",
 //   "metaData_3": "",
+//   "isReusable": true,          ← ✅ NEW, optional, defaults to true.
+//                                   Set false for a one-off/ad-hoc template.
 //   "stages": [
 //     { "stageOrder": 1, "strategy": "ANY",  "approverIds": ["u1", "u2"] },
 //     { "stageOrder": 2, "strategy": "ALL",  "approverIds": ["u3"] },
@@ -25,15 +62,26 @@ import * as service from "./template.service";
 //   ]
 // }
 //
-// No schema changes needed here — WorkflowTemplate itself is unchanged.
+// ownerType is resolved server-side (see resolveOwnerType above), never read
+// from the request body.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const createTemplateController = async (req: Request, res: Response) => {
+export const createTemplateController = async (
+  req: AuthedRequest,
+  res: Response,
+) => {
   try {
     const userId = req?.user?.id;
     if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!req.body?.appId) throw new ApiError(400, "appId is required");
 
-    const template = await service.createWorkflowTemplate(req.body, userId);
+    const ownerType = await resolveOwnerType(req, req.body.appId);
+
+    const template = await service.createWorkflowTemplate(
+      req.body,
+      userId,
+      ownerType,
+    );
 
     res.status(201).json({ success: true, data: template });
   } catch (err: any) {
@@ -48,10 +96,18 @@ export const createTemplateController = async (req: Request, res: Response) => {
 // GET /workflow-templates
 //
 // Paginated list of templates for a workspace.
+//
+// Visibility (✅ NEW): a non-admin caller only sees templates they're
+// assigned to via WorkFlowTemplateUser (which now also covers their own
+// self-assigned USER templates). An admin caller sees everything, unchanged
+// from before.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const getTemplates = async (req: Request, res: Response) => {
+export const getTemplates = async (req: AuthedRequest, res: Response) => {
   try {
+    const userId = req?.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
     const {
       workspaceId,
       filters,
@@ -63,20 +119,25 @@ export const getTemplates = async (req: Request, res: Response) => {
       sortOrder = "desc",
     } = req.query;
 
-    const result = await service.getTemplates({
-      workspaceId,
-      isActive,
-      page: Number(page),
-      limit: Number(limit),
-      sortBy,
-      sortOrder,
-      filters,
-      search,
-    });
+    const result = await service.getTemplates(
+      {
+        workspaceId,
+        isActive,
+        page: Number(page),
+        limit: Number(limit),
+        sortBy,
+        sortOrder,
+        filters,
+        search,
+      },
+      { userId, isSuperAdmin: req.user?.isSuperAdmin ?? false },
+    );
 
     res.status(200).json(result);
   } catch (err: any) {
-    res.status(400).json({ success: false, error: err.message });
+    res
+      .status(err instanceof ApiError ? err.statusCode : 400)
+      .json({ success: false, error: err.message });
   }
 };
 
@@ -107,10 +168,16 @@ export const getTemplateById = async (req: Request, res: Response) => {
 // that were already created from it. Runtime instances (StageInstance,
 // Approval) snapshot the template at creation time, so live workflows are safe.
 //
+// Ownership (✅ NEW): a non-admin caller can only update a template they
+// personally own (ownerType USER + created_by_id === them) — enforced inside
+// service.updateTemplate via the shared assertCanMutateTemplate guard.
+//
 // Expected payload:
 // {
 //   "name": "Updated EPC Flow",
 //   "metaData_1": "0-2000000",
+//   "isReusable": true,   ← ✅ NEW, optional — lets a user "promote" a
+//                             one-off fork into a real reusable template
 //   "stages": [
 //     { "stageOrder": 1, "strategy": "ANY",  "approverIds": ["u1","u2"] },
 //     { "stageOrder": 2, "strategy": "ALL",  "approverIds": ["u3"] }
@@ -118,7 +185,7 @@ export const getTemplateById = async (req: Request, res: Response) => {
 // }
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const updateTemplate = async (req: Request, res: Response) => {
+export const updateTemplate = async (req: AuthedRequest, res: Response) => {
   try {
     const { templateId } = req.params;
     const payload = req.body;
@@ -138,11 +205,10 @@ export const updateTemplate = async (req: Request, res: Response) => {
       },
     });
 
-    const result = await service.updateTemplate(
-      templateId as string,
-      payload,
+    const result = await service.updateTemplate(templateId as string, payload, {
       userId,
-    );
+      isSuperAdmin: req.user?.isSuperAdmin ?? false,
+    });
 
     res.status(200).json({
       success: true,
@@ -168,12 +234,18 @@ export const updateTemplate = async (req: Request, res: Response) => {
 // Hard delete is blocked if any active WorkflowInstance references it,
 // because the runtime stages need the template for the clarify re-run
 // (it re-reads template.stages to create new StageInstances).
+//
+// Ownership (✅ NEW): same guard as updateTemplate, enforced inside
+// service.deleteTemplate.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const deleteTemplate = async (req: Request, res: Response) => {
+export const deleteTemplate = async (req: AuthedRequest, res: Response) => {
   try {
     const { templateId } = req.params;
+    const userId = req?.user?.id;
+
     if (!templateId) throw new ApiError(400, "templateId is required");
+    if (!userId) throw new ApiError(401, "Unauthorized");
 
     // Block deletion if any active workflow still references this template.
     // The clarifyStageController re-reads template.stages to seed new stages,
@@ -194,7 +266,10 @@ export const deleteTemplate = async (req: Request, res: Response) => {
       );
     }
 
-    const result = await service.deleteTemplate(templateId as string);
+    const result = await service.deleteTemplate(templateId as string, {
+      userId,
+      isSuperAdmin: req.user?.isSuperAdmin ?? false,
+    });
     res.status(200).json({ success: true, data: result });
   } catch (err: any) {
     res
@@ -212,6 +287,10 @@ export const deleteTemplate = async (req: Request, res: Response) => {
 // Send an empty array to remove all users.
 //
 // Payload: { "templateId": "uuid", "userIds": ["uuid-1", "uuid-2"] }
+//
+// Guard (✅ NEW): USER-owned templates are self-assigned at creation time and
+// aren't reassignable through this endpoint — reassigning would overwrite or
+// delete the owner's own implicit access, which is never what's intended here.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function assignUsersToWorkflow(req: Request, res: Response) {
@@ -229,9 +308,16 @@ export async function assignUsersToWorkflow(req: Request, res: Response) {
     await prisma.$transaction(async (tx) => {
       const template = await tx.workflowTemplate.findUnique({
         where: { id: templateId },
-        select: { id: true, workspaceId: true },
+        select: { id: true, workspaceId: true, ownerType: true },
       });
       if (!template) throw new ApiError(404, "Template not found");
+
+      if (template.ownerType === "USER") {
+        throw new ApiError(
+          400,
+          "User-owned templates are self-assigned and can't be reassigned",
+        );
+      }
 
       if (userIds.length > 0) {
         const members = await tx.workspaceUser.findMany({
@@ -286,11 +372,9 @@ export async function assignUsersToWorkflow(req: Request, res: Response) {
 
     res.status(200).json({ success: true, message, users: assignedUsers });
   } catch (error: any) {
-    if (error instanceof ApiError) throw error;
-    res.status(500).json({
+    res.status(error instanceof ApiError ? error.statusCode : 500).json({
       success: false,
-      message: "Failed to assign users to template",
-      error: error.message,
+      message: error.message,
     });
   }
 }

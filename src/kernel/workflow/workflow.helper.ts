@@ -2,7 +2,79 @@ import { prisma } from "@shared/config/prisma";
 import {
   StageStatus,
   ApprovalStatus,
+  Prisma,
 } from "../../prisma/generated/prisma/client";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// forkTemplateForClarify
+//
+// Called when the proposer edits stages/approvers while resolving a Clarify.
+// We never mutate the workflow's existing template in place — that template
+// may be reused by other instances, and an in-place edit would silently
+// change workflows that never asked for it.
+//
+// Instead: clone the template + its stages/approvers into a new one-off
+// WorkflowTemplate (ownerType USER, isReusable false), apply the requested
+// stage list onto the clone, and hand back its id/stages so the caller can
+// repoint WorkflowInstance.templateId and read stages from the fork.
+//
+// `editedStages` is a FULL replacement list — same shape template
+// create/update already accept — no partial-merge logic to maintain.
+// ─────────────────────────────────────────────────────────────────────────────
+
+type Tx = Prisma.TransactionClient;
+
+export const forkTemplateForClarify = async (
+  tx: Tx,
+  originalTemplate: {
+    name: string;
+    description: string;
+    workspaceId: string;
+    appId: string;
+    metaData_1: string;
+    metaData_2: string;
+    metaData_3: string;
+  },
+  editedStages: Array<{
+    stageOrder: number;
+    strategy: "ALL" | "ANY" | "SOME";
+    minApprovals?: number | null;
+    approverIds: string[];
+  }>,
+  userId: string,
+) => {
+  return tx.workflowTemplate.create({
+    data: {
+      name: `${originalTemplate.name} (edited)`,
+      description: originalTemplate.description,
+      workspaceId: originalTemplate.workspaceId,
+      appId: originalTemplate.appId,
+      metaData_1: originalTemplate.metaData_1,
+      metaData_2: originalTemplate.metaData_2,
+      metaData_3: originalTemplate.metaData_3,
+      ownerType: "USER",
+      isReusable: false,
+      created_by_id: userId,
+      updated_by_id: userId,
+      stages: {
+        create: editedStages.map((stage) => ({
+          name: `Stage ${stage.stageOrder}`,
+          stageOrder: stage.stageOrder,
+          strategy: stage.strategy,
+          minApprovals: stage.minApprovals ?? null,
+          approvers: {
+            create: stage.approverIds.map((approverId) => ({
+              userId: approverId,
+            })),
+          },
+        })),
+      },
+    },
+    include: {
+      stages: { include: { approvers: true }, orderBy: { stageOrder: "asc" } },
+    },
+  });
+};
 
 export const buildWorkflowStages = (templateStages: any[]) => {
   return templateStages.map((stage: any) => ({

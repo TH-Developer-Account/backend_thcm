@@ -16,6 +16,11 @@ enum PermissionAction {
   write
 }
 
+enum TemplateOwnerType {
+  ADMIN
+  USER
+}
+
 enum VendorAccessTokenPurpose {
   FORM_ACCESS
   VIEW_PDF
@@ -411,6 +416,8 @@ model WorkflowTemplate {
   workspaceId String
   isActive    Boolean @default(true)
   appId       String
+  ownerType  TemplateOwnerType @default(ADMIN)
+  isReusable Boolean           @default(true)
   metaData_1  String
   metaData_2  String
   metaData_3  String
@@ -428,6 +435,9 @@ model WorkflowTemplate {
   workspace  Workspace        @relation(fields: [workspaceId], references: [id])
   created_by User             @relation("WorkFlowCreatedBy", fields: [created_by_id], references: [id])
   updated_by User             @relation("WorkFlowUpdatedBy", fields: [updated_by_id], references: [id])
+
+  @@index([ownerType])      
+  @@index([isReusable]) 
 }
 
 model TemplateStage {

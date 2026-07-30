@@ -291,6 +291,8 @@ export const WorkflowTemplateScalarFieldEnum = {
   workspaceId: 'workspaceId',
   isActive: 'isActive',
   appId: 'appId',
+  ownerType: 'ownerType',
+  isReusable: 'isReusable',
   metaData_1: 'metaData_1',
   metaData_2: 'metaData_2',
   metaData_3: 'metaData_3',

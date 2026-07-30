@@ -1,18 +1,18 @@
 import { NextFunction, Request, Response } from "express";
-
 import { prisma } from "@shared/config/prisma";
-import { budgetMap } from "@shared/utils/contants";
-import ApiError from "@shared/utils/apiError";
-
 import { approveStage } from "./workflow.service";
 import {
   Prisma,
   WorkflowSubjectType,
 } from "../../prisma/generated/prisma/client";
+import { budgetMap } from "@shared/utils/contants";
+import ApiError from "@shared/utils/apiError";
 import {
   updateSubjectStatus,
   getClarifyResetStatus,
+  getSubjectOwnerId,
 } from "./workflowSubject.helper";
+import { forkTemplateForClarify } from "./workflow.helper";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS
@@ -119,11 +119,15 @@ export const assignWorkflowController = async (
     }
 
     // 1. Find all templates for this app + workspace that the user manages
+    //    isReusable: true excludes ad-hoc one-off templates — those were
+    //    scaffolding for a single run and should never resurface as a
+    //    pickable option for a different subject.
     const templates = await prisma.workflowTemplate.findMany({
       where: {
         workspaceId,
         appId,
         isActive: true,
+        isReusable: true,
         workFlowUsers: { some: { userId } },
       },
       include: {
@@ -255,11 +259,13 @@ export const previewWorkflowController = async (
     }
 
     // 1. Get templates
+    // isReusable: true — same rule as assign; ad-hoc templates never surface here.
     const templates = await prisma.workflowTemplate.findMany({
       where: {
         workspaceId,
         appId,
         isActive: true,
+        isReusable: true,
         workFlowUsers: { some: { userId } },
       },
       include: {
@@ -475,11 +481,10 @@ export const clarifyStageController = async (
         },
       });
 
-      // ── Step 4: Archive ALL current iteration stages ──────────────────────
-      // Two calls because IN_PROGRESS needs status flipped to REJECTED (interrupted),
-      // while PENDING + APPROVED keep their status — only isCurrentIteration clears.
-      // Previously only PENDING was in the second filter, leaving APPROVED stages
-      // with isCurrentIteration=true and causing doubled stages on the next iteration.
+      // ── Step 4: Archive the OLD iteration's stages ────────────────────────
+      // Two calls because IN_PROGRESS needs status flipped to REJECTED
+      // (interrupted), while PENDING/APPROVED keep their status — only
+      // isCurrentIteration clears.
       await tx.stageInstance.updateMany({
         where: {
           workflowId: workflow.id,
@@ -497,7 +502,17 @@ export const clarifyStageController = async (
         data: { isCurrentIteration: false },
       });
 
-      // ── Step 5: Build new stages for iteration N+1 ────────────────────────
+      // ── Step 5: Build the next iteration's stages — as a DRAFT ────────────
+      // Built from the current template, ALL stages PENDING (including
+      // stage 1). This is what the FE renders so the proposer can view and
+      // edit stages/approvers before resubmitting. Nothing is "active" yet —
+      // activateFirstStageController is what actually starts it running,
+      // and it's the only place stage 1 flips to IN_PROGRESS.
+      //
+      // If the proposer edits at resubmit time, activateFirstStageController
+      // deletes this draft and rebuilds it from a forked template — this
+      // draft is disposable, never mutated, so that rebuild never risks
+      // touching a shared/reusable template.
       const newIteration = workflow.iteration + 1;
 
       for (const templateStage of workflow.template.stages) {
@@ -506,11 +521,10 @@ export const clarifyStageController = async (
             stageName: templateStage.name,
             workflowId: workflow.id,
             stageOrder: templateStage.stageOrder,
-            iteration: newIteration, // ← belongs to the new run
-            isCurrentIteration: true, // ← these are now the live stages
+            iteration: newIteration,
+            isCurrentIteration: true,
             strategy: templateStage.strategy,
             minApprovals: templateStage.minApprovals,
-            // Make all stages to pending
             status: "PENDING",
             startedAt: null,
             approvals: {
@@ -539,6 +553,14 @@ export const clarifyStageController = async (
       // registry in workflowSubject.helper.ts. EPC resets to PENDING,
       // Vendor Onboarding resets to IN_REVIEW (back to the initiating
       // employee, not the vendor).
+      //
+      // NOTE: building the next iteration's StageInstance rows (and any
+      // stage/approver edits the proposer wants to make) no longer happens
+      // here — it happens in activateFirstStageController, at the moment
+      // the proposer actually resubmits. Building it here was premature:
+      // nothing needs that structure to exist until then, and edits are the
+      // proposer's call, not the approver's (who is the one calling THIS
+      // endpoint). See activateFirstStageController for that logic.
       await updateSubjectStatus(
         tx,
         workflow.subjectType,
@@ -546,7 +568,7 @@ export const clarifyStageController = async (
         getClarifyResetStatus(workflow.subjectType),
       );
 
-      // ── Step 8: Write audit record ────────────────────────────────────────
+      // ── Step 6: Write audit record ──────────────────────────────────────────
       await tx.activityLog.create({
         data: {
           subjectType: workflow.subjectType,
@@ -565,8 +587,9 @@ export const clarifyStageController = async (
     res.status(200).json({
       success: true,
       message:
-        "Clarification requested. Workflow has been restarted from stage 1. " +
-        "Previous iteration data is preserved for audit.",
+        "Clarification requested. The next iteration's stages have been " +
+        "drafted (PENDING) — the proposer can review, optionally edit " +
+        "stages/approvers, and resubmit to activate stage 1.",
     });
   } catch (error) {
     next(error);
@@ -576,18 +599,31 @@ export const clarifyStageController = async (
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /workflows/activate-stage
 //
-// Activates stage 1 of the current iteration for a given workflow.
-// This is used to formally "start" a workflow after it has been assigned —
-// setting stage 1 to IN_PROGRESS so approvers can act on it.
+// Called when the proposer resubmits after a Clarify (or to start a workflow
+// after initial assignment). The current iteration's stages already exist as
+// a PENDING draft — built at clarify time (or at assignment time) — so the
+// FE always has something to render/edit against. This endpoint:
+//   - If no stageEdits: just flips the existing stage 1 PENDING → IN_PROGRESS.
+//   - If stageEdits present: the proposer edited the draft, so we discard it
+//     and rebuild from a forked template (never mutate a template in place —
+//     it may be shared/reusable), then activate the fresh stage 1.
 //
-// Body: { workflowId: string }
+// Body: { workflowId: string, stageEdits?: [...] }
+//
+// stageEdits (optional): a FULL replacement stage list, same shape as
+// template create/update payloads. If present:
+//   1. Caller must be the subject's owner (the proposer) — enforced via
+//      getSubjectOwnerId, same ownership rule used everywhere else.
+//   2. The current template is forked (never mutated in place) into a
+//      one-off (ownerType USER, isReusable false) template, and the
+//      workflow is repointed to it.
 //
 // Guards:
 //   1. Workflow must exist and be active (not superseded)
 //   2. Workflow must be IN_PROGRESS
-//   3. There must be no IN_PROGRESS stage already in the current iteration
-//      (prevents double-activation)
-//   4. Stage with stageOrder=1 must exist in the current iteration
+//   3. No stage already IN_PROGRESS in the current iteration (prevents
+//      double-activation)
+//   4. Stage 1 must exist in the current iteration
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const activateFirstStageController = async (
@@ -597,16 +633,24 @@ export const activateFirstStageController = async (
 ) => {
   try {
     const userId = req.user?.id;
-    const { workflowId } = req.body;
+    const { workflowId, stageEdits } = req.body;
 
     if (!userId) throw new ApiError(401, "Unauthorized");
     if (!workflowId) throw new ApiError(400, "workflowId is required");
 
-    await prisma.$transaction(async (tx) => {
-      // ── Step 1: Load the workflow ─────────────────────────────────────────
+    const result = await prisma.$transaction(async (tx) => {
+      // ── Step 1: Load the workflow + its current iteration's draft stages ──
       const workflow = await tx.workflowInstance.findUnique({
         where: { id: workflowId },
         include: {
+          template: {
+            include: {
+              stages: {
+                include: { approvers: true },
+                orderBy: { stageOrder: "asc" },
+              },
+            },
+          },
           stages: {
             where: { isCurrentIteration: true },
             orderBy: { stageOrder: "asc" },
@@ -643,48 +687,138 @@ export const activateFirstStageController = async (
         );
       }
 
-      // ── Guard 4: stage 1 must exist in the current iteration ─────────────
-      const firstStage = workflow.stages.find((s) => s.stageOrder === 1);
-      if (!firstStage) {
-        throw new ApiError(
-          404,
-          "Stage 1 not found in the current iteration for this workflow",
+      let firstStageInstanceId: string;
+      const builtStages: any[] = [];
+
+      if (stageEdits?.length) {
+        // ── The proposer edited the draft — discard it, rebuild from a fork ──
+        const ownerId = await getSubjectOwnerId(
+          workflow.subjectType,
+          workflow.subjectId,
         );
+        if (ownerId !== userId) {
+          throw new ApiError(
+            403,
+            "Only the proposer can edit stages when resubmitting",
+          );
+        }
+
+        const fork = await forkTemplateForClarify(
+          tx,
+          workflow.template,
+          stageEdits,
+          userId,
+        );
+
+        await tx.workflowInstance.update({
+          where: { id: workflow.id },
+          data: { templateId: fork.id },
+        });
+
+        // Discard the draft built at clarify time — it reflected the
+        // pre-edit template and is now stale.
+        await tx.stageInstance.deleteMany({
+          where: {
+            workflowId: workflow.id,
+            isCurrentIteration: true,
+            iteration: workflow.iteration,
+          },
+        });
+
+        for (const templateStage of fork.stages) {
+          const createdStage = await tx.stageInstance.create({
+            data: {
+              stageName: templateStage.name,
+              workflowId: workflow.id,
+              stageOrder: templateStage.stageOrder,
+              iteration: workflow.iteration,
+              isCurrentIteration: true,
+              strategy: templateStage.strategy,
+              minApprovals: templateStage.minApprovals,
+              status:
+                templateStage.stageOrder === 1 ? "IN_PROGRESS" : "PENDING",
+              startedAt: templateStage.stageOrder === 1 ? new Date() : null,
+              approvals: {
+                create: templateStage.approvers.map((a) => ({
+                  approverId: a.userId,
+                  status: "PENDING",
+                  isExternalApprover: a.isExternalApprover,
+                })),
+              },
+            },
+            include: { approvals: true },
+          });
+
+          builtStages.push(createdStage);
+          if (templateStage.stageOrder === 1) {
+            firstStageInstanceId = createdStage.id;
+          }
+        }
+
+        if (!firstStageInstanceId!) {
+          throw new ApiError(
+            404,
+            "Stage 1 not found on the edited template — cannot activate",
+          );
+        }
+      } else {
+        // ── No edits — just flip the existing draft's stage 1 in place ──────
+        const firstStage = workflow.stages.find((s) => s.stageOrder === 1);
+        if (!firstStage) {
+          throw new ApiError(
+            404,
+            "Stage 1 not found in the current iteration for this workflow",
+          );
+        }
+
+        await tx.stageInstance.update({
+          where: { id: firstStage.id },
+          data: { status: "IN_PROGRESS", startedAt: new Date() },
+        });
+
+        firstStageInstanceId = firstStage.id;
+        builtStages.push(...workflow.stages);
       }
 
-      // ── Activate stage 1 ──────────────────────────────────────────────────
-      await tx.stageInstance.update({
-        where: { id: firstStage.id },
-        data: {
-          status: "IN_PROGRESS",
-          startedAt: new Date(),
-        },
-      });
-
-      // ── Keep currentStage in sync on the workflow ─────────────────────────
+      // ── Keep currentStage in sync (already 1, but harmless/idempotent) ────
       await tx.workflowInstance.update({
-        where: { id: workflowId },
+        where: { id: workflow.id },
         data: { currentStage: 1 },
       });
+
+      await updateSubjectStatus(
+        tx,
+        workflow.subjectType,
+        workflow.subjectId,
+        "Resubmitted",
+      );
 
       await tx.activityLog.create({
         data: {
           subjectType: workflow.subjectType,
           subjectId: workflow.subjectId,
-          actorId: req.user?.id as string,
+          actorId: userId,
           action: "EPC_RESUBMITTED",
           workflowId: workflow.id,
-          stageId: firstStage.id,
+          stageId: firstStageInstanceId,
           metadata: {
             reason: "Proposer resubmitted the EPC.",
+            ...(stageEdits?.length && { stagesEdited: true }),
           },
         },
       });
+
+      return { iteration: workflow.iteration, stages: builtStages };
     });
 
     res.status(200).json({
       success: true,
-      message: "Stage 1 is now IN_PROGRESS",
+      message: "Workflow resubmitted — stage 1 is now IN_PROGRESS",
+      data: {
+        iteration: result.iteration,
+        currentStage: 1,
+        stages: result.stages,
+      },
     });
   } catch (error) {
     next(error);
@@ -755,11 +889,14 @@ export const triggerDeviationController = async (
     }
 
     // ── Step 2: Find a template matching the new budget ───────────────────
+    // isReusable: true — same rule as assign/preview; a deviation should
+    // never get matched to an ad-hoc, one-off template built for someone else.
     const templates = await prisma.workflowTemplate.findMany({
       where: {
         workspaceId,
         appId,
         isActive: true,
+        isReusable: true,
         workFlowUsers: { some: { userId } },
       },
       include: {

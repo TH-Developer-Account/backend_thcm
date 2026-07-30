@@ -17,6 +17,14 @@ export const PermissionAction = {
 export type PermissionAction = (typeof PermissionAction)[keyof typeof PermissionAction]
 
 
+export const TemplateOwnerType = {
+  ADMIN: 'ADMIN',
+  USER: 'USER'
+} as const
+
+export type TemplateOwnerType = (typeof TemplateOwnerType)[keyof typeof TemplateOwnerType]
+
+
 export const VendorAccessTokenPurpose = {
   FORM_ACCESS: 'FORM_ACCESS',
   VIEW_PDF: 'VIEW_PDF'

@@ -3846,6 +3846,8 @@ export const WorkflowTemplateScalarFieldEnum = {
   workspaceId: 'workspaceId',
   isActive: 'isActive',
   appId: 'appId',
+  ownerType: 'ownerType',
+  isReusable: 'isReusable',
   metaData_1: 'metaData_1',
   metaData_2: 'metaData_2',
   metaData_3: 'metaData_3',
@@ -4440,6 +4442,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'TemplateOwnerType'
+ */
+export type EnumTemplateOwnerTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TemplateOwnerType'>
+    
+
+
+/**
+ * Reference to a field of type 'TemplateOwnerType[]'
+ */
+export type ListEnumTemplateOwnerTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TemplateOwnerType[]'>
     
 
 

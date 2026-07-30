@@ -1,4 +1,7 @@
 import { prisma } from "@shared/config/prisma";
+import ApiError from "@shared/utils/apiError";
+
+type TemplateOwnerType = "ADMIN" | "USER";
 
 type CreateTemplateInput = {
   name: string;
@@ -8,6 +11,7 @@ type CreateTemplateInput = {
   metaData_2: string;
   metaData_3: string;
   appId: string;
+  isReusable?: boolean; // defaults to true; ad-hoc callers pass false
   stages: {
     name: string;
     stageOrder: number;
@@ -17,51 +21,101 @@ type CreateTemplateInput = {
   }[];
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// assertCanMutateTemplate
+//
+// Single ownership guard shared by updateTemplate and deleteTemplate, so the
+// "who can touch this template" rule lives in exactly one place. An admin
+// caller can mutate anything; a regular caller can only mutate a template
+// they personally own (ownerType USER + created_by_id === them).
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const assertCanMutateTemplate = (
+  template: { ownerType: TemplateOwnerType; created_by_id: string },
+  caller: { userId: string; isSuperAdmin: boolean },
+) => {
+  if (caller.isSuperAdmin) return;
+
+  const isOwnUserTemplate =
+    template.ownerType === "USER" && template.created_by_id === caller.userId;
+
+  if (!isOwnUserTemplate) {
+    throw new ApiError(
+      403,
+      "You do not have permission to modify this template",
+    );
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// createWorkflowTemplate
+//
+// ownerType is resolved by the controller (never trust the client to say
+// "I'm an admin") and passed in here. When a USER creates their own
+// template, we self-assign it via WorkFlowTemplateUser in the same
+// transaction — that's the only "assignment" a personal template ever
+// gets, and it's what makes it show up in that user's own template list
+// and in the assign/preview template lookup later.
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const createWorkflowTemplate = async (
   input: CreateTemplateInput,
   userId: string,
+  ownerType: TemplateOwnerType,
 ) => {
-  return prisma.workflowTemplate.create({
-    data: {
-      name: input.name,
-      description: input.description,
-      workspaceId: input.workspaceId,
-      created_by_id: userId,
-      updated_by_id: userId,
-      appId: input.appId,
-      metaData_1: input.metaData_1,
-      metaData_2: input.metaData_2,
-      metaData_3: input.metaData_3,
+  return prisma.$transaction(async (tx) => {
+    const template = await tx.workflowTemplate.create({
+      data: {
+        name: input.name,
+        description: input.description,
+        workspaceId: input.workspaceId,
+        created_by_id: userId,
+        updated_by_id: userId,
+        appId: input.appId,
+        metaData_1: input.metaData_1,
+        metaData_2: input.metaData_2,
+        metaData_3: input.metaData_3,
+        ownerType,
+        isReusable: input.isReusable ?? true,
 
-      stages: {
-        create: input.stages.map((stage) => ({
-          name: stage.name,
-          stageOrder: stage.stageOrder,
-          strategy: stage.strategy,
-          minApprovals: stage.minApprovals,
+        stages: {
+          create: input.stages.map((stage) => ({
+            name: stage.name,
+            stageOrder: stage.stageOrder,
+            strategy: stage.strategy,
+            minApprovals: stage.minApprovals,
 
-          approvers: {
-            create: stage.approverIds.map((user) => ({
-              userId: user.userId,
-              isExternalApprover: user.isExternalApprover ?? false,
-            })),
-          },
-        })),
+            approvers: {
+              create: stage.approverIds.map((user) => ({
+                userId: user.userId,
+                isExternalApprover: user.isExternalApprover ?? false,
+              })),
+            },
+          })),
+        },
       },
-    },
-    include: {
-      stages: {
-        include: { approvers: true },
+      include: {
+        stages: {
+          include: { approvers: true },
+        },
+        app: true,
       },
-      app: true,
-    },
+    });
+
+    if (ownerType === "USER") {
+      await tx.workFlowTemplateUser.create({
+        data: { templateId: template.id, userId },
+      });
+    }
+
+    return template;
   });
 };
 
 export const updateTemplate = async (
   templateId: string,
   payload: any,
-  userId: string,
+  caller: { userId: string; isSuperAdmin: boolean },
 ) => {
   const {
     name,
@@ -69,6 +123,7 @@ export const updateTemplate = async (
     metaData_2,
     metaData_3,
     isActive,
+    isReusable, // ✅ NEW — lets a user "promote" a fork to reusable, or vice versa
     stages, // full replacement expected
     appId,
   } = payload;
@@ -80,20 +135,25 @@ export const updateTemplate = async (
       include: { workflowInstances: true },
     });
 
-    if (!existing) throw new Error("Template not found");
+    if (!existing) throw new ApiError(404, "Template not found");
 
-    // 2. Prevent breaking active workflows
+    // 2. Ownership guard — admins can mutate anything, a regular caller only
+    //    their own USER-owned templates.
+    assertCanMutateTemplate(existing, caller);
+
+    // 3. Prevent breaking active workflows
     const activeInstances = existing.workflowInstances.filter(
       (w) => w.status === "IN_PROGRESS",
     );
 
     if (activeInstances.length > 0) {
-      throw new Error(
+      throw new ApiError(
+        409,
         "Cannot modify template with active workflows. Create new version instead.",
       );
     }
 
-    // 3. Update basic fields
+    // 4. Update basic fields
     await tx.workflowTemplate.update({
       where: { id: templateId },
       data: {
@@ -102,19 +162,20 @@ export const updateTemplate = async (
         metaData_2,
         metaData_3,
         isActive,
-        updated_by_id: userId,
+        ...(isReusable !== undefined && { isReusable }),
+        updated_by_id: caller.userId,
         appId,
       },
     });
 
     if (!stages) return { message: "Template updated (no stage change)" };
 
-    // 4. Delete existing stages (cascade deletes approvers)
+    // 5. Delete existing stages (cascade deletes approvers)
     await tx.templateStage.deleteMany({
       where: { templateId },
     });
 
-    // 5. Recreate stages
+    // 6. Recreate stages
     for (const stage of stages) {
       const createdStage = await tx.templateStage.create({
         data: {
@@ -143,14 +204,20 @@ export const updateTemplate = async (
   });
 };
 
-export const deleteTemplate = async (templateId: string) => {
+export const deleteTemplate = async (
+  templateId: string,
+  caller: { userId: string; isSuperAdmin: boolean },
+) => {
   return prisma.$transaction(async (tx) => {
     const template = await tx.workflowTemplate.findUnique({
       where: { id: templateId },
       include: { workflowInstances: true },
     });
 
-    if (!template) throw new Error("Template not found");
+    if (!template) throw new ApiError(404, "Template not found");
+
+    // Ownership guard — same rule as updateTemplate.
+    assertCanMutateTemplate(template, caller);
 
     // 🚨 Critical Safety Check
     const hasRunningWorkflows = template.workflowInstances.some(
@@ -158,7 +225,8 @@ export const deleteTemplate = async (templateId: string) => {
     );
 
     if (hasRunningWorkflows) {
-      throw new Error(
+      throw new ApiError(
+        409,
         "Cannot delete template with active workflows. Disable it instead.",
       );
     }
@@ -171,9 +239,6 @@ export const deleteTemplate = async (templateId: string) => {
           isActive: false,
         },
       });
-      // throw new Error(
-      //   "Template already used. Soft delete (isActive=false) recommended.",
-      // );
     } else {
       // Delete (cascade handles stages + approvers)
       await tx.workflowTemplate.delete({
@@ -185,7 +250,22 @@ export const deleteTemplate = async (templateId: string) => {
   });
 };
 
-export const getTemplates = async (query: any) => {
+// ─────────────────────────────────────────────────────────────────────────────
+// getTemplates
+//
+// Visibility rule (✅ NEW):
+//   - Admin caller (isSuperAdmin) → sees every template in the workspace,
+//     same as before this change.
+//   - Regular caller → only templates they're assigned to via
+//     WorkFlowTemplateUser — which now covers BOTH admin-assigned templates
+//     AND their own self-assigned USER templates, through the same join.
+//     One query shape, no OR-branch on ownerType needed.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getTemplates = async (
+  query: any,
+  caller: { userId: string; isSuperAdmin: boolean },
+) => {
   const {
     workspaceId,
     isActive,
@@ -202,7 +282,11 @@ export const getTemplates = async (query: any) => {
   if (workspaceId) where.workspaceId = workspaceId;
   if (isActive !== undefined) where.isActive = isActive === "true";
 
-  // ✅ Advanced Filters (NEW)
+  if (!caller.isSuperAdmin) {
+    where.workFlowUsers = { some: { userId: caller.userId } };
+  }
+
+  // ✅ Advanced Filters
   if (filters) {
     const parsedFilters =
       typeof filters === "string" ? JSON.parse(filters) : filters;
@@ -331,11 +415,19 @@ export const getTemplateById = async (templateId: string) => {
   });
 
   if (!template) {
-    throw new Error("Template not found");
+    throw new ApiError(404, "Template not found");
   }
 
   return template;
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// selectTemplate
+//
+// ✅ NEW: only matches against isReusable templates — an ad-hoc, one-off
+// template (isReusable: false) was scaffolding for a single run and should
+// never be auto-selected for a different subject later.
+// ─────────────────────────────────────────────────────────────────────────────
 
 export const selectTemplate = async ({
   workspaceId,
@@ -346,6 +438,7 @@ export const selectTemplate = async ({
     where: {
       workspaceId,
       isActive: true,
+      isReusable: true,
     },
     orderBy: {
       created_at: "desc",
@@ -360,7 +453,7 @@ export const selectTemplate = async ({
   });
 
   if (!templates.length) {
-    throw new Error("No matching workflow template found");
+    throw new ApiError(404, "No matching workflow template found");
   }
 
   return templates[0]; // highest priority
