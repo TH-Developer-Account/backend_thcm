@@ -4,8 +4,11 @@ import * as service from "./template.service";
 import ApiError from "@shared/utils/apiError";
 import { canManageApp } from "@kernel/rbac/userPermission";
 import { AuthenticatedUser } from "../../types/express";
+import { findSubjectById } from "./workflowSubject.helper";
+import { buildWorkflowStages } from "./workflow.helper";
+import { WorkflowSubjectType } from "../../prisma/generated/prisma/client";
 
-type AuthedRequest = Request & { user?: AuthenticatedUser };
+export type AuthedRequest = Request & { user?: AuthenticatedUser };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // resolveOwnerType
@@ -26,10 +29,11 @@ type AuthedRequest = Request & { user?: AuthenticatedUser };
 // ─────────────────────────────────────────────────────────────────────────────
 
 const resolveOwnerType = async (
-  req: AuthedRequest,
+  req: Request,
   appId: string,
   requestedScope: "APP" | "USER",
 ): Promise<"ADMIN" | "USER"> => {
+  const user = req.user as AuthenticatedUser | undefined;
   if (requestedScope === "USER") return "USER";
 
   const app = await prisma.app.findUnique({
@@ -40,8 +44,8 @@ const resolveOwnerType = async (
 
   const isEligible = canManageApp(
     {
-      isSuperAdmin: req.user?.isSuperAdmin ?? false,
-      permissions: req.user?.permissions ?? [],
+      isSuperAdmin: user?.isSuperAdmin ?? false,
+      permissions: user?.permissions ?? [],
     },
     app.key,
   );
@@ -88,12 +92,10 @@ const resolveOwnerType = async (
 // answer.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const createTemplateController = async (
-  req: AuthedRequest,
-  res: Response,
-) => {
+export const createTemplateController = async (req: Request, res: Response) => {
   try {
-    const userId = req?.user?.id;
+    const user = req.user as AuthenticatedUser | undefined;
+    const userId = user?.id;
     if (!userId) throw new ApiError(401, "Unauthorized");
     if (!req.body?.appId) throw new ApiError(400, "appId is required");
 
@@ -133,9 +135,10 @@ export const createTemplateController = async (
 // from before.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const getTemplates = async (req: AuthedRequest, res: Response) => {
+export const getTemplates = async (req: Request, res: Response) => {
   try {
-    const userId = req?.user?.id;
+    const user = req.user as AuthenticatedUser | undefined;
+    const userId = user?.id;
     if (!userId) throw new ApiError(401, "Unauthorized");
 
     const {
@@ -160,7 +163,7 @@ export const getTemplates = async (req: AuthedRequest, res: Response) => {
         filters,
         search,
       },
-      { userId, isSuperAdmin: req.user?.isSuperAdmin ?? false },
+      { userId, isSuperAdmin: user?.isSuperAdmin ?? false },
     );
 
     res.status(200).json(result);
@@ -215,11 +218,12 @@ export const getTemplateById = async (req: Request, res: Response) => {
 // }
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const updateTemplate = async (req: AuthedRequest, res: Response) => {
+export const updateTemplate = async (req: Request, res: Response) => {
   try {
     const { templateId } = req.params;
     const payload = req.body;
-    const userId = req?.user?.id;
+    const user = req.user as AuthenticatedUser | undefined;
+    const userId = user?.id;
 
     if (!templateId) throw new ApiError(400, "templateId is required");
     if (!userId) throw new ApiError(401, "Unauthorized");
@@ -237,7 +241,7 @@ export const updateTemplate = async (req: AuthedRequest, res: Response) => {
 
     const result = await service.updateTemplate(templateId as string, payload, {
       userId,
-      isSuperAdmin: req.user?.isSuperAdmin ?? false,
+      isSuperAdmin: user?.isSuperAdmin ?? false,
     });
 
     res.status(200).json({
@@ -269,10 +273,11 @@ export const updateTemplate = async (req: AuthedRequest, res: Response) => {
 // service.deleteTemplate.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const deleteTemplate = async (req: AuthedRequest, res: Response) => {
+export const deleteTemplate = async (req: Request, res: Response) => {
   try {
     const { templateId } = req.params;
-    const userId = req?.user?.id;
+    const user = req.user as AuthenticatedUser | undefined;
+    const userId = user?.id;
 
     if (!templateId) throw new ApiError(400, "templateId is required");
     if (!userId) throw new ApiError(401, "Unauthorized");
@@ -298,7 +303,7 @@ export const deleteTemplate = async (req: AuthedRequest, res: Response) => {
 
     const result = await service.deleteTemplate(templateId as string, {
       userId,
-      isSuperAdmin: req.user?.isSuperAdmin ?? false,
+      isSuperAdmin: user?.isSuperAdmin ?? false,
     });
     res.status(200).json({ success: true, data: result });
   } catch (err: any) {
@@ -408,3 +413,189 @@ export async function assignUsersToWorkflow(req: Request, res: Response) {
     });
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /work-flow/attach  (mounted as .../soa/attach on the FE side)
+//
+// Attaches a workflow to a subject record (recordType/recordRef →
+// subjectType/subjectId). Two cases, both converging on "create a
+// WorkflowInstance for this subject":
+//
+//   Case A — { recordType, recordRef, workflowId }
+//     Attach an EXISTING reusable template. Caller must be assigned to it
+//     (WorkFlowTemplateUser) or be a super admin — same rule as
+//     assignWorkflowController.
+//
+//   Case B — { recordType, recordRef, stages }
+//     No existing template — build a disposable ad-hoc one inline
+//     (ownerType: USER, isReusable: false, self-assigned), then instantiate
+//     it immediately. Reuses templateService.createWorkflowTemplate rather
+//     than duplicating template-creation logic here.
+//
+// A subject can only have one ACTIVE workflow at a time — this mirrors the
+// same invariant getActiveWorkflowForSubject relies on elsewhere.
+// ─────────────────────────────────────────────────────────────────────────────
+
+type AttachStageInput = {
+  name: string;
+  stageOrder: number;
+  strategy: "ANY" | "ALL" | "SOME";
+  minApprovals?: number;
+  approvers: Array<{
+    user: { id: string };
+    isExternalApprover?: boolean;
+  }>;
+};
+
+export const attachWorkflowController = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as AuthenticatedUser | undefined;
+    const userId = user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const {
+      recordRef,
+      recordType,
+      workflowId,
+      stages,
+    }: {
+      recordRef?: string;
+      recordType?: WorkflowSubjectType;
+      workflowId?: string;
+      stages?: AttachStageInput[];
+    } = req.body;
+
+    if (!recordRef) throw new ApiError(400, "recordRef is required");
+    if (!recordType) throw new ApiError(400, "recordType is required");
+    if (!workflowId && !stages?.length) {
+      throw new ApiError(400, "Either workflowId or stages must be provided");
+    }
+
+    // ── Guard: subject must exist ──────────────────────────────────────────
+    // findSubjectById throws 404 for an unknown subjectType/subjectId, so
+    // this doubles as existence validation.
+    const subject = (await findSubjectById(recordType, recordRef)) as Record<
+      string,
+      unknown
+    >;
+
+    const workspaceId = subject.workspaceId as string | undefined;
+    const appId = subject.appId as string | undefined;
+    if (!workspaceId || !appId) {
+      throw new ApiError(
+        500,
+        `${recordType} is missing workspaceId/appId — cannot attach a workflow`,
+      );
+    }
+
+    // ── Guard: subject must not already have an active workflow ───────────
+    const existingActive = await prisma.workflowInstance.findFirst({
+      where: { subjectType: recordType, subjectId: recordRef, isActive: true },
+      select: { id: true },
+    });
+    if (existingActive) {
+      throw new ApiError(
+        409,
+        "This record already has an active workflow attached",
+      );
+    }
+
+    let templateId: string;
+
+    if (workflowId) {
+      // ── Case A: attach an existing reusable template ────────────────────
+      const template = await prisma.workflowTemplate.findUnique({
+        where: { id: workflowId },
+        select: { id: true, isActive: true, isReusable: true, appId: true },
+      });
+      if (!template) throw new ApiError(404, "Workflow template not found");
+      if (!template.isActive || !template.isReusable) {
+        throw new ApiError(400, "This template is not available for use");
+      }
+      if (template.appId !== appId) {
+        throw new ApiError(
+          400,
+          "This template belongs to a different app than this record",
+        );
+      }
+
+      if (!user?.isSuperAdmin) {
+        const isAssigned = await prisma.workFlowTemplateUser.findUnique({
+          where: { templateId_userId: { templateId: workflowId, userId } },
+        });
+        if (!isAssigned) {
+          throw new ApiError(
+            403,
+            "You are not assigned to this workflow template",
+          );
+        }
+      }
+
+      templateId = workflowId;
+    } else {
+      // ── Case B: ad-hoc, one-off — build a disposable template first ─────
+      const adHocTemplate = await service.createWorkflowTemplate(
+        {
+          name: `Ad-hoc workflow — ${recordType} ${recordRef}`,
+          description: "",
+          workspaceId,
+          appId,
+          metaData_1: "",
+          metaData_2: "",
+          metaData_3: "",
+          isReusable: false,
+          stages: stages!.map((s) => ({
+            name: s.name,
+            stageOrder: s.stageOrder,
+            strategy: s.strategy,
+            minApprovals: s.minApprovals,
+            approverIds: s.approvers.map((a) => ({
+              userId: a.user.id,
+              isExternalApprover: a.isExternalApprover ?? false,
+            })),
+          })),
+        },
+        userId,
+        "USER",
+      );
+
+      templateId = adHocTemplate.id;
+    }
+
+    // ── Instantiate the WorkflowInstance from the resolved template ────────
+    const template = await prisma.workflowTemplate.findUnique({
+      where: { id: templateId },
+      include: {
+        stages: {
+          include: { approvers: true },
+          orderBy: { stageOrder: "asc" },
+        },
+      },
+    });
+    if (!template) {
+      throw new ApiError(404, "Template not found after resolution");
+    }
+
+    const workflow = await prisma.workflowInstance.create({
+      data: {
+        templateId,
+        workspaceId,
+        appId,
+        subjectType: recordType,
+        subjectId: recordRef,
+        currentStage: 1,
+        stages: { create: buildWorkflowStages(template.stages) },
+      },
+    });
+
+    res.status(201).json({
+      success: true,
+      data: { workflowId: workflow.id, templateId },
+    });
+  } catch (err: any) {
+    res.status(err instanceof ApiError ? err.statusCode : 500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
