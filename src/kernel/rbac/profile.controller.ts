@@ -3,13 +3,16 @@ import { Request, Response } from "express";
 import { prisma } from "@shared/config/prisma";
 import { formatProfile, profileInclude } from "@shared/utils/contants";
 
-import ApiError from "../../shared/utils/apiError";
+import ApiError from "@shared/utils/apiError";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // profile.controller.ts
 //
-// A Profile is a named bundle of module-level permissions.
-// These endpoints are used by the admin UI to manage what each role can do.
+// A Profile is a named bundle of permissions. Each permission is either:
+//   - MODULE scope: { action, appKey, moduleKey }  — access to one module
+//   - APP scope:    { action, appKey }              — "admin of this whole
+//                     app" (moduleKey omitted entirely). Covers every module
+//                     under that app, current and future, via one row.
 //
 // Routes:
 //   GET    /profiles?workspaceId=x       → list all profiles in the workspace
@@ -26,27 +29,32 @@ import ApiError from "../../shared/utils/apiError";
 type PermissionInput = {
   action: "read" | "write";
   appKey: string; // e.g. "MAP"
-  moduleKey: string; // e.g. "EPC"
+  moduleKey?: string; // e.g. "EPC" — OMIT for an app-scope (admin) row
 };
+
+type ResolvedPermissionTarget =
+  | { action: "read" | "write"; scope: "MODULE"; moduleId: string }
+  | { action: "read" | "write"; scope: "APP"; appId: string };
 
 const VALID_ACTIONS = new Set(["read", "write"]);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SHARED HELPER
 //
-// Resolves an array of { appKey, moduleKey } permission inputs into
-// actual moduleIds from the DB. Throws a 400 if any reference is invalid.
+// Resolves an array of permission inputs into actual moduleId/appId targets.
+// Throws a 400 if any reference is invalid.
 //
-// We fetch all modules for the workspace in one query instead of one-per-perm.
+// We fetch all modules AND all apps for the workspace in two queries total
+// (not one per permission), then resolve every input against those maps.
 // ─────────────────────────────────────────────────────────────────────────────
 
-async function resolveModuleIds(
+async function resolvePermissionTargets(
   workspaceId: string,
   permissions: PermissionInput[],
-): Promise<{ action: "read" | "write"; moduleId: string }[]> {
+): Promise<ResolvedPermissionTarget[]> {
   if (permissions.length === 0) return [];
 
-  // Validate action values upfront
+  // Validate upfront
   for (const p of permissions) {
     if (!VALID_ACTIONS.has(p.action)) {
       throw new ApiError(
@@ -54,32 +62,30 @@ async function resolveModuleIds(
         `Invalid action "${p.action}". Must be "read" or "write"`,
       );
     }
-    if (!p.appKey?.trim() || !p.moduleKey?.trim()) {
-      throw new ApiError(400, "Each permission must have appKey and moduleKey");
+    if (!p.appKey?.trim()) {
+      throw new ApiError(400, "Each permission must have an appKey");
     }
   }
 
-  // Fetch all modules in the workspace's enabled apps in one query
-  const modules = await prisma.module.findMany({
-    where: {
-      app: {
-        workspaceApps: { some: { workspaceId, enabled: true } },
-      },
-    },
-    select: {
-      id: true,
-      key: true,
-      app: { select: { key: true } },
-    },
-  });
+  const moduleInputs = permissions.filter((p) => p.moduleKey?.trim());
+  const appInputs = permissions.filter((p) => !p.moduleKey?.trim());
 
-  // Build a lookup map: "APP_KEY:MODULE_KEY" → moduleId
+  // ── Resolve module-scope inputs ────────────────────────────────────────────
+  const modules =
+    moduleInputs.length > 0
+      ? await prisma.module.findMany({
+          where: {
+            app: { workspaceApps: { some: { workspaceId, enabled: true } } },
+          },
+          select: { id: true, key: true, app: { select: { key: true } } },
+        })
+      : [];
+
   const moduleMap = new Map(
     modules.map((m) => [`${m.app.key}:${m.key}`, m.id]),
   );
 
-  // Resolve each permission — throw early if any reference is invalid
-  return permissions.map((p) => {
+  const resolvedModules: ResolvedPermissionTarget[] = moduleInputs.map((p) => {
     const moduleId = moduleMap.get(`${p.appKey}:${p.moduleKey}`);
     if (!moduleId) {
       throw new ApiError(
@@ -88,8 +94,32 @@ async function resolveModuleIds(
           `Make sure it exists and is enabled in this workspace.`,
       );
     }
-    return { action: p.action, moduleId };
+    return { action: p.action, scope: "MODULE", moduleId };
   });
+
+  // ── Resolve app-scope (admin) inputs ───────────────────────────────────────
+  const apps =
+    appInputs.length > 0
+      ? await prisma.app.findMany({
+          where: { workspaceApps: { some: { workspaceId, enabled: true } } },
+          select: { id: true, key: true },
+        })
+      : [];
+
+  const appMap = new Map(apps.map((a) => [a.key, a.id]));
+
+  const resolvedApps: ResolvedPermissionTarget[] = appInputs.map((p) => {
+    const appId = appMap.get(p.appKey);
+    if (!appId) {
+      throw new ApiError(
+        400,
+        `App "${p.appKey}" not found or not enabled in this workspace.`,
+      );
+    }
+    return { action: p.action, scope: "APP", appId };
+  });
+
+  return [...resolvedModules, ...resolvedApps];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -97,18 +127,6 @@ async function resolveModuleIds(
 //
 // Returns all profiles in the workspace with their permission counts.
 // Used by the admin UI to show the list of roles.
-//
-// Response:
-// {
-//   count: 5,
-//   data: [
-//     {
-//       id, name, description, isSystemProfile,
-//       assignedUserCount: 3,
-//       permissions: [{ action, appKey, appName, moduleKey, moduleName }]
-//     }
-//   ]
-// }
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function getProfiles(req: Request, res: Response) {
@@ -168,21 +186,20 @@ export async function getProfileById(req: Request, res: Response) {
 // Payload:
 // {
 //   "workspaceId": "uuid",
-//   "name": "Site Supervisor",
-//   "description": "Read+write on MAP, read on HR",  // optional
+//   "name": "MAP Admin",
+//   "description": "Full admin access to MAP",   // optional
 //   "permissions": [
-//     { "action": "read",  "appKey": "MAP", "moduleKey": "EPC" },
-//     { "action": "write", "appKey": "MAP", "moduleKey": "EPC" },
-//     { "action": "read",  "appKey": "MAP", "moduleKey": "EPF" },
-//     { "action": "write", "appKey": "MAP", "moduleKey": "EPF" },
-//     { "action": "read",  "appKey": "HR",  "moduleKey": "PAYROLL" }
+//     { "action": "write", "appKey": "MAP" },                          // ← APP scope: admin of MAP
+//     { "action": "read",  "appKey": "HR", "moduleKey": "PAYROLL" }    // ← MODULE scope: HR:PAYROLL only
 //   ]
 // }
 //
 // Rules:
 //   - name must be unique within the workspace
 //   - permissions array can be empty (creates a profile with no access)
-//   - each appKey + moduleKey must exist and be enabled in the workspace
+//   - a permission with NO moduleKey is an APP-scope (admin) grant for that app
+//   - each appKey (and moduleKey, if present) must exist and be enabled in
+//     the workspace
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function createProfile(req: Request, res: Response) {
@@ -192,7 +209,6 @@ export async function createProfile(req: Request, res: Response) {
   if (!name?.trim()) throw new ApiError(400, "name is required");
 
   try {
-    // Check name is unique in this workspace
     const existing = await prisma.profile.findUnique({
       where: { workspaceId_name: { workspaceId, name } },
       select: { id: true },
@@ -203,8 +219,7 @@ export async function createProfile(req: Request, res: Response) {
         `A profile named "${name}" already exists in this workspace`,
       );
 
-    // Resolve all appKey+moduleKey → moduleId before writing anything
-    const resolvedPermissions = await resolveModuleIds(
+    const resolvedPermissions = await resolvePermissionTargets(
       workspaceId,
       permissions,
     );
@@ -216,10 +231,13 @@ export async function createProfile(req: Request, res: Response) {
 
       if (resolvedPermissions.length > 0) {
         await tx.profilePermission.createMany({
-          data: resolvedPermissions.map(({ action, moduleId }) => ({
+          data: resolvedPermissions.map((target) => ({
             profileId: created.id,
-            action,
-            moduleId,
+            action: target.action,
+            scope: target.scope,
+            ...(target.scope === "MODULE"
+              ? { moduleId: target.moduleId }
+              : { appId: target.appId }),
           })),
         });
       }
@@ -255,9 +273,8 @@ export async function createProfile(req: Request, res: Response) {
 //   "name": "Senior Field Engineer",           // optional — omit to keep current
 //   "description": "Updated description",       // optional
 //   "permissions": [                            // required — replaces ALL permissions
-//     { "action": "read",  "appKey": "MAP", "moduleKey": "EPC" },
-//     { "action": "write", "appKey": "MAP", "moduleKey": "EPC" },
-//     { "action": "read",  "appKey": "HR",  "moduleKey": "PAYROLL" }
+//     { "action": "write", "appKey": "MAP" },                       // app-scope (admin)
+//     { "action": "read",  "appKey": "HR", "moduleKey": "PAYROLL" } // module-scope
 //   ]
 // }
 //
@@ -285,7 +302,6 @@ export async function updateProfile(req: Request, res: Response) {
       throw new ApiError(403, "System profiles cannot be modified");
     }
 
-    // If renaming, check the new name isn't already taken in this workspace
     if (name && name !== existing.name) {
       const nameTaken = await prisma.profile.findUnique({
         where: {
@@ -301,14 +317,12 @@ export async function updateProfile(req: Request, res: Response) {
       }
     }
 
-    // Resolve new permissions if provided
     const resolvedPermissions =
       permissions !== undefined
-        ? await resolveModuleIds(existing.workspaceId, permissions)
+        ? await resolvePermissionTargets(existing.workspaceId, permissions)
         : null;
 
     const updated = await prisma.$transaction(async (tx) => {
-      // Update name/description if provided
       await tx.profile.update({
         where: { id: profileId as string },
         data: {
@@ -317,7 +331,6 @@ export async function updateProfile(req: Request, res: Response) {
         },
       });
 
-      // Replace permissions if provided
       if (resolvedPermissions !== null) {
         await tx.profilePermission.deleteMany({
           where: { profileId: profileId as string },
@@ -325,10 +338,13 @@ export async function updateProfile(req: Request, res: Response) {
 
         if (resolvedPermissions.length > 0) {
           await tx.profilePermission.createMany({
-            data: resolvedPermissions.map(({ action, moduleId }) => ({
+            data: resolvedPermissions.map((target) => ({
               profileId: profileId as string,
-              action,
-              moduleId,
+              action: target.action,
+              scope: target.scope,
+              ...(target.scope === "MODULE"
+                ? { moduleId: target.moduleId }
+                : { appId: target.appId }),
             })),
           });
         }
@@ -359,13 +375,6 @@ export async function updateProfile(req: Request, res: Response) {
 // Deletes a profile and all its permission rows.
 // Blocked if any users are currently assigned to this profile —
 // you must reassign or remove those users first.
-//
-// No body needed. profileId comes from the URL.
-//
-// Why block instead of cascade-deleting user assignments?
-// Silently removing a user's only profile would leave them with zero access.
-// Forcing the admin to explicitly reassign users before deleting a profile
-// makes the operation conscious and safe.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function deleteProfile(req: Request, res: Response) {

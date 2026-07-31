@@ -4,13 +4,17 @@ import { prisma } from "@shared/config/prisma";
 // TYPES
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Every permission targets one specific module — no wildcards.
+// A permission row is one of two kinds now:
+//   - MODULE scope: targets one specific module (moduleKey set)
+//   - APP scope:    "admin of this whole app" — moduleKey is absent, since it
+//                    covers every module under that app, current and future
 export type ResolvedPermission = {
   action: "read" | "write";
+  scope: "MODULE" | "APP";
   appKey: string;
-  moduleKey: string;
   appId: string;
   appName: string;
+  moduleKey?: string; // only present when scope === "MODULE"
 };
 
 export type UserPermissions = {
@@ -21,17 +25,16 @@ export type UserPermissions = {
 // ─────────────────────────────────────────────────────────────────────────────
 // buildUserPermissions
 //
-// Fetches every permission row across all profiles the user holds.
-// Returns a flat deduplicated array — one entry per (action, app, module).
+// Fetches every permission row across all profiles the user holds — now in
+// TWO queries instead of one, since module-scope and app-scope rows join
+// through different tables (Module vs. App directly). This is a deliberate,
+// small cost: a UNION query would work but adds SQL complexity for a call
+// that only runs once per login, not per request — not worth optimizing.
 //
-// Example output for "Field Engineer":
+// Example output for a profile that's a MAP admin + has module access to HR:
 // [
-//   { action: "read",  appKey: "MAP", moduleKey: "EPC" },
-//   { action: "write", appKey: "MAP", moduleKey: "EPC" },
-//   { action: "read",  appKey: "MAP", moduleKey: "EPF" },
-//   { action: "write", appKey: "MAP", moduleKey: "EPF" },
-//   { action: "read",  appKey: "HR",  moduleKey: "PAYROLL" },
-//   ...
+//   { action: "write", scope: "APP",    appKey: "MAP", moduleKey: undefined },
+//   { action: "read",  scope: "MODULE", appKey: "HR",  moduleKey: "PAYROLL" },
 // ]
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -45,17 +48,15 @@ export async function buildUserPermissions(
   });
 
   if (!member) return { isSuperAdmin: false, permissions: [] };
-  // if (member.isSuperAdmin) return { isSuperAdmin: true, permissions: [] };
 
-  // Single SQL query — joins UserProfile → Profile → ProfilePermission → Module → App
-  // Every row now has a concrete appKey and moduleKey (no nulls possible).
-  const rows = await prisma.$queryRaw<
+  // ── Module-scope rows ──────────────────────────────────────────────────────
+  const moduleRows = await prisma.$queryRaw<
     {
       action: string;
       appKey: string;
-      moduleKey: string;
       appId: string;
       appName: string;
+      moduleKey: string;
     }[]
   >`
     SELECT
@@ -66,27 +67,63 @@ export async function buildUserPermissions(
       m.key       AS "moduleKey"
     FROM "UserProfile"       up
     JOIN "Profile"           p  ON p.id  = up."profileId"
-    JOIN "ProfilePermission" pp ON pp."profileId" = p.id
+    JOIN "ProfilePermission" pp ON pp."profileId" = p.id AND pp.scope = 'MODULE'
     JOIN "Module"            m  ON m.id  = pp."moduleId"
     JOIN "App"               a  ON a.id  = m."appId"
     WHERE up."userId"      = ${userId}
       AND up."workspaceId" = ${workspaceId}
   `;
 
-  // Deduplicate — two profiles might both grant READ on EPC
+  // ── App-scope rows ("admin of this whole app") ─────────────────────────────
+  const appRows = await prisma.$queryRaw<
+    {
+      action: string;
+      appKey: string;
+      appId: string;
+      appName: string;
+    }[]
+  >`
+    SELECT
+      pp.action   AS "action",
+      a.key       AS "appKey",
+      a.id        AS "appId",
+      a.name      AS "appName"
+    FROM "UserProfile"       up
+    JOIN "Profile"           p  ON p.id  = up."profileId"
+    JOIN "ProfilePermission" pp ON pp."profileId" = p.id AND pp.scope = 'APP'
+    JOIN "App"               a  ON a.id  = pp."appId"
+    WHERE up."userId"      = ${userId}
+      AND up."workspaceId" = ${workspaceId}
+  `;
+
+  // Deduplicate — two profiles might both grant the same row
   const seen = new Set<string>();
   const permissions: ResolvedPermission[] = [];
 
-  for (const row of rows) {
-    const key = `${row.action}|${row.appKey}|${row.moduleKey}`;
+  for (const row of moduleRows) {
+    const key = `MODULE|${row.action}|${row.appKey}|${row.moduleKey}`;
     if (seen.has(key)) continue;
     seen.add(key);
     permissions.push({
       action: row.action as "read" | "write",
+      scope: "MODULE",
       appKey: row.appKey,
       appId: row.appId,
       appName: row.appName,
       moduleKey: row.moduleKey,
+    });
+  }
+
+  for (const row of appRows) {
+    const key = `APP|${row.action}|${row.appKey}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    permissions.push({
+      action: row.action as "read" | "write",
+      scope: "APP",
+      appKey: row.appKey,
+      appId: row.appId,
+      appName: row.appName,
     });
   }
 
@@ -97,7 +134,14 @@ export async function buildUserPermissions(
 // hasPermission
 //
 // Returns true if the user has an explicit grant for action + app + module.
-// No wildcards — the match must be exact.
+//
+// Two ways this can be satisfied now:
+//   1. An exact MODULE-scope match (original behavior, unchanged).
+//   2. An APP-scope match on the same app with "write" — an app admin's
+//      single row implicitly covers every module under that app, since
+//      Module.appId already ties modules to their app. This is what lets
+//      an app admin pass every authorize() check in their app without a
+//      single module-scope row existing for them.
 //
 // Usage:
 //   hasPermission(req.user, "write", "MAP", "EPC")  → true/false
@@ -111,8 +155,44 @@ export function hasPermission(
 ): boolean {
   if (user.isSuperAdmin) return true;
 
-  return user.permissions.some(
+  const hasExactModuleGrant = user.permissions.some(
     (p) =>
-      p.action === action && p.appKey === appKey && p.moduleKey === moduleKey,
+      p.scope === "MODULE" &&
+      p.action === action &&
+      p.appKey === appKey &&
+      p.moduleKey === moduleKey,
+  );
+  if (hasExactModuleGrant) return true;
+
+  // App-admin fallback — a "write" app-scope grant covers every module
+  // under that app, regardless of the requested action (write implies read).
+  return user.permissions.some(
+    (p) => p.scope === "APP" && p.appKey === appKey && p.action === "write",
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// canManageApp
+//
+// Answers a DIFFERENT question than hasPermission: not "can this user act on
+// module X" but "is this user this app's admin" — i.e. does an APP-scope
+// write row exist for this app. Kept as a separate function rather than
+// folded into hasPermission, since the two answer genuinely different
+// questions (see workflowTemplate.controller.ts's resolveOwnerType, which
+// needs exactly this — "is the caller eligible to create an app-wide
+// template", not "can the caller act on a specific module").
+//
+// Usage:
+//   canManageApp(req.user, "MAP")  → true/false
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function canManageApp(
+  user: { isSuperAdmin: boolean; permissions: ResolvedPermission[] },
+  appKey: string,
+): boolean {
+  if (user.isSuperAdmin) return true;
+
+  return user.permissions.some(
+    (p) => p.scope === "APP" && p.appKey === appKey && p.action === "write",
   );
 }

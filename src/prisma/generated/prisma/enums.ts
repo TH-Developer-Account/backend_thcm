@@ -34,7 +34,8 @@ export type VendorAccessTokenPurpose = (typeof VendorAccessTokenPurpose)[keyof t
 
 
 export const ScopeType = {
-  MODULE: 'MODULE'
+  MODULE: 'MODULE',
+  APP: 'APP'
 } as const
 
 export type ScopeType = (typeof ScopeType)[keyof typeof ScopeType]

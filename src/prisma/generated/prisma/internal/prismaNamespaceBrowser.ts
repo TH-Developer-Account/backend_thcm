@@ -236,7 +236,9 @@ export const ProfilePermissionScalarFieldEnum = {
   id: 'id',
   profileId: 'profileId',
   action: 'action',
-  moduleId: 'moduleId'
+  scope: 'scope',
+  moduleId: 'moduleId',
+  appId: 'appId'
 } as const
 
 export type ProfilePermissionScalarFieldEnum = (typeof ProfilePermissionScalarFieldEnum)[keyof typeof ProfilePermissionScalarFieldEnum]

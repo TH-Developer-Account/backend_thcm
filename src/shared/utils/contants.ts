@@ -15,12 +15,9 @@ export const profileInclude = {
           app: { select: { key: true, name: true } },
         },
       },
+      app: { select: { key: true, name: true } }, // populated for APP-scope rows
     },
-    orderBy: [
-      { module: { app: { key: "asc" as const } } },
-      { module: { key: "asc" as const } },
-      { action: "asc" as const },
-    ],
+    orderBy: [{ action: "asc" as const }],
   },
   userProfiles: {
     select: {
@@ -50,13 +47,27 @@ export function formatProfile(profile: any) {
       lastName: up.user.last_name,
       email: up.user.email,
     })),
-    permissions: profile.permissions.map((p: any) => ({
-      action: p.action,
-      appKey: p.module.app.key,
-      appName: p.module.app.name,
-      moduleKey: p.module.key,
-      moduleName: p.module.name,
-    })),
+    // Two shapes depending on scope — the FE distinguishes an "admin of
+    // this app" row (scope: "APP", no moduleKey) from a regular
+    // module-level grant (scope: "MODULE") by this field, not by guessing
+    // from which relation happens to be populated.
+    permissions: profile.permissions.map((p: any) =>
+      p.scope === "APP"
+        ? {
+            scope: "APP" as const,
+            action: p.action,
+            appKey: p.app.key,
+            appName: p.app.name,
+          }
+        : {
+            scope: "MODULE" as const,
+            action: p.action,
+            appKey: p.module.app.key,
+            appName: p.module.app.name,
+            moduleKey: p.module.key,
+            moduleName: p.module.name,
+          },
+    ),
   };
 }
 

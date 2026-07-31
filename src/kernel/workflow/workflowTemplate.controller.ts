@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { prisma } from "@shared/config/prisma";
-import * as service from "@workflow/template.service";
+import * as service from "./template.service";
 import ApiError from "@shared/utils/apiError";
-import { hasPermission } from "@kernel/rbac/userPermission";
+import { canManageApp } from "@kernel/rbac/userPermission";
 import { AuthenticatedUser } from "../../types/express";
 
 type AuthedRequest = Request & { user?: AuthenticatedUser };
@@ -10,34 +10,50 @@ type AuthedRequest = Request & { user?: AuthenticatedUser };
 // ─────────────────────────────────────────────────────────────────────────────
 // resolveOwnerType
 //
-// ownerType is NEVER trusted from the client — it's derived server-side from
-// the caller's own permission grant. isSuperAdmin short-circuits true inside
-// hasPermission itself, so a super admin always gets ADMIN without a separate
-// branch here. Everyone else falls through to USER — self-service template
-// creation is unconditional; the permission only decides which kind they get.
+// The FE sends `scope: "APP" | "USER"` on create — but this is a UI
+// convenience (an admin gets the choice; a regular user only ever sees
+// "USER"), not a grant of authority. The backend independently verifies:
+// "USER" is always allowed — self-service template creation is
+// unconditional. "APP" is only honored if canManageApp() confirms the
+// caller actually administers this specific app (or is a super admin,
+// which canManageApp already short-circuits true for). Requesting "APP"
+// without eligibility is a hard 403, not a silent downgrade to USER — the
+// FE should never have shown that option to this caller, so surfacing the
+// mismatch as an error is more honest than quietly hiding it.
+//
+// ownerType is NEVER trusted from the client directly — only the intent
+// (`scope`) is, and that intent is independently checked here.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const resolveOwnerType = async (
   req: AuthedRequest,
   appId: string,
+  requestedScope: "APP" | "USER",
 ): Promise<"ADMIN" | "USER"> => {
+  if (requestedScope === "USER") return "USER";
+
   const app = await prisma.app.findUnique({
     where: { id: appId },
     select: { key: true },
   });
   if (!app) throw new ApiError(404, "App not found");
 
-  const isAdmin = hasPermission(
+  const isEligible = canManageApp(
     {
       isSuperAdmin: req.user?.isSuperAdmin ?? false,
       permissions: req.user?.permissions ?? [],
     },
-    "write",
     app.key,
-    "WORKFLOW_TEMPLATE",
   );
 
-  return isAdmin ? "ADMIN" : "USER";
+  if (!isEligible) {
+    throw new ApiError(
+      403,
+      "You do not have permission to create an app-wide workflow template",
+    );
+  }
+
+  return "ADMIN";
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -50,10 +66,15 @@ const resolveOwnerType = async (
 //   "name": "Standard EPC Approval",
 //   "workspaceId": "workspace-uuid",
 //   "appId": "app-uuid",
+//   "scope": "APP",              ← ✅ NEW — "APP" or "USER". The FE only
+//                                   offers "APP" when canManageApp() (via
+//                                   the FE's own copy of req.user.permissions)
+//                                   says the caller administers this app.
+//                                   Omit/"USER" is always allowed.
 //   "metaData_1": "0-1000000",   ← budget range key (used by evaluateBudget)
 //   "metaData_2": "",
 //   "metaData_3": "",
-//   "isReusable": true,          ← ✅ NEW, optional, defaults to true.
+//   "isReusable": true,          ← optional, defaults to true.
 //                                   Set false for a one-off/ad-hoc template.
 //   "stages": [
 //     { "stageOrder": 1, "strategy": "ANY",  "approverIds": ["u1", "u2"] },
@@ -62,8 +83,9 @@ const resolveOwnerType = async (
 //   ]
 // }
 //
-// ownerType is resolved server-side (see resolveOwnerType above), never read
-// from the request body.
+// ownerType is resolved server-side (see resolveOwnerType above) — the
+// request's `scope` is treated as intent to validate, never as the final
+// answer.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const createTemplateController = async (
@@ -75,7 +97,15 @@ export const createTemplateController = async (
     if (!userId) throw new ApiError(401, "Unauthorized");
     if (!req.body?.appId) throw new ApiError(400, "appId is required");
 
-    const ownerType = await resolveOwnerType(req, req.body.appId);
+    const { scope = "USER" } = req.body as { scope?: "APP" | "USER" };
+    if (!["APP", "USER"].includes(scope)) {
+      throw new ApiError(
+        400,
+        `Invalid scope "${scope}" — must be "APP" or "USER"`,
+      );
+    }
+
+    const ownerType = await resolveOwnerType(req, req.body.appId, scope);
 
     const template = await service.createWorkflowTemplate(
       req.body,
