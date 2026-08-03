@@ -29,6 +29,39 @@ import {
   resolveSubjectIdsForApprovalTab,
   generateVendorOnboardingReferenceNumber,
 } from "./vendorOnboarding.helper";
+import {
+  MAX_VENDOR_DOCUMENT_SIZE_BYTES,
+  ALLOWED_VENDOR_MIME_TYPES,
+} from "@shared/utils/validators.constant";
+
+const VENDOR_DOCUMENT_EXTENSIONS_BY_MIME_TYPE: Record<string, string> = {
+  "image/png": "png",
+  "application/pdf": "pdf",
+};
+
+// Throws a field-specific error so the vendor knows exactly which
+// document failed, rather than a generic "invalid file" message.
+function validateVendorDocumentFile(
+  file: Express.Multer.File,
+  documentType: string,
+) {
+  if (!ALLOWED_VENDOR_MIME_TYPES.has(file.mimetype)) {
+    throw new ApiError(
+      400,
+      `${documentType}: only PNG, JPEG or PDF files are accepted`,
+    );
+  }
+
+  if (file.size > MAX_VENDOR_DOCUMENT_SIZE_BYTES) {
+    throw new ApiError(400, `${documentType}: file size must not exceed 5 MB`);
+  }
+}
+
+// Safe to assume the mimetype is one of the allowed types here, since
+// validateVendorDocumentFile already rejects anything else beforehand.
+function getExtensionForMimeType(mimetype: string): string {
+  return VENDOR_DOCUMENT_EXTENSIONS_BY_MIME_TYPE[mimetype];
+}
 
 async function persistVendorDocuments(
   tx: Prisma.TransactionClient,
@@ -39,7 +72,10 @@ async function persistVendorDocuments(
     const file = files?.[documentType]?.[0];
     if (!file) continue; // untouched — keep whatever's already there, if anything
 
-    const s3Key = `vendor-onboarding-docs/${onboardingId}/${documentType}.pdf`;
+    validateVendorDocumentFile(file, documentType);
+
+    const extension = getExtensionForMimeType(file.mimetype);
+    const s3Key = `vendor-onboarding-docs/${onboardingId}/${documentType}.${extension}`;
     await uploadToS3(s3Key, file.buffer, file.mimetype);
 
     await tx.vendorOnboardingDocument.upsert({
@@ -557,8 +593,15 @@ export const getVendorFormByToken = async (
 
     const existingDocuments = await prisma.vendorOnboardingDocument.findMany({
       where: { onboardingId: onboarding.id },
-      select: { documentType: true },
+      select: { documentType: true, s3Key: true },
     });
+
+    const documentsWithSignedUrls = await Promise.all(
+      existingDocuments.map(async (doc) => ({
+        ...doc,
+        fileUrl: await getSignedImageUrl(doc.s3Key),
+      })),
+    );
 
     res.status(200).json({
       success: true,
@@ -587,6 +630,7 @@ export const getVendorFormByToken = async (
         alreadyUploadedDocumentTypes: existingDocuments.map(
           (d) => d.documentType,
         ),
+        documents: documentsWithSignedUrls,
         correctionReason:
           (latestClarification?.metadata as { reason?: string } | null)
             ?.reason ?? null,

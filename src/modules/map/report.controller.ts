@@ -7,20 +7,12 @@ import {
   deleteReportImage,
   getSignedImageUrl,
 } from "@shared/utils/aws-s3.services";
-import { getValidatorForApp } from "@shared/utils/validators.constant";
-
-// ─────────────────────────────────────────────────────────────────────────────
-// CONSTANTS
-// ─────────────────────────────────────────────────────────────────────────────
-
-const REQUIRED_IMAGE_COUNT = 4;
-const VALID_IMAGE_POSITIONS = [1, 2, 3, 4] as const;
-const ALLOWED_IMAGE_MIME_TYPES = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-]);
-const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+import {
+  getValidatorForApp,
+  VALID_IMAGE_POSITIONS,
+  ALLOWED_IMAGE_MIME_TYPES,
+  MAX_IMAGE_SIZE_BYTES,
+} from "@shared/utils/validators.constant";
 
 type ImagePosition = (typeof VALID_IMAGE_POSITIONS)[number];
 
