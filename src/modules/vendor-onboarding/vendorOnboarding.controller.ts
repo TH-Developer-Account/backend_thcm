@@ -36,6 +36,8 @@ import {
 
 const VENDOR_DOCUMENT_EXTENSIONS_BY_MIME_TYPE: Record<string, string> = {
   "image/png": "png",
+  "image/jpeg": "jpeg",
+  "image/webp": "webp",
   "application/pdf": "pdf",
 };
 
