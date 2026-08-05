@@ -19,7 +19,6 @@ export interface VendorOnboardingPdfData {
     mobile: string | null;
     email: string | null;
     msmeVendor: boolean | null;
-    msmeCertAttached: boolean | null;
     gstin: string | null;
     pan: string | null;
     entityRegNo: string | null;
@@ -81,7 +80,6 @@ export async function assembleVendorOnboardingPdfData(
       mobile: onboarding.mobile,
       email: onboarding.email,
       msmeVendor: onboarding.msmeVendor,
-      msmeCertAttached: onboarding.msmeCertAttached,
       gstin: onboarding.gstin,
       pan: onboarding.pan,
       entityRegNo: onboarding.entityRegNo,

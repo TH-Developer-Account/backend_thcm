@@ -2,7 +2,6 @@ import { prisma } from "@shared/config/prisma";
 import { selectTemplate } from "./template.service";
 import { buildWorkflowStages } from "./workflow.helper";
 import { notify } from "@notifications/notification.services";
-import type { NotificationType } from "@notifications/notification.services";
 
 import { updateSubjectStatus } from "./workflowSubject.helper";
 import {
@@ -63,7 +62,7 @@ const notifyAboutWorkflowEvent = ({
   subjectType: WorkflowSubjectType;
   subjectId: string;
   subjectMeta: SubjectNotificationMeta;
-  type: NotificationType;
+  type: string;
   title: string;
   body: string;
   extraMetadata?: Record<string, unknown>;
@@ -82,6 +81,110 @@ const notifyAboutWorkflowEvent = ({
       ...extraMetadata,
     },
   });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// notifyStageApprovers
+//
+// Notifies every approver on a given stage that it's now pending on them.
+// Self-contained (resolves workspace/app/subject meta itself) so it can be
+// called straight after any transaction that activates a stage — currently
+// assignWorkflowController (stage 1 on first creation) and
+// activateFirstStageController (stage 1 on resubmit). approveStage's own
+// mid-workflow advance keeps its existing inline notify — not rewired here,
+// see self-review note below.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const notifyStageApprovers = async ({
+  workflowId,
+  subjectType,
+  subjectId,
+  appId,
+  stageId,
+  approverIds,
+}: {
+  workflowId: string;
+  subjectType: WorkflowSubjectType;
+  subjectId: string;
+  appId: string;
+  stageId: string;
+  approverIds: string[];
+}) => {
+  if (!approverIds.length) return;
+
+  const [app, subjectMeta, workflow] = await Promise.all([
+    prisma.app.findUnique({ where: { id: appId }, select: { key: true } }),
+    getSubjectNotificationMeta(subjectType, subjectId),
+    prisma.workflowInstance.findUnique({
+      where: { id: workflowId },
+      select: { workspaceId: true },
+    }),
+  ]);
+
+  await Promise.all(
+    approverIds.map((approverId) =>
+      notifyAboutWorkflowEvent({
+        workspaceId: workflow!.workspaceId,
+        recipientId: approverId,
+        appKey: app?.key,
+        subjectType,
+        subjectId,
+        subjectMeta,
+        type: "APPROVAL_PENDING",
+        title: "Approval required",
+        body: `${subjectMeta.displayLabel} is waiting on your approval.`,
+        extraMetadata: { workflowId, stageId },
+      }),
+    ),
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// notifyProposerOfClarify
+//
+// Notifies the subject's owner (the proposer) that an approver requested
+// clarification. Fires GENERIC per your note that NotificationType may
+// become a plain string soon — no new enum value added here.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const notifyProposerOfClarify = async ({
+  workflowId,
+  subjectType,
+  subjectId,
+  appId,
+  ownerId,
+  reason,
+  requestedByName,
+}: {
+  workflowId: string;
+  subjectType: WorkflowSubjectType;
+  subjectId: string;
+  appId: string;
+  ownerId: string;
+  reason: string;
+  requestedByName: string;
+}) => {
+  const [app, subjectMeta, workflow] = await Promise.all([
+    prisma.app.findUnique({ where: { id: appId }, select: { key: true } }),
+    getSubjectNotificationMeta(subjectType, subjectId),
+    prisma.workflowInstance.findUnique({
+      where: { id: workflowId },
+      select: { workspaceId: true },
+    }),
+  ]);
+
+  await notifyAboutWorkflowEvent({
+    workspaceId: workflow!.workspaceId,
+    recipientId: ownerId,
+    appKey: app?.key,
+    subjectType,
+    subjectId,
+    subjectMeta,
+    type: "GENERIC",
+    title: "Clarification requested",
+    body: `${requestedByName} requested clarification on ${subjectMeta.displayLabel}: ${reason}`,
+    extraMetadata: { workflowId },
+  });
+};
 
 export const createEventProposalWithWorkflow = async (input: any) => {
   return prisma.$transaction(async (tx) => {

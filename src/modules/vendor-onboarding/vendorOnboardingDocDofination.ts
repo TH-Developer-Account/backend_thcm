@@ -52,10 +52,6 @@ export function buildVendorOnboardingDocDefinition(
     fieldRow("PAN", displayValue(data.vendor.pan)),
     fieldRow("Entity Registration No.", displayValue(data.vendor.entityRegNo)),
     fieldRow("MSME Vendor", displayBoolean(data.vendor.msmeVendor)),
-    fieldRow(
-      "MSME Certificate Attached",
-      displayBoolean(data.vendor.msmeCertAttached),
-    ),
     fieldRow("Vendor Submitted On", displayDate(data.vendor.vendorSubmittedAt)),
   ];
 

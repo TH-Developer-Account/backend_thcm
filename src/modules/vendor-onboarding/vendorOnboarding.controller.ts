@@ -415,7 +415,6 @@ export const updateEmployeeFields = async (
         mobile,
         email,
         msmeVendor,
-        msmeCertAttached,
         bankName,
         bankBranch,
         ifscCode,
@@ -483,9 +482,12 @@ export const sendForApproval = async (
     const uploadedTypes = new Set(
       onboarding.documents.map((d) => d.documentType),
     );
-    const missing = REQUIRED_VENDOR_DOCUMENT_TYPES.filter(
-      (t) => !uploadedTypes.has(t),
-    );
+
+    const requiredDocumentTypes = getRequiredVendorDocumentTypes({
+      msmeVendor: onboarding.msmeVendor ?? false,
+      ndaObtained: onboarding.ndaObtained ?? false,
+    });
+    const missing = requiredDocumentTypes.filter((t) => !uploadedTypes.has(t));
     if (missing.length > 0) {
       throw new ApiError(
         400,
@@ -622,7 +624,6 @@ export const getVendorFormByToken = async (
         pinCode: onboarding.pinCode,
         address: onboarding.address,
         msmeVendor: onboarding.msmeVendor,
-        msmeCertAttached: onboarding.msmeCertAttached,
         bankName: onboarding.bankName,
         bankBranch: onboarding.bankBranch,
         ifscCode: onboarding.ifscCode,
@@ -904,7 +905,6 @@ export const saveVendorFormDraft = async (
       mobile,
       email,
       msmeVendor,
-      msmeCertAttached,
       bankName,
       bankBranch,
       ifscCode,
@@ -936,10 +936,6 @@ export const saveVendorFormDraft = async (
           email,
           msmeVendor:
             msmeVendor === undefined ? undefined : msmeVendor === "true",
-          msmeCertAttached:
-            msmeCertAttached === undefined
-              ? undefined
-              : msmeCertAttached === "true",
           bankName,
           bankBranch,
           ifscCode,
@@ -994,7 +990,6 @@ export const exportVendorOnboardingById = async (
       Mobile: onboarding.mobile ?? "",
       Email: onboarding.email ?? "",
       "MSME Vendor": onboarding.msmeVendor ?? "",
-      "MSME Cert Attached": onboarding.msmeCertAttached ?? "",
       "Bank Name": onboarding.bankName ?? "",
       "Bank Branch": onboarding.bankBranch ?? "",
       "IFSC Code": onboarding.ifscCode ?? "",

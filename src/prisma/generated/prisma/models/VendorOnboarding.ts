@@ -38,7 +38,6 @@ export type VendorOnboardingMinAggregateOutputType = {
   mobile: string | null
   email: string | null
   msmeVendor: boolean | null
-  msmeCertAttached: boolean | null
   bankName: string | null
   bankBranch: string | null
   ifscCode: string | null
@@ -84,7 +83,6 @@ export type VendorOnboardingMaxAggregateOutputType = {
   mobile: string | null
   email: string | null
   msmeVendor: boolean | null
-  msmeCertAttached: boolean | null
   bankName: string | null
   bankBranch: string | null
   ifscCode: string | null
@@ -130,7 +128,6 @@ export type VendorOnboardingCountAggregateOutputType = {
   mobile: number
   email: number
   msmeVendor: number
-  msmeCertAttached: number
   bankName: number
   bankBranch: number
   ifscCode: number
@@ -178,7 +175,6 @@ export type VendorOnboardingMinAggregateInputType = {
   mobile?: true
   email?: true
   msmeVendor?: true
-  msmeCertAttached?: true
   bankName?: true
   bankBranch?: true
   ifscCode?: true
@@ -224,7 +220,6 @@ export type VendorOnboardingMaxAggregateInputType = {
   mobile?: true
   email?: true
   msmeVendor?: true
-  msmeCertAttached?: true
   bankName?: true
   bankBranch?: true
   ifscCode?: true
@@ -270,7 +265,6 @@ export type VendorOnboardingCountAggregateInputType = {
   mobile?: true
   email?: true
   msmeVendor?: true
-  msmeCertAttached?: true
   bankName?: true
   bankBranch?: true
   ifscCode?: true
@@ -389,7 +383,6 @@ export type VendorOnboardingGroupByOutputType = {
   mobile: string | null
   email: string | null
   msmeVendor: boolean | null
-  msmeCertAttached: boolean | null
   bankName: string | null
   bankBranch: string | null
   ifscCode: string | null
@@ -456,7 +449,6 @@ export type VendorOnboardingWhereInput = {
   mobile?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   email?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   msmeVendor?: Prisma.BoolNullableFilter<"VendorOnboarding"> | boolean | null
-  msmeCertAttached?: Prisma.BoolNullableFilter<"VendorOnboarding"> | boolean | null
   bankName?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   bankBranch?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   ifscCode?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
@@ -506,7 +498,6 @@ export type VendorOnboardingOrderByWithRelationInput = {
   mobile?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   msmeVendor?: Prisma.SortOrderInput | Prisma.SortOrder
-  msmeCertAttached?: Prisma.SortOrderInput | Prisma.SortOrder
   bankName?: Prisma.SortOrderInput | Prisma.SortOrder
   bankBranch?: Prisma.SortOrderInput | Prisma.SortOrder
   ifscCode?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -559,7 +550,6 @@ export type VendorOnboardingWhereUniqueInput = Prisma.AtLeast<{
   mobile?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   email?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   msmeVendor?: Prisma.BoolNullableFilter<"VendorOnboarding"> | boolean | null
-  msmeCertAttached?: Prisma.BoolNullableFilter<"VendorOnboarding"> | boolean | null
   bankName?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   bankBranch?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   ifscCode?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
@@ -609,7 +599,6 @@ export type VendorOnboardingOrderByWithAggregationInput = {
   mobile?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   msmeVendor?: Prisma.SortOrderInput | Prisma.SortOrder
-  msmeCertAttached?: Prisma.SortOrderInput | Prisma.SortOrder
   bankName?: Prisma.SortOrderInput | Prisma.SortOrder
   bankBranch?: Prisma.SortOrderInput | Prisma.SortOrder
   ifscCode?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -661,7 +650,6 @@ export type VendorOnboardingScalarWhereWithAggregatesInput = {
   mobile?: Prisma.StringNullableWithAggregatesFilter<"VendorOnboarding"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"VendorOnboarding"> | string | null
   msmeVendor?: Prisma.BoolNullableWithAggregatesFilter<"VendorOnboarding"> | boolean | null
-  msmeCertAttached?: Prisma.BoolNullableWithAggregatesFilter<"VendorOnboarding"> | boolean | null
   bankName?: Prisma.StringNullableWithAggregatesFilter<"VendorOnboarding"> | string | null
   bankBranch?: Prisma.StringNullableWithAggregatesFilter<"VendorOnboarding"> | string | null
   ifscCode?: Prisma.StringNullableWithAggregatesFilter<"VendorOnboarding"> | string | null
@@ -705,7 +693,6 @@ export type VendorOnboardingCreateInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -755,7 +742,6 @@ export type VendorOnboardingUncheckedCreateInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -801,7 +787,6 @@ export type VendorOnboardingUpdateInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -851,7 +836,6 @@ export type VendorOnboardingUncheckedUpdateInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -899,7 +883,6 @@ export type VendorOnboardingCreateManyInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -943,7 +926,6 @@ export type VendorOnboardingUpdateManyMutationInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -989,7 +971,6 @@ export type VendorOnboardingUncheckedUpdateManyInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1045,7 +1026,6 @@ export type VendorOnboardingCountOrderByAggregateInput = {
   mobile?: Prisma.SortOrder
   email?: Prisma.SortOrder
   msmeVendor?: Prisma.SortOrder
-  msmeCertAttached?: Prisma.SortOrder
   bankName?: Prisma.SortOrder
   bankBranch?: Prisma.SortOrder
   ifscCode?: Prisma.SortOrder
@@ -1091,7 +1071,6 @@ export type VendorOnboardingMaxOrderByAggregateInput = {
   mobile?: Prisma.SortOrder
   email?: Prisma.SortOrder
   msmeVendor?: Prisma.SortOrder
-  msmeCertAttached?: Prisma.SortOrder
   bankName?: Prisma.SortOrder
   bankBranch?: Prisma.SortOrder
   ifscCode?: Prisma.SortOrder
@@ -1137,7 +1116,6 @@ export type VendorOnboardingMinOrderByAggregateInput = {
   mobile?: Prisma.SortOrder
   email?: Prisma.SortOrder
   msmeVendor?: Prisma.SortOrder
-  msmeCertAttached?: Prisma.SortOrder
   bankName?: Prisma.SortOrder
   bankBranch?: Prisma.SortOrder
   ifscCode?: Prisma.SortOrder
@@ -1302,7 +1280,6 @@ export type VendorOnboardingCreateWithoutInitiatedByInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -1350,7 +1327,6 @@ export type VendorOnboardingUncheckedCreateWithoutInitiatedByInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -1427,7 +1403,6 @@ export type VendorOnboardingScalarWhereInput = {
   mobile?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   email?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   msmeVendor?: Prisma.BoolNullableFilter<"VendorOnboarding"> | boolean | null
-  msmeCertAttached?: Prisma.BoolNullableFilter<"VendorOnboarding"> | boolean | null
   bankName?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   bankBranch?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   ifscCode?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
@@ -1471,7 +1446,6 @@ export type VendorOnboardingCreateWithoutWorkspaceInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -1519,7 +1493,6 @@ export type VendorOnboardingUncheckedCreateWithoutWorkspaceInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -1591,7 +1564,6 @@ export type VendorOnboardingCreateWithoutDocumentsInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -1640,7 +1612,6 @@ export type VendorOnboardingUncheckedCreateWithoutDocumentsInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -1701,7 +1672,6 @@ export type VendorOnboardingUpdateWithoutDocumentsInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1750,7 +1720,6 @@ export type VendorOnboardingUncheckedUpdateWithoutDocumentsInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1795,7 +1764,6 @@ export type VendorOnboardingCreateWithoutAccessTokensInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -1844,7 +1812,6 @@ export type VendorOnboardingUncheckedCreateWithoutAccessTokensInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -1905,7 +1872,6 @@ export type VendorOnboardingUpdateWithoutAccessTokensInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1954,7 +1920,6 @@ export type VendorOnboardingUncheckedUpdateWithoutAccessTokensInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2000,7 +1965,6 @@ export type VendorOnboardingCreateManyInitiatedByInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -2044,7 +2008,6 @@ export type VendorOnboardingUpdateWithoutInitiatedByInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2092,7 +2055,6 @@ export type VendorOnboardingUncheckedUpdateWithoutInitiatedByInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2139,7 +2101,6 @@ export type VendorOnboardingUncheckedUpdateManyWithoutInitiatedByInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2184,7 +2145,6 @@ export type VendorOnboardingCreateManyWorkspaceInput = {
   mobile?: string | null
   email?: string | null
   msmeVendor?: boolean | null
-  msmeCertAttached?: boolean | null
   bankName?: string | null
   bankBranch?: string | null
   ifscCode?: string | null
@@ -2228,7 +2188,6 @@ export type VendorOnboardingUpdateWithoutWorkspaceInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2276,7 +2235,6 @@ export type VendorOnboardingUncheckedUpdateWithoutWorkspaceInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2323,7 +2281,6 @@ export type VendorOnboardingUncheckedUpdateManyWithoutWorkspaceInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  msmeCertAttached?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2409,7 +2366,6 @@ export type VendorOnboardingSelect<ExtArgs extends runtime.Types.Extensions.Inte
   mobile?: boolean
   email?: boolean
   msmeVendor?: boolean
-  msmeCertAttached?: boolean
   bankName?: boolean
   bankBranch?: boolean
   ifscCode?: boolean
@@ -2460,7 +2416,6 @@ export type VendorOnboardingSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   mobile?: boolean
   email?: boolean
   msmeVendor?: boolean
-  msmeCertAttached?: boolean
   bankName?: boolean
   bankBranch?: boolean
   ifscCode?: boolean
@@ -2508,7 +2463,6 @@ export type VendorOnboardingSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   mobile?: boolean
   email?: boolean
   msmeVendor?: boolean
-  msmeCertAttached?: boolean
   bankName?: boolean
   bankBranch?: boolean
   ifscCode?: boolean
@@ -2556,7 +2510,6 @@ export type VendorOnboardingSelectScalar = {
   mobile?: boolean
   email?: boolean
   msmeVendor?: boolean
-  msmeCertAttached?: boolean
   bankName?: boolean
   bankBranch?: boolean
   ifscCode?: boolean
@@ -2588,7 +2541,7 @@ export type VendorOnboardingSelectScalar = {
   updated_at?: boolean
 }
 
-export type VendorOnboardingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceNumber" | "workspaceId" | "initiatedById" | "status" | "vendorName" | "state" | "city" | "pinCode" | "address" | "mobile" | "email" | "msmeVendor" | "msmeCertAttached" | "bankName" | "bankBranch" | "ifscCode" | "bankAddress" | "accountNumber" | "gstin" | "pan" | "entityRegNo" | "dpdpConsentedAt" | "dpdpConsentIp" | "vendorSubmittedAt" | "vendorCode" | "vendorType" | "companyCode" | "purchaseOrg" | "paymentTerm" | "tds" | "vendorCategory" | "materialType" | "materialSubType" | "selfAssessmentObtained" | "ndaObtained" | "gpaObtained" | "isRelatedParty" | "vendorAuditReportPrepared" | "natureOfService" | "onboardingReason" | "created_at" | "updated_at", ExtArgs["result"]["vendorOnboarding"]>
+export type VendorOnboardingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceNumber" | "workspaceId" | "initiatedById" | "status" | "vendorName" | "state" | "city" | "pinCode" | "address" | "mobile" | "email" | "msmeVendor" | "bankName" | "bankBranch" | "ifscCode" | "bankAddress" | "accountNumber" | "gstin" | "pan" | "entityRegNo" | "dpdpConsentedAt" | "dpdpConsentIp" | "vendorSubmittedAt" | "vendorCode" | "vendorType" | "companyCode" | "purchaseOrg" | "paymentTerm" | "tds" | "vendorCategory" | "materialType" | "materialSubType" | "selfAssessmentObtained" | "ndaObtained" | "gpaObtained" | "isRelatedParty" | "vendorAuditReportPrepared" | "natureOfService" | "onboardingReason" | "created_at" | "updated_at", ExtArgs["result"]["vendorOnboarding"]>
 export type VendorOnboardingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   initiatedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2627,7 +2580,6 @@ export type $VendorOnboardingPayload<ExtArgs extends runtime.Types.Extensions.In
     mobile: string | null
     email: string | null
     msmeVendor: boolean | null
-    msmeCertAttached: boolean | null
     bankName: string | null
     bankBranch: string | null
     ifscCode: string | null
@@ -3097,7 +3049,6 @@ export interface VendorOnboardingFieldRefs {
   readonly mobile: Prisma.FieldRef<"VendorOnboarding", 'String'>
   readonly email: Prisma.FieldRef<"VendorOnboarding", 'String'>
   readonly msmeVendor: Prisma.FieldRef<"VendorOnboarding", 'Boolean'>
-  readonly msmeCertAttached: Prisma.FieldRef<"VendorOnboarding", 'Boolean'>
   readonly bankName: Prisma.FieldRef<"VendorOnboarding", 'String'>
   readonly bankBranch: Prisma.FieldRef<"VendorOnboarding", 'String'>
   readonly ifscCode: Prisma.FieldRef<"VendorOnboarding", 'String'>

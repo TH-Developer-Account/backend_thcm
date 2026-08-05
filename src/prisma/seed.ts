@@ -11,6 +11,7 @@ import {
   verticalsData,
   products,
 } from "./constants";
+import { seedUsers, PROFILE_NAMES, ProfileName } from "./constants";
 import { ProductMasterCreateManyInput } from "./generated/prisma/models";
 import { generateVendorOnboardingReferenceNumber } from "../modules/vendor-onboarding/vendorOnboarding.helper";
 
@@ -116,21 +117,23 @@ async function main() {
   // ─────────────────────────────────────────────────────────────────────────
   // STEP 5: PROFILES
   //
-  //  ┌─────────────────────────┬───────────────────────────────────────────┐
-  //  │ Profile                 │ What it grants                            │
-  //  ├─────────────────────────┼───────────────────────────────────────────┤
-  //  │ Workspace Admin         │ read + write on everything                │
-  //  │ Field Engineer          │ read everywhere + write on all of MAP     │
-  //  │ EPC Specialist          │ read everywhere + write on MAP→EPC only   │
-  //  │ Vendor Onboarding Mgr   │ read everywhere + write on Vendor Onbrdng │
-  //  │ Read-Only User          │ read on everything, no write at all       │
-  //  └─────────────────────────┴───────────────────────────────────────────┘
+  //  ┌─────────────────────────────┬───────────────────────────────────────┐
+  //  │ Profile                     │ What it grants                        │
+  //  ├─────────────────────────────┼───────────────────────────────────────┤
+  //  │ Workspace Admin              │ read + write on everything            │
+  //  │ MAP Admin                    │ read + write on MAP, read on Vendor   │
+  //  │ Vendor Onboarding Admin      │ read + write on Vendor, read on MAP   │
+  //  │ Field Engineer               │ read everywhere + write on all of MAP │
+  //  │ EPC Specialist                │ read everywhere + write on MAP→EPC   │
+  //  │ Vendor Onboarding Manager    │ read everywhere + write on Vendor     │
+  //  │ Read-Only User                │ read on everything, no write at all  │
+  //  └─────────────────────────────┴───────────────────────────────────────┘
   // ─────────────────────────────────────────────────────────────────────────
 
-  // ── Profile 1: Workspace Admin ────────────────────────────────────────────
+  // ── Profile: Workspace Admin ──────────────────────────────────────────────
   const adminProfile = await prisma.profile.create({
     data: {
-      name: "Workspace Admin",
+      name: PROFILE_NAMES.WORKSPACE_ADMIN,
       description: "Full access to all modules",
       workspaceId: workspace.id,
       isSystemProfile: true,
@@ -149,11 +152,51 @@ async function main() {
     },
   });
 
-  // ── Profile 2: Field Engineer ─────────────────────────────────────────────
+  // ── Profile: MAP Admin ─────────────────────────────────────────────────
+  // WRITE + READ on all MAP modules. READ only on Vendor Onboarding.
+  const mapAdminProfile = await prisma.profile.create({
+    data: {
+      name: PROFILE_NAMES.MAP_ADMIN,
+      description: "Full read+write on MAP, read on Vendor Onboarding",
+      workspaceId: workspace.id,
+      permissions: {
+        create: [
+          { action: "read", moduleId: epcModule.id },
+          { action: "write", moduleId: epcModule.id },
+          { action: "read", moduleId: epfModule.id },
+          { action: "write", moduleId: epfModule.id },
+          { action: "read", moduleId: crfModule.id },
+          { action: "write", moduleId: crfModule.id },
+          { action: "read", moduleId: vendorOnboardingModule.id },
+        ],
+      },
+    },
+  });
+
+  // ── Profile: Vendor Onboarding Admin ──────────────────────────────────
+  // WRITE + READ on Vendor Onboarding. READ only on MAP.
+  const vendorOnboardingAdminProfile = await prisma.profile.create({
+    data: {
+      name: PROFILE_NAMES.VENDOR_ONBOARDING_ADMIN,
+      description: "Full read+write on Vendor Onboarding, read on MAP",
+      workspaceId: workspace.id,
+      permissions: {
+        create: [
+          { action: "read", moduleId: epcModule.id },
+          { action: "read", moduleId: epfModule.id },
+          { action: "read", moduleId: crfModule.id },
+          { action: "read", moduleId: vendorOnboardingModule.id },
+          { action: "write", moduleId: vendorOnboardingModule.id },
+        ],
+      },
+    },
+  });
+
+  // ── Profile: Field Engineer ────────────────────────────────────────────
   // WRITE + READ on all MAP modules. READ only on Vendor Onboarding.
   const fieldEngineerProfile = await prisma.profile.create({
     data: {
-      name: "Field Engineer",
+      name: PROFILE_NAMES.FIELD_ENGINEER,
       description: "Read+write on MAP, read on Vendor Onboarding",
       workspaceId: workspace.id,
       permissions: {
@@ -170,11 +213,11 @@ async function main() {
     },
   });
 
-  // ── Profile 3: EPC Specialist ─────────────────────────────────────────────
+  // ── Profile: EPC Specialist ────────────────────────────────────────────
   // WRITE + READ on MAP→EPC only. READ on everything else.
   const epcSpecialistProfile = await prisma.profile.create({
     data: {
-      name: "EPC Specialist",
+      name: PROFILE_NAMES.EPC_SPECIALIST,
       description: "Read+write on EPC module, read on everything else",
       workspaceId: workspace.id,
       permissions: {
@@ -189,11 +232,11 @@ async function main() {
     },
   });
 
-  // ── Profile 4: Vendor Onboarding Manager ──────────────────────────────────
+  // ── Profile: Vendor Onboarding Manager ────────────────────────────────
   // WRITE + READ on Vendor Onboarding. READ only on MAP.
   const vendorOnboardingManagerProfile = await prisma.profile.create({
     data: {
-      name: "Vendor Onboarding Manager",
+      name: PROFILE_NAMES.VENDOR_ONBOARDING_MANAGER,
       description: "Read+write on Vendor Onboarding, read on MAP",
       workspaceId: workspace.id,
       permissions: {
@@ -208,10 +251,10 @@ async function main() {
     },
   });
 
-  // ── Profile 5: Read-Only User ─────────────────────────────────────────────
+  // ── Profile: Read-Only User ────────────────────────────────────────────
   const readOnlyProfile = await prisma.profile.create({
     data: {
-      name: "Read-Only User",
+      name: PROFILE_NAMES.READ_ONLY,
       description: "Read access to all modules, no write",
       workspaceId: workspace.id,
       permissions: {
@@ -225,127 +268,96 @@ async function main() {
     },
   });
 
+  // Name → profile record lookup, used to drive Step 8's profile assignment
+  // off `seedUsers[].profiles` instead of hardcoded index ranges.
+  const profilesByName: Record<ProfileName, { id: string }> = {
+    [PROFILE_NAMES.WORKSPACE_ADMIN]: adminProfile,
+    [PROFILE_NAMES.MAP_ADMIN]: mapAdminProfile,
+    [PROFILE_NAMES.VENDOR_ONBOARDING_ADMIN]: vendorOnboardingAdminProfile,
+    [PROFILE_NAMES.FIELD_ENGINEER]: fieldEngineerProfile,
+    [PROFILE_NAMES.EPC_SPECIALIST]: epcSpecialistProfile,
+    [PROFILE_NAMES.VENDOR_ONBOARDING_MANAGER]: vendorOnboardingManagerProfile,
+    [PROFILE_NAMES.READ_ONLY]: readOnlyProfile,
+  };
+
   console.log(
-    "✅ Profiles created: Admin, Field Engineer, EPC Specialist, Vendor Onboarding Manager, Read-Only",
+    "✅ Profiles created: Workspace Admin, MAP Admin, Vendor Onboarding Admin, " +
+      "Field Engineer, EPC Specialist, Vendor Onboarding Manager, Read-Only",
   );
 
   // ─────────────────────────────────────────────────────────────────────────
   // STEP 6: USERS
+  // Created from the static `seedUsers` definitions (see seedUsers.constants)
+  // rather than faker-generated data, so identities and role assignments are
+  // explicit and reproducible.
   // ─────────────────────────────────────────────────────────────────────────
 
   const users = await Promise.all(
-    Array.from({ length: 10 }).map(() =>
+    seedUsers.map((definition) =>
       prisma.user.create({
         data: {
-          first_name: faker.person.firstName(),
-          last_name: faker.person.lastName(),
-          email: faker.internet.email().toLowerCase(),
-          phone_number: `9${faker.string.numeric(9)}`,
-          password: "Password@123",
+          first_name: definition.first_name,
+          last_name: definition.last_name,
+          email: definition.email,
+          phone_number: definition.phone_number,
+          password: definition.password,
         },
       }),
     ),
   );
   console.log(`✅ ${users.length} users created`);
 
+  // Name-keyed lookup so downstream references (workflow approvers, demo
+  // checks, etc.) read as `usersByKey.vijay` instead of `users[1]`.
+  const usersByKey: Record<string, (typeof users)[number]> = {};
+  seedUsers.forEach((definition, index) => {
+    usersByKey[definition.key] = users[index];
+  });
+
   // ─────────────────────────────────────────────────────────────────────────
   // STEP 7: WORKSPACE MEMBERSHIP
-  // User 0 is the superadmin (bypasses all permission checks).
+  // isSuperAdmin comes from each user's definition (bypasses all permission
+  // checks) rather than being inferred from array position.
   // ─────────────────────────────────────────────────────────────────────────
 
-  for (let i = 0; i < users.length; i++) {
-    await prisma.workspaceUser.create({
-      data: {
-        userId: users[i].id,
-        workspaceId: workspace.id,
-        isSuperAdmin: i === 0,
-      },
-    });
-  }
+  await Promise.all(
+    seedUsers.map((definition, index) =>
+      prisma.workspaceUser.create({
+        data: {
+          userId: users[index].id,
+          workspaceId: workspace.id,
+          isSuperAdmin: definition.isSuperAdmin,
+        },
+      }),
+    ),
+  );
 
   // ─────────────────────────────────────────────────────────────────────────
   // STEP 8: PROFILE ASSIGNMENTS
-  //
-  //   User 0     → Workspace Admin
-  //   Users 1–3  → Field Engineer
-  //   Users 4–5  → EPC Specialist / Vendor Onboarding Manager (one each)
-  //   User 6     → BOTH Field Engineer + Vendor Onboarding Manager
-  //   Users 7–9  → Read-Only
+  // Driven entirely by `definition.profiles` — one user can hold multiple
+  // profiles (e.g. the dual-role Field Engineer + Vendor Onboarding Manager).
   // ─────────────────────────────────────────────────────────────────────────
 
-  await prisma.userProfile.create({
-    data: {
-      userId: users[0].id,
-      workspaceId: workspace.id,
-      profileId: adminProfile.id,
-    },
-  });
-
-  for (let i = 1; i <= 3; i++) {
-    await prisma.userProfile.create({
-      data: {
-        userId: users[i].id,
-        workspaceId: workspace.id,
-        profileId: fieldEngineerProfile.id,
-      },
-    });
-  }
-
-  await prisma.userProfile.create({
-    data: {
-      userId: users[4].id,
-      workspaceId: workspace.id,
-      profileId: epcSpecialistProfile.id,
-    },
-  });
-
-  await prisma.userProfile.create({
-    data: {
-      userId: users[5].id,
-      workspaceId: workspace.id,
-      profileId: vendorOnboardingManagerProfile.id,
-    },
-  });
-
-  // User 6 — BOTH Field Engineer AND Vendor Onboarding Manager
-  await prisma.userProfile.createMany({
-    data: [
-      {
-        userId: users[6].id,
-        workspaceId: workspace.id,
-        profileId: fieldEngineerProfile.id,
-      },
-      {
-        userId: users[6].id,
-        workspaceId: workspace.id,
-        profileId: vendorOnboardingManagerProfile.id,
-      },
-    ],
-  });
-
-  for (let i = 7; i <= 9; i++) {
-    await prisma.userProfile.create({
-      data: {
-        userId: users[i].id,
-        workspaceId: workspace.id,
-        profileId: readOnlyProfile.id,
-      },
-    });
-  }
+  await Promise.all(
+    seedUsers.map((definition, index) =>
+      prisma.userProfile.createMany({
+        data: definition.profiles.map((profileName) => ({
+          userId: users[index].id,
+          workspaceId: workspace.id,
+          profileId: profilesByName[profileName].id,
+        })),
+      }),
+    ),
+  );
 
   console.log("✅ Profile assignments complete");
-  console.log("   User 0:    Workspace Admin");
-  console.log(
-    "   Users 1–3: Field Engineer (WRITE MAP + READ Vendor Onboarding)",
-  );
-  console.log("   User 4:    EPC Specialist (WRITE EPC only)");
-  console.log(
-    "   User 5:    Vendor Onboarding Manager (WRITE Vendor Onboarding)",
-  );
-  console.log(
-    "   User 6:    Field Engineer + Vendor Onboarding Manager (both writes)",
-  );
-  console.log("   Users 7–9: Read-Only");
+  seedUsers.forEach((definition) => {
+    console.log(
+      `   ${definition.first_name} ${definition.last_name}: ${definition.profiles.join(", ")}${
+        definition.isSuperAdmin ? " (Super Admin)" : ""
+      }`,
+    );
+  });
 
   // ─────────────────────────────────────────────────────────────────────────
   // STEP 9: MASTER DATA (unchanged)
@@ -429,7 +441,7 @@ async function main() {
 
     await prisma.eventProposal.create({
       data: {
-        proposal_number: `EPF-${faker.number.int({ min: 1000, max: 9999 })}`,
+        proposal_number: `EPF-${1000 + i}`,
         event_from_date: startDate,
         event_to_date: endDate,
         event_description: faker.lorem.sentences(2),
@@ -492,10 +504,10 @@ async function main() {
     return permission !== null;
   }
 
-  const fieldEngineerUser = users[1];
-  const epcSpecialist = users[4];
-  const vendorOnboardingManager = users[5];
-  const readOnlyUser = users[7];
+  const fieldEngineerUser = usersByKey.vijay;
+  const epcSpecialist = usersByKey.aswin;
+  const vendorOnboardingManager = usersByKey.ashok;
+  const readOnlyUser = usersByKey.nilanjan;
 
   const check = async (label: string, result: boolean, expected: boolean) => {
     const icon = result === expected ? "✅" : "❌";
@@ -564,8 +576,8 @@ async function main() {
       name: "Standard EPC Approval",
       description: "This is the EPC Approval flow",
       workspaceId: workspace.id,
-      created_by_id: users[0].id,
-      updated_by_id: users[0].id,
+      created_by_id: usersByKey.syedFazal.id,
+      updated_by_id: usersByKey.syedFazal.id,
       appId: mapApp.id,
       metaData_1: ">20000",
       metaData_2: "",
@@ -577,7 +589,10 @@ async function main() {
             stageOrder: 1,
             strategy: "ANY",
             approvers: {
-              create: [{ userId: users[1].id }, { userId: users[2].id }],
+              create: [
+                { userId: usersByKey.vijay.id },
+                { userId: usersByKey.guruprasad.id },
+              ],
             },
           },
           {
@@ -585,7 +600,10 @@ async function main() {
             stageOrder: 2,
             strategy: "ALL",
             approvers: {
-              create: [{ userId: users[4].id }, { userId: users[5].id }],
+              create: [
+                { userId: usersByKey.aswin.id },
+                { userId: usersByKey.ashok.id },
+              ],
             },
           },
           {
@@ -595,9 +613,9 @@ async function main() {
             minApprovals: 2,
             approvers: {
               create: [
-                { userId: users[6].id },
-                { userId: users[7].id },
-                { userId: users[8].id },
+                { userId: usersByKey.hemadri.id },
+                { userId: usersByKey.nilanjan.id },
+                { userId: usersByKey.amit.id },
               ],
             },
           },
@@ -618,8 +636,8 @@ async function main() {
       name: "Standard Vendor Onboarding Approval",
       description: "Two-stage approval for vendor onboarding requests",
       workspaceId: workspace.id,
-      created_by_id: users[0].id,
-      updated_by_id: users[0].id,
+      created_by_id: usersByKey.syedFazal.id,
+      updated_by_id: usersByKey.syedFazal.id,
       appId: vendorApp.id,
       metaData_1: "",
       metaData_2: "",
@@ -631,7 +649,10 @@ async function main() {
             stageOrder: 1,
             strategy: "ANY",
             approvers: {
-              create: [{ userId: users[4].id }, { userId: users[5].id }],
+              create: [
+                { userId: usersByKey.aswin.id },
+                { userId: usersByKey.ashok.id },
+              ],
             },
           },
           {
@@ -639,7 +660,7 @@ async function main() {
             stageOrder: 2,
             strategy: "ANY",
             approvers: {
-              create: [{ userId: users[6].id }],
+              create: [{ userId: usersByKey.hemadri.id }],
             },
           },
         ],
@@ -781,7 +802,7 @@ async function main() {
   await prisma.vendorOnboarding.create({
     data: {
       workspaceId: workspace.id,
-      initiatedById: users[1].id, // a Field Engineer, matches "employee initiates" flow
+      initiatedById: usersByKey.vijay.id, // a Field Engineer, matches "employee initiates" flow
       status: "AWAITING_VENDOR",
       referenceNumber: generateVendorOnboardingReferenceNumber(
         faker.company.name(),

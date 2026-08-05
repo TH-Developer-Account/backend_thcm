@@ -695,7 +695,6 @@ export const VendorOnboardingScalarFieldEnum = {
   mobile: 'mobile',
   email: 'email',
   msmeVendor: 'msmeVendor',
-  msmeCertAttached: 'msmeCertAttached',
   bankName: 'bankName',
   bankBranch: 'bankBranch',
   ifscCode: 'ifscCode',

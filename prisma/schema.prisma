@@ -933,7 +933,7 @@ model Notification {
   id          String            @id @default(uuid())
   workspaceId String
   recipientId String
-  type        NotificationType
+  type        String
   title       String
   body        String
   link        String?           // deep link, e.g. /map/epc/:id

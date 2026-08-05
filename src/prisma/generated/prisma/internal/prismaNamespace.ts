@@ -4250,7 +4250,6 @@ export const VendorOnboardingScalarFieldEnum = {
   mobile: 'mobile',
   email: 'email',
   msmeVendor: 'msmeVendor',
-  msmeCertAttached: 'msmeCertAttached',
   bankName: 'bankName',
   bankBranch: 'bankBranch',
   ifscCode: 'ifscCode',
@@ -4668,20 +4667,6 @@ export type EnumImportExportStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
  * Reference to a field of type 'ImportExportStatus[]'
  */
 export type ListEnumImportExportStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ImportExportStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'NotificationType'
- */
-export type EnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType'>
-    
-
-
-/**
- * Reference to a field of type 'NotificationType[]'
- */
-export type ListEnumNotificationTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationType[]'>
     
 
 

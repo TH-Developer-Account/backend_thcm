@@ -28,7 +28,7 @@ export type NotificationMinAggregateOutputType = {
   id: string | null
   workspaceId: string | null
   recipientId: string | null
-  type: $Enums.NotificationType | null
+  type: string | null
   title: string | null
   body: string | null
   link: string | null
@@ -41,7 +41,7 @@ export type NotificationMaxAggregateOutputType = {
   id: string | null
   workspaceId: string | null
   recipientId: string | null
-  type: $Enums.NotificationType | null
+  type: string | null
   title: string | null
   body: string | null
   link: string | null
@@ -183,7 +183,7 @@ export type NotificationGroupByOutputType = {
   id: string
   workspaceId: string
   recipientId: string
-  type: $Enums.NotificationType
+  type: string
   title: string
   body: string
   link: string | null
@@ -218,7 +218,7 @@ export type NotificationWhereInput = {
   id?: Prisma.StringFilter<"Notification"> | string
   workspaceId?: Prisma.StringFilter<"Notification"> | string
   recipientId?: Prisma.StringFilter<"Notification"> | string
-  type?: Prisma.EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
+  type?: Prisma.StringFilter<"Notification"> | string
   title?: Prisma.StringFilter<"Notification"> | string
   body?: Prisma.StringFilter<"Notification"> | string
   link?: Prisma.StringNullableFilter<"Notification"> | string | null
@@ -253,7 +253,7 @@ export type NotificationWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.NotificationWhereInput | Prisma.NotificationWhereInput[]
   workspaceId?: Prisma.StringFilter<"Notification"> | string
   recipientId?: Prisma.StringFilter<"Notification"> | string
-  type?: Prisma.EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
+  type?: Prisma.StringFilter<"Notification"> | string
   title?: Prisma.StringFilter<"Notification"> | string
   body?: Prisma.StringFilter<"Notification"> | string
   link?: Prisma.StringNullableFilter<"Notification"> | string | null
@@ -289,7 +289,7 @@ export type NotificationScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   workspaceId?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   recipientId?: Prisma.StringWithAggregatesFilter<"Notification"> | string
-  type?: Prisma.EnumNotificationTypeWithAggregatesFilter<"Notification"> | $Enums.NotificationType
+  type?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   title?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   body?: Prisma.StringWithAggregatesFilter<"Notification"> | string
   link?: Prisma.StringNullableWithAggregatesFilter<"Notification"> | string | null
@@ -301,7 +301,7 @@ export type NotificationScalarWhereWithAggregatesInput = {
 
 export type NotificationCreateInput = {
   id?: string
-  type: $Enums.NotificationType
+  type: string
   title: string
   body: string
   link?: string | null
@@ -317,7 +317,7 @@ export type NotificationUncheckedCreateInput = {
   id?: string
   workspaceId: string
   recipientId: string
-  type: $Enums.NotificationType
+  type: string
   title: string
   body: string
   link?: string | null
@@ -329,7 +329,7 @@ export type NotificationUncheckedCreateInput = {
 
 export type NotificationUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -345,7 +345,7 @@ export type NotificationUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   recipientId?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -359,7 +359,7 @@ export type NotificationCreateManyInput = {
   id?: string
   workspaceId: string
   recipientId: string
-  type: $Enums.NotificationType
+  type: string
   title: string
   body: string
   link?: string | null
@@ -371,7 +371,7 @@ export type NotificationCreateManyInput = {
 
 export type NotificationUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -385,7 +385,7 @@ export type NotificationUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   recipientId?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -529,13 +529,9 @@ export type NotificationUncheckedUpdateManyWithoutWorkspaceNestedInput = {
   deleteMany?: Prisma.NotificationScalarWhereInput | Prisma.NotificationScalarWhereInput[]
 }
 
-export type EnumNotificationTypeFieldUpdateOperationsInput = {
-  set?: $Enums.NotificationType
-}
-
 export type NotificationCreateWithoutRecipientInput = {
   id?: string
-  type: $Enums.NotificationType
+  type: string
   title: string
   body: string
   link?: string | null
@@ -549,7 +545,7 @@ export type NotificationCreateWithoutRecipientInput = {
 export type NotificationUncheckedCreateWithoutRecipientInput = {
   id?: string
   workspaceId: string
-  type: $Enums.NotificationType
+  type: string
   title: string
   body: string
   link?: string | null
@@ -592,7 +588,7 @@ export type NotificationScalarWhereInput = {
   id?: Prisma.StringFilter<"Notification"> | string
   workspaceId?: Prisma.StringFilter<"Notification"> | string
   recipientId?: Prisma.StringFilter<"Notification"> | string
-  type?: Prisma.EnumNotificationTypeFilter<"Notification"> | $Enums.NotificationType
+  type?: Prisma.StringFilter<"Notification"> | string
   title?: Prisma.StringFilter<"Notification"> | string
   body?: Prisma.StringFilter<"Notification"> | string
   link?: Prisma.StringNullableFilter<"Notification"> | string | null
@@ -604,7 +600,7 @@ export type NotificationScalarWhereInput = {
 
 export type NotificationCreateWithoutWorkspaceInput = {
   id?: string
-  type: $Enums.NotificationType
+  type: string
   title: string
   body: string
   link?: string | null
@@ -618,7 +614,7 @@ export type NotificationCreateWithoutWorkspaceInput = {
 export type NotificationUncheckedCreateWithoutWorkspaceInput = {
   id?: string
   recipientId: string
-  type: $Enums.NotificationType
+  type: string
   title: string
   body: string
   link?: string | null
@@ -657,7 +653,7 @@ export type NotificationUpdateManyWithWhereWithoutWorkspaceInput = {
 export type NotificationCreateManyRecipientInput = {
   id?: string
   workspaceId: string
-  type: $Enums.NotificationType
+  type: string
   title: string
   body: string
   link?: string | null
@@ -669,7 +665,7 @@ export type NotificationCreateManyRecipientInput = {
 
 export type NotificationUpdateWithoutRecipientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -683,7 +679,7 @@ export type NotificationUpdateWithoutRecipientInput = {
 export type NotificationUncheckedUpdateWithoutRecipientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -696,7 +692,7 @@ export type NotificationUncheckedUpdateWithoutRecipientInput = {
 export type NotificationUncheckedUpdateManyWithoutRecipientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -709,7 +705,7 @@ export type NotificationUncheckedUpdateManyWithoutRecipientInput = {
 export type NotificationCreateManyWorkspaceInput = {
   id?: string
   recipientId: string
-  type: $Enums.NotificationType
+  type: string
   title: string
   body: string
   link?: string | null
@@ -721,7 +717,7 @@ export type NotificationCreateManyWorkspaceInput = {
 
 export type NotificationUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -735,7 +731,7 @@ export type NotificationUpdateWithoutWorkspaceInput = {
 export type NotificationUncheckedUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   recipientId?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -748,7 +744,7 @@ export type NotificationUncheckedUpdateWithoutWorkspaceInput = {
 export type NotificationUncheckedUpdateManyWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   recipientId?: Prisma.StringFieldUpdateOperationsInput | string
-  type?: Prisma.EnumNotificationTypeFieldUpdateOperationsInput | $Enums.NotificationType
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
   body?: Prisma.StringFieldUpdateOperationsInput | string
   link?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -846,7 +842,7 @@ export type $NotificationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     id: string
     workspaceId: string
     recipientId: string
-    type: $Enums.NotificationType
+    type: string
     title: string
     body: string
     link: string | null
@@ -1282,7 +1278,7 @@ export interface NotificationFieldRefs {
   readonly id: Prisma.FieldRef<"Notification", 'String'>
   readonly workspaceId: Prisma.FieldRef<"Notification", 'String'>
   readonly recipientId: Prisma.FieldRef<"Notification", 'String'>
-  readonly type: Prisma.FieldRef<"Notification", 'NotificationType'>
+  readonly type: Prisma.FieldRef<"Notification", 'String'>
   readonly title: Prisma.FieldRef<"Notification", 'String'>
   readonly body: Prisma.FieldRef<"Notification", 'String'>
   readonly link: Prisma.FieldRef<"Notification", 'String'>

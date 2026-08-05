@@ -1,6 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { prisma } from "@shared/config/prisma";
-import { approveStage } from "./workflow.service";
+import {
+  approveStage,
+  notifyStageApprovers,
+  notifyProposerOfClarify,
+} from "./workflow.service";
 import {
   Prisma,
   WorkflowSubjectType,
@@ -219,6 +223,19 @@ export const assignWorkflowController = async (
       },
     });
 
+    // ── Notify stage 1's approvers — strictly after the write above ────────
+    const stageOne = workflowInstance.stages.find((s) => s.stageOrder === 1);
+    if (stageOne) {
+      await notifyStageApprovers({
+        workflowId: workflowInstance.id,
+        subjectType,
+        subjectId,
+        appId,
+        stageId: stageOne.id,
+        approverIds: stageOne.approvals.map((a) => a.approver.id),
+      });
+    }
+
     res.status(201).json({
       success: true,
       message: "Workflow assigned successfully",
@@ -413,7 +430,7 @@ export const clarifyStageController = async (
       );
     }
 
-    await prisma.$transaction(async (tx) => {
+    const clarifyResult = await prisma.$transaction(async (tx) => {
       // ── Step 1: Load stage with full context ──────────────────────────────
       const stage = await tx.stageInstance.findUnique({
         where: { id: stageId as string },
@@ -585,7 +602,40 @@ export const clarifyStageController = async (
           },
         },
       });
+
+      // Returned so we can notify the proposer once this commits — the
+      // notify() call itself must stay outside the transaction.
+      return {
+        workflowId: workflow.id,
+        subjectType: workflow.subjectType,
+        subjectId: workflow.subjectId,
+        appId: workflow.appId,
+        requestedById: userId,
+      };
     });
+
+    // ── Notify the proposer — strictly after the transaction has committed ──
+    const [ownerId, requestedByUser] = await Promise.all([
+      getSubjectOwnerId(clarifyResult.subjectType, clarifyResult.subjectId),
+      prisma.user.findUnique({
+        where: { id: clarifyResult.requestedById },
+        select: { first_name: true, last_name: true },
+      }),
+    ]);
+    const requestedByName = requestedByUser
+      ? `${requestedByUser.first_name} ${requestedByUser.last_name}`.trim()
+      : "An approver";
+    if (ownerId) {
+      await notifyProposerOfClarify({
+        workflowId: clarifyResult.workflowId,
+        subjectType: clarifyResult.subjectType,
+        subjectId: clarifyResult.subjectId,
+        appId: clarifyResult.appId,
+        ownerId,
+        reason: String(reason).trim(),
+        requestedByName,
+      });
+    }
 
     res.status(200).json({
       success: true,
@@ -811,7 +861,32 @@ export const activateFirstStageController = async (
         },
       });
 
-      return { iteration: workflow.iteration, stages: builtStages };
+      return {
+        iteration: workflow.iteration,
+        stages: builtStages,
+        firstStageInstanceId: firstStageInstanceId!,
+        subjectType: workflow.subjectType,
+        subjectId: workflow.subjectId,
+        appId: workflow.appId,
+      };
+    });
+
+    // ── Notify stage 1's approvers — strictly after the transaction commits ──
+    // builtStages doesn't reliably carry approvals in the no-edit branch
+    // (the draft was fetched without an approvals include), so this is
+    // fetched fresh off firstStageInstanceId rather than reused from result.
+    const firstStageApprovals = await prisma.approval.findMany({
+      where: { stageId: result.firstStageInstanceId },
+      select: { approverId: true },
+    });
+
+    await notifyStageApprovers({
+      workflowId,
+      subjectType: result.subjectType,
+      subjectId: result.subjectId,
+      appId: result.appId,
+      stageId: result.firstStageInstanceId,
+      approverIds: firstStageApprovals.map((a) => a.approverId),
     });
 
     res.status(200).json({

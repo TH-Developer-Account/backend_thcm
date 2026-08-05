@@ -825,3 +825,228 @@ export const products = [
     category: "EVENT_OVERHEAD",
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────
+// Static seed user definitions.
+//
+// Each entry is keyed by a name-based identifier (e.g. "syedFazal") so
+// downstream seed logic can reference `usersByKey.syedFazal.id` instead of
+// magic array indices like `users[6]`. Edit names/emails/phones freely —
+// the `profiles` array is what actually drives permission assignment.
+// ─────────────────────────────────────────────────────────────────────────
+
+export const PROFILE_NAMES = {
+  WORKSPACE_ADMIN: "Workspace Admin",
+  MAP_ADMIN: "MAP Admin",
+  VENDOR_ONBOARDING_ADMIN: "Vendor Onboarding Admin",
+  FIELD_ENGINEER: "Field Engineer",
+  EPC_SPECIALIST: "EPC Specialist",
+  VENDOR_ONBOARDING_MANAGER: "Vendor Onboarding Manager",
+  READ_ONLY: "Read-Only User",
+} as const;
+
+export type ProfileName = (typeof PROFILE_NAMES)[keyof typeof PROFILE_NAMES];
+
+export interface SeedUserDefinition {
+  key: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  password: string;
+  isSuperAdmin: boolean;
+  profiles: ProfileName[];
+}
+
+const DEFAULT_PASSWORD = "Password@123";
+
+export const seedUsers: SeedUserDefinition[] = [
+  // ── Super Admin (1) ───────────────────────────────────────────────────
+  {
+    key: "syedFazal",
+    first_name: "Syed",
+    last_name: "Fazal",
+    email: "syed.fazal@tatahitachi.com",
+    phone_number: "9876500001",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: true,
+    profiles: [PROFILE_NAMES.WORKSPACE_ADMIN],
+  },
+
+  // ── Admin, both apps, not super (1) ───────────────────────────────────
+  {
+    key: "monica",
+    first_name: "hepsiba",
+    last_name: "monica",
+    email: "hepsiba.monica@tatahitachi.com",
+    phone_number: "9876500002",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.WORKSPACE_ADMIN],
+  },
+
+  // ── App Admins: write in own app, read in the other (2) ───────────────
+  {
+    key: "siddharth",
+    first_name: "siddharth",
+    last_name: "chaturvedi",
+    email: "siddharth.chaturvedi@tatahitachi.com",
+    phone_number: "9876500016",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.MAP_ADMIN],
+  },
+  {
+    key: "rehna",
+    first_name: "rehan",
+    last_name: "nusrat",
+    email: "rehan.nusrat@tatahitachi.com",
+    phone_number: "9876500017",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.VENDOR_ONBOARDING_ADMIN],
+  },
+
+  // ── Field Engineers (4) ────────────────────────────────────────────────
+  {
+    key: "vijay",
+    first_name: "vijay",
+    last_name: "parmar",
+    email: "vijay.parmar@tatahitachi.com",
+    phone_number: "9876500003",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.FIELD_ENGINEER],
+  },
+  {
+    key: "guruprasad",
+    first_name: "guruprasad",
+    last_name: "h",
+    email: "guruprasad.h@tatahitachi.com",
+    phone_number: "9876500004",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.FIELD_ENGINEER],
+  },
+  {
+    key: "girish",
+    first_name: "girish",
+    last_name: "kolambe",
+    email: "girish.kolambe@tatahitachi.com",
+    phone_number: "9876500005",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.FIELD_ENGINEER],
+  },
+  {
+    key: "shiva",
+    first_name: "shiva",
+    last_name: "rao",
+    email: "shiva.rao@tatahitachi.com",
+    phone_number: "9876500006",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.FIELD_ENGINEER],
+  },
+
+  // ── EPC Specialists (2) ────────────────────────────────────────────────
+  {
+    key: "aswin",
+    first_name: "aswin",
+    last_name: "peranna",
+    email: "aswin.peranna@tatahitachi.com",
+    phone_number: "9876500007",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.EPC_SPECIALIST],
+  },
+  {
+    key: "harsimar",
+    first_name: "harsimarpreet",
+    last_name: "kaur",
+    email: "harsimarpreet.kaur@tatahitachi.com",
+    phone_number: "9876500008",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.EPC_SPECIALIST],
+  },
+
+  // ── Vendor Onboarding Managers (3) ─────────────────────────────────────
+  {
+    key: "ashok",
+    first_name: "ashok",
+    last_name: "goenka",
+    email: "ashok.goenka@tatahitachi.com",
+    phone_number: "9876500009",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.VENDOR_ONBOARDING_MANAGER],
+  },
+  {
+    key: "anita",
+    first_name: "anita",
+    last_name: "sahoo",
+    email: "anita.sahoo@tatahitachi.com",
+    phone_number: "9876500010",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.VENDOR_ONBOARDING_MANAGER],
+  },
+  {
+    key: "sukumar",
+    first_name: "sukumar",
+    last_name: "Desai",
+    email: "sukumar.desai@tatahitachi.com",
+    phone_number: "9876500011",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.VENDOR_ONBOARDING_MANAGER],
+  },
+
+  // ── Dual role: Field Engineer + Vendor Onboarding Manager (1) ─────────
+  {
+    key: "hemadri",
+    first_name: "hemadri",
+    last_name: "kurukotti",
+    email: "hemadri.kurukotti@tatahitachi.com",
+    phone_number: "9876500012",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [
+      PROFILE_NAMES.FIELD_ENGINEER,
+      PROFILE_NAMES.VENDOR_ONBOARDING_MANAGER,
+    ],
+  },
+
+  // ── Read-Only (3) ────────────────────────────────────────────────────
+  {
+    key: "nilanjan",
+    first_name: "Nilanjan",
+    last_name: "Das",
+    email: "nilanjan.das@tatahitachi.com",
+    phone_number: "9876500013",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.READ_ONLY],
+  },
+  {
+    key: "amit",
+    first_name: "amit",
+    last_name: "biswas",
+    email: "amit.biswas@tatahitachi.com",
+    phone_number: "9876500014",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.READ_ONLY],
+  },
+  {
+    key: "jitesh",
+    first_name: "jitesh",
+    last_name: "jittu",
+    email: "jitesh.jittu@tatahitachi.com",
+    phone_number: "9876500015",
+    password: DEFAULT_PASSWORD,
+    isSuperAdmin: false,
+    profiles: [PROFILE_NAMES.READ_ONLY],
+  },
+];

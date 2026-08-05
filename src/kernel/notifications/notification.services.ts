@@ -35,7 +35,7 @@ export type NotificationType =
 type NotifyParams = {
   workspaceId: string;
   recipientId: string;
-  type: NotificationType;
+  type: string;
   title: string;
   body: string;
   link?: string;
