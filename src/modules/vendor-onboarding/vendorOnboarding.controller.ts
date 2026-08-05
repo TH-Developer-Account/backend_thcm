@@ -255,7 +255,18 @@ export const getVendorOnboardingById = async (
 
     const onboarding = await prisma.vendorOnboarding.findUnique({
       where: { id: id as string },
-      include: { documents: true },
+      include: {
+        documents: true,
+        initiatedBy: {
+          select: {
+            id: true,
+            first_name: true,
+            last_name: true,
+            email: true,
+            phone_number: true,
+          },
+        },
+      },
     });
     if (!onboarding) throw new ApiError(404, "Vendor onboarding not found");
 
@@ -271,11 +282,16 @@ export const getVendorOnboardingById = async (
       })),
     );
 
+    // initiatedBy is the Prisma relation name; renamed to created_by in the
+    // response to match the shape the frontend already consumes for EPC.
+    const { initiatedBy, ...onboardingWithoutInitiatedBy } = onboarding;
+
     res.status(200).json({
       success: true,
       data: {
-        ...onboarding,
+        ...onboardingWithoutInitiatedBy,
         documents: documentsWithSignedUrls,
+        created_by: initiatedBy,
         activeWorkflow,
       },
     });

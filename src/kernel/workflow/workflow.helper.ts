@@ -4,6 +4,7 @@ import {
   ApprovalStatus,
   Prisma,
 } from "../../prisma/generated/prisma/client";
+import ApiError from "@shared/utils/apiError";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // forkTemplateForClarify
@@ -74,6 +75,125 @@ export const forkTemplateForClarify = async (
       stages: { include: { approvers: true }, orderBy: { stageOrder: "asc" } },
     },
   });
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// createIterationStages
+//
+// Materializes StageInstance + Approval rows for one iteration of a
+// WorkflowInstance, from a resolved template's stages. Single place for this
+// so callers (activate-stage: no-edit resubmit, edited-stage resubmit,
+// template-swap resubmit) never hand-roll the same create loop three times.
+//
+// `activateFirst: true` flips stage 1 straight to IN_PROGRESS (the resubmit
+// case). `activateFirst: false` leaves everything PENDING (the clarify-time
+// draft case) — kept as a param rather than a second near-duplicate function.
+// ─────────────────────────────────────────────────────────────────────────────
+
+type TemplateStageInput = {
+  name: string;
+  stageOrder: number;
+  strategy: "ALL" | "ANY" | "SOME";
+  minApprovals?: number | null;
+  approvers: Array<{ userId: string; isExternalApprover?: boolean }>;
+};
+
+export const createIterationStages = async (
+  tx: Tx,
+  params: {
+    workflowId: string;
+    iteration: number;
+    templateStages: TemplateStageInput[];
+    activateFirst: boolean;
+  },
+) => {
+  const createdStages = [];
+  let firstStageInstanceId: string | undefined;
+
+  for (const templateStage of params.templateStages) {
+    const isFirstStage = templateStage.stageOrder === 1;
+    const shouldActivate = isFirstStage && params.activateFirst;
+
+    const stage = await tx.stageInstance.create({
+      data: {
+        stageName: templateStage.name,
+        workflowId: params.workflowId,
+        stageOrder: templateStage.stageOrder,
+        iteration: params.iteration,
+        isCurrentIteration: true,
+        strategy: templateStage.strategy,
+        minApprovals: templateStage.minApprovals ?? null,
+        status: shouldActivate ? "IN_PROGRESS" : "PENDING",
+        startedAt: shouldActivate ? new Date() : null,
+        approvals: {
+          create: templateStage.approvers.map((a) => ({
+            approverId: a.userId,
+            status: "PENDING",
+            isExternalApprover: a.isExternalApprover ?? false,
+          })),
+        },
+      },
+      include: { approvals: true },
+    });
+
+    createdStages.push(stage);
+    if (isFirstStage) firstStageInstanceId = stage.id;
+  }
+
+  return { createdStages, firstStageInstanceId };
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// assertTemplateAssignable
+//
+// Same eligibility rule attachWorkflowController's Case A already enforces
+// for "attach an existing reusable template" — pulled out here so
+// activateFirstStageController's template-swap-on-resubmit path can reuse it
+// instead of re-deriving the same checks.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const assertTemplateAssignable = async (
+  tx: Tx,
+  params: {
+    templateId: string;
+    appId: string;
+    userId: string;
+    isSuperAdmin: boolean;
+  },
+) => {
+  const template = await tx.workflowTemplate.findUnique({
+    where: { id: params.templateId },
+    include: {
+      stages: { include: { approvers: true }, orderBy: { stageOrder: "asc" } },
+    },
+  });
+
+  if (!template) throw new ApiError(404, "Workflow template not found");
+  if (!template.isActive || !template.isReusable) {
+    throw new ApiError(400, "This template is not available for use");
+  }
+  if (template.appId !== params.appId) {
+    throw new ApiError(
+      400,
+      "This template belongs to a different app than this record",
+    );
+  }
+
+  if (!params.isSuperAdmin) {
+    const isAssigned = await tx.workFlowTemplateUser.findUnique({
+      where: {
+        templateId_userId: {
+          templateId: params.templateId,
+          userId: params.userId,
+        },
+      },
+    });
+    if (!isAssigned) {
+      throw new ApiError(403, "You are not assigned to this workflow template");
+    }
+  }
+
+  return template;
 };
 
 export const buildWorkflowStages = (templateStages: any[]) => {

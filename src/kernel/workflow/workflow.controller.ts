@@ -16,7 +16,12 @@ import {
   getClarifyResetStatus,
   getSubjectOwnerId,
 } from "./workflowSubject.helper";
-import { forkTemplateForClarify } from "./workflow.helper";
+import {
+  forkTemplateForClarify,
+  createIterationStages,
+  assertTemplateAssignable,
+} from "./workflow.helper";
+import { AuthenticatedUser } from "../../types/express";
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────────────────────────────────────
@@ -656,12 +661,18 @@ export const clarifyStageController = async (
 // after initial assignment). The current iteration's stages already exist as
 // a PENDING draft — built at clarify time (or at assignment time) — so the
 // FE always has something to render/edit against. This endpoint:
-//   - If no stageEdits: just flips the existing stage 1 PENDING → IN_PROGRESS.
-//   - If stageEdits present: the proposer edited the draft, so we discard it
-//     and rebuild from a forked template (never mutate a template in place —
-//     it may be shared/reusable), then activate the fresh stage 1.
+//   - If neither stageEdits nor newTemplateId: just flips the existing
+//     stage 1 PENDING → IN_PROGRESS.
+//   - If stageEdits present: the proposer edited the draft in place, so we
+//     discard it and rebuild from a forked template (never mutate a template
+//     in place — it may be shared/reusable), then activate the fresh stage 1.
+//   - If newTemplateId present: the proposer picked a DIFFERENT existing
+//     template altogether, so we discard the draft and rebuild from that
+//     template's own stages, then repoint the workflow to it.
 //
-// Body: { workflowId: string, stageEdits?: [...] }
+// Body: { workflowId: string, stageEdits?: [...], newTemplateId?: string }
+// stageEdits and newTemplateId are mutually exclusive — only one kind of
+// change per resubmit.
 //
 // stageEdits (optional): a FULL replacement stage list, same shape as
 // template create/update payloads. If present:
@@ -670,6 +681,21 @@ export const clarifyStageController = async (
 //   2. The current template is forked (never mutated in place) into a
 //      one-off (ownerType USER, isReusable false) template, and the
 //      workflow is repointed to it.
+//
+// newTemplateId (optional): an existing template's id. If present:
+//   1. Caller must be the subject's owner — same ownership rule as stageEdits.
+//   2. The template must be active, reusable, belong to the same app, and
+//      the caller must be assigned to it (or be a super admin) — the exact
+//      eligibility rule attachWorkflowController's Case A already enforces,
+//      reused here via assertTemplateAssignable.
+//   3. The workflow is repointed directly to that template (no fork — it's
+//      already a real template, not an ad-hoc edit).
+//
+// Note: this deliberately does NOT go through assignWorkflowController.
+// assignWorkflowController's "reject if an active workflow already exists"
+// guard is correct and must stay — clarify never deactivates the
+// WorkflowInstance, it only re-drafts its stages. Changing what a
+// resubmit runs is this endpoint's job, not a second call to /assign.
 //
 // Guards:
 //   1. Workflow must exist and be active (not superseded)
@@ -685,11 +711,18 @@ export const activateFirstStageController = async (
   next: NextFunction,
 ) => {
   try {
-    const userId = req.user?.id;
-    const { workflowId, stageEdits } = req.body;
+    const user = req.user as AuthenticatedUser | undefined;
+    const userId = user?.id;
+    const { workflowId, stageEdits, newTemplateId } = req.body;
 
     if (!userId) throw new ApiError(401, "Unauthorized");
     if (!workflowId) throw new ApiError(400, "workflowId is required");
+    if (stageEdits?.length && newTemplateId) {
+      throw new ApiError(
+        400,
+        "stageEdits and newTemplateId are mutually exclusive — provide at most one",
+      );
+    }
 
     const result = await prisma.$transaction(async (tx) => {
       // ── Step 1: Load the workflow + its current iteration's draft stages ──
@@ -740,11 +773,11 @@ export const activateFirstStageController = async (
         );
       }
 
-      let firstStageInstanceId: string;
-      const builtStages: any[] = [];
+      let firstStageInstanceId: string | undefined;
+      let builtStages: any[] = [];
 
-      if (stageEdits?.length) {
-        // ── The proposer edited the draft — discard it, rebuild from a fork ──
+      if (stageEdits?.length || newTemplateId) {
+        // ── Both cases change what the resubmit runs — same ownership rule ──
         const ownerId = await getSubjectOwnerId(
           workflow.subjectType,
           workflow.subjectId,
@@ -752,24 +785,12 @@ export const activateFirstStageController = async (
         if (ownerId !== userId) {
           throw new ApiError(
             403,
-            "Only the proposer can edit stages when resubmitting",
+            "Only the proposer can change the workflow when resubmitting",
           );
         }
 
-        const fork = await forkTemplateForClarify(
-          tx,
-          workflow.template,
-          stageEdits,
-          userId,
-        );
-
-        await tx.workflowInstance.update({
-          where: { id: workflow.id },
-          data: { templateId: fork.id },
-        });
-
-        // Discard the draft built at clarify time — it reflected the
-        // pre-edit template and is now stale.
+        // Discard the draft built at clarify time — it reflected the old
+        // template and is now stale, regardless of which change is applied.
         await tx.stageInstance.deleteMany({
           where: {
             workflowId: workflow.id,
@@ -778,40 +799,55 @@ export const activateFirstStageController = async (
           },
         });
 
-        for (const templateStage of fork.stages) {
-          const createdStage = await tx.stageInstance.create({
-            data: {
-              stageName: templateStage.name,
-              workflowId: workflow.id,
-              stageOrder: templateStage.stageOrder,
-              iteration: workflow.iteration,
-              isCurrentIteration: true,
-              strategy: templateStage.strategy,
-              minApprovals: templateStage.minApprovals,
-              status:
-                templateStage.stageOrder === 1 ? "IN_PROGRESS" : "PENDING",
-              startedAt: templateStage.stageOrder === 1 ? new Date() : null,
-              approvals: {
-                create: templateStage.approvers.map((a) => ({
-                  approverId: a.userId,
-                  status: "PENDING",
-                  isExternalApprover: a.isExternalApprover,
-                })),
-              },
-            },
-            include: { approvals: true },
+        let resolvedTemplateStages: any[];
+
+        if (stageEdits?.length) {
+          // ── Edited the same template's stages — fork it, never mutate in place ──
+          const fork = await forkTemplateForClarify(
+            tx,
+            workflow.template,
+            stageEdits,
+            userId,
+          );
+
+          await tx.workflowInstance.update({
+            where: { id: workflow.id },
+            data: { templateId: fork.id },
           });
 
-          builtStages.push(createdStage);
-          if (templateStage.stageOrder === 1) {
-            firstStageInstanceId = createdStage.id;
-          }
+          resolvedTemplateStages = fork.stages;
+        } else {
+          // ── Swapped to a different existing template entirely ──────────
+          const newTemplate = await assertTemplateAssignable(tx, {
+            templateId: newTemplateId,
+            appId: workflow.appId,
+            userId,
+            isSuperAdmin: user?.isSuperAdmin ?? false,
+          });
+
+          await tx.workflowInstance.update({
+            where: { id: workflow.id },
+            data: { templateId: newTemplate.id },
+          });
+
+          resolvedTemplateStages = newTemplate.stages;
         }
 
-        if (!firstStageInstanceId!) {
+        const { createdStages, firstStageInstanceId: firstId } =
+          await createIterationStages(tx, {
+            workflowId: workflow.id,
+            iteration: workflow.iteration,
+            templateStages: resolvedTemplateStages,
+            activateFirst: true,
+          });
+
+        builtStages = createdStages;
+        firstStageInstanceId = firstId;
+
+        if (!firstStageInstanceId) {
           throw new ApiError(
             404,
-            "Stage 1 not found on the edited template — cannot activate",
+            "Stage 1 not found on the resolved template — cannot activate",
           );
         }
       } else {
@@ -857,6 +893,7 @@ export const activateFirstStageController = async (
           metadata: {
             reason: "Proposer resubmitted the EPC.",
             ...(stageEdits?.length && { stagesEdited: true }),
+            ...(newTemplateId && { templateSwapped: true }),
           },
         },
       });
