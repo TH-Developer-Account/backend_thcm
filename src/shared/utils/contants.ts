@@ -259,3 +259,39 @@ export const MATERIAL_SUBTYPES_BY_TYPE: Record<string, string[]> = {
   RAW_MATERIAL: ["SUB_TYPE_1"],
   SERVICE: ["SUB_TYPE_2"],
 };
+
+type VendorDocumentConditions = {
+  msmeVendor: boolean;
+  ndaObtained: boolean;
+};
+
+type VendorDocumentRequirement = {
+  documentType: VendorDocumentType;
+  isRequired: (conditions: VendorDocumentConditions) => boolean;
+};
+
+// Each document type owns its own requirement rule — adding a new
+// conditional document later means adding one entry here, not a new
+// branch in the controller.
+export const VENDOR_DOCUMENT_REQUIREMENTS: VendorDocumentRequirement[] = [
+  { documentType: "GST_CERTIFICATE", isRequired: () => true },
+  { documentType: "PAN_DOCUMENT", isRequired: () => true },
+  { documentType: "CANCELLED_CHEQUE", isRequired: () => true },
+  { documentType: "INCORPORATION_CERTIFICATE", isRequired: () => true },
+  { documentType: "MSME_CERTIFICATE", isRequired: (c) => c.msmeVendor },
+  { documentType: "NDA_CERTIFICATE", isRequired: (c) => c.ndaObtained },
+];
+
+export function getRequiredVendorDocumentTypes(
+  conditions: VendorDocumentConditions,
+): VendorDocumentType[] {
+  return VENDOR_DOCUMENT_REQUIREMENTS.filter((r) =>
+    r.isRequired(conditions),
+  ).map((r) => r.documentType);
+}
+
+// Form fields arrive as strings ("true"/"false") from multipart form-data,
+// but may already be booleans if the client sends JSON — normalize both.
+export function parseBooleanFormField(value: unknown): boolean {
+  return value === true || value === "true";
+}

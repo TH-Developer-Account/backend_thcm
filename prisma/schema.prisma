@@ -1000,7 +1000,6 @@ model VendorOnboarding {
   mobile            String?
   email             String?
   msmeVendor        Boolean?
-  msmeCertAttached  Boolean?
   bankName          String?
   bankBranch        String?
   ifscCode          String?

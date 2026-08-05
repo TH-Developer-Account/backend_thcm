@@ -6,6 +6,8 @@ import ApiError from "@shared/utils/apiError";
 import {
   REQUIRED_VENDOR_DOCUMENT_TYPES,
   ALL_VENDOR_DOCUMENT_TYPES,
+  getRequiredVendorDocumentTypes,
+  parseBooleanFormField,
 } from "@shared/utils/contants";
 import { getSignedImageUrl, uploadToS3 } from "@shared/utils/aws-s3.services";
 
@@ -37,6 +39,7 @@ import {
 const VENDOR_DOCUMENT_EXTENSIONS_BY_MIME_TYPE: Record<string, string> = {
   "image/png": "png",
   "image/jpeg": "jpeg",
+  "image/jpg": "jpg",
   "image/webp": "webp",
   "application/pdf": "pdf",
 };
@@ -663,6 +666,7 @@ export const submitVendorForm = async (
       email,
       msmeVendor,
       msmeCertAttached,
+      ndaObtained,
       bankName,
       bankBranch,
       ifscCode,
@@ -674,9 +678,12 @@ export const submitVendorForm = async (
       dpdpConsent,
     } = req.body;
 
-    if (dpdpConsent !== "true" && dpdpConsent !== true) {
+    if (!parseBooleanFormField(dpdpConsent)) {
       throw new ApiError(400, "DPDP Act consent is required");
     }
+
+    const isMsmeVendor = parseBooleanFormField(msmeVendor);
+    const isNdaObtained = parseBooleanFormField(ndaObtained);
 
     const files = req.files as
       | Record<string, Express.Multer.File[]>
@@ -692,7 +699,12 @@ export const submitVendorForm = async (
     });
     const existingTypes = new Set(existingDocuments.map((d) => d.documentType));
 
-    const missing = REQUIRED_VENDOR_DOCUMENT_TYPES.filter(
+    const requiredDocumentTypes = getRequiredVendorDocumentTypes({
+      msmeVendor: isMsmeVendor,
+      ndaObtained: isNdaObtained,
+    });
+
+    const missing = requiredDocumentTypes.filter(
       (t) => !existingTypes.has(t) && !files?.[t]?.[0],
     );
     if (missing.length > 0) {
@@ -714,8 +726,8 @@ export const submitVendorForm = async (
           address,
           mobile,
           email,
-          msmeVendor: msmeVendor === "true",
-          msmeCertAttached: msmeCertAttached === "true",
+          msmeVendor: isMsmeVendor,
+          ndaObtained: isNdaObtained,
           bankName,
           bankBranch,
           ifscCode,
@@ -731,7 +743,6 @@ export const submitVendorForm = async (
       });
 
       await persistVendorDocuments(tx, onboarding.id, files);
-
       await markVendorAccessTokenUsed(tokenId, tx);
 
       await tx.activityLog.create({

@@ -65,7 +65,10 @@ const templateMatchResolvers: Record<
   // STUB — no matching criteria decided yet for Vendor Onboarding.
   // Replace with a real resolver once that's defined; until then this
   // just takes the first active template configured for the workspace/app.
-  VENDOR_ONBOARDING: (templates) => templates[0],
+  VENDOR_ONBOARDING: (templates, criteria) => {
+    const { workflowId } = criteria || {};
+    return templates.find((t) => t.id === workflowId);
+  },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -121,12 +124,13 @@ export const assignWorkflowController = async (
     //    isReusable: true excludes ad-hoc one-off templates — those were
     //    scaffolding for a single run and should never resurface as a
     //    pickable option for a different subject.
+    //    Currently have removed isReusable: true to allow ad-hoc templates to be used for Vendor workflows.
     const templates = await prisma.workflowTemplate.findMany({
       where: {
         workspaceId,
         appId,
         isActive: true,
-        isReusable: true,
+        // isReusable: true,
         workFlowUsers: { some: { userId } },
       },
       include: {
