@@ -36,3 +36,24 @@ export function getValidatorForApp(appKey: string): string {
 
   return validatorId;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONSTANTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const REQUIRED_IMAGE_COUNT = 4;
+export const VALID_IMAGE_POSITIONS = [1, 2, 3, 4] as const;
+export const ALLOWED_IMAGE_MIME_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+]);
+export const ALLOWED_VENDOR_MIME_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "application/pdf",
+]);
+
+export const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+export const MAX_VENDOR_DOCUMENT_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB

@@ -28,21 +28,27 @@ export type ProfilePermissionMinAggregateOutputType = {
   id: string | null
   profileId: string | null
   action: $Enums.PermissionAction | null
+  scope: $Enums.ScopeType | null
   moduleId: string | null
+  appId: string | null
 }
 
 export type ProfilePermissionMaxAggregateOutputType = {
   id: string | null
   profileId: string | null
   action: $Enums.PermissionAction | null
+  scope: $Enums.ScopeType | null
   moduleId: string | null
+  appId: string | null
 }
 
 export type ProfilePermissionCountAggregateOutputType = {
   id: number
   profileId: number
   action: number
+  scope: number
   moduleId: number
+  appId: number
   _all: number
 }
 
@@ -51,21 +57,27 @@ export type ProfilePermissionMinAggregateInputType = {
   id?: true
   profileId?: true
   action?: true
+  scope?: true
   moduleId?: true
+  appId?: true
 }
 
 export type ProfilePermissionMaxAggregateInputType = {
   id?: true
   profileId?: true
   action?: true
+  scope?: true
   moduleId?: true
+  appId?: true
 }
 
 export type ProfilePermissionCountAggregateInputType = {
   id?: true
   profileId?: true
   action?: true
+  scope?: true
   moduleId?: true
+  appId?: true
   _all?: true
 }
 
@@ -145,7 +157,9 @@ export type ProfilePermissionGroupByOutputType = {
   id: string
   profileId: string
   action: $Enums.PermissionAction
-  moduleId: string
+  scope: $Enums.ScopeType
+  moduleId: string | null
+  appId: string | null
   _count: ProfilePermissionCountAggregateOutputType | null
   _min: ProfilePermissionMinAggregateOutputType | null
   _max: ProfilePermissionMaxAggregateOutputType | null
@@ -173,38 +187,50 @@ export type ProfilePermissionWhereInput = {
   id?: Prisma.StringFilter<"ProfilePermission"> | string
   profileId?: Prisma.StringFilter<"ProfilePermission"> | string
   action?: Prisma.EnumPermissionActionFilter<"ProfilePermission"> | $Enums.PermissionAction
-  moduleId?: Prisma.StringFilter<"ProfilePermission"> | string
+  scope?: Prisma.EnumScopeTypeFilter<"ProfilePermission"> | $Enums.ScopeType
+  moduleId?: Prisma.StringNullableFilter<"ProfilePermission"> | string | null
+  appId?: Prisma.StringNullableFilter<"ProfilePermission"> | string | null
   profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
-  module?: Prisma.XOR<Prisma.ModuleScalarRelationFilter, Prisma.ModuleWhereInput>
+  module?: Prisma.XOR<Prisma.ModuleNullableScalarRelationFilter, Prisma.ModuleWhereInput> | null
+  app?: Prisma.XOR<Prisma.AppNullableScalarRelationFilter, Prisma.AppWhereInput> | null
 }
 
 export type ProfilePermissionOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   action?: Prisma.SortOrder
-  moduleId?: Prisma.SortOrder
+  scope?: Prisma.SortOrder
+  moduleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  appId?: Prisma.SortOrderInput | Prisma.SortOrder
   profile?: Prisma.ProfileOrderByWithRelationInput
   module?: Prisma.ModuleOrderByWithRelationInput
+  app?: Prisma.AppOrderByWithRelationInput
 }
 
 export type ProfilePermissionWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   profileId_action_moduleId?: Prisma.ProfilePermissionProfileIdActionModuleIdCompoundUniqueInput
+  profileId_action_appId?: Prisma.ProfilePermissionProfileIdActionAppIdCompoundUniqueInput
   AND?: Prisma.ProfilePermissionWhereInput | Prisma.ProfilePermissionWhereInput[]
   OR?: Prisma.ProfilePermissionWhereInput[]
   NOT?: Prisma.ProfilePermissionWhereInput | Prisma.ProfilePermissionWhereInput[]
   profileId?: Prisma.StringFilter<"ProfilePermission"> | string
   action?: Prisma.EnumPermissionActionFilter<"ProfilePermission"> | $Enums.PermissionAction
-  moduleId?: Prisma.StringFilter<"ProfilePermission"> | string
+  scope?: Prisma.EnumScopeTypeFilter<"ProfilePermission"> | $Enums.ScopeType
+  moduleId?: Prisma.StringNullableFilter<"ProfilePermission"> | string | null
+  appId?: Prisma.StringNullableFilter<"ProfilePermission"> | string | null
   profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
-  module?: Prisma.XOR<Prisma.ModuleScalarRelationFilter, Prisma.ModuleWhereInput>
-}, "id" | "profileId_action_moduleId">
+  module?: Prisma.XOR<Prisma.ModuleNullableScalarRelationFilter, Prisma.ModuleWhereInput> | null
+  app?: Prisma.XOR<Prisma.AppNullableScalarRelationFilter, Prisma.AppWhereInput> | null
+}, "id" | "profileId_action_moduleId" | "profileId_action_appId">
 
 export type ProfilePermissionOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   action?: Prisma.SortOrder
-  moduleId?: Prisma.SortOrder
+  scope?: Prisma.SortOrder
+  moduleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  appId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ProfilePermissionCountOrderByAggregateInput
   _max?: Prisma.ProfilePermissionMaxOrderByAggregateInput
   _min?: Prisma.ProfilePermissionMinOrderByAggregateInput
@@ -217,54 +243,69 @@ export type ProfilePermissionScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ProfilePermission"> | string
   profileId?: Prisma.StringWithAggregatesFilter<"ProfilePermission"> | string
   action?: Prisma.EnumPermissionActionWithAggregatesFilter<"ProfilePermission"> | $Enums.PermissionAction
-  moduleId?: Prisma.StringWithAggregatesFilter<"ProfilePermission"> | string
+  scope?: Prisma.EnumScopeTypeWithAggregatesFilter<"ProfilePermission"> | $Enums.ScopeType
+  moduleId?: Prisma.StringNullableWithAggregatesFilter<"ProfilePermission"> | string | null
+  appId?: Prisma.StringNullableWithAggregatesFilter<"ProfilePermission"> | string | null
 }
 
 export type ProfilePermissionCreateInput = {
   id?: string
   action: $Enums.PermissionAction
+  scope?: $Enums.ScopeType
   profile: Prisma.ProfileCreateNestedOneWithoutPermissionsInput
-  module: Prisma.ModuleCreateNestedOneWithoutProfilePermissionsInput
+  module?: Prisma.ModuleCreateNestedOneWithoutProfilePermissionsInput
+  app?: Prisma.AppCreateNestedOneWithoutProfilePermissionsInput
 }
 
 export type ProfilePermissionUncheckedCreateInput = {
   id?: string
   profileId: string
   action: $Enums.PermissionAction
-  moduleId: string
+  scope?: $Enums.ScopeType
+  moduleId?: string | null
+  appId?: string | null
 }
 
 export type ProfilePermissionUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
   profile?: Prisma.ProfileUpdateOneRequiredWithoutPermissionsNestedInput
-  module?: Prisma.ModuleUpdateOneRequiredWithoutProfilePermissionsNestedInput
+  module?: Prisma.ModuleUpdateOneWithoutProfilePermissionsNestedInput
+  app?: Prisma.AppUpdateOneWithoutProfilePermissionsNestedInput
 }
 
 export type ProfilePermissionUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
-  moduleId?: Prisma.StringFieldUpdateOperationsInput | string
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  moduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ProfilePermissionCreateManyInput = {
   id?: string
   profileId: string
   action: $Enums.PermissionAction
-  moduleId: string
+  scope?: $Enums.ScopeType
+  moduleId?: string | null
+  appId?: string | null
 }
 
 export type ProfilePermissionUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
 }
 
 export type ProfilePermissionUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
-  moduleId?: Prisma.StringFieldUpdateOperationsInput | string
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  moduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ProfilePermissionListRelationFilter = {
@@ -283,25 +324,79 @@ export type ProfilePermissionProfileIdActionModuleIdCompoundUniqueInput = {
   moduleId: string
 }
 
+export type ProfilePermissionProfileIdActionAppIdCompoundUniqueInput = {
+  profileId: string
+  action: $Enums.PermissionAction
+  appId: string
+}
+
 export type ProfilePermissionCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   action?: Prisma.SortOrder
+  scope?: Prisma.SortOrder
   moduleId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
 }
 
 export type ProfilePermissionMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   action?: Prisma.SortOrder
+  scope?: Prisma.SortOrder
   moduleId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
 }
 
 export type ProfilePermissionMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
   action?: Prisma.SortOrder
+  scope?: Prisma.SortOrder
   moduleId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
+}
+
+export type ProfilePermissionCreateNestedManyWithoutAppInput = {
+  create?: Prisma.XOR<Prisma.ProfilePermissionCreateWithoutAppInput, Prisma.ProfilePermissionUncheckedCreateWithoutAppInput> | Prisma.ProfilePermissionCreateWithoutAppInput[] | Prisma.ProfilePermissionUncheckedCreateWithoutAppInput[]
+  connectOrCreate?: Prisma.ProfilePermissionCreateOrConnectWithoutAppInput | Prisma.ProfilePermissionCreateOrConnectWithoutAppInput[]
+  createMany?: Prisma.ProfilePermissionCreateManyAppInputEnvelope
+  connect?: Prisma.ProfilePermissionWhereUniqueInput | Prisma.ProfilePermissionWhereUniqueInput[]
+}
+
+export type ProfilePermissionUncheckedCreateNestedManyWithoutAppInput = {
+  create?: Prisma.XOR<Prisma.ProfilePermissionCreateWithoutAppInput, Prisma.ProfilePermissionUncheckedCreateWithoutAppInput> | Prisma.ProfilePermissionCreateWithoutAppInput[] | Prisma.ProfilePermissionUncheckedCreateWithoutAppInput[]
+  connectOrCreate?: Prisma.ProfilePermissionCreateOrConnectWithoutAppInput | Prisma.ProfilePermissionCreateOrConnectWithoutAppInput[]
+  createMany?: Prisma.ProfilePermissionCreateManyAppInputEnvelope
+  connect?: Prisma.ProfilePermissionWhereUniqueInput | Prisma.ProfilePermissionWhereUniqueInput[]
+}
+
+export type ProfilePermissionUpdateManyWithoutAppNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfilePermissionCreateWithoutAppInput, Prisma.ProfilePermissionUncheckedCreateWithoutAppInput> | Prisma.ProfilePermissionCreateWithoutAppInput[] | Prisma.ProfilePermissionUncheckedCreateWithoutAppInput[]
+  connectOrCreate?: Prisma.ProfilePermissionCreateOrConnectWithoutAppInput | Prisma.ProfilePermissionCreateOrConnectWithoutAppInput[]
+  upsert?: Prisma.ProfilePermissionUpsertWithWhereUniqueWithoutAppInput | Prisma.ProfilePermissionUpsertWithWhereUniqueWithoutAppInput[]
+  createMany?: Prisma.ProfilePermissionCreateManyAppInputEnvelope
+  set?: Prisma.ProfilePermissionWhereUniqueInput | Prisma.ProfilePermissionWhereUniqueInput[]
+  disconnect?: Prisma.ProfilePermissionWhereUniqueInput | Prisma.ProfilePermissionWhereUniqueInput[]
+  delete?: Prisma.ProfilePermissionWhereUniqueInput | Prisma.ProfilePermissionWhereUniqueInput[]
+  connect?: Prisma.ProfilePermissionWhereUniqueInput | Prisma.ProfilePermissionWhereUniqueInput[]
+  update?: Prisma.ProfilePermissionUpdateWithWhereUniqueWithoutAppInput | Prisma.ProfilePermissionUpdateWithWhereUniqueWithoutAppInput[]
+  updateMany?: Prisma.ProfilePermissionUpdateManyWithWhereWithoutAppInput | Prisma.ProfilePermissionUpdateManyWithWhereWithoutAppInput[]
+  deleteMany?: Prisma.ProfilePermissionScalarWhereInput | Prisma.ProfilePermissionScalarWhereInput[]
+}
+
+export type ProfilePermissionUncheckedUpdateManyWithoutAppNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfilePermissionCreateWithoutAppInput, Prisma.ProfilePermissionUncheckedCreateWithoutAppInput> | Prisma.ProfilePermissionCreateWithoutAppInput[] | Prisma.ProfilePermissionUncheckedCreateWithoutAppInput[]
+  connectOrCreate?: Prisma.ProfilePermissionCreateOrConnectWithoutAppInput | Prisma.ProfilePermissionCreateOrConnectWithoutAppInput[]
+  upsert?: Prisma.ProfilePermissionUpsertWithWhereUniqueWithoutAppInput | Prisma.ProfilePermissionUpsertWithWhereUniqueWithoutAppInput[]
+  createMany?: Prisma.ProfilePermissionCreateManyAppInputEnvelope
+  set?: Prisma.ProfilePermissionWhereUniqueInput | Prisma.ProfilePermissionWhereUniqueInput[]
+  disconnect?: Prisma.ProfilePermissionWhereUniqueInput | Prisma.ProfilePermissionWhereUniqueInput[]
+  delete?: Prisma.ProfilePermissionWhereUniqueInput | Prisma.ProfilePermissionWhereUniqueInput[]
+  connect?: Prisma.ProfilePermissionWhereUniqueInput | Prisma.ProfilePermissionWhereUniqueInput[]
+  update?: Prisma.ProfilePermissionUpdateWithWhereUniqueWithoutAppInput | Prisma.ProfilePermissionUpdateWithWhereUniqueWithoutAppInput[]
+  updateMany?: Prisma.ProfilePermissionUpdateManyWithWhereWithoutAppInput | Prisma.ProfilePermissionUpdateManyWithWhereWithoutAppInput[]
+  deleteMany?: Prisma.ProfilePermissionScalarWhereInput | Prisma.ProfilePermissionScalarWhereInput[]
 }
 
 export type ProfilePermissionCreateNestedManyWithoutModuleInput = {
@@ -392,16 +487,78 @@ export type EnumPermissionActionFieldUpdateOperationsInput = {
   set?: $Enums.PermissionAction
 }
 
+export type EnumScopeTypeFieldUpdateOperationsInput = {
+  set?: $Enums.ScopeType
+}
+
+export type ProfilePermissionCreateWithoutAppInput = {
+  id?: string
+  action: $Enums.PermissionAction
+  scope?: $Enums.ScopeType
+  profile: Prisma.ProfileCreateNestedOneWithoutPermissionsInput
+  module?: Prisma.ModuleCreateNestedOneWithoutProfilePermissionsInput
+}
+
+export type ProfilePermissionUncheckedCreateWithoutAppInput = {
+  id?: string
+  profileId: string
+  action: $Enums.PermissionAction
+  scope?: $Enums.ScopeType
+  moduleId?: string | null
+}
+
+export type ProfilePermissionCreateOrConnectWithoutAppInput = {
+  where: Prisma.ProfilePermissionWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfilePermissionCreateWithoutAppInput, Prisma.ProfilePermissionUncheckedCreateWithoutAppInput>
+}
+
+export type ProfilePermissionCreateManyAppInputEnvelope = {
+  data: Prisma.ProfilePermissionCreateManyAppInput | Prisma.ProfilePermissionCreateManyAppInput[]
+  skipDuplicates?: boolean
+}
+
+export type ProfilePermissionUpsertWithWhereUniqueWithoutAppInput = {
+  where: Prisma.ProfilePermissionWhereUniqueInput
+  update: Prisma.XOR<Prisma.ProfilePermissionUpdateWithoutAppInput, Prisma.ProfilePermissionUncheckedUpdateWithoutAppInput>
+  create: Prisma.XOR<Prisma.ProfilePermissionCreateWithoutAppInput, Prisma.ProfilePermissionUncheckedCreateWithoutAppInput>
+}
+
+export type ProfilePermissionUpdateWithWhereUniqueWithoutAppInput = {
+  where: Prisma.ProfilePermissionWhereUniqueInput
+  data: Prisma.XOR<Prisma.ProfilePermissionUpdateWithoutAppInput, Prisma.ProfilePermissionUncheckedUpdateWithoutAppInput>
+}
+
+export type ProfilePermissionUpdateManyWithWhereWithoutAppInput = {
+  where: Prisma.ProfilePermissionScalarWhereInput
+  data: Prisma.XOR<Prisma.ProfilePermissionUpdateManyMutationInput, Prisma.ProfilePermissionUncheckedUpdateManyWithoutAppInput>
+}
+
+export type ProfilePermissionScalarWhereInput = {
+  AND?: Prisma.ProfilePermissionScalarWhereInput | Prisma.ProfilePermissionScalarWhereInput[]
+  OR?: Prisma.ProfilePermissionScalarWhereInput[]
+  NOT?: Prisma.ProfilePermissionScalarWhereInput | Prisma.ProfilePermissionScalarWhereInput[]
+  id?: Prisma.StringFilter<"ProfilePermission"> | string
+  profileId?: Prisma.StringFilter<"ProfilePermission"> | string
+  action?: Prisma.EnumPermissionActionFilter<"ProfilePermission"> | $Enums.PermissionAction
+  scope?: Prisma.EnumScopeTypeFilter<"ProfilePermission"> | $Enums.ScopeType
+  moduleId?: Prisma.StringNullableFilter<"ProfilePermission"> | string | null
+  appId?: Prisma.StringNullableFilter<"ProfilePermission"> | string | null
+}
+
 export type ProfilePermissionCreateWithoutModuleInput = {
   id?: string
   action: $Enums.PermissionAction
+  scope?: $Enums.ScopeType
   profile: Prisma.ProfileCreateNestedOneWithoutPermissionsInput
+  app?: Prisma.AppCreateNestedOneWithoutProfilePermissionsInput
 }
 
 export type ProfilePermissionUncheckedCreateWithoutModuleInput = {
   id?: string
   profileId: string
   action: $Enums.PermissionAction
+  scope?: $Enums.ScopeType
+  appId?: string | null
 }
 
 export type ProfilePermissionCreateOrConnectWithoutModuleInput = {
@@ -430,26 +587,20 @@ export type ProfilePermissionUpdateManyWithWhereWithoutModuleInput = {
   data: Prisma.XOR<Prisma.ProfilePermissionUpdateManyMutationInput, Prisma.ProfilePermissionUncheckedUpdateManyWithoutModuleInput>
 }
 
-export type ProfilePermissionScalarWhereInput = {
-  AND?: Prisma.ProfilePermissionScalarWhereInput | Prisma.ProfilePermissionScalarWhereInput[]
-  OR?: Prisma.ProfilePermissionScalarWhereInput[]
-  NOT?: Prisma.ProfilePermissionScalarWhereInput | Prisma.ProfilePermissionScalarWhereInput[]
-  id?: Prisma.StringFilter<"ProfilePermission"> | string
-  profileId?: Prisma.StringFilter<"ProfilePermission"> | string
-  action?: Prisma.EnumPermissionActionFilter<"ProfilePermission"> | $Enums.PermissionAction
-  moduleId?: Prisma.StringFilter<"ProfilePermission"> | string
-}
-
 export type ProfilePermissionCreateWithoutProfileInput = {
   id?: string
   action: $Enums.PermissionAction
-  module: Prisma.ModuleCreateNestedOneWithoutProfilePermissionsInput
+  scope?: $Enums.ScopeType
+  module?: Prisma.ModuleCreateNestedOneWithoutProfilePermissionsInput
+  app?: Prisma.AppCreateNestedOneWithoutProfilePermissionsInput
 }
 
 export type ProfilePermissionUncheckedCreateWithoutProfileInput = {
   id?: string
   action: $Enums.PermissionAction
-  moduleId: string
+  scope?: $Enums.ScopeType
+  moduleId?: string | null
+  appId?: string | null
 }
 
 export type ProfilePermissionCreateOrConnectWithoutProfileInput = {
@@ -478,52 +629,100 @@ export type ProfilePermissionUpdateManyWithWhereWithoutProfileInput = {
   data: Prisma.XOR<Prisma.ProfilePermissionUpdateManyMutationInput, Prisma.ProfilePermissionUncheckedUpdateManyWithoutProfileInput>
 }
 
+export type ProfilePermissionCreateManyAppInput = {
+  id?: string
+  profileId: string
+  action: $Enums.PermissionAction
+  scope?: $Enums.ScopeType
+  moduleId?: string | null
+}
+
+export type ProfilePermissionUpdateWithoutAppInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  profile?: Prisma.ProfileUpdateOneRequiredWithoutPermissionsNestedInput
+  module?: Prisma.ModuleUpdateOneWithoutProfilePermissionsNestedInput
+}
+
+export type ProfilePermissionUncheckedUpdateWithoutAppInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  profileId?: Prisma.StringFieldUpdateOperationsInput | string
+  action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  moduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ProfilePermissionUncheckedUpdateManyWithoutAppInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  profileId?: Prisma.StringFieldUpdateOperationsInput | string
+  action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  moduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
 export type ProfilePermissionCreateManyModuleInput = {
   id?: string
   profileId: string
   action: $Enums.PermissionAction
+  scope?: $Enums.ScopeType
+  appId?: string | null
 }
 
 export type ProfilePermissionUpdateWithoutModuleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
   profile?: Prisma.ProfileUpdateOneRequiredWithoutPermissionsNestedInput
+  app?: Prisma.AppUpdateOneWithoutProfilePermissionsNestedInput
 }
 
 export type ProfilePermissionUncheckedUpdateWithoutModuleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  appId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ProfilePermissionUncheckedUpdateManyWithoutModuleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  appId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ProfilePermissionCreateManyProfileInput = {
   id?: string
   action: $Enums.PermissionAction
-  moduleId: string
+  scope?: $Enums.ScopeType
+  moduleId?: string | null
+  appId?: string | null
 }
 
 export type ProfilePermissionUpdateWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
-  module?: Prisma.ModuleUpdateOneRequiredWithoutProfilePermissionsNestedInput
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  module?: Prisma.ModuleUpdateOneWithoutProfilePermissionsNestedInput
+  app?: Prisma.AppUpdateOneWithoutProfilePermissionsNestedInput
 }
 
 export type ProfilePermissionUncheckedUpdateWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
-  moduleId?: Prisma.StringFieldUpdateOperationsInput | string
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  moduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ProfilePermissionUncheckedUpdateManyWithoutProfileInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   action?: Prisma.EnumPermissionActionFieldUpdateOperationsInput | $Enums.PermissionAction
-  moduleId?: Prisma.StringFieldUpdateOperationsInput | string
+  scope?: Prisma.EnumScopeTypeFieldUpdateOperationsInput | $Enums.ScopeType
+  moduleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -532,61 +731,78 @@ export type ProfilePermissionSelect<ExtArgs extends runtime.Types.Extensions.Int
   id?: boolean
   profileId?: boolean
   action?: boolean
+  scope?: boolean
   moduleId?: boolean
+  appId?: boolean
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
-  module?: boolean | Prisma.ModuleDefaultArgs<ExtArgs>
+  module?: boolean | Prisma.ProfilePermission$moduleArgs<ExtArgs>
+  app?: boolean | Prisma.ProfilePermission$appArgs<ExtArgs>
 }, ExtArgs["result"]["profilePermission"]>
 
 export type ProfilePermissionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   profileId?: boolean
   action?: boolean
+  scope?: boolean
   moduleId?: boolean
+  appId?: boolean
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
-  module?: boolean | Prisma.ModuleDefaultArgs<ExtArgs>
+  module?: boolean | Prisma.ProfilePermission$moduleArgs<ExtArgs>
+  app?: boolean | Prisma.ProfilePermission$appArgs<ExtArgs>
 }, ExtArgs["result"]["profilePermission"]>
 
 export type ProfilePermissionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   profileId?: boolean
   action?: boolean
+  scope?: boolean
   moduleId?: boolean
+  appId?: boolean
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
-  module?: boolean | Prisma.ModuleDefaultArgs<ExtArgs>
+  module?: boolean | Prisma.ProfilePermission$moduleArgs<ExtArgs>
+  app?: boolean | Prisma.ProfilePermission$appArgs<ExtArgs>
 }, ExtArgs["result"]["profilePermission"]>
 
 export type ProfilePermissionSelectScalar = {
   id?: boolean
   profileId?: boolean
   action?: boolean
+  scope?: boolean
   moduleId?: boolean
+  appId?: boolean
 }
 
-export type ProfilePermissionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "profileId" | "action" | "moduleId", ExtArgs["result"]["profilePermission"]>
+export type ProfilePermissionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "profileId" | "action" | "scope" | "moduleId" | "appId", ExtArgs["result"]["profilePermission"]>
 export type ProfilePermissionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
-  module?: boolean | Prisma.ModuleDefaultArgs<ExtArgs>
+  module?: boolean | Prisma.ProfilePermission$moduleArgs<ExtArgs>
+  app?: boolean | Prisma.ProfilePermission$appArgs<ExtArgs>
 }
 export type ProfilePermissionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
-  module?: boolean | Prisma.ModuleDefaultArgs<ExtArgs>
+  module?: boolean | Prisma.ProfilePermission$moduleArgs<ExtArgs>
+  app?: boolean | Prisma.ProfilePermission$appArgs<ExtArgs>
 }
 export type ProfilePermissionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
-  module?: boolean | Prisma.ModuleDefaultArgs<ExtArgs>
+  module?: boolean | Prisma.ProfilePermission$moduleArgs<ExtArgs>
+  app?: boolean | Prisma.ProfilePermission$appArgs<ExtArgs>
 }
 
 export type $ProfilePermissionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ProfilePermission"
   objects: {
     profile: Prisma.$ProfilePayload<ExtArgs>
-    module: Prisma.$ModulePayload<ExtArgs>
+    module: Prisma.$ModulePayload<ExtArgs> | null
+    app: Prisma.$AppPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     profileId: string
     action: $Enums.PermissionAction
-    moduleId: string
+    scope: $Enums.ScopeType
+    moduleId: string | null
+    appId: string | null
   }, ExtArgs["result"]["profilePermission"]>
   composites: {}
 }
@@ -982,7 +1198,8 @@ readonly fields: ProfilePermissionFieldRefs;
 export interface Prisma__ProfilePermissionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   profile<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  module<T extends Prisma.ModuleDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ModuleDefaultArgs<ExtArgs>>): Prisma.Prisma__ModuleClient<runtime.Types.Result.GetResult<Prisma.$ModulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  module<T extends Prisma.ProfilePermission$moduleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfilePermission$moduleArgs<ExtArgs>>): Prisma.Prisma__ModuleClient<runtime.Types.Result.GetResult<Prisma.$ModulePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  app<T extends Prisma.ProfilePermission$appArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfilePermission$appArgs<ExtArgs>>): Prisma.Prisma__AppClient<runtime.Types.Result.GetResult<Prisma.$AppPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1015,7 +1232,9 @@ export interface ProfilePermissionFieldRefs {
   readonly id: Prisma.FieldRef<"ProfilePermission", 'String'>
   readonly profileId: Prisma.FieldRef<"ProfilePermission", 'String'>
   readonly action: Prisma.FieldRef<"ProfilePermission", 'PermissionAction'>
+  readonly scope: Prisma.FieldRef<"ProfilePermission", 'ScopeType'>
   readonly moduleId: Prisma.FieldRef<"ProfilePermission", 'String'>
+  readonly appId: Prisma.FieldRef<"ProfilePermission", 'String'>
 }
     
 
@@ -1414,6 +1633,44 @@ export type ProfilePermissionDeleteManyArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many ProfilePermissions to delete.
    */
   limit?: number
+}
+
+/**
+ * ProfilePermission.module
+ */
+export type ProfilePermission$moduleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Module
+   */
+  select?: Prisma.ModuleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Module
+   */
+  omit?: Prisma.ModuleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ModuleInclude<ExtArgs> | null
+  where?: Prisma.ModuleWhereInput
+}
+
+/**
+ * ProfilePermission.app
+ */
+export type ProfilePermission$appArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the App
+   */
+  select?: Prisma.AppSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the App
+   */
+  omit?: Prisma.AppOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AppInclude<ExtArgs> | null
+  where?: Prisma.AppWhereInput
 }
 
 /**

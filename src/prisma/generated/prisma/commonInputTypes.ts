@@ -157,6 +157,13 @@ export type EnumPermissionActionFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPermissionActionFilter<$PrismaModel> | $Enums.PermissionAction
 }
 
+export type EnumScopeTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ScopeType | Prisma.EnumScopeTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ScopeType[] | Prisma.ListEnumScopeTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ScopeType[] | Prisma.ListEnumScopeTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumScopeTypeFilter<$PrismaModel> | $Enums.ScopeType
+}
+
 export type EnumPermissionActionWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.PermissionAction | Prisma.EnumPermissionActionFieldRefInput<$PrismaModel>
   in?: $Enums.PermissionAction[] | Prisma.ListEnumPermissionActionFieldRefInput<$PrismaModel>
@@ -165,6 +172,16 @@ export type EnumPermissionActionWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPermissionActionFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPermissionActionFilter<$PrismaModel>
+}
+
+export type EnumScopeTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ScopeType | Prisma.EnumScopeTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ScopeType[] | Prisma.ListEnumScopeTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ScopeType[] | Prisma.ListEnumScopeTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumScopeTypeWithAggregatesFilter<$PrismaModel> | $Enums.ScopeType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumScopeTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumScopeTypeFilter<$PrismaModel>
 }
 
 export type DecimalNullableFilter<$PrismaModel = never> = {
@@ -243,6 +260,23 @@ export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
   _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedJsonNullableFilter<$PrismaModel>
   _max?: Prisma.NestedJsonNullableFilter<$PrismaModel>
+}
+
+export type EnumTemplateOwnerTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.TemplateOwnerType | Prisma.EnumTemplateOwnerTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TemplateOwnerType[] | Prisma.ListEnumTemplateOwnerTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TemplateOwnerType[] | Prisma.ListEnumTemplateOwnerTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTemplateOwnerTypeFilter<$PrismaModel> | $Enums.TemplateOwnerType
+}
+
+export type EnumTemplateOwnerTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TemplateOwnerType | Prisma.EnumTemplateOwnerTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TemplateOwnerType[] | Prisma.ListEnumTemplateOwnerTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TemplateOwnerType[] | Prisma.ListEnumTemplateOwnerTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTemplateOwnerTypeWithAggregatesFilter<$PrismaModel> | $Enums.TemplateOwnerType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTemplateOwnerTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTemplateOwnerTypeFilter<$PrismaModel>
 }
 
 export type EnumStrategyTypeFilter<$PrismaModel = never> = {
@@ -775,6 +809,13 @@ export type NestedEnumPermissionActionFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumPermissionActionFilter<$PrismaModel> | $Enums.PermissionAction
 }
 
+export type NestedEnumScopeTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.ScopeType | Prisma.EnumScopeTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ScopeType[] | Prisma.ListEnumScopeTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ScopeType[] | Prisma.ListEnumScopeTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumScopeTypeFilter<$PrismaModel> | $Enums.ScopeType
+}
+
 export type NestedEnumPermissionActionWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.PermissionAction | Prisma.EnumPermissionActionFieldRefInput<$PrismaModel>
   in?: $Enums.PermissionAction[] | Prisma.ListEnumPermissionActionFieldRefInput<$PrismaModel>
@@ -783,6 +824,16 @@ export type NestedEnumPermissionActionWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumPermissionActionFilter<$PrismaModel>
   _max?: Prisma.NestedEnumPermissionActionFilter<$PrismaModel>
+}
+
+export type NestedEnumScopeTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ScopeType | Prisma.EnumScopeTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.ScopeType[] | Prisma.ListEnumScopeTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ScopeType[] | Prisma.ListEnumScopeTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumScopeTypeWithAggregatesFilter<$PrismaModel> | $Enums.ScopeType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumScopeTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumScopeTypeFilter<$PrismaModel>
 }
 
 export type NestedDecimalNullableFilter<$PrismaModel = never> = {
@@ -834,6 +885,23 @@ export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
   gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type NestedEnumTemplateOwnerTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.TemplateOwnerType | Prisma.EnumTemplateOwnerTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TemplateOwnerType[] | Prisma.ListEnumTemplateOwnerTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TemplateOwnerType[] | Prisma.ListEnumTemplateOwnerTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTemplateOwnerTypeFilter<$PrismaModel> | $Enums.TemplateOwnerType
+}
+
+export type NestedEnumTemplateOwnerTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TemplateOwnerType | Prisma.EnumTemplateOwnerTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.TemplateOwnerType[] | Prisma.ListEnumTemplateOwnerTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TemplateOwnerType[] | Prisma.ListEnumTemplateOwnerTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTemplateOwnerTypeWithAggregatesFilter<$PrismaModel> | $Enums.TemplateOwnerType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTemplateOwnerTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTemplateOwnerTypeFilter<$PrismaModel>
 }
 
 export type NestedEnumStrategyTypeFilter<$PrismaModel = never> = {

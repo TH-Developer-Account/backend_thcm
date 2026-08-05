@@ -1,4 +1,4 @@
-import { prisma } from "../config/prisma";
+import { prisma } from "@shared/config/prisma";
 import { faker } from "@faker-js/faker";
 import {
   MARKETING_ACTIVITY_PLANNER,

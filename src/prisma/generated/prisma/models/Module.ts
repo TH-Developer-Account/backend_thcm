@@ -352,9 +352,9 @@ export type ModuleMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
-export type ModuleScalarRelationFilter = {
-  is?: Prisma.ModuleWhereInput
-  isNot?: Prisma.ModuleWhereInput
+export type ModuleNullableScalarRelationFilter = {
+  is?: Prisma.ModuleWhereInput | null
+  isNot?: Prisma.ModuleWhereInput | null
 }
 
 export type ModuleCreateNestedManyWithoutAppInput = {
@@ -405,10 +405,12 @@ export type ModuleCreateNestedOneWithoutProfilePermissionsInput = {
   connect?: Prisma.ModuleWhereUniqueInput
 }
 
-export type ModuleUpdateOneRequiredWithoutProfilePermissionsNestedInput = {
+export type ModuleUpdateOneWithoutProfilePermissionsNestedInput = {
   create?: Prisma.XOR<Prisma.ModuleCreateWithoutProfilePermissionsInput, Prisma.ModuleUncheckedCreateWithoutProfilePermissionsInput>
   connectOrCreate?: Prisma.ModuleCreateOrConnectWithoutProfilePermissionsInput
   upsert?: Prisma.ModuleUpsertWithoutProfilePermissionsInput
+  disconnect?: Prisma.ModuleWhereInput | boolean
+  delete?: Prisma.ModuleWhereInput | boolean
   connect?: Prisma.ModuleWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ModuleUpdateToOneWithWhereWithoutProfilePermissionsInput, Prisma.ModuleUpdateWithoutProfilePermissionsInput>, Prisma.ModuleUncheckedUpdateWithoutProfilePermissionsInput>
 }

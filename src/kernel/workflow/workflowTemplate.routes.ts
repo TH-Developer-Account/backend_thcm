@@ -9,6 +9,7 @@ import {
   getTemplates,
   getTemplateById,
   assignUsersToWorkflow,
+  attachWorkflowController,
 } from "./workflowTemplate.controller";
 
 const router = Router();
@@ -17,6 +18,7 @@ router.use(requireAuth); // sets req.user
 router.use(firstAuthRequestPerDay);
 
 router.post("/assign-profile", asyncHandler(assignUsersToWorkflow));
+router.post("/attach", asyncHandler(attachWorkflowController));
 router.post("/", asyncHandler(createTemplateController));
 
 router.post("/update/:templateId", asyncHandler(updateTemplate));

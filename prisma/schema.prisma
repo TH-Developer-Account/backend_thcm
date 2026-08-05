@@ -16,6 +16,11 @@ enum PermissionAction {
   write
 }
 
+enum TemplateOwnerType {
+  ADMIN
+  USER
+}
+
 enum VendorAccessTokenPurpose {
   FORM_ACCESS
   VIEW_PDF
@@ -23,6 +28,7 @@ enum VendorAccessTokenPurpose {
 
 enum ScopeType {
   MODULE
+  APP
 }
 
 enum StrategyType {
@@ -264,9 +270,10 @@ model App {
   key  String @unique
   name String
 
-  workspaceApps    WorkspaceApp[]
-  modules          Module[]
-  workFlowTemplate WorkflowTemplate[]
+  workspaceApps      WorkspaceApp[]
+  modules            Module[]
+  workFlowTemplate   WorkflowTemplate[]
+  profilePermissions ProfilePermission[]   
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
@@ -324,13 +331,18 @@ model ProfilePermission {
   id        String           @id @default(uuid())
   profileId String
   action    PermissionAction
-  moduleId  String
+  scope     ScopeType        @default(MODULE)   // ✅ NEW
+  moduleId  String?                              // ← was required, now optional
+  appId     String?                              // ✅ NEW
 
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  module  Module  @relation(fields: [moduleId], references: [id])
+  module  Module? @relation(fields: [moduleId], references: [id])   // ← was required
+  app     App?    @relation(fields: [appId], references: [id])       // ✅ NEW
 
   @@unique([profileId, action, moduleId])
+  @@unique([profileId, action, appId])   // ✅ NEW
   @@index([profileId, moduleId])
+  @@index([profileId, appId])            // ✅ NEW
 }
 
 model UserProfile {
@@ -411,6 +423,8 @@ model WorkflowTemplate {
   workspaceId String
   isActive    Boolean @default(true)
   appId       String
+  ownerType  TemplateOwnerType @default(ADMIN)
+  isReusable Boolean           @default(true)
   metaData_1  String
   metaData_2  String
   metaData_3  String
@@ -428,6 +442,9 @@ model WorkflowTemplate {
   workspace  Workspace        @relation(fields: [workspaceId], references: [id])
   created_by User             @relation("WorkFlowCreatedBy", fields: [created_by_id], references: [id])
   updated_by User             @relation("WorkFlowUpdatedBy", fields: [updated_by_id], references: [id])
+
+  @@index([ownerType])      
+  @@index([isReusable]) 
 }
 
 model TemplateStage {
