@@ -1,4 +1,4 @@
-import { ResolvedPermission } from "../utils/userPermission";
+import { ResolvedPermission } from "../kernel/rbac/userPermission";
 import {
   VendorAccessToken,
   VendorOnboarding,
@@ -6,27 +6,36 @@ import {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Extend Express's Request type so TypeScript knows about req.user
+//
+// Express 5's own types route Request.user through Express.User (this used
+// to be a Passport convention; Express 5 baked it into core). Augmenting
+// Express.Request.user directly (the old Express 4 pattern) no longer merges
+// — Request.user is typed as Express.User | undefined, so Express.User is
+// what needs augmenting.
 // ─────────────────────────────────────────────────────────────────────────────
 
 declare global {
   namespace Express {
+    interface User {
+      id: string;
+      email: string;
+      workspaceId: string;
+      isSuperAdmin: boolean;
+      permissions: ResolvedPermission[];
+    }
+
     interface Request {
-      user?: {
-        id: string;
-        email: string;
-        workspaceId: string;
-        isSuperAdmin: boolean;
-        // Flat list of scoped permission rules — replaces the old nested map.
-        // Old: { MAP: { EPC: ["read", "write"] } }
-        // New: [{ action: "write", scopeType: "APP", appKey: "MAP", moduleKey: null }]
-        //
-        // The flat array is simpler to reason about because one WORKSPACE-scoped
-        // "read" row now covers every app/module — no expansion needed.
-        permissions: ResolvedPermission[];
-      };
       vendorAccessToken?: VendorAccessToken & {
         onboarding: VendorOnboarding;
       };
     }
   }
 }
+
+export type AuthenticatedUser = {
+  id: string;
+  email: string;
+  workspaceId: string;
+  isSuperAdmin: boolean;
+  permissions: ResolvedPermission[];
+};

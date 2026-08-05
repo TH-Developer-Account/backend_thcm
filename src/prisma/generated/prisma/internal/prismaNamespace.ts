@@ -3791,7 +3791,9 @@ export const ProfilePermissionScalarFieldEnum = {
   id: 'id',
   profileId: 'profileId',
   action: 'action',
-  moduleId: 'moduleId'
+  scope: 'scope',
+  moduleId: 'moduleId',
+  appId: 'appId'
 } as const
 
 export type ProfilePermissionScalarFieldEnum = (typeof ProfilePermissionScalarFieldEnum)[keyof typeof ProfilePermissionScalarFieldEnum]
@@ -3846,6 +3848,8 @@ export const WorkflowTemplateScalarFieldEnum = {
   workspaceId: 'workspaceId',
   isActive: 'isActive',
   appId: 'appId',
+  ownerType: 'ownerType',
+  isReusable: 'isReusable',
   metaData_1: 'metaData_1',
   metaData_2: 'metaData_2',
   metaData_3: 'metaData_3',
@@ -4416,6 +4420,20 @@ export type ListEnumPermissionActionFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
+ * Reference to a field of type 'ScopeType'
+ */
+export type EnumScopeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScopeType'>
+    
+
+
+/**
+ * Reference to a field of type 'ScopeType[]'
+ */
+export type ListEnumScopeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScopeType[]'>
+    
+
+
+/**
  * Reference to a field of type 'Decimal'
  */
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -4440,6 +4458,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'TemplateOwnerType'
+ */
+export type EnumTemplateOwnerTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TemplateOwnerType'>
+    
+
+
+/**
+ * Reference to a field of type 'TemplateOwnerType[]'
+ */
+export type ListEnumTemplateOwnerTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TemplateOwnerType[]'>
     
 
 

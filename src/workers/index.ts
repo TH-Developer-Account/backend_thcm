@@ -1,22 +1,25 @@
 import { Worker, Job } from "bullmq";
-import { redisConnectionQueue } from "../config/redis";
-import { LeadImportJobData, LeadExportJobData } from "../queues/lead.queue";
-import { EpcExportJobData } from "../queues/epc.queue";
-import { importLeadsFromS3 } from "../services/leadImport.services";
-import { exportLeadsToBuffer } from "../services/leadExport.services";
-import { exportEpcsToS3 } from "../services/epcExport.services";
+
+import { redisConnectionQueue } from "@shared/config/redis";
+import {
+  uploadBufferToS3,
+  getSignedReportUrl,
+} from "@shared/utils/aws-s3.services";
+
+import { deliverNotification } from "@notifications/notification.services";
+import { NotificationDeliveryJobData } from "@notifications/notification.queue";
 import {
   markLogProcessing,
   markLogCompleted,
   markLogFailed,
-} from "../services/importExportLog.services";
-import { buildAndUploadErrorExcel } from "../utils/errorExcelBuilder";
-import {
-  uploadBufferToS3,
-  getSignedReportUrl,
-} from "../services/aws-s3.services";
-import { deliverNotification } from "../services/notification.services";
-import { NotificationDeliveryJobData } from "../queues/notification.queue";
+} from "@import-export/importExportLog.services";
+import { buildAndUploadErrorExcel } from "@import-export/utils/errorExcelBuilder";
+
+import { LeadImportJobData, LeadExportJobData } from "@leads/lead.queue";
+import { importLeadsFromS3 } from "@leads/leadImport.services";
+import { exportLeadsToBuffer } from "@leads/leadExport.services";
+import { EpcExportJobData } from "@map/epc.queue";
+import { exportEpcsToS3 } from "@map/epcExport.services";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // workers/index.ts — BullMQ worker definitions

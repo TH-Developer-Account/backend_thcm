@@ -236,7 +236,9 @@ export const ProfilePermissionScalarFieldEnum = {
   id: 'id',
   profileId: 'profileId',
   action: 'action',
-  moduleId: 'moduleId'
+  scope: 'scope',
+  moduleId: 'moduleId',
+  appId: 'appId'
 } as const
 
 export type ProfilePermissionScalarFieldEnum = (typeof ProfilePermissionScalarFieldEnum)[keyof typeof ProfilePermissionScalarFieldEnum]
@@ -291,6 +293,8 @@ export const WorkflowTemplateScalarFieldEnum = {
   workspaceId: 'workspaceId',
   isActive: 'isActive',
   appId: 'appId',
+  ownerType: 'ownerType',
+  isReusable: 'isReusable',
   metaData_1: 'metaData_1',
   metaData_2: 'metaData_2',
   metaData_3: 'metaData_3',

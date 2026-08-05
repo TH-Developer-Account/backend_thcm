@@ -31,6 +31,8 @@ export type WorkflowTemplateMinAggregateOutputType = {
   workspaceId: string | null
   isActive: boolean | null
   appId: string | null
+  ownerType: $Enums.TemplateOwnerType | null
+  isReusable: boolean | null
   metaData_1: string | null
   metaData_2: string | null
   metaData_3: string | null
@@ -47,6 +49,8 @@ export type WorkflowTemplateMaxAggregateOutputType = {
   workspaceId: string | null
   isActive: boolean | null
   appId: string | null
+  ownerType: $Enums.TemplateOwnerType | null
+  isReusable: boolean | null
   metaData_1: string | null
   metaData_2: string | null
   metaData_3: string | null
@@ -63,6 +67,8 @@ export type WorkflowTemplateCountAggregateOutputType = {
   workspaceId: number
   isActive: number
   appId: number
+  ownerType: number
+  isReusable: number
   metaData_1: number
   metaData_2: number
   metaData_3: number
@@ -81,6 +87,8 @@ export type WorkflowTemplateMinAggregateInputType = {
   workspaceId?: true
   isActive?: true
   appId?: true
+  ownerType?: true
+  isReusable?: true
   metaData_1?: true
   metaData_2?: true
   metaData_3?: true
@@ -97,6 +105,8 @@ export type WorkflowTemplateMaxAggregateInputType = {
   workspaceId?: true
   isActive?: true
   appId?: true
+  ownerType?: true
+  isReusable?: true
   metaData_1?: true
   metaData_2?: true
   metaData_3?: true
@@ -113,6 +123,8 @@ export type WorkflowTemplateCountAggregateInputType = {
   workspaceId?: true
   isActive?: true
   appId?: true
+  ownerType?: true
+  isReusable?: true
   metaData_1?: true
   metaData_2?: true
   metaData_3?: true
@@ -202,6 +214,8 @@ export type WorkflowTemplateGroupByOutputType = {
   workspaceId: string
   isActive: boolean
   appId: string
+  ownerType: $Enums.TemplateOwnerType
+  isReusable: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -239,6 +253,8 @@ export type WorkflowTemplateWhereInput = {
   workspaceId?: Prisma.StringFilter<"WorkflowTemplate"> | string
   isActive?: Prisma.BoolFilter<"WorkflowTemplate"> | boolean
   appId?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFilter<"WorkflowTemplate"> | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFilter<"WorkflowTemplate"> | boolean
   metaData_1?: Prisma.StringFilter<"WorkflowTemplate"> | string
   metaData_2?: Prisma.StringFilter<"WorkflowTemplate"> | string
   metaData_3?: Prisma.StringFilter<"WorkflowTemplate"> | string
@@ -262,6 +278,8 @@ export type WorkflowTemplateOrderByWithRelationInput = {
   workspaceId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   appId?: Prisma.SortOrder
+  ownerType?: Prisma.SortOrder
+  isReusable?: Prisma.SortOrder
   metaData_1?: Prisma.SortOrder
   metaData_2?: Prisma.SortOrder
   metaData_3?: Prisma.SortOrder
@@ -288,6 +306,8 @@ export type WorkflowTemplateWhereUniqueInput = Prisma.AtLeast<{
   workspaceId?: Prisma.StringFilter<"WorkflowTemplate"> | string
   isActive?: Prisma.BoolFilter<"WorkflowTemplate"> | boolean
   appId?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFilter<"WorkflowTemplate"> | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFilter<"WorkflowTemplate"> | boolean
   metaData_1?: Prisma.StringFilter<"WorkflowTemplate"> | string
   metaData_2?: Prisma.StringFilter<"WorkflowTemplate"> | string
   metaData_3?: Prisma.StringFilter<"WorkflowTemplate"> | string
@@ -311,6 +331,8 @@ export type WorkflowTemplateOrderByWithAggregationInput = {
   workspaceId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   appId?: Prisma.SortOrder
+  ownerType?: Prisma.SortOrder
+  isReusable?: Prisma.SortOrder
   metaData_1?: Prisma.SortOrder
   metaData_2?: Prisma.SortOrder
   metaData_3?: Prisma.SortOrder
@@ -333,6 +355,8 @@ export type WorkflowTemplateScalarWhereWithAggregatesInput = {
   workspaceId?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
   isActive?: Prisma.BoolWithAggregatesFilter<"WorkflowTemplate"> | boolean
   appId?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeWithAggregatesFilter<"WorkflowTemplate"> | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolWithAggregatesFilter<"WorkflowTemplate"> | boolean
   metaData_1?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
   metaData_2?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
   metaData_3?: Prisma.StringWithAggregatesFilter<"WorkflowTemplate"> | string
@@ -347,6 +371,8 @@ export type WorkflowTemplateCreateInput = {
   name: string
   description: string
   isActive?: boolean
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -368,6 +394,8 @@ export type WorkflowTemplateUncheckedCreateInput = {
   workspaceId: string
   isActive?: boolean
   appId: string
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -385,6 +413,8 @@ export type WorkflowTemplateUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -406,6 +436,8 @@ export type WorkflowTemplateUncheckedUpdateInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -425,6 +457,8 @@ export type WorkflowTemplateCreateManyInput = {
   workspaceId: string
   isActive?: boolean
   appId: string
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -439,6 +473,8 @@ export type WorkflowTemplateUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -453,6 +489,8 @@ export type WorkflowTemplateUncheckedUpdateManyInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -479,6 +517,8 @@ export type WorkflowTemplateCountOrderByAggregateInput = {
   workspaceId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   appId?: Prisma.SortOrder
+  ownerType?: Prisma.SortOrder
+  isReusable?: Prisma.SortOrder
   metaData_1?: Prisma.SortOrder
   metaData_2?: Prisma.SortOrder
   metaData_3?: Prisma.SortOrder
@@ -495,6 +535,8 @@ export type WorkflowTemplateMaxOrderByAggregateInput = {
   workspaceId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   appId?: Prisma.SortOrder
+  ownerType?: Prisma.SortOrder
+  isReusable?: Prisma.SortOrder
   metaData_1?: Prisma.SortOrder
   metaData_2?: Prisma.SortOrder
   metaData_3?: Prisma.SortOrder
@@ -511,6 +553,8 @@ export type WorkflowTemplateMinOrderByAggregateInput = {
   workspaceId?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   appId?: Prisma.SortOrder
+  ownerType?: Prisma.SortOrder
+  isReusable?: Prisma.SortOrder
   metaData_1?: Prisma.SortOrder
   metaData_2?: Prisma.SortOrder
   metaData_3?: Prisma.SortOrder
@@ -693,6 +737,10 @@ export type WorkflowTemplateUncheckedUpdateManyWithoutAppNestedInput = {
   deleteMany?: Prisma.WorkflowTemplateScalarWhereInput | Prisma.WorkflowTemplateScalarWhereInput[]
 }
 
+export type EnumTemplateOwnerTypeFieldUpdateOperationsInput = {
+  set?: $Enums.TemplateOwnerType
+}
+
 export type WorkflowTemplateCreateNestedOneWithoutStagesInput = {
   create?: Prisma.XOR<Prisma.WorkflowTemplateCreateWithoutStagesInput, Prisma.WorkflowTemplateUncheckedCreateWithoutStagesInput>
   connectOrCreate?: Prisma.WorkflowTemplateCreateOrConnectWithoutStagesInput
@@ -740,6 +788,8 @@ export type WorkflowTemplateCreateWithoutCreated_byInput = {
   name: string
   description: string
   isActive?: boolean
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -760,6 +810,8 @@ export type WorkflowTemplateUncheckedCreateWithoutCreated_byInput = {
   workspaceId: string
   isActive?: boolean
   appId: string
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -786,6 +838,8 @@ export type WorkflowTemplateCreateWithoutUpdated_byInput = {
   name: string
   description: string
   isActive?: boolean
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -806,6 +860,8 @@ export type WorkflowTemplateUncheckedCreateWithoutUpdated_byInput = {
   workspaceId: string
   isActive?: boolean
   appId: string
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -853,6 +909,8 @@ export type WorkflowTemplateScalarWhereInput = {
   workspaceId?: Prisma.StringFilter<"WorkflowTemplate"> | string
   isActive?: Prisma.BoolFilter<"WorkflowTemplate"> | boolean
   appId?: Prisma.StringFilter<"WorkflowTemplate"> | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFilter<"WorkflowTemplate"> | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFilter<"WorkflowTemplate"> | boolean
   metaData_1?: Prisma.StringFilter<"WorkflowTemplate"> | string
   metaData_2?: Prisma.StringFilter<"WorkflowTemplate"> | string
   metaData_3?: Prisma.StringFilter<"WorkflowTemplate"> | string
@@ -883,6 +941,8 @@ export type WorkflowTemplateCreateWithoutWorkspaceInput = {
   name: string
   description: string
   isActive?: boolean
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -902,6 +962,8 @@ export type WorkflowTemplateUncheckedCreateWithoutWorkspaceInput = {
   description: string
   isActive?: boolean
   appId: string
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -945,6 +1007,8 @@ export type WorkflowTemplateCreateWithoutAppInput = {
   name: string
   description: string
   isActive?: boolean
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -964,6 +1028,8 @@ export type WorkflowTemplateUncheckedCreateWithoutAppInput = {
   description: string
   workspaceId: string
   isActive?: boolean
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -1007,6 +1073,8 @@ export type WorkflowTemplateCreateWithoutStagesInput = {
   name: string
   description: string
   isActive?: boolean
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -1027,6 +1095,8 @@ export type WorkflowTemplateUncheckedCreateWithoutStagesInput = {
   workspaceId: string
   isActive?: boolean
   appId: string
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -1059,6 +1129,8 @@ export type WorkflowTemplateUpdateWithoutStagesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1079,6 +1151,8 @@ export type WorkflowTemplateUncheckedUpdateWithoutStagesInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1095,6 +1169,8 @@ export type WorkflowTemplateCreateWithoutWorkflowInstancesInput = {
   name: string
   description: string
   isActive?: boolean
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -1115,6 +1191,8 @@ export type WorkflowTemplateUncheckedCreateWithoutWorkflowInstancesInput = {
   workspaceId: string
   isActive?: boolean
   appId: string
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -1147,6 +1225,8 @@ export type WorkflowTemplateUpdateWithoutWorkflowInstancesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1167,6 +1247,8 @@ export type WorkflowTemplateUncheckedUpdateWithoutWorkflowInstancesInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1183,6 +1265,8 @@ export type WorkflowTemplateCreateWithoutWorkFlowUsersInput = {
   name: string
   description: string
   isActive?: boolean
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -1203,6 +1287,8 @@ export type WorkflowTemplateUncheckedCreateWithoutWorkFlowUsersInput = {
   workspaceId: string
   isActive?: boolean
   appId: string
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -1235,6 +1321,8 @@ export type WorkflowTemplateUpdateWithoutWorkFlowUsersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1255,6 +1343,8 @@ export type WorkflowTemplateUncheckedUpdateWithoutWorkFlowUsersInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1273,6 +1363,8 @@ export type WorkflowTemplateCreateManyCreated_byInput = {
   workspaceId: string
   isActive?: boolean
   appId: string
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -1288,6 +1380,8 @@ export type WorkflowTemplateCreateManyUpdated_byInput = {
   workspaceId: string
   isActive?: boolean
   appId: string
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -1301,6 +1395,8 @@ export type WorkflowTemplateUpdateWithoutCreated_byInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1321,6 +1417,8 @@ export type WorkflowTemplateUncheckedUpdateWithoutCreated_byInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1339,6 +1437,8 @@ export type WorkflowTemplateUncheckedUpdateManyWithoutCreated_byInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1352,6 +1452,8 @@ export type WorkflowTemplateUpdateWithoutUpdated_byInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1372,6 +1474,8 @@ export type WorkflowTemplateUncheckedUpdateWithoutUpdated_byInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1390,6 +1494,8 @@ export type WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byInput = {
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1404,6 +1510,8 @@ export type WorkflowTemplateCreateManyWorkspaceInput = {
   description: string
   isActive?: boolean
   appId: string
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -1418,6 +1526,8 @@ export type WorkflowTemplateUpdateWithoutWorkspaceInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1437,6 +1547,8 @@ export type WorkflowTemplateUncheckedUpdateWithoutWorkspaceInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1455,6 +1567,8 @@ export type WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   appId?: Prisma.StringFieldUpdateOperationsInput | string
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1470,6 +1584,8 @@ export type WorkflowTemplateCreateManyAppInput = {
   description: string
   workspaceId: string
   isActive?: boolean
+  ownerType?: $Enums.TemplateOwnerType
+  isReusable?: boolean
   metaData_1: string
   metaData_2: string
   metaData_3: string
@@ -1484,6 +1600,8 @@ export type WorkflowTemplateUpdateWithoutAppInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1503,6 +1621,8 @@ export type WorkflowTemplateUncheckedUpdateWithoutAppInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1521,6 +1641,8 @@ export type WorkflowTemplateUncheckedUpdateManyWithoutAppInput = {
   description?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ownerType?: Prisma.EnumTemplateOwnerTypeFieldUpdateOperationsInput | $Enums.TemplateOwnerType
+  isReusable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   metaData_1?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_2?: Prisma.StringFieldUpdateOperationsInput | string
   metaData_3?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1586,6 +1708,8 @@ export type WorkflowTemplateSelect<ExtArgs extends runtime.Types.Extensions.Inte
   workspaceId?: boolean
   isActive?: boolean
   appId?: boolean
+  ownerType?: boolean
+  isReusable?: boolean
   metaData_1?: boolean
   metaData_2?: boolean
   metaData_3?: boolean
@@ -1610,6 +1734,8 @@ export type WorkflowTemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   workspaceId?: boolean
   isActive?: boolean
   appId?: boolean
+  ownerType?: boolean
+  isReusable?: boolean
   metaData_1?: boolean
   metaData_2?: boolean
   metaData_3?: boolean
@@ -1630,6 +1756,8 @@ export type WorkflowTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   workspaceId?: boolean
   isActive?: boolean
   appId?: boolean
+  ownerType?: boolean
+  isReusable?: boolean
   metaData_1?: boolean
   metaData_2?: boolean
   metaData_3?: boolean
@@ -1650,6 +1778,8 @@ export type WorkflowTemplateSelectScalar = {
   workspaceId?: boolean
   isActive?: boolean
   appId?: boolean
+  ownerType?: boolean
+  isReusable?: boolean
   metaData_1?: boolean
   metaData_2?: boolean
   metaData_3?: boolean
@@ -1659,7 +1789,7 @@ export type WorkflowTemplateSelectScalar = {
   updated_at?: boolean
 }
 
-export type WorkflowTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "workspaceId" | "isActive" | "appId" | "metaData_1" | "metaData_2" | "metaData_3" | "created_by_id" | "updated_by_id" | "created_at" | "updated_at", ExtArgs["result"]["workflowTemplate"]>
+export type WorkflowTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "workspaceId" | "isActive" | "appId" | "ownerType" | "isReusable" | "metaData_1" | "metaData_2" | "metaData_3" | "created_by_id" | "updated_by_id" | "created_at" | "updated_at", ExtArgs["result"]["workflowTemplate"]>
 export type WorkflowTemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   stages?: boolean | Prisma.WorkflowTemplate$stagesArgs<ExtArgs>
   workflowInstances?: boolean | Prisma.WorkflowTemplate$workflowInstancesArgs<ExtArgs>
@@ -1701,6 +1831,8 @@ export type $WorkflowTemplatePayload<ExtArgs extends runtime.Types.Extensions.In
     workspaceId: string
     isActive: boolean
     appId: string
+    ownerType: $Enums.TemplateOwnerType
+    isReusable: boolean
     metaData_1: string
     metaData_2: string
     metaData_3: string
@@ -2144,6 +2276,8 @@ export interface WorkflowTemplateFieldRefs {
   readonly workspaceId: Prisma.FieldRef<"WorkflowTemplate", 'String'>
   readonly isActive: Prisma.FieldRef<"WorkflowTemplate", 'Boolean'>
   readonly appId: Prisma.FieldRef<"WorkflowTemplate", 'String'>
+  readonly ownerType: Prisma.FieldRef<"WorkflowTemplate", 'TemplateOwnerType'>
+  readonly isReusable: Prisma.FieldRef<"WorkflowTemplate", 'Boolean'>
   readonly metaData_1: Prisma.FieldRef<"WorkflowTemplate", 'String'>
   readonly metaData_2: Prisma.FieldRef<"WorkflowTemplate", 'String'>
   readonly metaData_3: Prisma.FieldRef<"WorkflowTemplate", 'String'>

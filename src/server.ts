@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import app from "./app";
-import logger from "./config/logger";
-import { startSseSubscriber } from "./events/sse.subscriber";
+import logger from "@shared/utils/logger";
+import { startSseSubscriber } from "@notifications/sse.subscriber";
 
 dotenv.config();
 const PORT = process.env.PORT || 9000;
