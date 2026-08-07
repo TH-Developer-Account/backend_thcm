@@ -1029,9 +1029,12 @@ model VendorOnboarding {
   vendorAuditReportPrepared Boolean?
   natureOfService           String?
   onboardingReason          String?
+  guestId                   String?
+
 
   workspace   Workspace                  @relation(fields: [workspaceId], references: [id])
   initiatedBy User                       @relation("VendorOnboardingInitiatedBy", fields: [initiatedById], references: [id])
+  guest   Guest? @relation(fields: [guestId], references: [id])
   documents   VendorOnboardingDocument[]
   accessTokens VendorAccessToken[]
 
@@ -1067,6 +1070,19 @@ model VendorAccessToken {
   onboarding VendorOnboarding @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
 
   @@index([onboardingId])
+}
+
+model Guest {
+  id        String   @id @default(uuid())
+  mobile    String?  @unique
+  email     String?  @unique
+  password  String?  
+  createdAt DateTime @default(now())
+
+  vendorOnboardings VendorOnboarding[]
+ 
+  @@index([mobile])
+  @@index([email])
 }
 
 

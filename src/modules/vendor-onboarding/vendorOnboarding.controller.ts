@@ -22,6 +22,7 @@ import {
   issueVendorAccessToken,
   markVendorAccessTokenUsed,
 } from "./vendorAccessToken.services";
+import { createGuestCredentials } from "@guest/guest.credential";
 
 import { getActiveWorkflowForSubject } from "@workflow/workflowSubject.helper";
 import {
@@ -682,7 +683,6 @@ export const submitVendorForm = async (
       mobile,
       email,
       msmeVendor,
-      msmeCertAttached,
       ndaObtained,
       bankName,
       bankBranch,
@@ -731,6 +731,11 @@ export const submitVendorForm = async (
       );
     }
 
+    // Escapes the transaction closure below — only set when a brand-new
+    // Guest is created, so the credentials email after commit knows
+    // whether it has anything to send.
+    let guestPlainPassword: string | undefined;
+
     await prisma.$transaction(async (tx) => {
       await tx.vendorOnboarding.update({
         where: { id: onboarding.id },
@@ -759,6 +764,34 @@ export const submitVendorForm = async (
         },
       });
 
+      // ── Guest linking ──────────────────────────────────────────────
+      // First submission creates the Guest row (mobile is this app's
+      // identity key); a re-submission (correction after clarify) finds
+      // the existing one and links nothing new.
+      if (mobile) {
+        const existingGuest = await tx.guest.findUnique({ where: { mobile } });
+        const guest =
+          existingGuest ?? (await tx.guest.create({ data: { mobile, email } }));
+
+        await tx.vendorOnboarding.update({
+          where: { id: onboarding.id },
+          data: { guestId: guest.id },
+        });
+
+        // Credentials are generated once, at creation, only if there's
+        // an email to send them to. An existing guest keeps whatever
+        // password (or lack of one) they already have.
+        if (!existingGuest && email) {
+          const { plainPassword, hashedPassword } =
+            await createGuestCredentials();
+          await tx.guest.update({
+            where: { id: guest.id },
+            data: { password: hashedPassword },
+          });
+          guestPlainPassword = plainPassword;
+        }
+      }
+
       await persistVendorDocuments(tx, onboarding.id, files);
       await markVendorAccessTokenUsed(tokenId, tx);
 
@@ -779,6 +812,19 @@ export const submitVendorForm = async (
         body: `${onboarding.vendorName ?? "The vendor"} has submitted their onboarding form. Please review.`,
       });
     });
+
+    if (guestPlainPassword) {
+      await addMailJob({
+        to: onboarding.email as string,
+        subject: "Your Guest Portal Login",
+        templateName: "guest-credentials",
+        templateData: {
+          email: onboarding.email,
+          password: guestPlainPassword,
+          loginUrl: `${process.env.FRONTEND_URL}/guest/login`,
+        },
+      });
+    }
 
     const viewToken = await issueVendorAccessToken(
       onboarding.id,
@@ -1047,6 +1093,63 @@ export const exportVendorOnboardingById = async (
     );
     res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
     res.send(buffer);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /vendor-onboarding/mine
+// Lists every onboarding tied to the authenticated guest — past + current.
+export const listGuestVendorOnboardings = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const guestId = req.guest!.id;
+
+    const onboardings = await prisma.vendorOnboarding.findMany({
+      where: { guestId },
+      select: {
+        id: true,
+        referenceNumber: true,
+        vendorName: true,
+        status: true,
+        vendorSubmittedAt: true,
+        created_at: true,
+      },
+      orderBy: { created_at: "desc" },
+    });
+
+    res.status(200).json({ success: true, onboardings });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /vendor-onboarding/mine/:id
+// Full record for one onboarding — scoped to guestId in the WHERE clause
+// itself, not checked after the fact. A guest requesting someone else's
+// id gets the same 404 as a nonexistent id (no existence leak).
+export const getGuestVendorOnboardingById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const guestId = req.guest!.id;
+    const { id } = req.params;
+
+    const onboarding = await prisma.vendorOnboarding.findFirst({
+      where: { id: id as string, guestId },
+      include: { documents: true },
+    });
+
+    if (!onboarding) {
+      throw new ApiError(404, "Onboarding record not found");
+    }
+
+    res.status(200).json({ success: true, onboarding });
   } catch (error) {
     next(error);
   }

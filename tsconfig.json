@@ -28,6 +28,7 @@
       /* Feature modules — the apps */
       "@map/*": ["./src/modules/map/*"],
       "@leads/*": ["./src/modules/leads/*"],
+      "@guest/*": ["./src/modules/guest/*"],
       "@vendor-onboarding/*": ["./src/modules/vendor-onboarding/*"],
       "@dia/*": ["./src/modules/dia/*"]
     }

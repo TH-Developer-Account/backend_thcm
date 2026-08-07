@@ -254,3 +254,8 @@ export type VendorOnboardingDocument = Prisma.VendorOnboardingDocumentModel
  * 
  */
 export type VendorAccessToken = Prisma.VendorAccessTokenModel
+/**
+ * Model Guest
+ * 
+ */
+export type Guest = Prisma.GuestModel
