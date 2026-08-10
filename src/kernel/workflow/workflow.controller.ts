@@ -717,12 +717,6 @@ export const activateFirstStageController = async (
 
     if (!userId) throw new ApiError(401, "Unauthorized");
     if (!workflowId) throw new ApiError(400, "workflowId is required");
-    if (stageEdits?.length && newTemplateId) {
-      throw new ApiError(
-        400,
-        "stageEdits and newTemplateId are mutually exclusive — provide at most one",
-      );
-    }
 
     const result = await prisma.$transaction(async (tx) => {
       // ── Step 1: Load the workflow + its current iteration's draft stages ──
@@ -791,6 +785,17 @@ export const activateFirstStageController = async (
 
         // Discard the draft built at clarify time — it reflected the old
         // template and is now stale, regardless of which change is applied.
+        // Approval rows must go first — StageInstance.deleteMany would
+        // otherwise hit the RESTRICT FK on Approval.stageId.
+        await tx.approval.deleteMany({
+          where: {
+            stage: {
+              workflowId: workflow.id,
+              isCurrentIteration: true,
+              iteration: workflow.iteration,
+            },
+          },
+        });
         await tx.stageInstance.deleteMany({
           where: {
             workflowId: workflow.id,
@@ -799,39 +804,43 @@ export const activateFirstStageController = async (
           },
         });
 
+        // ── Step A: resolve the base template — swapped or current ─────────
+        // newTemplateId present → assignment-checked swap.
+        // Otherwise → the workflow's existing template, unchanged.
+        const baseTemplate = newTemplateId
+          ? await assertTemplateAssignable(tx, {
+              templateId: newTemplateId,
+              appId: workflow.appId,
+              userId,
+              isSuperAdmin: user?.isSuperAdmin ?? false,
+            })
+          : workflow.template;
+
+        // ── Step B: resolve the final stage list — forked or as-is ─────────
+        // stageEdits present → fork baseTemplate (current OR newly-swapped)
+        // with the edits applied. Otherwise → use baseTemplate's stages as
+        // they are — this covers a plain template swap with no edits.
         let resolvedTemplateStages: any[];
+        let resolvedTemplateId: string;
 
         if (stageEdits?.length) {
-          // ── Edited the same template's stages — fork it, never mutate in place ──
           const fork = await forkTemplateForClarify(
             tx,
-            workflow.template,
+            baseTemplate,
             stageEdits,
             userId,
           );
-
-          await tx.workflowInstance.update({
-            where: { id: workflow.id },
-            data: { templateId: fork.id },
-          });
-
           resolvedTemplateStages = fork.stages;
+          resolvedTemplateId = fork.id;
         } else {
-          // ── Swapped to a different existing template entirely ──────────
-          const newTemplate = await assertTemplateAssignable(tx, {
-            templateId: newTemplateId,
-            appId: workflow.appId,
-            userId,
-            isSuperAdmin: user?.isSuperAdmin ?? false,
-          });
-
-          await tx.workflowInstance.update({
-            where: { id: workflow.id },
-            data: { templateId: newTemplate.id },
-          });
-
-          resolvedTemplateStages = newTemplate.stages;
+          resolvedTemplateStages = baseTemplate.stages;
+          resolvedTemplateId = baseTemplate.id;
         }
+
+        await tx.workflowInstance.update({
+          where: { id: workflow.id },
+          data: { templateId: resolvedTemplateId },
+        });
 
         const { createdStages, firstStageInstanceId: firstId } =
           await createIterationStages(tx, {
@@ -851,7 +860,7 @@ export const activateFirstStageController = async (
           );
         }
       } else {
-        // ── No edits — just flip the existing draft's stage 1 in place ──────
+        // ── No edits, no swap — just flip the existing draft's stage 1 ─────
         const firstStage = workflow.stages.find((s) => s.stageOrder === 1);
         if (!firstStage) {
           throw new ApiError(
@@ -892,6 +901,7 @@ export const activateFirstStageController = async (
           stageId: firstStageInstanceId,
           metadata: {
             reason: "Proposer resubmitted the EPC.",
+            // Independent flags — both can be true (swap + edit together).
             ...(stageEdits?.length && { stagesEdited: true }),
             ...(newTemplateId && { templateSwapped: true }),
           },
@@ -909,9 +919,6 @@ export const activateFirstStageController = async (
     });
 
     // ── Notify stage 1's approvers — strictly after the transaction commits ──
-    // builtStages doesn't reliably carry approvals in the no-edit branch
-    // (the draft was fetched without an approvals include), so this is
-    // fetched fresh off firstStageInstanceId rather than reused from result.
     const firstStageApprovals = await prisma.approval.findMany({
       where: { stageId: result.firstStageInstanceId },
       select: { approverId: true },

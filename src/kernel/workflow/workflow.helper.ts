@@ -27,7 +27,7 @@ type Tx = Prisma.TransactionClient;
 
 export const forkTemplateForClarify = async (
   tx: Tx,
-  originalTemplate: {
+  baseTemplate: {
     name: string;
     description: string;
     workspaceId: string;
@@ -40,19 +40,19 @@ export const forkTemplateForClarify = async (
     stageOrder: number;
     strategy: "ALL" | "ANY" | "SOME";
     minApprovals?: number | null;
-    approverIds: string[];
+    approvers: Array<{ approverId: string; isExternalApprover?: boolean }>;
   }>,
   userId: string,
 ) => {
   return tx.workflowTemplate.create({
     data: {
-      name: `${originalTemplate.name} (edited)`,
-      description: originalTemplate.description,
-      workspaceId: originalTemplate.workspaceId,
-      appId: originalTemplate.appId,
-      metaData_1: originalTemplate.metaData_1,
-      metaData_2: originalTemplate.metaData_2,
-      metaData_3: originalTemplate.metaData_3,
+      name: `${baseTemplate.name} (edited)`,
+      description: baseTemplate.description,
+      workspaceId: baseTemplate.workspaceId,
+      appId: baseTemplate.appId,
+      metaData_1: baseTemplate.metaData_1,
+      metaData_2: baseTemplate.metaData_2,
+      metaData_3: baseTemplate.metaData_3,
       ownerType: "USER",
       isReusable: false,
       created_by_id: userId,
@@ -64,8 +64,9 @@ export const forkTemplateForClarify = async (
           strategy: stage.strategy,
           minApprovals: stage.minApprovals ?? null,
           approvers: {
-            create: stage.approverIds.map((approverId) => ({
-              userId: approverId,
+            create: stage.approvers.map((approver) => ({
+              userId: approver.approverId,
+              isExternalApprover: approver.isExternalApprover ?? false,
             })),
           },
         })),
