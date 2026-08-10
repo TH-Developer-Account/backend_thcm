@@ -1114,9 +1114,14 @@ export const listGuestVendorOnboardings = async (
         id: true,
         referenceNumber: true,
         vendorName: true,
+        companyCode: true,
+        vendorType: true,
         status: true,
         vendorSubmittedAt: true,
         created_at: true,
+        initiatedBy: {
+          select: { first_name: true, last_name: true },
+        },
       },
       orderBy: { created_at: "desc" },
     });
