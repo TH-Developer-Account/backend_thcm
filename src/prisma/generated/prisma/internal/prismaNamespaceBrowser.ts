@@ -93,7 +93,12 @@ export const ModelName = {
   PushSubscription: 'PushSubscription',
   VendorOnboarding: 'VendorOnboarding',
   VendorOnboardingDocument: 'VendorOnboardingDocument',
+<<<<<<< HEAD
   AccessToken: 'AccessToken'
+=======
+  VendorAccessToken: 'VendorAccessToken',
+  Guest: 'Guest'
+>>>>>>> d8a08f2191b07c9042b9857f1a4dd8fdc3efa420
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -722,6 +727,7 @@ export const VendorOnboardingScalarFieldEnum = {
   vendorAuditReportPrepared: 'vendorAuditReportPrepared',
   natureOfService: 'natureOfService',
   onboardingReason: 'onboardingReason',
+  guestId: 'guestId',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -752,6 +758,17 @@ export const AccessTokenScalarFieldEnum = {
 } as const
 
 export type AccessTokenScalarFieldEnum = (typeof AccessTokenScalarFieldEnum)[keyof typeof AccessTokenScalarFieldEnum]
+
+
+export const GuestScalarFieldEnum = {
+  id: 'id',
+  mobile: 'mobile',
+  email: 'email',
+  password: 'password',
+  createdAt: 'createdAt'
+} as const
+
+export type GuestScalarFieldEnum = (typeof GuestScalarFieldEnum)[keyof typeof GuestScalarFieldEnum]
 
 
 export const SortOrder = {

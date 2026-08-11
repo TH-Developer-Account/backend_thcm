@@ -426,7 +426,12 @@ export const ModelName = {
   PushSubscription: 'PushSubscription',
   VendorOnboarding: 'VendorOnboarding',
   VendorOnboardingDocument: 'VendorOnboardingDocument',
+<<<<<<< HEAD
   AccessToken: 'AccessToken'
+=======
+  VendorAccessToken: 'VendorAccessToken',
+  Guest: 'Guest'
+>>>>>>> d8a08f2191b07c9042b9857f1a4dd8fdc3efa420
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -442,7 +447,11 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
+<<<<<<< HEAD
     modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken"
+=======
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "vendorAccessToken" | "guest"
+>>>>>>> d8a08f2191b07c9042b9857f1a4dd8fdc3efa420
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3628,6 +3637,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Guest: {
+      payload: Prisma.$GuestPayload<ExtArgs>
+      fields: Prisma.GuestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GuestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GuestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestPayload>
+        }
+        findFirst: {
+          args: Prisma.GuestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GuestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestPayload>
+        }
+        findMany: {
+          args: Prisma.GuestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestPayload>[]
+        }
+        create: {
+          args: Prisma.GuestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestPayload>
+        }
+        createMany: {
+          args: Prisma.GuestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GuestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestPayload>[]
+        }
+        delete: {
+          args: Prisma.GuestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestPayload>
+        }
+        update: {
+          args: Prisma.GuestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestPayload>
+        }
+        deleteMany: {
+          args: Prisma.GuestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GuestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GuestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestPayload>[]
+        }
+        upsert: {
+          args: Prisma.GuestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GuestPayload>
+        }
+        aggregate: {
+          args: Prisma.GuestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGuest>
+        }
+        groupBy: {
+          args: Prisma.GuestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GuestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GuestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GuestCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4277,6 +4360,7 @@ export const VendorOnboardingScalarFieldEnum = {
   vendorAuditReportPrepared: 'vendorAuditReportPrepared',
   natureOfService: 'natureOfService',
   onboardingReason: 'onboardingReason',
+  guestId: 'guestId',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -4307,6 +4391,17 @@ export const AccessTokenScalarFieldEnum = {
 } as const
 
 export type AccessTokenScalarFieldEnum = (typeof AccessTokenScalarFieldEnum)[keyof typeof AccessTokenScalarFieldEnum]
+
+
+export const GuestScalarFieldEnum = {
+  id: 'id',
+  mobile: 'mobile',
+  email: 'email',
+  password: 'password',
+  createdAt: 'createdAt'
+} as const
+
+export type GuestScalarFieldEnum = (typeof GuestScalarFieldEnum)[keyof typeof GuestScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -4836,7 +4931,12 @@ export type GlobalOmitConfig = {
   pushSubscription?: Prisma.PushSubscriptionOmit
   vendorOnboarding?: Prisma.VendorOnboardingOmit
   vendorOnboardingDocument?: Prisma.VendorOnboardingDocumentOmit
+<<<<<<< HEAD
   accessToken?: Prisma.AccessTokenOmit
+=======
+  vendorAccessToken?: Prisma.VendorAccessTokenOmit
+  guest?: Prisma.GuestOmit
+>>>>>>> d8a08f2191b07c9042b9857f1a4dd8fdc3efa420
 }
 
 /* Types for Logging */

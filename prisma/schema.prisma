@@ -1050,9 +1050,12 @@ model VendorOnboarding {
   vendorAuditReportPrepared Boolean?
   natureOfService           String?
   onboardingReason          String?
+  guestId                   String?
+
 
   workspace   Workspace                  @relation(fields: [workspaceId], references: [id])
   initiatedBy User                       @relation("VendorOnboardingInitiatedBy", fields: [initiatedById], references: [id])
+  guest   Guest? @relation(fields: [guestId], references: [id])
   documents   VendorOnboardingDocument[]
 
   created_at DateTime @default(now())
@@ -1162,6 +1165,19 @@ model MedicalClaimGradeEligibility {
   id         String  @id @default(uuid())
   grade      String  @unique
   annualCap  Decimal @db.Decimal(12, 2)
+}
+
+model Guest {
+  id        String   @id @default(uuid())
+  mobile    String?  @unique
+  email     String?  @unique
+  password  String?  
+  createdAt DateTime @default(now())
+
+  vendorOnboardings VendorOnboarding[]
+ 
+  @@index([mobile])
+  @@index([email])
 }
 
 
