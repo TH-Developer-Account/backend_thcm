@@ -40,7 +40,7 @@ export const forkTemplateForClarify = async (
     stageOrder: number;
     strategy: "ALL" | "ANY" | "SOME";
     minApprovals?: number | null;
-    approverIds: string[];
+    approvers: Array<{ approverId: string; isExternalApprover?: boolean }>;
   }>,
   userId: string,
 ) => {
@@ -64,8 +64,9 @@ export const forkTemplateForClarify = async (
           strategy: stage.strategy,
           minApprovals: stage.minApprovals ?? null,
           approvers: {
-            create: stage.approverIds.map((approverId) => ({
-              userId: approverId,
+            create: stage.approvers.map((approver) => ({
+              userId: approver.approverId,
+              isExternalApprover: approver.isExternalApprover ?? false,
             })),
           },
         })),

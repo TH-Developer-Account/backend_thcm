@@ -25,14 +25,6 @@ export const TemplateOwnerType = {
 export type TemplateOwnerType = (typeof TemplateOwnerType)[keyof typeof TemplateOwnerType]
 
 
-export const VendorAccessTokenPurpose = {
-  FORM_ACCESS: 'FORM_ACCESS',
-  VIEW_PDF: 'VIEW_PDF'
-} as const
-
-export type VendorAccessTokenPurpose = (typeof VendorAccessTokenPurpose)[keyof typeof VendorAccessTokenPurpose]
-
-
 export const ScopeType = {
   MODULE: 'MODULE',
   APP: 'APP'
@@ -86,6 +78,14 @@ export const WorkflowType = {
 } as const
 
 export type WorkflowType = (typeof WorkflowType)[keyof typeof WorkflowType]
+
+
+export const AccessTokenSubjectType = {
+  VENDOR_ONBOARDING: 'VENDOR_ONBOARDING',
+  MEDICAL_CLAIM: 'MEDICAL_CLAIM'
+} as const
+
+export type AccessTokenSubjectType = (typeof AccessTokenSubjectType)[keyof typeof AccessTokenSubjectType]
 
 
 export const ActivityAction = {

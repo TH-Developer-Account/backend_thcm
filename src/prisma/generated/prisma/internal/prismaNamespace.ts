@@ -426,7 +426,7 @@ export const ModelName = {
   PushSubscription: 'PushSubscription',
   VendorOnboarding: 'VendorOnboarding',
   VendorOnboardingDocument: 'VendorOnboardingDocument',
-  VendorAccessToken: 'VendorAccessToken'
+  AccessToken: 'AccessToken'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -442,7 +442,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "vendorAccessToken"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3554,77 +3554,77 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    VendorAccessToken: {
-      payload: Prisma.$VendorAccessTokenPayload<ExtArgs>
-      fields: Prisma.VendorAccessTokenFieldRefs
+    AccessToken: {
+      payload: Prisma.$AccessTokenPayload<ExtArgs>
+      fields: Prisma.AccessTokenFieldRefs
       operations: {
         findUnique: {
-          args: Prisma.VendorAccessTokenFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload> | null
+          args: Prisma.AccessTokenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccessTokenPayload> | null
         }
         findUniqueOrThrow: {
-          args: Prisma.VendorAccessTokenFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>
+          args: Prisma.AccessTokenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccessTokenPayload>
         }
         findFirst: {
-          args: Prisma.VendorAccessTokenFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload> | null
+          args: Prisma.AccessTokenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccessTokenPayload> | null
         }
         findFirstOrThrow: {
-          args: Prisma.VendorAccessTokenFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>
+          args: Prisma.AccessTokenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccessTokenPayload>
         }
         findMany: {
-          args: Prisma.VendorAccessTokenFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>[]
+          args: Prisma.AccessTokenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccessTokenPayload>[]
         }
         create: {
-          args: Prisma.VendorAccessTokenCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>
+          args: Prisma.AccessTokenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccessTokenPayload>
         }
         createMany: {
-          args: Prisma.VendorAccessTokenCreateManyArgs<ExtArgs>
+          args: Prisma.AccessTokenCreateManyArgs<ExtArgs>
           result: BatchPayload
         }
         createManyAndReturn: {
-          args: Prisma.VendorAccessTokenCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>[]
+          args: Prisma.AccessTokenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccessTokenPayload>[]
         }
         delete: {
-          args: Prisma.VendorAccessTokenDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>
+          args: Prisma.AccessTokenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccessTokenPayload>
         }
         update: {
-          args: Prisma.VendorAccessTokenUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>
+          args: Prisma.AccessTokenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccessTokenPayload>
         }
         deleteMany: {
-          args: Prisma.VendorAccessTokenDeleteManyArgs<ExtArgs>
+          args: Prisma.AccessTokenDeleteManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateMany: {
-          args: Prisma.VendorAccessTokenUpdateManyArgs<ExtArgs>
+          args: Prisma.AccessTokenUpdateManyArgs<ExtArgs>
           result: BatchPayload
         }
         updateManyAndReturn: {
-          args: Prisma.VendorAccessTokenUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>[]
+          args: Prisma.AccessTokenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccessTokenPayload>[]
         }
         upsert: {
-          args: Prisma.VendorAccessTokenUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAccessTokenPayload>
+          args: Prisma.AccessTokenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccessTokenPayload>
         }
         aggregate: {
-          args: Prisma.VendorAccessTokenAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateVendorAccessToken>
+          args: Prisma.AccessTokenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAccessToken>
         }
         groupBy: {
-          args: Prisma.VendorAccessTokenGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.VendorAccessTokenGroupByOutputType>[]
+          args: Prisma.AccessTokenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AccessTokenGroupByOutputType>[]
         }
         count: {
-          args: Prisma.VendorAccessTokenCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.VendorAccessTokenCountAggregateOutputType> | number
+          args: Prisma.AccessTokenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AccessTokenCountAggregateOutputType> | number
         }
       }
     }
@@ -4295,9 +4295,10 @@ export const VendorOnboardingDocumentScalarFieldEnum = {
 export type VendorOnboardingDocumentScalarFieldEnum = (typeof VendorOnboardingDocumentScalarFieldEnum)[keyof typeof VendorOnboardingDocumentScalarFieldEnum]
 
 
-export const VendorAccessTokenScalarFieldEnum = {
+export const AccessTokenScalarFieldEnum = {
   id: 'id',
-  onboardingId: 'onboardingId',
+  subjectType: 'subjectType',
+  subjectId: 'subjectId',
   token: 'token',
   used: 'used',
   purpose: 'purpose',
@@ -4305,7 +4306,7 @@ export const VendorAccessTokenScalarFieldEnum = {
   created_at: 'created_at'
 } as const
 
-export type VendorAccessTokenScalarFieldEnum = (typeof VendorAccessTokenScalarFieldEnum)[keyof typeof VendorAccessTokenScalarFieldEnum]
+export type AccessTokenScalarFieldEnum = (typeof AccessTokenScalarFieldEnum)[keyof typeof AccessTokenScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -4671,16 +4672,16 @@ export type ListEnumImportExportStatusFieldRefInput<$PrismaModel> = FieldRefInpu
 
 
 /**
- * Reference to a field of type 'VendorAccessTokenPurpose'
+ * Reference to a field of type 'AccessTokenSubjectType'
  */
-export type EnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VendorAccessTokenPurpose'>
+export type EnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccessTokenSubjectType'>
     
 
 
 /**
- * Reference to a field of type 'VendorAccessTokenPurpose[]'
+ * Reference to a field of type 'AccessTokenSubjectType[]'
  */
-export type ListEnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VendorAccessTokenPurpose[]'>
+export type ListEnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccessTokenSubjectType[]'>
     
 
 /**
@@ -4835,7 +4836,7 @@ export type GlobalOmitConfig = {
   pushSubscription?: Prisma.PushSubscriptionOmit
   vendorOnboarding?: Prisma.VendorOnboardingOmit
   vendorOnboardingDocument?: Prisma.VendorOnboardingDocumentOmit
-  vendorAccessToken?: Prisma.VendorAccessTokenOmit
+  accessToken?: Prisma.AccessTokenOmit
 }
 
 /* Types for Logging */

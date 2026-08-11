@@ -19,9 +19,9 @@ import { buildXlsxBuffer, XlsxRow } from "@import-export/utils/xlsxWriter";
 import { addMailJob } from "@mail/mail.service";
 
 import {
-  issueVendorAccessToken,
-  markVendorAccessTokenUsed,
-} from "./vendorAccessToken.services";
+  issueAccessToken,
+  markAccessTokenUsed,
+} from "@shared/services/accessToken.services";
 
 import { getActiveWorkflowForSubject } from "@workflow/workflowSubject.helper";
 import {
@@ -124,7 +124,11 @@ export const initiateVendorOnboarding = async (
         },
       });
 
-      const tokenRecord = await issueVendorAccessToken(created.id, tx);
+      const tokenRecord = await issueAccessToken(
+        "VENDOR_ONBOARDING",
+        created.id,
+        tx,
+      );
 
       await tx.activityLog.create({
         data: {
@@ -320,7 +324,10 @@ export const resendVendorLink = async (
       throw new ApiError(400, "This request is no longer awaiting the vendor");
     }
 
-    const tokenRecord = await issueVendorAccessToken(onboarding.id);
+    const tokenRecord = await issueAccessToken(
+      "VENDOR_ONBOARDING",
+      onboarding.id,
+    );
 
     await addMailJob({
       to: onboarding.email as string,
@@ -760,7 +767,7 @@ export const submitVendorForm = async (
       });
 
       await persistVendorDocuments(tx, onboarding.id, files);
-      await markVendorAccessTokenUsed(tokenId, tx);
+      await markAccessTokenUsed(tokenId, tx);
 
       await tx.activityLog.create({
         data: {
@@ -780,7 +787,8 @@ export const submitVendorForm = async (
       });
     });
 
-    const viewToken = await issueVendorAccessToken(
+    const viewToken = await issueAccessToken(
+      "VENDOR_ONBOARDING",
       onboarding.id,
       prisma,
       "VIEW_PDF",
@@ -839,7 +847,11 @@ export const sendBackToVendor = async (
     }
 
     const tokenRecord = await prisma.$transaction(async (tx) => {
-      const token = await issueVendorAccessToken(onboarding.id, tx);
+      const token = await issueAccessToken(
+        "VENDOR_ONBOARDING",
+        onboarding.id,
+        tx,
+      );
 
       await tx.vendorOnboarding.update({
         where: { id: onboarding.id },
@@ -887,17 +899,21 @@ export const getVendorOnboardingPdfByToken = async (
   try {
     const { token } = req.params;
 
-    const tokenRecord = await prisma.vendorAccessToken.findUnique({
+    const tokenRecord = await prisma.accessToken.findUnique({
       where: { token: token as string },
     });
 
-    if (!tokenRecord || tokenRecord.purpose !== "VIEW_PDF") {
+    if (
+      !tokenRecord ||
+      tokenRecord.subjectType !== "VENDOR_ONBOARDING" ||
+      tokenRecord.purpose !== "VIEW_PDF"
+    ) {
       throw new ApiError(404, "Invalid or expired link");
     }
 
     const url = await getOrGeneratePdfUrl(
       "VENDOR_ONBOARDING",
-      tokenRecord.onboardingId,
+      tokenRecord.subjectId,
     );
 
     res.redirect(url);

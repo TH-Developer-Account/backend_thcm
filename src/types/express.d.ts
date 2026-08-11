@@ -25,9 +25,9 @@ declare global {
     }
 
     interface Request {
-      vendorAccessToken?: VendorAccessToken & {
-        onboarding: VendorOnboarding;
-      };
+      vendorAccessToken?:
+        | { id: string; onboarding: VendorOnboarding }
+        | undefined;
     }
   }
 }

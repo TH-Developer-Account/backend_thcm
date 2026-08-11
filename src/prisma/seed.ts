@@ -46,7 +46,7 @@ async function main() {
   await prisma.comment.deleteMany();
 
   // ✅ NEW — clean vendor onboarding tables too
-  await prisma.vendorAccessToken.deleteMany();
+  await prisma.accessToken.deleteMany();
   await prisma.vendorOnboardingDocument.deleteMany();
   await prisma.vendorOnboarding.deleteMany();
 

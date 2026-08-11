@@ -56,13 +56,13 @@ const ownerIdResolvers: Record<
     return onboarding?.initiatedById ?? null;
   },
 
-  // AUDIT_INSTANCE: async (subjectId) => {
-  //   const audit = await prisma.auditInstance.findUnique({
-  //     where: { id: subjectId },
-  //     select: { dealerUserId: true },
-  //   });
-  //   return audit?.dealerUserId ?? null;
-  // },
+  MEDICAL_CLAIM: async (subjectId) => {
+    const claim = await prisma.medicalClaim.findUnique({
+      where: { id: subjectId },
+      select: { initiatedById: true },
+    });
+    return claim?.initiatedById ?? null;
+  },
 };
 
 export async function getSubjectOwnerId(
@@ -105,8 +105,8 @@ const subjectResolvers: Record<
   VENDOR_ONBOARDING: (subjectId) =>
     prisma.vendorOnboarding.findUnique({ where: { id: subjectId } }),
 
-  // AUDIT_INSTANCE: (subjectId) =>
-  //   prisma.auditInstance.findUnique({ where: { id: subjectId } }),
+  MEDICAL_CLAIM: (subjectId) =>
+    prisma.medicalClaim.findUnique({ where: { id: subjectId } }),
 };
 
 export async function findSubjectById(
@@ -157,6 +157,9 @@ const statusUpdaters: Record<
 
   VENDOR_ONBOARDING: (tx, subjectId, status) =>
     tx.vendorOnboarding.update({ where: { id: subjectId }, data: { status } }),
+
+  MEDICAL_CLAIM: (tx, subjectId, status) =>
+    tx.medicalClaim.update({ where: { id: subjectId }, data: { status } }),
 };
 
 export async function updateSubjectStatus(
@@ -182,6 +185,7 @@ export async function updateSubjectStatus(
 const clarifyResetStatus: Record<WorkflowSubjectType, string> = {
   EVENT_PROPOSAL: "PENDING",
   VENDOR_ONBOARDING: "IN_REVIEW",
+  MEDICAL_CLAIM: "CLARIFICATION_REQUESTED",
 };
 
 export function getClarifyResetStatus(

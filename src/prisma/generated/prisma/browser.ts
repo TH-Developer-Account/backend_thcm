@@ -228,7 +228,7 @@ export type VendorOnboarding = Prisma.VendorOnboardingModel
  */
 export type VendorOnboardingDocument = Prisma.VendorOnboardingDocumentModel
 /**
- * Model VendorAccessToken
+ * Model AccessToken
  * 
  */
-export type VendorAccessToken = Prisma.VendorAccessTokenModel
+export type AccessToken = Prisma.AccessTokenModel

@@ -619,21 +619,21 @@ export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
 }
 
-export type EnumVendorAccessTokenPurposeFilter<$PrismaModel = never> = {
-  equals?: $Enums.VendorAccessTokenPurpose | Prisma.EnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel>
-  in?: $Enums.VendorAccessTokenPurpose[] | Prisma.ListEnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.VendorAccessTokenPurpose[] | Prisma.ListEnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumVendorAccessTokenPurposeFilter<$PrismaModel> | $Enums.VendorAccessTokenPurpose
+export type EnumAccessTokenSubjectTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccessTokenSubjectType | Prisma.EnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.AccessTokenSubjectType[] | Prisma.ListEnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccessTokenSubjectType[] | Prisma.ListEnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccessTokenSubjectTypeFilter<$PrismaModel> | $Enums.AccessTokenSubjectType
 }
 
-export type EnumVendorAccessTokenPurposeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.VendorAccessTokenPurpose | Prisma.EnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel>
-  in?: $Enums.VendorAccessTokenPurpose[] | Prisma.ListEnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.VendorAccessTokenPurpose[] | Prisma.ListEnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumVendorAccessTokenPurposeWithAggregatesFilter<$PrismaModel> | $Enums.VendorAccessTokenPurpose
+export type EnumAccessTokenSubjectTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccessTokenSubjectType | Prisma.EnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.AccessTokenSubjectType[] | Prisma.ListEnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccessTokenSubjectType[] | Prisma.ListEnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccessTokenSubjectTypeWithAggregatesFilter<$PrismaModel> | $Enums.AccessTokenSubjectType
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumVendorAccessTokenPurposeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumVendorAccessTokenPurposeFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAccessTokenSubjectTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAccessTokenSubjectTypeFilter<$PrismaModel>
 }
 
 export type NestedStringFilter<$PrismaModel = never> = {
@@ -1216,21 +1216,21 @@ export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedBoolNullableFilter<$PrismaModel>
 }
 
-export type NestedEnumVendorAccessTokenPurposeFilter<$PrismaModel = never> = {
-  equals?: $Enums.VendorAccessTokenPurpose | Prisma.EnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel>
-  in?: $Enums.VendorAccessTokenPurpose[] | Prisma.ListEnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.VendorAccessTokenPurpose[] | Prisma.ListEnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumVendorAccessTokenPurposeFilter<$PrismaModel> | $Enums.VendorAccessTokenPurpose
+export type NestedEnumAccessTokenSubjectTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccessTokenSubjectType | Prisma.EnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.AccessTokenSubjectType[] | Prisma.ListEnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccessTokenSubjectType[] | Prisma.ListEnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccessTokenSubjectTypeFilter<$PrismaModel> | $Enums.AccessTokenSubjectType
 }
 
-export type NestedEnumVendorAccessTokenPurposeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.VendorAccessTokenPurpose | Prisma.EnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel>
-  in?: $Enums.VendorAccessTokenPurpose[] | Prisma.ListEnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.VendorAccessTokenPurpose[] | Prisma.ListEnumVendorAccessTokenPurposeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumVendorAccessTokenPurposeWithAggregatesFilter<$PrismaModel> | $Enums.VendorAccessTokenPurpose
+export type NestedEnumAccessTokenSubjectTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccessTokenSubjectType | Prisma.EnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.AccessTokenSubjectType[] | Prisma.ListEnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccessTokenSubjectType[] | Prisma.ListEnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccessTokenSubjectTypeWithAggregatesFilter<$PrismaModel> | $Enums.AccessTokenSubjectType
   _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumVendorAccessTokenPurposeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumVendorAccessTokenPurposeFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAccessTokenSubjectTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAccessTokenSubjectTypeFilter<$PrismaModel>
 }
 
 
