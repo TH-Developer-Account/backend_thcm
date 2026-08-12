@@ -20,6 +20,8 @@ import { importLeadsFromS3 } from "@leads/leadImport.services";
 import { exportLeadsToBuffer } from "@leads/leadExport.services";
 import { EpcExportJobData } from "@map/epc.queue";
 import { exportEpcsToS3 } from "@map/epcExport.services";
+import { exportVendorOnboardingsToS3 } from "@vendor-onboarding/vendorOnboardingExport.service";
+import { VendorOnboardingExportJobData } from "@vendor-onboarding/vendorOnboardingExport.queue";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // workers/index.ts — BullMQ worker definitions
@@ -253,6 +255,69 @@ export function startNotificationDeliveryWorker() {
     console.error(
       `[notification-delivery] Job ${job?.id} failed:`,
       error.message,
+    );
+  });
+
+  return worker;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// vendorOnboardingExport.worker.ts
+//
+// NOTE: I don't have your actual epcExport.worker.ts / leadExport.worker.ts
+// in front of me (they weren't in the project files provided), so this is
+// inferred from the queue/service/ImportExportLog contracts I can see —
+// same PENDING → PROCESSING → COMPLETED/FAILED lifecycle, same
+// job.updateProgress()/downloadUrl shape the poll endpoint reads
+// (getLeadExportStatus reads progress.downloadUrl and job.failedReason).
+// Please diff this against your real worker file's setup (concurrency,
+// event listeners, error formatting) before wiring it in — don't assume
+// this matches exactly.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function startVendorOnboardingExportWorker() {
+  const worker = new Worker<VendorOnboardingExportJobData>(
+    "vendor-onboarding-export",
+    async (job) => {
+      const { logId, format, ...filters } = job.data;
+
+      await markLogProcessing(logId);
+
+      try {
+        const result = await exportVendorOnboardingsToS3(filters, format);
+
+        await markLogCompleted(logId, {
+          totalRecords: result.totalRecords,
+          successRecords: result.totalRecords,
+          failedRecords: 0,
+          fileS3Key: result.s3Key,
+        });
+
+        // Matches the existing leads/EPC export workers: a presigned URL is
+        // generated once here and cached in job.progress for the poll
+        // endpoint to read directly. Same inherited limitation those have —
+        // the URL expires (default 1h) before BullMQ's 24h job retention
+        // does, so a very late poll could return a stale link. Not solving
+        // that here since it's a pre-existing pattern, not something new
+        // this endpoint introduces — worth fixing for all three export
+        // types together if it becomes a real issue.
+        const downloadUrl = await getSignedReportUrl(result.s3Key);
+        await job.updateProgress({ downloadUrl });
+
+        return result;
+      } catch (error) {
+        const reason =
+          error instanceof Error ? error.message : "Unknown export failure";
+        await markLogFailed(logId, reason);
+        throw error;
+      }
+    },
+    { connection: redisConnectionQueue, concurrency: 2 },
+  );
+
+  worker.on("failed", (job, err) => {
+    console.error(
+      `[VendorOnboardingExportWorker] Job ${job?.id} failed: ${err.message}`,
     );
   });
 

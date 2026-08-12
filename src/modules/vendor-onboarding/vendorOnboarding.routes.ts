@@ -21,6 +21,8 @@ import {
   getVendorOnboardingPdfByToken,
   exportVendorOnboardingById,
   saveVendorFormDraft,
+  enqueueVendorOnboardingExport,
+  getVendorOnboardingExportStatus,
 } from "./vendorOnboarding.controller";
 import { requireVendorAccessToken } from "./vendorAccessToken.middleware";
 
@@ -56,6 +58,20 @@ router.get(
   requireAuth,
   authorize(APP_KEY, MODULE, "read"),
   asyncHandler(getVendorOnboardingById),
+);
+
+router.get(
+  "/export/bulk/:jobId",
+  requireAuth,
+  authorize(APP_KEY, MODULE, "read"),
+  asyncHandler(getVendorOnboardingExportStatus),
+);
+
+router.post(
+  "/export/bulk",
+  requireAuth,
+  authorize(APP_KEY, MODULE, "read"),
+  asyncHandler(enqueueVendorOnboardingExport),
 );
 
 router.get(

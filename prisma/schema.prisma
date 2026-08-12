@@ -133,6 +133,7 @@ enum ImportExportType {
   LEAD_IMPORT
   LEAD_EXPORT
   EPC_EXPORT
+  VENDOR_ONBOARDING_EXPORT
 }
 
 enum ImportExportStatus {

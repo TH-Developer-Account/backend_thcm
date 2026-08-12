@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { randomUUID } from "crypto";
 import { Prisma } from "../../prisma/generated/prisma/client";
 
 import { prisma } from "@shared/config/prisma";
@@ -30,7 +31,11 @@ import {
   VendorListingTab,
   resolveSubjectIdsForApprovalTab,
   generateVendorOnboardingReferenceNumber,
+  mapVendorOnboardingToXlsxRow,
+  VENDOR_ONBOARDING_EXPORT_COLUMN_WIDTHS,
 } from "./vendorOnboarding.helper";
+import { vendorOnboardingExportQueue } from "./vendorOnboardingExport.queue";
+import { createPendingLog } from "@import-export/importExportLog.services";
 import {
   MAX_VENDOR_DOCUMENT_SIZE_BYTES,
   ALLOWED_VENDOR_MIME_TYPES,
@@ -1010,48 +1015,15 @@ export const exportVendorOnboardingById = async (
       );
     }
 
-    const row: XlsxRow = {
-      "Reference Number": onboarding.referenceNumber,
-      Status: onboarding.status,
-      "Vendor Name": onboarding.vendorName ?? "",
-      State: onboarding.state ?? "",
-      City: onboarding.city ?? "",
-      "Pin Code": onboarding.pinCode ?? "",
-      Address: onboarding.address ?? "",
-      Mobile: onboarding.mobile ?? "",
-      Email: onboarding.email ?? "",
-      "MSME Vendor": onboarding.msmeVendor ?? "",
-      "Bank Name": onboarding.bankName ?? "",
-      "Bank Branch": onboarding.bankBranch ?? "",
-      "IFSC Code": onboarding.ifscCode ?? "",
-      "Bank Address": onboarding.bankAddress ?? "",
-      "Account Number": onboarding.accountNumber ?? "",
-      GSTIN: onboarding.gstin ?? "",
-      PAN: onboarding.pan ?? "",
-      "Entity Reg No": onboarding.entityRegNo ?? "",
-      "Vendor Submitted At": onboarding.vendorSubmittedAt?.toISOString() ?? "",
-      "Vendor Code": onboarding.vendorCode ?? "",
-      "Vendor Type": onboarding.vendorType ?? "",
-      "Company Code": onboarding.companyCode ?? "",
-      "Purchase Org": onboarding.purchaseOrg ?? "",
-      "Payment Term": onboarding.paymentTerm ?? "",
-      TDS: onboarding.tds ?? "",
-      "Vendor Category": onboarding.vendorCategory ?? "",
-      "Material Type": onboarding.materialType ?? "",
-      "Material Sub Type": onboarding.materialSubType ?? "",
-      "Self Assessment Obtained": onboarding.selfAssessmentObtained ?? "",
-      "NDA Obtained": onboarding.ndaObtained ?? "",
-      "GPA Obtained": onboarding.gpaObtained ?? "",
-      "Is Related Party": onboarding.isRelatedParty ?? "",
-      "Vendor Audit Report Prepared":
-        onboarding.vendorAuditReportPrepared ?? "",
-      "Nature Of Service": onboarding.natureOfService ?? "",
-      "Onboarding Reason": onboarding.onboardingReason ?? "",
-      "Created At": onboarding.created_at.toISOString(),
-      "Updated At": onboarding.updated_at.toISOString(),
-    };
+    const row = mapVendorOnboardingToXlsxRow(onboarding);
 
-    const buffer = buildXlsxBuffer([{ name: "VendorOnboarding", rows: [row] }]);
+    const buffer = buildXlsxBuffer([
+      {
+        name: "VendorOnboarding",
+        rows: [row],
+        columnWidths: VENDOR_ONBOARDING_EXPORT_COLUMN_WIDTHS,
+      },
+    ]);
 
     const filename = `vendor-onboarding-${onboarding.referenceNumber}.xlsx`;
 
@@ -1062,6 +1034,118 @@ export const exportVendorOnboardingById = async (
     );
     res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
     res.send(buffer);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// POST /vendor-onboarding/export/bulk
+// Body: { tab?, search?, format: 'csv' | 'xlsx' }
+// Enqueues a bulk export scoped to the same tab/search filters as
+// listVendorOnboardings — "export what I'm currently looking at".
+export const enqueueVendorOnboardingExport = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const { tab, search, format = "xlsx" } = req.body;
+
+    if (!["csv", "xlsx"].includes(format)) {
+      throw new ApiError(400, "format must be 'csv' or 'xlsx'");
+    }
+
+    const vendorTab: VendorListingTab = [
+      "onboarding",
+      "pendingOnMe",
+      "approvedByMe",
+    ].includes(tab)
+      ? (tab as VendorListingTab)
+      : "initiation";
+
+    const vendorSearch = typeof search === "string" ? search.trim() : "";
+    const workspaceId = await resolveWorkspaceId(userId);
+
+    // Resolved once, now, and frozen into the job payload — see
+    // vendorOnboardingExport.queue.ts for why this isn't re-derived
+    // inside the worker.
+    const approvalSubjectIds =
+      vendorTab === "pendingOnMe" || vendorTab === "approvedByMe"
+        ? await resolveSubjectIdsForApprovalTab(userId, vendorTab)
+        : undefined;
+
+    // WHY generate the jobId ourselves instead of the previous
+    // add-then-createPendingLog-then-updateData sequence: BullMQ can start
+    // processing a job before a later job.updateData() call lands, so the
+    // worker could call markLogProcessing() with the "" placeholder logId
+    // and fail with a "record not found" update. Creating the log row
+    // first — with a pre-generated jobId — and enqueueing the job already
+    // carrying the real logId removes that race entirely instead of
+    // reducing its window.
+    const jobId = randomUUID();
+
+    const logId = await createPendingLog({
+      type: "VENDOR_ONBOARDING_EXPORT",
+      triggeredById: userId,
+      workspaceId,
+      jobId,
+    });
+
+    const job = await vendorOnboardingExportQueue.add(
+      "export",
+      {
+        workspaceId,
+        userId,
+        tab: vendorTab,
+        search: vendorSearch,
+        approvalSubjectIds,
+        format,
+        requestedBy: userId,
+        logId,
+      },
+      { jobId },
+    );
+
+    res.status(202).json({
+      success: true,
+      message: "Vendor onboarding export job queued",
+      jobId: job.id,
+      logId,
+      pollUrl: `/api/v1/vendor-onboarding/export/bulk/${job.id}`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /vendor-onboarding/export/bulk/:jobId
+export const getVendorOnboardingExportStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const { jobId } = req.params;
+    const job = await vendorOnboardingExportQueue.getJob(jobId as string);
+
+    if (!job) throw new ApiError(404, "Export job not found");
+
+    const state = await job.getState();
+    const progress = job.progress as Record<string, unknown>;
+
+    res.status(200).json({
+      success: true,
+      jobId,
+      status: state,
+      downloadUrl: progress?.downloadUrl ?? null,
+      failedReason: state === "failed" ? job.failedReason : undefined,
+    });
   } catch (error) {
     next(error);
   }

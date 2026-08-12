@@ -18,7 +18,11 @@ import { prisma } from "@shared/config/prisma";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-export type ImportExportType = "LEAD_IMPORT" | "LEAD_EXPORT" | "EPC_EXPORT";
+export type ImportExportType =
+  | "LEAD_IMPORT"
+  | "LEAD_EXPORT"
+  | "EPC_EXPORT"
+  | "VENDOR_ONBOARDING_EXPORT";
 export type ImportExportStatus =
   | "PENDING"
   | "PROCESSING"
