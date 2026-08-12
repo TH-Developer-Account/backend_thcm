@@ -6,7 +6,6 @@ import { firstAuthRequestPerDay } from "@shared/middleware/dailyActiveUsers.midd
 import { ALL_VENDOR_DOCUMENT_TYPES } from "@shared/utils/contants";
 
 import { requireAuth, authorize } from "@kernel/auth/auth.middleware";
-import { requireGuestAuth } from "@guest/guest.middleware";
 
 import {
   initiateVendorOnboarding,
@@ -22,8 +21,6 @@ import {
   getVendorOnboardingPdfByToken,
   exportVendorOnboardingById,
   saveVendorFormDraft,
-  listGuestVendorOnboardings,
-  getGuestVendorOnboardingById,
 } from "./vendorOnboarding.controller";
 import { requireVendorAccessToken } from "./vendorAccessToken.middleware";
 
@@ -43,18 +40,6 @@ const documentUploadFields = ALL_VENDOR_DOCUMENT_TYPES.map((name) => ({
   name,
   maxCount: 1,
 }));
-
-router.get(
-  "/guest",
-  requireGuestAuth,
-  asyncHandler(listGuestVendorOnboardings),
-);
-
-router.get(
-  "/guest/:id",
-  requireGuestAuth,
-  asyncHandler(getGuestVendorOnboardingById),
-);
 
 // List — defaults to "mine", ?scope=workspace for superadmins to see all.
 router.get(
