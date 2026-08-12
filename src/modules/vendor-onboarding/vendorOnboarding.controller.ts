@@ -9,6 +9,7 @@ import {
   getRequiredVendorDocumentTypes,
   parseBooleanFormField,
 } from "@shared/utils/contants";
+import { linkOrCreateGuestForSubject } from "@modules/guest/guest.services";
 import { getSignedImageUrl, uploadToS3 } from "@shared/utils/aws-s3.services";
 
 import { notify } from "@notifications/notification.services";
@@ -111,9 +112,16 @@ export const initiateVendorOnboarding = async (
       throw new ApiError(400, "Vendor Name, mobile and email are required");
     }
 
-    const onboarding = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx) => {
       const referenceNumber =
         generateVendorOnboardingReferenceNumber(vendorName);
+
+      // Guest identity is created (or found) here, at staff-initiation —
+      // no more token-based first touch, so this is the only point where
+      // a guest can be linked before the vendor ever interacts with the form.
+      const { guestId, isNewGuest, plainPassword } =
+        await linkOrCreateGuestForSubject(tx, { mobile, email });
+
       const created = await tx.vendorOnboarding.create({
         data: {
           workspaceId,
@@ -122,14 +130,9 @@ export const initiateVendorOnboarding = async (
           vendorName,
           mobile,
           email,
+          guestId,
         },
       });
-
-      const tokenRecord = await issueAccessToken(
-        "VENDOR_ONBOARDING",
-        created.id,
-        tx,
-      );
 
       await tx.activityLog.create({
         data: {
@@ -140,24 +143,41 @@ export const initiateVendorOnboarding = async (
         },
       });
 
-      return { created, tokenRecord };
+      return { created, isNewGuest, plainPassword };
     });
 
-    await addMailJob({
-      to: email,
-      subject: "Vendor Onboarding — Action Required",
-      templateName: "vendor-onboarding",
-      templateData: {
-        vendorName,
-        formUrl: `${process.env.FRONTEND_URL}/vendor-form/${onboarding.tokenRecord.token}`,
-      },
-    });
+    // New guest: send credentials + prompt to log in and fill the form.
+    // Existing guest (repeat vendor, different onboarding request): no
+    // credentials to send, just point them at login — same as
+    // notifyGuestOfClarification's shape, applied at initiation instead
+    // of clarify.
+    if (result.plainPassword) {
+      await addMailJob({
+        to: email,
+        subject: "Vendor Onboarding — Your Guest Portal Login",
+        templateName: "guest-credentials",
+        templateData: {
+          email,
+          password: result.plainPassword,
+          loginUrl: `${process.env.FRONTEND_URL}/guest/login`,
+        },
+      });
+    } else {
+      await addMailJob({
+        to: email,
+        subject: "Vendor Onboarding — Action Required",
+        templateName: "vendor-onboarding", // needs updating: formUrl -> loginUrl (see note below)
+        templateData: {
+          vendorName,
+          loginUrl: `${process.env.FRONTEND_URL}/guest/login`,
+        },
+      });
+    }
 
     res.status(201).json({
       success: true,
-      message:
-        "Vendor onboarding initiated and link has been sent to their email!",
-      data: onboarding.created,
+      message: "Vendor onboarding initiated and login details sent!",
+      data: result.created,
     });
   } catch (error) {
     next(error);
@@ -673,14 +693,29 @@ export const getVendorFormByToken = async (
 };
 
 // POST /public/vendor-onboarding/:token/submit
-// Multipart: form fields + up to 6 named file parts (one per REQUIRED_VENDOR_DOCUMENT_TYPES entry).
-export const submitVendorForm = async (
+// Multipart: form fields + up to 6 named file parts (one per REQUIRED_VENDOR_DOCUMENT_TYPES entry)
+export const submitGuestVendorOnboardingForm = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { onboarding, id: tokenId } = req.vendorAccessToken!;
+    const guestId = req.guest!.id;
+    const { id } = req.params;
+
+    const onboarding = await prisma.vendorOnboarding.findFirst({
+      where: { id: id as string, guestId },
+    });
+    if (!onboarding) {
+      throw new ApiError(404, "Onboarding record not found");
+    }
+    if (onboarding.status !== "AWAITING_VENDOR") {
+      throw new ApiError(
+        400,
+        "This request is not currently open for submission",
+      );
+    }
+
     const {
       vendorName,
       state,
@@ -713,10 +748,6 @@ export const submitVendorForm = async (
       | Record<string, Express.Multer.File[]>
       | undefined;
 
-    // A required document is only "missing" if there's neither an existing
-    // record for it NOR a new file provided now — covers both first-time
-    // submission (nothing exists yet) and correction (most types already
-    // exist, only the flagged ones need a new file).
     const existingDocuments = await prisma.vendorOnboardingDocument.findMany({
       where: { onboardingId: onboarding.id },
       select: { documentType: true },
@@ -737,11 +768,6 @@ export const submitVendorForm = async (
         `Missing required documents: ${missing.join(", ")}`,
       );
     }
-
-    // Escapes the transaction closure below — only set when a brand-new
-    // Guest is created, so the credentials email after commit knows
-    // whether it has anything to send.
-    let guestPlainPassword: string | undefined;
 
     await prisma.$transaction(async (tx) => {
       await tx.vendorOnboarding.update({
@@ -771,36 +797,10 @@ export const submitVendorForm = async (
         },
       });
 
-      // ── Guest linking ──────────────────────────────────────────────
-      // First submission creates the Guest row (mobile is this app's
-      // identity key); a re-submission (correction after clarify) finds
-      // the existing one and links nothing new.
-      if (mobile) {
-        const existingGuest = await tx.guest.findUnique({ where: { mobile } });
-        const guest =
-          existingGuest ?? (await tx.guest.create({ data: { mobile, email } }));
-
-        await tx.vendorOnboarding.update({
-          where: { id: onboarding.id },
-          data: { guestId: guest.id },
-        });
-
-        // Credentials are generated once, at creation, only if there's
-        // an email to send them to. An existing guest keeps whatever
-        // password (or lack of one) they already have.
-        if (!existingGuest && email) {
-          const { plainPassword, hashedPassword } =
-            await createGuestCredentials();
-          await tx.guest.update({
-            where: { id: guest.id },
-            data: { password: hashedPassword },
-          });
-          guestPlainPassword = plainPassword;
-        }
-      }
+      // No guest-linking here anymore — guestId was set at initiation.
+      // No markAccessTokenUsed — there's no token in this flow at all.
 
       await persistVendorDocuments(tx, onboarding.id, files);
-      await markAccessTokenUsed(tokenId, tx);
 
       await tx.activityLog.create({
         data: {
@@ -820,24 +820,11 @@ export const submitVendorForm = async (
       });
     });
 
-    if (guestPlainPassword) {
-      await addMailJob({
-        to: onboarding.email as string,
-        subject: "Your Guest Portal Login",
-        templateName: "guest-credentials",
-        templateData: {
-          email: onboarding.email,
-          password: guestPlainPassword,
-          loginUrl: `${process.env.FRONTEND_URL}/guest/login`,
-        },
-      });
-    }
-
     const viewToken = await issueAccessToken(
       "VENDOR_ONBOARDING",
       onboarding.id,
       prisma,
-      "VIEW_PDF",
+      "VIEW_PDF", // unrelated purpose — the PDF-view link, not form access. Stays as-is.
     );
 
     await addMailJob({
@@ -858,12 +845,138 @@ export const submitVendorForm = async (
   }
 };
 
+// Replaces saveVendorFormDraft. Mounted as:
+//   PATCH /vendor-onboarding/guest/:id/draft  (requireGuestAuth)
+export const saveGuestVendorOnboardingDraft = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const guestId = req.guest!.id;
+    const { id } = req.params;
+
+    const onboarding = await prisma.vendorOnboarding.findFirst({
+      where: { id: id as string, guestId },
+    });
+    if (!onboarding) throw new ApiError(404, "Onboarding record not found");
+
+    const {
+      vendorName,
+      state,
+      city,
+      pinCode,
+      address,
+      mobile,
+      email,
+      msmeVendor,
+      bankName,
+      bankBranch,
+      ifscCode,
+      bankAddress,
+      accountNumber,
+      gstin,
+      pan,
+      entityRegNo,
+    } = req.body;
+    const files = req.files as
+      | Record<string, Express.Multer.File[]>
+      | undefined;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.vendorOnboarding.update({
+        where: { id: onboarding.id },
+        data: {
+          vendorName,
+          state,
+          city,
+          pinCode,
+          address,
+          mobile,
+          email,
+          msmeVendor:
+            msmeVendor === undefined ? undefined : msmeVendor === "true",
+          bankName,
+          bankBranch,
+          ifscCode,
+          bankAddress,
+          accountNumber,
+          gstin,
+          pan,
+          entityRegNo,
+        },
+      });
+
+      await persistVendorDocuments(tx, onboarding.id, files);
+    });
+
+    res.status(200).json({ success: true, message: "Draft saved" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Enhanced getGuestVendorOnboardingById — folds in what getVendorFormByToken
+// used to provide (signed doc URLs, correctionReason, already-uploaded
+// types), so the guest form page has one endpoint to call regardless of
+// first-submission vs. post-clarify state.
+export const getGuestVendorOnboardingById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const guestId = req.guest!.id;
+    const { id } = req.params;
+
+    const onboarding = await prisma.vendorOnboarding.findFirst({
+      where: { id: id as string, guestId },
+      include: { documents: true },
+    });
+    if (!onboarding) {
+      throw new ApiError(404, "Onboarding record not found");
+    }
+
+    const latestClarification = await prisma.activityLog.findFirst({
+      where: {
+        subjectType: "VENDOR_ONBOARDING",
+        subjectId: onboarding.id,
+        action: "CLARIFY",
+      },
+      orderBy: { createdAt: "desc" },
+      select: { metadata: true, createdAt: true },
+    });
+
+    const documentsWithSignedUrls = await Promise.all(
+      onboarding.documents.map(async (doc) => ({
+        ...doc,
+        fileUrl: await getSignedImageUrl(doc.s3Key),
+      })),
+    );
+
+    res.status(200).json({
+      success: true,
+      onboarding: {
+        ...onboarding,
+        documents: documentsWithSignedUrls,
+        alreadyUploadedDocumentTypes: onboarding.documents.map(
+          (d) => d.documentType,
+        ),
+        correctionReason:
+          (latestClarification?.metadata as { reason?: string } | null)
+            ?.reason ?? null,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // controllers/vendorOnboarding.controller.ts
 
 // POST /vendor-onboarding/:id/send-back-to-vendor
 // Reopens vendor access after a clarify (approver comment → employee →
 // vendor). Reuses AWAITING_VENDOR rather than a new status, per your call —
-// the token middleware's existing status guard already works unmodified.
 export const sendBackToVendor = async (
   req: Request,
   res: Response,
@@ -883,8 +996,6 @@ export const sendBackToVendor = async (
       throw new ApiError(403, "You do not have access to this request");
     }
 
-    // Only meaningful post-clarify — before that, the vendor never had
-    // anything to correct yet.
     if (onboarding.status !== "IN_REVIEW") {
       throw new ApiError(
         400,
@@ -892,13 +1003,7 @@ export const sendBackToVendor = async (
       );
     }
 
-    const tokenRecord = await prisma.$transaction(async (tx) => {
-      const token = await issueAccessToken(
-        "VENDOR_ONBOARDING",
-        onboarding.id,
-        tx,
-      );
-
+    await prisma.$transaction(async (tx) => {
       await tx.vendorOnboarding.update({
         where: { id: onboarding.id },
         data: { status: "AWAITING_VENDOR" },
@@ -912,17 +1017,15 @@ export const sendBackToVendor = async (
           action: "CLARIFY",
         },
       });
-
-      return token;
     });
 
     await addMailJob({
       to: onboarding.email as string,
       subject: "Vendor Onboarding — Correction Required",
-      templateName: "vendor-onboarding-resubmit",
+      templateName: "vendor-onboarding-resubmit", // needs updating: formUrl -> loginUrl
       templateData: {
         vendorName: onboarding.vendorName,
-        formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
+        loginUrl: `${process.env.FRONTEND_URL}/guest/login`,
         currentYear: new Date().getFullYear(),
       },
     });
@@ -963,72 +1066,6 @@ export const getVendorOnboardingPdfByToken = async (
     );
 
     res.redirect(url);
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const saveVendorFormDraft = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const {
-      vendorName,
-      state,
-      city,
-      pinCode,
-      address,
-      mobile,
-      email,
-      msmeVendor,
-      bankName,
-      bankBranch,
-      ifscCode,
-      bankAddress,
-      accountNumber,
-      gstin,
-      pan,
-      entityRegNo,
-    } = req.body;
-    const { onboarding } = req.vendorAccessToken!;
-    const files = req.files as
-      | Record<string, Express.Multer.File[]>
-      | undefined;
-
-    // No dpdpConsent requirement and no missing-document check — a draft
-    // is allowed to be partial. Status and access token are untouched so
-    // the vendor can return and finish later with the same link. No
-    // activityLog / notify / email — draft saves are silent.
-    await prisma.$transaction(async (tx) => {
-      await tx.vendorOnboarding.update({
-        where: { id: onboarding.id },
-        data: {
-          vendorName,
-          state,
-          city,
-          pinCode,
-          address,
-          mobile,
-          email,
-          msmeVendor:
-            msmeVendor === undefined ? undefined : msmeVendor === "true",
-          bankName,
-          bankBranch,
-          ifscCode,
-          bankAddress,
-          accountNumber,
-          gstin,
-          pan,
-          entityRegNo,
-        },
-      });
-
-      await persistVendorDocuments(tx, onboarding.id, files);
-    });
-
-    res.status(200).json({ success: true, message: "Draft saved" });
   } catch (error) {
     next(error);
   }
@@ -1143,34 +1180,6 @@ export const listGuestVendorOnboardings = async (
     });
 
     res.status(200).json({ success: true, onboardings });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// GET /vendor-onboarding/mine/:id
-// Full record for one onboarding — scoped to guestId in the WHERE clause
-// itself, not checked after the fact. A guest requesting someone else's
-// id gets the same 404 as a nonexistent id (no existence leak).
-export const getGuestVendorOnboardingById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const guestId = req.guest!.id;
-    const { id } = req.params;
-
-    const onboarding = await prisma.vendorOnboarding.findFirst({
-      where: { id: id as string, guestId },
-      include: { documents: true },
-    });
-
-    if (!onboarding) {
-      throw new ApiError(404, "Onboarding record not found");
-    }
-
-    res.status(200).json({ success: true, onboarding });
   } catch (error) {
     next(error);
   }

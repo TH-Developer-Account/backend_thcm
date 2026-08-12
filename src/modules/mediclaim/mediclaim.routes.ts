@@ -3,20 +3,17 @@ import multer from "multer";
 import asyncHandler from "@shared/middleware/async.middleware";
 import { requireAuth, authorize } from "@kernel/auth/auth.middleware";
 import { requireGuestAuth } from "@guest/guest.middleware";
-import { requireMedicalClaimAccessToken } from "./mediclaim.middleware";
 import {
   initiateMedicalClaim,
-  resendMedicalClaimLink,
+  resendMedicalClaimLink, // consider: still meaningful? see note below
   closeMedicalClaim,
   listMedicalClaims,
   getMedicalClaimById,
   exportMedicalClaimById,
-  getMedicalClaimFormByToken,
-  submitMedicalClaimForm,
-  saveMedicalClaimDraft,
   listGuestMedicalClaims,
   getGuestMedicalClaimById,
-  resubmitGuestMedicalClaim,
+  submitGuestMedicalClaimForm,
+  saveGuestMedicalClaimDraft,
 } from "./mediclaim.controller";
 
 const router = Router();
@@ -33,10 +30,16 @@ router.get(
   asyncHandler(getGuestMedicalClaimById),
 );
 router.patch(
-  "/guest/:id/resubmit",
+  "/guest/:id/submit",
   requireGuestAuth,
   upload.array("billAttachments"),
-  asyncHandler(resubmitGuestMedicalClaim),
+  asyncHandler(submitGuestMedicalClaimForm),
+);
+router.patch(
+  "/guest/:id/draft",
+  requireGuestAuth,
+  upload.array("billAttachments"),
+  asyncHandler(saveGuestMedicalClaimDraft),
 );
 
 // ── Internal staff surface ──
@@ -65,35 +68,10 @@ router.post(
   asyncHandler(initiateMedicalClaim),
 );
 router.post(
-  "/:id/resend-link",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "write"),
-  asyncHandler(resendMedicalClaimLink),
-);
-router.post(
   "/:id/close",
   requireAuth,
   authorize(APP_KEY, MODULE, "write"),
   asyncHandler(closeMedicalClaim),
-);
-
-// ── First-touch, token-based (AWAITING_EX_EMPLOYEE only) ──
-router.get(
-  "/public/:token",
-  requireMedicalClaimAccessToken,
-  asyncHandler(getMedicalClaimFormByToken),
-);
-router.post(
-  "/public/:token/submit",
-  requireMedicalClaimAccessToken,
-  upload.array("billAttachments"),
-  asyncHandler(submitMedicalClaimForm),
-);
-router.patch(
-  "/public/:token/draft",
-  requireMedicalClaimAccessToken,
-  upload.array("billAttachments"),
-  asyncHandler(saveMedicalClaimDraft),
 );
 
 export default router;

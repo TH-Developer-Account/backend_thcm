@@ -6,6 +6,7 @@ import { resolveWorkspaceId } from "@import-export/export.controller";
 import { notify } from "@notifications/notification.services";
 import { addMailJob } from "@mail/mail.service";
 import { uploadToS3 } from "@shared/utils/aws-s3.services";
+import { linkOrCreateGuestForSubject } from "@modules/guest/guest.services";
 import {
   issueAccessToken,
   markAccessTokenUsed,
@@ -90,6 +91,10 @@ async function persistMedicalClaimBills(
   }
 }
 // POST /medical-claims — staff initiates
+// Replaces initiateMedicalClaim. Same shape as vendor onboarding's version —
+// guest creation moves here from submitMedicalClaimForm.
+// Add import: import { linkOrCreateGuestForSubject } from "@guest/guest.credential.services";
+
 export const initiateMedicalClaim = async (
   req: Request,
   res: Response,
@@ -107,6 +112,10 @@ export const initiateMedicalClaim = async (
 
     const result = await prisma.$transaction(async (tx) => {
       const referenceNumber = generateMedicalClaimReferenceNumber(employeeName);
+
+      const { guestId, isNewGuest, plainPassword } =
+        await linkOrCreateGuestForSubject(tx, { mobile, email });
+
       const created = await tx.medicalClaim.create({
         data: {
           workspaceId,
@@ -116,14 +125,9 @@ export const initiateMedicalClaim = async (
           ticketNumber,
           mobile,
           email,
+          guestId,
         },
       });
-
-      const tokenRecord = await issueAccessToken(
-        "MEDICAL_CLAIM",
-        created.id,
-        tx,
-      );
 
       await tx.activityLog.create({
         data: {
@@ -134,22 +138,35 @@ export const initiateMedicalClaim = async (
         },
       });
 
-      return { created, tokenRecord };
+      return { created, isNewGuest, plainPassword };
     });
 
-    await addMailJob({
-      to: email,
-      subject: "Medical Claim — Action Required",
-      templateName: "medical-claim-initiation",
-      templateData: {
-        employeeName,
-        formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${result.tokenRecord.token}`,
-      },
-    });
+    if (result.plainPassword) {
+      await addMailJob({
+        to: email,
+        subject: "Medical Claim — Your Guest Portal Login",
+        templateName: "guest-credentials",
+        templateData: {
+          email,
+          password: result.plainPassword,
+          loginUrl: `${process.env.FRONTEND_URL}/guest/login`,
+        },
+      });
+    } else {
+      await addMailJob({
+        to: email,
+        subject: "Medical Claim — Action Required",
+        templateName: "medical-claim-initiation", // needs updating: formUrl -> loginUrl
+        templateData: {
+          employeeName,
+          loginUrl: `${process.env.FRONTEND_URL}/guest/login`,
+        },
+      });
+    }
 
     res.status(201).json({
       success: true,
-      message: "Medical claim initiated and link has been sent to their email!",
+      message: "Medical claim initiated and login details sent!",
       data: result.created,
     });
   } catch (error) {
@@ -213,16 +230,43 @@ export const getMedicalClaimFormByToken = async (
   }
 };
 
-// POST /medical-claims/public/:token/submit
-// Workflow starts immediately on submission — no manual initiator review
-// gate, unlike vendor onboarding (explicit product decision).
-export const submitMedicalClaimForm = async (
+// Replaces submitMedicalClaimForm AND resubmitGuestMedicalClaim. Mounted as:
+//   PATCH /medical-claim/guest/:id/submit  (requireGuestAuth)
+//
+// Branches on claim.status rather than pretending the two cases are
+// identical — they aren't:
+//   AWAITING_EX_EMPLOYEE   -> first submission: declaration/signature
+//                             required, no existing workflow to reactivate
+//                             (workflow assignment itself is STILL the same
+//                             unwired TODO as the original code — not
+//                             something this merge fixes or invents)
+//   CLARIFICATION_REQUESTED -> resubmit: declaration already on file,
+//                              reactivates the existing workflow instance
+
+export const submitGuestMedicalClaimForm = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { claim, id: tokenId } = req.medicalClaimAccessToken!;
+    const guestId = req.guest!.id;
+    const { id } = req.params;
+
+    const claim = await prisma.medicalClaim.findFirst({
+      where: { id: id as string, guestId },
+    });
+    if (!claim) throw new ApiError(404, "Claim not found");
+
+    const isFirstSubmission = claim.status === "AWAITING_EX_EMPLOYEE";
+    const isResubmission = claim.status === "CLARIFICATION_REQUESTED";
+
+    if (!isFirstSubmission && !isResubmission) {
+      throw new ApiError(
+        400,
+        "This claim is not currently open for submission",
+      );
+    }
+
     const {
       grade,
       location,
@@ -230,8 +274,6 @@ export const submitMedicalClaimForm = async (
       claimCover,
       spouseName,
       medicalAdvanceTaken,
-      mobile,
-      email,
       declarationAccepted,
       signatureName,
       signatureDate,
@@ -239,54 +281,44 @@ export const submitMedicalClaimForm = async (
     const bills = req.body.bills ? JSON.parse(req.body.bills) : [];
     const files = (req.files as Express.Multer.File[]) ?? [];
 
-    if (!declarationAccepted)
+    if (isFirstSubmission && !declarationAccepted) {
       throw new ApiError(400, "Declaration must be accepted before submitting");
+    }
     if (!Array.isArray(bills) || bills.length === 0) {
       throw new ApiError(400, "At least one claim head entry is required");
     }
-    const validatedBills = validateBillAttachments(bills, files);
-    if (!grade)
+    if (!grade) {
       throw new ApiError(400, "Grade is required to compute eligibility");
-    if (!mobile) throw new ApiError(400, "A mobile number is required");
+    }
 
-    let guestPlainPassword: string | null = null;
+    const validatedBills = validateBillAttachments(bills, files);
 
-    const result = await prisma.$transaction(async (tx) => {
-      // ── Guest linking — identity key is mobile, same as vendor onboarding ──
-      const existingGuest = await tx.guest.findUnique({ where: { mobile } });
-      const guest =
-        existingGuest ?? (await tx.guest.create({ data: { mobile, email } }));
-
-      if (!existingGuest && email) {
-        const { plainPassword, hashedPassword } =
-          await createGuestCredentials();
-        await tx.guest.update({
-          where: { id: guest.id },
-          data: { password: hashedPassword },
-        });
-        guestPlainPassword = plainPassword;
-      }
-
+    await prisma.$transaction(async (tx) => {
       const eligibility = await computeMedicalClaimEligibility(
         tx,
-        guest.id,
+        guestId,
         grade,
+        isResubmission ? claim.id : undefined, // exclude own prior amount on resubmit recompute
       );
-      if (!eligibility)
+      if (!eligibility) {
         throw new ApiError(
           400,
           `No eligibility configured for grade "${grade}"`,
         );
+      }
 
       const totalClaimed = validatedBills.reduce(
         (sum, b: any) => sum + Number(b.amount),
         0,
       );
 
-      const updated = await tx.medicalClaim.update({
+      if (isResubmission) {
+        await tx.medicalClaimBill.deleteMany({ where: { claimId: claim.id } });
+      }
+
+      await tx.medicalClaim.update({
         where: { id: claim.id },
         data: {
-          guestId: guest.id,
           grade,
           location,
           patientName,
@@ -296,79 +328,103 @@ export const submitMedicalClaimForm = async (
           eligibleAmount: eligibility.eligibleAmount,
           alreadySettled: eligibility.alreadySettled,
           totalClaimed,
-          declarationAcceptedAt: new Date(),
-          signatureName,
-          signatureDate,
-          submittedAt: new Date(),
-          status: "IN_PROGRESS",
+          ...(isFirstSubmission
+            ? {
+                declarationAcceptedAt: new Date(),
+                signatureName,
+                signatureDate,
+                submittedAt: new Date(),
+                status: "IN_PROGRESS",
+              }
+            : {}),
         },
       });
 
-      await persistMedicalClaimBills(tx, updated.id, validatedBills, files);
-      await markAccessTokenUsed(tokenId, tx);
+      await persistMedicalClaimBills(tx, claim.id, validatedBills, files);
 
-      // Workflow assignment — same marker vendor onboarding's sendForApproval
-      // uses; assignWorkflow's real signature wasn't in the files reviewed
-      // for this pass, so this is left explicit rather than guessed.
-      // await assignWorkflow({ subjectType: "MEDICAL_CLAIM", subjectId: updated.id, tx });
+      if (isFirstSubmission) {
+        // Same gap as the original submitMedicalClaimForm — workflow
+        // assignment was never wired here (see the commented-out
+        // assignWorkflow call in the source this was extracted from).
+        // Not invented/fixed as part of this merge.
+        await tx.activityLog.create({
+          data: {
+            subjectType: "MEDICAL_CLAIM",
+            subjectId: claim.id,
+            actorId: claim.initiatedById,
+            action: "MEDICAL_CLAIM_SUBMITTED",
+          },
+        });
+        await tx.activityLog.create({
+          data: {
+            subjectType: "MEDICAL_CLAIM",
+            subjectId: claim.id,
+            actorId: claim.initiatedById,
+            action: "MEDICAL_CLAIM_SENT_FOR_APPROVAL",
+          },
+        });
+      } else {
+        const activeWorkflow = await tx.workflowInstance.findFirst({
+          where: {
+            subjectType: "MEDICAL_CLAIM",
+            subjectId: claim.id,
+            isActive: true,
+          },
+          select: { id: true },
+        });
+        if (!activeWorkflow) {
+          throw new ApiError(404, "No active workflow found for this claim");
+        }
 
-      await tx.activityLog.create({
-        data: {
-          subjectType: "MEDICAL_CLAIM",
-          subjectId: updated.id,
-          actorId: updated.initiatedById,
-          action: "MEDICAL_CLAIM_SUBMITTED",
-        },
-      });
-      await tx.activityLog.create({
-        data: {
-          subjectType: "MEDICAL_CLAIM",
-          subjectId: updated.id,
-          actorId: updated.initiatedById,
-          action: "MEDICAL_CLAIM_SENT_FOR_APPROVAL",
-        },
-      });
+        await activateFirstStageForResubmit(
+          tx,
+          activeWorkflow.id,
+          claim.initiatedById, // actorId convention — guest resubmits, but actorId stays the initiator
+          getResubmitAction("MEDICAL_CLAIM"),
+          getResubmitStatus("MEDICAL_CLAIM"),
+        );
+      }
 
       await notify({
-        workspaceId: updated.workspaceId,
-        recipientId: updated.initiatedById,
+        workspaceId: claim.workspaceId,
+        recipientId: claim.initiatedById,
         type: "GENERIC",
-        title: "Medical claim submitted",
-        body: `${updated.employeeName ?? "The ex-employee"} has submitted their medical claim. It is now in the approval workflow.`,
+        title: isFirstSubmission
+          ? "Medical claim submitted"
+          : "Medical claim resubmitted",
+        body: isFirstSubmission
+          ? `${claim.employeeName ?? "The ex-employee"} has submitted their medical claim. It is now in the approval workflow.`
+          : `${claim.employeeName ?? "The ex-employee"} has resubmitted their claim after clarification. It is back in the approval workflow.`,
       });
-
-      return updated;
     });
 
-    if (guestPlainPassword) {
-      await addMailJob({
-        to: email,
-        subject: "Your Guest Portal Login",
-        templateName: "guest-credentials",
-        templateData: {
-          email,
-          password: guestPlainPassword,
-          loginUrl: `${process.env.FRONTEND_URL}/guest/login`,
-        },
-      });
-    }
-
-    res
-      .status(200)
-      .json({ success: true, message: "Claim submitted successfully" });
+    res.status(200).json({
+      success: true,
+      message: isFirstSubmission
+        ? "Claim submitted successfully"
+        : "Claim updated and resubmitted for approval",
+    });
   } catch (error) {
     next(error);
   }
 };
 
-// PATCH /medical-claims/public/:token/draft
-export const saveMedicalClaimDraft = async (
+// Replaces saveMedicalClaimDraft. Mounted as:
+//   PATCH /medical-claim/guest/:id/draft  (requireGuestAuth)
+export const saveGuestMedicalClaimDraft = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { claim } = req.medicalClaimAccessToken!;
+    const guestId = req.guest!.id;
+    const { id } = req.params;
+
+    const claim = await prisma.medicalClaim.findFirst({
+      where: { id: id as string, guestId },
+    });
+    if (!claim) throw new ApiError(404, "Claim not found");
+
     const {
       grade,
       location,
@@ -376,8 +432,6 @@ export const saveMedicalClaimDraft = async (
       claimCover,
       spouseName,
       medicalAdvanceTaken,
-      mobile,
-      email,
     } = req.body;
 
     await prisma.medicalClaim.update({
@@ -389,8 +443,6 @@ export const saveMedicalClaimDraft = async (
         claimCover,
         spouseName,
         medicalAdvanceTaken,
-        mobile,
-        email,
       },
     });
 
