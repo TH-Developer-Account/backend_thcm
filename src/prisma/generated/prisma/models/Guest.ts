@@ -183,6 +183,7 @@ export type GuestWhereInput = {
   password?: Prisma.StringNullableFilter<"Guest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Guest"> | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingListRelationFilter
+  medicalClaims?: Prisma.MedicalClaimListRelationFilter
 }
 
 export type GuestOrderByWithRelationInput = {
@@ -192,6 +193,7 @@ export type GuestOrderByWithRelationInput = {
   password?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   vendorOnboardings?: Prisma.VendorOnboardingOrderByRelationAggregateInput
+  medicalClaims?: Prisma.MedicalClaimOrderByRelationAggregateInput
 }
 
 export type GuestWhereUniqueInput = Prisma.AtLeast<{
@@ -204,6 +206,7 @@ export type GuestWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringNullableFilter<"Guest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Guest"> | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingListRelationFilter
+  medicalClaims?: Prisma.MedicalClaimListRelationFilter
 }, "id" | "mobile" | "email">
 
 export type GuestOrderByWithAggregationInput = {
@@ -235,6 +238,7 @@ export type GuestCreateInput = {
   password?: string | null
   createdAt?: Date | string
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutGuestInput
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutGuestInput
 }
 
 export type GuestUncheckedCreateInput = {
@@ -244,6 +248,7 @@ export type GuestUncheckedCreateInput = {
   password?: string | null
   createdAt?: Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutGuestInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutGuestInput
 }
 
 export type GuestUpdateInput = {
@@ -253,6 +258,7 @@ export type GuestUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutGuestNestedInput
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutGuestNestedInput
 }
 
 export type GuestUncheckedUpdateInput = {
@@ -262,6 +268,7 @@ export type GuestUncheckedUpdateInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutGuestNestedInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutGuestNestedInput
 }
 
 export type GuestCreateManyInput = {
@@ -333,12 +340,29 @@ export type GuestUpdateOneWithoutVendorOnboardingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GuestUpdateToOneWithWhereWithoutVendorOnboardingsInput, Prisma.GuestUpdateWithoutVendorOnboardingsInput>, Prisma.GuestUncheckedUpdateWithoutVendorOnboardingsInput>
 }
 
+export type GuestCreateNestedOneWithoutMedicalClaimsInput = {
+  create?: Prisma.XOR<Prisma.GuestCreateWithoutMedicalClaimsInput, Prisma.GuestUncheckedCreateWithoutMedicalClaimsInput>
+  connectOrCreate?: Prisma.GuestCreateOrConnectWithoutMedicalClaimsInput
+  connect?: Prisma.GuestWhereUniqueInput
+}
+
+export type GuestUpdateOneWithoutMedicalClaimsNestedInput = {
+  create?: Prisma.XOR<Prisma.GuestCreateWithoutMedicalClaimsInput, Prisma.GuestUncheckedCreateWithoutMedicalClaimsInput>
+  connectOrCreate?: Prisma.GuestCreateOrConnectWithoutMedicalClaimsInput
+  upsert?: Prisma.GuestUpsertWithoutMedicalClaimsInput
+  disconnect?: Prisma.GuestWhereInput | boolean
+  delete?: Prisma.GuestWhereInput | boolean
+  connect?: Prisma.GuestWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GuestUpdateToOneWithWhereWithoutMedicalClaimsInput, Prisma.GuestUpdateWithoutMedicalClaimsInput>, Prisma.GuestUncheckedUpdateWithoutMedicalClaimsInput>
+}
+
 export type GuestCreateWithoutVendorOnboardingsInput = {
   id?: string
   mobile?: string | null
   email?: string | null
   password?: string | null
   createdAt?: Date | string
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutGuestInput
 }
 
 export type GuestUncheckedCreateWithoutVendorOnboardingsInput = {
@@ -347,6 +371,7 @@ export type GuestUncheckedCreateWithoutVendorOnboardingsInput = {
   email?: string | null
   password?: string | null
   createdAt?: Date | string
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutGuestInput
 }
 
 export type GuestCreateOrConnectWithoutVendorOnboardingsInput = {
@@ -371,6 +396,7 @@ export type GuestUpdateWithoutVendorOnboardingsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutGuestNestedInput
 }
 
 export type GuestUncheckedUpdateWithoutVendorOnboardingsInput = {
@@ -379,6 +405,59 @@ export type GuestUncheckedUpdateWithoutVendorOnboardingsInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutGuestNestedInput
+}
+
+export type GuestCreateWithoutMedicalClaimsInput = {
+  id?: string
+  mobile?: string | null
+  email?: string | null
+  password?: string | null
+  createdAt?: Date | string
+  vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutGuestInput
+}
+
+export type GuestUncheckedCreateWithoutMedicalClaimsInput = {
+  id?: string
+  mobile?: string | null
+  email?: string | null
+  password?: string | null
+  createdAt?: Date | string
+  vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutGuestInput
+}
+
+export type GuestCreateOrConnectWithoutMedicalClaimsInput = {
+  where: Prisma.GuestWhereUniqueInput
+  create: Prisma.XOR<Prisma.GuestCreateWithoutMedicalClaimsInput, Prisma.GuestUncheckedCreateWithoutMedicalClaimsInput>
+}
+
+export type GuestUpsertWithoutMedicalClaimsInput = {
+  update: Prisma.XOR<Prisma.GuestUpdateWithoutMedicalClaimsInput, Prisma.GuestUncheckedUpdateWithoutMedicalClaimsInput>
+  create: Prisma.XOR<Prisma.GuestCreateWithoutMedicalClaimsInput, Prisma.GuestUncheckedCreateWithoutMedicalClaimsInput>
+  where?: Prisma.GuestWhereInput
+}
+
+export type GuestUpdateToOneWithWhereWithoutMedicalClaimsInput = {
+  where?: Prisma.GuestWhereInput
+  data: Prisma.XOR<Prisma.GuestUpdateWithoutMedicalClaimsInput, Prisma.GuestUncheckedUpdateWithoutMedicalClaimsInput>
+}
+
+export type GuestUpdateWithoutMedicalClaimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutGuestNestedInput
+}
+
+export type GuestUncheckedUpdateWithoutMedicalClaimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutGuestNestedInput
 }
 
 
@@ -388,10 +467,12 @@ export type GuestUncheckedUpdateWithoutVendorOnboardingsInput = {
 
 export type GuestCountOutputType = {
   vendorOnboardings: number
+  medicalClaims: number
 }
 
 export type GuestCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vendorOnboardings?: boolean | GuestCountOutputTypeCountVendorOnboardingsArgs
+  medicalClaims?: boolean | GuestCountOutputTypeCountMedicalClaimsArgs
 }
 
 /**
@@ -411,6 +492,13 @@ export type GuestCountOutputTypeCountVendorOnboardingsArgs<ExtArgs extends runti
   where?: Prisma.VendorOnboardingWhereInput
 }
 
+/**
+ * GuestCountOutputType without action
+ */
+export type GuestCountOutputTypeCountMedicalClaimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MedicalClaimWhereInput
+}
+
 
 export type GuestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -419,6 +507,7 @@ export type GuestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   password?: boolean
   createdAt?: boolean
   vendorOnboardings?: boolean | Prisma.Guest$vendorOnboardingsArgs<ExtArgs>
+  medicalClaims?: boolean | Prisma.Guest$medicalClaimsArgs<ExtArgs>
   _count?: boolean | Prisma.GuestCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["guest"]>
 
@@ -449,6 +538,7 @@ export type GuestSelectScalar = {
 export type GuestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "mobile" | "email" | "password" | "createdAt", ExtArgs["result"]["guest"]>
 export type GuestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vendorOnboardings?: boolean | Prisma.Guest$vendorOnboardingsArgs<ExtArgs>
+  medicalClaims?: boolean | Prisma.Guest$medicalClaimsArgs<ExtArgs>
   _count?: boolean | Prisma.GuestCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GuestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -458,6 +548,7 @@ export type $GuestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Guest"
   objects: {
     vendorOnboardings: Prisma.$VendorOnboardingPayload<ExtArgs>[]
+    medicalClaims: Prisma.$MedicalClaimPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -860,6 +951,7 @@ readonly fields: GuestFieldRefs;
 export interface Prisma__GuestClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vendorOnboardings<T extends Prisma.Guest$vendorOnboardingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guest$vendorOnboardingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorOnboardingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  medicalClaims<T extends Prisma.Guest$medicalClaimsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guest$medicalClaimsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MedicalClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1308,6 +1400,30 @@ export type Guest$vendorOnboardingsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.VendorOnboardingScalarFieldEnum | Prisma.VendorOnboardingScalarFieldEnum[]
+}
+
+/**
+ * Guest.medicalClaims
+ */
+export type Guest$medicalClaimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MedicalClaim
+   */
+  select?: Prisma.MedicalClaimSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MedicalClaim
+   */
+  omit?: Prisma.MedicalClaimOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MedicalClaimInclude<ExtArgs> | null
+  where?: Prisma.MedicalClaimWhereInput
+  orderBy?: Prisma.MedicalClaimOrderByWithRelationInput | Prisma.MedicalClaimOrderByWithRelationInput[]
+  cursor?: Prisma.MedicalClaimWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MedicalClaimScalarFieldEnum | Prisma.MedicalClaimScalarFieldEnum[]
 }
 
 /**

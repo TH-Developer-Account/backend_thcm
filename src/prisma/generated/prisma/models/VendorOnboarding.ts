@@ -1271,22 +1271,6 @@ export type VendorOnboardingUpdateOneRequiredWithoutDocumentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.VendorOnboardingUpdateToOneWithWhereWithoutDocumentsInput, Prisma.VendorOnboardingUpdateWithoutDocumentsInput>, Prisma.VendorOnboardingUncheckedUpdateWithoutDocumentsInput>
 }
 
-<<<<<<< HEAD
-=======
-export type VendorOnboardingCreateNestedOneWithoutAccessTokensInput = {
-  create?: Prisma.XOR<Prisma.VendorOnboardingCreateWithoutAccessTokensInput, Prisma.VendorOnboardingUncheckedCreateWithoutAccessTokensInput>
-  connectOrCreate?: Prisma.VendorOnboardingCreateOrConnectWithoutAccessTokensInput
-  connect?: Prisma.VendorOnboardingWhereUniqueInput
-}
-
-export type VendorOnboardingUpdateOneRequiredWithoutAccessTokensNestedInput = {
-  create?: Prisma.XOR<Prisma.VendorOnboardingCreateWithoutAccessTokensInput, Prisma.VendorOnboardingUncheckedCreateWithoutAccessTokensInput>
-  connectOrCreate?: Prisma.VendorOnboardingCreateOrConnectWithoutAccessTokensInput
-  upsert?: Prisma.VendorOnboardingUpsertWithoutAccessTokensInput
-  connect?: Prisma.VendorOnboardingWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.VendorOnboardingUpdateToOneWithWhereWithoutAccessTokensInput, Prisma.VendorOnboardingUpdateWithoutAccessTokensInput>, Prisma.VendorOnboardingUncheckedUpdateWithoutAccessTokensInput>
-}
-
 export type VendorOnboardingCreateNestedManyWithoutGuestInput = {
   create?: Prisma.XOR<Prisma.VendorOnboardingCreateWithoutGuestInput, Prisma.VendorOnboardingUncheckedCreateWithoutGuestInput> | Prisma.VendorOnboardingCreateWithoutGuestInput[] | Prisma.VendorOnboardingUncheckedCreateWithoutGuestInput[]
   connectOrCreate?: Prisma.VendorOnboardingCreateOrConnectWithoutGuestInput | Prisma.VendorOnboardingCreateOrConnectWithoutGuestInput[]
@@ -1329,7 +1313,6 @@ export type VendorOnboardingUncheckedUpdateManyWithoutGuestNestedInput = {
   deleteMany?: Prisma.VendorOnboardingScalarWhereInput | Prisma.VendorOnboardingScalarWhereInput[]
 }
 
->>>>>>> d8a08f2191b07c9042b9857f1a4dd8fdc3efa420
 export type VendorOnboardingCreateWithoutInitiatedByInput = {
   id?: string
   referenceNumber: string
@@ -1658,11 +1641,7 @@ export type VendorOnboardingCreateWithoutDocumentsInput = {
   updated_at?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutVendorOnboardingsInput
   initiatedBy: Prisma.UserCreateNestedOneWithoutInitiated_vendor_onboardingsInput
-<<<<<<< HEAD
-=======
   guest?: Prisma.GuestCreateNestedOneWithoutVendorOnboardingsInput
-  accessTokens?: Prisma.VendorAccessTokenCreateNestedManyWithoutOnboardingInput
->>>>>>> d8a08f2191b07c9042b9857f1a4dd8fdc3efa420
 }
 
 export type VendorOnboardingUncheckedCreateWithoutDocumentsInput = {
@@ -1770,11 +1749,7 @@ export type VendorOnboardingUpdateWithoutDocumentsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutVendorOnboardingsNestedInput
   initiatedBy?: Prisma.UserUpdateOneRequiredWithoutInitiated_vendor_onboardingsNestedInput
-<<<<<<< HEAD
-=======
   guest?: Prisma.GuestUpdateOneWithoutVendorOnboardingsNestedInput
-  accessTokens?: Prisma.VendorAccessTokenUpdateManyWithoutOnboardingNestedInput
->>>>>>> d8a08f2191b07c9042b9857f1a4dd8fdc3efa420
 }
 
 export type VendorOnboardingUncheckedUpdateWithoutDocumentsInput = {
@@ -1821,214 +1796,6 @@ export type VendorOnboardingUncheckedUpdateWithoutDocumentsInput = {
   guestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-<<<<<<< HEAD
-=======
-  accessTokens?: Prisma.VendorAccessTokenUncheckedUpdateManyWithoutOnboardingNestedInput
-}
-
-export type VendorOnboardingCreateWithoutAccessTokensInput = {
-  id?: string
-  referenceNumber: string
-  status?: string
-  vendorName?: string | null
-  state?: string | null
-  city?: string | null
-  pinCode?: string | null
-  address?: string | null
-  mobile?: string | null
-  email?: string | null
-  msmeVendor?: boolean | null
-  bankName?: string | null
-  bankBranch?: string | null
-  ifscCode?: string | null
-  bankAddress?: string | null
-  accountNumber?: string | null
-  gstin?: string | null
-  pan?: string | null
-  entityRegNo?: string | null
-  dpdpConsentedAt?: Date | string | null
-  dpdpConsentIp?: string | null
-  vendorSubmittedAt?: Date | string | null
-  vendorCode?: string | null
-  vendorType?: string | null
-  companyCode?: string | null
-  purchaseOrg?: string | null
-  paymentTerm?: string | null
-  tds?: string | null
-  vendorCategory?: string | null
-  materialType?: string | null
-  materialSubType?: string | null
-  selfAssessmentObtained?: boolean | null
-  ndaObtained?: boolean | null
-  gpaObtained?: boolean | null
-  isRelatedParty?: boolean | null
-  vendorAuditReportPrepared?: boolean | null
-  natureOfService?: string | null
-  onboardingReason?: string | null
-  created_at?: Date | string
-  updated_at?: Date | string
-  workspace: Prisma.WorkspaceCreateNestedOneWithoutVendorOnboardingsInput
-  initiatedBy: Prisma.UserCreateNestedOneWithoutInitiated_vendor_onboardingsInput
-  guest?: Prisma.GuestCreateNestedOneWithoutVendorOnboardingsInput
-  documents?: Prisma.VendorOnboardingDocumentCreateNestedManyWithoutOnboardingInput
-}
-
-export type VendorOnboardingUncheckedCreateWithoutAccessTokensInput = {
-  id?: string
-  referenceNumber: string
-  workspaceId: string
-  initiatedById: string
-  status?: string
-  vendorName?: string | null
-  state?: string | null
-  city?: string | null
-  pinCode?: string | null
-  address?: string | null
-  mobile?: string | null
-  email?: string | null
-  msmeVendor?: boolean | null
-  bankName?: string | null
-  bankBranch?: string | null
-  ifscCode?: string | null
-  bankAddress?: string | null
-  accountNumber?: string | null
-  gstin?: string | null
-  pan?: string | null
-  entityRegNo?: string | null
-  dpdpConsentedAt?: Date | string | null
-  dpdpConsentIp?: string | null
-  vendorSubmittedAt?: Date | string | null
-  vendorCode?: string | null
-  vendorType?: string | null
-  companyCode?: string | null
-  purchaseOrg?: string | null
-  paymentTerm?: string | null
-  tds?: string | null
-  vendorCategory?: string | null
-  materialType?: string | null
-  materialSubType?: string | null
-  selfAssessmentObtained?: boolean | null
-  ndaObtained?: boolean | null
-  gpaObtained?: boolean | null
-  isRelatedParty?: boolean | null
-  vendorAuditReportPrepared?: boolean | null
-  natureOfService?: string | null
-  onboardingReason?: string | null
-  guestId?: string | null
-  created_at?: Date | string
-  updated_at?: Date | string
-  documents?: Prisma.VendorOnboardingDocumentUncheckedCreateNestedManyWithoutOnboardingInput
-}
-
-export type VendorOnboardingCreateOrConnectWithoutAccessTokensInput = {
-  where: Prisma.VendorOnboardingWhereUniqueInput
-  create: Prisma.XOR<Prisma.VendorOnboardingCreateWithoutAccessTokensInput, Prisma.VendorOnboardingUncheckedCreateWithoutAccessTokensInput>
-}
-
-export type VendorOnboardingUpsertWithoutAccessTokensInput = {
-  update: Prisma.XOR<Prisma.VendorOnboardingUpdateWithoutAccessTokensInput, Prisma.VendorOnboardingUncheckedUpdateWithoutAccessTokensInput>
-  create: Prisma.XOR<Prisma.VendorOnboardingCreateWithoutAccessTokensInput, Prisma.VendorOnboardingUncheckedCreateWithoutAccessTokensInput>
-  where?: Prisma.VendorOnboardingWhereInput
-}
-
-export type VendorOnboardingUpdateToOneWithWhereWithoutAccessTokensInput = {
-  where?: Prisma.VendorOnboardingWhereInput
-  data: Prisma.XOR<Prisma.VendorOnboardingUpdateWithoutAccessTokensInput, Prisma.VendorOnboardingUncheckedUpdateWithoutAccessTokensInput>
-}
-
-export type VendorOnboardingUpdateWithoutAccessTokensInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  vendorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  pinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bankAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  pan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  entityRegNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dpdpConsentedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  dpdpConsentIp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  vendorSubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  vendorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  companyCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchaseOrg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymentTerm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  vendorCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  materialType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  materialSubType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  selfAssessmentObtained?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  ndaObtained?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  gpaObtained?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  isRelatedParty?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  vendorAuditReportPrepared?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutVendorOnboardingsNestedInput
-  initiatedBy?: Prisma.UserUpdateOneRequiredWithoutInitiated_vendor_onboardingsNestedInput
-  guest?: Prisma.GuestUpdateOneWithoutVendorOnboardingsNestedInput
-  documents?: Prisma.VendorOnboardingDocumentUpdateManyWithoutOnboardingNestedInput
-}
-
-export type VendorOnboardingUncheckedUpdateWithoutAccessTokensInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  referenceNumber?: Prisma.StringFieldUpdateOperationsInput | string
-  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
-  initiatedById?: Prisma.StringFieldUpdateOperationsInput | string
-  status?: Prisma.StringFieldUpdateOperationsInput | string
-  vendorName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  pinCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  msmeVendor?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  bankName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bankBranch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  ifscCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bankAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  accountNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  pan?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  entityRegNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  dpdpConsentedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  dpdpConsentIp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  vendorSubmittedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  vendorType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  companyCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  purchaseOrg?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  paymentTerm?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tds?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  vendorCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  materialType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  materialSubType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  selfAssessmentObtained?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  ndaObtained?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  gpaObtained?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  isRelatedParty?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  vendorAuditReportPrepared?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
-  natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  guestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  documents?: Prisma.VendorOnboardingDocumentUncheckedUpdateManyWithoutOnboardingNestedInput
->>>>>>> d8a08f2191b07c9042b9857f1a4dd8fdc3efa420
 }
 
 export type VendorOnboardingCreateWithoutGuestInput = {
@@ -2075,7 +1842,6 @@ export type VendorOnboardingCreateWithoutGuestInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutVendorOnboardingsInput
   initiatedBy: Prisma.UserCreateNestedOneWithoutInitiated_vendor_onboardingsInput
   documents?: Prisma.VendorOnboardingDocumentCreateNestedManyWithoutOnboardingInput
-  accessTokens?: Prisma.VendorAccessTokenCreateNestedManyWithoutOnboardingInput
 }
 
 export type VendorOnboardingUncheckedCreateWithoutGuestInput = {
@@ -2122,7 +1888,6 @@ export type VendorOnboardingUncheckedCreateWithoutGuestInput = {
   created_at?: Date | string
   updated_at?: Date | string
   documents?: Prisma.VendorOnboardingDocumentUncheckedCreateNestedManyWithoutOnboardingInput
-  accessTokens?: Prisma.VendorAccessTokenUncheckedCreateNestedManyWithoutOnboardingInput
 }
 
 export type VendorOnboardingCreateOrConnectWithoutGuestInput = {
@@ -2604,7 +2369,6 @@ export type VendorOnboardingUpdateWithoutGuestInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutVendorOnboardingsNestedInput
   initiatedBy?: Prisma.UserUpdateOneRequiredWithoutInitiated_vendor_onboardingsNestedInput
   documents?: Prisma.VendorOnboardingDocumentUpdateManyWithoutOnboardingNestedInput
-  accessTokens?: Prisma.VendorAccessTokenUpdateManyWithoutOnboardingNestedInput
 }
 
 export type VendorOnboardingUncheckedUpdateWithoutGuestInput = {
@@ -2651,7 +2415,6 @@ export type VendorOnboardingUncheckedUpdateWithoutGuestInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.VendorOnboardingDocumentUncheckedUpdateManyWithoutOnboardingNestedInput
-  accessTokens?: Prisma.VendorAccessTokenUncheckedUpdateManyWithoutOnboardingNestedInput
 }
 
 export type VendorOnboardingUncheckedUpdateManyWithoutGuestInput = {

@@ -179,6 +179,7 @@ export type WorkspaceWhereInput = {
   profiles?: Prisma.ProfileListRelationFilter
   userProfiles?: Prisma.UserProfileListRelationFilter
   vendorOnboardings?: Prisma.VendorOnboardingListRelationFilter
+  medicalClaims?: Prisma.MedicalClaimListRelationFilter
   workflowTemplates?: Prisma.WorkflowTemplateListRelationFilter
   workflows?: Prisma.WorkflowInstanceListRelationFilter
   importExportLogs?: Prisma.ImportExportLogListRelationFilter
@@ -195,6 +196,7 @@ export type WorkspaceOrderByWithRelationInput = {
   profiles?: Prisma.ProfileOrderByRelationAggregateInput
   userProfiles?: Prisma.UserProfileOrderByRelationAggregateInput
   vendorOnboardings?: Prisma.VendorOnboardingOrderByRelationAggregateInput
+  medicalClaims?: Prisma.MedicalClaimOrderByRelationAggregateInput
   workflowTemplates?: Prisma.WorkflowTemplateOrderByRelationAggregateInput
   workflows?: Prisma.WorkflowInstanceOrderByRelationAggregateInput
   importExportLogs?: Prisma.ImportExportLogOrderByRelationAggregateInput
@@ -214,6 +216,7 @@ export type WorkspaceWhereUniqueInput = Prisma.AtLeast<{
   profiles?: Prisma.ProfileListRelationFilter
   userProfiles?: Prisma.UserProfileListRelationFilter
   vendorOnboardings?: Prisma.VendorOnboardingListRelationFilter
+  medicalClaims?: Prisma.MedicalClaimListRelationFilter
   workflowTemplates?: Prisma.WorkflowTemplateListRelationFilter
   workflows?: Prisma.WorkflowInstanceListRelationFilter
   importExportLogs?: Prisma.ImportExportLogListRelationFilter
@@ -250,6 +253,7 @@ export type WorkspaceCreateInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
@@ -266,6 +270,7 @@ export type WorkspaceUncheckedCreateInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -282,6 +287,7 @@ export type WorkspaceUpdateInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
@@ -298,6 +304,7 @@ export type WorkspaceUncheckedUpdateInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -477,6 +484,20 @@ export type WorkspaceUpdateOneRequiredWithoutVendorOnboardingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutVendorOnboardingsInput, Prisma.WorkspaceUpdateWithoutVendorOnboardingsInput>, Prisma.WorkspaceUncheckedUpdateWithoutVendorOnboardingsInput>
 }
 
+export type WorkspaceCreateNestedOneWithoutMedicalClaimsInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutMedicalClaimsInput, Prisma.WorkspaceUncheckedCreateWithoutMedicalClaimsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutMedicalClaimsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+}
+
+export type WorkspaceUpdateOneRequiredWithoutMedicalClaimsNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkspaceCreateWithoutMedicalClaimsInput, Prisma.WorkspaceUncheckedCreateWithoutMedicalClaimsInput>
+  connectOrCreate?: Prisma.WorkspaceCreateOrConnectWithoutMedicalClaimsInput
+  upsert?: Prisma.WorkspaceUpsertWithoutMedicalClaimsInput
+  connect?: Prisma.WorkspaceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkspaceUpdateToOneWithWhereWithoutMedicalClaimsInput, Prisma.WorkspaceUpdateWithoutMedicalClaimsInput>, Prisma.WorkspaceUncheckedUpdateWithoutMedicalClaimsInput>
+}
+
 export type WorkspaceCreateWithoutUsersInput = {
   id?: string
   name: string
@@ -486,6 +507,7 @@ export type WorkspaceCreateWithoutUsersInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
@@ -501,6 +523,7 @@ export type WorkspaceUncheckedCreateWithoutUsersInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -532,6 +555,7 @@ export type WorkspaceUpdateWithoutUsersInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
@@ -547,6 +571,7 @@ export type WorkspaceUncheckedUpdateWithoutUsersInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -562,6 +587,7 @@ export type WorkspaceCreateWithoutAppsInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
@@ -577,6 +603,7 @@ export type WorkspaceUncheckedCreateWithoutAppsInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -608,6 +635,7 @@ export type WorkspaceUpdateWithoutAppsInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
@@ -623,6 +651,7 @@ export type WorkspaceUncheckedUpdateWithoutAppsInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -638,6 +667,7 @@ export type WorkspaceCreateWithoutProfilesInput = {
   apps?: Prisma.WorkspaceAppCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
@@ -653,6 +683,7 @@ export type WorkspaceUncheckedCreateWithoutProfilesInput = {
   apps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -684,6 +715,7 @@ export type WorkspaceUpdateWithoutProfilesInput = {
   apps?: Prisma.WorkspaceAppUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
@@ -699,6 +731,7 @@ export type WorkspaceUncheckedUpdateWithoutProfilesInput = {
   apps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -714,6 +747,7 @@ export type WorkspaceCreateWithoutUserProfilesInput = {
   apps?: Prisma.WorkspaceAppCreateNestedManyWithoutWorkspaceInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
@@ -729,6 +763,7 @@ export type WorkspaceUncheckedCreateWithoutUserProfilesInput = {
   apps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutWorkspaceInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -760,6 +795,7 @@ export type WorkspaceUpdateWithoutUserProfilesInput = {
   apps?: Prisma.WorkspaceAppUpdateManyWithoutWorkspaceNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
@@ -775,6 +811,7 @@ export type WorkspaceUncheckedUpdateWithoutUserProfilesInput = {
   apps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutWorkspaceNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -791,6 +828,7 @@ export type WorkspaceCreateWithoutWorkflowTemplatesInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutWorkspaceInput
@@ -806,6 +844,7 @@ export type WorkspaceUncheckedCreateWithoutWorkflowTemplatesInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -837,6 +876,7 @@ export type WorkspaceUpdateWithoutWorkflowTemplatesInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutWorkspaceNestedInput
@@ -852,6 +892,7 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowTemplatesInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -867,6 +908,7 @@ export type WorkspaceCreateWithoutWorkflowsInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutWorkspaceInput
@@ -882,6 +924,7 @@ export type WorkspaceUncheckedCreateWithoutWorkflowsInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -913,6 +956,7 @@ export type WorkspaceUpdateWithoutWorkflowsInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutWorkspaceNestedInput
@@ -928,6 +972,7 @@ export type WorkspaceUncheckedUpdateWithoutWorkflowsInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -943,6 +988,7 @@ export type WorkspaceCreateWithoutImportExportLogsInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutWorkspaceInput
@@ -958,6 +1004,7 @@ export type WorkspaceUncheckedCreateWithoutImportExportLogsInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -989,6 +1036,7 @@ export type WorkspaceUpdateWithoutImportExportLogsInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutWorkspaceNestedInput
@@ -1004,6 +1052,7 @@ export type WorkspaceUncheckedUpdateWithoutImportExportLogsInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -1019,6 +1068,7 @@ export type WorkspaceCreateWithoutNotificationsInput = {
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
@@ -1034,6 +1084,7 @@ export type WorkspaceUncheckedCreateWithoutNotificationsInput = {
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1065,6 +1116,7 @@ export type WorkspaceUpdateWithoutNotificationsInput = {
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
@@ -1080,6 +1132,7 @@ export type WorkspaceUncheckedUpdateWithoutNotificationsInput = {
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -1094,6 +1147,7 @@ export type WorkspaceCreateWithoutVendorOnboardingsInput = {
   apps?: Prisma.WorkspaceAppCreateNestedManyWithoutWorkspaceInput
   profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
@@ -1109,6 +1163,7 @@ export type WorkspaceUncheckedCreateWithoutVendorOnboardingsInput = {
   apps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutWorkspaceInput
   profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutWorkspaceInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
   workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
@@ -1140,6 +1195,7 @@ export type WorkspaceUpdateWithoutVendorOnboardingsInput = {
   apps?: Prisma.WorkspaceAppUpdateManyWithoutWorkspaceNestedInput
   profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
@@ -1155,6 +1211,87 @@ export type WorkspaceUncheckedUpdateWithoutVendorOnboardingsInput = {
   apps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutWorkspaceNestedInput
   profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceCreateWithoutMedicalClaimsInput = {
+  id?: string
+  name: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  users?: Prisma.WorkspaceUserCreateNestedManyWithoutWorkspaceInput
+  apps?: Prisma.WorkspaceAppCreateNestedManyWithoutWorkspaceInput
+  profiles?: Prisma.ProfileCreateNestedManyWithoutWorkspaceInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutWorkspaceInput
+  vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutWorkspaceInput
+  workflowTemplates?: Prisma.WorkflowTemplateCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowInstanceCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutWorkspaceInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceUncheckedCreateWithoutMedicalClaimsInput = {
+  id?: string
+  name: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  users?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutWorkspaceInput
+  apps?: Prisma.WorkspaceAppUncheckedCreateNestedManyWithoutWorkspaceInput
+  profiles?: Prisma.ProfileUncheckedCreateNestedManyWithoutWorkspaceInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutWorkspaceInput
+  vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflowTemplates?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutWorkspaceInput
+  workflows?: Prisma.WorkflowInstanceUncheckedCreateNestedManyWithoutWorkspaceInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutWorkspaceInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutWorkspaceInput
+}
+
+export type WorkspaceCreateOrConnectWithoutMedicalClaimsInput = {
+  where: Prisma.WorkspaceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutMedicalClaimsInput, Prisma.WorkspaceUncheckedCreateWithoutMedicalClaimsInput>
+}
+
+export type WorkspaceUpsertWithoutMedicalClaimsInput = {
+  update: Prisma.XOR<Prisma.WorkspaceUpdateWithoutMedicalClaimsInput, Prisma.WorkspaceUncheckedUpdateWithoutMedicalClaimsInput>
+  create: Prisma.XOR<Prisma.WorkspaceCreateWithoutMedicalClaimsInput, Prisma.WorkspaceUncheckedCreateWithoutMedicalClaimsInput>
+  where?: Prisma.WorkspaceWhereInput
+}
+
+export type WorkspaceUpdateToOneWithWhereWithoutMedicalClaimsInput = {
+  where?: Prisma.WorkspaceWhereInput
+  data: Prisma.XOR<Prisma.WorkspaceUpdateWithoutMedicalClaimsInput, Prisma.WorkspaceUncheckedUpdateWithoutMedicalClaimsInput>
+}
+
+export type WorkspaceUpdateWithoutMedicalClaimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.WorkspaceUserUpdateManyWithoutWorkspaceNestedInput
+  apps?: Prisma.WorkspaceAppUpdateManyWithoutWorkspaceNestedInput
+  profiles?: Prisma.ProfileUpdateManyWithoutWorkspaceNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutWorkspaceNestedInput
+  vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutWorkspaceNestedInput
+  workflowTemplates?: Prisma.WorkflowTemplateUpdateManyWithoutWorkspaceNestedInput
+  workflows?: Prisma.WorkflowInstanceUpdateManyWithoutWorkspaceNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutWorkspaceNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutWorkspaceNestedInput
+}
+
+export type WorkspaceUncheckedUpdateWithoutMedicalClaimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutWorkspaceNestedInput
+  apps?: Prisma.WorkspaceAppUncheckedUpdateManyWithoutWorkspaceNestedInput
+  profiles?: Prisma.ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutWorkspaceNestedInput
+  vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflowTemplates?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutWorkspaceNestedInput
   workflows?: Prisma.WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutWorkspaceNestedInput
@@ -1172,6 +1309,7 @@ export type WorkspaceCountOutputType = {
   profiles: number
   userProfiles: number
   vendorOnboardings: number
+  medicalClaims: number
   workflowTemplates: number
   workflows: number
   importExportLogs: number
@@ -1184,6 +1322,7 @@ export type WorkspaceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   profiles?: boolean | WorkspaceCountOutputTypeCountProfilesArgs
   userProfiles?: boolean | WorkspaceCountOutputTypeCountUserProfilesArgs
   vendorOnboardings?: boolean | WorkspaceCountOutputTypeCountVendorOnboardingsArgs
+  medicalClaims?: boolean | WorkspaceCountOutputTypeCountMedicalClaimsArgs
   workflowTemplates?: boolean | WorkspaceCountOutputTypeCountWorkflowTemplatesArgs
   workflows?: boolean | WorkspaceCountOutputTypeCountWorkflowsArgs
   importExportLogs?: boolean | WorkspaceCountOutputTypeCountImportExportLogsArgs
@@ -1238,6 +1377,13 @@ export type WorkspaceCountOutputTypeCountVendorOnboardingsArgs<ExtArgs extends r
 /**
  * WorkspaceCountOutputType without action
  */
+export type WorkspaceCountOutputTypeCountMedicalClaimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MedicalClaimWhereInput
+}
+
+/**
+ * WorkspaceCountOutputType without action
+ */
 export type WorkspaceCountOutputTypeCountWorkflowTemplatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.WorkflowTemplateWhereInput
 }
@@ -1274,6 +1420,7 @@ export type WorkspaceSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   profiles?: boolean | Prisma.Workspace$profilesArgs<ExtArgs>
   userProfiles?: boolean | Prisma.Workspace$userProfilesArgs<ExtArgs>
   vendorOnboardings?: boolean | Prisma.Workspace$vendorOnboardingsArgs<ExtArgs>
+  medicalClaims?: boolean | Prisma.Workspace$medicalClaimsArgs<ExtArgs>
   workflowTemplates?: boolean | Prisma.Workspace$workflowTemplatesArgs<ExtArgs>
   workflows?: boolean | Prisma.Workspace$workflowsArgs<ExtArgs>
   importExportLogs?: boolean | Prisma.Workspace$importExportLogsArgs<ExtArgs>
@@ -1309,6 +1456,7 @@ export type WorkspaceInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   profiles?: boolean | Prisma.Workspace$profilesArgs<ExtArgs>
   userProfiles?: boolean | Prisma.Workspace$userProfilesArgs<ExtArgs>
   vendorOnboardings?: boolean | Prisma.Workspace$vendorOnboardingsArgs<ExtArgs>
+  medicalClaims?: boolean | Prisma.Workspace$medicalClaimsArgs<ExtArgs>
   workflowTemplates?: boolean | Prisma.Workspace$workflowTemplatesArgs<ExtArgs>
   workflows?: boolean | Prisma.Workspace$workflowsArgs<ExtArgs>
   importExportLogs?: boolean | Prisma.Workspace$importExportLogsArgs<ExtArgs>
@@ -1326,6 +1474,7 @@ export type $WorkspacePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     profiles: Prisma.$ProfilePayload<ExtArgs>[]
     userProfiles: Prisma.$UserProfilePayload<ExtArgs>[]
     vendorOnboardings: Prisma.$VendorOnboardingPayload<ExtArgs>[]
+    medicalClaims: Prisma.$MedicalClaimPayload<ExtArgs>[]
     workflowTemplates: Prisma.$WorkflowTemplatePayload<ExtArgs>[]
     workflows: Prisma.$WorkflowInstancePayload<ExtArgs>[]
     importExportLogs: Prisma.$ImportExportLogPayload<ExtArgs>[]
@@ -1735,6 +1884,7 @@ export interface Prisma__WorkspaceClient<T, Null = never, ExtArgs extends runtim
   profiles<T extends Prisma.Workspace$profilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$profilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userProfiles<T extends Prisma.Workspace$userProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$userProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vendorOnboardings<T extends Prisma.Workspace$vendorOnboardingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$vendorOnboardingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorOnboardingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  medicalClaims<T extends Prisma.Workspace$medicalClaimsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$medicalClaimsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MedicalClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflowTemplates<T extends Prisma.Workspace$workflowTemplatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$workflowTemplatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workflows<T extends Prisma.Workspace$workflowsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$workflowsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   importExportLogs<T extends Prisma.Workspace$importExportLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Workspace$importExportLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImportExportLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2282,6 +2432,30 @@ export type Workspace$vendorOnboardingsArgs<ExtArgs extends runtime.Types.Extens
   take?: number
   skip?: number
   distinct?: Prisma.VendorOnboardingScalarFieldEnum | Prisma.VendorOnboardingScalarFieldEnum[]
+}
+
+/**
+ * Workspace.medicalClaims
+ */
+export type Workspace$medicalClaimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MedicalClaim
+   */
+  select?: Prisma.MedicalClaimSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MedicalClaim
+   */
+  omit?: Prisma.MedicalClaimOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MedicalClaimInclude<ExtArgs> | null
+  where?: Prisma.MedicalClaimWhereInput
+  orderBy?: Prisma.MedicalClaimOrderByWithRelationInput | Prisma.MedicalClaimOrderByWithRelationInput[]
+  cursor?: Prisma.MedicalClaimWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MedicalClaimScalarFieldEnum | Prisma.MedicalClaimScalarFieldEnum[]
 }
 
 /**

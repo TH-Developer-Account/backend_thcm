@@ -93,12 +93,11 @@ export const ModelName = {
   PushSubscription: 'PushSubscription',
   VendorOnboarding: 'VendorOnboarding',
   VendorOnboardingDocument: 'VendorOnboardingDocument',
-<<<<<<< HEAD
-  AccessToken: 'AccessToken'
-=======
-  VendorAccessToken: 'VendorAccessToken',
+  AccessToken: 'AccessToken',
+  MedicalClaim: 'MedicalClaim',
+  MedicalClaimBill: 'MedicalClaimBill',
+  MedicalClaimGradeEligibility: 'MedicalClaimGradeEligibility',
   Guest: 'Guest'
->>>>>>> d8a08f2191b07c9042b9857f1a4dd8fdc3efa420
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -758,6 +757,60 @@ export const AccessTokenScalarFieldEnum = {
 } as const
 
 export type AccessTokenScalarFieldEnum = (typeof AccessTokenScalarFieldEnum)[keyof typeof AccessTokenScalarFieldEnum]
+
+
+export const MedicalClaimScalarFieldEnum = {
+  id: 'id',
+  referenceNumber: 'referenceNumber',
+  workspaceId: 'workspaceId',
+  initiatedById: 'initiatedById',
+  guestId: 'guestId',
+  status: 'status',
+  mobile: 'mobile',
+  email: 'email',
+  ticketNumber: 'ticketNumber',
+  grade: 'grade',
+  location: 'location',
+  employeeName: 'employeeName',
+  patientName: 'patientName',
+  claimCover: 'claimCover',
+  spouseName: 'spouseName',
+  medicalAdvanceTaken: 'medicalAdvanceTaken',
+  eligibleAmount: 'eligibleAmount',
+  alreadySettled: 'alreadySettled',
+  totalClaimed: 'totalClaimed',
+  declarationAcceptedAt: 'declarationAcceptedAt',
+  signatureName: 'signatureName',
+  signatureDate: 'signatureDate',
+  submittedAt: 'submittedAt',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type MedicalClaimScalarFieldEnum = (typeof MedicalClaimScalarFieldEnum)[keyof typeof MedicalClaimScalarFieldEnum]
+
+
+export const MedicalClaimBillScalarFieldEnum = {
+  id: 'id',
+  claimId: 'claimId',
+  claimHead: 'claimHead',
+  billNo: 'billNo',
+  billName: 'billName',
+  billDate: 'billDate',
+  amount: 'amount',
+  s3Key: 's3Key'
+} as const
+
+export type MedicalClaimBillScalarFieldEnum = (typeof MedicalClaimBillScalarFieldEnum)[keyof typeof MedicalClaimBillScalarFieldEnum]
+
+
+export const MedicalClaimGradeEligibilityScalarFieldEnum = {
+  id: 'id',
+  grade: 'grade',
+  annualCap: 'annualCap'
+} as const
+
+export type MedicalClaimGradeEligibilityScalarFieldEnum = (typeof MedicalClaimGradeEligibilityScalarFieldEnum)[keyof typeof MedicalClaimGradeEligibilityScalarFieldEnum]
 
 
 export const GuestScalarFieldEnum = {

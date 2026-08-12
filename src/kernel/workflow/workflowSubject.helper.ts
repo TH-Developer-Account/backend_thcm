@@ -1,7 +1,7 @@
 // src/helpers/workflowSubject.helper.ts
 //
 // WorkflowInstance and ActivityLog are generic — they route/log against a
-// `subjectType` + `subjectId` pair rather than an app-specific foreign key
+// `subjectType`   `subjectId` pair rather than an app-specific foreign key
 // (e.g. eventProposalId). This file is the single place that knows how to
 // turn that pair back into a real row.
 //
@@ -21,10 +21,12 @@
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import { activeWorkflowInclude } from "@shared/utils/contants";
+import { notifyGuestOfClarification } from "@modules/mediclaim/mediclaim.helper";
 
 import {
   Prisma,
   WorkflowSubjectType,
+  ActivityAction,
 } from "../../prisma/generated/prisma/client";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -86,7 +88,7 @@ export async function getSubjectOwnerId(
 // findSubjectById
 //
 // Returns the full subject record, loosely typed. Used by read endpoints
-// that flatten the subject + its active workflow into one response, the
+// that flatten the subject   its active workflow into one response, the
 // way getEventProposalById does today.
 //
 // Loosely typed by design (Promise<Record<string, unknown> | null>) per
@@ -192,4 +194,47 @@ export function getClarifyResetStatus(
   subjectType: WorkflowSubjectType,
 ): string {
   return clarifyResetStatus[subjectType] ?? "PENDING";
+}
+
+const postClarifyHooks: Partial<
+  Record<WorkflowSubjectType, (tx: Tx, subjectId: string) => Promise<void>>
+> = {
+  MEDICAL_CLAIM: (tx, subjectId) => notifyGuestOfClarification(tx, subjectId),
+};
+
+export async function runPostClarifyHook(
+  tx: Tx,
+  subjectType: WorkflowSubjectType,
+  subjectId: string,
+): Promise<void> {
+  const hook = postClarifyHooks[subjectType];
+  if (hook) await hook(tx, subjectId);
+}
+
+// Subject-specific action name + status for the "resubmitted" transition —
+// same reasoning as clarifyResetStatus. Without this, every subject type
+// resubmitting through activateFirstStageController would get EPC's
+// action name/status literal, which is wrong the moment a second subject
+// type uses the endpoint (as MEDICAL_CLAIM now does).
+const resubmitActionBySubjectType: Record<WorkflowSubjectType, ActivityAction> =
+  {
+    EVENT_PROPOSAL: "EPC_RESUBMITTED",
+    VENDOR_ONBOARDING: "VENDOR_FORM_SUBMITTED",
+    MEDICAL_CLAIM: "MEDICAL_CLAIM_RESUBMITTED",
+  };
+
+const resubmitStatusBySubjectType: Record<WorkflowSubjectType, string> = {
+  EVENT_PROPOSAL: "Resubmitted",
+  VENDOR_ONBOARDING: "IN_PROGRESS",
+  MEDICAL_CLAIM: "IN_PROGRESS",
+};
+
+export function getResubmitAction(
+  subjectType: WorkflowSubjectType,
+): ActivityAction {
+  return resubmitActionBySubjectType[subjectType];
+}
+
+export function getResubmitStatus(subjectType: WorkflowSubjectType): string {
+  return resubmitStatusBySubjectType[subjectType];
 }

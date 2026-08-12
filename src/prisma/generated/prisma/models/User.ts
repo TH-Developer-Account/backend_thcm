@@ -233,6 +233,7 @@ export type UserWhereInput = {
   created_workflow?: Prisma.WorkflowTemplateListRelationFilter
   updated_workflow?: Prisma.WorkflowTemplateListRelationFilter
   initiated_vendor_onboardings?: Prisma.VendorOnboardingListRelationFilter
+  initiated_medical_claims?: Prisma.MedicalClaimListRelationFilter
   approvals?: Prisma.ApprovalListRelationFilter
   templateApprovals?: Prisma.TemplateApproverListRelationFilter
   workFlowUsers?: Prisma.WorkFlowTemplateUserListRelationFilter
@@ -264,6 +265,7 @@ export type UserOrderByWithRelationInput = {
   created_workflow?: Prisma.WorkflowTemplateOrderByRelationAggregateInput
   updated_workflow?: Prisma.WorkflowTemplateOrderByRelationAggregateInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingOrderByRelationAggregateInput
+  initiated_medical_claims?: Prisma.MedicalClaimOrderByRelationAggregateInput
   approvals?: Prisma.ApprovalOrderByRelationAggregateInput
   templateApprovals?: Prisma.TemplateApproverOrderByRelationAggregateInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserOrderByRelationAggregateInput
@@ -298,6 +300,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   created_workflow?: Prisma.WorkflowTemplateListRelationFilter
   updated_workflow?: Prisma.WorkflowTemplateListRelationFilter
   initiated_vendor_onboardings?: Prisma.VendorOnboardingListRelationFilter
+  initiated_medical_claims?: Prisma.MedicalClaimListRelationFilter
   approvals?: Prisma.ApprovalListRelationFilter
   templateApprovals?: Prisma.TemplateApproverListRelationFilter
   workFlowUsers?: Prisma.WorkFlowTemplateUserListRelationFilter
@@ -361,6 +364,7 @@ export type UserCreateInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -392,6 +396,7 @@ export type UserUncheckedCreateInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -423,6 +428,7 @@ export type UserUpdateInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -454,6 +460,7 @@ export type UserUncheckedUpdateInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -810,6 +817,20 @@ export type UserUpdateOneRequiredWithoutInitiated_vendor_onboardingsNestedInput 
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInitiated_vendor_onboardingsInput, Prisma.UserUpdateWithoutInitiated_vendor_onboardingsInput>, Prisma.UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput>
 }
 
+export type UserCreateNestedOneWithoutInitiated_medical_claimsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInitiated_medical_claimsInput, Prisma.UserUncheckedCreateWithoutInitiated_medical_claimsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInitiated_medical_claimsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutInitiated_medical_claimsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutInitiated_medical_claimsInput, Prisma.UserUncheckedCreateWithoutInitiated_medical_claimsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutInitiated_medical_claimsInput
+  upsert?: Prisma.UserUpsertWithoutInitiated_medical_claimsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInitiated_medical_claimsInput, Prisma.UserUpdateWithoutInitiated_medical_claimsInput>, Prisma.UserUncheckedUpdateWithoutInitiated_medical_claimsInput>
+}
+
 export type UserCreateWithoutPassword_reset_tokensInput = {
   id?: string
   first_name: string
@@ -831,6 +852,7 @@ export type UserCreateWithoutPassword_reset_tokensInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -861,6 +883,7 @@ export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -907,6 +930,7 @@ export type UserUpdateWithoutPassword_reset_tokensInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -937,6 +961,7 @@ export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -967,6 +992,7 @@ export type UserCreateWithoutRefresh_tokensInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -997,6 +1023,7 @@ export type UserUncheckedCreateWithoutRefresh_tokensInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1043,6 +1070,7 @@ export type UserUpdateWithoutRefresh_tokensInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1073,6 +1101,7 @@ export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1103,6 +1132,7 @@ export type UserCreateWithoutWorkspaceUsersInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -1133,6 +1163,7 @@ export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1179,6 +1210,7 @@ export type UserUpdateWithoutWorkspaceUsersInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1209,6 +1241,7 @@ export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1239,6 +1272,7 @@ export type UserCreateWithoutUserProfilesInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -1269,6 +1303,7 @@ export type UserUncheckedCreateWithoutUserProfilesInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1315,6 +1350,7 @@ export type UserUpdateWithoutUserProfilesInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1345,6 +1381,7 @@ export type UserUncheckedUpdateWithoutUserProfilesInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1375,6 +1412,7 @@ export type UserCreateWithoutCreated_event_proposalsInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -1405,6 +1443,7 @@ export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1440,6 +1479,7 @@ export type UserCreateWithoutUpdated_event_proposalsInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -1470,6 +1510,7 @@ export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1516,6 +1557,7 @@ export type UserUpdateWithoutCreated_event_proposalsInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1546,6 +1588,7 @@ export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1587,6 +1630,7 @@ export type UserUpdateWithoutUpdated_event_proposalsInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1617,6 +1661,7 @@ export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1647,6 +1692,7 @@ export type UserCreateWithoutCreated_workflowInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -1677,6 +1723,7 @@ export type UserUncheckedCreateWithoutCreated_workflowInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1712,6 +1759,7 @@ export type UserCreateWithoutUpdated_workflowInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -1742,6 +1790,7 @@ export type UserUncheckedCreateWithoutUpdated_workflowInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -1788,6 +1837,7 @@ export type UserUpdateWithoutCreated_workflowInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1818,6 +1868,7 @@ export type UserUncheckedUpdateWithoutCreated_workflowInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1859,6 +1910,7 @@ export type UserUpdateWithoutUpdated_workflowInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -1889,6 +1941,7 @@ export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -1920,6 +1973,7 @@ export type UserCreateWithoutTemplateApprovalsInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
@@ -1950,6 +2004,7 @@ export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
@@ -1996,6 +2051,7 @@ export type UserUpdateWithoutTemplateApprovalsInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
@@ -2026,6 +2082,7 @@ export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
@@ -2056,6 +2113,7 @@ export type UserCreateWithoutApprovalsInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
@@ -2086,6 +2144,7 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
@@ -2132,6 +2191,7 @@ export type UserUpdateWithoutApprovalsInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
@@ -2162,6 +2222,7 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
@@ -2192,6 +2253,7 @@ export type UserCreateWithoutWorkFlowUsersInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
@@ -2222,6 +2284,7 @@ export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
@@ -2268,6 +2331,7 @@ export type UserUpdateWithoutWorkFlowUsersInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
@@ -2298,6 +2362,7 @@ export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
@@ -2328,6 +2393,7 @@ export type UserCreateWithoutActivityLogsInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -2358,6 +2424,7 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -2404,6 +2471,7 @@ export type UserUpdateWithoutActivityLogsInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -2434,6 +2502,7 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -2464,6 +2533,7 @@ export type UserCreateWithoutCommentsInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -2494,6 +2564,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -2540,6 +2611,7 @@ export type UserUpdateWithoutCommentsInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -2570,6 +2642,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -2600,6 +2673,7 @@ export type UserCreateWithoutReportValidationsInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -2630,6 +2704,7 @@ export type UserUncheckedCreateWithoutReportValidationsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -2676,6 +2751,7 @@ export type UserUpdateWithoutReportValidationsInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -2706,6 +2782,7 @@ export type UserUncheckedUpdateWithoutReportValidationsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -2736,6 +2813,7 @@ export type UserCreateWithoutImportExportLogsInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -2766,6 +2844,7 @@ export type UserUncheckedCreateWithoutImportExportLogsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -2812,6 +2891,7 @@ export type UserUpdateWithoutImportExportLogsInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -2842,6 +2922,7 @@ export type UserUncheckedUpdateWithoutImportExportLogsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -2871,6 +2952,7 @@ export type UserCreateWithoutNotificationsInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -2901,6 +2983,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -2947,6 +3030,7 @@ export type UserUpdateWithoutNotificationsInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -2977,6 +3061,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -3007,6 +3092,7 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -3037,6 +3123,7 @@ export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -3083,6 +3170,7 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -3113,6 +3201,7 @@ export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -3143,6 +3232,7 @@ export type UserCreateWithoutInitiated_vendor_onboardingsInput = {
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
@@ -3173,6 +3263,7 @@ export type UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
   approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
   templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
@@ -3219,6 +3310,7 @@ export type UserUpdateWithoutInitiated_vendor_onboardingsInput = {
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
@@ -3249,6 +3341,147 @@ export type UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput = {
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+}
+
+export type UserCreateWithoutInitiated_medical_claimsInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+}
+
+export type UserUncheckedCreateWithoutInitiated_medical_claimsInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+}
+
+export type UserCreateOrConnectWithoutInitiated_medical_claimsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutInitiated_medical_claimsInput, Prisma.UserUncheckedCreateWithoutInitiated_medical_claimsInput>
+}
+
+export type UserUpsertWithoutInitiated_medical_claimsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutInitiated_medical_claimsInput, Prisma.UserUncheckedUpdateWithoutInitiated_medical_claimsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutInitiated_medical_claimsInput, Prisma.UserUncheckedCreateWithoutInitiated_medical_claimsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutInitiated_medical_claimsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutInitiated_medical_claimsInput, Prisma.UserUncheckedUpdateWithoutInitiated_medical_claimsInput>
+}
+
+export type UserUpdateWithoutInitiated_medical_claimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutInitiated_medical_claimsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -3275,6 +3508,7 @@ export type UserCountOutputType = {
   created_workflow: number
   updated_workflow: number
   initiated_vendor_onboardings: number
+  initiated_medical_claims: number
   approvals: number
   templateApprovals: number
   workFlowUsers: number
@@ -3296,6 +3530,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   created_workflow?: boolean | UserCountOutputTypeCountCreated_workflowArgs
   updated_workflow?: boolean | UserCountOutputTypeCountUpdated_workflowArgs
   initiated_vendor_onboardings?: boolean | UserCountOutputTypeCountInitiated_vendor_onboardingsArgs
+  initiated_medical_claims?: boolean | UserCountOutputTypeCountInitiated_medical_claimsArgs
   approvals?: boolean | UserCountOutputTypeCountApprovalsArgs
   templateApprovals?: boolean | UserCountOutputTypeCountTemplateApprovalsArgs
   workFlowUsers?: boolean | UserCountOutputTypeCountWorkFlowUsersArgs
@@ -3395,6 +3630,13 @@ export type UserCountOutputTypeCountInitiated_vendor_onboardingsArgs<ExtArgs ext
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountInitiated_medical_claimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MedicalClaimWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountApprovalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ApprovalWhereInput
 }
@@ -3464,6 +3706,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   created_workflow?: boolean | Prisma.User$created_workflowArgs<ExtArgs>
   updated_workflow?: boolean | Prisma.User$updated_workflowArgs<ExtArgs>
   initiated_vendor_onboardings?: boolean | Prisma.User$initiated_vendor_onboardingsArgs<ExtArgs>
+  initiated_medical_claims?: boolean | Prisma.User$initiated_medical_claimsArgs<ExtArgs>
   approvals?: boolean | Prisma.User$approvalsArgs<ExtArgs>
   templateApprovals?: boolean | Prisma.User$templateApprovalsArgs<ExtArgs>
   workFlowUsers?: boolean | Prisma.User$workFlowUsersArgs<ExtArgs>
@@ -3526,6 +3769,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   created_workflow?: boolean | Prisma.User$created_workflowArgs<ExtArgs>
   updated_workflow?: boolean | Prisma.User$updated_workflowArgs<ExtArgs>
   initiated_vendor_onboardings?: boolean | Prisma.User$initiated_vendor_onboardingsArgs<ExtArgs>
+  initiated_medical_claims?: boolean | Prisma.User$initiated_medical_claimsArgs<ExtArgs>
   approvals?: boolean | Prisma.User$approvalsArgs<ExtArgs>
   templateApprovals?: boolean | Prisma.User$templateApprovalsArgs<ExtArgs>
   workFlowUsers?: boolean | Prisma.User$workFlowUsersArgs<ExtArgs>
@@ -3552,6 +3796,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     created_workflow: Prisma.$WorkflowTemplatePayload<ExtArgs>[]
     updated_workflow: Prisma.$WorkflowTemplatePayload<ExtArgs>[]
     initiated_vendor_onboardings: Prisma.$VendorOnboardingPayload<ExtArgs>[]
+    initiated_medical_claims: Prisma.$MedicalClaimPayload<ExtArgs>[]
     approvals: Prisma.$ApprovalPayload<ExtArgs>[]
     templateApprovals: Prisma.$TemplateApproverPayload<ExtArgs>[]
     workFlowUsers: Prisma.$WorkFlowTemplateUserPayload<ExtArgs>[]
@@ -3976,6 +4221,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   created_workflow<T extends Prisma.User$created_workflowArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$created_workflowArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   updated_workflow<T extends Prisma.User$updated_workflowArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updated_workflowArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkflowTemplatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   initiated_vendor_onboardings<T extends Prisma.User$initiated_vendor_onboardingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$initiated_vendor_onboardingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorOnboardingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  initiated_medical_claims<T extends Prisma.User$initiated_medical_claimsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$initiated_medical_claimsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MedicalClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   approvals<T extends Prisma.User$approvalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ApprovalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   templateApprovals<T extends Prisma.User$templateApprovalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$templateApprovalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TemplateApproverPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workFlowUsers<T extends Prisma.User$workFlowUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workFlowUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkFlowTemplateUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4676,6 +4922,30 @@ export type User$initiated_vendor_onboardingsArgs<ExtArgs extends runtime.Types.
   take?: number
   skip?: number
   distinct?: Prisma.VendorOnboardingScalarFieldEnum | Prisma.VendorOnboardingScalarFieldEnum[]
+}
+
+/**
+ * User.initiated_medical_claims
+ */
+export type User$initiated_medical_claimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MedicalClaim
+   */
+  select?: Prisma.MedicalClaimSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MedicalClaim
+   */
+  omit?: Prisma.MedicalClaimOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MedicalClaimInclude<ExtArgs> | null
+  where?: Prisma.MedicalClaimWhereInput
+  orderBy?: Prisma.MedicalClaimOrderByWithRelationInput | Prisma.MedicalClaimOrderByWithRelationInput[]
+  cursor?: Prisma.MedicalClaimWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MedicalClaimScalarFieldEnum | Prisma.MedicalClaimScalarFieldEnum[]
 }
 
 /**

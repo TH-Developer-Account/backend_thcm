@@ -636,6 +636,40 @@ export type EnumAccessTokenSubjectTypeWithAggregatesFilter<$PrismaModel = never>
   _max?: Prisma.NestedEnumAccessTokenSubjectTypeFilter<$PrismaModel>
 }
 
+export type EnumClaimCoverNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClaimCover | Prisma.EnumClaimCoverFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ClaimCover[] | Prisma.ListEnumClaimCoverFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ClaimCover[] | Prisma.ListEnumClaimCoverFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumClaimCoverNullableFilter<$PrismaModel> | $Enums.ClaimCover | null
+}
+
+export type EnumClaimCoverNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClaimCover | Prisma.EnumClaimCoverFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ClaimCover[] | Prisma.ListEnumClaimCoverFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ClaimCover[] | Prisma.ListEnumClaimCoverFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumClaimCoverNullableWithAggregatesFilter<$PrismaModel> | $Enums.ClaimCover | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClaimCoverNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClaimCoverNullableFilter<$PrismaModel>
+}
+
+export type EnumClaimHeadFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClaimHead | Prisma.EnumClaimHeadFieldRefInput<$PrismaModel>
+  in?: $Enums.ClaimHead[] | Prisma.ListEnumClaimHeadFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClaimHead[] | Prisma.ListEnumClaimHeadFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClaimHeadFilter<$PrismaModel> | $Enums.ClaimHead
+}
+
+export type EnumClaimHeadWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClaimHead | Prisma.EnumClaimHeadFieldRefInput<$PrismaModel>
+  in?: $Enums.ClaimHead[] | Prisma.ListEnumClaimHeadFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClaimHead[] | Prisma.ListEnumClaimHeadFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClaimHeadWithAggregatesFilter<$PrismaModel> | $Enums.ClaimHead
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClaimHeadFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClaimHeadFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1231,6 +1265,40 @@ export type NestedEnumAccessTokenSubjectTypeWithAggregatesFilter<$PrismaModel = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAccessTokenSubjectTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAccessTokenSubjectTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumClaimCoverNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClaimCover | Prisma.EnumClaimCoverFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ClaimCover[] | Prisma.ListEnumClaimCoverFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ClaimCover[] | Prisma.ListEnumClaimCoverFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumClaimCoverNullableFilter<$PrismaModel> | $Enums.ClaimCover | null
+}
+
+export type NestedEnumClaimCoverNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClaimCover | Prisma.EnumClaimCoverFieldRefInput<$PrismaModel> | null
+  in?: $Enums.ClaimCover[] | Prisma.ListEnumClaimCoverFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.ClaimCover[] | Prisma.ListEnumClaimCoverFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumClaimCoverNullableWithAggregatesFilter<$PrismaModel> | $Enums.ClaimCover | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClaimCoverNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClaimCoverNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumClaimHeadFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClaimHead | Prisma.EnumClaimHeadFieldRefInput<$PrismaModel>
+  in?: $Enums.ClaimHead[] | Prisma.ListEnumClaimHeadFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClaimHead[] | Prisma.ListEnumClaimHeadFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClaimHeadFilter<$PrismaModel> | $Enums.ClaimHead
+}
+
+export type NestedEnumClaimHeadWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClaimHead | Prisma.EnumClaimHeadFieldRefInput<$PrismaModel>
+  in?: $Enums.ClaimHead[] | Prisma.ListEnumClaimHeadFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClaimHead[] | Prisma.ListEnumClaimHeadFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClaimHeadWithAggregatesFilter<$PrismaModel> | $Enums.ClaimHead
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClaimHeadFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClaimHeadFilter<$PrismaModel>
 }
 
 

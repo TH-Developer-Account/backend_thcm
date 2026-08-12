@@ -57,21 +57,27 @@ const notificationMetaResolvers: Record<
     };
   },
 
-  // AUDIT_INSTANCE: async (subjectId) => {
-  //   const audit = await prisma.auditInstance.findUnique({
-  //     where: { id: subjectId },
-  //     select: { auditNumber: true, dealerUserId: true },
-  //   });
-  //   if (!audit) return null;
-  //
-  //   return {
-  //     ownerId: audit.dealerUserId,
-  //     displayLabel: audit.auditNumber
-  //       ? `Audit ${audit.auditNumber}`
-  //       : "Audit",
-  //     link: `/dia/audit/${subjectId}`,
-  //   };
-  // },
+  MEDICAL_CLAIM: async (subjectId) => {
+    const claim = await prisma.medicalClaim.findUnique({
+      where: { id: subjectId },
+      select: {
+        employeeName: true,
+        referenceNumber: true,
+        initiatedById: true,
+      },
+    });
+    if (!claim) return null;
+
+    return {
+      ownerId: claim.initiatedById,
+      displayLabel: claim.referenceNumber
+        ? `Medical Claim ${claim.referenceNumber}`
+        : claim.employeeName
+          ? `Medical claim — ${claim.employeeName}`
+          : "Medical claim",
+      link: `/medical-claims/${subjectId}`,
+    };
+  },
 };
 
 export async function getSubjectNotificationMeta(

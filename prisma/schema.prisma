@@ -198,6 +198,7 @@ model User {
   updated_workflow WorkflowTemplate[] @relation("WorkFlowUpdatedBy")
 
   initiated_vendor_onboardings VendorOnboarding[] @relation("VendorOnboardingInitiatedBy")
+  initiated_medical_claims MedicalClaim[] @relation("MedicalClaimInitiatedBy")
 
   approvals         Approval[]
   templateApprovals TemplateApprover[]
@@ -259,6 +260,7 @@ model Workspace {
   profiles     Profile[]
   userProfiles UserProfile[]
   vendorOnboardings VendorOnboarding[]
+  medicalClaims MedicalClaim[]
 
   workflowTemplates WorkflowTemplate[]
   workflows         WorkflowInstance[]
@@ -1112,6 +1114,8 @@ model MedicalClaim {
   initiatedById   String
   guestId         String?
   status          String   @default("AWAITING_EX_EMPLOYEE")
+  mobile       String?
+  email        String?
 
   // ── Ex-employee-filled ──
   ticketNumber      String?
@@ -1175,6 +1179,7 @@ model Guest {
   createdAt DateTime @default(now())
 
   vendorOnboardings VendorOnboarding[]
+  medicalClaims MedicalClaim[]
  
   @@index([mobile])
   @@index([email])

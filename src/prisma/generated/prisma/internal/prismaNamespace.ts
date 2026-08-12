@@ -426,12 +426,11 @@ export const ModelName = {
   PushSubscription: 'PushSubscription',
   VendorOnboarding: 'VendorOnboarding',
   VendorOnboardingDocument: 'VendorOnboardingDocument',
-<<<<<<< HEAD
-  AccessToken: 'AccessToken'
-=======
-  VendorAccessToken: 'VendorAccessToken',
+  AccessToken: 'AccessToken',
+  MedicalClaim: 'MedicalClaim',
+  MedicalClaimBill: 'MedicalClaimBill',
+  MedicalClaimGradeEligibility: 'MedicalClaimGradeEligibility',
   Guest: 'Guest'
->>>>>>> d8a08f2191b07c9042b9857f1a4dd8fdc3efa420
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -447,11 +446,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-<<<<<<< HEAD
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken"
-=======
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "vendorAccessToken" | "guest"
->>>>>>> d8a08f2191b07c9042b9857f1a4dd8fdc3efa420
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "medicalClaimGradeEligibility" | "guest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3637,6 +3632,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MedicalClaim: {
+      payload: Prisma.$MedicalClaimPayload<ExtArgs>
+      fields: Prisma.MedicalClaimFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MedicalClaimFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MedicalClaimFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimPayload>
+        }
+        findFirst: {
+          args: Prisma.MedicalClaimFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MedicalClaimFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimPayload>
+        }
+        findMany: {
+          args: Prisma.MedicalClaimFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimPayload>[]
+        }
+        create: {
+          args: Prisma.MedicalClaimCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimPayload>
+        }
+        createMany: {
+          args: Prisma.MedicalClaimCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MedicalClaimCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimPayload>[]
+        }
+        delete: {
+          args: Prisma.MedicalClaimDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimPayload>
+        }
+        update: {
+          args: Prisma.MedicalClaimUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimPayload>
+        }
+        deleteMany: {
+          args: Prisma.MedicalClaimDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MedicalClaimUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MedicalClaimUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimPayload>[]
+        }
+        upsert: {
+          args: Prisma.MedicalClaimUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimPayload>
+        }
+        aggregate: {
+          args: Prisma.MedicalClaimAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMedicalClaim>
+        }
+        groupBy: {
+          args: Prisma.MedicalClaimGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MedicalClaimGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MedicalClaimCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MedicalClaimCountAggregateOutputType> | number
+        }
+      }
+    }
+    MedicalClaimBill: {
+      payload: Prisma.$MedicalClaimBillPayload<ExtArgs>
+      fields: Prisma.MedicalClaimBillFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MedicalClaimBillFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimBillPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MedicalClaimBillFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimBillPayload>
+        }
+        findFirst: {
+          args: Prisma.MedicalClaimBillFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimBillPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MedicalClaimBillFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimBillPayload>
+        }
+        findMany: {
+          args: Prisma.MedicalClaimBillFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimBillPayload>[]
+        }
+        create: {
+          args: Prisma.MedicalClaimBillCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimBillPayload>
+        }
+        createMany: {
+          args: Prisma.MedicalClaimBillCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MedicalClaimBillCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimBillPayload>[]
+        }
+        delete: {
+          args: Prisma.MedicalClaimBillDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimBillPayload>
+        }
+        update: {
+          args: Prisma.MedicalClaimBillUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimBillPayload>
+        }
+        deleteMany: {
+          args: Prisma.MedicalClaimBillDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MedicalClaimBillUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MedicalClaimBillUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimBillPayload>[]
+        }
+        upsert: {
+          args: Prisma.MedicalClaimBillUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimBillPayload>
+        }
+        aggregate: {
+          args: Prisma.MedicalClaimBillAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMedicalClaimBill>
+        }
+        groupBy: {
+          args: Prisma.MedicalClaimBillGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MedicalClaimBillGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MedicalClaimBillCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MedicalClaimBillCountAggregateOutputType> | number
+        }
+      }
+    }
+    MedicalClaimGradeEligibility: {
+      payload: Prisma.$MedicalClaimGradeEligibilityPayload<ExtArgs>
+      fields: Prisma.MedicalClaimGradeEligibilityFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MedicalClaimGradeEligibilityFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimGradeEligibilityPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MedicalClaimGradeEligibilityFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimGradeEligibilityPayload>
+        }
+        findFirst: {
+          args: Prisma.MedicalClaimGradeEligibilityFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimGradeEligibilityPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MedicalClaimGradeEligibilityFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimGradeEligibilityPayload>
+        }
+        findMany: {
+          args: Prisma.MedicalClaimGradeEligibilityFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimGradeEligibilityPayload>[]
+        }
+        create: {
+          args: Prisma.MedicalClaimGradeEligibilityCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimGradeEligibilityPayload>
+        }
+        createMany: {
+          args: Prisma.MedicalClaimGradeEligibilityCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MedicalClaimGradeEligibilityCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimGradeEligibilityPayload>[]
+        }
+        delete: {
+          args: Prisma.MedicalClaimGradeEligibilityDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimGradeEligibilityPayload>
+        }
+        update: {
+          args: Prisma.MedicalClaimGradeEligibilityUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimGradeEligibilityPayload>
+        }
+        deleteMany: {
+          args: Prisma.MedicalClaimGradeEligibilityDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MedicalClaimGradeEligibilityUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MedicalClaimGradeEligibilityUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimGradeEligibilityPayload>[]
+        }
+        upsert: {
+          args: Prisma.MedicalClaimGradeEligibilityUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MedicalClaimGradeEligibilityPayload>
+        }
+        aggregate: {
+          args: Prisma.MedicalClaimGradeEligibilityAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMedicalClaimGradeEligibility>
+        }
+        groupBy: {
+          args: Prisma.MedicalClaimGradeEligibilityGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MedicalClaimGradeEligibilityGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MedicalClaimGradeEligibilityCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MedicalClaimGradeEligibilityCountAggregateOutputType> | number
+        }
+      }
+    }
     Guest: {
       payload: Prisma.$GuestPayload<ExtArgs>
       fields: Prisma.GuestFieldRefs
@@ -4393,6 +4610,60 @@ export const AccessTokenScalarFieldEnum = {
 export type AccessTokenScalarFieldEnum = (typeof AccessTokenScalarFieldEnum)[keyof typeof AccessTokenScalarFieldEnum]
 
 
+export const MedicalClaimScalarFieldEnum = {
+  id: 'id',
+  referenceNumber: 'referenceNumber',
+  workspaceId: 'workspaceId',
+  initiatedById: 'initiatedById',
+  guestId: 'guestId',
+  status: 'status',
+  mobile: 'mobile',
+  email: 'email',
+  ticketNumber: 'ticketNumber',
+  grade: 'grade',
+  location: 'location',
+  employeeName: 'employeeName',
+  patientName: 'patientName',
+  claimCover: 'claimCover',
+  spouseName: 'spouseName',
+  medicalAdvanceTaken: 'medicalAdvanceTaken',
+  eligibleAmount: 'eligibleAmount',
+  alreadySettled: 'alreadySettled',
+  totalClaimed: 'totalClaimed',
+  declarationAcceptedAt: 'declarationAcceptedAt',
+  signatureName: 'signatureName',
+  signatureDate: 'signatureDate',
+  submittedAt: 'submittedAt',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type MedicalClaimScalarFieldEnum = (typeof MedicalClaimScalarFieldEnum)[keyof typeof MedicalClaimScalarFieldEnum]
+
+
+export const MedicalClaimBillScalarFieldEnum = {
+  id: 'id',
+  claimId: 'claimId',
+  claimHead: 'claimHead',
+  billNo: 'billNo',
+  billName: 'billName',
+  billDate: 'billDate',
+  amount: 'amount',
+  s3Key: 's3Key'
+} as const
+
+export type MedicalClaimBillScalarFieldEnum = (typeof MedicalClaimBillScalarFieldEnum)[keyof typeof MedicalClaimBillScalarFieldEnum]
+
+
+export const MedicalClaimGradeEligibilityScalarFieldEnum = {
+  id: 'id',
+  grade: 'grade',
+  annualCap: 'annualCap'
+} as const
+
+export type MedicalClaimGradeEligibilityScalarFieldEnum = (typeof MedicalClaimGradeEligibilityScalarFieldEnum)[keyof typeof MedicalClaimGradeEligibilityScalarFieldEnum]
+
+
 export const GuestScalarFieldEnum = {
   id: 'id',
   mobile: 'mobile',
@@ -4779,6 +5050,34 @@ export type EnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel> = FieldRefInpu
 export type ListEnumAccessTokenSubjectTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccessTokenSubjectType[]'>
     
 
+
+/**
+ * Reference to a field of type 'ClaimCover'
+ */
+export type EnumClaimCoverFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClaimCover'>
+    
+
+
+/**
+ * Reference to a field of type 'ClaimCover[]'
+ */
+export type ListEnumClaimCoverFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClaimCover[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ClaimHead'
+ */
+export type EnumClaimHeadFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClaimHead'>
+    
+
+
+/**
+ * Reference to a field of type 'ClaimHead[]'
+ */
+export type ListEnumClaimHeadFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClaimHead[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -4931,12 +5230,11 @@ export type GlobalOmitConfig = {
   pushSubscription?: Prisma.PushSubscriptionOmit
   vendorOnboarding?: Prisma.VendorOnboardingOmit
   vendorOnboardingDocument?: Prisma.VendorOnboardingDocumentOmit
-<<<<<<< HEAD
   accessToken?: Prisma.AccessTokenOmit
-=======
-  vendorAccessToken?: Prisma.VendorAccessTokenOmit
+  medicalClaim?: Prisma.MedicalClaimOmit
+  medicalClaimBill?: Prisma.MedicalClaimBillOmit
+  medicalClaimGradeEligibility?: Prisma.MedicalClaimGradeEligibilityOmit
   guest?: Prisma.GuestOmit
->>>>>>> d8a08f2191b07c9042b9857f1a4dd8fdc3efa420
 }
 
 /* Types for Logging */

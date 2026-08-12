@@ -2,6 +2,7 @@ import { prisma } from "@shared/config/prisma";
 import { selectTemplate } from "./template.service";
 import { buildWorkflowStages } from "./workflow.helper";
 import { notify } from "@notifications/notification.services";
+import ApiError from "@shared/utils/apiError";
 
 import { updateSubjectStatus } from "./workflowSubject.helper";
 import {
@@ -9,11 +10,13 @@ import {
   SubjectNotificationMeta,
 } from "@notifications/notification.helper";
 import {
+  Prisma,
   ApprovalStatus,
   StageStatus,
   StrategyType,
   WorkflowStatus,
   WorkflowSubjectType,
+  ActivityAction,
 } from "../../prisma/generated/prisma/client";
 
 type ApproveStageResult =
@@ -474,3 +477,87 @@ export const rejectStage = async ({
 
   return result;
 };
+
+export async function activateFirstStageForResubmit(
+  tx: Prisma.TransactionClient,
+  workflowId: string,
+  actorId: string,
+  resubmittedAction: ActivityAction,
+  resubmittedStatus: string,
+) {
+  const workflow = await tx.workflowInstance.findUnique({
+    where: { id: workflowId },
+    include: {
+      stages: {
+        where: { isCurrentIteration: true },
+        orderBy: { stageOrder: "asc" },
+      },
+    },
+  });
+
+  if (!workflow) throw new ApiError(404, "Workflow not found");
+  if (!workflow.isActive) {
+    throw new ApiError(
+      400,
+      "This workflow has been superseded and is no longer active",
+    );
+  }
+  if (workflow.status !== "IN_PROGRESS") {
+    throw new ApiError(
+      400,
+      `Workflow is not in progress (current status: ${workflow.status})`,
+    );
+  }
+
+  const alreadyActive = workflow.stages.find((s) => s.status === "IN_PROGRESS");
+  if (alreadyActive) {
+    throw new ApiError(
+      409,
+      `Stage ${alreadyActive.stageOrder} is already IN_PROGRESS for this iteration`,
+    );
+  }
+
+  const firstStage = workflow.stages.find((s) => s.stageOrder === 1);
+  if (!firstStage) {
+    throw new ApiError(
+      404,
+      "Stage 1 not found in the current iteration for this workflow",
+    );
+  }
+
+  await tx.stageInstance.update({
+    where: { id: firstStage.id },
+    data: { status: "IN_PROGRESS", startedAt: new Date() },
+  });
+
+  await tx.workflowInstance.update({
+    where: { id: workflow.id },
+    data: { currentStage: 1 },
+  });
+
+  await updateSubjectStatus(
+    tx,
+    workflow.subjectType,
+    workflow.subjectId,
+    resubmittedStatus,
+  );
+
+  await tx.activityLog.create({
+    data: {
+      subjectType: workflow.subjectType,
+      subjectId: workflow.subjectId,
+      actorId,
+      action: resubmittedAction,
+      workflowId: workflow.id,
+      stageId: firstStage.id,
+      metadata: { reason: "Resubmitted after clarification." },
+    },
+  });
+
+  return {
+    firstStageInstanceId: firstStage.id,
+    subjectType: workflow.subjectType,
+    subjectId: workflow.subjectId,
+    appId: workflow.appId,
+  };
+}
