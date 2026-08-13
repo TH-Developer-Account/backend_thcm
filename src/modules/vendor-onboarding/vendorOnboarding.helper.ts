@@ -1,21 +1,75 @@
 import { prisma } from "@shared/config/prisma";
 
+interface Approver {
+	id: string;
+	first_name: string;
+	last_name: string;
+	email: string;
+	phone_number: string;
+}
+
+interface Approval {
+	id: string;
+	status: "PENDING" | "APPROVED" | "REJECTED" | string;
+	isExternalApprover: boolean;
+	approver: Approver;
+}
+
+interface Stage {
+	id: string;
+	workflowId: string;
+	stageOrder: number;
+	stageName: string;
+	iteration: number;
+	isCurrentIteration: boolean;
+	strategy: "ALL" | "ANY" | string;
+	minApprovals: number | null;
+	startedAt: string | null;
+	dueAt: string | null;
+	escalatedTo: string | null;
+	status: "PENDING" | "IN_PROGRESS" | "APPROVED" | "REJECTED" | string;
+	approvals: Approval[];
+}
+
+interface WorkflowObject {
+	id: string;
+	templateId: string;
+	workspaceId: string;
+	iteration: number;
+	isActive: boolean;
+	workflowType: string;
+	status: string;
+	currentStage: number;
+	appId: string;
+	subjectType: string;
+	subjectId: string;
+	created_at: string;
+	updated_at: string;
+	template: {
+		id: string;
+		name: string;
+		description: string;
+		metaData_1: string;
+	};
+	stages: Stage[];
+}
+
 // ── constants ──────────────────────────────────────────────────────────────
 const VENDOR_INITIATION_STATUS = "AWAITING_VENDOR";
 
 const INITIATION_SEARCH_FIELDS = ["vendorName", "email", "mobile"] as const;
 const ONBOARDING_SEARCH_FIELDS = [
-  "vendorName",
-  "vendorCode",
-  "vendorType",
-  "companyCode",
+	"vendorName",
+	"vendorCode",
+	"vendorType",
+	"companyCode",
 ] as const;
 
 export type VendorListingTab =
-  | "initiation"
-  | "onboarding"
-  | "pendingOnMe"
-  | "approvedByMe";
+	| "initiation"
+	| "onboarding"
+	| "pendingOnMe"
+	| "approvedByMe";
 
 // ── pure helpers ─────────────────────────────────────────────────────────────
 
@@ -34,28 +88,28 @@ export type VendorListingTab =
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function resolveSubjectIdsForApprovalTab(
-  userId: string,
-  tab: Extract<VendorListingTab, "pendingOnMe" | "approvedByMe">,
+	userId: string,
+	tab: Extract<VendorListingTab, "pendingOnMe" | "approvedByMe">,
 ): Promise<string[]> {
-  const approvals = await prisma.approval.findMany({
-    where: {
-      approverId: userId,
-      status: tab === "pendingOnMe" ? "PENDING" : "APPROVED",
-      stage: {
-        workflow: { subjectType: "VENDOR_ONBOARDING", isActive: true },
-        ...(tab === "pendingOnMe"
-          ? { isCurrentIteration: true, status: "IN_PROGRESS" }
-          : {}),
-      },
-    },
-    select: {
-      stage: { select: { workflow: { select: { subjectId: true } } } },
-    },
-  });
+	const approvals = await prisma.approval.findMany({
+		where: {
+			approverId: userId,
+			status: tab === "pendingOnMe" ? "PENDING" : "APPROVED",
+			stage: {
+				workflow: { subjectType: "VENDOR_ONBOARDING", isActive: true },
+				...(tab === "pendingOnMe"
+					? { isCurrentIteration: true, status: "IN_PROGRESS" }
+					: {}),
+			},
+		},
+		select: {
+			stage: { select: { workflow: { select: { subjectId: true } } } },
+		},
+	});
 
-  // dedupe — a subject could theoretically surface more than once across
-  // stages/iterations for approvedByMe
-  return [...new Set(approvals.map((a) => a.stage.workflow.subjectId))];
+	// dedupe — a subject could theoretically surface more than once across
+	// stages/iterations for approvedByMe
+	return [...new Set(approvals.map((a) => a.stage.workflow.subjectId))];
 }
 
 // Builds the Prisma `where` clause for any listing tab. Kept pure (no req/res)
@@ -65,57 +119,57 @@ export async function resolveSubjectIdsForApprovalTab(
 // pendingOnMe/approvedByMe — passed in rather than queried here, so this
 // function stays synchronous and side-effect-free like the rest of the file.
 export const buildVendorOnboardingWhereClause = (
-  workspaceId: string,
-  userId: string,
-  tab: VendorListingTab,
-  search: string,
-  approvalSubjectIds?: string[],
+	workspaceId: string,
+	userId: string,
+	tab: VendorListingTab,
+	search: string,
+	approvalSubjectIds?: string[],
 ) => {
-  const searchableFields =
-    tab === "initiation" ? INITIATION_SEARCH_FIELDS : ONBOARDING_SEARCH_FIELDS;
+	const searchableFields =
+		tab === "initiation" ? INITIATION_SEARCH_FIELDS : ONBOARDING_SEARCH_FIELDS;
 
-  const searchFilter = search
-    ? {
-        OR: searchableFields.map((field) => ({
-          [field]: { contains: search, mode: "insensitive" as const },
-        })),
-      }
-    : {};
+	const searchFilter = search
+		? {
+				OR: searchableFields.map((field) => ({
+					[field]: { contains: search, mode: "insensitive" as const },
+				})),
+			}
+		: {};
 
-  if (tab === "pendingOnMe" || tab === "approvedByMe") {
-    return {
-      workspaceId,
-      id: { in: approvalSubjectIds ?? [] },
-      ...searchFilter,
-    };
-  }
+	if (tab === "pendingOnMe" || tab === "approvedByMe") {
+		return {
+			workspaceId,
+			id: { in: approvalSubjectIds ?? [] },
+			...searchFilter,
+		};
+	}
 
-  const statusFilter =
-    tab === "initiation"
-      ? { status: VENDOR_INITIATION_STATUS }
-      : { status: { not: VENDOR_INITIATION_STATUS } };
+	const statusFilter =
+		tab === "initiation"
+			? { status: VENDOR_INITIATION_STATUS }
+			: { status: { not: VENDOR_INITIATION_STATUS } };
 
-  return {
-    workspaceId,
-    initiatedById: userId,
-    ...statusFilter,
-    ...searchFilter,
-  };
+	return {
+		workspaceId,
+		initiatedById: userId,
+		...statusFilter,
+		...searchFilter,
+	};
 };
 
 // Clamped so a malformed or malicious query string can't request page sizes
 // large enough to be a denial-of-service vector against the DB.
 export const parseVendorListingPaginationParams = (
-  page_index: string,
-  page_size: string,
+	page_index: string,
+	page_size: string,
 ) => {
-  const reqPageIndex = Math.max(0, parseInt(page_index as string, 10) || 0);
-  const reqPageSize = Math.min(
-    100,
-    Math.max(1, parseInt(page_size as string, 10) || 10),
-  );
+	const reqPageIndex = Math.max(0, parseInt(page_index as string, 10) || 0);
+	const reqPageSize = Math.min(
+		100,
+		Math.max(1, parseInt(page_size as string, 10) || 10),
+	);
 
-  return { reqPageIndex, reqPageSize };
+	return { reqPageIndex, reqPageSize };
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -134,15 +188,28 @@ export const parseVendorListingPaginationParams = (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function generateVendorOnboardingReferenceNumber(
-  vendorName: string,
+	vendorName: string,
 ): string {
-  const letters = vendorName.replace(/[^a-zA-Z]/g, "").toUpperCase();
-  const vendorCode = (letters + "XXXX").slice(0, 4);
+	const letters = vendorName.replace(/[^a-zA-Z]/g, "").toUpperCase();
+	const vendorCode = (letters + "XXXX").slice(0, 4);
 
-  const timestamp = new Date()
-    .toISOString()
-    .replace(/[-:T.]/g, "")
-    .slice(0, 14); // YYYYMMDDHHmmss
+	const timestamp = new Date()
+		.toISOString()
+		.replace(/[-:T.]/g, "")
+		.slice(0, 14); // YYYYMMDDHHmmss
 
-  return `VON-${vendorCode}-${timestamp}`;
+	return `VON-${vendorCode}-${timestamp}`;
 }
+
+export const isExternalApproverInWorkflow = (
+	workflow: WorkflowObject,
+	userId: string,
+): boolean => {
+	for (const stage of workflow.stages) {
+		const approval = stage.approvals.find((a) => a.approver.id === userId);
+		if (approval) {
+			return approval.isExternalApprover === true;
+		}
+	}
+	return false; // userId not found among approvers at all
+};
