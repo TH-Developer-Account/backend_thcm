@@ -420,8 +420,12 @@ export const updateEmployeeFields = async (
       id as string,
     );
 
-    // @ts-ignore
-    const isExternal = isExternalApproverInWorkflow(activeWorkflow, userId);
+    let isExternal = false;
+
+    if (activeWorkflow) {
+      // @ts-ignore
+      isExternal = isExternalApproverInWorkflow(activeWorkflow, userId);
+    }
 
     // ── Guard: only the initiator or a superadmin can edit ───────────────────
     if (!isExternal && onboarding.initiatedById !== userId) {
