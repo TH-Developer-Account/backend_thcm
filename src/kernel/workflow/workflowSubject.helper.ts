@@ -21,12 +21,12 @@
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import { activeWorkflowInclude } from "@shared/utils/contants";
-import { notifyGuestOfClarification } from "@modules/mediclaim/mediclaim.helper";
+import { notifyGuestOfClarification } from "@medi-claim/mediclaim.helper";
 
 import {
-  Prisma,
-  WorkflowSubjectType,
-  ActivityAction,
+	Prisma,
+	WorkflowSubjectType,
+	ActivityAction,
 } from "../../prisma/generated/prisma/client";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -40,48 +40,48 @@ import {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ownerIdResolvers: Record<
-  WorkflowSubjectType,
-  (subjectId: string) => Promise<string | null>
+	WorkflowSubjectType,
+	(subjectId: string) => Promise<string | null>
 > = {
-  EVENT_PROPOSAL: async (subjectId) => {
-    const epc = await prisma.eventProposal.findUnique({
-      where: { id: subjectId },
-      select: { created_by_id: true },
-    });
-    return epc?.created_by_id ?? null;
-  },
-  VENDOR_ONBOARDING: async (subjectId) => {
-    const onboarding = await prisma.vendorOnboarding.findUnique({
-      where: { id: subjectId },
-      select: { initiatedById: true },
-    });
-    return onboarding?.initiatedById ?? null;
-  },
+	EVENT_PROPOSAL: async (subjectId) => {
+		const epc = await prisma.eventProposal.findUnique({
+			where: { id: subjectId },
+			select: { created_by_id: true },
+		});
+		return epc?.created_by_id ?? null;
+	},
+	VENDOR_ONBOARDING: async (subjectId) => {
+		const onboarding = await prisma.vendorOnboarding.findUnique({
+			where: { id: subjectId },
+			select: { initiatedById: true },
+		});
+		return onboarding?.initiatedById ?? null;
+	},
 
-  MEDICAL_CLAIM: async (subjectId) => {
-    const claim = await prisma.medicalClaim.findUnique({
-      where: { id: subjectId },
-      select: { initiatedById: true },
-    });
-    return claim?.initiatedById ?? null;
-  },
+	MEDICAL_CLAIM: async (subjectId) => {
+		const claim = await prisma.medicalClaim.findUnique({
+			where: { id: subjectId },
+			select: { initiatedById: true },
+		});
+		return claim?.initiatedById ?? null;
+	},
 };
 
 export async function getSubjectOwnerId(
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
 ): Promise<string> {
-  const resolver = ownerIdResolvers[subjectType];
-  if (!resolver) {
-    throw new ApiError(400, `Unknown workflow subject type "${subjectType}"`);
-  }
+	const resolver = ownerIdResolvers[subjectType];
+	if (!resolver) {
+		throw new ApiError(400, `Unknown workflow subject type "${subjectType}"`);
+	}
 
-  const ownerId = await resolver(subjectId);
-  if (!ownerId) {
-    throw new ApiError(404, `${subjectType} not found for id "${subjectId}"`);
-  }
+	const ownerId = await resolver(subjectId);
+	if (!ownerId) {
+		throw new ApiError(404, `${subjectType} not found for id "${subjectId}"`);
+	}
 
-  return ownerId;
+	return ownerId;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -98,45 +98,45 @@ export async function getSubjectOwnerId(
 // ─────────────────────────────────────────────────────────────────────────────
 
 const subjectResolvers: Record<
-  WorkflowSubjectType,
-  (subjectId: string) => Promise<Record<string, unknown> | null>
+	WorkflowSubjectType,
+	(subjectId: string) => Promise<Record<string, unknown> | null>
 > = {
-  EVENT_PROPOSAL: (subjectId) =>
-    prisma.eventProposal.findUnique({ where: { id: subjectId } }),
+	EVENT_PROPOSAL: (subjectId) =>
+		prisma.eventProposal.findUnique({ where: { id: subjectId } }),
 
-  VENDOR_ONBOARDING: (subjectId) =>
-    prisma.vendorOnboarding.findUnique({ where: { id: subjectId } }),
+	VENDOR_ONBOARDING: (subjectId) =>
+		prisma.vendorOnboarding.findUnique({ where: { id: subjectId } }),
 
-  MEDICAL_CLAIM: (subjectId) =>
-    prisma.medicalClaim.findUnique({ where: { id: subjectId } }),
+	MEDICAL_CLAIM: (subjectId) =>
+		prisma.medicalClaim.findUnique({ where: { id: subjectId } }),
 };
 
 export async function findSubjectById(
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
 ): Promise<Record<string, unknown>> {
-  const resolver = subjectResolvers[subjectType];
-  if (!resolver) {
-    throw new ApiError(400, `Unknown workflow subject type "${subjectType}"`);
-  }
+	const resolver = subjectResolvers[subjectType];
+	if (!resolver) {
+		throw new ApiError(400, `Unknown workflow subject type "${subjectType}"`);
+	}
 
-  const subject = await resolver(subjectId);
-  if (!subject) {
-    throw new ApiError(404, `${subjectType} not found for id "${subjectId}"`);
-  }
+	const subject = await resolver(subjectId);
+	if (!subject) {
+		throw new ApiError(404, `${subjectType} not found for id "${subjectId}"`);
+	}
 
-  return subject;
+	return subject;
 }
 
 export async function getActiveWorkflowForSubject(
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
 ) {
-  return prisma.workflowInstance.findFirst({
-    where: { subjectType, subjectId, isActive: true },
-    orderBy: { created_at: "desc" },
-    include: activeWorkflowInclude,
-  });
+	return prisma.workflowInstance.findFirst({
+		where: { subjectType, subjectId, isActive: true },
+		orderBy: { created_at: "desc" },
+		include: activeWorkflowInclude,
+	});
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -151,28 +151,28 @@ export async function getActiveWorkflowForSubject(
 type Tx = Prisma.TransactionClient;
 
 const statusUpdaters: Record<
-  WorkflowSubjectType,
-  (tx: Tx, subjectId: string, status: string) => Promise<unknown>
+	WorkflowSubjectType,
+	(tx: Tx, subjectId: string, status: string) => Promise<unknown>
 > = {
-  EVENT_PROPOSAL: (tx, subjectId, status) =>
-    tx.eventProposal.update({ where: { id: subjectId }, data: { status } }),
+	EVENT_PROPOSAL: (tx, subjectId, status) =>
+		tx.eventProposal.update({ where: { id: subjectId }, data: { status } }),
 
-  VENDOR_ONBOARDING: (tx, subjectId, status) =>
-    tx.vendorOnboarding.update({ where: { id: subjectId }, data: { status } }),
+	VENDOR_ONBOARDING: (tx, subjectId, status) =>
+		tx.vendorOnboarding.update({ where: { id: subjectId }, data: { status } }),
 
-  MEDICAL_CLAIM: (tx, subjectId, status) =>
-    tx.medicalClaim.update({ where: { id: subjectId }, data: { status } }),
+	MEDICAL_CLAIM: (tx, subjectId, status) =>
+		tx.medicalClaim.update({ where: { id: subjectId }, data: { status } }),
 };
 
 export async function updateSubjectStatus(
-  tx: Tx,
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
-  status: string,
+	tx: Tx,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
+	status: string,
 ): Promise<void> {
-  const updater = statusUpdaters[subjectType];
-  if (!updater) return; // unwired subject type — no-op, same as commented-out AUDIT_INSTANCE branches above
-  await updater(tx, subjectId, status);
+	const updater = statusUpdaters[subjectType];
+	if (!updater) return; // unwired subject type — no-op, same as commented-out AUDIT_INSTANCE branches above
+	await updater(tx, subjectId, status);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -185,30 +185,30 @@ export async function updateSubjectStatus(
 // ─────────────────────────────────────────────────────────────────────────────
 
 const clarifyResetStatus: Record<WorkflowSubjectType, string> = {
-  EVENT_PROPOSAL: "PENDING",
-  VENDOR_ONBOARDING: "IN_REVIEW",
-  MEDICAL_CLAIM: "CLARIFICATION_REQUESTED",
+	EVENT_PROPOSAL: "PENDING",
+	VENDOR_ONBOARDING: "IN_REVIEW",
+	MEDICAL_CLAIM: "CLARIFICATION_REQUESTED",
 };
 
 export function getClarifyResetStatus(
-  subjectType: WorkflowSubjectType,
+	subjectType: WorkflowSubjectType,
 ): string {
-  return clarifyResetStatus[subjectType] ?? "PENDING";
+	return clarifyResetStatus[subjectType] ?? "PENDING";
 }
 
 const postClarifyHooks: Partial<
-  Record<WorkflowSubjectType, (tx: Tx, subjectId: string) => Promise<void>>
+	Record<WorkflowSubjectType, (tx: Tx, subjectId: string) => Promise<void>>
 > = {
-  MEDICAL_CLAIM: (tx, subjectId) => notifyGuestOfClarification(tx, subjectId),
+	MEDICAL_CLAIM: (tx, subjectId) => notifyGuestOfClarification(tx, subjectId),
 };
 
 export async function runPostClarifyHook(
-  tx: Tx,
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
+	tx: Tx,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
 ): Promise<void> {
-  const hook = postClarifyHooks[subjectType];
-  if (hook) await hook(tx, subjectId);
+	const hook = postClarifyHooks[subjectType];
+	if (hook) await hook(tx, subjectId);
 }
 
 // Subject-specific action name + status for the "resubmitted" transition —
@@ -217,24 +217,24 @@ export async function runPostClarifyHook(
 // action name/status literal, which is wrong the moment a second subject
 // type uses the endpoint (as MEDICAL_CLAIM now does).
 const resubmitActionBySubjectType: Record<WorkflowSubjectType, ActivityAction> =
-  {
-    EVENT_PROPOSAL: "EPC_RESUBMITTED",
-    VENDOR_ONBOARDING: "VENDOR_FORM_SUBMITTED",
-    MEDICAL_CLAIM: "MEDICAL_CLAIM_RESUBMITTED",
-  };
+	{
+		EVENT_PROPOSAL: "EPC_RESUBMITTED",
+		VENDOR_ONBOARDING: "VENDOR_FORM_SUBMITTED",
+		MEDICAL_CLAIM: "MEDICAL_CLAIM_RESUBMITTED",
+	};
 
 const resubmitStatusBySubjectType: Record<WorkflowSubjectType, string> = {
-  EVENT_PROPOSAL: "Resubmitted",
-  VENDOR_ONBOARDING: "IN_PROGRESS",
-  MEDICAL_CLAIM: "IN_PROGRESS",
+	EVENT_PROPOSAL: "Resubmitted",
+	VENDOR_ONBOARDING: "IN_PROGRESS",
+	MEDICAL_CLAIM: "IN_PROGRESS",
 };
 
 export function getResubmitAction(
-  subjectType: WorkflowSubjectType,
+	subjectType: WorkflowSubjectType,
 ): ActivityAction {
-  return resubmitActionBySubjectType[subjectType];
+	return resubmitActionBySubjectType[subjectType];
 }
 
 export function getResubmitStatus(subjectType: WorkflowSubjectType): string {
-  return resubmitStatusBySubjectType[subjectType];
+	return resubmitStatusBySubjectType[subjectType];
 }
