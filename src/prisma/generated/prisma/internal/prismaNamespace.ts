@@ -430,7 +430,9 @@ export const ModelName = {
   MedicalClaim: 'MedicalClaim',
   MedicalClaimBill: 'MedicalClaimBill',
   MedicalClaimGradeEligibility: 'MedicalClaimGradeEligibility',
-  Guest: 'Guest'
+  Guest: 'Guest',
+  MachineStudy: 'MachineStudy',
+  MachineStudyCycle: 'MachineStudyCycle'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -446,7 +448,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "medicalClaimGradeEligibility" | "guest"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "medicalClaimGradeEligibility" | "guest" | "machineStudy" | "machineStudyCycle"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3928,6 +3930,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MachineStudy: {
+      payload: Prisma.$MachineStudyPayload<ExtArgs>
+      fields: Prisma.MachineStudyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MachineStudyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MachineStudyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>
+        }
+        findFirst: {
+          args: Prisma.MachineStudyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MachineStudyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>
+        }
+        findMany: {
+          args: Prisma.MachineStudyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>[]
+        }
+        create: {
+          args: Prisma.MachineStudyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>
+        }
+        createMany: {
+          args: Prisma.MachineStudyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MachineStudyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>[]
+        }
+        delete: {
+          args: Prisma.MachineStudyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>
+        }
+        update: {
+          args: Prisma.MachineStudyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>
+        }
+        deleteMany: {
+          args: Prisma.MachineStudyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MachineStudyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MachineStudyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>[]
+        }
+        upsert: {
+          args: Prisma.MachineStudyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>
+        }
+        aggregate: {
+          args: Prisma.MachineStudyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMachineStudy>
+        }
+        groupBy: {
+          args: Prisma.MachineStudyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MachineStudyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MachineStudyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MachineStudyCountAggregateOutputType> | number
+        }
+      }
+    }
+    MachineStudyCycle: {
+      payload: Prisma.$MachineStudyCyclePayload<ExtArgs>
+      fields: Prisma.MachineStudyCycleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MachineStudyCycleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MachineStudyCycleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>
+        }
+        findFirst: {
+          args: Prisma.MachineStudyCycleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MachineStudyCycleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>
+        }
+        findMany: {
+          args: Prisma.MachineStudyCycleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>[]
+        }
+        create: {
+          args: Prisma.MachineStudyCycleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>
+        }
+        createMany: {
+          args: Prisma.MachineStudyCycleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MachineStudyCycleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>[]
+        }
+        delete: {
+          args: Prisma.MachineStudyCycleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>
+        }
+        update: {
+          args: Prisma.MachineStudyCycleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>
+        }
+        deleteMany: {
+          args: Prisma.MachineStudyCycleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MachineStudyCycleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MachineStudyCycleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>[]
+        }
+        upsert: {
+          args: Prisma.MachineStudyCycleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>
+        }
+        aggregate: {
+          args: Prisma.MachineStudyCycleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMachineStudyCycle>
+        }
+        groupBy: {
+          args: Prisma.MachineStudyCycleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MachineStudyCycleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MachineStudyCycleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MachineStudyCycleCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4322,7 +4472,8 @@ export type BudgetMasterScalarFieldEnum = (typeof BudgetMasterScalarFieldEnum)[k
 
 export const EventNameScalarFieldEnum = {
   id: 'id',
-  title: 'title'
+  title: 'title',
+  reportTemplateKey: 'reportTemplateKey'
 } as const
 
 export type EventNameScalarFieldEnum = (typeof EventNameScalarFieldEnum)[keyof typeof EventNameScalarFieldEnum]
@@ -4424,9 +4575,22 @@ export const LeadScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
   name: 'name',
-  email: 'email',
+  companyName: 'companyName',
   phone: 'phone',
+  email: 'email',
+  dealership: 'dealership',
+  participantType: 'participantType',
+  participantStatus: 'participantStatus',
+  machineModel: 'machineModel',
+  machineSerial: 'machineSerial',
+  valueOfServiceOffers: 'valueOfServiceOffers',
+  valueOfPartsOffers: 'valueOfPartsOffers',
+  valueOfPartsBilled: 'valueOfPartsBilled',
   notes: 'notes',
+  eventDate: 'eventDate',
+  location: 'location',
+  district: 'district',
+  state: 'state',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -4455,18 +4619,17 @@ export type PincodeScalarFieldEnum = (typeof PincodeScalarFieldEnum)[keyof typeo
 export const EventReportScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
-  outcomeStatus: 'outcomeStatus',
-  totalLeadsGenerated: 'totalLeadsGenerated',
-  approvedEventCost: 'approvedEventCost',
-  expectedConversion: 'expectedConversion',
-  remarks: 'remarks',
   status: 'status',
+  eventHighlights: 'eventHighlights',
+  computedOutcomes: 'computedOutcomes',
   rejectionReason: 'rejectionReason',
   clarificationReason: 'clarificationReason',
+  generationError: 'generationError',
   submittedAt: 'submittedAt',
   resubmittedAt: 'resubmittedAt',
   validatedAt: 'validatedAt',
   validatorId: 'validatorId',
+  pdfS3Key: 'pdfS3Key',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -4478,8 +4641,10 @@ export const EventReportImageScalarFieldEnum = {
   id: 'id',
   reportId: 'reportId',
   position: 'position',
+  caption: 'caption',
   s3Key: 's3Key',
-  fileUrl: 'fileUrl'
+  fileUrl: 'fileUrl',
+  mimeType: 'mimeType'
 } as const
 
 export type EventReportImageScalarFieldEnum = (typeof EventReportImageScalarFieldEnum)[keyof typeof EventReportImageScalarFieldEnum]
@@ -4673,6 +4838,53 @@ export const GuestScalarFieldEnum = {
 } as const
 
 export type GuestScalarFieldEnum = (typeof GuestScalarFieldEnum)[keyof typeof GuestScalarFieldEnum]
+
+
+export const MachineStudyScalarFieldEnum = {
+  id: 'id',
+  epcId: 'epcId',
+  isCompetitorMachine: 'isCompetitorMachine',
+  machineModel: 'machineModel',
+  customerName: 'customerName',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  application: 'application',
+  fuelType: 'fuelType',
+  startHmr: 'startHmr',
+  endHmr: 'endHmr',
+  bucketVolumeCuM: 'bucketVolumeCuM',
+  acStatus: 'acStatus',
+  operationMode: 'operationMode',
+  dieselTopUpLtr: 'dieselTopUpLtr',
+  startKwhReading: 'startKwhReading',
+  endKwhReading: 'endKwhReading',
+  operatorName: 'operatorName',
+  operatorExperience: 'operatorExperience',
+  priorMachinesOperated: 'priorMachinesOperated',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type MachineStudyScalarFieldEnum = (typeof MachineStudyScalarFieldEnum)[keyof typeof MachineStudyScalarFieldEnum]
+
+
+export const MachineStudyCycleScalarFieldEnum = {
+  id: 'id',
+  studyId: 'studyId',
+  sequenceNo: 'sequenceNo',
+  truckNumber: 'truckNumber',
+  startSeconds: 'startSeconds',
+  finishSeconds: 'finishSeconds',
+  timeTakenSeconds: 'timeTakenSeconds',
+  bucketPasses: 'bucketPasses',
+  swingAngleDegrees: 'swingAngleDegrees',
+  unladenWeightKg: 'unladenWeightKg',
+  ladenWeightKg: 'ladenWeightKg',
+  payloadKg: 'payloadKg',
+  remarks: 'remarks'
+} as const
+
+export type MachineStudyCycleScalarFieldEnum = (typeof MachineStudyCycleScalarFieldEnum)[keyof typeof MachineStudyCycleScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -4968,6 +5180,34 @@ export type ListEnumProductCategoryFieldRefInput<$PrismaModel> = FieldRefInputTy
 
 
 /**
+ * Reference to a field of type 'ParticipantType'
+ */
+export type EnumParticipantTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ParticipantType'>
+    
+
+
+/**
+ * Reference to a field of type 'ParticipantType[]'
+ */
+export type ListEnumParticipantTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ParticipantType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ParticipantStatus'
+ */
+export type EnumParticipantStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ParticipantStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ParticipantStatus[]'
+ */
+export type ListEnumParticipantStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ParticipantStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -4978,20 +5218,6 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-/**
- * Reference to a field of type 'OutcomeStatus'
- */
-export type EnumOutcomeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutcomeStatus'>
-    
-
-
-/**
- * Reference to a field of type 'OutcomeStatus[]'
- */
-export type ListEnumOutcomeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutcomeStatus[]'>
     
 
 
@@ -5076,6 +5302,20 @@ export type EnumClaimHeadFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
  * Reference to a field of type 'ClaimHead[]'
  */
 export type ListEnumClaimHeadFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClaimHead[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FuelType'
+ */
+export type EnumFuelTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FuelType'>
+    
+
+
+/**
+ * Reference to a field of type 'FuelType[]'
+ */
+export type ListEnumFuelTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FuelType[]'>
     
 
 /**
@@ -5235,6 +5475,8 @@ export type GlobalOmitConfig = {
   medicalClaimBill?: Prisma.MedicalClaimBillOmit
   medicalClaimGradeEligibility?: Prisma.MedicalClaimGradeEligibilityOmit
   guest?: Prisma.GuestOmit
+  machineStudy?: Prisma.MachineStudyOmit
+  machineStudyCycle?: Prisma.MachineStudyCycleOmit
 }
 
 /* Types for Logging */

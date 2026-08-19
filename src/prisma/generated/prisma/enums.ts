@@ -141,6 +141,8 @@ export type ProductCategory = (typeof ProductCategory)[keyof typeof ProductCateg
 
 
 export const ReportStatus = {
+  GENERATING: 'GENERATING',
+  GENERATION_FAILED: 'GENERATION_FAILED',
   SUBMITTED: 'SUBMITTED',
   VALIDATED: 'VALIDATED',
   REJECTED: 'REJECTED',
@@ -215,3 +217,41 @@ export const ClaimHead = {
 } as const
 
 export type ClaimHead = (typeof ClaimHead)[keyof typeof ClaimHead]
+
+
+export const ParticipantType = {
+  CUSTOMER: 'CUSTOMER',
+  CUSTOMER_KEY_ACCOUNT: 'CUSTOMER_KEY_ACCOUNT',
+  CUSTOMER_STAFF: 'CUSTOMER_STAFF',
+  VENDOR_PARTNER: 'VENDOR_PARTNER',
+  HITACHI_REPRESENTATIVE: 'HITACHI_REPRESENTATIVE',
+  TATA_HITACHI_EXECUTIVE: 'TATA_HITACHI_EXECUTIVE',
+  DEALERSHIP_EXECUTIVE: 'DEALERSHIP_EXECUTIVE',
+  FINANCIER_EXECUTIVE: 'FINANCIER_EXECUTIVE',
+  MACHINE_OPERATOR: 'MACHINE_OPERATOR',
+  MACHINE_MECHANIC: 'MACHINE_MECHANIC',
+  OTHER: 'OTHER'
+} as const
+
+export type ParticipantType = (typeof ParticipantType)[keyof typeof ParticipantType]
+
+
+export const ParticipantStatus = {
+  COLD_ENQUIRY: 'COLD_ENQUIRY',
+  WARM_ENQUIRY: 'WARM_ENQUIRY',
+  HOT_ENQUIRY: 'HOT_ENQUIRY',
+  EVENT_ATTENDEE: 'EVENT_ATTENDEE',
+  FELICITATION: 'FELICITATION',
+  KEY_HANDOVER: 'KEY_HANDOVER',
+  BOOKING: 'BOOKING'
+} as const
+
+export type ParticipantStatus = (typeof ParticipantStatus)[keyof typeof ParticipantStatus]
+
+
+export const FuelType = {
+  DIESEL: 'DIESEL',
+  ELECTRIC: 'ELECTRIC'
+} as const
+
+export type FuelType = (typeof FuelType)[keyof typeof FuelType]

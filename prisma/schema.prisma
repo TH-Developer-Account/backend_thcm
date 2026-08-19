@@ -117,6 +117,8 @@ enum ProductCategory {
 }
 
 enum ReportStatus {
+  GENERATING
+  GENERATION_FAILED
   SUBMITTED
   VALIDATED
   REJECTED
@@ -167,6 +169,35 @@ enum ClaimHead {
   OPHTHALMIC_TREATMENT
   EXECUTIVE_HEALTH_CHECKUP
   EXCESS_HOSPITALISATION
+}
+
+enum ParticipantType {
+  CUSTOMER
+  CUSTOMER_KEY_ACCOUNT
+  CUSTOMER_STAFF
+  VENDOR_PARTNER
+  HITACHI_REPRESENTATIVE
+  TATA_HITACHI_EXECUTIVE
+  DEALERSHIP_EXECUTIVE
+  FINANCIER_EXECUTIVE
+  MACHINE_OPERATOR
+  MACHINE_MECHANIC
+  OTHER
+}
+
+enum ParticipantStatus {
+  COLD_ENQUIRY
+  WARM_ENQUIRY
+  HOT_ENQUIRY
+  EVENT_ATTENDEE
+  FELICITATION
+  KEY_HANDOVER
+  BOOKING
+}
+
+enum FuelType {
+  DIESEL
+  ELECTRIC
 }
 
 // ─────────────────────────────────────────────
@@ -428,6 +459,7 @@ model EventProposal {
 
   leads     Lead[]
   importExportLogs ImportExportLog[]
+  machineStudies MachineStudy[] 
 
   search_vector Unsupported("tsvector")?
   created_at    DateTime                 @default(now())
@@ -685,6 +717,7 @@ model BudgetMaster {
 model EventName {
   id     String          @id @default(uuid())
   title  String
+  reportTemplateKey String? @unique
   events EventProposal[]
 }
 
@@ -794,17 +827,38 @@ model Operator {
 }
 
 model Lead {
-  id             String      @id @default(uuid())
+  id             String   @id @default(uuid())
   epcId          String
-  name           String      @db.VarChar(100)
-  email          String?     @db.VarChar(100)
-  phone          String?     @db.VarChar(15)
+
+  name           String   @db.VarChar(100)
+  companyName    String?  @db.VarChar(150)
+  phone          String?  @db.VarChar(15)
+  email          String?  @db.VarChar(100)
+
+  dealership     String?  @db.VarChar(150)
+
+  participantType   ParticipantType?
+  participantStatus ParticipantStatus?
+
+  machineModel   String?  @db.VarChar(150)
+  machineSerial  String?  @db.VarChar(100)
+
+  valueOfServiceOffers Decimal? @db.Decimal(12, 2)
+  valueOfPartsOffers   Decimal? @db.Decimal(12, 2)
+  valueOfPartsBilled   Decimal? @db.Decimal(12, 2)
+
   notes          String?
+  eventDate      DateTime?
+  location       String?
+  district       String?
+  state          String?
+
   epc            EventProposal @relation(fields: [epcId], references: [id])
-  created_at     DateTime    @default(now())
-  updated_at     DateTime    @updatedAt
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 
   @@index([epcId])
+  @@index([participantStatus])
 }
 
 model Pincode {
@@ -844,20 +898,23 @@ model Pincode {
 // ─────────────────────────────────────────────
 
 model EventReport {
-  id                   String        @id @default(uuid())
-  epcId                String        @unique
-  outcomeStatus        OutcomeStatus
-  totalLeadsGenerated  Int
-  approvedEventCost    Decimal       @db.Decimal(12, 2)
-  expectedConversion   String?
-  remarks              String?
-  status               ReportStatus  @default(SUBMITTED)
-  rejectionReason      String?
-  clarificationReason  String?
-  submittedAt          DateTime      @default(now())
-  resubmittedAt        DateTime?
-  validatedAt          DateTime?
-  validatorId          String
+  id                  String       @id @default(uuid())
+  epcId               String       @unique
+  status              ReportStatus @default(GENERATING)
+
+  eventHighlights     String?
+
+  computedOutcomes    Json?
+
+  rejectionReason     String?
+  clarificationReason String?
+  generationError     String?
+
+  submittedAt         DateTime  @default(now())
+  resubmittedAt       DateTime?
+  validatedAt         DateTime?
+  validatorId         String
+  pdfS3Key            String? 
 
   epc       EventProposal      @relation(fields: [epcId], references: [id], onDelete: Cascade)
   validator User               @relation("ReportValidator", fields: [validatorId], references: [id])
@@ -881,11 +938,13 @@ model EventReport {
 // ─────────────────────────────────────────────
 
 model EventReportImage {
-  id       String @id @default(uuid())
+  id       String  @id @default(uuid())
   reportId String
-  position Int    // 1 | 2 | 3 | 4
+  position Int
+  caption  String?
   s3Key    String
   fileUrl  String
+  mimeType String?
 
   report EventReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
@@ -1183,6 +1242,64 @@ model Guest {
  
   @@index([mobile])
   @@index([email])
+}
+
+model MachineStudy {
+  id                  String    @id @default(uuid())
+  epcId               String
+  isCompetitorMachine Boolean   @default(false)
+
+  machineModel        String
+  customerName        String
+  startDate           DateTime
+  endDate             DateTime
+  application         String
+  fuelType            FuelType
+  startHmr            Decimal   @db.Decimal(10, 2)
+  endHmr              Decimal   @db.Decimal(10, 2)
+  bucketVolumeCuM     Decimal   @db.Decimal(6, 2)
+  acStatus            String
+  operationMode       String
+
+  // Fuel-efficiency inputs — exactly one side populated, based on fuelType.
+  dieselTopUpLtr      Decimal?  @db.Decimal(8, 2)   // required when fuelType = DIESEL
+  startKwhReading     Decimal?  @db.Decimal(10, 2)  // required when fuelType = ELECTRIC
+  endKwhReading       Decimal?  @db.Decimal(10, 2)  // required when fuelType = ELECTRIC
+
+  operatorName          String?
+  operatorExperience    String?
+  priorMachinesOperated String?
+
+  epc    EventProposal        @relation(fields: [epcId], references: [id])
+  cycles MachineStudyCycle[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Enforces cardinality: at most one row per (EPC, variant) — one study for
+  // single-machine templates, exactly two (false + true) for benchmarking.
+  @@unique([epcId, isCompetitorMachine])
+  @@index([epcId])
+}
+
+model MachineStudyCycle {
+  id                String   @id @default(uuid())
+  studyId           String
+  sequenceNo        Int
+  truckNumber       String?           // null for "Material Preparation" rows
+  startSeconds      Int               // elapsed seconds from study start
+  finishSeconds     Int
+  timeTakenSeconds  Int               // provided directly in the source sheet, not derived
+  bucketPasses      Int?
+  swingAngleDegrees String?
+  unladenWeightKg   Decimal? @db.Decimal(8, 2)
+  ladenWeightKg     Decimal? @db.Decimal(8, 2)
+  payloadKg         Decimal? @db.Decimal(8, 2)     // provided directly, not derived
+  remarks           String?
+
+  study MachineStudy @relation(fields: [studyId], references: [id], onDelete: Cascade)
+
+  @@index([studyId])
 }
 
 

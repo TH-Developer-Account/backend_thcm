@@ -1,29 +1,21 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
+import {
+  ParticipantType,
+  ParticipantStatus,
+} from "../../prisma/generated/prisma/client";
+import { resolveLeadFormConfig } from "./utils/leadFormVariants";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// How many months back from today an event's end date must fall for its
-// lead to be considered an attributed source (not DIRECT).
 // ─────────────────────────────────────────────────────────────────────────────
 const LEAD_SOURCE_PERIOD_MONTHS = 4;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Returns true when the given date falls within the attribution window,
-// i.e. it is not older than LEAD_SOURCE_PERIOD_MONTHS from today.
-// Pure function — no side effects, easy to unit-test.
-// ─────────────────────────────────────────────────────────────────────────────
 const isWithinAttributionPeriod = (eventToDate: Date): boolean => {
   const cutoff = new Date();
   cutoff.setMonth(cutoff.getMonth() - LEAD_SOURCE_PERIOD_MONTHS);
   return eventToDate >= cutoff;
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Formats the originSource string for an attributed lead.
-// Shape: eventConductedDate_eventName_location
-// Date format: YYYY-MM-DD (ISO date, locale-independent)
-// ─────────────────────────────────────────────────────────────────────────────
 const formatOriginSource = (
   eventToDate: Date,
   eventName: string,
@@ -33,36 +25,24 @@ const formatOriginSource = (
   return `${datePart}_${eventName}_${location}`;
 };
 
+const assertValidEnumValue = <T extends Record<string, string>>(
+  enumObject: T,
+  value: unknown,
+  fieldLabel: string,
+  index?: number,
+): void => {
+  if (value === undefined || value === null) return;
+  if (!Object.values(enumObject).includes(value as string)) {
+    const prefix = index !== undefined ? `leads[${index}]: ` : "";
+    throw new ApiError(
+      400,
+      `${prefix}invalid ${fieldLabel} "${value}". Must be one of: ${Object.values(enumObject).join(", ")}`,
+    );
+  }
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
-// POST /leads
-//
-// Bulk-creates leads for a given EPC.
-//
-// Expected payload:
-// {
-//   "epcId": "uuid",
-//   "leads": [
-//     {
-//       "name": "Rajesh Kumar",
-//       "email": "rajesh@example.com",
-//       "phone": "9876543210",
-//     },
-//     {
-//       "name": "Priya Singh",
-//       "phone": "9123456780",
-//       "source": "REFERRAL"
-//     }
-//   ]
-// }
-//
-// Rules:
-//   - The EPC must exist.
-//   - At least one lead must be supplied.
-//   - Each lead must have at minimum a `name`.
-//   - Either `email` or `phone` is strongly recommended but not enforced at
-//     the DB layer — validation is done here so the error message is clear.
-//   - All inserts are done in a single transaction; if any record fails the
-//     whole batch is rolled back.
+// POST /leads/create-leads
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const createLeads = async (
@@ -80,6 +60,19 @@ export const createLeads = async (
         name: string;
         email?: string;
         phone?: string;
+        companyName?: string;
+        dealership?: string;
+        location?: string;
+        district?: string;
+        state?: string;
+        eventDate?: string;
+        participantType?: ParticipantType;
+        participantStatus?: ParticipantStatus;
+        machineModel?: string;
+        machineSerial?: string;
+        valueOfServiceOffers?: number;
+        valueOfPartsOffers?: number;
+        valueOfPartsBilled?: number;
         notes?: string;
       }[];
     };
@@ -89,7 +82,6 @@ export const createLeads = async (
       throw new ApiError(400, "leads must be a non-empty array");
     }
 
-    // ── Validate each lead entry before touching the DB ───────────────────
     leads.forEach((lead, index) => {
       if (!lead.name || String(lead.name).trim().length < 2) {
         throw new ApiError(
@@ -109,28 +101,52 @@ export const createLeads = async (
       if (lead.phone && !/^\+?[0-9]{7,15}$/.test(lead.phone)) {
         throw new ApiError(400, `leads[${index}]: invalid phone format`);
       }
+      if (lead.eventDate && isNaN(Date.parse(lead.eventDate))) {
+        throw new ApiError(400, `leads[${index}]: invalid eventDate`);
+      }
+      assertValidEnumValue(
+        ParticipantType,
+        lead.participantType,
+        "participantType",
+        index,
+      );
+      assertValidEnumValue(
+        ParticipantStatus,
+        lead.participantStatus,
+        "participantStatus",
+        index,
+      );
     });
 
-    // ── Ensure the EPC exists ─────────────────────────────────────────────
     const epc = await prisma.eventProposal.findUnique({
       where: { id: epcId },
-      select: { id: true, status: true },
+      select: { id: true },
     });
     if (!epc) throw new ApiError(404, "Event Proposal not found");
 
-    // ── Bulk insert inside a transaction ──────────────────────────────────
     const created = await prisma.$transaction(async (tx) => {
-      const records = await tx.lead.createMany({
+      return tx.lead.createMany({
         data: leads.map((lead) => ({
           epcId,
           name: String(lead.name).trim(),
           email: lead.email?.trim() ?? null,
           phone: lead.phone?.trim() ?? null,
+          companyName: lead.companyName?.trim() ?? null,
+          dealership: lead.dealership?.trim() ?? null,
+          location: lead.location?.trim() ?? null,
+          district: lead.district?.trim() ?? null,
+          state: lead.state?.trim() ?? null,
+          eventDate: lead.eventDate ? new Date(lead.eventDate) : null,
+          participantType: lead.participantType ?? null,
+          participantStatus: lead.participantStatus ?? null,
+          machineModel: lead.machineModel?.trim() ?? null,
+          machineSerial: lead.machineSerial?.trim() ?? null,
+          valueOfServiceOffers: lead.valueOfServiceOffers ?? null,
+          valueOfPartsOffers: lead.valueOfPartsOffers ?? null,
+          valueOfPartsBilled: lead.valueOfPartsBilled ?? null,
           notes: lead.notes?.trim() ?? null,
         })),
       });
-
-      return records;
     });
 
     res.status(201).json({
@@ -144,17 +160,7 @@ export const createLeads = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /leads/epc/:epcId
-//
-// Returns all leads captured for an EPC with optional filtering by status
-// or source. Supports pagination.
-//
-// Query params:
-//   page       (default 1)
-//   pageSize   (default 20)
-//   status     LeadStatus enum value
-//   source     LeadSource enum value
-//   search     partial match on name / email / phone / company
+// GET /leads/get-all-leads — paginated, filterable
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getLeads = async (
@@ -166,15 +172,19 @@ export const getLeads = async (
     const userId = req.user?.id;
     if (!userId) throw new ApiError(401, "Unauthorized");
 
-    const { page = "1", pageSize = "20", status, source, search } = req.query;
+    const {
+      page = "1",
+      pageSize = "20",
+      participantStatus,
+      participantType,
+      search,
+    } = req.query;
 
     const skip = (Number(page) - 1) * Number(pageSize);
     const take = Number(pageSize);
 
-    // ── Build where clause ────────────────────────────────────────────────
     const where: Record<string, any> = {};
 
-    // ── Add this near the top of the file, after imports ──────────────────────
     const epcSummarySelect = {
       select: {
         id: true,
@@ -190,8 +200,22 @@ export const getLeads = async (
         { name: { contains: term, mode: "insensitive" } },
         { email: { contains: term, mode: "insensitive" } },
         { phone: { contains: term, mode: "insensitive" } },
-        { company: { contains: term, mode: "insensitive" } },
+        { companyName: { contains: term, mode: "insensitive" } },
       ];
+    }
+
+    if (participantStatus) {
+      assertValidEnumValue(
+        ParticipantStatus,
+        participantStatus,
+        "participantStatus",
+      );
+      where.participantStatus = participantStatus;
+    }
+
+    if (participantType) {
+      assertValidEnumValue(ParticipantType, participantType, "participantType");
+      where.participantType = participantType;
     }
 
     const [leads, total] = await Promise.all([
@@ -221,9 +245,70 @@ export const getLeads = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// GET /leads/epc/:epcId — all leads for one EPC, no pagination
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getLeadsByEpc = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const { epcId } = req.params;
+
+    const leads = await prisma.lead.findMany({
+      where: { epcId: epcId as string },
+      orderBy: { created_at: "desc" },
+      include: {
+        epc: {
+          select: {
+            id: true,
+            proposal_number: true,
+            location: true,
+            event_name: { select: { id: true, title: true } },
+          },
+        },
+      },
+    });
+
+    res.status(200).json({ success: true, data: leads });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /leads/form-config/:epcId
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getLeadFormConfig = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const { epcId } = req.params;
+    const epc = await prisma.eventProposal.findUnique({
+      where: { id: epcId as string },
+      select: { event_name_id: true },
+    });
+    if (!epc) throw new ApiError(404, "EPC not found");
+
+    const config = await resolveLeadFormConfig(epc.event_name_id);
+    res.status(200).json({ success: true, data: config });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // GET /leads/:leadId
-//
-// Returns a single lead by its ID.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getLeadById = async (
@@ -242,11 +327,7 @@ export const getLeadById = async (
       where: { id: leadId as string },
       include: {
         epc: {
-          select: {
-            id: true,
-            event_from_date: true,
-            event_to_date: true,
-          },
+          select: { id: true, event_from_date: true, event_to_date: true },
         },
       },
     });
@@ -260,16 +341,7 @@ export const getLeadById = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PATCH /leads/:leadId
-//
-// Updates a single lead's fields or status.
-//
-// Expected payload (all fields optional):
-// {
-//   "name": "Updated Name",
-//   "status": "CONTACTED",
-//   "notes": "Called and discussed requirements"
-// }
+// PUT /leads/:leadId
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const updateLead = async (
@@ -284,10 +356,26 @@ export const updateLead = async (
     const { leadId } = req.params;
     if (!leadId) throw new ApiError(400, "leadId is required");
 
-    const { name, email, phone, company, designation, source, status, notes } =
-      req.body;
+    const {
+      name,
+      email,
+      phone,
+      companyName,
+      dealership,
+      location,
+      district,
+      state,
+      eventDate,
+      participantType,
+      participantStatus,
+      machineModel,
+      machineSerial,
+      valueOfServiceOffers,
+      valueOfPartsOffers,
+      valueOfPartsBilled,
+      notes,
+    } = req.body;
 
-    // ── Validate only supplied fields ─────────────────────────────────────
     if (name !== undefined && String(name).trim().length < 2) {
       throw new ApiError(400, "name must be at least 2 characters");
     }
@@ -297,12 +385,45 @@ export const updateLead = async (
     if (phone !== undefined && !/^\+?[0-9]{7,15}$/.test(phone)) {
       throw new ApiError(400, "Invalid phone format");
     }
+    if (
+      eventDate !== undefined &&
+      eventDate !== null &&
+      isNaN(Date.parse(eventDate))
+    ) {
+      throw new ApiError(400, "Invalid eventDate");
+    }
+    assertValidEnumValue(ParticipantType, participantType, "participantType");
+    assertValidEnumValue(
+      ParticipantStatus,
+      participantStatus,
+      "participantStatus",
+    );
 
-    // ── Build update payload (only what was sent) ─────────────────────────
     const data: Record<string, any> = {};
     if (name !== undefined) data.name = String(name).trim();
     if (email !== undefined) data.email = email?.trim() ?? null;
     if (phone !== undefined) data.phone = phone?.trim() ?? null;
+    if (companyName !== undefined)
+      data.companyName = companyName?.trim() ?? null;
+    if (dealership !== undefined) data.dealership = dealership?.trim() ?? null;
+    if (location !== undefined) data.location = location?.trim() ?? null;
+    if (district !== undefined) data.district = district?.trim() ?? null;
+    if (state !== undefined) data.state = state?.trim() ?? null;
+    if (eventDate !== undefined)
+      data.eventDate = eventDate ? new Date(eventDate) : null;
+    if (participantType !== undefined) data.participantType = participantType;
+    if (participantStatus !== undefined)
+      data.participantStatus = participantStatus;
+    if (machineModel !== undefined)
+      data.machineModel = machineModel?.trim() ?? null;
+    if (machineSerial !== undefined)
+      data.machineSerial = machineSerial?.trim() ?? null;
+    if (valueOfServiceOffers !== undefined)
+      data.valueOfServiceOffers = valueOfServiceOffers;
+    if (valueOfPartsOffers !== undefined)
+      data.valueOfPartsOffers = valueOfPartsOffers;
+    if (valueOfPartsBilled !== undefined)
+      data.valueOfPartsBilled = valueOfPartsBilled;
     if (notes !== undefined) data.notes = notes?.trim() ?? null;
 
     if (Object.keys(data).length === 0) {
@@ -329,8 +450,6 @@ export const updateLead = async (
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DELETE /leads/:leadId
-//
-// Hard-deletes a single lead. A lead can be deleted at any status.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const deleteLead = async (
@@ -347,10 +466,9 @@ export const deleteLead = async (
 
     await prisma.lead.delete({ where: { id: leadId as string } });
 
-    res.status(200).json({
-      success: true,
-      message: "Lead deleted successfully",
-    });
+    res
+      .status(200)
+      .json({ success: true, message: "Lead deleted successfully" });
   } catch (error: any) {
     if (error.code === "P2025") {
       return next(new ApiError(404, "Lead not found"));
@@ -360,24 +478,7 @@ export const deleteLead = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /external/leads?phone=9876543210
-//
-// Called by an external service to determine the origin source of a caller.
-//
-// Logic:
-//   1. Find all leads matching the phone number.
-//   2. Filter to those whose EPC event_to_date falls within the last
-//      LEAD_SOURCE_PERIOD_MONTHS months.
-//   3. If no valid leads exist → originSource: "DIRECT"
-//   4. If valid leads exist → pick the one with the latest event_to_date
-//      and return originSource: "eventConductedDate_eventName_location"
-//
-// Response shape:
-// { "originSource": "2025-01-15_Dealer Meet_Pune" }
-//   or
-// { "originSource": "DIRECT" }
-//
-// Returns 400 if the phone query param is missing or blank.
+// GET /leads/get-lead-by-phone?phone=...
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getLeadsByPhone = async (
@@ -387,34 +488,24 @@ export const getLeadsByPhone = async (
 ) => {
   try {
     const phone = String(req.query.phone ?? "").trim();
-
-    if (!phone) {
-      throw new ApiError(400, "phone query parameter is required");
-    }
+    if (!phone) throw new ApiError(400, "phone query parameter is required");
 
     const leads = await prisma.lead.findMany({
       where: { phone },
       include: {
-        epc: {
-          include: {
-            event_name: { select: { title: true } },
-          },
-        },
+        epc: { include: { event_name: { select: { title: true } } } },
       },
     });
 
-    // ── Filter to leads whose event ended within the attribution window ────
     const attributableLeads = leads.filter((lead) =>
       isWithinAttributionPeriod(lead.epc.event_to_date),
     );
 
     if (attributableLeads.length === 0) {
-      // No leads at all, or all events are outside the attribution period
       res.status(200).json({ originSource: "DIRECT" });
       return;
     }
 
-    // ── Pick the lead with the most recent event_to_date ──────────────────
     const latestLead = attributableLeads.reduce((newest, current) =>
       current.epc.event_to_date > newest.epc.event_to_date ? current : newest,
     );

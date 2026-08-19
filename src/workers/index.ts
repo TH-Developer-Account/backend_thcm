@@ -1,4 +1,5 @@
 import { Worker, Job } from "bullmq";
+import { prisma } from "@shared/config/prisma";
 
 import { redisConnectionQueue } from "@shared/config/redis";
 import {
@@ -20,6 +21,9 @@ import { importLeadsFromS3 } from "@leads/leadImport.services";
 import { exportLeadsToBuffer } from "@leads/leadExport.services";
 import { EpcExportJobData } from "@map/epc.queue";
 import { exportEpcsToS3 } from "@map/epcExport.services";
+
+import { EventReportGenerationJobData } from "@modules/map/eventReportGeneration.queue";
+import { generateEventReport } from "@map/reports/eventReportGenerator.services";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // workers/index.ts — BullMQ worker definitions
@@ -254,6 +258,52 @@ export function startNotificationDeliveryWorker() {
       `[notification-delivery] Job ${job?.id} failed:`,
       error.message,
     );
+  });
+
+  return worker;
+}
+
+// ── Event Report Generation Worker ────────────────────────────────────────────
+// Concurrency 2 — each job does DB aggregation + pdfmake rendering + S3 upload,
+// heavier than notification delivery but lighter than the EPC export scan.
+
+export function startEventReportGenerationWorker() {
+  const worker = new Worker<EventReportGenerationJobData>(
+    "event-report-generation",
+    async (job: Job<EventReportGenerationJobData>) => {
+      const { reportId } = job.data;
+      await job.updateProgress({ status: "generating" });
+      await generateEventReport(reportId);
+      await job.updateProgress({ status: "completed" });
+    },
+    {
+      connection: redisConnectionQueue,
+      concurrency: 2,
+    },
+  );
+
+  worker.on("completed", (job) => {
+    console.info(`[event-report-generation] Job ${job.id} completed`);
+  });
+
+  worker.on("failed", async (job, error) => {
+    console.error(
+      `[event-report-generation] Job ${job?.id} failed:`,
+      error.message,
+    );
+    if (job?.data?.reportId) {
+      await prisma.eventReport
+        .update({
+          where: { id: job.data.reportId },
+          data: { status: "GENERATION_FAILED", generationError: error.message },
+        })
+        .catch((updateError) =>
+          console.error(
+            "[event-report-generation] Failed to mark report as failed:",
+            updateError,
+          ),
+        );
+    }
   });
 
   return worker;

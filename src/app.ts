@@ -26,6 +26,7 @@ import epcRoutes from "@map/epc.routes";
 import efpRoutes from "@map/epf.routes";
 import crfRoutes from "@map/crf.routes";
 import guestRoutes from "@guest/guest.routes";
+import machineStudyRoutes from "@map/machineStudy.routes";
 import errorHandler from "@shared/middleware/error.middleware";
 import ApiError from "@shared/utils/apiError";
 import { startJobs } from "@shared/jobs/scheduler";
@@ -66,6 +67,7 @@ app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/vendor-onboarding", vendorOnboardRoutes);
 app.use("/api/v1/pdf", pdfRoutes);
 app.use("/api/v1/guest", guestRoutes);
+app.use("/api/v1/machine-studies", machineStudyRoutes);
 
 // Scheduler
 startJobs();

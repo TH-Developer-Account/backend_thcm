@@ -97,7 +97,9 @@ export const ModelName = {
   MedicalClaim: 'MedicalClaim',
   MedicalClaimBill: 'MedicalClaimBill',
   MedicalClaimGradeEligibility: 'MedicalClaimGradeEligibility',
-  Guest: 'Guest'
+  Guest: 'Guest',
+  MachineStudy: 'MachineStudy',
+  MachineStudyCycle: 'MachineStudyCycle'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -471,7 +473,8 @@ export type BudgetMasterScalarFieldEnum = (typeof BudgetMasterScalarFieldEnum)[k
 
 export const EventNameScalarFieldEnum = {
   id: 'id',
-  title: 'title'
+  title: 'title',
+  reportTemplateKey: 'reportTemplateKey'
 } as const
 
 export type EventNameScalarFieldEnum = (typeof EventNameScalarFieldEnum)[keyof typeof EventNameScalarFieldEnum]
@@ -573,9 +576,22 @@ export const LeadScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
   name: 'name',
-  email: 'email',
+  companyName: 'companyName',
   phone: 'phone',
+  email: 'email',
+  dealership: 'dealership',
+  participantType: 'participantType',
+  participantStatus: 'participantStatus',
+  machineModel: 'machineModel',
+  machineSerial: 'machineSerial',
+  valueOfServiceOffers: 'valueOfServiceOffers',
+  valueOfPartsOffers: 'valueOfPartsOffers',
+  valueOfPartsBilled: 'valueOfPartsBilled',
   notes: 'notes',
+  eventDate: 'eventDate',
+  location: 'location',
+  district: 'district',
+  state: 'state',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -604,18 +620,17 @@ export type PincodeScalarFieldEnum = (typeof PincodeScalarFieldEnum)[keyof typeo
 export const EventReportScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
-  outcomeStatus: 'outcomeStatus',
-  totalLeadsGenerated: 'totalLeadsGenerated',
-  approvedEventCost: 'approvedEventCost',
-  expectedConversion: 'expectedConversion',
-  remarks: 'remarks',
   status: 'status',
+  eventHighlights: 'eventHighlights',
+  computedOutcomes: 'computedOutcomes',
   rejectionReason: 'rejectionReason',
   clarificationReason: 'clarificationReason',
+  generationError: 'generationError',
   submittedAt: 'submittedAt',
   resubmittedAt: 'resubmittedAt',
   validatedAt: 'validatedAt',
   validatorId: 'validatorId',
+  pdfS3Key: 'pdfS3Key',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -627,8 +642,10 @@ export const EventReportImageScalarFieldEnum = {
   id: 'id',
   reportId: 'reportId',
   position: 'position',
+  caption: 'caption',
   s3Key: 's3Key',
-  fileUrl: 'fileUrl'
+  fileUrl: 'fileUrl',
+  mimeType: 'mimeType'
 } as const
 
 export type EventReportImageScalarFieldEnum = (typeof EventReportImageScalarFieldEnum)[keyof typeof EventReportImageScalarFieldEnum]
@@ -822,6 +839,53 @@ export const GuestScalarFieldEnum = {
 } as const
 
 export type GuestScalarFieldEnum = (typeof GuestScalarFieldEnum)[keyof typeof GuestScalarFieldEnum]
+
+
+export const MachineStudyScalarFieldEnum = {
+  id: 'id',
+  epcId: 'epcId',
+  isCompetitorMachine: 'isCompetitorMachine',
+  machineModel: 'machineModel',
+  customerName: 'customerName',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  application: 'application',
+  fuelType: 'fuelType',
+  startHmr: 'startHmr',
+  endHmr: 'endHmr',
+  bucketVolumeCuM: 'bucketVolumeCuM',
+  acStatus: 'acStatus',
+  operationMode: 'operationMode',
+  dieselTopUpLtr: 'dieselTopUpLtr',
+  startKwhReading: 'startKwhReading',
+  endKwhReading: 'endKwhReading',
+  operatorName: 'operatorName',
+  operatorExperience: 'operatorExperience',
+  priorMachinesOperated: 'priorMachinesOperated',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type MachineStudyScalarFieldEnum = (typeof MachineStudyScalarFieldEnum)[keyof typeof MachineStudyScalarFieldEnum]
+
+
+export const MachineStudyCycleScalarFieldEnum = {
+  id: 'id',
+  studyId: 'studyId',
+  sequenceNo: 'sequenceNo',
+  truckNumber: 'truckNumber',
+  startSeconds: 'startSeconds',
+  finishSeconds: 'finishSeconds',
+  timeTakenSeconds: 'timeTakenSeconds',
+  bucketPasses: 'bucketPasses',
+  swingAngleDegrees: 'swingAngleDegrees',
+  unladenWeightKg: 'unladenWeightKg',
+  ladenWeightKg: 'ladenWeightKg',
+  payloadKg: 'payloadKg',
+  remarks: 'remarks'
+} as const
+
+export type MachineStudyCycleScalarFieldEnum = (typeof MachineStudyCycleScalarFieldEnum)[keyof typeof MachineStudyCycleScalarFieldEnum]
 
 
 export const SortOrder = {

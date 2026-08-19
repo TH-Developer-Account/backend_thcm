@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
+import { randomUUID } from "crypto";
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import { leadImportQueue } from "@leads/lead.queue";
 import { uploadToS3 } from "@shared/utils/aws-s3.services";
-import { createPendingLog } from "./importExportLog.services";
+import { createPendingLog, attachJobIdToLog } from "./importExportLog.services";
 import { isSupportedMimeType } from "./utils/fileParser";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -45,7 +46,6 @@ export const enqueueLeadImport = async (
       );
     }
 
-    // Resolve workspaceId from DB — JWT only carries userId
     const workspaceUser = await prisma.workspaceUser.findFirst({
       where: { userId },
       select: { workspaceId: true },
@@ -53,33 +53,38 @@ export const enqueueLeadImport = async (
     if (!workspaceUser)
       throw new ApiError(403, "User not part of any workspace");
 
-    // Upload file to S3 before enqueuing — the worker downloads it from S3.
-    // Never pass large buffers through Redis.
     const timestamp = Date.now();
     const s3Key = `imports/leads/${epcId}/${timestamp}-${file.originalname}`;
     await uploadToS3(s3Key, file.buffer, file.mimetype);
 
-    // Enqueue first to get the BullMQ jobId, then create the log with it.
-    // WHY enqueue before log creation: BullMQ assigns the jobId; we need it
-    // to correlate the log with the queue job for status polling.
+    // ── Pre-generate the log ID and create the log row BEFORE enqueueing ────
+    // WHY: the job must carry the real logId from its very first read by the
+    // worker. Enqueueing first and patching logId in afterward (the previous
+    // approach) races against the worker picking up the job before the patch
+    // lands — exactly the bug that just happened. jobId isn't known yet at
+    // this point (BullMQ only assigns it on .add()), so the log is created
+    // with a temporary placeholder and patched with the real jobId after
+    // enqueueing — that patch is safe since nothing reads jobId mid-flight.
+    const logId = randomUUID();
+
+    await createPendingLog({
+      id: logId,
+      type: "LEAD_IMPORT",
+      triggeredById: userId,
+      workspaceId: workspaceUser.workspaceId,
+      jobId: "pending",
+      epcId,
+    });
+
     const job = await leadImportQueue.add("import", {
       epcId,
       fileS3Key: s3Key,
       fileMimeType: file.mimetype,
       requestedBy: userId,
-      logId: "", // placeholder — updated below after log creation
+      logId,
     });
 
-    const logId = await createPendingLog({
-      type: "LEAD_IMPORT",
-      triggeredById: userId,
-      workspaceId: workspaceUser.workspaceId,
-      jobId: job.id!,
-      epcId,
-    });
-
-    // Update job data to carry the real logId so the worker can update the log
-    await job.updateData({ ...job.data, logId });
+    await attachJobIdToLog(logId, job.id!);
 
     res.status(202).json({
       success: true,

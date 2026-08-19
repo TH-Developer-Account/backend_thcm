@@ -1,5 +1,6 @@
 import { Prisma } from "../../../prisma/generated/prisma/client";
 import { prisma } from "@shared/config/prisma";
+import { EVENT_REPORT_TEMPLATES } from "../reports/eventReportTemplate.defination";
 
 interface SearchEventProposalInput {
   userId: string;
@@ -37,6 +38,40 @@ const SORT_COLUMN_MAP: Record<
   status: Prisma.sql`ep.status`,
   event_name: Prisma.sql`en.title`,
 };
+
+// Shape of the raw row coming back from $queryRaw, before we derive
+// sourceType/dualVariant off report_template_key and drop that column.
+type RawEventProposalRow = {
+  report_template_key: string | null;
+  [key: string]: unknown;
+};
+
+// Attaches sourceType/dualVariant to each row using the same synchronous
+// registry the async report-generation pipeline uses, keyed off the
+// reportTemplateKey we joined in via EventName. No extra DB round-trip —
+// EVENT_REPORT_TEMPLATES is a plain in-memory Record.
+//
+// EventNames with no reportTemplateKey (or an unmapped one) get
+// sourceType: null / dualVariant: false — the frontend treats null as
+// "hide the report-related actions for this row" rather than defaulting
+// to LEAD_FORM behavior.
+function attachSourceType<T extends RawEventProposalRow>(
+  row: T,
+): Omit<T, "report_template_key"> & {
+  sourceType: "LEAD_FORM" | "DATA_FORM" | null;
+  dualVariant: boolean;
+} {
+  const { report_template_key, ...rest } = row;
+  const template = report_template_key
+    ? EVENT_REPORT_TEMPLATES[report_template_key]
+    : undefined;
+
+  return {
+    ...rest,
+    sourceType: template?.sourceType ?? null,
+    dualVariant: template?.dualVariant ?? false,
+  };
+}
 
 export async function searchEventProposals(filters: SearchEventProposalInput) {
   const {
@@ -269,8 +304,13 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
    *   wf."currentStage"  AS workflow_current_stage
    *   wf."isActive"      AS workflow_is_active  — always true here, but useful
    *                                               for client-side type narrowing
+   *
+   * ✅ NEW column: en."reportTemplateKey" AS report_template_key
+   *   Lets us derive sourceType/dualVariant per row after the query
+   *   (see attachSourceType below) without a second round-trip per EPC.
+   *   `en` is already joined for event_name, so this is free.
    * ───────────────────────────────────────────────────────────── */
-  const dataPromise = prisma.$queryRaw<any[]>(Prisma.sql`
+  const dataPromise = prisma.$queryRaw<RawEventProposalRow[]>(Prisma.sql`
     SELECT
       ep.id,
       ep.proposal_number,
@@ -285,6 +325,7 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
       ep.department_id,
       ep.event_name_id,
       en.title                  AS event_name,
+      en."reportTemplateKey"    AS report_template_key,
       us.first_name             AS first_name,
       us.last_name              AS last_name,
       epf.id                    AS epf_id,
@@ -343,7 +384,9 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
     ${whereClause}
   `);
 
-  const [data, countResult] = await Promise.all([dataPromise, countPromise]);
+  const [rawData, countResult] = await Promise.all([dataPromise, countPromise]);
+
+  const data = rawData.map(attachSourceType);
 
   return {
     data,

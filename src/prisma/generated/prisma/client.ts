@@ -274,3 +274,13 @@ export type MedicalClaimGradeEligibility = Prisma.MedicalClaimGradeEligibilityMo
  * 
  */
 export type Guest = Prisma.GuestModel
+/**
+ * Model MachineStudy
+ * 
+ */
+export type MachineStudy = Prisma.MachineStudyModel
+/**
+ * Model MachineStudyCycle
+ * 
+ */
+export type MachineStudyCycle = Prisma.MachineStudyCycleModel
