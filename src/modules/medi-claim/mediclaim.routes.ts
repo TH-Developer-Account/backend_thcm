@@ -20,7 +20,7 @@ import {
 } from "./mediclaim.controller";
 
 const router = Router();
-const APP_KEY = "MEDICAL_CLAIM";
+export const APP_KEY = "MEDICAL_CLAIM";
 const MODULE = "MEDICAL_CLAIM_INITIATION";
 
 const upload = multer({ storage: multer.memoryStorage() });

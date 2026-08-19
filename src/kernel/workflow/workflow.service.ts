@@ -18,6 +18,16 @@ import {
   WorkflowSubjectType,
   ActivityAction,
 } from "../../prisma/generated/prisma/client";
+import { templateMatchResolvers } from "./workflow.helper";
+
+interface AssignWorkflowParams {
+  subjectType: WorkflowSubjectType;
+  subjectId: string;
+  workspaceId: string;
+  appId: string;
+  userId: string; // whose managed templates to search — see open question above
+  criteria?: Record<string, unknown>;
+}
 
 type ApproveStageResult =
   | {
@@ -559,5 +569,111 @@ export async function activateFirstStageForResubmit(
     subjectType: workflow.subjectType,
     subjectId: workflow.subjectId,
     appId: workflow.appId,
+  };
+}
+
+export async function assignWorkflow(
+  tx: Prisma.TransactionClient,
+  {
+    subjectType,
+    subjectId,
+    workspaceId,
+    appId,
+    userId,
+    criteria,
+  }: AssignWorkflowParams,
+) {
+  const matchResolver = templateMatchResolvers[subjectType];
+  if (!matchResolver) {
+    throw new ApiError(400, `Unknown workflow subject type "${subjectType}"`);
+  }
+
+  const existing = await tx.workflowInstance.findFirst({
+    where: { subjectType, subjectId, isActive: true },
+  });
+  if (existing) {
+    throw new ApiError(
+      409,
+      "An active workflow already exists for this record.",
+    );
+  }
+
+  const templates = await tx.workflowTemplate.findMany({
+    where: {
+      workspaceId,
+      appId,
+      isActive: true,
+      workFlowUsers: { some: { userId } },
+    },
+    include: {
+      stages: { include: { approvers: true }, orderBy: { stageOrder: "asc" } },
+    },
+  });
+
+  if (!templates.length) {
+    throw new ApiError(
+      404,
+      "No workflow templates found for this workspace/app",
+    );
+  }
+
+  const matchedTemplate = matchResolver(templates, criteria);
+  if (!matchedTemplate) {
+    throw new ApiError(
+      400,
+      "No matching workflow template found for the given criteria",
+    );
+  }
+
+  const workflowInstance = await tx.workflowInstance.create({
+    data: {
+      templateId: matchedTemplate.id,
+      workspaceId,
+      appId,
+      subjectType,
+      subjectId,
+      currentStage: 1,
+      iteration: 1,
+      isActive: true,
+      workflowType: "STANDARD",
+      stages: {
+        create: matchedTemplate.stages.map((stage) => ({
+          stageOrder: stage.stageOrder,
+          strategy: stage.strategy,
+          minApprovals: stage.minApprovals,
+          stageName: stage.name,
+          iteration: 1,
+          isCurrentIteration: true,
+          status: stage.stageOrder === 1 ? "IN_PROGRESS" : "PENDING",
+          startedAt: stage.stageOrder === 1 ? new Date() : null,
+          approvals: {
+            create: stage.approvers.map((a) => ({
+              approverId: a.userId,
+              status: "PENDING",
+              isExternalApprover: a.isExternalApprover,
+            })),
+          },
+        })),
+      },
+    },
+    include: {
+      stages: {
+        where: { isCurrentIteration: true },
+        orderBy: { stageOrder: "asc" },
+        include: { approvals: { select: { id: true, approverId: true } } },
+      },
+    },
+  });
+
+  // Notification is deliberately NOT inside this function's transaction —
+  // same convention as everywhere else in this app (notify calls happen
+  // after commit, per your transaction-discipline principle). Caller is
+  // responsible for calling notifyStageApprovers itself, post-commit.
+  const stageOne = workflowInstance.stages.find((s) => s.stageOrder === 1);
+
+  return {
+    workflowInstance,
+    stageOneApproverIds: stageOne?.approvals.map((a) => a.approverId) ?? [],
+    stageOneId: stageOne?.id,
   };
 }
