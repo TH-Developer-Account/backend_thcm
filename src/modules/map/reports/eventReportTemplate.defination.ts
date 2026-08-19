@@ -90,6 +90,60 @@ const STANDARD_PARTICIPANT_OUTCOMES = [
   },
 ] as const;
 
+// ── Cost-per-status block — shared by every Lead-Form template that tracks
+// participantStatus (Event Attendee deliberately excluded — the other six
+// represent meaningful conversion outcomes; "cost per attendee" doesn't). ──
+const STANDARD_COST_PER_STATUS_OUTCOMES = [
+  {
+    reportLabel: "Cost per Cold Enquiry",
+    computation: {
+      kind: "COST_PER_PARTICIPANT_STATUS",
+      status: "COLD_ENQUIRY",
+      label: "Cost per Cold Enquiry",
+    },
+  },
+  {
+    reportLabel: "Cost per Warm Enquiry",
+    computation: {
+      kind: "COST_PER_PARTICIPANT_STATUS",
+      status: "WARM_ENQUIRY",
+      label: "Cost per Warm Enquiry",
+    },
+  },
+  {
+    reportLabel: "Cost per Hot Enquiry",
+    computation: {
+      kind: "COST_PER_PARTICIPANT_STATUS",
+      status: "HOT_ENQUIRY",
+      label: "Cost per Hot Enquiry",
+    },
+  },
+  {
+    reportLabel: "Cost per Booking",
+    computation: {
+      kind: "COST_PER_PARTICIPANT_STATUS",
+      status: "BOOKING",
+      label: "Cost per Booking",
+    },
+  },
+  {
+    reportLabel: "Cost per Key Handover",
+    computation: {
+      kind: "COST_PER_PARTICIPANT_STATUS",
+      status: "KEY_HANDOVER",
+      label: "Cost per Key Handover",
+    },
+  },
+  {
+    reportLabel: "Cost per Felicitation",
+    computation: {
+      kind: "COST_PER_PARTICIPANT_STATUS",
+      status: "FELICITATION",
+      label: "Cost per Felicitation",
+    },
+  },
+] as const;
+
 const MACHINE_STUDY_HEADER_OUTCOMES = [
   {
     reportLabel: "Machine Model",
@@ -194,7 +248,10 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
         EPC_INPUT_FIELDS.state,
         EPC_INPUT_FIELDS.dealership,
       ],
-      outcomeFields: [...STANDARD_PARTICIPANT_OUTCOMES],
+      outcomeFields: [
+        ...STANDARD_PARTICIPANT_OUTCOMES,
+        ...STANDARD_COST_PER_STATUS_OUTCOMES,
+      ],
     },
 
     CUSTOMER_MEET_KEY_ACCOUNT: {
@@ -210,7 +267,10 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
         EPC_INPUT_FIELDS.state,
         EPC_INPUT_FIELDS.dealership,
       ],
-      outcomeFields: [...STANDARD_PARTICIPANT_OUTCOMES],
+      outcomeFields: [
+        ...STANDARD_PARTICIPANT_OUTCOMES,
+        ...STANDARD_COST_PER_STATUS_OUTCOMES,
+      ],
     },
 
     PRODUCT_LAUNCH: {
@@ -226,7 +286,10 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
         EPC_INPUT_FIELDS.state,
         EPC_INPUT_FIELDS.dealership,
       ],
-      outcomeFields: [...STANDARD_PARTICIPANT_OUTCOMES],
+      outcomeFields: [
+        ...STANDARD_PARTICIPANT_OUTCOMES,
+        ...STANDARD_COST_PER_STATUS_OUTCOMES,
+      ],
     },
 
     LOAN_MELA: {
@@ -303,6 +366,7 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
             value: "BOOKING",
           },
         },
+        ...STANDARD_COST_PER_STATUS_OUTCOMES,
       ],
     },
 
@@ -380,6 +444,7 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
             value: "BOOKING",
           },
         },
+        ...STANDARD_COST_PER_STATUS_OUTCOMES,
       ],
     },
 
@@ -456,6 +521,7 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
             value: "BOOKING",
           },
         },
+        ...STANDARD_COST_PER_STATUS_OUTCOMES,
       ],
     },
 
@@ -484,7 +550,33 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
       maxImages: 10,
       dualVariant: true,
       inputFields: [EPC_INPUT_FIELDS.event, EPC_INPUT_FIELDS.location()],
-      outcomeFields: [...MACHINE_STUDY_HEADER_OUTCOMES],
+      outcomeFields: [
+        {
+          reportLabel: "Fuel Efficiency",
+          computation: {
+            kind: "BENCHMARK_PERCENT_BETTER",
+            field: "ltrPerHr",
+            label: "Fuel Efficiency (Ltr/Hr)",
+          },
+        },
+        {
+          reportLabel: "Production",
+          computation: {
+            kind: "BENCHMARK_PERCENT_BETTER",
+            field: "tonsPerHr",
+            label: "Production (Ton/Hr)",
+          },
+        },
+        {
+          reportLabel: "Productivity",
+          computation: {
+            kind: "BENCHMARK_PERCENT_BETTER",
+            field: "tonsPerLtr",
+            label: "Productivity (Ton/Ltr)",
+          },
+        },
+        ...MACHINE_STUDY_HEADER_OUTCOMES,
+      ],
     },
 
     SERVICE_CAMPAIGN: {
@@ -674,6 +766,7 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
             value: "FELICITATION",
           },
         },
+        ...STANDARD_COST_PER_STATUS_OUTCOMES,
       ],
     },
 
@@ -871,6 +964,7 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
             value: "COLD_ENQUIRY",
           },
         },
+        ...STANDARD_COST_PER_STATUS_OUTCOMES,
       ],
     },
 

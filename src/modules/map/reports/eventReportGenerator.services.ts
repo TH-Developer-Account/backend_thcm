@@ -42,8 +42,12 @@ function findFieldValue(
   return String(field.value);
 }
 
-function composeReportTitle(inputFields: ResolvedField[]): string {
-  return findFieldValue(inputFields, "Event") ?? "Event Report";
+function composeReportTitle(
+  inputFields: ResolvedField[],
+  proposalNumber: string,
+): string {
+  const eventName = findFieldValue(inputFields, "Event") ?? "Event Report";
+  return `${eventName} — ${proposalNumber}`;
 }
 
 function composeReportSubtitle(
@@ -119,7 +123,10 @@ export async function generateEventReport(reportId: string): Promise<void> {
   );
 
   // ── Compose title/subtitle (see note above) ─────────────────────────────────
-  const reportTitle = composeReportTitle(resolvedData.inputFields);
+  const reportTitle = composeReportTitle(
+    resolvedData.inputFields,
+    report.epc.proposal_number,
+  );
   const reportSubtitle = composeReportSubtitle(
     template,
     resolvedData.inputFields,

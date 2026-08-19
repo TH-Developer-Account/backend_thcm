@@ -16,6 +16,11 @@ export type OutcomeComputation =
     }
   | { kind: "COUNT_BY_PARTICIPANT_STATUS"; value: ParticipantStatus }
   | {
+      kind: "COST_PER_PARTICIPANT_STATUS";
+      status: ParticipantStatus;
+      label: string;
+    }
+  | {
       kind: "COUNT_UNIQUE";
       field: "name" | "phone" | "email" | "companyName" | "machineSerial";
     }
@@ -34,6 +39,11 @@ export type OutcomeComputation =
         | "valueOfPartsBilled";
     }
   | { kind: "MACHINE_STUDY_SUMMARY"; field: keyof MachineStudySummary }
+  | {
+      kind: "BENCHMARK_PERCENT_BETTER";
+      field: "ltrPerHr" | "tonsPerHr" | "tonsPerLtr";
+      label: string;
+    }
   | { kind: "DATA_FORM_VALUE"; field: string };
 
 export interface EventReportTemplateConfig {

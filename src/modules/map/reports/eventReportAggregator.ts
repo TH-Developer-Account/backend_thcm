@@ -17,10 +17,10 @@ import {
 // for EPC_FIELD inputs, and from Lead rows or MachineStudy(+cycles) for
 // outcomes depending on the template's sourceType.
 //
-// Deliberately has no knowledge of pdfmake, S3, or EventReport.status — this
-// module's only job is "template + epcId → resolved values". Keeping it pure
-// data-resolution means it can be unit-tested against a template config and
-// a handful of fake Lead/MachineStudy rows without touching a queue or a PDF.
+// COST_PER_PARTICIPANT_STATUS is the one computation that needs BOTH
+// sources at once (EPC budget ÷ Lead count) — the EPC is now fetched once
+// at the top and its eventBudget threaded into the Lead-side resolver,
+// rather than each side querying independently.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type ResolvedField =
@@ -29,6 +29,11 @@ export type ResolvedField =
       reportLabel: string;
       tataHitachiValue: unknown;
       competitionValue: unknown;
+    }
+  | {
+      reportLabel: string;
+      percentBetter: number | null;
+      betterVariant: "tataHitachi" | "competition" | null;
     };
 
 export type ResolvedReportData = {
@@ -36,36 +41,22 @@ export type ResolvedReportData = {
   outcomeFields: ResolvedField[];
 };
 
-// ── Path traversal for EPC_FIELD inputs (e.g. "event_name.title") ────────────
-
 function getByPath(obj: Record<string, any>, path: string): unknown {
   return path.split(".").reduce<any>((acc, key) => acc?.[key], obj);
 }
 
-// Prisma Decimal fields need explicit conversion — plain arithmetic on them
-// silently does string concatenation instead of addition.
 function toNumber(value: Prisma.Decimal | number | null | undefined): number {
   if (value === null || value === undefined) return 0;
   return value instanceof Prisma.Decimal ? value.toNumber() : value;
 }
 
-// ── Input fields — always EPC-sourced or free text, same resolution regardless of sourceType ──
+// ── Input fields — always EPC-sourced or free text ────────────────────────
 
-async function resolveInputFields(
+function resolveInputFieldsFromEpc(
   template: EventReportTemplateConfig,
-  epcId: string,
+  epc: Record<string, any>,
   eventHighlights: string | null,
-): Promise<ResolvedField[]> {
-  const epc = await prisma.eventProposal.findUnique({
-    where: { id: epcId },
-    include: { event_name: { select: { title: true } } },
-  });
-
-  if (!epc)
-    throw new Error(
-      `EventProposal not found while resolving report inputs: ${epcId}`,
-    );
-
+): ResolvedField[] {
   return template.inputFields.map((field) => {
     if (field.source.kind === "FREE_TEXT") {
       return { reportLabel: field.reportLabel, value: eventHighlights };
@@ -79,26 +70,29 @@ async function resolveInputFields(
 
 // ── LEAD_FORM outcome resolution ──────────────────────────────────────────────
 
+type LeadForAggregation = {
+  name: string;
+  phone: string | null;
+  email: string | null;
+  companyName: string | null;
+  dealership: string | null;
+  location: string | null;
+  district: string | null;
+  state: string | null;
+  eventDate: Date | null;
+  machineModel: string | null;
+  machineSerial: string | null;
+  participantType: string | null;
+  participantStatus: string | null;
+  valueOfServiceOffers: Prisma.Decimal | null;
+  valueOfPartsOffers: Prisma.Decimal | null;
+  valueOfPartsBilled: Prisma.Decimal | null;
+};
+
 function resolveLeadFormComputation(
   computation: OutcomeComputation,
-  leads: {
-    name: string;
-    phone: string | null;
-    email: string | null;
-    companyName: string | null;
-    dealership: string | null;
-    location: string | null;
-    district: string | null;
-    state: string | null;
-    eventDate: Date | null;
-    machineModel: string | null;
-    machineSerial: string | null;
-    participantType: string | null;
-    participantStatus: string | null;
-    valueOfServiceOffers: Prisma.Decimal | null;
-    valueOfPartsOffers: Prisma.Decimal | null;
-    valueOfPartsBilled: Prisma.Decimal | null;
-  }[],
+  leads: LeadForAggregation[],
+  eventBudget: number | null,
 ): unknown {
   switch (computation.kind) {
     case "COUNT_ALL":
@@ -116,6 +110,14 @@ function resolveLeadFormComputation(
     case "COUNT_BY_PARTICIPANT_STATUS":
       return leads.filter((l) => l.participantStatus === computation.value)
         .length;
+
+    case "COST_PER_PARTICIPANT_STATUS": {
+      if (eventBudget === null) return null;
+      const count = leads.filter(
+        (l) => l.participantStatus === computation.status,
+      ).length;
+      return count > 0 ? eventBudget / count : null;
+    }
 
     case "COUNT_UNIQUE": {
       const values = leads
@@ -157,14 +159,11 @@ function resolveLeadFormComputation(
     }
 
     case "SUM": {
-      const total = leads.reduce(
-        (sum, l) => sum + toNumber(l[computation.field]),
-        0,
-      );
-      return total;
+      return leads.reduce((sum, l) => sum + toNumber(l[computation.field]), 0);
     }
 
     case "MACHINE_STUDY_SUMMARY":
+    case "BENCHMARK_PERCENT_BETTER":
     case "DATA_FORM_VALUE":
       throw new Error(
         `Computation kind "${computation.kind}" is not valid for a LEAD_FORM template — check the registry entry.`,
@@ -182,12 +181,13 @@ function resolveLeadFormComputation(
 async function resolveLeadFormOutcomes(
   template: EventReportTemplateConfig,
   epcId: string,
+  eventBudget: number | null,
 ): Promise<ResolvedField[]> {
   const leads = await prisma.lead.findMany({ where: { epcId } });
 
   return template.outcomeFields.map((field) => ({
     reportLabel: field.reportLabel,
-    value: resolveLeadFormComputation(field.computation, leads),
+    value: resolveLeadFormComputation(field.computation, leads, eventBudget),
   }));
 }
 
@@ -205,7 +205,7 @@ function resolveDataFormComputation(
       return summary[computation.field];
     default:
       throw new Error(
-        `Computation kind "${computation.kind}" is not valid for a DATA_FORM template — check the registry entry.`,
+        `Computation kind "${computation.kind}" is not valid for a single-machine resolution — check the registry entry.`,
       );
   }
 }
@@ -247,6 +247,39 @@ async function resolveSingleMachineStudy(
   return { study, summary };
 }
 
+function resolveBenchmarkComparison(
+  computation: Extract<
+    OutcomeComputation,
+    { kind: "BENCHMARK_PERCENT_BETTER" }
+  >,
+  tataHitachiSummary: MachineStudySummary,
+  competitionSummary: MachineStudySummary,
+): ResolvedField {
+  const tataValue = tataHitachiSummary[computation.field];
+  const competitionValue = competitionSummary[computation.field];
+
+  if (tataValue == null || competitionValue == null || competitionValue === 0) {
+    return {
+      reportLabel: computation.label,
+      percentBetter: null,
+      betterVariant: null,
+    };
+  }
+
+  // Ltr/Hr is a fuel-consumption-rate metric — lower is better; Tons/Hr and
+  // Tons/Ltr are output metrics — higher is better. Sign convention flips
+  // accordingly so "percentBetter" reads positive when Tata Hitachi wins.
+  const isLowerBetter = computation.field === "ltrPerHr";
+  const rawPercent = ((tataValue - competitionValue) / competitionValue) * 100;
+  const percentBetter = isLowerBetter ? -rawPercent : rawPercent;
+
+  return {
+    reportLabel: computation.label,
+    percentBetter: Math.abs(percentBetter),
+    betterVariant: percentBetter >= 0 ? "tataHitachi" : "competition",
+  };
+}
+
 async function resolveDataFormOutcomes(
   template: EventReportTemplateConfig,
   epcId: string,
@@ -259,25 +292,34 @@ async function resolveDataFormOutcomes(
     }));
   }
 
-  // Benchmarking — resolve both machines, pair every field into one row.
   const [tataHitachi, competition] = await Promise.all([
     resolveSingleMachineStudy(epcId, false),
     resolveSingleMachineStudy(epcId, true),
   ]);
 
-  return template.outcomeFields.map((field) => ({
-    reportLabel: field.reportLabel,
-    tataHitachiValue: resolveDataFormComputation(
-      field.computation,
-      tataHitachi.study,
-      tataHitachi.summary,
-    ),
-    competitionValue: resolveDataFormComputation(
-      field.computation,
-      competition.study,
-      competition.summary,
-    ),
-  }));
+  return template.outcomeFields.map((field) => {
+    if (field.computation.kind === "BENCHMARK_PERCENT_BETTER") {
+      return resolveBenchmarkComparison(
+        field.computation,
+        tataHitachi.summary,
+        competition.summary,
+      );
+    }
+
+    return {
+      reportLabel: field.reportLabel,
+      tataHitachiValue: resolveDataFormComputation(
+        field.computation,
+        tataHitachi.study,
+        tataHitachi.summary,
+      ),
+      competitionValue: resolveDataFormComputation(
+        field.computation,
+        competition.study,
+        competition.summary,
+      ),
+    };
+  });
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────
@@ -287,15 +329,26 @@ export async function resolveEventReportData(
   epcId: string,
   eventHighlights: string | null,
 ): Promise<ResolvedReportData> {
-  const inputFields = await resolveInputFields(
-    template,
-    epcId,
-    eventHighlights,
-  );
+  const epc = await prisma.eventProposal.findUnique({
+    where: { id: epcId },
+    include: {
+      event_name: { select: { title: true } },
+      epf: { select: { eventBudget: true } },
+    },
+  });
+
+  if (!epc)
+    throw new Error(
+      `EventProposal not found while resolving report data: ${epcId}`,
+    );
+
+  const inputFields = resolveInputFieldsFromEpc(template, epc, eventHighlights);
+  const eventBudget =
+    epc.epf?.eventBudget != null ? toNumber(epc.epf.eventBudget) : null;
 
   const outcomeFields =
     template.sourceType === "LEAD_FORM"
-      ? await resolveLeadFormOutcomes(template, epcId)
+      ? await resolveLeadFormOutcomes(template, epcId, eventBudget)
       : await resolveDataFormOutcomes(template, epcId);
 
   return { inputFields, outcomeFields };
