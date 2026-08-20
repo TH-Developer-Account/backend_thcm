@@ -717,7 +717,7 @@ export const setMedicalClaimBillApprovedAmounts = async (
   try {
     const userId = req.user?.id;
     const { id } = req.params;
-    const { bills } = req.body; // [{ billId, approvedAmount }]
+    const { bills } = req.body; // [{ billId, approvedClaimAmount }]
     if (!userId) throw new ApiError(401, "Unauthorized");
     if (!Array.isArray(bills) || bills.length === 0) {
       throw new ApiError(400, "At least one bill amount is required");
@@ -772,11 +772,18 @@ export const setMedicalClaimBillApprovedAmounts = async (
         `Bill ${invalid.billId} does not belong to this claim`,
       );
 
+    const claimBills = await prisma.medicalClaimBill.findMany({
+      where: { claimId: claim.id },
+      select: { id: true, amount: true },
+    });
+    const amountByBillId = new Map(claimBills.map((b) => [b.id, b.amount]));
+
     bills.map((b: any) =>
       prisma.medicalClaimBill.update({
         where: { id: b.billId },
         data: {
-          approvedAmount: b.approvedAmount ?? amountByBillId.get(b.billId),
+          approvedClaimAmount:
+            b.approvedClaimAmount ?? amountByBillId.get(b.billId),
         },
       }),
     );
