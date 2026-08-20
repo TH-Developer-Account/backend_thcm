@@ -705,3 +705,86 @@ export const resubmitGuestMedicalClaim = async (
     next(error);
   }
 };
+
+// PATCH /medical-claims/:id/bills/approved-amounts
+// Non-external approvers only, on the claim's currently active stage —
+// separate step before the approve action itself, per product decision.
+export const setMedicalClaimBillApprovedAmounts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    const { id } = req.params;
+    const { bills } = req.body; // [{ billId, approvedAmount }]
+    if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!Array.isArray(bills) || bills.length === 0) {
+      throw new ApiError(400, "At least one bill amount is required");
+    }
+
+    const claim = await prisma.medicalClaim.findUnique({
+      where: { id: id as string },
+    });
+    if (!claim) throw new ApiError(404, "Medical claim not found");
+
+    const activeWorkflow = await prisma.workflowInstance.findFirst({
+      where: {
+        subjectType: "MEDICAL_CLAIM",
+        subjectId: claim.id,
+        isActive: true,
+      },
+      select: { id: true },
+    });
+    if (!activeWorkflow)
+      throw new ApiError(404, "No active workflow found for this claim");
+
+    const approval = await prisma.approval.findFirst({
+      where: {
+        approverId: userId,
+        isExternalApprover: false,
+        stage: {
+          workflowId: activeWorkflow.id,
+          isCurrentIteration: true,
+          status: "IN_PROGRESS",
+        },
+      },
+    });
+    if (!approval) {
+      throw new ApiError(
+        403,
+        "You are not authorized to edit amounts for this claim's current stage",
+      );
+    }
+
+    const claimBillIds = new Set(
+      (
+        await prisma.medicalClaimBill.findMany({
+          where: { claimId: claim.id },
+          select: { id: true },
+        })
+      ).map((b) => b.id),
+    );
+    const invalid = bills.find((b: any) => !claimBillIds.has(b.billId));
+    if (invalid)
+      throw new ApiError(
+        400,
+        `Bill ${invalid.billId} does not belong to this claim`,
+      );
+
+    bills.map((b: any) =>
+      prisma.medicalClaimBill.update({
+        where: { id: b.billId },
+        data: {
+          approvedAmount: b.approvedAmount ?? amountByBillId.get(b.billId),
+        },
+      }),
+    );
+
+    res
+      .status(200)
+      .json({ success: true, message: "Approved amounts updated" });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -126,17 +126,18 @@ export async function computeMedicalClaimEligibility(
   if (!eligibility) return null;
 
   const currentYearStart = new Date(new Date().getFullYear(), 0, 1);
-  const priorApproved = await tx.medicalClaim.aggregate({
+  const priorApprovedBills = await tx.medicalClaimBill.aggregate({
     where: {
-      guestId,
-      status: "APPROVED",
-      created_at: { gte: currentYearStart },
-      ...(excludeClaimId ? { id: { not: excludeClaimId } } : {}),
+      claim: {
+        guestId,
+        status: "APPROVED",
+        created_at: { gte: currentYearStart },
+        ...(excludeClaimId ? { id: { not: excludeClaimId } } : {}),
+      },
     },
-    _sum: { totalClaimed: true },
+    _sum: { approvedAmount: true },
   });
-
-  const alreadySettled = Number(priorApproved._sum.totalClaimed ?? 0);
+  const alreadySettled = Number(priorApprovedBills._sum.approvedAmount ?? 0);
   const eligibleAmount = Number(eligibility.annualCap) - alreadySettled;
 
   return { eligibleAmount, alreadySettled };
