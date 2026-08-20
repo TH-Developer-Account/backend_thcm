@@ -1157,6 +1157,7 @@ model MedicalClaimBill {
   billName  String?
   billDate  DateTime?
   amount    Decimal   @db.Decimal(12, 2)
+  approvedClaimAmount    Decimal?   @db.Decimal(12, 2)
   s3Key     String?   // presigned at read time, same convention as every other attachment
 
   claim MedicalClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
