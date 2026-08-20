@@ -308,13 +308,21 @@ export const submitMedicalClaimForm = async (
       await persistMedicalClaimBills(tx, updated.id, validatedBills, files);
       await markAccessTokenUsed(tokenId, tx);
 
+      const app = await tx.app.findUnique({
+        where: { key: APP_KEY },
+        select: { id: true },
+      });
+      if (!app) {
+        throw new ApiError(404, `App "${APP_KEY}" not found`);
+      }
+
       // Workflow assignment — same marker vendor onboarding's sendForApproval
       // uses; assignWorkflow's real signature wasn't in the files reviewed
       const assigned = await assignWorkflow(tx, {
         subjectType: APP_KEY,
         subjectId: updated.id,
         workspaceId: updated.workspaceId,
-        appId: APP_KEY,
+        appId: app.id,
         userId: updated.initiatedById,
       });
 
