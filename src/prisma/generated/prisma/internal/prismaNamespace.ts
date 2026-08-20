@@ -4649,6 +4649,7 @@ export const MedicalClaimBillScalarFieldEnum = {
   billName: 'billName',
   billDate: 'billDate',
   amount: 'amount',
+  approvedClaimAmount: 'approvedClaimAmount',
   s3Key: 's3Key'
 } as const
 

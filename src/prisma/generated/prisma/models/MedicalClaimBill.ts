@@ -28,10 +28,12 @@ export type AggregateMedicalClaimBill = {
 
 export type MedicalClaimBillAvgAggregateOutputType = {
   amount: runtime.Decimal | null
+  approvedClaimAmount: runtime.Decimal | null
 }
 
 export type MedicalClaimBillSumAggregateOutputType = {
   amount: runtime.Decimal | null
+  approvedClaimAmount: runtime.Decimal | null
 }
 
 export type MedicalClaimBillMinAggregateOutputType = {
@@ -42,6 +44,7 @@ export type MedicalClaimBillMinAggregateOutputType = {
   billName: string | null
   billDate: Date | null
   amount: runtime.Decimal | null
+  approvedClaimAmount: runtime.Decimal | null
   s3Key: string | null
 }
 
@@ -53,6 +56,7 @@ export type MedicalClaimBillMaxAggregateOutputType = {
   billName: string | null
   billDate: Date | null
   amount: runtime.Decimal | null
+  approvedClaimAmount: runtime.Decimal | null
   s3Key: string | null
 }
 
@@ -64,6 +68,7 @@ export type MedicalClaimBillCountAggregateOutputType = {
   billName: number
   billDate: number
   amount: number
+  approvedClaimAmount: number
   s3Key: number
   _all: number
 }
@@ -71,10 +76,12 @@ export type MedicalClaimBillCountAggregateOutputType = {
 
 export type MedicalClaimBillAvgAggregateInputType = {
   amount?: true
+  approvedClaimAmount?: true
 }
 
 export type MedicalClaimBillSumAggregateInputType = {
   amount?: true
+  approvedClaimAmount?: true
 }
 
 export type MedicalClaimBillMinAggregateInputType = {
@@ -85,6 +92,7 @@ export type MedicalClaimBillMinAggregateInputType = {
   billName?: true
   billDate?: true
   amount?: true
+  approvedClaimAmount?: true
   s3Key?: true
 }
 
@@ -96,6 +104,7 @@ export type MedicalClaimBillMaxAggregateInputType = {
   billName?: true
   billDate?: true
   amount?: true
+  approvedClaimAmount?: true
   s3Key?: true
 }
 
@@ -107,6 +116,7 @@ export type MedicalClaimBillCountAggregateInputType = {
   billName?: true
   billDate?: true
   amount?: true
+  approvedClaimAmount?: true
   s3Key?: true
   _all?: true
 }
@@ -205,6 +215,7 @@ export type MedicalClaimBillGroupByOutputType = {
   billName: string | null
   billDate: Date | null
   amount: runtime.Decimal
+  approvedClaimAmount: runtime.Decimal | null
   s3Key: string | null
   _count: MedicalClaimBillCountAggregateOutputType | null
   _avg: MedicalClaimBillAvgAggregateOutputType | null
@@ -239,6 +250,7 @@ export type MedicalClaimBillWhereInput = {
   billName?: Prisma.StringNullableFilter<"MedicalClaimBill"> | string | null
   billDate?: Prisma.DateTimeNullableFilter<"MedicalClaimBill"> | Date | string | null
   amount?: Prisma.DecimalFilter<"MedicalClaimBill"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: Prisma.DecimalNullableFilter<"MedicalClaimBill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: Prisma.StringNullableFilter<"MedicalClaimBill"> | string | null
   claim?: Prisma.XOR<Prisma.MedicalClaimScalarRelationFilter, Prisma.MedicalClaimWhereInput>
 }
@@ -251,6 +263,7 @@ export type MedicalClaimBillOrderByWithRelationInput = {
   billName?: Prisma.SortOrderInput | Prisma.SortOrder
   billDate?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
+  approvedClaimAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   s3Key?: Prisma.SortOrderInput | Prisma.SortOrder
   claim?: Prisma.MedicalClaimOrderByWithRelationInput
 }
@@ -266,6 +279,7 @@ export type MedicalClaimBillWhereUniqueInput = Prisma.AtLeast<{
   billName?: Prisma.StringNullableFilter<"MedicalClaimBill"> | string | null
   billDate?: Prisma.DateTimeNullableFilter<"MedicalClaimBill"> | Date | string | null
   amount?: Prisma.DecimalFilter<"MedicalClaimBill"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: Prisma.DecimalNullableFilter<"MedicalClaimBill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: Prisma.StringNullableFilter<"MedicalClaimBill"> | string | null
   claim?: Prisma.XOR<Prisma.MedicalClaimScalarRelationFilter, Prisma.MedicalClaimWhereInput>
 }, "id">
@@ -278,6 +292,7 @@ export type MedicalClaimBillOrderByWithAggregationInput = {
   billName?: Prisma.SortOrderInput | Prisma.SortOrder
   billDate?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrder
+  approvedClaimAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   s3Key?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MedicalClaimBillCountOrderByAggregateInput
   _avg?: Prisma.MedicalClaimBillAvgOrderByAggregateInput
@@ -297,6 +312,7 @@ export type MedicalClaimBillScalarWhereWithAggregatesInput = {
   billName?: Prisma.StringNullableWithAggregatesFilter<"MedicalClaimBill"> | string | null
   billDate?: Prisma.DateTimeNullableWithAggregatesFilter<"MedicalClaimBill"> | Date | string | null
   amount?: Prisma.DecimalWithAggregatesFilter<"MedicalClaimBill"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: Prisma.DecimalNullableWithAggregatesFilter<"MedicalClaimBill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: Prisma.StringNullableWithAggregatesFilter<"MedicalClaimBill"> | string | null
 }
 
@@ -307,6 +323,7 @@ export type MedicalClaimBillCreateInput = {
   billName?: string | null
   billDate?: Date | string | null
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: string | null
   claim: Prisma.MedicalClaimCreateNestedOneWithoutBillsInput
 }
@@ -319,6 +336,7 @@ export type MedicalClaimBillUncheckedCreateInput = {
   billName?: string | null
   billDate?: Date | string | null
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: string | null
 }
 
@@ -329,6 +347,7 @@ export type MedicalClaimBillUpdateInput = {
   billName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   claim?: Prisma.MedicalClaimUpdateOneRequiredWithoutBillsNestedInput
 }
@@ -341,6 +360,7 @@ export type MedicalClaimBillUncheckedUpdateInput = {
   billName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -352,6 +372,7 @@ export type MedicalClaimBillCreateManyInput = {
   billName?: string | null
   billDate?: Date | string | null
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: string | null
 }
 
@@ -362,6 +383,7 @@ export type MedicalClaimBillUpdateManyMutationInput = {
   billName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -373,6 +395,7 @@ export type MedicalClaimBillUncheckedUpdateManyInput = {
   billName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -394,11 +417,13 @@ export type MedicalClaimBillCountOrderByAggregateInput = {
   billName?: Prisma.SortOrder
   billDate?: Prisma.SortOrder
   amount?: Prisma.SortOrder
+  approvedClaimAmount?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
 }
 
 export type MedicalClaimBillAvgOrderByAggregateInput = {
   amount?: Prisma.SortOrder
+  approvedClaimAmount?: Prisma.SortOrder
 }
 
 export type MedicalClaimBillMaxOrderByAggregateInput = {
@@ -409,6 +434,7 @@ export type MedicalClaimBillMaxOrderByAggregateInput = {
   billName?: Prisma.SortOrder
   billDate?: Prisma.SortOrder
   amount?: Prisma.SortOrder
+  approvedClaimAmount?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
 }
 
@@ -420,11 +446,13 @@ export type MedicalClaimBillMinOrderByAggregateInput = {
   billName?: Prisma.SortOrder
   billDate?: Prisma.SortOrder
   amount?: Prisma.SortOrder
+  approvedClaimAmount?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
 }
 
 export type MedicalClaimBillSumOrderByAggregateInput = {
   amount?: Prisma.SortOrder
+  approvedClaimAmount?: Prisma.SortOrder
 }
 
 export type MedicalClaimBillCreateNestedManyWithoutClaimInput = {
@@ -480,6 +508,7 @@ export type MedicalClaimBillCreateWithoutClaimInput = {
   billName?: string | null
   billDate?: Date | string | null
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: string | null
 }
 
@@ -490,6 +519,7 @@ export type MedicalClaimBillUncheckedCreateWithoutClaimInput = {
   billName?: string | null
   billDate?: Date | string | null
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: string | null
 }
 
@@ -530,6 +560,7 @@ export type MedicalClaimBillScalarWhereInput = {
   billName?: Prisma.StringNullableFilter<"MedicalClaimBill"> | string | null
   billDate?: Prisma.DateTimeNullableFilter<"MedicalClaimBill"> | Date | string | null
   amount?: Prisma.DecimalFilter<"MedicalClaimBill"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: Prisma.DecimalNullableFilter<"MedicalClaimBill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: Prisma.StringNullableFilter<"MedicalClaimBill"> | string | null
 }
 
@@ -540,6 +571,7 @@ export type MedicalClaimBillCreateManyClaimInput = {
   billName?: string | null
   billDate?: Date | string | null
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: string | null
 }
 
@@ -550,6 +582,7 @@ export type MedicalClaimBillUpdateWithoutClaimInput = {
   billName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -560,6 +593,7 @@ export type MedicalClaimBillUncheckedUpdateWithoutClaimInput = {
   billName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -570,6 +604,7 @@ export type MedicalClaimBillUncheckedUpdateManyWithoutClaimInput = {
   billName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   billDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  approvedClaimAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   s3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -583,6 +618,7 @@ export type MedicalClaimBillSelect<ExtArgs extends runtime.Types.Extensions.Inte
   billName?: boolean
   billDate?: boolean
   amount?: boolean
+  approvedClaimAmount?: boolean
   s3Key?: boolean
   claim?: boolean | Prisma.MedicalClaimDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["medicalClaimBill"]>
@@ -595,6 +631,7 @@ export type MedicalClaimBillSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   billName?: boolean
   billDate?: boolean
   amount?: boolean
+  approvedClaimAmount?: boolean
   s3Key?: boolean
   claim?: boolean | Prisma.MedicalClaimDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["medicalClaimBill"]>
@@ -607,6 +644,7 @@ export type MedicalClaimBillSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   billName?: boolean
   billDate?: boolean
   amount?: boolean
+  approvedClaimAmount?: boolean
   s3Key?: boolean
   claim?: boolean | Prisma.MedicalClaimDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["medicalClaimBill"]>
@@ -619,10 +657,11 @@ export type MedicalClaimBillSelectScalar = {
   billName?: boolean
   billDate?: boolean
   amount?: boolean
+  approvedClaimAmount?: boolean
   s3Key?: boolean
 }
 
-export type MedicalClaimBillOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "claimId" | "claimHead" | "billNo" | "billName" | "billDate" | "amount" | "s3Key", ExtArgs["result"]["medicalClaimBill"]>
+export type MedicalClaimBillOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "claimId" | "claimHead" | "billNo" | "billName" | "billDate" | "amount" | "approvedClaimAmount" | "s3Key", ExtArgs["result"]["medicalClaimBill"]>
 export type MedicalClaimBillInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   claim?: boolean | Prisma.MedicalClaimDefaultArgs<ExtArgs>
 }
@@ -646,6 +685,7 @@ export type $MedicalClaimBillPayload<ExtArgs extends runtime.Types.Extensions.In
     billName: string | null
     billDate: Date | null
     amount: runtime.Decimal
+    approvedClaimAmount: runtime.Decimal | null
     s3Key: string | null
   }, ExtArgs["result"]["medicalClaimBill"]>
   composites: {}
@@ -1078,6 +1118,7 @@ export interface MedicalClaimBillFieldRefs {
   readonly billName: Prisma.FieldRef<"MedicalClaimBill", 'String'>
   readonly billDate: Prisma.FieldRef<"MedicalClaimBill", 'DateTime'>
   readonly amount: Prisma.FieldRef<"MedicalClaimBill", 'Decimal'>
+  readonly approvedClaimAmount: Prisma.FieldRef<"MedicalClaimBill", 'Decimal'>
   readonly s3Key: Prisma.FieldRef<"MedicalClaimBill", 'String'>
 }
     
