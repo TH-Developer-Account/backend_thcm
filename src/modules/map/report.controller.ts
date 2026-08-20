@@ -9,6 +9,7 @@ import {
   getSignedImageUrl,
   getSignedReportUrl,
 } from "@shared/utils/aws-s3.services";
+import { canManageApp } from "@kernel/rbac/userPermission";
 import {
   getValidatorForApp,
   ALLOWED_IMAGE_MIME_TYPES,
@@ -19,6 +20,7 @@ import {
   resolveEventReportTemplate,
   resolveEventReportFormConfig,
 } from "./reports/eventReportTemplate.registry";
+import { AuthenticatedUser } from "../../types/express";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Multer config — images arrive as a single "images" array field (1-10
@@ -646,6 +648,129 @@ export const requestReportClarification = async (
       success: true,
       message:
         "Clarification requested. The proposer has been notified to resubmit.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getReportListing = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const user = req.user as AuthenticatedUser | undefined;
+    if (!user?.id) throw new ApiError(401, "Unauthorized");
+
+    const {
+      page = "1",
+      pageSize = "20",
+      status,
+      search,
+      fromDate,
+      toDate,
+    } = req.query;
+
+    const skip = (Number(page) - 1) * Number(pageSize);
+    const take = Number(pageSize);
+
+    const isAdmin = Boolean(user?.isSuperAdmin) || canManageApp(user, "MAP");
+
+    const where: Record<string, any> = {};
+
+    if (!isAdmin) {
+      where.epc = { created_by_id: user?.id };
+    }
+
+    if (status) {
+      const validStatuses = [
+        "GENERATING",
+        "GENERATION_FAILED",
+        "SUBMITTED",
+        "VALIDATED",
+        "REJECTED",
+        "CLARIFICATION_REQUESTED",
+      ];
+      if (!validStatuses.includes(status as string)) {
+        throw new ApiError(
+          400,
+          `Invalid status. Must be one of: ${validStatuses.join(", ")}`,
+        );
+      }
+      where.status = status;
+    }
+
+    if (fromDate || toDate) {
+      where.submittedAt = {};
+      if (fromDate) where.submittedAt.gte = new Date(fromDate as string);
+      if (toDate) where.submittedAt.lte = new Date(toDate as string);
+    }
+
+    if (search) {
+      const term = String(search).trim();
+      where.AND = [
+        {
+          OR: [
+            {
+              epc: { proposal_number: { contains: term, mode: "insensitive" } },
+            },
+            {
+              epc: {
+                event_name: { title: { contains: term, mode: "insensitive" } },
+              },
+            },
+          ],
+        },
+      ];
+    }
+
+    const [reports, total] = await Promise.all([
+      prisma.eventReport.findMany({
+        where,
+        skip,
+        take,
+        orderBy: { submittedAt: "desc" },
+        select: {
+          id: true,
+          status: true,
+          submittedAt: true,
+          resubmittedAt: true,
+          validatedAt: true,
+          pdfS3Key: true,
+          epc: {
+            select: {
+              id: true,
+              proposal_number: true,
+              location: true,
+              event_name: { select: { title: true } },
+              created_by: {
+                select: { id: true, first_name: true, last_name: true },
+              },
+            },
+          },
+          validator: {
+            select: { id: true, first_name: true, last_name: true },
+          },
+        },
+      }),
+      prisma.eventReport.count({ where }),
+    ]);
+
+    const data = reports.map(({ pdfS3Key, ...report }) => ({
+      ...report,
+      hasPdf: Boolean(pdfS3Key),
+    }));
+
+    res.status(200).json({
+      success: true,
+      data,
+      pagination: {
+        total,
+        page: Number(page),
+        pageSize: take,
+        totalPages: Math.ceil(total / take),
+      },
     });
   } catch (error) {
     next(error);

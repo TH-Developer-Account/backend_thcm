@@ -10,6 +10,7 @@ import {
   validateReport,
   requestReportClarification,
   getReportFormConfig,
+  getReportListing,
 } from "@map/report.controller";
 
 const router = Router();
@@ -40,6 +41,7 @@ const uploadReportImages = multer({
 // ─────────────────────────────────────────────────────────────────────────────
 
 router.get("/form-config/:epcId", asyncHandler(getReportFormConfig));
+router.get("/listing", asyncHandler(getReportListing));
 router.post("/:epcId/submit", uploadReportImages, asyncHandler(submitReport));
 router.patch(
   "/:epcId/resubmit",
