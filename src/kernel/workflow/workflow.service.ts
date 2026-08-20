@@ -603,7 +603,6 @@ export async function assignWorkflow(
       workspaceId,
       appId,
       isActive: true,
-      workFlowUsers: { some: { userId } },
     },
     include: {
       stages: { include: { approvers: true }, orderBy: { stageOrder: "asc" } },
