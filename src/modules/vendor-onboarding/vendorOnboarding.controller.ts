@@ -28,6 +28,7 @@ import {
   buildVendorOnboardingWhereClause,
   parseVendorListingPaginationParams,
   resolveVendorListingOrderBy,
+  maskUnsubmittedVendorOnboardingFields,
   VendorListingTab,
   resolveSubjectIdsForApprovalTab,
   generateVendorOnboardingReferenceNumber,
@@ -286,21 +287,32 @@ export const getVendorOnboardingById = async (
       id as string,
     );
 
-    const documentsWithSignedUrls = await Promise.all(
-      onboarding.documents.map(async (doc) => ({
-        ...doc,
-        fileUrl: await getSignedImageUrl(doc.s3Key),
-      })),
-    );
+    // Vendor hasn't submitted yet (still drafting or hasn't started) — no
+    // point signing S3 URLs for documents that shouldn't be shown, and a
+    // pre-submission record has none attached via the draft path anyway.
+    const documentsWithSignedUrls =
+      onboarding.status === "AWAITING_VENDOR"
+        ? []
+        : await Promise.all(
+            onboarding.documents.map(async (doc) => ({
+              ...doc,
+              fileUrl: await getSignedImageUrl(doc.s3Key),
+            })),
+          );
 
     // initiatedBy is the Prisma relation name; renamed to created_by in the
     // response to match the shape the frontend already consumes for EPC.
     const { initiatedBy, ...onboardingWithoutInitiatedBy } = onboarding;
 
+    const responseData =
+      onboarding.status === "AWAITING_VENDOR"
+        ? maskUnsubmittedVendorOnboardingFields(onboardingWithoutInitiatedBy)
+        : onboardingWithoutInitiatedBy;
+
     res.status(200).json({
       success: true,
       data: {
-        ...onboardingWithoutInitiatedBy,
+        ...responseData,
         documents: documentsWithSignedUrls,
         created_by: initiatedBy,
         activeWorkflow,

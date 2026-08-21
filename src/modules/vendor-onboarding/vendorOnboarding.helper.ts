@@ -165,6 +165,36 @@ export const parseVendorListingPaginationParams = (
   return { reqPageIndex, reqPageSize };
 };
 
+// ── draft visibility ─────────────────────────────────────────────────────
+
+// While status is AWAITING_VENDOR, the vendor may have partially filled the
+// form via saveVendorFormDraft (or not started at all) — either way nothing
+// past the initial contact fields has been submitted yet, so it shouldn't be
+// visible to staff. vendorName/email/mobile stay visible since those are set
+// at initiation time, not by the vendor's draft. Kept pure so the masking
+// rule can be unit-tested without mocking Express/Prisma.
+export const maskUnsubmittedVendorOnboardingFields = <
+  T extends Record<string, unknown>,
+>(
+  onboarding: T,
+): T => ({
+  ...onboarding,
+  state: null,
+  city: null,
+  pinCode: null,
+  address: null,
+  msmeVendor: null,
+  bankName: null,
+  bankBranch: null,
+  ifscCode: null,
+  bankAddress: null,
+  accountNumber: null,
+  gstin: null,
+  pan: null,
+  entityRegNo: null,
+  vendorSubmittedAt: null,
+});
+
 // ── sorting ──────────────────────────────────────────────────────────────
 
 // Maps each whitelisted sortBy key (as sent by the frontend) to the actual
