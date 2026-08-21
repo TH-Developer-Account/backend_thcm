@@ -5,7 +5,7 @@ import ApiError from "@shared/utils/apiError";
 import { resolveWorkspaceId } from "@import-export/export.controller";
 import { notify } from "@notifications/notification.services";
 import { addMailJob } from "@mail/mail.service";
-import { getSignedImageUrl, uploadToS3 } from "@shared/utils/aws-s3.services";
+import { getSignedImageUrl } from "@shared/utils/aws-s3.services";
 import {
   issueAccessToken,
   markAccessTokenUsed,
@@ -30,104 +30,8 @@ import {
   resolveMedicalClaimSubjectIdsForApprovalTab,
   generateMedicalClaimReferenceNumber,
   computeMedicalClaimEligibility,
-  getBillAttachmentExtension,
+  upsertMedicalClaimBills,
 } from "./mediclaim.helper";
-
-interface MedicalClaimBillInputRaw {
-  claimHead: string;
-  billNo?: string;
-  billName?: string;
-  billDate?: string;
-  amount: number;
-  attachmentIndex?: number | null; // may be missing/null before validation
-}
-
-interface MedicalClaimBillInput extends Omit<
-  MedicalClaimBillInputRaw,
-  "attachmentIndex"
-> {
-  attachmentIndex: number; // guaranteed present after validateBillAttachments
-}
-
-// ── Shared bill validation + persistence ────────────────────────────────────
-// Extracted once the TS narrowing issue surfaced — one place proves AND
-// types the "every bill has an attachment" guarantee, instead of two
-// runtime checks that couldn't be trusted by the compiler.
-function validateBillAttachments(
-  bills: MedicalClaimBillInputRaw[],
-  files: Express.Multer.File[],
-): MedicalClaimBillInput[] {
-  const missingIndex = bills.findIndex(
-    (b) => b.attachmentIndex == null || !files[b.attachmentIndex],
-  );
-  if (missingIndex !== -1) {
-    throw new ApiError(
-      400,
-      `An attachment is required for bill #${missingIndex + 1} (${bills[missingIndex].claimHead})`,
-    );
-  }
-  return bills as MedicalClaimBillInput[];
-}
-
-async function persistMedicalClaimBills(
-  tx: any,
-  claimId: string,
-  bills: MedicalClaimBillInput[],
-  files: Express.Multer.File[],
-) {
-  for (const [index, bill] of bills.entries()) {
-    const file = files[bill.attachmentIndex];
-    const extension = getBillAttachmentExtension(file.mimetype);
-    const s3Key = `medical-claim-bills/${claimId}/${index}-${bill.claimHead}.${extension}`;
-    await uploadToS3(s3Key, file.buffer, file.mimetype);
-
-    await tx.medicalClaimBill.create({
-      data: {
-        claimId,
-        claimHead: bill.claimHead as any,
-        billNo: bill.billNo,
-        billName: bill.billName,
-        billDate: bill.billDate ? new Date(bill.billDate) : null,
-        amount: bill.amount,
-        s3Key,
-      },
-    });
-  }
-}
-
-// Draft-safe bill persistence: unlike persistMedicalClaimBills (submit/
-// resubmit), a bill here may have no attachment yet — draft saves are
-// explicitly partial. Only uploads to S3 when a file is actually present.
-export async function persistDraftMedicalClaimBills(
-  tx: any,
-  claimId: string,
-  bills: MedicalClaimBillInputRaw[],
-  files: Express.Multer.File[],
-) {
-  for (const [index, bill] of bills.entries()) {
-    const file =
-      bill.attachmentIndex != null ? files[bill.attachmentIndex] : undefined;
-
-    let s3Key: string | null = null;
-    if (file) {
-      const extension = getBillAttachmentExtension(file.mimetype);
-      s3Key = `medical-claim-bills/${claimId}/${index}-${bill.claimHead}.${extension}`;
-      await uploadToS3(s3Key, file.buffer, file.mimetype);
-    }
-
-    await tx.medicalClaimBill.create({
-      data: {
-        claimId,
-        claimHead: bill.claimHead as any,
-        billNo: bill.billNo,
-        billName: bill.billName,
-        billDate: bill.billDate ? new Date(bill.billDate) : null,
-        amount: bill.amount,
-        s3Key,
-      },
-    });
-  }
-}
 
 const attachSignedUrlsToBills = async <T extends { s3Key: string | null }>(
   bills: T[],
@@ -247,7 +151,6 @@ export const resendMedicalClaimLink = async (
 };
 
 // GET /medical-claims/public/:token
-// GET /medical-claims/public/:token
 export const getMedicalClaimFormByToken = async (
   req: Request,
   res: Response,
@@ -306,7 +209,6 @@ export const submitMedicalClaimForm = async (
     if (!Array.isArray(bills) || bills.length === 0) {
       throw new ApiError(400, "At least one claim head entry is required");
     }
-    const validatedBills = validateBillAttachments(bills, files);
     if (!grade)
       throw new ApiError(400, "Grade is required to compute eligibility");
     if (!mobile) throw new ApiError(400, "A mobile number is required");
@@ -340,11 +242,6 @@ export const submitMedicalClaimForm = async (
           `No eligibility configured for grade "${grade}"`,
         );
 
-      const totalClaimed = validatedBills.reduce(
-        (sum, b: any) => sum + Number(b.amount),
-        0,
-      );
-
       const updated = await tx.medicalClaim.update({
         where: { id: claim.id },
         data: {
@@ -357,7 +254,6 @@ export const submitMedicalClaimForm = async (
           medicalAdvanceTaken,
           eligibleAmount: eligibility.eligibleAmount,
           alreadySettled: eligibility.alreadySettled,
-          totalClaimed,
           declarationAcceptedAt: new Date(),
           signatureName,
           signatureDate,
@@ -366,7 +262,18 @@ export const submitMedicalClaimForm = async (
         },
       });
 
-      await persistMedicalClaimBills(tx, updated.id, validatedBills, files);
+      const totalClaimed = await upsertMedicalClaimBills(
+        tx,
+        updated.id,
+        bills,
+        files,
+        { requireAttachment: true },
+      );
+      await tx.medicalClaim.update({
+        where: { id: updated.id },
+        data: { totalClaimed },
+      });
+
       await markAccessTokenUsed(tokenId, tx);
 
       const app = await tx.app.findUnique({
@@ -487,8 +394,9 @@ export const saveMedicalClaimDraft = async (
         },
       });
 
-      await tx.medicalClaimBill.deleteMany({ where: { claimId: claim.id } });
-      await persistDraftMedicalClaimBills(tx, claim.id, bills, files);
+      await upsertMedicalClaimBills(tx, claim.id, bills, files, {
+        requireAttachment: false,
+      });
     });
 
     res.status(200).json({ success: true, message: "Draft saved" });
@@ -671,11 +579,25 @@ export const getGuestMedicalClaimById = async (
     });
     if (!claim || claim.guestId !== guestId)
       throw new ApiError(404, "Claim not found");
+
+    const latestClarification = await prisma.activityLog.findFirst({
+      where: {
+        subjectType: APP_KEY,
+        subjectId: claim.id,
+        action: "CLARIFY",
+      },
+      orderBy: { createdAt: "desc" },
+      select: { metadata: true, createdAt: true },
+    });
+
     const billsWithSignedUrls = await attachSignedUrlsToBills(claim.bills);
     res.status(200).json({
       success: true,
       data: {
         ...claim,
+        correctionReason:
+          (latestClarification?.metadata as { reason?: string } | null)
+            ?.reason ?? null,
         bills: billsWithSignedUrls,
       },
     });
@@ -716,7 +638,6 @@ export const resubmitGuestMedicalClaim = async (
     if (!Array.isArray(bills) || bills.length === 0) {
       throw new ApiError(400, "At least one claim head entry is required");
     }
-    const validatedBills = validateBillAttachments(bills, files);
 
     await prisma.$transaction(async (tx) => {
       const eligibility = await computeMedicalClaimEligibility(
@@ -731,12 +652,13 @@ export const resubmitGuestMedicalClaim = async (
           `No eligibility configured for grade "${grade}"`,
         );
 
-      const totalClaimed = validatedBills.reduce(
-        (sum, b: any) => sum + Number(b.amount),
-        0,
+      const totalClaimed = await upsertMedicalClaimBills(
+        tx,
+        claim.id,
+        bills,
+        files,
+        { requireAttachment: true },
       );
-
-      await tx.medicalClaimBill.deleteMany({ where: { claimId: claim.id } });
 
       await tx.medicalClaim.update({
         where: { id: claim.id },
@@ -752,8 +674,6 @@ export const resubmitGuestMedicalClaim = async (
           totalClaimed,
         },
       });
-
-      await persistMedicalClaimBills(tx, claim.id, validatedBills, files);
 
       const activeWorkflow = await tx.workflowInstance.findFirst({
         where: {
