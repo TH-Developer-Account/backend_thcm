@@ -27,6 +27,7 @@ export type AggregateActivityLog = {
 export type ActivityLogMinAggregateOutputType = {
   id: string | null
   actorId: string | null
+  actorGuestId: string | null
   action: $Enums.ActivityAction | null
   workflowId: string | null
   stageId: string | null
@@ -38,6 +39,7 @@ export type ActivityLogMinAggregateOutputType = {
 export type ActivityLogMaxAggregateOutputType = {
   id: string | null
   actorId: string | null
+  actorGuestId: string | null
   action: $Enums.ActivityAction | null
   workflowId: string | null
   stageId: string | null
@@ -49,6 +51,7 @@ export type ActivityLogMaxAggregateOutputType = {
 export type ActivityLogCountAggregateOutputType = {
   id: number
   actorId: number
+  actorGuestId: number
   action: number
   workflowId: number
   stageId: number
@@ -63,6 +66,7 @@ export type ActivityLogCountAggregateOutputType = {
 export type ActivityLogMinAggregateInputType = {
   id?: true
   actorId?: true
+  actorGuestId?: true
   action?: true
   workflowId?: true
   stageId?: true
@@ -74,6 +78,7 @@ export type ActivityLogMinAggregateInputType = {
 export type ActivityLogMaxAggregateInputType = {
   id?: true
   actorId?: true
+  actorGuestId?: true
   action?: true
   workflowId?: true
   stageId?: true
@@ -85,6 +90,7 @@ export type ActivityLogMaxAggregateInputType = {
 export type ActivityLogCountAggregateInputType = {
   id?: true
   actorId?: true
+  actorGuestId?: true
   action?: true
   workflowId?: true
   stageId?: true
@@ -169,7 +175,8 @@ export type ActivityLogGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type ActivityLogGroupByOutputType = {
   id: string
-  actorId: string
+  actorId: string | null
+  actorGuestId: string | null
   action: $Enums.ActivityAction
   workflowId: string | null
   stageId: string | null
@@ -202,7 +209,8 @@ export type ActivityLogWhereInput = {
   OR?: Prisma.ActivityLogWhereInput[]
   NOT?: Prisma.ActivityLogWhereInput | Prisma.ActivityLogWhereInput[]
   id?: Prisma.StringFilter<"ActivityLog"> | string
-  actorId?: Prisma.StringFilter<"ActivityLog"> | string
+  actorId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
+  actorGuestId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   action?: Prisma.EnumActivityActionFilter<"ActivityLog"> | $Enums.ActivityAction
   workflowId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   stageId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
@@ -210,14 +218,16 @@ export type ActivityLogWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ActivityLog"> | Date | string
   subjectType?: Prisma.EnumWorkflowSubjectTypeFilter<"ActivityLog"> | $Enums.WorkflowSubjectType
   subjectId?: Prisma.StringFilter<"ActivityLog"> | string
-  actor?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  actor?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  actorGuest?: Prisma.XOR<Prisma.GuestNullableScalarRelationFilter, Prisma.GuestWhereInput> | null
   workflow?: Prisma.XOR<Prisma.WorkflowInstanceNullableScalarRelationFilter, Prisma.WorkflowInstanceWhereInput> | null
   stage?: Prisma.XOR<Prisma.StageInstanceNullableScalarRelationFilter, Prisma.StageInstanceWhereInput> | null
 }
 
 export type ActivityLogOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  actorId?: Prisma.SortOrder
+  actorId?: Prisma.SortOrderInput | Prisma.SortOrder
+  actorGuestId?: Prisma.SortOrderInput | Prisma.SortOrder
   action?: Prisma.SortOrder
   workflowId?: Prisma.SortOrderInput | Prisma.SortOrder
   stageId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -226,6 +236,7 @@ export type ActivityLogOrderByWithRelationInput = {
   subjectType?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   actor?: Prisma.UserOrderByWithRelationInput
+  actorGuest?: Prisma.GuestOrderByWithRelationInput
   workflow?: Prisma.WorkflowInstanceOrderByWithRelationInput
   stage?: Prisma.StageInstanceOrderByWithRelationInput
 }
@@ -235,7 +246,8 @@ export type ActivityLogWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.ActivityLogWhereInput | Prisma.ActivityLogWhereInput[]
   OR?: Prisma.ActivityLogWhereInput[]
   NOT?: Prisma.ActivityLogWhereInput | Prisma.ActivityLogWhereInput[]
-  actorId?: Prisma.StringFilter<"ActivityLog"> | string
+  actorId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
+  actorGuestId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   action?: Prisma.EnumActivityActionFilter<"ActivityLog"> | $Enums.ActivityAction
   workflowId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   stageId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
@@ -243,14 +255,16 @@ export type ActivityLogWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ActivityLog"> | Date | string
   subjectType?: Prisma.EnumWorkflowSubjectTypeFilter<"ActivityLog"> | $Enums.WorkflowSubjectType
   subjectId?: Prisma.StringFilter<"ActivityLog"> | string
-  actor?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  actor?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  actorGuest?: Prisma.XOR<Prisma.GuestNullableScalarRelationFilter, Prisma.GuestWhereInput> | null
   workflow?: Prisma.XOR<Prisma.WorkflowInstanceNullableScalarRelationFilter, Prisma.WorkflowInstanceWhereInput> | null
   stage?: Prisma.XOR<Prisma.StageInstanceNullableScalarRelationFilter, Prisma.StageInstanceWhereInput> | null
 }, "id">
 
 export type ActivityLogOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  actorId?: Prisma.SortOrder
+  actorId?: Prisma.SortOrderInput | Prisma.SortOrder
+  actorGuestId?: Prisma.SortOrderInput | Prisma.SortOrder
   action?: Prisma.SortOrder
   workflowId?: Prisma.SortOrderInput | Prisma.SortOrder
   stageId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -268,7 +282,8 @@ export type ActivityLogScalarWhereWithAggregatesInput = {
   OR?: Prisma.ActivityLogScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ActivityLogScalarWhereWithAggregatesInput | Prisma.ActivityLogScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ActivityLog"> | string
-  actorId?: Prisma.StringWithAggregatesFilter<"ActivityLog"> | string
+  actorId?: Prisma.StringNullableWithAggregatesFilter<"ActivityLog"> | string | null
+  actorGuestId?: Prisma.StringNullableWithAggregatesFilter<"ActivityLog"> | string | null
   action?: Prisma.EnumActivityActionWithAggregatesFilter<"ActivityLog"> | $Enums.ActivityAction
   workflowId?: Prisma.StringNullableWithAggregatesFilter<"ActivityLog"> | string | null
   stageId?: Prisma.StringNullableWithAggregatesFilter<"ActivityLog"> | string | null
@@ -285,14 +300,16 @@ export type ActivityLogCreateInput = {
   createdAt?: Date | string
   subjectType: $Enums.WorkflowSubjectType
   subjectId: string
-  actor: Prisma.UserCreateNestedOneWithoutActivityLogsInput
+  actor?: Prisma.UserCreateNestedOneWithoutActivityLogsInput
+  actorGuest?: Prisma.GuestCreateNestedOneWithoutActivityLogsInput
   workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutActivityLogsInput
   stage?: Prisma.StageInstanceCreateNestedOneWithoutActivityLogsInput
 }
 
 export type ActivityLogUncheckedCreateInput = {
   id?: string
-  actorId: string
+  actorId?: string | null
+  actorGuestId?: string | null
   action: $Enums.ActivityAction
   workflowId?: string | null
   stageId?: string | null
@@ -309,14 +326,16 @@ export type ActivityLogUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subjectType?: Prisma.EnumWorkflowSubjectTypeFieldUpdateOperationsInput | $Enums.WorkflowSubjectType
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
-  actor?: Prisma.UserUpdateOneRequiredWithoutActivityLogsNestedInput
+  actor?: Prisma.UserUpdateOneWithoutActivityLogsNestedInput
+  actorGuest?: Prisma.GuestUpdateOneWithoutActivityLogsNestedInput
   workflow?: Prisma.WorkflowInstanceUpdateOneWithoutActivityLogsNestedInput
   stage?: Prisma.StageInstanceUpdateOneWithoutActivityLogsNestedInput
 }
 
 export type ActivityLogUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  actorId?: Prisma.StringFieldUpdateOperationsInput | string
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorGuestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.EnumActivityActionFieldUpdateOperationsInput | $Enums.ActivityAction
   workflowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -328,7 +347,8 @@ export type ActivityLogUncheckedUpdateInput = {
 
 export type ActivityLogCreateManyInput = {
   id?: string
-  actorId: string
+  actorId?: string | null
+  actorGuestId?: string | null
   action: $Enums.ActivityAction
   workflowId?: string | null
   stageId?: string | null
@@ -349,7 +369,8 @@ export type ActivityLogUpdateManyMutationInput = {
 
 export type ActivityLogUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  actorId?: Prisma.StringFieldUpdateOperationsInput | string
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorGuestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.EnumActivityActionFieldUpdateOperationsInput | $Enums.ActivityAction
   workflowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -372,6 +393,7 @@ export type ActivityLogOrderByRelationAggregateInput = {
 export type ActivityLogCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   actorId?: Prisma.SortOrder
+  actorGuestId?: Prisma.SortOrder
   action?: Prisma.SortOrder
   workflowId?: Prisma.SortOrder
   stageId?: Prisma.SortOrder
@@ -384,6 +406,7 @@ export type ActivityLogCountOrderByAggregateInput = {
 export type ActivityLogMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   actorId?: Prisma.SortOrder
+  actorGuestId?: Prisma.SortOrder
   action?: Prisma.SortOrder
   workflowId?: Prisma.SortOrder
   stageId?: Prisma.SortOrder
@@ -395,6 +418,7 @@ export type ActivityLogMaxOrderByAggregateInput = {
 export type ActivityLogMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   actorId?: Prisma.SortOrder
+  actorGuestId?: Prisma.SortOrder
   action?: Prisma.SortOrder
   workflowId?: Prisma.SortOrder
   stageId?: Prisma.SortOrder
@@ -533,6 +557,48 @@ export type EnumActivityActionFieldUpdateOperationsInput = {
   set?: $Enums.ActivityAction
 }
 
+export type ActivityLogCreateNestedManyWithoutActorGuestInput = {
+  create?: Prisma.XOR<Prisma.ActivityLogCreateWithoutActorGuestInput, Prisma.ActivityLogUncheckedCreateWithoutActorGuestInput> | Prisma.ActivityLogCreateWithoutActorGuestInput[] | Prisma.ActivityLogUncheckedCreateWithoutActorGuestInput[]
+  connectOrCreate?: Prisma.ActivityLogCreateOrConnectWithoutActorGuestInput | Prisma.ActivityLogCreateOrConnectWithoutActorGuestInput[]
+  createMany?: Prisma.ActivityLogCreateManyActorGuestInputEnvelope
+  connect?: Prisma.ActivityLogWhereUniqueInput | Prisma.ActivityLogWhereUniqueInput[]
+}
+
+export type ActivityLogUncheckedCreateNestedManyWithoutActorGuestInput = {
+  create?: Prisma.XOR<Prisma.ActivityLogCreateWithoutActorGuestInput, Prisma.ActivityLogUncheckedCreateWithoutActorGuestInput> | Prisma.ActivityLogCreateWithoutActorGuestInput[] | Prisma.ActivityLogUncheckedCreateWithoutActorGuestInput[]
+  connectOrCreate?: Prisma.ActivityLogCreateOrConnectWithoutActorGuestInput | Prisma.ActivityLogCreateOrConnectWithoutActorGuestInput[]
+  createMany?: Prisma.ActivityLogCreateManyActorGuestInputEnvelope
+  connect?: Prisma.ActivityLogWhereUniqueInput | Prisma.ActivityLogWhereUniqueInput[]
+}
+
+export type ActivityLogUpdateManyWithoutActorGuestNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityLogCreateWithoutActorGuestInput, Prisma.ActivityLogUncheckedCreateWithoutActorGuestInput> | Prisma.ActivityLogCreateWithoutActorGuestInput[] | Prisma.ActivityLogUncheckedCreateWithoutActorGuestInput[]
+  connectOrCreate?: Prisma.ActivityLogCreateOrConnectWithoutActorGuestInput | Prisma.ActivityLogCreateOrConnectWithoutActorGuestInput[]
+  upsert?: Prisma.ActivityLogUpsertWithWhereUniqueWithoutActorGuestInput | Prisma.ActivityLogUpsertWithWhereUniqueWithoutActorGuestInput[]
+  createMany?: Prisma.ActivityLogCreateManyActorGuestInputEnvelope
+  set?: Prisma.ActivityLogWhereUniqueInput | Prisma.ActivityLogWhereUniqueInput[]
+  disconnect?: Prisma.ActivityLogWhereUniqueInput | Prisma.ActivityLogWhereUniqueInput[]
+  delete?: Prisma.ActivityLogWhereUniqueInput | Prisma.ActivityLogWhereUniqueInput[]
+  connect?: Prisma.ActivityLogWhereUniqueInput | Prisma.ActivityLogWhereUniqueInput[]
+  update?: Prisma.ActivityLogUpdateWithWhereUniqueWithoutActorGuestInput | Prisma.ActivityLogUpdateWithWhereUniqueWithoutActorGuestInput[]
+  updateMany?: Prisma.ActivityLogUpdateManyWithWhereWithoutActorGuestInput | Prisma.ActivityLogUpdateManyWithWhereWithoutActorGuestInput[]
+  deleteMany?: Prisma.ActivityLogScalarWhereInput | Prisma.ActivityLogScalarWhereInput[]
+}
+
+export type ActivityLogUncheckedUpdateManyWithoutActorGuestNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityLogCreateWithoutActorGuestInput, Prisma.ActivityLogUncheckedCreateWithoutActorGuestInput> | Prisma.ActivityLogCreateWithoutActorGuestInput[] | Prisma.ActivityLogUncheckedCreateWithoutActorGuestInput[]
+  connectOrCreate?: Prisma.ActivityLogCreateOrConnectWithoutActorGuestInput | Prisma.ActivityLogCreateOrConnectWithoutActorGuestInput[]
+  upsert?: Prisma.ActivityLogUpsertWithWhereUniqueWithoutActorGuestInput | Prisma.ActivityLogUpsertWithWhereUniqueWithoutActorGuestInput[]
+  createMany?: Prisma.ActivityLogCreateManyActorGuestInputEnvelope
+  set?: Prisma.ActivityLogWhereUniqueInput | Prisma.ActivityLogWhereUniqueInput[]
+  disconnect?: Prisma.ActivityLogWhereUniqueInput | Prisma.ActivityLogWhereUniqueInput[]
+  delete?: Prisma.ActivityLogWhereUniqueInput | Prisma.ActivityLogWhereUniqueInput[]
+  connect?: Prisma.ActivityLogWhereUniqueInput | Prisma.ActivityLogWhereUniqueInput[]
+  update?: Prisma.ActivityLogUpdateWithWhereUniqueWithoutActorGuestInput | Prisma.ActivityLogUpdateWithWhereUniqueWithoutActorGuestInput[]
+  updateMany?: Prisma.ActivityLogUpdateManyWithWhereWithoutActorGuestInput | Prisma.ActivityLogUpdateManyWithWhereWithoutActorGuestInput[]
+  deleteMany?: Prisma.ActivityLogScalarWhereInput | Prisma.ActivityLogScalarWhereInput[]
+}
+
 export type ActivityLogCreateWithoutActorInput = {
   id?: string
   action: $Enums.ActivityAction
@@ -540,12 +606,14 @@ export type ActivityLogCreateWithoutActorInput = {
   createdAt?: Date | string
   subjectType: $Enums.WorkflowSubjectType
   subjectId: string
+  actorGuest?: Prisma.GuestCreateNestedOneWithoutActivityLogsInput
   workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutActivityLogsInput
   stage?: Prisma.StageInstanceCreateNestedOneWithoutActivityLogsInput
 }
 
 export type ActivityLogUncheckedCreateWithoutActorInput = {
   id?: string
+  actorGuestId?: string | null
   action: $Enums.ActivityAction
   workflowId?: string | null
   stageId?: string | null
@@ -586,7 +654,8 @@ export type ActivityLogScalarWhereInput = {
   OR?: Prisma.ActivityLogScalarWhereInput[]
   NOT?: Prisma.ActivityLogScalarWhereInput | Prisma.ActivityLogScalarWhereInput[]
   id?: Prisma.StringFilter<"ActivityLog"> | string
-  actorId?: Prisma.StringFilter<"ActivityLog"> | string
+  actorId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
+  actorGuestId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   action?: Prisma.EnumActivityActionFilter<"ActivityLog"> | $Enums.ActivityAction
   workflowId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
   stageId?: Prisma.StringNullableFilter<"ActivityLog"> | string | null
@@ -603,13 +672,15 @@ export type ActivityLogCreateWithoutWorkflowInput = {
   createdAt?: Date | string
   subjectType: $Enums.WorkflowSubjectType
   subjectId: string
-  actor: Prisma.UserCreateNestedOneWithoutActivityLogsInput
+  actor?: Prisma.UserCreateNestedOneWithoutActivityLogsInput
+  actorGuest?: Prisma.GuestCreateNestedOneWithoutActivityLogsInput
   stage?: Prisma.StageInstanceCreateNestedOneWithoutActivityLogsInput
 }
 
 export type ActivityLogUncheckedCreateWithoutWorkflowInput = {
   id?: string
-  actorId: string
+  actorId?: string | null
+  actorGuestId?: string | null
   action: $Enums.ActivityAction
   stageId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -651,13 +722,15 @@ export type ActivityLogCreateWithoutStageInput = {
   createdAt?: Date | string
   subjectType: $Enums.WorkflowSubjectType
   subjectId: string
-  actor: Prisma.UserCreateNestedOneWithoutActivityLogsInput
+  actor?: Prisma.UserCreateNestedOneWithoutActivityLogsInput
+  actorGuest?: Prisma.GuestCreateNestedOneWithoutActivityLogsInput
   workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutActivityLogsInput
 }
 
 export type ActivityLogUncheckedCreateWithoutStageInput = {
   id?: string
-  actorId: string
+  actorId?: string | null
+  actorGuestId?: string | null
   action: $Enums.ActivityAction
   workflowId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -692,8 +765,59 @@ export type ActivityLogUpdateManyWithWhereWithoutStageInput = {
   data: Prisma.XOR<Prisma.ActivityLogUpdateManyMutationInput, Prisma.ActivityLogUncheckedUpdateManyWithoutStageInput>
 }
 
+export type ActivityLogCreateWithoutActorGuestInput = {
+  id?: string
+  action: $Enums.ActivityAction
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  subjectType: $Enums.WorkflowSubjectType
+  subjectId: string
+  actor?: Prisma.UserCreateNestedOneWithoutActivityLogsInput
+  workflow?: Prisma.WorkflowInstanceCreateNestedOneWithoutActivityLogsInput
+  stage?: Prisma.StageInstanceCreateNestedOneWithoutActivityLogsInput
+}
+
+export type ActivityLogUncheckedCreateWithoutActorGuestInput = {
+  id?: string
+  actorId?: string | null
+  action: $Enums.ActivityAction
+  workflowId?: string | null
+  stageId?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  subjectType: $Enums.WorkflowSubjectType
+  subjectId: string
+}
+
+export type ActivityLogCreateOrConnectWithoutActorGuestInput = {
+  where: Prisma.ActivityLogWhereUniqueInput
+  create: Prisma.XOR<Prisma.ActivityLogCreateWithoutActorGuestInput, Prisma.ActivityLogUncheckedCreateWithoutActorGuestInput>
+}
+
+export type ActivityLogCreateManyActorGuestInputEnvelope = {
+  data: Prisma.ActivityLogCreateManyActorGuestInput | Prisma.ActivityLogCreateManyActorGuestInput[]
+  skipDuplicates?: boolean
+}
+
+export type ActivityLogUpsertWithWhereUniqueWithoutActorGuestInput = {
+  where: Prisma.ActivityLogWhereUniqueInput
+  update: Prisma.XOR<Prisma.ActivityLogUpdateWithoutActorGuestInput, Prisma.ActivityLogUncheckedUpdateWithoutActorGuestInput>
+  create: Prisma.XOR<Prisma.ActivityLogCreateWithoutActorGuestInput, Prisma.ActivityLogUncheckedCreateWithoutActorGuestInput>
+}
+
+export type ActivityLogUpdateWithWhereUniqueWithoutActorGuestInput = {
+  where: Prisma.ActivityLogWhereUniqueInput
+  data: Prisma.XOR<Prisma.ActivityLogUpdateWithoutActorGuestInput, Prisma.ActivityLogUncheckedUpdateWithoutActorGuestInput>
+}
+
+export type ActivityLogUpdateManyWithWhereWithoutActorGuestInput = {
+  where: Prisma.ActivityLogScalarWhereInput
+  data: Prisma.XOR<Prisma.ActivityLogUpdateManyMutationInput, Prisma.ActivityLogUncheckedUpdateManyWithoutActorGuestInput>
+}
+
 export type ActivityLogCreateManyActorInput = {
   id?: string
+  actorGuestId?: string | null
   action: $Enums.ActivityAction
   workflowId?: string | null
   stageId?: string | null
@@ -710,12 +834,14 @@ export type ActivityLogUpdateWithoutActorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subjectType?: Prisma.EnumWorkflowSubjectTypeFieldUpdateOperationsInput | $Enums.WorkflowSubjectType
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  actorGuest?: Prisma.GuestUpdateOneWithoutActivityLogsNestedInput
   workflow?: Prisma.WorkflowInstanceUpdateOneWithoutActivityLogsNestedInput
   stage?: Prisma.StageInstanceUpdateOneWithoutActivityLogsNestedInput
 }
 
 export type ActivityLogUncheckedUpdateWithoutActorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  actorGuestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.EnumActivityActionFieldUpdateOperationsInput | $Enums.ActivityAction
   workflowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -727,6 +853,7 @@ export type ActivityLogUncheckedUpdateWithoutActorInput = {
 
 export type ActivityLogUncheckedUpdateManyWithoutActorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  actorGuestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.EnumActivityActionFieldUpdateOperationsInput | $Enums.ActivityAction
   workflowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -738,7 +865,8 @@ export type ActivityLogUncheckedUpdateManyWithoutActorInput = {
 
 export type ActivityLogCreateManyWorkflowInput = {
   id?: string
-  actorId: string
+  actorId?: string | null
+  actorGuestId?: string | null
   action: $Enums.ActivityAction
   stageId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -754,13 +882,15 @@ export type ActivityLogUpdateWithoutWorkflowInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subjectType?: Prisma.EnumWorkflowSubjectTypeFieldUpdateOperationsInput | $Enums.WorkflowSubjectType
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
-  actor?: Prisma.UserUpdateOneRequiredWithoutActivityLogsNestedInput
+  actor?: Prisma.UserUpdateOneWithoutActivityLogsNestedInput
+  actorGuest?: Prisma.GuestUpdateOneWithoutActivityLogsNestedInput
   stage?: Prisma.StageInstanceUpdateOneWithoutActivityLogsNestedInput
 }
 
 export type ActivityLogUncheckedUpdateWithoutWorkflowInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  actorId?: Prisma.StringFieldUpdateOperationsInput | string
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorGuestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.EnumActivityActionFieldUpdateOperationsInput | $Enums.ActivityAction
   stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -771,7 +901,8 @@ export type ActivityLogUncheckedUpdateWithoutWorkflowInput = {
 
 export type ActivityLogUncheckedUpdateManyWithoutWorkflowInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  actorId?: Prisma.StringFieldUpdateOperationsInput | string
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorGuestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.EnumActivityActionFieldUpdateOperationsInput | $Enums.ActivityAction
   stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -782,7 +913,8 @@ export type ActivityLogUncheckedUpdateManyWithoutWorkflowInput = {
 
 export type ActivityLogCreateManyStageInput = {
   id?: string
-  actorId: string
+  actorId?: string | null
+  actorGuestId?: string | null
   action: $Enums.ActivityAction
   workflowId?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -798,13 +930,15 @@ export type ActivityLogUpdateWithoutStageInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subjectType?: Prisma.EnumWorkflowSubjectTypeFieldUpdateOperationsInput | $Enums.WorkflowSubjectType
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
-  actor?: Prisma.UserUpdateOneRequiredWithoutActivityLogsNestedInput
+  actor?: Prisma.UserUpdateOneWithoutActivityLogsNestedInput
+  actorGuest?: Prisma.GuestUpdateOneWithoutActivityLogsNestedInput
   workflow?: Prisma.WorkflowInstanceUpdateOneWithoutActivityLogsNestedInput
 }
 
 export type ActivityLogUncheckedUpdateWithoutStageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  actorId?: Prisma.StringFieldUpdateOperationsInput | string
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorGuestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.EnumActivityActionFieldUpdateOperationsInput | $Enums.ActivityAction
   workflowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -815,9 +949,58 @@ export type ActivityLogUncheckedUpdateWithoutStageInput = {
 
 export type ActivityLogUncheckedUpdateManyWithoutStageInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  actorId?: Prisma.StringFieldUpdateOperationsInput | string
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  actorGuestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.EnumActivityActionFieldUpdateOperationsInput | $Enums.ActivityAction
   workflowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subjectType?: Prisma.EnumWorkflowSubjectTypeFieldUpdateOperationsInput | $Enums.WorkflowSubjectType
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type ActivityLogCreateManyActorGuestInput = {
+  id?: string
+  actorId?: string | null
+  action: $Enums.ActivityAction
+  workflowId?: string | null
+  stageId?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Date | string
+  subjectType: $Enums.WorkflowSubjectType
+  subjectId: string
+}
+
+export type ActivityLogUpdateWithoutActorGuestInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  action?: Prisma.EnumActivityActionFieldUpdateOperationsInput | $Enums.ActivityAction
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subjectType?: Prisma.EnumWorkflowSubjectTypeFieldUpdateOperationsInput | $Enums.WorkflowSubjectType
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  actor?: Prisma.UserUpdateOneWithoutActivityLogsNestedInput
+  workflow?: Prisma.WorkflowInstanceUpdateOneWithoutActivityLogsNestedInput
+  stage?: Prisma.StageInstanceUpdateOneWithoutActivityLogsNestedInput
+}
+
+export type ActivityLogUncheckedUpdateWithoutActorGuestInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  action?: Prisma.EnumActivityActionFieldUpdateOperationsInput | $Enums.ActivityAction
+  workflowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  subjectType?: Prisma.EnumWorkflowSubjectTypeFieldUpdateOperationsInput | $Enums.WorkflowSubjectType
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type ActivityLogUncheckedUpdateManyWithoutActorGuestInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  actorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  action?: Prisma.EnumActivityActionFieldUpdateOperationsInput | $Enums.ActivityAction
+  workflowId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stageId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subjectType?: Prisma.EnumWorkflowSubjectTypeFieldUpdateOperationsInput | $Enums.WorkflowSubjectType
@@ -829,6 +1012,7 @@ export type ActivityLogUncheckedUpdateManyWithoutStageInput = {
 export type ActivityLogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   actorId?: boolean
+  actorGuestId?: boolean
   action?: boolean
   workflowId?: boolean
   stageId?: boolean
@@ -836,7 +1020,8 @@ export type ActivityLogSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   createdAt?: boolean
   subjectType?: boolean
   subjectId?: boolean
-  actor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  actor?: boolean | Prisma.ActivityLog$actorArgs<ExtArgs>
+  actorGuest?: boolean | Prisma.ActivityLog$actorGuestArgs<ExtArgs>
   workflow?: boolean | Prisma.ActivityLog$workflowArgs<ExtArgs>
   stage?: boolean | Prisma.ActivityLog$stageArgs<ExtArgs>
 }, ExtArgs["result"]["activityLog"]>
@@ -844,6 +1029,7 @@ export type ActivityLogSelect<ExtArgs extends runtime.Types.Extensions.InternalA
 export type ActivityLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   actorId?: boolean
+  actorGuestId?: boolean
   action?: boolean
   workflowId?: boolean
   stageId?: boolean
@@ -851,7 +1037,8 @@ export type ActivityLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   createdAt?: boolean
   subjectType?: boolean
   subjectId?: boolean
-  actor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  actor?: boolean | Prisma.ActivityLog$actorArgs<ExtArgs>
+  actorGuest?: boolean | Prisma.ActivityLog$actorGuestArgs<ExtArgs>
   workflow?: boolean | Prisma.ActivityLog$workflowArgs<ExtArgs>
   stage?: boolean | Prisma.ActivityLog$stageArgs<ExtArgs>
 }, ExtArgs["result"]["activityLog"]>
@@ -859,6 +1046,7 @@ export type ActivityLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
 export type ActivityLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   actorId?: boolean
+  actorGuestId?: boolean
   action?: boolean
   workflowId?: boolean
   stageId?: boolean
@@ -866,7 +1054,8 @@ export type ActivityLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   createdAt?: boolean
   subjectType?: boolean
   subjectId?: boolean
-  actor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  actor?: boolean | Prisma.ActivityLog$actorArgs<ExtArgs>
+  actorGuest?: boolean | Prisma.ActivityLog$actorGuestArgs<ExtArgs>
   workflow?: boolean | Prisma.ActivityLog$workflowArgs<ExtArgs>
   stage?: boolean | Prisma.ActivityLog$stageArgs<ExtArgs>
 }, ExtArgs["result"]["activityLog"]>
@@ -874,6 +1063,7 @@ export type ActivityLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
 export type ActivityLogSelectScalar = {
   id?: boolean
   actorId?: boolean
+  actorGuestId?: boolean
   action?: boolean
   workflowId?: boolean
   stageId?: boolean
@@ -883,19 +1073,22 @@ export type ActivityLogSelectScalar = {
   subjectId?: boolean
 }
 
-export type ActivityLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "actorId" | "action" | "workflowId" | "stageId" | "metadata" | "createdAt" | "subjectType" | "subjectId", ExtArgs["result"]["activityLog"]>
+export type ActivityLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "actorId" | "actorGuestId" | "action" | "workflowId" | "stageId" | "metadata" | "createdAt" | "subjectType" | "subjectId", ExtArgs["result"]["activityLog"]>
 export type ActivityLogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  actor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  actor?: boolean | Prisma.ActivityLog$actorArgs<ExtArgs>
+  actorGuest?: boolean | Prisma.ActivityLog$actorGuestArgs<ExtArgs>
   workflow?: boolean | Prisma.ActivityLog$workflowArgs<ExtArgs>
   stage?: boolean | Prisma.ActivityLog$stageArgs<ExtArgs>
 }
 export type ActivityLogIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  actor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  actor?: boolean | Prisma.ActivityLog$actorArgs<ExtArgs>
+  actorGuest?: boolean | Prisma.ActivityLog$actorGuestArgs<ExtArgs>
   workflow?: boolean | Prisma.ActivityLog$workflowArgs<ExtArgs>
   stage?: boolean | Prisma.ActivityLog$stageArgs<ExtArgs>
 }
 export type ActivityLogIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  actor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  actor?: boolean | Prisma.ActivityLog$actorArgs<ExtArgs>
+  actorGuest?: boolean | Prisma.ActivityLog$actorGuestArgs<ExtArgs>
   workflow?: boolean | Prisma.ActivityLog$workflowArgs<ExtArgs>
   stage?: boolean | Prisma.ActivityLog$stageArgs<ExtArgs>
 }
@@ -903,13 +1096,15 @@ export type ActivityLogIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.
 export type $ActivityLogPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ActivityLog"
   objects: {
-    actor: Prisma.$UserPayload<ExtArgs>
+    actor: Prisma.$UserPayload<ExtArgs> | null
+    actorGuest: Prisma.$GuestPayload<ExtArgs> | null
     workflow: Prisma.$WorkflowInstancePayload<ExtArgs> | null
     stage: Prisma.$StageInstancePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    actorId: string
+    actorId: string | null
+    actorGuestId: string | null
     action: $Enums.ActivityAction
     workflowId: string | null
     stageId: string | null
@@ -1311,7 +1506,8 @@ readonly fields: ActivityLogFieldRefs;
  */
 export interface Prisma__ActivityLogClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  actor<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  actor<T extends Prisma.ActivityLog$actorArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityLog$actorArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  actorGuest<T extends Prisma.ActivityLog$actorGuestArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityLog$actorGuestArgs<ExtArgs>>): Prisma.Prisma__GuestClient<runtime.Types.Result.GetResult<Prisma.$GuestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   workflow<T extends Prisma.ActivityLog$workflowArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityLog$workflowArgs<ExtArgs>>): Prisma.Prisma__WorkflowInstanceClient<runtime.Types.Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   stage<T extends Prisma.ActivityLog$stageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ActivityLog$stageArgs<ExtArgs>>): Prisma.Prisma__StageInstanceClient<runtime.Types.Result.GetResult<Prisma.$StageInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1345,6 +1541,7 @@ export interface Prisma__ActivityLogClient<T, Null = never, ExtArgs extends runt
 export interface ActivityLogFieldRefs {
   readonly id: Prisma.FieldRef<"ActivityLog", 'String'>
   readonly actorId: Prisma.FieldRef<"ActivityLog", 'String'>
+  readonly actorGuestId: Prisma.FieldRef<"ActivityLog", 'String'>
   readonly action: Prisma.FieldRef<"ActivityLog", 'ActivityAction'>
   readonly workflowId: Prisma.FieldRef<"ActivityLog", 'String'>
   readonly stageId: Prisma.FieldRef<"ActivityLog", 'String'>
@@ -1750,6 +1947,44 @@ export type ActivityLogDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many ActivityLogs to delete.
    */
   limit?: number
+}
+
+/**
+ * ActivityLog.actor
+ */
+export type ActivityLog$actorArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * ActivityLog.actorGuest
+ */
+export type ActivityLog$actorGuestArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Guest
+   */
+  select?: Prisma.GuestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Guest
+   */
+  omit?: Prisma.GuestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GuestInclude<ExtArgs> | null
+  where?: Prisma.GuestWhereInput
 }
 
 /**

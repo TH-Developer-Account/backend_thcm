@@ -21,11 +21,6 @@ enum TemplateOwnerType {
   USER
 }
 
-enum VendorAccessTokenPurpose {
-  FORM_ACCESS
-  VIEW_PDF
-}
-
 enum ScopeType {
   MODULE
   APP
@@ -63,6 +58,11 @@ enum WorkflowType {
   DEVIATION
 }
 
+enum AccessTokenSubjectType {
+  VENDOR_ONBOARDING
+  MEDICAL_CLAIM
+}
+
 enum ActivityAction {
    // Proposer domain
   EPC_CREATED
@@ -88,6 +88,13 @@ enum ActivityAction {
   VENDOR_FORM_SUBMITTED
   VENDOR_ONBOARDING_SENT_FOR_APPROVAL
   VENDOR_ONBOARDING_CLOSED
+
+  //Medical Claim
+  MEDICAL_CLAIM_INITIATED
+  MEDICAL_CLAIM_SUBMITTED
+  MEDICAL_CLAIM_RESUBMITTED
+  MEDICAL_CLAIM_SENT_FOR_APPROVAL
+  MEDICAL_CLAIM_CLOSED
 
   // Approval/workflow domain
   APPROVED
@@ -137,8 +144,8 @@ enum ImportExportStatus {
 
 enum WorkflowSubjectType {
   EVENT_PROPOSAL
-  // AUDIT_INSTANCE
-  VENDOR_ONBOARDING 
+  VENDOR_ONBOARDING
+  MEDICAL_CLAIM 
 }
 
 enum NotificationType {
@@ -146,6 +153,20 @@ enum NotificationType {
   APPROVAL_DECISION  // an approval/rejection/clarify happened on something this user owns
   REPORT_STATUS      // event report validated/rejected/clarification requested
   GENERIC            // catch-all for future apps that don't fit the above
+}
+
+enum ClaimCover {
+  SELF
+  SPOUSE
+  BOTH
+}
+
+enum ClaimHead {
+  VISIT_FEES
+  MEDICINES_INVESTIGATIONS
+  OPHTHALMIC_TREATMENT
+  EXECUTIVE_HEALTH_CHECKUP
+  EXCESS_HOSPITALISATION
 }
 
 // ─────────────────────────────────────────────
@@ -177,6 +198,7 @@ model User {
   updated_workflow WorkflowTemplate[] @relation("WorkFlowUpdatedBy")
 
   initiated_vendor_onboardings VendorOnboarding[] @relation("VendorOnboardingInitiatedBy")
+  initiated_medical_claims MedicalClaim[] @relation("MedicalClaimInitiatedBy")
 
   approvals         Approval[]
   templateApprovals TemplateApprover[]
@@ -238,6 +260,7 @@ model Workspace {
   profiles     Profile[]
   userProfiles UserProfile[]
   vendorOnboardings VendorOnboarding[]
+  medicalClaims MedicalClaim[]
 
   workflowTemplates WorkflowTemplate[]
   workflows         WorkflowInstance[]
@@ -539,7 +562,7 @@ model Approval {
   reason     String?
   isExternalApprover Boolean @default(false)
 
-  stage    StageInstance @relation(fields: [stageId], references: [id])
+  stage    StageInstance @relation(fields: [stageId], references: [id], onDelete: Cascade)
   approver User          @relation(fields: [approverId], references: [id])
   comments Comment[]
 
@@ -583,23 +606,26 @@ model WorkFlowTemplateUser {
 // ─────────────────────────────────────────────
 
 model ActivityLog {
-  id         String         @id @default(uuid())
-  actorId    String                         // who performed the action
-  action     ActivityAction
-  workflowId String?                        // set for approval-domain actions
-  stageId    String?                        // set for stage-level actions, null for DEVIATION_RAISED
-  metadata   Json?                          // typed in app layer (reason, budget delta, etc.)
-  createdAt  DateTime       @default(now())
-  subjectType WorkflowSubjectType
-  subjectId String                       
-
-  actor    User              @relation(fields: [actorId], references: [id])
-  workflow WorkflowInstance? @relation(fields: [workflowId], references: [id])
-  stage    StageInstance?    @relation(fields: [stageId], references: [id])
-
-  @@index([subjectId])           // primary timeline query
-  @@index([actorId])         // "what did this user do" query
-  @@index([workflowId])      // workflow-scoped audit query
+  id           String         @id @default(uuid())
+  actorId      String?                          // ← now optional
+  actorGuestId String?                          // ← new
+  action       ActivityAction
+  workflowId   String?
+  stageId      String?
+  metadata     Json?
+  createdAt    DateTime       @default(now())
+  subjectType  WorkflowSubjectType
+  subjectId    String
+ 
+  actor      User?             @relation(fields: [actorId], references: [id])
+  actorGuest Guest?            @relation(fields: [actorGuestId], references: [id])
+  workflow   WorkflowInstance? @relation(fields: [workflowId], references: [id])
+  stage      StageInstance?    @relation(fields: [stageId], references: [id])
+ 
+  @@index([subjectId])
+  @@index([actorId])
+  @@index([actorGuestId])
+  @@index([workflowId])
 }
 
 // ─────────────────────────────────────────────
@@ -1029,11 +1055,13 @@ model VendorOnboarding {
   vendorAuditReportPrepared Boolean?
   natureOfService           String?
   onboardingReason          String?
+  guestId                   String?
+
 
   workspace   Workspace                  @relation(fields: [workspaceId], references: [id])
   initiatedBy User                       @relation("VendorOnboardingInitiatedBy", fields: [initiatedById], references: [id])
+  guest   Guest? @relation(fields: [guestId], references: [id])
   documents   VendorOnboardingDocument[]
-  accessTokens VendorAccessToken[]
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -1055,18 +1083,112 @@ model VendorOnboardingDocument {
   @@index([onboardingId])
 }
 
-model VendorAccessToken {
+model AccessToken  {
   id           String    @id @default(uuid())
-  onboardingId String
+  subjectType  AccessTokenSubjectType
+  subjectId    String
   token        String    @unique
   used         Boolean   @default(false)
-  purpose      VendorAccessTokenPurpose @default(FORM_ACCESS)
+  purpose      String
   usedAt       DateTime?
   created_at   DateTime  @default(now())
 
-  onboarding VendorOnboarding @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
 
-  @@index([onboardingId])
+ @@index([subjectType, subjectId])
+}
+
+
+
+// MEDICAL CLAIM
+//
+// Same two-phase lifecycle shape as VendorOnboarding, with one addition:
+// after a CLARIFY, the ex-employee (not the initiator) makes the edit —
+// see CLARIFICATION_REQUESTED in the status machine comment above.
+//
+// Ex-employee never becomes a User — access is via AccessToken + Guest,
+// same pattern as vendor onboarding. Status is a plain string (same
+// convention as VendorOnboarding.status / EventProposal.status).
+// ─────────────────────────────────────────────
+
+model MedicalClaim {
+  id              String   @id @default(uuid())
+  referenceNumber String   @unique
+  workspaceId     String
+  initiatedById   String
+  guestId         String?
+  status          String   @default("AWAITING_EX_EMPLOYEE")
+  mobile       String?
+  email        String?
+
+  // ── Ex-employee-filled ──
+  ticketNumber      String?
+  grade             String?
+  location          String?
+  employeeName      String?
+  patientName       String?
+  claimCover        ClaimCover?
+  spouseName        String?
+  medicalAdvanceTaken Decimal? @db.Decimal(12, 2)
+
+  // ── Computed server-side at submission — never trust client input ──
+  eligibleAmount    Decimal? @db.Decimal(12, 2) // grade cap, looked up at submit time
+  alreadySettled    Decimal? @db.Decimal(12, 2) // sum of this guest's approved claims this calendar year
+  totalClaimed      Decimal? @db.Decimal(12, 2) // sum of MedicalClaimBill.amount, stored for audit
+
+  declarationAcceptedAt DateTime?
+  signatureName          String?
+  signatureDate           DateTime?
+  submittedAt             DateTime?
+
+  workspace   Workspace          @relation(fields: [workspaceId], references: [id])
+  initiatedBy User               @relation("MedicalClaimInitiatedBy", fields: [initiatedById], references: [id])
+  guest       Guest?             @relation(fields: [guestId], references: [id])
+  bills       MedicalClaimBill[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([workspaceId, status])
+  @@index([guestId])
+}
+
+model MedicalClaimBill {
+  id        String    @id @default(uuid())
+  claimId   String
+  claimHead ClaimHead
+  billNo    String?
+  billName  String?
+  billDate  DateTime?
+  amount    Decimal   @db.Decimal(12, 2)
+  approvedClaimAmount    Decimal?   @db.Decimal(12, 2)
+  s3Key     String?   // presigned at read time, same convention as every other attachment
+
+  claim MedicalClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@index([claimId])
+}
+
+// Newly created for this app — no existing grade→amount lookup exists yet.
+model MedicalClaimGradeEligibility {
+  id         String  @id @default(uuid())
+  grade      String  @unique
+  annualCap  Decimal @db.Decimal(12, 2)
+}
+
+model Guest {
+  id        String   @id @default(uuid())
+  mobile    String?  @unique
+  email     String?  @unique
+  password  String? 
+  name String? 
+  createdAt DateTime @default(now())
+
+  vendorOnboardings VendorOnboarding[]
+  medicalClaims MedicalClaim[]
+  activityLogs ActivityLog[]
+ 
+  @@index([mobile])
+  @@index([email])
 }
 
 

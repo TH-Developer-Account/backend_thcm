@@ -6,6 +6,7 @@ import { firstAuthRequestPerDay } from "@shared/middleware/dailyActiveUsers.midd
 import { ALL_VENDOR_DOCUMENT_TYPES } from "@shared/utils/contants";
 
 import { requireAuth, authorize } from "@kernel/auth/auth.middleware";
+
 import {
   initiateVendorOnboarding,
   resendVendorLink,

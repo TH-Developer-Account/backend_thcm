@@ -250,7 +250,27 @@ export type VendorOnboarding = Prisma.VendorOnboardingModel
  */
 export type VendorOnboardingDocument = Prisma.VendorOnboardingDocumentModel
 /**
- * Model VendorAccessToken
+ * Model AccessToken
  * 
  */
-export type VendorAccessToken = Prisma.VendorAccessTokenModel
+export type AccessToken = Prisma.AccessTokenModel
+/**
+ * Model MedicalClaim
+ * 
+ */
+export type MedicalClaim = Prisma.MedicalClaimModel
+/**
+ * Model MedicalClaimBill
+ * 
+ */
+export type MedicalClaimBill = Prisma.MedicalClaimBillModel
+/**
+ * Model MedicalClaimGradeEligibility
+ * 
+ */
+export type MedicalClaimGradeEligibility = Prisma.MedicalClaimGradeEligibilityModel
+/**
+ * Model Guest
+ * 
+ */
+export type Guest = Prisma.GuestModel

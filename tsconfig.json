@@ -1,46 +1,48 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es2020",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "paths": {
-      /* Umbrella aliases — barrel imports / cross-cutting references */
-      "@kernel/*": ["./src/kernel/*"],
-      "@modules/*": ["./src/modules/*"],
-      "@shared/*": ["./src/shared/*"],
-      "@users/*": ["./src/users/*"],
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es2020",
+		"rootDir": "./src",
+		"outDir": "./dist",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"paths": {
+			/* Umbrella aliases — barrel imports / cross-cutting references */
+			"@kernel/*": ["./src/kernel/*"],
+			"@modules/*": ["./src/modules/*"],
+			"@shared/*": ["./src/shared/*"],
+			"@users/*": ["./src/users/*"],
 
-      /* Kernel submodules — shared engines every app plugs into */
-      "@auth/*": ["./src/kernel/auth/*"],
-      "@rbac/*": ["./src/kernel/rbac/*"],
-      "@workflow/*": ["./src/kernel/workflow/*"],
-      "@notifications/*": ["./src/kernel/notifications/*"],
-      "@pdf/*": ["./src/kernel/pdf/*"],
-      "@reference-data/*": ["./src/kernel/reference-data/*"],
-      "@import-export/*": ["./src/kernel/import-export/*"],
-      "@mail/*": ["./src/kernel/mail/*"],
-      "@comments/*": ["./src/kernel/comments/*"],
-      "@reports/*": ["./src/kernel/reports/*"],
+			/* Kernel submodules — shared engines every app plugs into */
+			"@auth/*": ["./src/kernel/auth/*"],
+			"@rbac/*": ["./src/kernel/rbac/*"],
+			"@workflow/*": ["./src/kernel/workflow/*"],
+			"@notifications/*": ["./src/kernel/notifications/*"],
+			"@pdf/*": ["./src/kernel/pdf/*"],
+			"@reference-data/*": ["./src/kernel/reference-data/*"],
+			"@import-export/*": ["./src/kernel/import-export/*"],
+			"@mail/*": ["./src/kernel/mail/*"],
+			"@comments/*": ["./src/kernel/comments/*"],
+			"@reports/*": ["./src/kernel/reports/*"],
 
-      /* Feature modules — the apps */
-      "@map/*": ["./src/modules/map/*"],
-      "@leads/*": ["./src/modules/leads/*"],
-      "@vendor-onboarding/*": ["./src/modules/vendor-onboarding/*"],
-      "@dia/*": ["./src/modules/dia/*"]
-    }
-  },
-  "include": ["src/**/*.ts", "src/**/*.d.ts"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "generated",
-    "prisma.config.ts",
-    "prisma"
-  ],
-  "ts-node": {
-    "files": true
-  }
+			/* Feature modules — the apps */
+			"@map/*": ["./src/modules/map/*"],
+			"@leads/*": ["./src/modules/leads/*"],
+			"@guest/*": ["./src/modules/guest/*"],
+			"@vendor-onboarding/*": ["./src/modules/vendor-onboarding/*"],
+			"@medi-claim/*": ["./src/modules/medi-claim/*"],
+			"@dia/*": ["./src/modules/dia/*"]
+		}
+	},
+	"include": ["src/**/*.ts", "src/**/*.d.ts"],
+	"exclude": [
+		"node_modules",
+		"dist",
+		"generated",
+		"prisma.config.ts",
+		"prisma"
+	],
+	"ts-node": {
+		"files": true
+	}
 }

@@ -277,7 +277,7 @@ export const getTemplates = async (
     sortOrder,
   } = query;
 
-  const where: any = {};
+  const where: any = { isReusable: true };
 
   if (workspaceId) where.workspaceId = workspaceId;
   if (isActive !== undefined) where.isActive = isActive === "true";

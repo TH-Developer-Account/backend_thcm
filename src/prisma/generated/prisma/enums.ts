@@ -25,14 +25,6 @@ export const TemplateOwnerType = {
 export type TemplateOwnerType = (typeof TemplateOwnerType)[keyof typeof TemplateOwnerType]
 
 
-export const VendorAccessTokenPurpose = {
-  FORM_ACCESS: 'FORM_ACCESS',
-  VIEW_PDF: 'VIEW_PDF'
-} as const
-
-export type VendorAccessTokenPurpose = (typeof VendorAccessTokenPurpose)[keyof typeof VendorAccessTokenPurpose]
-
-
 export const ScopeType = {
   MODULE: 'MODULE',
   APP: 'APP'
@@ -88,6 +80,14 @@ export const WorkflowType = {
 export type WorkflowType = (typeof WorkflowType)[keyof typeof WorkflowType]
 
 
+export const AccessTokenSubjectType = {
+  VENDOR_ONBOARDING: 'VENDOR_ONBOARDING',
+  MEDICAL_CLAIM: 'MEDICAL_CLAIM'
+} as const
+
+export type AccessTokenSubjectType = (typeof AccessTokenSubjectType)[keyof typeof AccessTokenSubjectType]
+
+
 export const ActivityAction = {
   EPC_CREATED: 'EPC_CREATED',
   EPC_UPDATED: 'EPC_UPDATED',
@@ -108,6 +108,11 @@ export const ActivityAction = {
   VENDOR_FORM_SUBMITTED: 'VENDOR_FORM_SUBMITTED',
   VENDOR_ONBOARDING_SENT_FOR_APPROVAL: 'VENDOR_ONBOARDING_SENT_FOR_APPROVAL',
   VENDOR_ONBOARDING_CLOSED: 'VENDOR_ONBOARDING_CLOSED',
+  MEDICAL_CLAIM_INITIATED: 'MEDICAL_CLAIM_INITIATED',
+  MEDICAL_CLAIM_SUBMITTED: 'MEDICAL_CLAIM_SUBMITTED',
+  MEDICAL_CLAIM_RESUBMITTED: 'MEDICAL_CLAIM_RESUBMITTED',
+  MEDICAL_CLAIM_SENT_FOR_APPROVAL: 'MEDICAL_CLAIM_SENT_FOR_APPROVAL',
+  MEDICAL_CLAIM_CLOSED: 'MEDICAL_CLAIM_CLOSED',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
   CLARIFY: 'CLARIFY',
@@ -175,7 +180,8 @@ export type ImportExportStatus = (typeof ImportExportStatus)[keyof typeof Import
 
 export const WorkflowSubjectType = {
   EVENT_PROPOSAL: 'EVENT_PROPOSAL',
-  VENDOR_ONBOARDING: 'VENDOR_ONBOARDING'
+  VENDOR_ONBOARDING: 'VENDOR_ONBOARDING',
+  MEDICAL_CLAIM: 'MEDICAL_CLAIM'
 } as const
 
 export type WorkflowSubjectType = (typeof WorkflowSubjectType)[keyof typeof WorkflowSubjectType]
@@ -189,3 +195,23 @@ export const NotificationType = {
 } as const
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const ClaimCover = {
+  SELF: 'SELF',
+  SPOUSE: 'SPOUSE',
+  BOTH: 'BOTH'
+} as const
+
+export type ClaimCover = (typeof ClaimCover)[keyof typeof ClaimCover]
+
+
+export const ClaimHead = {
+  VISIT_FEES: 'VISIT_FEES',
+  MEDICINES_INVESTIGATIONS: 'MEDICINES_INVESTIGATIONS',
+  OPHTHALMIC_TREATMENT: 'OPHTHALMIC_TREATMENT',
+  EXECUTIVE_HEALTH_CHECKUP: 'EXECUTIVE_HEALTH_CHECKUP',
+  EXCESS_HOSPITALISATION: 'EXCESS_HOSPITALISATION'
+} as const
+
+export type ClaimHead = (typeof ClaimHead)[keyof typeof ClaimHead]

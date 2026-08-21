@@ -4,17 +4,20 @@ import {
   approveStage,
   notifyStageApprovers,
   notifyProposerOfClarify,
+  activateFirstStageForResubmit,
 } from "./workflow.service";
 import {
   Prisma,
   WorkflowSubjectType,
 } from "../../prisma/generated/prisma/client";
-import { budgetMap } from "@shared/utils/contants";
 import ApiError from "@shared/utils/apiError";
 import {
   updateSubjectStatus,
   getClarifyResetStatus,
   getSubjectOwnerId,
+  runPostClarifyHook,
+  getResubmitAction,
+  getResubmitStatus,
 } from "./workflowSubject.helper";
 import {
   forkTemplateForClarify,
@@ -22,63 +25,7 @@ import {
   assertTemplateAssignable,
 } from "./workflow.helper";
 import { AuthenticatedUser } from "../../types/express";
-// ─────────────────────────────────────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────────────────────────────────────
-
-const evaluateBudget = (
-  selectedValue: string,
-  actualValue: number,
-): boolean => {
-  const range = budgetMap[selectedValue];
-  if (!range) return false;
-  const { min, max } = range;
-  if (max === null) return actualValue >= min;
-  return actualValue >= min && actualValue <= max;
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// templateMatchResolvers  ✅ NEW
-//
-// assignWorkflowController used to hardcode budget-based matching, but budget
-// only means something for EVENT_PROPOSAL. This is the single place that
-// knows how each subject type picks a template out of the candidate list —
-// same strategy-map shape as workflowSubject.helper.ts, so adding a new app's
-// matching rule means adding one entry here, not touching the controller.
-//
-// EVENT_PROPOSAL    → budget range match against template.metaData_1
-// VENDOR_ONBOARDING → STUB: first active template, no criteria yet
-// ─────────────────────────────────────────────────────────────────────────────
-
-type CandidateTemplate = Prisma.WorkflowTemplateGetPayload<{
-  include: {
-    stages: { include: { approvers: true } };
-  };
-}>;
-
-const templateMatchResolvers: Record<
-  WorkflowSubjectType,
-  (
-    templates: CandidateTemplate[],
-    criteria: Record<string, unknown> | undefined,
-  ) => CandidateTemplate | undefined
-> = {
-  EVENT_PROPOSAL: (templates, criteria) => {
-    const budget = criteria?.budget;
-    if (budget === undefined) return undefined;
-    return templates.find((t) =>
-      evaluateBudget(t.metaData_1 || "", Number(budget)),
-    );
-  },
-
-  // STUB — no matching criteria decided yet for Vendor Onboarding.
-  // Replace with a real resolver once that's defined; until then this
-  // just takes the first active template configured for the workspace/app.
-  VENDOR_ONBOARDING: (templates, criteria) => {
-    const { workflowId } = criteria || {};
-    return templates.find((t) => t.id === workflowId);
-  },
-};
+import { templateMatchResolvers, evaluateBudget } from "./workflow.helper";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /workflows/assign
@@ -593,6 +540,8 @@ export const clarifyStageController = async (
         getClarifyResetStatus(workflow.subjectType),
       );
 
+      await runPostClarifyHook(tx, workflow.subjectType, workflow.subjectId);
+
       // ── Step 6: Write audit record ──────────────────────────────────────────
       await tx.activityLog.create({
         data: {
@@ -851,52 +800,17 @@ export const activateFirstStageController = async (
           );
         }
       } else {
-        // ── No edits — just flip the existing draft's stage 1 in place ──────
-        const firstStage = workflow.stages.find((s) => s.stageOrder === 1);
-        if (!firstStage) {
-          throw new ApiError(
-            404,
-            "Stage 1 not found in the current iteration for this workflow",
-          );
-        }
+        const activated = await activateFirstStageForResubmit(
+          tx,
+          workflow.id,
+          { type: "user", id: userId },
+          getResubmitAction(workflow.subjectType),
+          getResubmitStatus(workflow.subjectType),
+        );
 
-        await tx.stageInstance.update({
-          where: { id: firstStage.id },
-          data: { status: "IN_PROGRESS", startedAt: new Date() },
-        });
-
-        firstStageInstanceId = firstStage.id;
+        firstStageInstanceId = activated.firstStageInstanceId;
         builtStages.push(...workflow.stages);
       }
-
-      // ── Keep currentStage in sync (already 1, but harmless/idempotent) ────
-      await tx.workflowInstance.update({
-        where: { id: workflow.id },
-        data: { currentStage: 1 },
-      });
-
-      await updateSubjectStatus(
-        tx,
-        workflow.subjectType,
-        workflow.subjectId,
-        "Resubmitted",
-      );
-
-      await tx.activityLog.create({
-        data: {
-          subjectType: workflow.subjectType,
-          subjectId: workflow.subjectId,
-          actorId: userId,
-          action: "EPC_RESUBMITTED",
-          workflowId: workflow.id,
-          stageId: firstStageInstanceId,
-          metadata: {
-            reason: "Proposer resubmitted the EPC.",
-            ...(stageEdits?.length && { stagesEdited: true }),
-            ...(newTemplateId && { templateSwapped: true }),
-          },
-        },
-      });
 
       return {
         iteration: workflow.iteration,

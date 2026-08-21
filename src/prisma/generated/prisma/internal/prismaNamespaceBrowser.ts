@@ -93,7 +93,11 @@ export const ModelName = {
   PushSubscription: 'PushSubscription',
   VendorOnboarding: 'VendorOnboarding',
   VendorOnboardingDocument: 'VendorOnboardingDocument',
-  VendorAccessToken: 'VendorAccessToken'
+  AccessToken: 'AccessToken',
+  MedicalClaim: 'MedicalClaim',
+  MedicalClaimBill: 'MedicalClaimBill',
+  MedicalClaimGradeEligibility: 'MedicalClaimGradeEligibility',
+  Guest: 'Guest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -392,6 +396,7 @@ export type WorkFlowTemplateUserScalarFieldEnum = (typeof WorkFlowTemplateUserSc
 export const ActivityLogScalarFieldEnum = {
   id: 'id',
   actorId: 'actorId',
+  actorGuestId: 'actorGuestId',
   action: 'action',
   workflowId: 'workflowId',
   stageId: 'stageId',
@@ -722,6 +727,7 @@ export const VendorOnboardingScalarFieldEnum = {
   vendorAuditReportPrepared: 'vendorAuditReportPrepared',
   natureOfService: 'natureOfService',
   onboardingReason: 'onboardingReason',
+  guestId: 'guestId',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -740,9 +746,10 @@ export const VendorOnboardingDocumentScalarFieldEnum = {
 export type VendorOnboardingDocumentScalarFieldEnum = (typeof VendorOnboardingDocumentScalarFieldEnum)[keyof typeof VendorOnboardingDocumentScalarFieldEnum]
 
 
-export const VendorAccessTokenScalarFieldEnum = {
+export const AccessTokenScalarFieldEnum = {
   id: 'id',
-  onboardingId: 'onboardingId',
+  subjectType: 'subjectType',
+  subjectId: 'subjectId',
   token: 'token',
   used: 'used',
   purpose: 'purpose',
@@ -750,7 +757,74 @@ export const VendorAccessTokenScalarFieldEnum = {
   created_at: 'created_at'
 } as const
 
-export type VendorAccessTokenScalarFieldEnum = (typeof VendorAccessTokenScalarFieldEnum)[keyof typeof VendorAccessTokenScalarFieldEnum]
+export type AccessTokenScalarFieldEnum = (typeof AccessTokenScalarFieldEnum)[keyof typeof AccessTokenScalarFieldEnum]
+
+
+export const MedicalClaimScalarFieldEnum = {
+  id: 'id',
+  referenceNumber: 'referenceNumber',
+  workspaceId: 'workspaceId',
+  initiatedById: 'initiatedById',
+  guestId: 'guestId',
+  status: 'status',
+  mobile: 'mobile',
+  email: 'email',
+  ticketNumber: 'ticketNumber',
+  grade: 'grade',
+  location: 'location',
+  employeeName: 'employeeName',
+  patientName: 'patientName',
+  claimCover: 'claimCover',
+  spouseName: 'spouseName',
+  medicalAdvanceTaken: 'medicalAdvanceTaken',
+  eligibleAmount: 'eligibleAmount',
+  alreadySettled: 'alreadySettled',
+  totalClaimed: 'totalClaimed',
+  declarationAcceptedAt: 'declarationAcceptedAt',
+  signatureName: 'signatureName',
+  signatureDate: 'signatureDate',
+  submittedAt: 'submittedAt',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type MedicalClaimScalarFieldEnum = (typeof MedicalClaimScalarFieldEnum)[keyof typeof MedicalClaimScalarFieldEnum]
+
+
+export const MedicalClaimBillScalarFieldEnum = {
+  id: 'id',
+  claimId: 'claimId',
+  claimHead: 'claimHead',
+  billNo: 'billNo',
+  billName: 'billName',
+  billDate: 'billDate',
+  amount: 'amount',
+  approvedClaimAmount: 'approvedClaimAmount',
+  s3Key: 's3Key'
+} as const
+
+export type MedicalClaimBillScalarFieldEnum = (typeof MedicalClaimBillScalarFieldEnum)[keyof typeof MedicalClaimBillScalarFieldEnum]
+
+
+export const MedicalClaimGradeEligibilityScalarFieldEnum = {
+  id: 'id',
+  grade: 'grade',
+  annualCap: 'annualCap'
+} as const
+
+export type MedicalClaimGradeEligibilityScalarFieldEnum = (typeof MedicalClaimGradeEligibilityScalarFieldEnum)[keyof typeof MedicalClaimGradeEligibilityScalarFieldEnum]
+
+
+export const GuestScalarFieldEnum = {
+  id: 'id',
+  mobile: 'mobile',
+  email: 'email',
+  password: 'password',
+  name: 'name',
+  createdAt: 'createdAt'
+} as const
+
+export type GuestScalarFieldEnum = (typeof GuestScalarFieldEnum)[keyof typeof GuestScalarFieldEnum]
 
 
 export const SortOrder = {

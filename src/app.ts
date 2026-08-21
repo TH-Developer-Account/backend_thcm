@@ -20,20 +20,22 @@ import workflowRoutes from "@workflow/workflow.routes";
 import "@mail/mail.queue"; // boots the BullMQ worker
 import commentRoutes from "@comments/comments.routes";
 import vendorOnboardRoutes from "@vendor-onboarding/vendorOnboarding.routes";
+import mediClaimRoutes from "@medi-claim/mediclaim.routes";
 import leadRoutes from "@leads/leads.routes";
 import reportRoutes from "@map/report.routes";
 import epcRoutes from "@map/epc.routes";
 import efpRoutes from "@map/epf.routes";
 import crfRoutes from "@map/crf.routes";
+import guestRoutes from "@guest/guest.routes";
 import errorHandler from "@shared/middleware/error.middleware";
 import ApiError from "@shared/utils/apiError";
 import { startJobs } from "@shared/jobs/scheduler";
 
 const corsOptions = {
-  origin: process.env.FRONTEND_URL, // frontend URL
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true, // allow cookies / auth headers
+	origin: process.env.FRONTEND_URL, // frontend URL
+	methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+	allowedHeaders: ["Content-Type", "Authorization"],
+	credentials: true, // allow cookies / auth headers
 };
 
 const app = express();
@@ -63,14 +65,16 @@ app.use("/api/v1/export", exportRoutes);
 app.use("/api/v1/import-export-logs", importExportLogRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/vendor-onboarding", vendorOnboardRoutes);
+app.use("/api/v1/medi-claim", mediClaimRoutes);
 app.use("/api/v1/pdf", pdfRoutes);
+app.use("/api/v1/guest", guestRoutes);
 
 // Scheduler
 startJobs();
 
 /* 404 */
 app.use((req, res, next) => {
-  next(new ApiError(404, `Route not found: ${req.originalUrl}`));
+	next(new ApiError(404, `Route not found: ${req.originalUrl}`));
 });
 
 /* Global error handler */

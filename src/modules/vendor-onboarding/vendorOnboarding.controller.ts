@@ -19,9 +19,9 @@ import { buildXlsxBuffer, XlsxRow } from "@import-export/utils/xlsxWriter";
 import { addMailJob } from "@mail/mail.service";
 
 import {
-  issueVendorAccessToken,
-  markVendorAccessTokenUsed,
-} from "./vendorAccessToken.services";
+  issueAccessToken,
+  markAccessTokenUsed,
+} from "@shared/services/accessToken.services";
 
 import { getActiveWorkflowForSubject } from "@workflow/workflowSubject.helper";
 import {
@@ -30,6 +30,7 @@ import {
   VendorListingTab,
   resolveSubjectIdsForApprovalTab,
   generateVendorOnboardingReferenceNumber,
+  isExternalApproverInWorkflow,
 } from "./vendorOnboarding.helper";
 import {
   MAX_VENDOR_DOCUMENT_SIZE_BYTES,
@@ -124,7 +125,11 @@ export const initiateVendorOnboarding = async (
         },
       });
 
-      const tokenRecord = await issueVendorAccessToken(created.id, tx);
+      const tokenRecord = await issueAccessToken(
+        "VENDOR_ONBOARDING",
+        created.id,
+        tx,
+      );
 
       await tx.activityLog.create({
         data: {
@@ -320,7 +325,10 @@ export const resendVendorLink = async (
       throw new ApiError(400, "This request is no longer awaiting the vendor");
     }
 
-    const tokenRecord = await issueVendorAccessToken(onboarding.id);
+    const tokenRecord = await issueAccessToken(
+      "VENDOR_ONBOARDING",
+      onboarding.id,
+    );
 
     await addMailJob({
       to: onboarding.email as string,
@@ -407,14 +415,27 @@ export const updateEmployeeFields = async (
     });
     if (!onboarding) throw new ApiError(404, "Vendor onboarding not found");
 
+    const activeWorkflow = await getActiveWorkflowForSubject(
+      "VENDOR_ONBOARDING",
+      id as string,
+    );
+
+    let isExternal = false;
+
+    if (activeWorkflow) {
+      // @ts-ignore
+      isExternal = isExternalApproverInWorkflow(activeWorkflow, userId);
+    }
+
     // ── Guard: only the initiator or a superadmin can edit ───────────────────
-    if (onboarding.initiatedById !== userId) {
+    if (!isExternal && onboarding.initiatedById !== userId) {
       throw new ApiError(403, "You do not have access to this request");
     }
 
     if (
       onboarding.status !== "VENDOR_SUBMITTED" &&
-      onboarding.status !== "IN_REVIEW"
+      onboarding.status !== "IN_REVIEW" &&
+      !isExternal
     ) {
       throw new ApiError(400, "This request is not awaiting employee review");
     }
@@ -546,6 +567,13 @@ export const sendForApproval = async (
 // POST /vendor-onboarding/:id/close
 // Final approver's explicit close action, after WorkflowInstance reaches APPROVED —
 // same two-step shape as EPC_CLOSED.
+// POST /vendor-onboarding/:id/close
+// Final approver's explicit close action, after WorkflowInstance reaches APPROVED —
+// same two-step shape as EPC_CLOSED.
+//
+// After close, notifies the initiator (to) with every approver from the
+// workflow's final iteration in cc — so everyone who acted on the request
+// sees it's done. Mail is enqueued strictly after the transaction commits.
 export const closeVendorOnboarding = async (
   req: Request,
   res: Response,
@@ -562,11 +590,38 @@ export const closeVendorOnboarding = async (
         subjectId: id as string,
         isActive: true,
       },
+      include: {
+        stages: {
+          where: { isCurrentIteration: true },
+          include: {
+            approvals: {
+              select: {
+                approver: {
+                  select: { email: true },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!activeWorkflow || activeWorkflow.status !== "APPROVED") {
       throw new ApiError(400, "Workflow must be fully approved before closing");
     }
+
+    const onboarding = await prisma.vendorOnboarding.findUnique({
+      where: { id: id as string },
+      select: {
+        vendorName: true,
+        vendorCode: true,
+        referenceNumber: true,
+        initiatedBy: {
+          select: { email: true },
+        },
+      },
+    });
+    if (!onboarding) throw new ApiError(404, "Vendor onboarding not found");
 
     await prisma.$transaction(async (tx) => {
       await tx.vendorOnboarding.update({
@@ -583,6 +638,29 @@ export const closeVendorOnboarding = async (
         },
       });
     });
+
+    // ── Post-commit notification — never allowed to affect the response ──────
+    const initiatorEmail = onboarding.initiatedBy.email;
+    if (initiatorEmail) {
+      const approverEmails = activeWorkflow.stages
+        .flatMap((stage) => stage.approvals.map((a) => a.approver.email))
+        .filter(
+          (email): email is string => !!email && email !== initiatorEmail,
+        );
+      const ccEmails = [...new Set(approverEmails)];
+
+      await addMailJob({
+        to: initiatorEmail,
+        cc: ccEmails.length ? ccEmails : undefined,
+        subject: `Vendor Onboarding Closed — ${onboarding.vendorName ?? ""}`,
+        templateName: "vendor-onboarding-closed",
+        templateData: {
+          vendorName: onboarding.vendorName,
+          vendorCode: onboarding.vendorCode,
+          referenceNumber: onboarding.referenceNumber,
+        },
+      });
+    }
 
     res
       .status(200)
@@ -648,6 +726,7 @@ export const getVendorFormByToken = async (
         gstin: onboarding.gstin,
         pan: onboarding.pan,
         entityRegNo: onboarding.entityRegNo,
+        ndaObtained: onboarding.ndaObtained,
         // lets the frontend show "already uploaded ✓" per document type
         // instead of asking for all 6 again
         alreadyUploadedDocumentTypes: existingDocuments.map(
@@ -682,7 +761,6 @@ export const submitVendorForm = async (
       mobile,
       email,
       msmeVendor,
-      msmeCertAttached,
       ndaObtained,
       bankName,
       bankBranch,
@@ -760,7 +838,7 @@ export const submitVendorForm = async (
       });
 
       await persistVendorDocuments(tx, onboarding.id, files);
-      await markVendorAccessTokenUsed(tokenId, tx);
+      await markAccessTokenUsed(tokenId, tx);
 
       await tx.activityLog.create({
         data: {
@@ -780,7 +858,8 @@ export const submitVendorForm = async (
       });
     });
 
-    const viewToken = await issueVendorAccessToken(
+    const viewToken = await issueAccessToken(
+      "VENDOR_ONBOARDING",
       onboarding.id,
       prisma,
       "VIEW_PDF",
@@ -839,7 +918,11 @@ export const sendBackToVendor = async (
     }
 
     const tokenRecord = await prisma.$transaction(async (tx) => {
-      const token = await issueVendorAccessToken(onboarding.id, tx);
+      const token = await issueAccessToken(
+        "VENDOR_ONBOARDING",
+        onboarding.id,
+        tx,
+      );
 
       await tx.vendorOnboarding.update({
         where: { id: onboarding.id },
@@ -887,17 +970,21 @@ export const getVendorOnboardingPdfByToken = async (
   try {
     const { token } = req.params;
 
-    const tokenRecord = await prisma.vendorAccessToken.findUnique({
+    const tokenRecord = await prisma.accessToken.findUnique({
       where: { token: token as string },
     });
 
-    if (!tokenRecord || tokenRecord.purpose !== "VIEW_PDF") {
+    if (
+      !tokenRecord ||
+      tokenRecord.subjectType !== "VENDOR_ONBOARDING" ||
+      tokenRecord.purpose !== "VIEW_PDF"
+    ) {
       throw new ApiError(404, "Invalid or expired link");
     }
 
     const url = await getOrGeneratePdfUrl(
       "VENDOR_ONBOARDING",
-      tokenRecord.onboardingId,
+      tokenRecord.subjectId,
     );
 
     res.redirect(url);
@@ -921,6 +1008,7 @@ export const saveVendorFormDraft = async (
       mobile,
       email,
       msmeVendor,
+      ndaObtained,
       bankName,
       bankBranch,
       ifscCode,
@@ -952,6 +1040,8 @@ export const saveVendorFormDraft = async (
           email,
           msmeVendor:
             msmeVendor === undefined ? undefined : msmeVendor === "true",
+          ndaObtained:
+            ndaObtained === undefined ? undefined : ndaObtained === "true",
           bankName,
           bankBranch,
           ifscCode,

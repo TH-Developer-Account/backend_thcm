@@ -2,6 +2,7 @@ import { ResolvedPermission } from "../kernel/rbac/userPermission";
 import {
   VendorAccessToken,
   VendorOnboarding,
+  MedicalClaim,
 } from "../prisma/generated/prisma/client";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -25,8 +26,19 @@ declare global {
     }
 
     interface Request {
-      vendorAccessToken?: VendorAccessToken & {
-        onboarding: VendorOnboarding;
+      vendorAccessToken?:
+        | { id: string; onboarding: VendorOnboarding }
+        | undefined;
+
+      medicalClaimAccessToken?: { id: string; claim: MedicalClaim } | undefined;
+
+      // A guest is not a User — no workspaceId, no permissions. Kept as
+      // a plain object rather than folded into Express.User, since the
+      // two identities are never valid at the same time on one request.
+      guest?: {
+        id: string;
+        mobile: string | null;
+        email: string | null;
       };
     }
   }
