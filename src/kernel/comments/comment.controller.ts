@@ -97,6 +97,8 @@ type ActivityActorInfo = {
   id: string;
   name: string;
   role: "STAFF" | "GUEST";
+  first_name: string;
+  last_name: string;
 } | null;
 
 const resolveActor = (
@@ -111,6 +113,8 @@ const resolveActor = (
     return {
       id: staffActor.id,
       name: `${staffActor.first_name} ${staffActor.last_name}`.trim(),
+      first_name: staffActor.first_name,
+      last_name: staffActor.last_name,
       role: "STAFF",
     };
   }
@@ -118,6 +122,8 @@ const resolveActor = (
     return {
       id: guestActor.id,
       name: guestActor.email ?? guestActor.mobile ?? "Guest",
+      first_name: "",
+      last_name: "Guest",
       role: "GUEST",
     };
   }
@@ -442,7 +448,9 @@ export const getActivityFeed = async (
         workflowId: true,
         createdAt: true,
         actor: { select: { id: true, first_name: true, last_name: true } },
-        actorGuest: { select: { id: true, mobile: true, email: true } },
+        actorGuest: {
+          select: { id: true, mobile: true, email: true },
+        },
         stage: {
           select: {
             stageOrder: true,
