@@ -108,6 +108,43 @@ export const parseMedicalClaimListingPaginationParams = (
   return { reqPageIndex, reqPageSize };
 };
 
+// ── sorting ──────────────────────────────────────────────────────────────
+
+// Maps each whitelisted sortBy key (as sent by the frontend) to the actual
+// Prisma field to order by. A whitelist — not raw pass-through — because an
+// unrecognized key handed straight to Prisma's `orderBy` would throw at the
+// DB layer; unknown keys fall back to the default safely. Mirrors
+// resolveVendorListingOrderBy in vendorOnboarding.helper.ts.
+const MEDICAL_CLAIM_SORT_FIELD_MAP: Record<string, string> = {
+  employeeName: "employeeName",
+  ticketNumber: "ticketNumber",
+  referenceNumber: "referenceNumber",
+  status: "status",
+  created_at: "created_at",
+  updated_at: "updated_at",
+};
+
+const DEFAULT_MEDICAL_CLAIM_SORT_FIELD = "created_at";
+const DEFAULT_MEDICAL_CLAIM_SORT_ORDER = "desc";
+
+// Resolves raw sortBy/sortOrder query values into a Prisma-safe `orderBy`
+// object. Kept pure so it can be unit-tested without mocking Express/Prisma.
+export const resolveMedicalClaimListingOrderBy = (
+  sortBy: string | undefined,
+  sortOrder: string | undefined,
+): Record<string, "asc" | "desc"> => {
+  const field =
+    MEDICAL_CLAIM_SORT_FIELD_MAP[sortBy ?? ""] ??
+    DEFAULT_MEDICAL_CLAIM_SORT_FIELD;
+
+  const direction =
+    sortOrder === "asc" || sortOrder === "desc"
+      ? sortOrder
+      : DEFAULT_MEDICAL_CLAIM_SORT_ORDER;
+
+  return { [field]: direction };
+};
+
 // Format: MED-<4-letter employee code>-<timestamp>, e.g. MED-SYED-20260811143205
 // Mirrors generateVendorOnboardingReferenceNumber exactly.
 export function generateMedicalClaimReferenceNumber(

@@ -26,6 +26,7 @@ import { APP_KEY } from "./mediclaim.routes";
 import {
   buildMedicalClaimWhereClause,
   parseMedicalClaimListingPaginationParams,
+  resolveMedicalClaimListingOrderBy,
   MedicalClaimListingTab,
   resolveMedicalClaimSubjectIdsForApprovalTab,
   generateMedicalClaimReferenceNumber,
@@ -438,12 +439,17 @@ export const listMedicalClaims = async (
       approvalSubjectIds,
     );
 
+    const orderBy = resolveMedicalClaimListingOrderBy(
+      req.query.sortBy as string,
+      req.query.sortOrder as string,
+    );
+
     const [items, total] = await Promise.all([
       prisma.medicalClaim.findMany({
         where,
         skip: reqPageIndex * reqPageSize,
         take: reqPageSize,
-        orderBy: { created_at: "desc" },
+        orderBy,
       }),
       prisma.medicalClaim.count({ where }),
     ]);
