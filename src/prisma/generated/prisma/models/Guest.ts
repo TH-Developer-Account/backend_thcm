@@ -29,6 +29,7 @@ export type GuestMinAggregateOutputType = {
   mobile: string | null
   email: string | null
   password: string | null
+  name: string | null
   createdAt: Date | null
 }
 
@@ -37,6 +38,7 @@ export type GuestMaxAggregateOutputType = {
   mobile: string | null
   email: string | null
   password: string | null
+  name: string | null
   createdAt: Date | null
 }
 
@@ -45,6 +47,7 @@ export type GuestCountAggregateOutputType = {
   mobile: number
   email: number
   password: number
+  name: number
   createdAt: number
   _all: number
 }
@@ -55,6 +58,7 @@ export type GuestMinAggregateInputType = {
   mobile?: true
   email?: true
   password?: true
+  name?: true
   createdAt?: true
 }
 
@@ -63,6 +67,7 @@ export type GuestMaxAggregateInputType = {
   mobile?: true
   email?: true
   password?: true
+  name?: true
   createdAt?: true
 }
 
@@ -71,6 +76,7 @@ export type GuestCountAggregateInputType = {
   mobile?: true
   email?: true
   password?: true
+  name?: true
   createdAt?: true
   _all?: true
 }
@@ -152,6 +158,7 @@ export type GuestGroupByOutputType = {
   mobile: string | null
   email: string | null
   password: string | null
+  name: string | null
   createdAt: Date
   _count: GuestCountAggregateOutputType | null
   _min: GuestMinAggregateOutputType | null
@@ -181,6 +188,7 @@ export type GuestWhereInput = {
   mobile?: Prisma.StringNullableFilter<"Guest"> | string | null
   email?: Prisma.StringNullableFilter<"Guest"> | string | null
   password?: Prisma.StringNullableFilter<"Guest"> | string | null
+  name?: Prisma.StringNullableFilter<"Guest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Guest"> | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingListRelationFilter
   medicalClaims?: Prisma.MedicalClaimListRelationFilter
@@ -192,6 +200,7 @@ export type GuestOrderByWithRelationInput = {
   mobile?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrderInput | Prisma.SortOrder
+  name?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   vendorOnboardings?: Prisma.VendorOnboardingOrderByRelationAggregateInput
   medicalClaims?: Prisma.MedicalClaimOrderByRelationAggregateInput
@@ -206,6 +215,7 @@ export type GuestWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.GuestWhereInput[]
   NOT?: Prisma.GuestWhereInput | Prisma.GuestWhereInput[]
   password?: Prisma.StringNullableFilter<"Guest"> | string | null
+  name?: Prisma.StringNullableFilter<"Guest"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Guest"> | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingListRelationFilter
   medicalClaims?: Prisma.MedicalClaimListRelationFilter
@@ -217,6 +227,7 @@ export type GuestOrderByWithAggregationInput = {
   mobile?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrderInput | Prisma.SortOrder
+  name?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.GuestCountOrderByAggregateInput
   _max?: Prisma.GuestMaxOrderByAggregateInput
@@ -231,6 +242,7 @@ export type GuestScalarWhereWithAggregatesInput = {
   mobile?: Prisma.StringNullableWithAggregatesFilter<"Guest"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"Guest"> | string | null
   password?: Prisma.StringNullableWithAggregatesFilter<"Guest"> | string | null
+  name?: Prisma.StringNullableWithAggregatesFilter<"Guest"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Guest"> | Date | string
 }
 
@@ -239,6 +251,7 @@ export type GuestCreateInput = {
   mobile?: string | null
   email?: string | null
   password?: string | null
+  name?: string | null
   createdAt?: Date | string
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutGuestInput
   medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutGuestInput
@@ -250,6 +263,7 @@ export type GuestUncheckedCreateInput = {
   mobile?: string | null
   email?: string | null
   password?: string | null
+  name?: string | null
   createdAt?: Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutGuestInput
   medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutGuestInput
@@ -261,6 +275,7 @@ export type GuestUpdateInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutGuestNestedInput
   medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutGuestNestedInput
@@ -272,6 +287,7 @@ export type GuestUncheckedUpdateInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutGuestNestedInput
   medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutGuestNestedInput
@@ -283,6 +299,7 @@ export type GuestCreateManyInput = {
   mobile?: string | null
   email?: string | null
   password?: string | null
+  name?: string | null
   createdAt?: Date | string
 }
 
@@ -291,6 +308,7 @@ export type GuestUpdateManyMutationInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -299,6 +317,7 @@ export type GuestUncheckedUpdateManyInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -312,6 +331,7 @@ export type GuestCountOrderByAggregateInput = {
   mobile?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -320,6 +340,7 @@ export type GuestMaxOrderByAggregateInput = {
   mobile?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -328,6 +349,7 @@ export type GuestMinOrderByAggregateInput = {
   mobile?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  name?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -384,6 +406,7 @@ export type GuestCreateWithoutActivityLogsInput = {
   mobile?: string | null
   email?: string | null
   password?: string | null
+  name?: string | null
   createdAt?: Date | string
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutGuestInput
   medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutGuestInput
@@ -394,6 +417,7 @@ export type GuestUncheckedCreateWithoutActivityLogsInput = {
   mobile?: string | null
   email?: string | null
   password?: string | null
+  name?: string | null
   createdAt?: Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutGuestInput
   medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutGuestInput
@@ -420,6 +444,7 @@ export type GuestUpdateWithoutActivityLogsInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutGuestNestedInput
   medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutGuestNestedInput
@@ -430,6 +455,7 @@ export type GuestUncheckedUpdateWithoutActivityLogsInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutGuestNestedInput
   medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutGuestNestedInput
@@ -440,6 +466,7 @@ export type GuestCreateWithoutVendorOnboardingsInput = {
   mobile?: string | null
   email?: string | null
   password?: string | null
+  name?: string | null
   createdAt?: Date | string
   medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutGuestInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorGuestInput
@@ -450,6 +477,7 @@ export type GuestUncheckedCreateWithoutVendorOnboardingsInput = {
   mobile?: string | null
   email?: string | null
   password?: string | null
+  name?: string | null
   createdAt?: Date | string
   medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutGuestInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorGuestInput
@@ -476,6 +504,7 @@ export type GuestUpdateWithoutVendorOnboardingsInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutGuestNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorGuestNestedInput
@@ -486,6 +515,7 @@ export type GuestUncheckedUpdateWithoutVendorOnboardingsInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutGuestNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorGuestNestedInput
@@ -496,6 +526,7 @@ export type GuestCreateWithoutMedicalClaimsInput = {
   mobile?: string | null
   email?: string | null
   password?: string | null
+  name?: string | null
   createdAt?: Date | string
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutGuestInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorGuestInput
@@ -506,6 +537,7 @@ export type GuestUncheckedCreateWithoutMedicalClaimsInput = {
   mobile?: string | null
   email?: string | null
   password?: string | null
+  name?: string | null
   createdAt?: Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutGuestInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorGuestInput
@@ -532,6 +564,7 @@ export type GuestUpdateWithoutMedicalClaimsInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutGuestNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorGuestNestedInput
@@ -542,6 +575,7 @@ export type GuestUncheckedUpdateWithoutMedicalClaimsInput = {
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutGuestNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorGuestNestedInput
@@ -601,6 +635,7 @@ export type GuestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   mobile?: boolean
   email?: boolean
   password?: boolean
+  name?: boolean
   createdAt?: boolean
   vendorOnboardings?: boolean | Prisma.Guest$vendorOnboardingsArgs<ExtArgs>
   medicalClaims?: boolean | Prisma.Guest$medicalClaimsArgs<ExtArgs>
@@ -613,6 +648,7 @@ export type GuestSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   mobile?: boolean
   email?: boolean
   password?: boolean
+  name?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["guest"]>
 
@@ -621,6 +657,7 @@ export type GuestSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   mobile?: boolean
   email?: boolean
   password?: boolean
+  name?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["guest"]>
 
@@ -629,10 +666,11 @@ export type GuestSelectScalar = {
   mobile?: boolean
   email?: boolean
   password?: boolean
+  name?: boolean
   createdAt?: boolean
 }
 
-export type GuestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "mobile" | "email" | "password" | "createdAt", ExtArgs["result"]["guest"]>
+export type GuestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "mobile" | "email" | "password" | "name" | "createdAt", ExtArgs["result"]["guest"]>
 export type GuestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vendorOnboardings?: boolean | Prisma.Guest$vendorOnboardingsArgs<ExtArgs>
   medicalClaims?: boolean | Prisma.Guest$medicalClaimsArgs<ExtArgs>
@@ -654,6 +692,7 @@ export type $GuestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     mobile: string | null
     email: string | null
     password: string | null
+    name: string | null
     createdAt: Date
   }, ExtArgs["result"]["guest"]>
   composites: {}
@@ -1085,6 +1124,7 @@ export interface GuestFieldRefs {
   readonly mobile: Prisma.FieldRef<"Guest", 'String'>
   readonly email: Prisma.FieldRef<"Guest", 'String'>
   readonly password: Prisma.FieldRef<"Guest", 'String'>
+  readonly name: Prisma.FieldRef<"Guest", 'String'>
   readonly createdAt: Prisma.FieldRef<"Guest", 'DateTime'>
 }
     

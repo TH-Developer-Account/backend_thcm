@@ -4671,6 +4671,7 @@ export const GuestScalarFieldEnum = {
   mobile: 'mobile',
   email: 'email',
   password: 'password',
+  name: 'name',
   createdAt: 'createdAt'
 } as const
 
