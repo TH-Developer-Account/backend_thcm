@@ -27,6 +27,7 @@ import { getActiveWorkflowForSubject } from "@workflow/workflowSubject.helper";
 import {
   buildVendorOnboardingWhereClause,
   parseVendorListingPaginationParams,
+  resolveVendorListingOrderBy,
   VendorListingTab,
   resolveSubjectIdsForApprovalTab,
   generateVendorOnboardingReferenceNumber,
@@ -179,7 +180,7 @@ export const listVendorOnboardings = async (
     const userId = req.user?.id;
     const workspaceId = await resolveWorkspaceId(userId as string);
 
-    const { tab, search, pageSize, pageIndex } = req.query;
+    const { tab, search, pageSize, pageIndex, sortBy, sortOrder } = req.query;
     if (!userId) throw new ApiError(401, "Unauthorized");
 
     const vendorTab: VendorListingTab = [
@@ -211,10 +212,15 @@ export const listVendorOnboardings = async (
       approvalSubjectIds,
     );
 
+    const orderBy = resolveVendorListingOrderBy(
+      sortBy as string,
+      sortOrder as string,
+    );
+
     const [rows, totalCount] = await Promise.all([
       prisma.vendorOnboarding.findMany({
         where,
-        orderBy: { created_at: "desc" },
+        orderBy,
         skip: reqPageIndex * reqPageSize,
         take: reqPageSize,
         select: {

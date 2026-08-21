@@ -165,6 +165,44 @@ export const parseVendorListingPaginationParams = (
   return { reqPageIndex, reqPageSize };
 };
 
+// ── sorting ──────────────────────────────────────────────────────────────
+
+// Maps each whitelisted sortBy key (as sent by the frontend) to the actual
+// Prisma field to order by. A whitelist — not raw pass-through — because an
+// unrecognized or relation-shaped key handed straight to Prisma's `orderBy`
+// would throw at the DB layer; unknown keys fall back to the default safely.
+const VENDOR_LISTING_SORT_FIELD_MAP: Record<string, string> = {
+  referenceNumber: "referenceNumber",
+  vendorName: "vendorName",
+  vendorCode: "vendorCode",
+  vendorType: "vendorType",
+  companyCode: "companyCode",
+  status: "status",
+  created_at: "created_at",
+  updated_at: "updated_at",
+};
+
+const DEFAULT_VENDOR_LISTING_SORT_FIELD = "created_at";
+const DEFAULT_VENDOR_LISTING_SORT_ORDER = "desc";
+
+// Resolves raw sortBy/sortOrder query values into a Prisma-safe `orderBy`
+// object. Kept pure so it can be unit-tested without mocking Express/Prisma.
+export const resolveVendorListingOrderBy = (
+  sortBy: string | undefined,
+  sortOrder: string | undefined,
+): Record<string, "asc" | "desc"> => {
+  const field =
+    VENDOR_LISTING_SORT_FIELD_MAP[sortBy ?? ""] ??
+    DEFAULT_VENDOR_LISTING_SORT_FIELD;
+
+  const direction =
+    sortOrder === "asc" || sortOrder === "desc"
+      ? sortOrder
+      : DEFAULT_VENDOR_LISTING_SORT_ORDER;
+
+  return { [field]: direction };
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // generateVendorOnboardingReferenceNumber
 //
