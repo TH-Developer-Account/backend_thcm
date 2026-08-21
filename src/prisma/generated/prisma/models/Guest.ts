@@ -184,6 +184,7 @@ export type GuestWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Guest"> | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingListRelationFilter
   medicalClaims?: Prisma.MedicalClaimListRelationFilter
+  activityLogs?: Prisma.ActivityLogListRelationFilter
 }
 
 export type GuestOrderByWithRelationInput = {
@@ -194,6 +195,7 @@ export type GuestOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   vendorOnboardings?: Prisma.VendorOnboardingOrderByRelationAggregateInput
   medicalClaims?: Prisma.MedicalClaimOrderByRelationAggregateInput
+  activityLogs?: Prisma.ActivityLogOrderByRelationAggregateInput
 }
 
 export type GuestWhereUniqueInput = Prisma.AtLeast<{
@@ -207,6 +209,7 @@ export type GuestWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Guest"> | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingListRelationFilter
   medicalClaims?: Prisma.MedicalClaimListRelationFilter
+  activityLogs?: Prisma.ActivityLogListRelationFilter
 }, "id" | "mobile" | "email">
 
 export type GuestOrderByWithAggregationInput = {
@@ -239,6 +242,7 @@ export type GuestCreateInput = {
   createdAt?: Date | string
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutGuestInput
   medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutGuestInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorGuestInput
 }
 
 export type GuestUncheckedCreateInput = {
@@ -249,6 +253,7 @@ export type GuestUncheckedCreateInput = {
   createdAt?: Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutGuestInput
   medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutGuestInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorGuestInput
 }
 
 export type GuestUpdateInput = {
@@ -259,6 +264,7 @@ export type GuestUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutGuestNestedInput
   medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutGuestNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorGuestNestedInput
 }
 
 export type GuestUncheckedUpdateInput = {
@@ -269,6 +275,7 @@ export type GuestUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutGuestNestedInput
   medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutGuestNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorGuestNestedInput
 }
 
 export type GuestCreateManyInput = {
@@ -324,6 +331,22 @@ export type GuestMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
 }
 
+export type GuestCreateNestedOneWithoutActivityLogsInput = {
+  create?: Prisma.XOR<Prisma.GuestCreateWithoutActivityLogsInput, Prisma.GuestUncheckedCreateWithoutActivityLogsInput>
+  connectOrCreate?: Prisma.GuestCreateOrConnectWithoutActivityLogsInput
+  connect?: Prisma.GuestWhereUniqueInput
+}
+
+export type GuestUpdateOneWithoutActivityLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.GuestCreateWithoutActivityLogsInput, Prisma.GuestUncheckedCreateWithoutActivityLogsInput>
+  connectOrCreate?: Prisma.GuestCreateOrConnectWithoutActivityLogsInput
+  upsert?: Prisma.GuestUpsertWithoutActivityLogsInput
+  disconnect?: Prisma.GuestWhereInput | boolean
+  delete?: Prisma.GuestWhereInput | boolean
+  connect?: Prisma.GuestWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GuestUpdateToOneWithWhereWithoutActivityLogsInput, Prisma.GuestUpdateWithoutActivityLogsInput>, Prisma.GuestUncheckedUpdateWithoutActivityLogsInput>
+}
+
 export type GuestCreateNestedOneWithoutVendorOnboardingsInput = {
   create?: Prisma.XOR<Prisma.GuestCreateWithoutVendorOnboardingsInput, Prisma.GuestUncheckedCreateWithoutVendorOnboardingsInput>
   connectOrCreate?: Prisma.GuestCreateOrConnectWithoutVendorOnboardingsInput
@@ -356,6 +379,62 @@ export type GuestUpdateOneWithoutMedicalClaimsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GuestUpdateToOneWithWhereWithoutMedicalClaimsInput, Prisma.GuestUpdateWithoutMedicalClaimsInput>, Prisma.GuestUncheckedUpdateWithoutMedicalClaimsInput>
 }
 
+export type GuestCreateWithoutActivityLogsInput = {
+  id?: string
+  mobile?: string | null
+  email?: string | null
+  password?: string | null
+  createdAt?: Date | string
+  vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutGuestInput
+  medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutGuestInput
+}
+
+export type GuestUncheckedCreateWithoutActivityLogsInput = {
+  id?: string
+  mobile?: string | null
+  email?: string | null
+  password?: string | null
+  createdAt?: Date | string
+  vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutGuestInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutGuestInput
+}
+
+export type GuestCreateOrConnectWithoutActivityLogsInput = {
+  where: Prisma.GuestWhereUniqueInput
+  create: Prisma.XOR<Prisma.GuestCreateWithoutActivityLogsInput, Prisma.GuestUncheckedCreateWithoutActivityLogsInput>
+}
+
+export type GuestUpsertWithoutActivityLogsInput = {
+  update: Prisma.XOR<Prisma.GuestUpdateWithoutActivityLogsInput, Prisma.GuestUncheckedUpdateWithoutActivityLogsInput>
+  create: Prisma.XOR<Prisma.GuestCreateWithoutActivityLogsInput, Prisma.GuestUncheckedCreateWithoutActivityLogsInput>
+  where?: Prisma.GuestWhereInput
+}
+
+export type GuestUpdateToOneWithWhereWithoutActivityLogsInput = {
+  where?: Prisma.GuestWhereInput
+  data: Prisma.XOR<Prisma.GuestUpdateWithoutActivityLogsInput, Prisma.GuestUncheckedUpdateWithoutActivityLogsInput>
+}
+
+export type GuestUpdateWithoutActivityLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutGuestNestedInput
+  medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutGuestNestedInput
+}
+
+export type GuestUncheckedUpdateWithoutActivityLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutGuestNestedInput
+  medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutGuestNestedInput
+}
+
 export type GuestCreateWithoutVendorOnboardingsInput = {
   id?: string
   mobile?: string | null
@@ -363,6 +442,7 @@ export type GuestCreateWithoutVendorOnboardingsInput = {
   password?: string | null
   createdAt?: Date | string
   medicalClaims?: Prisma.MedicalClaimCreateNestedManyWithoutGuestInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorGuestInput
 }
 
 export type GuestUncheckedCreateWithoutVendorOnboardingsInput = {
@@ -372,6 +452,7 @@ export type GuestUncheckedCreateWithoutVendorOnboardingsInput = {
   password?: string | null
   createdAt?: Date | string
   medicalClaims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutGuestInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorGuestInput
 }
 
 export type GuestCreateOrConnectWithoutVendorOnboardingsInput = {
@@ -397,6 +478,7 @@ export type GuestUpdateWithoutVendorOnboardingsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   medicalClaims?: Prisma.MedicalClaimUpdateManyWithoutGuestNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorGuestNestedInput
 }
 
 export type GuestUncheckedUpdateWithoutVendorOnboardingsInput = {
@@ -406,6 +488,7 @@ export type GuestUncheckedUpdateWithoutVendorOnboardingsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   medicalClaims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutGuestNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorGuestNestedInput
 }
 
 export type GuestCreateWithoutMedicalClaimsInput = {
@@ -415,6 +498,7 @@ export type GuestCreateWithoutMedicalClaimsInput = {
   password?: string | null
   createdAt?: Date | string
   vendorOnboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutGuestInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorGuestInput
 }
 
 export type GuestUncheckedCreateWithoutMedicalClaimsInput = {
@@ -424,6 +508,7 @@ export type GuestUncheckedCreateWithoutMedicalClaimsInput = {
   password?: string | null
   createdAt?: Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutGuestInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorGuestInput
 }
 
 export type GuestCreateOrConnectWithoutMedicalClaimsInput = {
@@ -449,6 +534,7 @@ export type GuestUpdateWithoutMedicalClaimsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUpdateManyWithoutGuestNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorGuestNestedInput
 }
 
 export type GuestUncheckedUpdateWithoutMedicalClaimsInput = {
@@ -458,6 +544,7 @@ export type GuestUncheckedUpdateWithoutMedicalClaimsInput = {
   password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorOnboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutGuestNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorGuestNestedInput
 }
 
 
@@ -468,11 +555,13 @@ export type GuestUncheckedUpdateWithoutMedicalClaimsInput = {
 export type GuestCountOutputType = {
   vendorOnboardings: number
   medicalClaims: number
+  activityLogs: number
 }
 
 export type GuestCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vendorOnboardings?: boolean | GuestCountOutputTypeCountVendorOnboardingsArgs
   medicalClaims?: boolean | GuestCountOutputTypeCountMedicalClaimsArgs
+  activityLogs?: boolean | GuestCountOutputTypeCountActivityLogsArgs
 }
 
 /**
@@ -499,6 +588,13 @@ export type GuestCountOutputTypeCountMedicalClaimsArgs<ExtArgs extends runtime.T
   where?: Prisma.MedicalClaimWhereInput
 }
 
+/**
+ * GuestCountOutputType without action
+ */
+export type GuestCountOutputTypeCountActivityLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityLogWhereInput
+}
+
 
 export type GuestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -508,6 +604,7 @@ export type GuestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdAt?: boolean
   vendorOnboardings?: boolean | Prisma.Guest$vendorOnboardingsArgs<ExtArgs>
   medicalClaims?: boolean | Prisma.Guest$medicalClaimsArgs<ExtArgs>
+  activityLogs?: boolean | Prisma.Guest$activityLogsArgs<ExtArgs>
   _count?: boolean | Prisma.GuestCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["guest"]>
 
@@ -539,6 +636,7 @@ export type GuestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
 export type GuestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vendorOnboardings?: boolean | Prisma.Guest$vendorOnboardingsArgs<ExtArgs>
   medicalClaims?: boolean | Prisma.Guest$medicalClaimsArgs<ExtArgs>
+  activityLogs?: boolean | Prisma.Guest$activityLogsArgs<ExtArgs>
   _count?: boolean | Prisma.GuestCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GuestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -549,6 +647,7 @@ export type $GuestPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     vendorOnboardings: Prisma.$VendorOnboardingPayload<ExtArgs>[]
     medicalClaims: Prisma.$MedicalClaimPayload<ExtArgs>[]
+    activityLogs: Prisma.$ActivityLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -952,6 +1051,7 @@ export interface Prisma__GuestClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vendorOnboardings<T extends Prisma.Guest$vendorOnboardingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guest$vendorOnboardingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorOnboardingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   medicalClaims<T extends Prisma.Guest$medicalClaimsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guest$medicalClaimsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MedicalClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  activityLogs<T extends Prisma.Guest$activityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guest$activityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1424,6 +1524,30 @@ export type Guest$medicalClaimsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.MedicalClaimScalarFieldEnum | Prisma.MedicalClaimScalarFieldEnum[]
+}
+
+/**
+ * Guest.activityLogs
+ */
+export type Guest$activityLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ActivityLog
+   */
+  select?: Prisma.ActivityLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ActivityLog
+   */
+  omit?: Prisma.ActivityLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityLogInclude<ExtArgs> | null
+  where?: Prisma.ActivityLogWhereInput
+  orderBy?: Prisma.ActivityLogOrderByWithRelationInput | Prisma.ActivityLogOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActivityLogScalarFieldEnum | Prisma.ActivityLogScalarFieldEnum[]
 }
 
 /**

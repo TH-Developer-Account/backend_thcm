@@ -606,23 +606,26 @@ model WorkFlowTemplateUser {
 // ─────────────────────────────────────────────
 
 model ActivityLog {
-  id         String         @id @default(uuid())
-  actorId    String                         // who performed the action
-  action     ActivityAction
-  workflowId String?                        // set for approval-domain actions
-  stageId    String?                        // set for stage-level actions, null for DEVIATION_RAISED
-  metadata   Json?                          // typed in app layer (reason, budget delta, etc.)
-  createdAt  DateTime       @default(now())
-  subjectType WorkflowSubjectType
-  subjectId String                       
-
-  actor    User              @relation(fields: [actorId], references: [id])
-  workflow WorkflowInstance? @relation(fields: [workflowId], references: [id])
-  stage    StageInstance?    @relation(fields: [stageId], references: [id])
-
-  @@index([subjectId])           // primary timeline query
-  @@index([actorId])         // "what did this user do" query
-  @@index([workflowId])      // workflow-scoped audit query
+  id           String         @id @default(uuid())
+  actorId      String?                          // ← now optional
+  actorGuestId String?                          // ← new
+  action       ActivityAction
+  workflowId   String?
+  stageId      String?
+  metadata     Json?
+  createdAt    DateTime       @default(now())
+  subjectType  WorkflowSubjectType
+  subjectId    String
+ 
+  actor      User?             @relation(fields: [actorId], references: [id])
+  actorGuest Guest?            @relation(fields: [actorGuestId], references: [id])
+  workflow   WorkflowInstance? @relation(fields: [workflowId], references: [id])
+  stage      StageInstance?    @relation(fields: [stageId], references: [id])
+ 
+  @@index([subjectId])
+  @@index([actorId])
+  @@index([actorGuestId])
+  @@index([workflowId])
 }
 
 // ─────────────────────────────────────────────
@@ -1181,6 +1184,7 @@ model Guest {
 
   vendorOnboardings VendorOnboarding[]
   medicalClaims MedicalClaim[]
+  activityLogs ActivityLog[]
  
   @@index([mobile])
   @@index([email])

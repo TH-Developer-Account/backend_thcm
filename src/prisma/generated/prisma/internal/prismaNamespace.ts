@@ -4247,6 +4247,7 @@ export type WorkFlowTemplateUserScalarFieldEnum = (typeof WorkFlowTemplateUserSc
 export const ActivityLogScalarFieldEnum = {
   id: 'id',
   actorId: 'actorId',
+  actorGuestId: 'actorGuestId',
   action: 'action',
   workflowId: 'workflowId',
   stageId: 'stageId',
