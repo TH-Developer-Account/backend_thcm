@@ -107,7 +107,7 @@ const resolveActor = (
     id: string;
     mobile: string | null;
     email: string | null;
-    name: string;
+    name: string | null;
   } | null,
 ): ActivityActorInfo => {
   if (staffActor) {
