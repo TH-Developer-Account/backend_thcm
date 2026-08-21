@@ -219,7 +219,8 @@ export const submitMedicalClaimForm = async (
       // ── Guest linking — identity key is mobile, same as vendor onboarding ──
       const existingGuest = await tx.guest.findUnique({ where: { mobile } });
       const guest =
-        existingGuest ?? (await tx.guest.create({ data: { mobile, email } }));
+        existingGuest ??
+        (await tx.guest.create({ data: { mobile, email, name: patientName } }));
 
       if (!existingGuest && email) {
         const { plainPassword, hashedPassword } =

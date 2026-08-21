@@ -107,6 +107,7 @@ const resolveActor = (
     id: string;
     mobile: string | null;
     email: string | null;
+    name: string;
   } | null,
 ): ActivityActorInfo => {
   if (staffActor) {
@@ -123,7 +124,7 @@ const resolveActor = (
       id: guestActor.id,
       name: guestActor.email ?? guestActor.mobile ?? "Guest",
       first_name: "",
-      last_name: "Guest",
+      last_name: guestActor.name || "Guest",
       role: "GUEST",
     };
   }
@@ -449,7 +450,7 @@ export const getActivityFeed = async (
         createdAt: true,
         actor: { select: { id: true, first_name: true, last_name: true } },
         actorGuest: {
-          select: { id: true, mobile: true, email: true },
+          select: { id: true, mobile: true, email: true, name: true },
         },
         stage: {
           select: {
