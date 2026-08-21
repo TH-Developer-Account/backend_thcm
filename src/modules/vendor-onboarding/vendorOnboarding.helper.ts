@@ -55,14 +55,14 @@ interface WorkflowObject {
 }
 
 // ── constants ──────────────────────────────────────────────────────────────
-const VENDOR_INITIATION_STATUS = "AWAITING_VENDOR";
 
-const INITIATION_SEARCH_FIELDS = ["vendorName", "email", "mobile"] as const;
 const ONBOARDING_SEARCH_FIELDS = [
   "vendorName",
   "vendorCode",
   "vendorType",
   "companyCode",
+  "email",
+  "mobile",
 ] as const;
 
 export type VendorListingTab =
@@ -125,8 +125,7 @@ export const buildVendorOnboardingWhereClause = (
   search: string,
   approvalSubjectIds?: string[],
 ) => {
-  const searchableFields =
-    tab === "initiation" ? INITIATION_SEARCH_FIELDS : ONBOARDING_SEARCH_FIELDS;
+  const searchableFields = ONBOARDING_SEARCH_FIELDS;
 
   const searchFilter = search
     ? {
@@ -144,15 +143,9 @@ export const buildVendorOnboardingWhereClause = (
     };
   }
 
-  //   const statusFilter =
-  //     tab === "initiation"
-  //       ? { status: VENDOR_INITIATION_STATUS }
-  //       : { status: { not: VENDOR_INITIATION_STATUS } };
-
   return {
     workspaceId,
     initiatedById: userId,
-    // ...statusFilter,
     ...searchFilter,
   };
 };
