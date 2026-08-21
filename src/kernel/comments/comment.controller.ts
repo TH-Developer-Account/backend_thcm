@@ -82,6 +82,49 @@ const resolveUserIdsByEmail = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// resolveActor
+//
+// Flattens ActivityLog's two mutually-exclusive actor relations (staff
+// User vs Guest) — and Comment's single staff-only User — into one shape
+// so the frontend never has to know two relations exist or branch on
+// which one is present. Exactly one of staffActor/guestActor is ever set
+// on a given ActivityLog row (enforced at write time); Comment call sites
+// always pass null for guestActor since guests can't post comments today
+// (comments.routes.ts is requireAuth-gated).
+// ─────────────────────────────────────────────────────────────────────────────
+
+type ActivityActorInfo = {
+  id: string;
+  name: string;
+  role: "STAFF" | "GUEST";
+} | null;
+
+const resolveActor = (
+  staffActor: { id: string; first_name: string; last_name: string } | null,
+  guestActor: {
+    id: string;
+    mobile: string | null;
+    email: string | null;
+  } | null,
+): ActivityActorInfo => {
+  if (staffActor) {
+    return {
+      id: staffActor.id,
+      name: `${staffActor.first_name} ${staffActor.last_name}`.trim(),
+      role: "STAFF",
+    };
+  }
+  if (guestActor) {
+    return {
+      id: guestActor.id,
+      name: guestActor.email ?? guestActor.mobile ?? "Guest",
+      role: "GUEST",
+    };
+  }
+  return null;
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // POST /comments
 //
 // Adds an approver's comment to an Approval. Already app-agnostic: an
@@ -254,10 +297,7 @@ export const addCreatorComment = async (
     );
 
     if (!activeWorkflow) {
-      throw new ApiError(
-        400,
-        "No workflow has been assigned to this record yet. Comments can be added once a workflow is assigned.",
-      );
+      throw new ApiError(404, "No active workflow found for this subject");
     }
 
     const comment = await prisma.comment.create({
@@ -266,26 +306,25 @@ export const addCreatorComment = async (
         type,
         userId,
         workflowId: activeWorkflow.id,
-        approvalId: undefined,
       },
       include: {
         user: { select: { id: true, first_name: true, last_name: true } },
       },
     });
 
-    const currentStage = await prisma.stageInstance.findFirst({
+    const currentStageApprovals = await prisma.approval.findMany({
       where: {
-        workflowId: activeWorkflow.id,
-        stageOrder: activeWorkflow.currentStage,
-        isCurrentIteration: true,
+        stage: {
+          workflowId: activeWorkflow.id,
+          isCurrentIteration: true,
+          stageOrder: activeWorkflow.currentStage,
+        },
       },
-      include: { approvals: true },
+      select: { approverId: true },
     });
 
-    const approverIds = currentStage?.approvals.map((a) => a.approverId) ?? [];
-
     await notifyCommentRecipients({
-      recipientIds: approverIds.filter((id) => id !== userId),
+      recipientIds: currentStageApprovals.map((a) => a.approverId),
       workspaceId: activeWorkflow.workspaceId,
       subjectType,
       subjectId: subjectId as string,
@@ -403,6 +442,7 @@ export const getActivityFeed = async (
         workflowId: true,
         createdAt: true,
         actor: { select: { id: true, first_name: true, last_name: true } },
+        actorGuest: { select: { id: true, mobile: true, email: true } },
         stage: {
           select: {
             stageOrder: true,
@@ -416,8 +456,6 @@ export const getActivityFeed = async (
       orderBy: { createdAt: "asc" },
     });
 
-    type Actor = { id: string; first_name: string; last_name: string } | null;
-
     type StageContext = {
       stageOrder: number | null;
       stageName: string | null;
@@ -429,7 +467,7 @@ export const getActivityFeed = async (
       entryType: "COMMENT";
       id: string;
       message: string;
-      actor: Actor;
+      actor: ActivityActorInfo;
       workflowId: string;
       workflowType: string | null;
       isActiveWorkflow: boolean | null;
@@ -440,7 +478,7 @@ export const getActivityFeed = async (
       entryType: "CREATOR_COMMENT";
       id: string;
       message: string;
-      actor: Actor;
+      actor: ActivityActorInfo;
       workflowId: string;
       workflowType: string | null;
       isActiveWorkflow: boolean | null;
@@ -456,7 +494,7 @@ export const getActivityFeed = async (
       id: string;
       action: string;
       metadata: unknown;
-      actor: Actor;
+      actor: ActivityActorInfo;
       workflowId: string | null;
       workflowType: string | null;
       isActiveWorkflow: boolean | null;
@@ -475,7 +513,7 @@ export const getActivityFeed = async (
           entryType: "COMMENT",
           id: c.id,
           message: c.message,
-          actor: c.user,
+          actor: resolveActor(c.user, null),
           workflowId: c.approval!.stage.workflowId,
           workflowType: wf?.workflowType ?? null,
           isActiveWorkflow: wf?.isActive ?? null,
@@ -495,7 +533,7 @@ export const getActivityFeed = async (
           entryType: "CREATOR_COMMENT",
           id: c.id,
           message: c.message,
-          actor: c.user,
+          actor: resolveActor(c.user, null),
           workflowId: c.workflowId!,
           workflowType: wf?.workflowType ?? null,
           isActiveWorkflow: wf?.isActive ?? null,
@@ -513,7 +551,7 @@ export const getActivityFeed = async (
       id: a.id,
       action: a.action,
       metadata: a.metadata ?? null,
-      actor: a.actor,
+      actor: resolveActor(a.actor, a.actorGuest),
       workflowId: a.workflowId ?? null,
       workflowType: a.workflow?.workflowType ?? null,
       isActiveWorkflow: a.workflow?.isActive ?? null,
