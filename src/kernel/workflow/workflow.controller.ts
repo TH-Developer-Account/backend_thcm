@@ -803,10 +803,11 @@ export const activateFirstStageController = async (
         const activated = await activateFirstStageForResubmit(
           tx,
           workflow.id,
-          userId,
+          { type: "user", id: userId },
           getResubmitAction(workflow.subjectType),
           getResubmitStatus(workflow.subjectType),
         );
+
         firstStageInstanceId = activated.firstStageInstanceId;
         builtStages.push(...workflow.stages);
       }

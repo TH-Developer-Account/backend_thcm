@@ -689,7 +689,7 @@ export const resubmitGuestMedicalClaim = async (
       await activateFirstStageForResubmit(
         tx,
         activeWorkflow.id,
-        claim.initiatedById, // actorId convention — guest resubmits, but actorId is still the initiator, per the established convention throughout this app
+        { type: "guest", id: guestId },
         getResubmitAction(APP_KEY),
         getResubmitStatus(APP_KEY),
       );

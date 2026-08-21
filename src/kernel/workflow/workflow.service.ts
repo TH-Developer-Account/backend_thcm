@@ -29,6 +29,10 @@ interface AssignWorkflowParams {
   criteria?: Record<string, unknown>;
 }
 
+type ActivityActor =
+  | { type: "user"; id: string }
+  | { type: "guest"; id: string };
+
 type ApproveStageResult =
   | {
       kind: "advanced";
@@ -491,7 +495,7 @@ export const rejectStage = async ({
 export async function activateFirstStageForResubmit(
   tx: Prisma.TransactionClient,
   workflowId: string,
-  actorId: string,
+  actor: ActivityActor,
   resubmittedAction: ActivityAction,
   resubmittedStatus: string,
 ) {
@@ -556,7 +560,8 @@ export async function activateFirstStageForResubmit(
     data: {
       subjectType: workflow.subjectType,
       subjectId: workflow.subjectId,
-      actorId,
+      actorId: actor.type === "user" ? actor.id : null,
+      actorGuestId: actor.type === "guest" ? actor.id : null,
       action: resubmittedAction,
       workflowId: workflow.id,
       stageId: firstStage.id,
