@@ -634,6 +634,7 @@ export const closeVendorOnboarding = async (
         vendorName: true,
         vendorCode: true,
         referenceNumber: true,
+        email: true,
         initiatedBy: {
           select: { email: true },
         },
@@ -671,6 +672,19 @@ export const closeVendorOnboarding = async (
         to: initiatorEmail,
         cc: ccEmails.length ? ccEmails : undefined,
         subject: `Vendor Onboarding Closed — ${onboarding.vendorName ?? ""}`,
+        templateName: "vendor-onboarding-closed",
+        templateData: {
+          vendorName: onboarding.vendorName,
+          vendorCode: onboarding.vendorCode,
+          referenceNumber: onboarding.referenceNumber,
+        },
+      });
+    }
+
+    if (onboarding.email) {
+      await addMailJob({
+        to: onboarding.email,
+        subject: "Your Vendor Onboarding Is Complete — Tata Hitachi",
         templateName: "vendor-onboarding-closed",
         templateData: {
           vendorName: onboarding.vendorName,

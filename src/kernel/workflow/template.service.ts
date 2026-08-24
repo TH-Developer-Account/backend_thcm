@@ -250,6 +250,50 @@ export const deleteTemplate = async (
   });
 };
 
+export type WorkflowListScope = "ALL" | "CREATED_BY_ME" | "ASSIGNED_TO_ME";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// buildScopeFilter
+//
+// Single place that turns a tab selection into a Prisma where-fragment.
+// Flat switch, not a registry — there are exactly 3 fixed tabs, not an
+// open set keyed by subject type, so a map/registry here would be an
+// abstraction with no second axis to justify it.
+//
+// CREATED_BY_ME  → templates this caller authored, ADMIN or USER owned.
+// ASSIGNED_TO_ME → ADMIN-owned templates this caller is assigned to via
+//                  WorkFlowTemplateUser (self-assigned USER templates are
+//                  deliberately excluded here — those belong on "created",
+//                  not "assigned").
+// ALL            → union of the two above for a regular caller. Super
+//                  admins keep the pre-existing behavior of seeing every
+//                  template in the workspace on this tab (returns
+//                  `undefined`, i.e. no extra restriction).
+// ─────────────────────────────────────────────────────────────────────────────
+
+const buildScopeFilter = (
+  scope: WorkflowListScope,
+  caller: { userId: string; isSuperAdmin: boolean },
+): Record<string, any> | undefined => {
+  const createdByMe = { created_by_id: caller.userId };
+  const assignedToMe = {
+    ownerType: "ADMIN" as const,
+    workFlowUsers: { some: { userId: caller.userId } },
+  };
+
+  switch (scope) {
+    case "CREATED_BY_ME":
+      return createdByMe;
+    case "ASSIGNED_TO_ME":
+      return assignedToMe;
+    case "ALL":
+    default:
+      return caller.isSuperAdmin
+        ? undefined
+        : { OR: [createdByMe, assignedToMe] };
+  }
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // getTemplates
 //
@@ -275,6 +319,7 @@ export const getTemplates = async (
     limit,
     sortBy,
     sortOrder,
+    scope = "ALL",
   } = query;
 
   const where: any = { isReusable: true };
@@ -282,9 +327,24 @@ export const getTemplates = async (
   if (workspaceId) where.workspaceId = workspaceId;
   if (isActive !== undefined) where.isActive = isActive === "true";
 
-  if (!caller.isSuperAdmin) {
-    where.workFlowUsers = { some: { userId: caller.userId } };
+  // Visibility + search both need `where.OR`/`where.AND` slots — combine
+  // them into one `where.AND` array instead of letting either overwrite
+  // the other.
+  const andConditions: Record<string, any>[] = [];
+
+  const scopeFilter = buildScopeFilter(scope as WorkflowListScope, caller);
+  if (scopeFilter) andConditions.push(scopeFilter);
+
+  if (search?.trim()) {
+    andConditions.push({
+      OR: [
+        { name: { contains: search.trim(), mode: "insensitive" } },
+        { description: { contains: search.trim(), mode: "insensitive" } },
+      ],
+    });
   }
+
+  if (andConditions.length) where.AND = andConditions;
 
   // ✅ Advanced Filters
   if (filters) {
@@ -295,22 +355,15 @@ export const getTemplates = async (
 
     if (apps?.length) {
       where.appId = {
-        in: Array.isArray(apps) ? apps : [apps], // fallback safety
+        in: Array.isArray(apps) ? apps : [apps],
       };
     }
 
     if (createdBy?.length) {
       where.created_by_id = {
-        in: Array.isArray(createdBy) ? createdBy : [createdBy], // fallback safety
+        in: Array.isArray(createdBy) ? createdBy : [createdBy],
       };
     }
-  }
-
-  if (search?.trim()) {
-    where.OR = [
-      { name: { contains: search.trim(), mode: "insensitive" } },
-      { description: { contains: search.trim(), mode: "insensitive" } },
-    ];
   }
 
   // Whitelist allowed sort fields to prevent arbitrary column injection
