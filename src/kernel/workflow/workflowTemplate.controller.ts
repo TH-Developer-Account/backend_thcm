@@ -150,7 +150,15 @@ export const getTemplates = async (req: Request, res: Response) => {
       limit = 10,
       sortBy = "created_at",
       sortOrder = "desc",
+      scope = "ALL",
     } = req.query;
+
+    if (!["ALL", "CREATED_BY_ME", "ASSIGNED_TO_ME"].includes(scope as string)) {
+      throw new ApiError(
+        400,
+        `Invalid scope "${scope}" — must be "ALL", "CREATED_BY_ME", or "ASSIGNED_TO_ME"`,
+      );
+    }
 
     const result = await service.getTemplates(
       {
@@ -162,6 +170,7 @@ export const getTemplates = async (req: Request, res: Response) => {
         sortOrder,
         filters,
         search,
+        scope,
       },
       { userId, isSuperAdmin: user?.isSuperAdmin ?? false },
     );
@@ -173,7 +182,6 @@ export const getTemplates = async (req: Request, res: Response) => {
       .json({ success: false, error: err.message });
   }
 };
-
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /workflow-templates/:templateId
 // ─────────────────────────────────────────────────────────────────────────────

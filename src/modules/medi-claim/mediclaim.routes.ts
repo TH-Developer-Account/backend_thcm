@@ -17,10 +17,11 @@ import {
   listGuestMedicalClaims,
   getGuestMedicalClaimById,
   resubmitGuestMedicalClaim,
+  setMedicalClaimBillApprovedAmounts,
 } from "./mediclaim.controller";
 
 const router = Router();
-const APP_KEY = "MEDICAL_CLAIM";
+export const APP_KEY = "MEDICAL_CLAIM";
 const MODULE = "MEDICAL_CLAIM_INITIATION";
 
 const upload = multer({ storage: multer.memoryStorage() });
@@ -75,6 +76,13 @@ router.post(
   requireAuth,
   authorize(APP_KEY, MODULE, "write"),
   asyncHandler(closeMedicalClaim),
+);
+
+router.patch(
+  "/:id/bills/approved-amounts",
+  requireAuth,
+  authorize(APP_KEY, MODULE, "write"),
+  asyncHandler(setMedicalClaimBillApprovedAmounts),
 );
 
 // ── First-touch, token-based (AWAITING_EX_EMPLOYEE only) ──

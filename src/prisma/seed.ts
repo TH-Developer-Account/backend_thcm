@@ -3,6 +3,7 @@ import { faker } from "@faker-js/faker";
 import {
   MARKETING_ACTIVITY_PLANNER,
   VENDOR_ONBOARDING,
+  MEDICAL_CLAIM,
   EVENT_PLANNING_CALENDAR,
   branchData,
   eventNameData,
@@ -21,7 +22,12 @@ async function main() {
   // ─────────────────────────────────────────────
   // STEP 1: CLEAN ALL TABLES
   // ─────────────────────────────────────────────
-
+  await prisma.importExportLog.deleteMany();
+  await prisma.notification.deleteMany();
+  await prisma.vendorOnboardingDocument.deleteMany();
+  await prisma.vendorOnboarding.deleteMany();
+  await prisma.medicalClaim.deleteMany();
+  await prisma.medicalClaimBill.deleteMany();
   await prisma.approval.deleteMany();
   await prisma.stageInstance.deleteMany();
   await prisma.workflowInstance.deleteMany();
@@ -79,11 +85,15 @@ async function main() {
   const vendorApp = await prisma.app.create({
     data: { key: "VENDOR_ONBOARDING", name: VENDOR_ONBOARDING },
   });
+  const mediclaimApp = await prisma.app.create({
+    data: { key: "MEDICAL_CLAIM", name: MEDICAL_CLAIM },
+  });
 
   await prisma.workspaceApp.createMany({
     data: [
       { workspaceId: workspace.id, appId: mapApp.id },
       { workspaceId: workspace.id, appId: vendorApp.id },
+      { workspaceId: workspace.id, appId: mediclaimApp.id },
     ],
   });
   console.log("✅ Apps enabled: MAP, Vendor Onboarding");
@@ -109,6 +119,13 @@ async function main() {
       key: "VENDOR_INITIATION",
       name: "Vendor Initiation",
       appId: vendorApp.id,
+    },
+  });
+  const mediclaimModule = await prisma.module.create({
+    data: {
+      key: "MEDICAL_CLAIM_INITIATION",
+      name: "Medical Claim Initiation",
+      appId: mediclaimApp.id,
     },
   });
 
@@ -147,6 +164,8 @@ async function main() {
           { action: "write", moduleId: crfModule.id },
           { action: "read", moduleId: vendorOnboardingModule.id },
           { action: "write", moduleId: vendorOnboardingModule.id },
+          { action: "read", moduleId: mediclaimModule.id },
+          { action: "write", moduleId: mediclaimModule.id },
         ],
       },
     },

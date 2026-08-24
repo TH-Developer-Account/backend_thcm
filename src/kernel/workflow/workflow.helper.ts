@@ -3,8 +3,10 @@ import {
   StageStatus,
   ApprovalStatus,
   Prisma,
+  WorkflowSubjectType,
 } from "../../prisma/generated/prisma/client";
 import ApiError from "@shared/utils/apiError";
+import { budgetMap } from "@shared/utils/contants";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // forkTemplateForClarify
@@ -25,9 +27,69 @@ import ApiError from "@shared/utils/apiError";
 
 type Tx = Prisma.TransactionClient;
 
+export const evaluateBudget = (
+  selectedValue: string,
+  actualValue: number,
+): boolean => {
+  const range = budgetMap[selectedValue];
+  if (!range) return false;
+  const { min, max } = range;
+  if (max === null) return actualValue >= min;
+  return actualValue >= min && actualValue <= max;
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// templateMatchResolvers  ✅ NEW
+//
+// assignWorkflowController used to hardcode budget-based matching, but budget
+// only means something for EVENT_PROPOSAL. This is the single place that
+// knows how each subject type picks a template out of the candidate list —
+// same strategy-map shape as workflowSubject.helper.ts, so adding a new app's
+// matching rule means adding one entry here, not touching the controller.
+//
+// EVENT_PROPOSAL    → budget range match against template.metaData_1
+// VENDOR_ONBOARDING → STUB: first active template, no criteria yet
+// ─────────────────────────────────────────────────────────────────────────────
+
+type CandidateTemplate = Prisma.WorkflowTemplateGetPayload<{
+  include: {
+    stages: { include: { approvers: true } };
+  };
+}>;
+
+export const templateMatchResolvers: Record<
+  WorkflowSubjectType,
+  (
+    templates: CandidateTemplate[],
+    criteria: Record<string, unknown> | undefined,
+  ) => CandidateTemplate | undefined
+> = {
+  EVENT_PROPOSAL: (templates, criteria) => {
+    const budget = criteria?.budget;
+    if (budget === undefined) return undefined;
+    return templates.find((t) =>
+      evaluateBudget(t.metaData_1 || "", Number(budget)),
+    );
+  },
+
+  // STUB — no matching criteria decided yet for Vendor Onboarding.
+  // Replace with a real resolver once that's defined; until then this
+  // just takes the first active template configured for the workspace/app.
+  VENDOR_ONBOARDING: (templates, criteria) => {
+    const { workflowId } = criteria || {};
+    return templates.find((t) => t.id === workflowId);
+  },
+
+  MEDICAL_CLAIM: (templates) => {
+    return templates.find(
+      (t) => t.isActive === true && t.ownerType === "ADMIN",
+    );
+  },
+};
+
 export const forkTemplateForClarify = async (
   tx: Tx,
-  originalTemplate: {
+  baseTemplate: {
     name: string;
     description: string;
     workspaceId: string;
@@ -46,13 +108,13 @@ export const forkTemplateForClarify = async (
 ) => {
   return tx.workflowTemplate.create({
     data: {
-      name: `${originalTemplate.name} (edited)`,
-      description: originalTemplate.description,
-      workspaceId: originalTemplate.workspaceId,
-      appId: originalTemplate.appId,
-      metaData_1: originalTemplate.metaData_1,
-      metaData_2: originalTemplate.metaData_2,
-      metaData_3: originalTemplate.metaData_3,
+      name: `${baseTemplate.name} (edited)`,
+      description: baseTemplate.description,
+      workspaceId: baseTemplate.workspaceId,
+      appId: baseTemplate.appId,
+      metaData_1: baseTemplate.metaData_1,
+      metaData_2: baseTemplate.metaData_2,
+      metaData_3: baseTemplate.metaData_3,
       ownerType: "USER",
       isReusable: false,
       created_by_id: userId,
@@ -170,7 +232,10 @@ export const assertTemplateAssignable = async (
   });
 
   if (!template) throw new ApiError(404, "Workflow template not found");
-  if (!template.isActive || !template.isReusable) {
+  // if (!template.isActive || !template.isReusable) {
+  //   throw new ApiError(400, "This template is not available for use");
+  // }
+  if (!template.isActive) {
     throw new ApiError(400, "This template is not available for use");
   }
   if (template.appId !== params.appId) {

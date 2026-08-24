@@ -28,11 +28,14 @@ import { getActiveWorkflowForSubject } from "@workflow/workflowSubject.helper";
 import {
   buildVendorOnboardingWhereClause,
   parseVendorListingPaginationParams,
+  resolveVendorListingOrderBy,
+  maskUnsubmittedVendorOnboardingFields,
   VendorListingTab,
   resolveSubjectIdsForApprovalTab,
   generateVendorOnboardingReferenceNumber,
   mapVendorOnboardingToXlsxRow,
   VENDOR_ONBOARDING_EXPORT_COLUMN_WIDTHS,
+  isExternalApproverInWorkflow,
 } from "./vendorOnboarding.helper";
 import { vendorOnboardingExportQueue } from "./vendorOnboardingExport.queue";
 import { createPendingLog } from "@import-export/importExportLog.services";
@@ -183,7 +186,7 @@ export const listVendorOnboardings = async (
     const userId = req.user?.id;
     const workspaceId = await resolveWorkspaceId(userId as string);
 
-    const { tab, search, pageSize, pageIndex } = req.query;
+    const { tab, search, pageSize, pageIndex, sortBy, sortOrder } = req.query;
     if (!userId) throw new ApiError(401, "Unauthorized");
 
     const vendorTab: VendorListingTab = [
@@ -215,10 +218,15 @@ export const listVendorOnboardings = async (
       approvalSubjectIds,
     );
 
+    const orderBy = resolveVendorListingOrderBy(
+      sortBy as string,
+      sortOrder as string,
+    );
+
     const [rows, totalCount] = await Promise.all([
       prisma.vendorOnboarding.findMany({
         where,
-        orderBy: { created_at: "desc" },
+        orderBy,
         skip: reqPageIndex * reqPageSize,
         take: reqPageSize,
         select: {
@@ -284,21 +292,32 @@ export const getVendorOnboardingById = async (
       id as string,
     );
 
-    const documentsWithSignedUrls = await Promise.all(
-      onboarding.documents.map(async (doc) => ({
-        ...doc,
-        fileUrl: await getSignedImageUrl(doc.s3Key),
-      })),
-    );
+    // Vendor hasn't submitted yet (still drafting or hasn't started) — no
+    // point signing S3 URLs for documents that shouldn't be shown, and a
+    // pre-submission record has none attached via the draft path anyway.
+    const documentsWithSignedUrls =
+      onboarding.status === "AWAITING_VENDOR"
+        ? []
+        : await Promise.all(
+            onboarding.documents.map(async (doc) => ({
+              ...doc,
+              fileUrl: await getSignedImageUrl(doc.s3Key),
+            })),
+          );
 
     // initiatedBy is the Prisma relation name; renamed to created_by in the
     // response to match the shape the frontend already consumes for EPC.
     const { initiatedBy, ...onboardingWithoutInitiatedBy } = onboarding;
 
+    const responseData =
+      onboarding.status === "AWAITING_VENDOR"
+        ? maskUnsubmittedVendorOnboardingFields(onboardingWithoutInitiatedBy)
+        : onboardingWithoutInitiatedBy;
+
     res.status(200).json({
       success: true,
       data: {
-        ...onboardingWithoutInitiatedBy,
+        ...responseData,
         documents: documentsWithSignedUrls,
         created_by: initiatedBy,
         activeWorkflow,
@@ -419,14 +438,27 @@ export const updateEmployeeFields = async (
     });
     if (!onboarding) throw new ApiError(404, "Vendor onboarding not found");
 
+    const activeWorkflow = await getActiveWorkflowForSubject(
+      "VENDOR_ONBOARDING",
+      id as string,
+    );
+
+    let isExternal = false;
+
+    if (activeWorkflow) {
+      // @ts-ignore
+      isExternal = isExternalApproverInWorkflow(activeWorkflow, userId);
+    }
+
     // ── Guard: only the initiator or a superadmin can edit ───────────────────
-    if (onboarding.initiatedById !== userId) {
+    if (!isExternal && onboarding.initiatedById !== userId) {
       throw new ApiError(403, "You do not have access to this request");
     }
 
     if (
       onboarding.status !== "VENDOR_SUBMITTED" &&
-      onboarding.status !== "IN_REVIEW"
+      onboarding.status !== "IN_REVIEW" &&
+      !isExternal
     ) {
       throw new ApiError(400, "This request is not awaiting employee review");
     }
@@ -558,6 +590,13 @@ export const sendForApproval = async (
 // POST /vendor-onboarding/:id/close
 // Final approver's explicit close action, after WorkflowInstance reaches APPROVED —
 // same two-step shape as EPC_CLOSED.
+// POST /vendor-onboarding/:id/close
+// Final approver's explicit close action, after WorkflowInstance reaches APPROVED —
+// same two-step shape as EPC_CLOSED.
+//
+// After close, notifies the initiator (to) with every approver from the
+// workflow's final iteration in cc — so everyone who acted on the request
+// sees it's done. Mail is enqueued strictly after the transaction commits.
 export const closeVendorOnboarding = async (
   req: Request,
   res: Response,
@@ -574,11 +613,39 @@ export const closeVendorOnboarding = async (
         subjectId: id as string,
         isActive: true,
       },
+      include: {
+        stages: {
+          where: { isCurrentIteration: true },
+          include: {
+            approvals: {
+              select: {
+                approver: {
+                  select: { email: true },
+                },
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!activeWorkflow || activeWorkflow.status !== "APPROVED") {
       throw new ApiError(400, "Workflow must be fully approved before closing");
     }
+
+    const onboarding = await prisma.vendorOnboarding.findUnique({
+      where: { id: id as string },
+      select: {
+        vendorName: true,
+        vendorCode: true,
+        referenceNumber: true,
+        email: true,
+        initiatedBy: {
+          select: { email: true },
+        },
+      },
+    });
+    if (!onboarding) throw new ApiError(404, "Vendor onboarding not found");
 
     await prisma.$transaction(async (tx) => {
       await tx.vendorOnboarding.update({
@@ -595,6 +662,42 @@ export const closeVendorOnboarding = async (
         },
       });
     });
+
+    // ── Post-commit notification — never allowed to affect the response ──────
+    const initiatorEmail = onboarding.initiatedBy.email;
+    if (initiatorEmail) {
+      const approverEmails = activeWorkflow.stages
+        .flatMap((stage) => stage.approvals.map((a) => a.approver.email))
+        .filter(
+          (email): email is string => !!email && email !== initiatorEmail,
+        );
+      const ccEmails = [...new Set(approverEmails)];
+
+      await addMailJob({
+        to: initiatorEmail,
+        cc: ccEmails.length ? ccEmails : undefined,
+        subject: `Vendor Onboarding Closed — ${onboarding.vendorName ?? ""}`,
+        templateName: "vendor-onboarding-closed",
+        templateData: {
+          vendorName: onboarding.vendorName,
+          vendorCode: onboarding.vendorCode,
+          referenceNumber: onboarding.referenceNumber,
+        },
+      });
+    }
+
+    if (onboarding.email) {
+      await addMailJob({
+        to: onboarding.email,
+        subject: "Your Vendor Onboarding Is Complete — Tata Hitachi",
+        templateName: "vendor-onboarding-closed",
+        templateData: {
+          vendorName: onboarding.vendorName,
+          vendorCode: onboarding.vendorCode,
+          referenceNumber: onboarding.referenceNumber,
+        },
+      });
+    }
 
     res
       .status(200)
@@ -660,6 +763,7 @@ export const getVendorFormByToken = async (
         gstin: onboarding.gstin,
         pan: onboarding.pan,
         entityRegNo: onboarding.entityRegNo,
+        ndaObtained: onboarding.ndaObtained,
         // lets the frontend show "already uploaded ✓" per document type
         // instead of asking for all 6 again
         alreadyUploadedDocumentTypes: existingDocuments.map(
@@ -941,6 +1045,7 @@ export const saveVendorFormDraft = async (
       mobile,
       email,
       msmeVendor,
+      ndaObtained,
       bankName,
       bankBranch,
       ifscCode,
@@ -972,6 +1077,8 @@ export const saveVendorFormDraft = async (
           email,
           msmeVendor:
             msmeVendor === undefined ? undefined : msmeVendor === "true",
+          ndaObtained:
+            ndaObtained === undefined ? undefined : ndaObtained === "true",
           bankName,
           bankBranch,
           ifscCode,

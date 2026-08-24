@@ -396,6 +396,7 @@ export type WorkFlowTemplateUserScalarFieldEnum = (typeof WorkFlowTemplateUserSc
 export const ActivityLogScalarFieldEnum = {
   id: 'id',
   actorId: 'actorId',
+  actorGuestId: 'actorGuestId',
   action: 'action',
   workflowId: 'workflowId',
   stageId: 'stageId',
@@ -798,6 +799,7 @@ export const MedicalClaimBillScalarFieldEnum = {
   billName: 'billName',
   billDate: 'billDate',
   amount: 'amount',
+  approvedClaimAmount: 'approvedClaimAmount',
   s3Key: 's3Key'
 } as const
 
@@ -818,6 +820,7 @@ export const GuestScalarFieldEnum = {
   mobile: 'mobile',
   email: 'email',
   password: 'password',
+  name: 'name',
   createdAt: 'createdAt'
 } as const
 

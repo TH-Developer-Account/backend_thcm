@@ -5,7 +5,7 @@ import ApiError from "@shared/utils/apiError";
 import { resolveWorkspaceId } from "@import-export/export.controller";
 import { notify } from "@notifications/notification.services";
 import { addMailJob } from "@mail/mail.service";
-import { uploadToS3 } from "@shared/utils/aws-s3.services";
+import { getSignedImageUrl } from "@shared/utils/aws-s3.services";
 import {
   issueAccessToken,
   markAccessTokenUsed,
@@ -16,79 +16,35 @@ import {
   getResubmitAction,
   getResubmitStatus,
 } from "@workflow/workflowSubject.helper";
-import { activateFirstStageForResubmit } from "@workflow/workflow.service";
+import {
+  activateFirstStageForResubmit,
+  notifyStageApprovers,
+  assignWorkflow,
+} from "@workflow/workflow.service";
+import { APP_KEY } from "./mediclaim.routes";
 
 import {
   buildMedicalClaimWhereClause,
   parseMedicalClaimListingPaginationParams,
+  resolveMedicalClaimListingOrderBy,
   MedicalClaimListingTab,
   resolveMedicalClaimSubjectIdsForApprovalTab,
   generateMedicalClaimReferenceNumber,
   computeMedicalClaimEligibility,
-  getBillAttachmentExtension,
+  upsertMedicalClaimBills,
 } from "./mediclaim.helper";
 
-interface MedicalClaimBillInputRaw {
-  claimHead: string;
-  billNo?: string;
-  billName?: string;
-  billDate?: string;
-  amount: number;
-  attachmentIndex?: number | null; // may be missing/null before validation
-}
-
-interface MedicalClaimBillInput extends Omit<
-  MedicalClaimBillInputRaw,
-  "attachmentIndex"
-> {
-  attachmentIndex: number; // guaranteed present after validateBillAttachments
-}
-
-// ── Shared bill validation + persistence ────────────────────────────────────
-// Extracted once the TS narrowing issue surfaced — one place proves AND
-// types the "every bill has an attachment" guarantee, instead of two
-// runtime checks that couldn't be trusted by the compiler.
-function validateBillAttachments(
-  bills: MedicalClaimBillInputRaw[],
-  files: Express.Multer.File[],
-): MedicalClaimBillInput[] {
-  const missingIndex = bills.findIndex(
-    (b) => b.attachmentIndex == null || !files[b.attachmentIndex],
+const attachSignedUrlsToBills = async <T extends { s3Key: string | null }>(
+  bills: T[],
+): Promise<Array<T & { fileUrl: string | null }>> =>
+  Promise.all(
+    bills.map(async (bill, index) => ({
+      ...bill,
+      attachmentIndex: index,
+      fileUrl: bill.s3Key ? await getSignedImageUrl(bill.s3Key) : null,
+    })),
   );
-  if (missingIndex !== -1) {
-    throw new ApiError(
-      400,
-      `An attachment is required for bill #${missingIndex + 1} (${bills[missingIndex].claimHead})`,
-    );
-  }
-  return bills as MedicalClaimBillInput[];
-}
 
-async function persistMedicalClaimBills(
-  tx: any,
-  claimId: string,
-  bills: MedicalClaimBillInput[],
-  files: Express.Multer.File[],
-) {
-  for (const [index, bill] of bills.entries()) {
-    const file = files[bill.attachmentIndex];
-    const extension = getBillAttachmentExtension(file.mimetype);
-    const s3Key = `medical-claim-bills/${claimId}/${index}-${bill.claimHead}.${extension}`;
-    await uploadToS3(s3Key, file.buffer, file.mimetype);
-
-    await tx.medicalClaimBill.create({
-      data: {
-        claimId,
-        claimHead: bill.claimHead as any,
-        billNo: bill.billNo,
-        billName: bill.billName,
-        billDate: bill.billDate ? new Date(bill.billDate) : null,
-        amount: bill.amount,
-        s3Key,
-      },
-    });
-  }
-}
 // POST /medical-claims — staff initiates
 export const initiateMedicalClaim = async (
   req: Request,
@@ -119,15 +75,11 @@ export const initiateMedicalClaim = async (
         },
       });
 
-      const tokenRecord = await issueAccessToken(
-        "MEDICAL_CLAIM",
-        created.id,
-        tx,
-      );
+      const tokenRecord = await issueAccessToken(APP_KEY, created.id, tx);
 
       await tx.activityLog.create({
         data: {
-          subjectType: "MEDICAL_CLAIM",
+          subjectType: APP_KEY,
           subjectId: created.id,
           actorId: userId,
           action: "MEDICAL_CLAIM_INITIATED",
@@ -140,7 +92,7 @@ export const initiateMedicalClaim = async (
     await addMailJob({
       to: email,
       subject: "Medical Claim — Action Required",
-      templateName: "medical-claim-initiation",
+      templateName: "medi-claim-initiation",
       templateData: {
         employeeName,
         formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${result.tokenRecord.token}`,
@@ -179,12 +131,12 @@ export const resendMedicalClaimLink = async (
       );
     }
 
-    const tokenRecord = await issueAccessToken("MEDICAL_CLAIM", claim.id);
+    const tokenRecord = await issueAccessToken(APP_KEY, claim.id);
 
     await addMailJob({
       to: claim.email as string,
       subject: "Medical Claim — Action Required (Reminder)",
-      templateName: "medical-claim-initiation",
+      templateName: "medi-claim-initiation",
       templateData: {
         employeeName: claim.employeeName,
         formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${tokenRecord.token}`,
@@ -206,8 +158,22 @@ export const getMedicalClaimFormByToken = async (
   next: NextFunction,
 ) => {
   try {
-    const { claim } = req.medicalClaimAccessToken!;
-    res.status(200).json({ success: true, data: claim });
+    const { id: claimId } = req.medicalClaimAccessToken!.claim;
+    const claim = await prisma.medicalClaim.findUnique({
+      where: { id: claimId },
+      include: { bills: true },
+    });
+    if (!claim) throw new ApiError(404, "Medical claim not found");
+
+    const billsWithSignedUrls = await attachSignedUrlsToBills(claim.bills);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ...claim,
+        bills: billsWithSignedUrls,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -244,7 +210,6 @@ export const submitMedicalClaimForm = async (
     if (!Array.isArray(bills) || bills.length === 0) {
       throw new ApiError(400, "At least one claim head entry is required");
     }
-    const validatedBills = validateBillAttachments(bills, files);
     if (!grade)
       throw new ApiError(400, "Grade is required to compute eligibility");
     if (!mobile) throw new ApiError(400, "A mobile number is required");
@@ -255,7 +220,8 @@ export const submitMedicalClaimForm = async (
       // ── Guest linking — identity key is mobile, same as vendor onboarding ──
       const existingGuest = await tx.guest.findUnique({ where: { mobile } });
       const guest =
-        existingGuest ?? (await tx.guest.create({ data: { mobile, email } }));
+        existingGuest ??
+        (await tx.guest.create({ data: { mobile, email, name: patientName } }));
 
       if (!existingGuest && email) {
         const { plainPassword, hashedPassword } =
@@ -278,11 +244,6 @@ export const submitMedicalClaimForm = async (
           `No eligibility configured for grade "${grade}"`,
         );
 
-      const totalClaimed = validatedBills.reduce(
-        (sum, b: any) => sum + Number(b.amount),
-        0,
-      );
-
       const updated = await tx.medicalClaim.update({
         where: { id: claim.id },
         data: {
@@ -295,7 +256,6 @@ export const submitMedicalClaimForm = async (
           medicalAdvanceTaken,
           eligibleAmount: eligibility.eligibleAmount,
           alreadySettled: eligibility.alreadySettled,
-          totalClaimed,
           declarationAcceptedAt: new Date(),
           signatureName,
           signatureDate,
@@ -304,17 +264,41 @@ export const submitMedicalClaimForm = async (
         },
       });
 
-      await persistMedicalClaimBills(tx, updated.id, validatedBills, files);
+      const totalClaimed = await upsertMedicalClaimBills(
+        tx,
+        updated.id,
+        bills,
+        files,
+        { requireAttachment: true },
+      );
+      await tx.medicalClaim.update({
+        where: { id: updated.id },
+        data: { totalClaimed },
+      });
+
       await markAccessTokenUsed(tokenId, tx);
+
+      const app = await tx.app.findUnique({
+        where: { key: APP_KEY },
+        select: { id: true },
+      });
+      if (!app) {
+        throw new ApiError(404, `App "${APP_KEY}" not found`);
+      }
 
       // Workflow assignment — same marker vendor onboarding's sendForApproval
       // uses; assignWorkflow's real signature wasn't in the files reviewed
-      // for this pass, so this is left explicit rather than guessed.
-      // await assignWorkflow({ subjectType: "MEDICAL_CLAIM", subjectId: updated.id, tx });
+      const assigned = await assignWorkflow(tx, {
+        subjectType: APP_KEY,
+        subjectId: updated.id,
+        workspaceId: updated.workspaceId,
+        appId: app.id,
+        userId: updated.initiatedById,
+      });
 
       await tx.activityLog.create({
         data: {
-          subjectType: "MEDICAL_CLAIM",
+          subjectType: APP_KEY,
           subjectId: updated.id,
           actorId: updated.initiatedById,
           action: "MEDICAL_CLAIM_SUBMITTED",
@@ -322,7 +306,7 @@ export const submitMedicalClaimForm = async (
       });
       await tx.activityLog.create({
         data: {
-          subjectType: "MEDICAL_CLAIM",
+          subjectType: APP_KEY,
           subjectId: updated.id,
           actorId: updated.initiatedById,
           action: "MEDICAL_CLAIM_SENT_FOR_APPROVAL",
@@ -337,8 +321,19 @@ export const submitMedicalClaimForm = async (
         body: `${updated.employeeName ?? "The ex-employee"} has submitted their medical claim. It is now in the approval workflow.`,
       });
 
-      return updated;
+      return { updated, assigned };
     });
+
+    if (result.assigned.stageOneId) {
+      await notifyStageApprovers({
+        workflowId: result.assigned.workflowInstance.id,
+        subjectType: APP_KEY,
+        subjectId: result.updated.id,
+        appId: APP_KEY,
+        stageId: result.assigned.stageOneId,
+        approverIds: result.assigned.stageOneApproverIds,
+      });
+    }
 
     if (guestPlainPassword) {
       await addMailJob({
@@ -379,19 +374,31 @@ export const saveMedicalClaimDraft = async (
       mobile,
       email,
     } = req.body;
+    const bills = req.body.bills ? JSON.parse(req.body.bills) : [];
+    const files = (req.files as Express.Multer.File[]) ?? [];
 
-    await prisma.medicalClaim.update({
-      where: { id: claim.id },
-      data: {
-        grade,
-        location,
-        patientName,
-        claimCover,
-        spouseName,
-        medicalAdvanceTaken,
-        mobile,
-        email,
-      },
+    if (!Array.isArray(bills)) {
+      throw new ApiError(400, "Bills must be an array");
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.medicalClaim.update({
+        where: { id: claim.id },
+        data: {
+          grade,
+          location,
+          patientName,
+          claimCover,
+          spouseName,
+          medicalAdvanceTaken,
+          mobile,
+          email,
+        },
+      });
+
+      await upsertMedicalClaimBills(tx, claim.id, bills, files, {
+        requireAttachment: false,
+      });
     });
 
     res.status(200).json({ success: true, message: "Draft saved" });
@@ -432,12 +439,17 @@ export const listMedicalClaims = async (
       approvalSubjectIds,
     );
 
+    const orderBy = resolveMedicalClaimListingOrderBy(
+      req.query.sortBy as string,
+      req.query.sortOrder as string,
+    );
+
     const [items, total] = await Promise.all([
       prisma.medicalClaim.findMany({
         where,
         skip: reqPageIndex * reqPageSize,
         take: reqPageSize,
-        orderBy: { created_at: "desc" },
+        orderBy,
       }),
       prisma.medicalClaim.count({ where }),
     ]);
@@ -468,12 +480,17 @@ export const getMedicalClaimById = async (
     });
     if (!claim) throw new ApiError(404, "Medical claim not found");
 
-    const activeWorkflow = await getActiveWorkflowForSubject(
-      "MEDICAL_CLAIM",
-      claim.id,
-    );
+    const activeWorkflow = await getActiveWorkflowForSubject(APP_KEY, claim.id);
 
-    res.status(200).json({ success: true, data: { ...claim, activeWorkflow } });
+    const billsWithSignedUrls = await attachSignedUrlsToBills(claim.bills);
+    res.status(200).json({
+      success: true,
+      data: {
+        ...claim,
+        bills: billsWithSignedUrls,
+        activeWorkflow,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -521,7 +538,7 @@ export const closeMedicalClaim = async (
       });
       await tx.activityLog.create({
         data: {
-          subjectType: "MEDICAL_CLAIM",
+          subjectType: APP_KEY,
           subjectId: claim.id,
           actorId: userId,
           action: "MEDICAL_CLAIM_CLOSED",
@@ -570,7 +587,27 @@ export const getGuestMedicalClaimById = async (
     if (!claim || claim.guestId !== guestId)
       throw new ApiError(404, "Claim not found");
 
-    res.status(200).json({ success: true, data: claim });
+    const latestClarification = await prisma.activityLog.findFirst({
+      where: {
+        subjectType: APP_KEY,
+        subjectId: claim.id,
+        action: "CLARIFY",
+      },
+      orderBy: { createdAt: "desc" },
+      select: { metadata: true, createdAt: true },
+    });
+
+    const billsWithSignedUrls = await attachSignedUrlsToBills(claim.bills);
+    res.status(200).json({
+      success: true,
+      data: {
+        ...claim,
+        correctionReason:
+          (latestClarification?.metadata as { reason?: string } | null)
+            ?.reason ?? null,
+        bills: billsWithSignedUrls,
+      },
+    });
   } catch (error) {
     next(error);
   }
@@ -608,7 +645,6 @@ export const resubmitGuestMedicalClaim = async (
     if (!Array.isArray(bills) || bills.length === 0) {
       throw new ApiError(400, "At least one claim head entry is required");
     }
-    const validatedBills = validateBillAttachments(bills, files);
 
     await prisma.$transaction(async (tx) => {
       const eligibility = await computeMedicalClaimEligibility(
@@ -623,12 +659,13 @@ export const resubmitGuestMedicalClaim = async (
           `No eligibility configured for grade "${grade}"`,
         );
 
-      const totalClaimed = validatedBills.reduce(
-        (sum, b: any) => sum + Number(b.amount),
-        0,
+      const totalClaimed = await upsertMedicalClaimBills(
+        tx,
+        claim.id,
+        bills,
+        files,
+        { requireAttachment: true },
       );
-
-      await tx.medicalClaimBill.deleteMany({ where: { claimId: claim.id } });
 
       await tx.medicalClaim.update({
         where: { id: claim.id },
@@ -645,11 +682,9 @@ export const resubmitGuestMedicalClaim = async (
         },
       });
 
-      await persistMedicalClaimBills(tx, claim.id, validatedBills, files);
-
       const activeWorkflow = await tx.workflowInstance.findFirst({
         where: {
-          subjectType: "MEDICAL_CLAIM",
+          subjectType: APP_KEY,
           subjectId: claim.id,
           isActive: true,
         },
@@ -661,9 +696,9 @@ export const resubmitGuestMedicalClaim = async (
       await activateFirstStageForResubmit(
         tx,
         activeWorkflow.id,
-        claim.initiatedById, // actorId convention — guest resubmits, but actorId is still the initiator, per the established convention throughout this app
-        getResubmitAction("MEDICAL_CLAIM"),
-        getResubmitStatus("MEDICAL_CLAIM"),
+        { type: "guest", id: guestId },
+        getResubmitAction(APP_KEY),
+        getResubmitStatus(APP_KEY),
       );
 
       await notify({
@@ -679,6 +714,96 @@ export const resubmitGuestMedicalClaim = async (
       success: true,
       message: "Claim updated and resubmitted for approval",
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// PATCH /medical-claims/:id/bills/approved-amounts
+// Non-external approvers only, on the claim's currently active stage —
+// separate step before the approve action itself, per product decision.
+export const setMedicalClaimBillApprovedAmounts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    const { id } = req.params;
+    const { bills } = req.body; // [{ billId, approvedClaimAmount }]
+    if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!Array.isArray(bills) || bills.length === 0) {
+      throw new ApiError(400, "At least one bill amount is required");
+    }
+
+    const claim = await prisma.medicalClaim.findUnique({
+      where: { id: id as string },
+    });
+    if (!claim) throw new ApiError(404, "Medical claim not found");
+
+    const activeWorkflow = await prisma.workflowInstance.findFirst({
+      where: {
+        subjectType: "MEDICAL_CLAIM",
+        subjectId: claim.id,
+        isActive: true,
+      },
+      select: { id: true },
+    });
+    if (!activeWorkflow)
+      throw new ApiError(404, "No active workflow found for this claim");
+
+    const approval = await prisma.approval.findFirst({
+      where: {
+        approverId: userId,
+        isExternalApprover: false,
+        stage: {
+          workflowId: activeWorkflow.id,
+          isCurrentIteration: true,
+          status: "IN_PROGRESS",
+        },
+      },
+    });
+    if (!approval) {
+      throw new ApiError(
+        403,
+        "You are not authorized to edit amounts for this claim's current stage",
+      );
+    }
+
+    const claimBillIds = new Set(
+      (
+        await prisma.medicalClaimBill.findMany({
+          where: { claimId: claim.id },
+          select: { id: true },
+        })
+      ).map((b) => b.id),
+    );
+    const invalid = bills.find((b: any) => !claimBillIds.has(b.billId));
+    if (invalid)
+      throw new ApiError(
+        400,
+        `Bill ${invalid.billId} does not belong to this claim`,
+      );
+
+    const claimBills = await prisma.medicalClaimBill.findMany({
+      where: { claimId: claim.id },
+      select: { id: true, amount: true },
+    });
+    const amountByBillId = new Map(claimBills.map((b) => [b.id, b.amount]));
+
+    bills.map((b: any) =>
+      prisma.medicalClaimBill.update({
+        where: { id: b.billId },
+        data: {
+          approvedClaimAmount:
+            b.approvedClaimAmount ?? amountByBillId.get(b.billId),
+        },
+      }),
+    );
+
+    res
+      .status(200)
+      .json({ success: true, message: "Approved amounts updated" });
   } catch (error) {
     next(error);
   }

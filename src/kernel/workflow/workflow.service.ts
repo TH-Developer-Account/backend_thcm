@@ -2,6 +2,7 @@ import { prisma } from "@shared/config/prisma";
 import { selectTemplate } from "./template.service";
 import { buildWorkflowStages } from "./workflow.helper";
 import { notify } from "@notifications/notification.services";
+import { addMailJob } from "@mail/mail.service";
 import ApiError from "@shared/utils/apiError";
 
 import { updateSubjectStatus } from "./workflowSubject.helper";
@@ -18,6 +19,20 @@ import {
   WorkflowSubjectType,
   ActivityAction,
 } from "../../prisma/generated/prisma/client";
+import { templateMatchResolvers } from "./workflow.helper";
+
+interface AssignWorkflowParams {
+  subjectType: WorkflowSubjectType;
+  subjectId: string;
+  workspaceId: string;
+  appId: string;
+  userId: string; // whose managed templates to search — see open question above
+  criteria?: Record<string, unknown>;
+}
+
+type ActivityActor =
+  | { type: "user"; id: string }
+  | { type: "guest"; id: string };
 
 type ApproveStageResult =
   | {
@@ -97,6 +112,63 @@ const notifyAboutWorkflowEvent = ({
 // see self-review note below.
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ─────────────────────────────────────────────────────────────────────────────
+// emailStageApprovers
+//
+// Same audience as notifyStageApprovers' in-app notification, just the email
+// leg — kept as its own function (not inlined) so a mail failure never
+// blocks the in-app notify loop next to it, and so it's independently
+// testable. Uses the generic approval-pending.hbs template (subject-type
+// agnostic, via subjectMeta.displayLabel) rather than the EPC-only
+// approval-approved.hbs, since this fires for EPC/Vendor/Medical Claim alike.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const emailStageApprovers = async ({
+  appName,
+  stageId,
+  approverIds,
+  subjectMeta,
+}: {
+  appName: string;
+  stageId: string;
+  approverIds: string[];
+  subjectMeta: SubjectNotificationMeta;
+}) => {
+  if (!approverIds.length) return;
+
+  const [approvers, stage] = await Promise.all([
+    prisma.user.findMany({
+      where: { id: { in: approverIds } },
+      select: { email: true, first_name: true, last_name: true },
+    }),
+    prisma.stageInstance.findUnique({
+      where: { id: stageId },
+      select: { stageName: true },
+    }),
+  ]);
+
+  const dashboardUrl = `${process.env.FRONTEND_URL ?? ""}${subjectMeta.link}`;
+
+  await Promise.all(
+    approvers
+      .filter((approver) => approver.email)
+      .map((approver) =>
+        addMailJob({
+          to: approver.email as string,
+          subject: `Approval required — ${subjectMeta.displayLabel}`,
+          templateName: "approval-pending",
+          templateData: {
+            appName,
+            approverName: `${approver.first_name} ${approver.last_name}`,
+            subjectLabel: subjectMeta.displayLabel,
+            stageName: stage?.stageName ?? "",
+            dashboardUrl,
+          },
+        }),
+      ),
+  );
+};
+
 export const notifyStageApprovers = async ({
   workflowId,
   subjectType,
@@ -115,7 +187,10 @@ export const notifyStageApprovers = async ({
   if (!approverIds.length) return;
 
   const [app, subjectMeta, workflow] = await Promise.all([
-    prisma.app.findUnique({ where: { id: appId }, select: { key: true } }),
+    prisma.app.findUnique({
+      where: { id: appId },
+      select: { key: true, name: true },
+    }),
     getSubjectNotificationMeta(subjectType, subjectId),
     prisma.workflowInstance.findUnique({
       where: { id: workflowId },
@@ -123,8 +198,8 @@ export const notifyStageApprovers = async ({
     }),
   ]);
 
-  await Promise.all(
-    approverIds.map((approverId) =>
+  await Promise.all([
+    ...approverIds.map((approverId) =>
       notifyAboutWorkflowEvent({
         workspaceId: workflow!.workspaceId,
         recipientId: approverId,
@@ -138,7 +213,13 @@ export const notifyStageApprovers = async ({
         extraMetadata: { workflowId, stageId },
       }),
     ),
-  );
+    emailStageApprovers({
+      appName: app?.name ?? "THCM",
+      stageId,
+      approverIds,
+      subjectMeta,
+    }),
+  ]);
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -361,25 +442,14 @@ export const approveStage = async ({
     });
 
     if (result.kind === "advanced") {
-      await Promise.all(
-        result.nextStageApproverIds.map((approverId) =>
-          notifyAboutWorkflowEvent({
-            workspaceId: workflow!.workspaceId,
-            recipientId: approverId,
-            appKey: app?.key,
-            subjectType: result.subjectType,
-            subjectId: result.subjectId,
-            subjectMeta,
-            type: "APPROVAL_PENDING",
-            title: "Approval required",
-            body: `${subjectMeta.displayLabel} is waiting on your approval.`,
-            extraMetadata: {
-              workflowId: result.workflowId,
-              stageId: result.nextStageId,
-            },
-          }),
-        ),
-      );
+      await notifyStageApprovers({
+        workflowId: result.workflowId,
+        subjectType: result.subjectType,
+        subjectId: result.subjectId,
+        appId: result.appId,
+        stageId: result.nextStageId,
+        approverIds: result.nextStageApproverIds,
+      });
     }
 
     if (result.kind === "final_approved" && subjectMeta.ownerId) {
@@ -481,7 +551,7 @@ export const rejectStage = async ({
 export async function activateFirstStageForResubmit(
   tx: Prisma.TransactionClient,
   workflowId: string,
-  actorId: string,
+  actor: ActivityActor,
   resubmittedAction: ActivityAction,
   resubmittedStatus: string,
 ) {
@@ -546,7 +616,8 @@ export async function activateFirstStageForResubmit(
     data: {
       subjectType: workflow.subjectType,
       subjectId: workflow.subjectId,
-      actorId,
+      actorId: actor.type === "user" ? actor.id : null,
+      actorGuestId: actor.type === "guest" ? actor.id : null,
       action: resubmittedAction,
       workflowId: workflow.id,
       stageId: firstStage.id,
@@ -559,5 +630,110 @@ export async function activateFirstStageForResubmit(
     subjectType: workflow.subjectType,
     subjectId: workflow.subjectId,
     appId: workflow.appId,
+  };
+}
+
+export async function assignWorkflow(
+  tx: Prisma.TransactionClient,
+  {
+    subjectType,
+    subjectId,
+    workspaceId,
+    appId,
+    userId,
+    criteria,
+  }: AssignWorkflowParams,
+) {
+  const matchResolver = templateMatchResolvers[subjectType];
+  if (!matchResolver) {
+    throw new ApiError(400, `Unknown workflow subject type "${subjectType}"`);
+  }
+
+  const existing = await tx.workflowInstance.findFirst({
+    where: { subjectType, subjectId, isActive: true },
+  });
+  if (existing) {
+    throw new ApiError(
+      409,
+      "An active workflow already exists for this record.",
+    );
+  }
+
+  const templates = await tx.workflowTemplate.findMany({
+    where: {
+      workspaceId,
+      appId,
+      isActive: true,
+    },
+    include: {
+      stages: { include: { approvers: true }, orderBy: { stageOrder: "asc" } },
+    },
+  });
+
+  if (!templates.length) {
+    throw new ApiError(
+      404,
+      "No workflow templates found for this workspace/app",
+    );
+  }
+
+  const matchedTemplate = matchResolver(templates, criteria);
+  if (!matchedTemplate) {
+    throw new ApiError(
+      400,
+      "No matching workflow template found for the given criteria",
+    );
+  }
+
+  const workflowInstance = await tx.workflowInstance.create({
+    data: {
+      templateId: matchedTemplate.id,
+      workspaceId,
+      appId,
+      subjectType,
+      subjectId,
+      currentStage: 1,
+      iteration: 1,
+      isActive: true,
+      workflowType: "STANDARD",
+      stages: {
+        create: matchedTemplate.stages.map((stage) => ({
+          stageOrder: stage.stageOrder,
+          strategy: stage.strategy,
+          minApprovals: stage.minApprovals,
+          stageName: stage.name,
+          iteration: 1,
+          isCurrentIteration: true,
+          status: stage.stageOrder === 1 ? "IN_PROGRESS" : "PENDING",
+          startedAt: stage.stageOrder === 1 ? new Date() : null,
+          approvals: {
+            create: stage.approvers.map((a) => ({
+              approverId: a.userId,
+              status: "PENDING",
+              isExternalApprover: a.isExternalApprover,
+            })),
+          },
+        })),
+      },
+    },
+    include: {
+      stages: {
+        where: { isCurrentIteration: true },
+        orderBy: { stageOrder: "asc" },
+        include: { approvals: { select: { id: true, approverId: true } } },
+      },
+    },
+  });
+
+  // Notification is deliberately NOT inside this function's transaction —
+  // same convention as everywhere else in this app (notify calls happen
+  // after commit, per your transaction-discipline principle). Caller is
+  // responsible for calling notifyStageApprovers itself, post-commit.
+  const stageOne = workflowInstance.stages.find((s) => s.stageOrder === 1);
+
+  return {
+    workflowInstance,
+    stageOneApproverIds: stageOne?.approvals.map((a) => a.approverId) ?? [],
+    stageOneId: stageOne?.id,
   };
 }

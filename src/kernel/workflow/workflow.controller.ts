@@ -10,7 +10,6 @@ import {
   Prisma,
   WorkflowSubjectType,
 } from "../../prisma/generated/prisma/client";
-import { budgetMap } from "@shared/utils/contants";
 import ApiError from "@shared/utils/apiError";
 import {
   updateSubjectStatus,
@@ -26,68 +25,7 @@ import {
   assertTemplateAssignable,
 } from "./workflow.helper";
 import { AuthenticatedUser } from "../../types/express";
-// ─────────────────────────────────────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────────────────────────────────────
-
-const evaluateBudget = (
-  selectedValue: string,
-  actualValue: number,
-): boolean => {
-  const range = budgetMap[selectedValue];
-  if (!range) return false;
-  const { min, max } = range;
-  if (max === null) return actualValue >= min;
-  return actualValue >= min && actualValue <= max;
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// templateMatchResolvers  ✅ NEW
-//
-// assignWorkflowController used to hardcode budget-based matching, but budget
-// only means something for EVENT_PROPOSAL. This is the single place that
-// knows how each subject type picks a template out of the candidate list —
-// same strategy-map shape as workflowSubject.helper.ts, so adding a new app's
-// matching rule means adding one entry here, not touching the controller.
-//
-// EVENT_PROPOSAL    → budget range match against template.metaData_1
-// VENDOR_ONBOARDING → STUB: first active template, no criteria yet
-// ─────────────────────────────────────────────────────────────────────────────
-
-type CandidateTemplate = Prisma.WorkflowTemplateGetPayload<{
-  include: {
-    stages: { include: { approvers: true } };
-  };
-}>;
-
-const templateMatchResolvers: Record<
-  WorkflowSubjectType,
-  (
-    templates: CandidateTemplate[],
-    criteria: Record<string, unknown> | undefined,
-  ) => CandidateTemplate | undefined
-> = {
-  EVENT_PROPOSAL: (templates, criteria) => {
-    const budget = criteria?.budget;
-    if (budget === undefined) return undefined;
-    return templates.find((t) =>
-      evaluateBudget(t.metaData_1 || "", Number(budget)),
-    );
-  },
-
-  // STUB — no matching criteria decided yet for Vendor Onboarding.
-  // Replace with a real resolver once that's defined; until then this
-  // just takes the first active template configured for the workspace/app.
-  VENDOR_ONBOARDING: (templates, criteria) => {
-    const { workflowId } = criteria || {};
-    return templates.find((t) => t.id === workflowId);
-  },
-
-  MEDICAL_CLAIM: (templates, criteria) => {
-    const { workflowId } = criteria || {};
-    return templates.find((t) => t.id === workflowId);
-  },
-};
+import { templateMatchResolvers, evaluateBudget } from "./workflow.helper";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /workflows/assign
@@ -865,10 +803,11 @@ export const activateFirstStageController = async (
         const activated = await activateFirstStageForResubmit(
           tx,
           workflow.id,
-          userId,
+          { type: "user", id: userId },
           getResubmitAction(workflow.subjectType),
           getResubmitStatus(workflow.subjectType),
         );
+
         firstStageInstanceId = activated.firstStageInstanceId;
         builtStages.push(...workflow.stages);
       }

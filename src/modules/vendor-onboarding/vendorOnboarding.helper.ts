@@ -2,15 +2,69 @@ import { prisma } from "@shared/config/prisma";
 import { VendorOnboarding } from "../../prisma/generated/prisma/client";
 import { CsvRow } from "@import-export/utils/csvWriter";
 
-// ── constants ──────────────────────────────────────────────────────────────
-const VENDOR_INITIATION_STATUS = "AWAITING_VENDOR";
+interface Approver {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+}
 
-const INITIATION_SEARCH_FIELDS = ["vendorName", "email", "mobile"] as const;
+interface Approval {
+  id: string;
+  status: "PENDING" | "APPROVED" | "REJECTED" | string;
+  isExternalApprover: boolean;
+  approver: Approver;
+}
+
+interface Stage {
+  id: string;
+  workflowId: string;
+  stageOrder: number;
+  stageName: string;
+  iteration: number;
+  isCurrentIteration: boolean;
+  strategy: "ALL" | "ANY" | string;
+  minApprovals: number | null;
+  startedAt: string | null;
+  dueAt: string | null;
+  escalatedTo: string | null;
+  status: "PENDING" | "IN_PROGRESS" | "APPROVED" | "REJECTED" | string;
+  approvals: Approval[];
+}
+
+interface WorkflowObject {
+  id: string;
+  templateId: string;
+  workspaceId: string;
+  iteration: number;
+  isActive: boolean;
+  workflowType: string;
+  status: string;
+  currentStage: number;
+  appId: string;
+  subjectType: string;
+  subjectId: string;
+  created_at: string;
+  updated_at: string;
+  template: {
+    id: string;
+    name: string;
+    description: string;
+    metaData_1: string;
+  };
+  stages: Stage[];
+}
+
+// ── constants ──────────────────────────────────────────────────────────────
+
 const ONBOARDING_SEARCH_FIELDS = [
   "vendorName",
   "vendorCode",
   "vendorType",
   "companyCode",
+  "email",
+  "mobile",
 ] as const;
 
 export type VendorListingTab =
@@ -73,8 +127,7 @@ export const buildVendorOnboardingWhereClause = (
   search: string,
   approvalSubjectIds?: string[],
 ) => {
-  const searchableFields =
-    tab === "initiation" ? INITIATION_SEARCH_FIELDS : ONBOARDING_SEARCH_FIELDS;
+  const searchableFields = ONBOARDING_SEARCH_FIELDS;
 
   const searchFilter = search
     ? {
@@ -92,15 +145,9 @@ export const buildVendorOnboardingWhereClause = (
     };
   }
 
-  const statusFilter =
-    tab === "initiation"
-      ? { status: VENDOR_INITIATION_STATUS }
-      : { status: { not: VENDOR_INITIATION_STATUS } };
-
   return {
     workspaceId,
     initiatedById: userId,
-    ...statusFilter,
     ...searchFilter,
   };
 };
@@ -118,6 +165,74 @@ export const parseVendorListingPaginationParams = (
   );
 
   return { reqPageIndex, reqPageSize };
+};
+
+// ── draft visibility ─────────────────────────────────────────────────────
+
+// While status is AWAITING_VENDOR, the vendor may have partially filled the
+// form via saveVendorFormDraft (or not started at all) — either way nothing
+// past the initial contact fields has been submitted yet, so it shouldn't be
+// visible to staff. vendorName/email/mobile stay visible since those are set
+// at initiation time, not by the vendor's draft. Kept pure so the masking
+// rule can be unit-tested without mocking Express/Prisma.
+export const maskUnsubmittedVendorOnboardingFields = <
+  T extends Record<string, unknown>,
+>(
+  onboarding: T,
+): T => ({
+  ...onboarding,
+  state: null,
+  city: null,
+  pinCode: null,
+  address: null,
+  msmeVendor: null,
+  bankName: null,
+  bankBranch: null,
+  ifscCode: null,
+  bankAddress: null,
+  accountNumber: null,
+  gstin: null,
+  pan: null,
+  entityRegNo: null,
+  vendorSubmittedAt: null,
+});
+
+// ── sorting ──────────────────────────────────────────────────────────────
+
+// Maps each whitelisted sortBy key (as sent by the frontend) to the actual
+// Prisma field to order by. A whitelist — not raw pass-through — because an
+// unrecognized or relation-shaped key handed straight to Prisma's `orderBy`
+// would throw at the DB layer; unknown keys fall back to the default safely.
+const VENDOR_LISTING_SORT_FIELD_MAP: Record<string, string> = {
+  referenceNumber: "referenceNumber",
+  vendorName: "vendorName",
+  vendorCode: "vendorCode",
+  vendorType: "vendorType",
+  companyCode: "companyCode",
+  status: "status",
+  created_at: "created_at",
+  updated_at: "updated_at",
+};
+
+const DEFAULT_VENDOR_LISTING_SORT_FIELD = "created_at";
+const DEFAULT_VENDOR_LISTING_SORT_ORDER = "desc";
+
+// Resolves raw sortBy/sortOrder query values into a Prisma-safe `orderBy`
+// object. Kept pure so it can be unit-tested without mocking Express/Prisma.
+export const resolveVendorListingOrderBy = (
+  sortBy: string | undefined,
+  sortOrder: string | undefined,
+): Record<string, "asc" | "desc"> => {
+  const field =
+    VENDOR_LISTING_SORT_FIELD_MAP[sortBy ?? ""] ??
+    DEFAULT_VENDOR_LISTING_SORT_FIELD;
+
+  const direction =
+    sortOrder === "asc" || sortOrder === "desc"
+      ? sortOrder
+      : DEFAULT_VENDOR_LISTING_SORT_ORDER;
+
+  return { [field]: direction };
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -215,4 +330,15 @@ export const VENDOR_ONBOARDING_EXPORT_COLUMN_WIDTHS: Record<string, number> = {
   "Bank Address": 30,
   "Entity Reg No": 20,
   "Onboarding Reason": 30,
+export const isExternalApproverInWorkflow = (
+  workflow: WorkflowObject,
+  userId: string,
+): boolean => {
+  for (const stage of workflow.stages) {
+    const approval = stage.approvals.find((a) => a.approver.id === userId);
+    if (approval) {
+      return approval.isExternalApprover === true;
+    }
+  }
+  return false; // userId not found among approvers at all
 };
