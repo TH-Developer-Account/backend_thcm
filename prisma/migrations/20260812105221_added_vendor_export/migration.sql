@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "ImportExportType" ADD VALUE 'VENDOR_ONBOARDING_EXPORT';

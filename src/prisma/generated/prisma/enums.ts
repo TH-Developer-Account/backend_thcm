@@ -162,7 +162,8 @@ export type OutcomeStatus = (typeof OutcomeStatus)[keyof typeof OutcomeStatus]
 export const ImportExportType = {
   LEAD_IMPORT: 'LEAD_IMPORT',
   LEAD_EXPORT: 'LEAD_EXPORT',
-  EPC_EXPORT: 'EPC_EXPORT'
+  EPC_EXPORT: 'EPC_EXPORT',
+  VENDOR_ONBOARDING_EXPORT: 'VENDOR_ONBOARDING_EXPORT'
 } as const
 
 export type ImportExportType = (typeof ImportExportType)[keyof typeof ImportExportType]

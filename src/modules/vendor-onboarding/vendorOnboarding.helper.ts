@@ -1,4 +1,6 @@
 import { prisma } from "@shared/config/prisma";
+import { VendorOnboarding } from "../../prisma/generated/prisma/client";
+import { CsvRow } from "@import-export/utils/csvWriter";
 
 interface Approver {
   id: string;
@@ -262,6 +264,72 @@ export function generateVendorOnboardingReferenceNumber(
   return `VON-${vendorCode}-${timestamp}`;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// mapVendorOnboardingToXlsxRow
+//
+// Single source of truth for "what does a VendorOnboarding row look like in
+// an export file". Used by both the single-record export
+// (exportVendorOnboardingById) and the bulk export
+// (vendorOnboardingExport.service.ts) — previously this field list was
+// duplicated inline in the single-record controller, which would have
+// silently drifted from the bulk export's row shape over time.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function mapVendorOnboardingToXlsxRow(
+  onboarding: VendorOnboarding,
+): CsvRow {
+  return {
+    "Reference Number": onboarding.referenceNumber,
+    Status: onboarding.status,
+    "Vendor Name": onboarding.vendorName ?? "",
+    State: onboarding.state ?? "",
+    City: onboarding.city ?? "",
+    "Pin Code": onboarding.pinCode ?? "",
+    Address: onboarding.address ?? "",
+    Mobile: onboarding.mobile ?? "",
+    Email: onboarding.email ?? "",
+    "MSME Vendor": onboarding.msmeVendor ?? "",
+    "Bank Name": onboarding.bankName ?? "",
+    "Bank Branch": onboarding.bankBranch ?? "",
+    "IFSC Code": onboarding.ifscCode ?? "",
+    "Bank Address": onboarding.bankAddress ?? "",
+    "Account Number": onboarding.accountNumber ?? "",
+    GSTIN: onboarding.gstin ?? "",
+    PAN: onboarding.pan ?? "",
+    "Entity Reg No": onboarding.entityRegNo ?? "",
+    "Vendor Submitted At": onboarding.vendorSubmittedAt?.toISOString() ?? "",
+    "Vendor Code": onboarding.vendorCode ?? "",
+    "Vendor Type": onboarding.vendorType ?? "",
+    "Company Code": onboarding.companyCode ?? "",
+    "Purchase Org": onboarding.purchaseOrg ?? "",
+    "Payment Term": onboarding.paymentTerm ?? "",
+    TDS: onboarding.tds ?? "",
+    "Vendor Category": onboarding.vendorCategory ?? "",
+    "Material Type": onboarding.materialType ?? "",
+    "Material Sub Type": onboarding.materialSubType ?? "",
+    "Self Assessment Obtained": onboarding.selfAssessmentObtained ?? "",
+    "NDA Obtained": onboarding.ndaObtained ?? "",
+    "GPA Obtained": onboarding.gpaObtained ?? "",
+    "Is Related Party": onboarding.isRelatedParty ?? "",
+    "Vendor Audit Report Prepared": onboarding.vendorAuditReportPrepared ?? "",
+    "Nature Of Service": onboarding.natureOfService ?? "",
+    "Onboarding Reason": onboarding.onboardingReason ?? "",
+    "Created At": onboarding.created_at.toISOString(),
+    "Updated At": onboarding.updated_at.toISOString(),
+  };
+}
+
+// Column width hints shared by both export paths — kept alongside the row
+// mapper so the two stay in sync (adding a field to one is a strong signal
+// to check the other).
+export const VENDOR_ONBOARDING_EXPORT_COLUMN_WIDTHS: Record<string, number> = {
+  "Reference Number": 24,
+  "Vendor Name": 25,
+  Address: 35,
+  Email: 28,
+  "Bank Address": 30,
+  "Entity Reg No": 20,
+  "Onboarding Reason": 30,
 export const isExternalApproverInWorkflow = (
   workflow: WorkflowObject,
   userId: string,

@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { randomUUID } from "crypto";
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 
@@ -54,22 +55,35 @@ export const enqueueEpcExport = async (
 
     const workspaceId = await resolveWorkspaceId(userId);
 
-    const job = await epcExportQueue.add("epc-dump", {
-      filters,
-      format,
-      requestedBy: userId,
-      logId: "", // placeholder — updated after log creation
-    });
+    // jobId generated up front and the log row created before the job is
+    // enqueued, rather than add() → createPendingLog() → job.updateData().
+    // That sequence had a real race: BullMQ can start processing a job
+    // within a few ms of add(), often faster than the two awaited DB calls
+    // that followed it — so the worker could call markLogProcessing()
+    // against a logId that was still "" (the placeholder) or hadn't been
+    // written back yet, and the update would fail with "no record found".
+    // Creating the log first and enqueueing with the real logId already
+    // attached removes the race instead of narrowing its window.
+    const jobId = randomUUID();
 
     const logId = await createPendingLog({
       type: "EPC_EXPORT",
       triggeredById: userId,
       workspaceId,
-      jobId: job.id!,
+      jobId,
       // epcId intentionally omitted — EPC_EXPORT is workspace-wide
     });
 
-    await job.updateData({ ...job.data, logId });
+    const job = await epcExportQueue.add(
+      "epc-dump",
+      {
+        filters,
+        format,
+        requestedBy: userId,
+        logId,
+      },
+      { jobId },
+    );
 
     res.status(202).json({
       success: true,
@@ -138,22 +152,27 @@ export const enqueueLeadExport = async (
 
     const workspaceId = await resolveWorkspaceId(userId);
 
-    const job = await leadExportQueue.add("export", {
-      epcId: epcId ?? undefined,
-      format,
-      requestedBy: userId,
-      logId: "", // placeholder — updated after log creation
-    });
+    // Same fix as enqueueEpcExport above — see that comment for why.
+    const jobId = randomUUID();
 
     const logId = await createPendingLog({
       type: "LEAD_EXPORT",
       triggeredById: userId,
       workspaceId,
-      jobId: job.id!,
+      jobId,
       epcId: epcId ?? undefined,
     });
 
-    await job.updateData({ ...job.data, logId });
+    const job = await leadExportQueue.add(
+      "export",
+      {
+        epcId: epcId ?? undefined,
+        format,
+        requestedBy: userId,
+        logId,
+      },
+      { jobId },
+    );
 
     res.status(202).json({
       success: true,
