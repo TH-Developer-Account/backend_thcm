@@ -330,6 +330,8 @@ export const VENDOR_ONBOARDING_EXPORT_COLUMN_WIDTHS: Record<string, number> = {
   "Bank Address": 30,
   "Entity Reg No": 20,
   "Onboarding Reason": 30,
+};
+
 export const isExternalApproverInWorkflow = (
   workflow: WorkflowObject,
   userId: string,
