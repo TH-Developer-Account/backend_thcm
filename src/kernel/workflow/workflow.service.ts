@@ -2,6 +2,7 @@ import { prisma } from "@shared/config/prisma";
 import { selectTemplate } from "./template.service";
 import { buildWorkflowStages } from "./workflow.helper";
 import { notify } from "@notifications/notification.services";
+import { addMailJob } from "@mail/mail.service";
 import ApiError from "@shared/utils/apiError";
 
 import { updateSubjectStatus } from "./workflowSubject.helper";
@@ -111,6 +112,63 @@ const notifyAboutWorkflowEvent = ({
 // see self-review note below.
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ─────────────────────────────────────────────────────────────────────────────
+// emailStageApprovers
+//
+// Same audience as notifyStageApprovers' in-app notification, just the email
+// leg — kept as its own function (not inlined) so a mail failure never
+// blocks the in-app notify loop next to it, and so it's independently
+// testable. Uses the generic approval-pending.hbs template (subject-type
+// agnostic, via subjectMeta.displayLabel) rather than the EPC-only
+// approval-approved.hbs, since this fires for EPC/Vendor/Medical Claim alike.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const emailStageApprovers = async ({
+  appName,
+  stageId,
+  approverIds,
+  subjectMeta,
+}: {
+  appName: string;
+  stageId: string;
+  approverIds: string[];
+  subjectMeta: SubjectNotificationMeta;
+}) => {
+  if (!approverIds.length) return;
+
+  const [approvers, stage] = await Promise.all([
+    prisma.user.findMany({
+      where: { id: { in: approverIds } },
+      select: { email: true, first_name: true, last_name: true },
+    }),
+    prisma.stageInstance.findUnique({
+      where: { id: stageId },
+      select: { stageName: true },
+    }),
+  ]);
+
+  const dashboardUrl = `${process.env.FRONTEND_URL ?? ""}${subjectMeta.link}`;
+
+  await Promise.all(
+    approvers
+      .filter((approver) => approver.email)
+      .map((approver) =>
+        addMailJob({
+          to: approver.email as string,
+          subject: `Approval required — ${subjectMeta.displayLabel}`,
+          templateName: "approval-pending",
+          templateData: {
+            appName,
+            approverName: `${approver.first_name} ${approver.last_name}`,
+            subjectLabel: subjectMeta.displayLabel,
+            stageName: stage?.stageName ?? "",
+            dashboardUrl,
+          },
+        }),
+      ),
+  );
+};
+
 export const notifyStageApprovers = async ({
   workflowId,
   subjectType,
@@ -129,7 +187,10 @@ export const notifyStageApprovers = async ({
   if (!approverIds.length) return;
 
   const [app, subjectMeta, workflow] = await Promise.all([
-    prisma.app.findUnique({ where: { id: appId }, select: { key: true } }),
+    prisma.app.findUnique({
+      where: { id: appId },
+      select: { key: true, name: true },
+    }),
     getSubjectNotificationMeta(subjectType, subjectId),
     prisma.workflowInstance.findUnique({
       where: { id: workflowId },
@@ -137,8 +198,8 @@ export const notifyStageApprovers = async ({
     }),
   ]);
 
-  await Promise.all(
-    approverIds.map((approverId) =>
+  await Promise.all([
+    ...approverIds.map((approverId) =>
       notifyAboutWorkflowEvent({
         workspaceId: workflow!.workspaceId,
         recipientId: approverId,
@@ -152,7 +213,13 @@ export const notifyStageApprovers = async ({
         extraMetadata: { workflowId, stageId },
       }),
     ),
-  );
+    emailStageApprovers({
+      appName: app?.name ?? "THCM",
+      stageId,
+      approverIds,
+      subjectMeta,
+    }),
+  ]);
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -375,25 +442,14 @@ export const approveStage = async ({
     });
 
     if (result.kind === "advanced") {
-      await Promise.all(
-        result.nextStageApproverIds.map((approverId) =>
-          notifyAboutWorkflowEvent({
-            workspaceId: workflow!.workspaceId,
-            recipientId: approverId,
-            appKey: app?.key,
-            subjectType: result.subjectType,
-            subjectId: result.subjectId,
-            subjectMeta,
-            type: "APPROVAL_PENDING",
-            title: "Approval required",
-            body: `${subjectMeta.displayLabel} is waiting on your approval.`,
-            extraMetadata: {
-              workflowId: result.workflowId,
-              stageId: result.nextStageId,
-            },
-          }),
-        ),
-      );
+      await notifyStageApprovers({
+        workflowId: result.workflowId,
+        subjectType: result.subjectType,
+        subjectId: result.subjectId,
+        appId: result.appId,
+        stageId: result.nextStageId,
+        approverIds: result.nextStageApproverIds,
+      });
     }
 
     if (result.kind === "final_approved" && subjectMeta.ownerId) {
