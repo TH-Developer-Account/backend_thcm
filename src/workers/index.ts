@@ -14,6 +14,7 @@ import {
   markLogFailed,
 } from "@import-export/importExportLog.services";
 import { buildAndUploadErrorExcel } from "@import-export/utils/errorExcelBuilder";
+import { notify } from "@notifications/notification.services";
 
 import { LeadImportJobData, LeadExportJobData } from "@leads/lead.queue";
 import { importLeadsFromS3 } from "@leads/leadImport.services";
@@ -293,14 +294,20 @@ export function startVendorOnboardingExportWorker() {
           fileS3Key: result.s3Key,
         });
 
-        // Matches the existing leads/EPC export workers: a presigned URL is
-        // generated once here and cached in job.progress for the poll
-        // endpoint to read directly. Same inherited limitation those have —
-        // the URL expires (default 1h) before BullMQ's 24h job retention
-        // does, so a very late poll could return a stale link. Not solving
-        // that here since it's a pre-existing pattern, not something new
-        // this endpoint introduces — worth fixing for all three export
-        // types together if it becomes a real issue.
+        // Notification carries logId only, not a presigned URL — the URL
+        // is generated fresh when the user actually clicks download (see
+        // getOutputFileUrl), same reasoning as the poll endpoint's downloadUrl
+        // staleness note above but permanent here since there's no expiry
+        // window to outlive.
+        await notify({
+          workspaceId: job.data.workspaceId,
+          recipientId: job.data.userId,
+          type: "REPORT_STATUS",
+          title: "Vendor onboarding export ready",
+          body: `Your export of ${result.totalRecords} record${result.totalRecords === 1 ? "" : "s"} is ready to download.`,
+          metadata: { downloadable: true, logId },
+        });
+
         const downloadUrl = await getSignedReportUrl(result.s3Key);
         await job.updateProgress({ downloadUrl });
 
