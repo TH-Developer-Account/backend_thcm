@@ -82,6 +82,71 @@ const resolveUserIdsByEmail = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
+// notifyMentionedUsers
+//
+// Shared by addComment and addCreatorComment — both accept `to`/`cc` email
+// arrays for @mentions and need to: email the mentioned addresses, resolve
+// them to user ids, and fire the same in-app notification used for other
+// comment recipients. Extracted so "what a mention triggers" lives in one
+// place rather than being duplicated per endpoint.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const notifyMentionedUsers = async ({
+  to,
+  cc,
+  actorUserId,
+  workspaceId,
+  subjectType,
+  subjectId,
+  commenterName,
+  message,
+}: {
+  to: string[];
+  cc: string[];
+  actorUserId: string;
+  workspaceId: string;
+  subjectType: WorkflowSubjectType;
+  subjectId: string;
+  commenterName: string;
+  message: string;
+}) => {
+  const mentionedEmails = [
+    ...(Array.isArray(to) ? to : []),
+    ...(Array.isArray(cc) ? cc : []),
+  ];
+
+  if (!mentionedEmails.length) return;
+
+  await addMailJob({
+    to,
+    cc: Array.isArray(cc) && cc.length ? cc : undefined,
+    subject: `Please check someone has mentioned you in a comment..!!`,
+    templateName: "comment-mentioned",
+    templateData: {
+      appName: "Marketing Activity Planner",
+      epcName: "test-epc",
+      comment: message,
+      approverName: commenterName,
+      dashboardUrl: `www.google.com`,
+    },
+  });
+
+  const mentionedUserIds = await resolveUserIdsByEmail(
+    mentionedEmails,
+    actorUserId,
+  );
+
+  await notifyCommentRecipients({
+    recipientIds: mentionedUserIds,
+    workspaceId,
+    subjectType,
+    subjectId,
+    commenterName,
+    message,
+  });
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
 // resolveActor
 //
 // Flattens ActivityLog's two mutually-exclusive actor relations (staff
@@ -213,40 +278,16 @@ export const addComment = async (
       },
     });
 
-    const mentionedEmails = [
-      ...(Array.isArray(to) ? to : []),
-      ...(Array.isArray(cc) ? cc : []),
-    ];
-
-    if (mentionedEmails.length) {
-      await addMailJob({
-        to,
-        cc: cc && Array.isArray(cc) && cc.length ? cc : undefined,
-        subject: `Please check someone has mentioned you in a comment..!!`,
-        templateName: "comment-mentioned",
-        templateData: {
-          appName: "Marketing Activity Planner",
-          epcName: "test-epc",
-          comment: message,
-          approverName: `${approval.approver.first_name} ${approval.approver.last_name}`,
-          dashboardUrl: `www.google.com`,
-        },
-      });
-
-      const mentionedUserIds = await resolveUserIdsByEmail(
-        mentionedEmails,
-        userId,
-      );
-
-      await notifyCommentRecipients({
-        recipientIds: mentionedUserIds,
-        workspaceId: workflow.workspaceId,
-        subjectType: workflow.subjectType,
-        subjectId: workflow.subjectId,
-        commenterName: `${approval.approver.first_name} ${approval.approver.last_name}`,
-        message: String(message).trim(),
-      });
-    }
+    await notifyMentionedUsers({
+      to,
+      cc,
+      actorUserId: userId,
+      workspaceId: workflow.workspaceId,
+      subjectType: workflow.subjectType,
+      subjectId: workflow.subjectId,
+      commenterName: `${approval.approver.first_name} ${approval.approver.last_name}`,
+      message: String(message).trim(),
+    });
 
     res.status(201).json({
       success: true,
@@ -271,6 +312,8 @@ export const addComment = async (
 //
 // Notifies the current stage's approvers, since they're the ones waiting
 // to act and wouldn't otherwise see that the creator has responded.
+// Also accepts `to`/`cc` mention emails (same as addComment) — mentioned
+// users get an email + in-app notification in addition to the approvers.
 // ─────────────────────────────────────────────────────────────────────────────
 export const addCreatorComment = async (
   req: Request,
@@ -283,7 +326,7 @@ export const addCreatorComment = async (
 
     const subjectType = req.params.subjectType as WorkflowSubjectType;
     const { subjectId } = req.params;
-    const { message, type = "COMMENT" } = req.body;
+    const { message, type = "COMMENT", to, cc } = req.body;
 
     if (!message) throw new ApiError(400, "message is required");
     if (String(message).trim().length < 3) {
@@ -332,6 +375,17 @@ export const addCreatorComment = async (
 
     await notifyCommentRecipients({
       recipientIds: currentStageApprovals.map((a) => a.approverId),
+      workspaceId: activeWorkflow.workspaceId,
+      subjectType,
+      subjectId: subjectId as string,
+      commenterName: `${comment.user.first_name} ${comment.user.last_name}`,
+      message: String(message).trim(),
+    });
+
+    await notifyMentionedUsers({
+      to,
+      cc,
+      actorUserId: userId,
       workspaceId: activeWorkflow.workspaceId,
       subjectType,
       subjectId: subjectId as string,
