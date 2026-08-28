@@ -692,6 +692,7 @@ export const VendorOnboardingScalarFieldEnum = {
   workspaceId: 'workspaceId',
   initiatedById: 'initiatedById',
   status: 'status',
+  vendorReferenceName: 'vendorReferenceName',
   vendorName: 'vendorName',
   state: 'state',
   city: 'city',
@@ -800,6 +801,8 @@ export const MedicalClaimBillScalarFieldEnum = {
   billDate: 'billDate',
   amount: 'amount',
   approvedClaimAmount: 'approvedClaimAmount',
+  remarks: 'remarks',
+  approved: 'approved',
   s3Key: 's3Key'
 } as const
 

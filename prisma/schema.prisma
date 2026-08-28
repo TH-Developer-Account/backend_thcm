@@ -1019,6 +1019,7 @@ model VendorOnboarding {
   status        String   @default("AWAITING_VENDOR")
 
   // ── Vendor-filled (Phase 1) ──
+  vendorReferenceName String?
   vendorName        String?
   state             String?
   city              String?
@@ -1162,6 +1163,8 @@ model MedicalClaimBill {
   billDate  DateTime?
   amount    Decimal   @db.Decimal(12, 2)
   approvedClaimAmount    Decimal?   @db.Decimal(12, 2)
+  remarks   String?
+  approved  Boolean   @default(false)
   s3Key     String?   // presigned at read time, same convention as every other attachment
 
   claim MedicalClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)

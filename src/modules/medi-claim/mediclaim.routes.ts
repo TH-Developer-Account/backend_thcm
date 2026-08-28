@@ -18,6 +18,7 @@ import {
   getGuestMedicalClaimById,
   resubmitGuestMedicalClaim,
   setMedicalClaimBillApprovedAmounts,
+  setMedicalClaimBillRemarks,
 } from "./mediclaim.controller";
 
 const router = Router();
@@ -83,6 +84,13 @@ router.patch(
   requireAuth,
   authorize(APP_KEY, MODULE, "write"),
   asyncHandler(setMedicalClaimBillApprovedAmounts),
+);
+
+router.patch(
+  "/:id/bills/remarks",
+  requireAuth,
+  authorize(APP_KEY, MODULE, "write"),
+  asyncHandler(setMedicalClaimBillRemarks),
 );
 
 // ── First-touch, token-based (AWAITING_EX_EMPLOYEE only) ──

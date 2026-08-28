@@ -113,20 +113,21 @@ export const initiateVendorOnboarding = async (
     const workspaceId = await resolveWorkspaceId(userId as string);
     if (!userId) throw new ApiError(401, "Unauthorized");
 
-    const { vendorName, mobile, email } = req.body;
-    if (!vendorName || !mobile || !email) {
+    const { vendorReferenceName, mobile, email } = req.body;
+    if (!vendorReferenceName || !mobile || !email) {
       throw new ApiError(400, "Vendor Name, mobile and email are required");
     }
 
     const onboarding = await prisma.$transaction(async (tx) => {
       const referenceNumber =
-        generateVendorOnboardingReferenceNumber(vendorName);
+        generateVendorOnboardingReferenceNumber(vendorReferenceName);
+
       const created = await tx.vendorOnboarding.create({
         data: {
           workspaceId,
           initiatedById: userId,
           referenceNumber,
-          vendorName,
+          vendorReferenceName,
           mobile,
           email,
         },
@@ -155,7 +156,7 @@ export const initiateVendorOnboarding = async (
       subject: "Vendor Onboarding — Action Required",
       templateName: "vendor-onboarding",
       templateData: {
-        vendorName,
+        vendorReferenceName,
         formUrl: `${process.env.FRONTEND_URL}/vendor-form/${onboarding.tokenRecord.token}`,
       },
     });
@@ -847,11 +848,15 @@ export const submitVendorForm = async (
     }
 
     await prisma.$transaction(async (tx) => {
+      const referenceNumber =
+        generateVendorOnboardingReferenceNumber(vendorName);
+
       await tx.vendorOnboarding.update({
         where: { id: onboarding.id },
         data: {
           status: "VENDOR_SUBMITTED",
           vendorName,
+          referenceNumber,
           state,
           city,
           pinCode,
