@@ -404,19 +404,103 @@ export const addCreatorComment = async (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /comments/:subjectType/:subjectId/activity
+// WorkflowContext / getWorkflowContextForSubject
 //
-// Unified chronological activity feed for any subject's lifecycle. Merges:
+// Shared prefix for both getComments and getActivityLog: validate the
+// subject exists, then pull every WorkflowInstance (across iterations,
+// clarify forks, etc.) tied to it, plus a workflowId → {type, isActive}
+// lookup map. Extracted so this isn't duplicated across the two endpoints
+// and so each endpoint's remaining query only fetches what it actually
+// needs (comments vs. activity log), instead of always paying for both.
+// ─────────────────────────────────────────────────────────────────────────────
+
+type WorkflowContext = {
+  workflowIds: string[];
+  workflowMeta: Map<string, { workflowType: string; isActive: boolean }>;
+};
+
+const getWorkflowContextForSubject = async (
+  subjectType: WorkflowSubjectType,
+  subjectId: string,
+): Promise<WorkflowContext> => {
+  await findSubjectById(subjectType, subjectId);
+
+  const workflows = await prisma.workflowInstance.findMany({
+    where: { subjectType, subjectId },
+    select: { id: true, workflowType: true, isActive: true },
+  });
+
+  return {
+    workflowIds: workflows.map((w) => w.id),
+    workflowMeta: new Map(
+      workflows.map((w) => [
+        w.id,
+        { workflowType: w.workflowType, isActive: w.isActive },
+      ]),
+    ),
+  };
+};
+
+type StageContext = {
+  stageOrder: number | null;
+  stageName: string | null;
+  iteration: number | null;
+  isCurrentIteration: boolean | null;
+};
+
+type ApproverCommentEntry = {
+  entryType: "COMMENT";
+  id: string;
+  message: string;
+  actor: ActivityActorInfo;
+  workflowId: string;
+  workflowType: string | null;
+  isActiveWorkflow: boolean | null;
+  createdAt: string;
+} & StageContext;
+
+type CreatorCommentEntry = {
+  entryType: "CREATOR_COMMENT";
+  id: string;
+  message: string;
+  actor: ActivityActorInfo;
+  workflowId: string;
+  workflowType: string | null;
+  isActiveWorkflow: boolean | null;
+  stageOrder: null;
+  stageName: null;
+  iteration: null;
+  isCurrentIteration: null;
+  createdAt: string;
+};
+
+type CommentEntry = ApproverCommentEntry | CreatorCommentEntry;
+
+type ActivityLogEntry = {
+  entryType: "ACTIVITY_LOG";
+  id: string;
+  action: string;
+  metadata: unknown;
+  actor: ActivityActorInfo;
+  workflowId: string | null;
+  workflowType: string | null;
+  isActiveWorkflow: boolean | null;
+  createdAt: string;
+} & StageContext;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /comments/:subjectType/:subjectId/comments
+//
+// Chronological feed of a subject's comments only. Merges:
 //   entryType: "COMMENT"         — approver comment (via approvalId chain)
 //   entryType: "CREATOR_COMMENT" — creator comment (via workflowId directly)
-//   entryType: "ACTIVITY_LOG"    — system event from ActivityLog
 //
-// DB round-trips: 4
+// DB round-trips: 3
 //   1. findSubjectById   → validate subject exists (404s internally)
 //   2. workflowInstance  → pull all workflowIds + metadata for this subject
-//   3+4. comment (x2), activityLog → gather entries
+//   3+4. comment (x2)    → gather approver + creator comments
 // ─────────────────────────────────────────────────────────────────────────────
-export const getActivityFeed = async (
+export const getComments = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -425,14 +509,12 @@ export const getActivityFeed = async (
     const subjectType = req.params.subjectType as WorkflowSubjectType;
     const { subjectId } = req.params;
 
-    await findSubjectById(subjectType, subjectId as string);
+    const { workflowIds, workflowMeta } = await getWorkflowContextForSubject(
+      subjectType,
+      subjectId as string,
+    );
 
-    const workflows = await prisma.workflowInstance.findMany({
-      where: { subjectType, subjectId: subjectId as string },
-      select: { id: true, workflowType: true, isActive: true },
-    });
-
-    if (!workflows.length) {
+    if (!workflowIds.length) {
       res.status(200).json({
         success: true,
         subjectType,
@@ -442,15 +524,6 @@ export const getActivityFeed = async (
       });
       return;
     }
-
-    const workflowIds = workflows.map((w) => w.id);
-
-    const workflowMeta = new Map(
-      workflows.map((w) => [
-        w.id,
-        { workflowType: w.workflowType, isActive: w.isActive },
-      ]),
-    );
 
     const approverComments = await prisma.comment.findMany({
       where: {
@@ -494,81 +567,6 @@ export const getActivityFeed = async (
       orderBy: { createdAt: "asc" },
     });
 
-    const activityLogs = await prisma.activityLog.findMany({
-      where: { subjectType, subjectId: subjectId as string },
-      select: {
-        id: true,
-        action: true,
-        metadata: true,
-        workflowId: true,
-        createdAt: true,
-        actor: { select: { id: true, first_name: true, last_name: true } },
-        actorGuest: {
-          select: { id: true, mobile: true, email: true, name: true },
-        },
-        stage: {
-          select: {
-            stageOrder: true,
-            stageName: true,
-            iteration: true,
-            isCurrentIteration: true,
-          },
-        },
-        workflow: { select: { workflowType: true, isActive: true } },
-      },
-      orderBy: { createdAt: "asc" },
-    });
-
-    type StageContext = {
-      stageOrder: number | null;
-      stageName: string | null;
-      iteration: number | null;
-      isCurrentIteration: boolean | null;
-    };
-
-    type ApproverCommentEntry = {
-      entryType: "COMMENT";
-      id: string;
-      message: string;
-      actor: ActivityActorInfo;
-      workflowId: string;
-      workflowType: string | null;
-      isActiveWorkflow: boolean | null;
-      createdAt: string;
-    } & StageContext;
-
-    type CreatorCommentEntry = {
-      entryType: "CREATOR_COMMENT";
-      id: string;
-      message: string;
-      actor: ActivityActorInfo;
-      workflowId: string;
-      workflowType: string | null;
-      isActiveWorkflow: boolean | null;
-      stageOrder: null;
-      stageName: null;
-      iteration: null;
-      isCurrentIteration: null;
-      createdAt: string;
-    };
-
-    type ActivityLogEntry = {
-      entryType: "ACTIVITY_LOG";
-      id: string;
-      action: string;
-      metadata: unknown;
-      actor: ActivityActorInfo;
-      workflowId: string | null;
-      workflowType: string | null;
-      isActiveWorkflow: boolean | null;
-      createdAt: string;
-    } & StageContext;
-
-    type TimelineEntry =
-      | ApproverCommentEntry
-      | CreatorCommentEntry
-      | ActivityLogEntry;
-
     const approverCommentEntries: ApproverCommentEntry[] = approverComments.map(
       (c) => {
         const wf = workflowMeta.get(c.approval!.stage.workflowId);
@@ -609,6 +607,89 @@ export const getActivityFeed = async (
       },
     );
 
+    const comments: CommentEntry[] = [
+      ...approverCommentEntries,
+      ...creatorCommentEntries,
+    ].sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    );
+
+    res.status(200).json({
+      success: true,
+      subjectType,
+      subjectId,
+      totalEntries: comments.length,
+      data: comments,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /comments/:subjectType/:subjectId/activity-log
+//
+// Chronological feed of system events (ActivityLog) for a subject's
+// lifecycle — approvals, clarifications, resubmits, etc. No comments here;
+// see getComments for those. Kept as its own query so this endpoint never
+// pays for the two comment lookups it doesn't need.
+//
+// DB round-trips: 3
+//   1. findSubjectById   → validate subject exists (404s internally)
+//   2. workflowInstance  → pull all workflowIds + metadata for this subject
+//   3. activityLog       → gather system events
+// ─────────────────────────────────────────────────────────────────────────────
+export const getActivityLog = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const subjectType = req.params.subjectType as WorkflowSubjectType;
+    const { subjectId } = req.params;
+
+    const { workflowIds } = await getWorkflowContextForSubject(
+      subjectType,
+      subjectId as string,
+    );
+
+    if (!workflowIds.length) {
+      res.status(200).json({
+        success: true,
+        subjectType,
+        subjectId,
+        totalEntries: 0,
+        data: [],
+      });
+      return;
+    }
+
+    const activityLogs = await prisma.activityLog.findMany({
+      where: { subjectType, subjectId: subjectId as string },
+      select: {
+        id: true,
+        action: true,
+        metadata: true,
+        workflowId: true,
+        createdAt: true,
+        actor: { select: { id: true, first_name: true, last_name: true } },
+        actorGuest: {
+          select: { id: true, mobile: true, email: true, name: true },
+        },
+        stage: {
+          select: {
+            stageOrder: true,
+            stageName: true,
+            iteration: true,
+            isCurrentIteration: true,
+          },
+        },
+        workflow: { select: { workflowType: true, isActive: true } },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+
     const activityLogEntries: ActivityLogEntry[] = activityLogs.map((a) => ({
       entryType: "ACTIVITY_LOG",
       id: a.id,
@@ -625,21 +706,12 @@ export const getActivityFeed = async (
       createdAt: a.createdAt.toISOString(),
     }));
 
-    const timeline: TimelineEntry[] = [
-      ...approverCommentEntries,
-      ...creatorCommentEntries,
-      ...activityLogEntries,
-    ].sort(
-      (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-    );
-
     res.status(200).json({
       success: true,
       subjectType,
       subjectId,
-      totalEntries: timeline.length,
-      data: timeline,
+      totalEntries: activityLogEntries.length,
+      data: activityLogEntries,
     });
   } catch (error) {
     next(error);

@@ -6,7 +6,8 @@ import { firstAuthRequestPerDay } from "@shared/middleware/dailyActiveUsers.midd
 import { requireAuth, authorize } from "../auth/auth.middleware";
 import {
   addComment,
-  getActivityFeed,
+  getComments,
+  getActivityLog,
   addCreatorComment,
 } from "./comment.controller";
 
@@ -20,6 +21,10 @@ router.post(
   "/:subjectType/:subjectId/creator-comment",
   asyncHandler(addCreatorComment),
 );
-router.get("/:subjectType/:subjectId/activity", asyncHandler(getActivityFeed));
+router.get("/:subjectType/:subjectId/comments", asyncHandler(getComments));
+router.get(
+  "/:subjectType/:subjectId/activity-log",
+  asyncHandler(getActivityLog),
+);
 
 export default router;
