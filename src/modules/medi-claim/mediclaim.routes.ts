@@ -11,6 +11,8 @@ import {
   listMedicalClaims,
   getMedicalClaimById,
   exportMedicalClaimById,
+  enqueueMedicalClaimExport,
+  getMedicalClaimExportStatus,
   getMedicalClaimFormByToken,
   submitMedicalClaimForm,
   saveMedicalClaimDraft,
@@ -59,6 +61,18 @@ router.get(
   requireAuth,
   authorize(APP_KEY, MODULE, "read"),
   asyncHandler(exportMedicalClaimById),
+);
+router.post(
+  "/export",
+  requireAuth,
+  authorize(APP_KEY, MODULE, "read"),
+  asyncHandler(enqueueMedicalClaimExport),
+);
+router.get(
+  "/export/status/:jobId",
+  requireAuth,
+  authorize(APP_KEY, MODULE, "read"),
+  asyncHandler(getMedicalClaimExportStatus),
 );
 router.post(
   "/",

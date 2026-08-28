@@ -4,6 +4,11 @@ import {
   VendorOnboardingPdfData,
 } from "@vendor-onboarding/vendorOnboardingAssembler";
 import { buildVendorOnboardingDocDefinition } from "@vendor-onboarding/vendorOnboardingDocDofination";
+import {
+  assembleMedicalClaimPdfData,
+  MedicalClaimPdfData,
+} from "@medi-claim/mediclaimAssembler";
+import { buildMedicalClaimDocDefinition } from "@medi-claim/mediclaimDocDefination";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PDF DOCUMENT REGISTRY
@@ -14,7 +19,7 @@ import { buildVendorOnboardingDocDefinition } from "@vendor-onboarding/vendorOnb
 // an S3 key builder (storage location) for exactly one document type.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type PdfDocumentType = "VENDOR_ONBOARDING";
+export type PdfDocumentType = "VENDOR_ONBOARDING" | "MEDICAL_CLAIM";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface PdfDocumentDefinition<TData = any> {
@@ -33,6 +38,12 @@ export const pdfDocumentRegistry: Record<
       buildVendorOnboardingDocDefinition(data),
     buildS3Key: (onboardingId: string) =>
       `vendor-onboarding-pdfs/${onboardingId}.pdf`,
+  },
+  MEDICAL_CLAIM: {
+    assembleData: assembleMedicalClaimPdfData,
+    buildDocDefinition: (data: MedicalClaimPdfData) =>
+      buildMedicalClaimDocDefinition(data),
+    buildS3Key: (claimId: string) => `medical-claim-pdfs/${claimId}.pdf`,
   },
 };
 

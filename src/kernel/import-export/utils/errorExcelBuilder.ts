@@ -63,7 +63,11 @@ function buildErrorRows(
 // ── Public API ────────────────────────────────────────────────────────────────
 
 export type BuildErrorExcelOptions = {
-  epcId: string;
+  // Short, filename-safe identifier for the import run this error file
+  // belongs to (e.g. an epcId for lead imports, a workspaceId for medical
+  // claim imports). Kept generic — not every importer has an epcId — so
+  // this builder isn't coupled to any single import type.
+  filePrefix: string;
   logId: string;
   allRawRows: RawRow[];
   errors: RowError[];
@@ -91,7 +95,7 @@ export async function buildAndUploadErrorExcel(
   ]);
 
   const timestamp = new Date().toISOString().slice(0, 10);
-  const filename = `lead-import-errors-${options.epcId.slice(0, 8)}-${timestamp}.xlsx`;
+  const filename = `import-errors-${options.filePrefix.slice(0, 8)}-${timestamp}.xlsx`;
   const s3Key = `imports/errors/${options.logId}/${filename}`;
 
   await uploadBufferToS3(s3Key, buffer, filename);

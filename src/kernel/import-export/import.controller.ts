@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import { leadImportQueue } from "@leads/lead.queue";
+import { mediclaimImportQueue } from "@medi-claim/mediclaimImport.queue";
 import { uploadToS3 } from "@shared/utils/aws-s3.services";
 import { createPendingLog } from "./importExportLog.services";
 import { isSupportedMimeType } from "./utils/fileParser";
@@ -87,6 +88,112 @@ export const enqueueLeadImport = async (
       jobId: job.id,
       logId,
       pollUrl: `/api/v1/leads/import/${job.id}`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ── POST /medical-claims (import) ─────────────────────────────────────────────
+// Expects multipart/form-data with:
+//   file — CSV or XLSX file with columns: employeeName, ticketNumber, mobile, email
+//
+// Bulk-initiates one medical claim per row — same effect as calling
+// initiateMedicalClaim once per row, run as a background job.
+
+export const enqueueMedicalClaimImport = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const file = req.file;
+    if (!file)
+      throw new ApiError(400, "file is required (multipart/form-data)");
+
+    if (!isSupportedMimeType(file.mimetype)) {
+      throw new ApiError(
+        400,
+        "Unsupported file type. Upload a CSV or XLSX file",
+      );
+    }
+
+    const workspaceUser = await prisma.workspaceUser.findFirst({
+      where: { userId },
+      select: { workspaceId: true },
+    });
+    if (!workspaceUser)
+      throw new ApiError(403, "User not part of any workspace");
+
+    // Upload file to S3 before enqueuing — the worker downloads it from S3.
+    // Never pass large buffers through Redis. Same convention as
+    // enqueueLeadImport above.
+    const timestamp = Date.now();
+    const s3Key = `imports/medical-claims/${timestamp}-${file.originalname}`;
+    await uploadToS3(s3Key, file.buffer, file.mimetype);
+
+    const job = await mediclaimImportQueue.add("import", {
+      workspaceId: workspaceUser.workspaceId,
+      fileS3Key: s3Key,
+      fileMimeType: file.mimetype,
+      requestedBy: userId,
+      logId: "", // placeholder — updated below after log creation
+    });
+
+    const logId = await createPendingLog({
+      type: "MEDICAL_CLAIM_IMPORT",
+      triggeredById: userId,
+      workspaceId: workspaceUser.workspaceId,
+      jobId: job.id!,
+    });
+
+    await job.updateData({ ...job.data, logId });
+
+    res.status(202).json({
+      success: true,
+      message: "Medical claim import job queued",
+      jobId: job.id,
+      logId,
+      pollUrl: `/api/v1/medical-claims/import/${job.id}`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ── GET /medical-claims/import/:jobId ─────────────────────────────────────────
+
+export const getMedicalClaimImportStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const { jobId } = req.params;
+    const job = await mediclaimImportQueue.getJob(jobId as string);
+
+    if (!job) throw new ApiError(404, "Import job not found");
+
+    const state = await job.getState();
+    const progress = job.progress as Record<string, unknown>;
+
+    res.status(200).json({
+      success: true,
+      jobId,
+      status: state,
+      progress: {
+        totalRows: progress?.totalRows ?? 0,
+        processedRows: progress?.processedRows ?? 0,
+        failedRows: progress?.failedRows ?? 0,
+      },
+      errors: progress?.errors ?? [],
+      failedReason: state === "failed" ? job.failedReason : undefined,
     });
   } catch (error) {
     next(error);

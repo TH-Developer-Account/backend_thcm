@@ -7,6 +7,8 @@ import {
   startEpcExportWorker,
   startNotificationDeliveryWorker,
   startVendorOnboardingExportWorker,
+  startMedicalClaimExportWorker,
+  startMedicalClaimImportWorker,
 } from "./workers";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -31,6 +33,8 @@ const workers = [
   startEpcExportWorker(),
   startNotificationDeliveryWorker(),
   startVendorOnboardingExportWorker(),
+  startMedicalClaimExportWorker(),
+  startMedicalClaimImportWorker(),
 ];
 
 console.info(`[Worker] ${workers.length} workers running`);

@@ -4,7 +4,12 @@ import multer from "multer";
 import asyncHandler from "@shared/middleware/async.middleware";
 import { firstAuthRequestPerDay } from "@shared/middleware/dailyActiveUsers.middleware";
 import { requireAuth } from "@auth/auth.middleware";
-import { enqueueLeadImport, getLeadImportStatus } from "./import.controller";
+import {
+  enqueueLeadImport,
+  getLeadImportStatus,
+  enqueueMedicalClaimImport,
+  getMedicalClaimImportStatus,
+} from "./import.controller";
 import { SUPPORTED_MIME_TYPES } from "./utils/fileParser";
 
 const router = Router();
@@ -29,5 +34,12 @@ router.use(firstAuthRequestPerDay);
 
 router.post("/leads", upload.single("file"), asyncHandler(enqueueLeadImport));
 router.get("/status/leads", asyncHandler(getLeadImportStatus));
+
+router.post(
+  "/medical-claims",
+  upload.single("file"),
+  asyncHandler(enqueueMedicalClaimImport),
+);
+router.get("/status/medical-claims", asyncHandler(getMedicalClaimImportStatus));
 
 export default router;

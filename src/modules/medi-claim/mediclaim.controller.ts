@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { randomUUID } from "crypto";
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 
@@ -6,6 +7,9 @@ import { resolveWorkspaceId } from "@import-export/export.controller";
 import { notify } from "@notifications/notification.services";
 import { addMailJob } from "@mail/mail.service";
 import { getSignedImageUrl } from "@shared/utils/aws-s3.services";
+import { buildXlsxBuffer } from "@import-export/utils/xlsxWriter";
+import { createPendingLog } from "@import-export/importExportLog.services";
+import { mediclaimExportQueue } from "./mediclaimExport.queue";
 import {
   issueAccessToken,
   markAccessTokenUsed,
@@ -32,6 +36,8 @@ import {
   generateMedicalClaimReferenceNumber,
   computeMedicalClaimEligibility,
   upsertMedicalClaimBills,
+  mapMedicalClaimToXlsxRow,
+  MEDICAL_CLAIM_EXPORT_COLUMN_WIDTHS,
 } from "./mediclaim.helper";
 
 const attachSignedUrlsToBills = async <T extends { s3Key: string | null }>(
@@ -496,15 +502,153 @@ export const getMedicalClaimById = async (
   }
 };
 
-// GET /medical-claims/export/:id — mirrors exportVendorOnboardingById; body
-// deferred until the PDF assembler/docDefinition pair for medical claims exists
+// GET /medical-claims/export/:id — single-record XLSX download.
+// Synchronous (no queue): a single row is cheap to build, so this mirrors
+// exportVendorOnboardingById rather than the queued bulk export below.
 export const exportMedicalClaimById = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    throw new ApiError(501, "Medical claim export not yet implemented");
+    const userId = req.user?.id;
+    const { id } = req.params;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const workspaceId = await resolveWorkspaceId(userId);
+
+    const claim = await prisma.medicalClaim.findUnique({
+      where: { id: id as string },
+    });
+    if (!claim) throw new ApiError(404, "Medical claim not found");
+    if (claim.workspaceId !== workspaceId) {
+      throw new ApiError(
+        403,
+        "Medical claim does not belong to your workspace",
+      );
+    }
+
+    const row = mapMedicalClaimToXlsxRow(claim);
+
+    const buffer = buildXlsxBuffer([
+      {
+        name: "MedicalClaim",
+        rows: [row],
+        columnWidths: MEDICAL_CLAIM_EXPORT_COLUMN_WIDTHS,
+      },
+    ]);
+
+    const filename = `medical-claim-${claim.referenceNumber}.xlsx`;
+
+    res.status(200);
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    );
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.send(buffer);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// POST /medical-claims/export — enqueues a bulk export scoped to the same
+// tab/search filters as listMedicalClaims ("export what I'm currently
+// looking at"). Mirrors enqueueVendorOnboardingExport.
+export const enqueueMedicalClaimExport = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const {
+      tab = "claims",
+      search = "",
+      format = "xlsx",
+    }: {
+      tab?: MedicalClaimListingTab;
+      search?: string;
+      format?: "csv" | "xlsx";
+    } = req.body;
+
+    if (!["csv", "xlsx"].includes(format)) {
+      throw new ApiError(400, "format must be 'csv' or 'xlsx'");
+    }
+
+    const workspaceId = await resolveWorkspaceId(userId);
+
+    const approvalSubjectIds =
+      tab === "pendingOnMe" || tab === "approvedByMe"
+        ? await resolveMedicalClaimSubjectIdsForApprovalTab(userId, tab)
+        : undefined;
+
+    // jobId generated up front, log row created before enqueue — same fix
+    // as export.controller.ts's enqueueEpcExport, avoiding the race where
+    // the worker could pick up the job before the log row exists.
+    const jobId = randomUUID();
+
+    const logId = await createPendingLog({
+      type: "MEDICAL_CLAIM_EXPORT",
+      triggeredById: userId,
+      workspaceId,
+      jobId,
+    });
+
+    const job = await mediclaimExportQueue.add(
+      "medical-claim-export",
+      {
+        workspaceId,
+        userId,
+        tab,
+        search,
+        approvalSubjectIds,
+        format,
+        requestedBy: userId,
+        logId,
+      },
+      { jobId },
+    );
+
+    res.status(202).json({
+      success: true,
+      message: "Medical claim export job queued",
+      jobId: job.id,
+      logId,
+      pollUrl: `/api/v1/medical-claims/export/status/${job.id}`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /medical-claims/export/status/:jobId
+export const getMedicalClaimExportStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const { jobId } = req.params;
+    const job = await mediclaimExportQueue.getJob(jobId as string);
+
+    if (!job) throw new ApiError(404, "Export job not found");
+
+    const state = await job.getState();
+    const progress = job.progress as Record<string, unknown>;
+
+    res.status(200).json({
+      success: true,
+      jobId,
+      status: state,
+      downloadUrl: progress?.downloadUrl ?? null,
+      failedReason: state === "failed" ? job.failedReason : undefined,
+    });
   } catch (error) {
     next(error);
   }

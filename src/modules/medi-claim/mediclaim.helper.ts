@@ -3,6 +3,7 @@ import { prisma } from "@shared/config/prisma";
 import { addMailJob } from "@mail/mail.service";
 import ApiError from "@shared/utils/apiError";
 import { uploadToS3, deleteReportImage } from "@shared/utils/aws-s3.services";
+import { XlsxRow } from "@import-export/utils/xlsxWriter";
 import { APP_KEY } from "./mediclaim.routes";
 
 type Tx = Prisma.TransactionClient;
@@ -143,6 +144,57 @@ export const resolveMedicalClaimListingOrderBy = (
       : DEFAULT_MEDICAL_CLAIM_SORT_ORDER;
 
   return { [field]: direction };
+};
+
+// ── export ───────────────────────────────────────────────────────────────
+
+// Row shape for both the single-claim export (exportMedicalClaimById) and
+// the bulk listing export (enqueueMedicalClaimExport) — one mapper, two
+// callers, mirrors mapVendorOnboardingToXlsxRow.
+export const mapMedicalClaimToXlsxRow = (claim: {
+  referenceNumber: string;
+  employeeName: string | null;
+  ticketNumber: string | null;
+  mobile: string | null;
+  email: string | null;
+  grade: string | null;
+  location: string | null;
+  patientName: string | null;
+  claimCover: string | null;
+  spouseName: string | null;
+  medicalAdvanceTaken: unknown;
+  eligibleAmount: unknown;
+  alreadySettled: unknown;
+  totalClaimed: unknown;
+  status: string;
+  submittedAt: Date | null;
+  created_at: Date;
+}): XlsxRow => ({
+  "Reference Number": claim.referenceNumber,
+  "Employee Name": claim.employeeName ?? "",
+  "Ticket Number": claim.ticketNumber ?? "",
+  Mobile: claim.mobile ?? "",
+  Email: claim.email ?? "",
+  Grade: claim.grade ?? "",
+  Location: claim.location ?? "",
+  "Patient Name": claim.patientName ?? "",
+  "Claim Cover": claim.claimCover ?? "",
+  "Spouse Name": claim.spouseName ?? "",
+  "Medical Advance Taken": claim.medicalAdvanceTaken
+    ? Number(claim.medicalAdvanceTaken)
+    : "",
+  "Eligible Amount": claim.eligibleAmount ? Number(claim.eligibleAmount) : "",
+  "Already Settled": claim.alreadySettled ? Number(claim.alreadySettled) : "",
+  "Total Claimed": claim.totalClaimed ? Number(claim.totalClaimed) : "",
+  Status: claim.status,
+  "Submitted At": claim.submittedAt ?? "",
+  "Created At": claim.created_at,
+});
+
+export const MEDICAL_CLAIM_EXPORT_COLUMN_WIDTHS: Record<string, number> = {
+  "Reference Number": 26,
+  "Employee Name": 24,
+  Email: 28,
 };
 
 // Format: MED-<4-letter employee code>-<timestamp>, e.g. MED-SYED-20260811143205

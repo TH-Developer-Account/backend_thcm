@@ -23,6 +23,10 @@ import { EpcExportJobData } from "@map/epc.queue";
 import { exportEpcsToS3 } from "@map/epcExport.services";
 import { exportVendorOnboardingsToS3 } from "@vendor-onboarding/vendorOnboardingExport.service";
 import { VendorOnboardingExportJobData } from "@vendor-onboarding/vendorOnboardingExport.queue";
+import { exportMedicalClaimsToS3 } from "@medi-claim/mediclaimExport.service";
+import { MedicalClaimExportJobData } from "@medi-claim/mediclaimExport.queue";
+import { importMedicalClaimsFromS3 } from "@medi-claim/mediclaimImport.service";
+import { MedicalClaimImportJobData } from "@medi-claim/mediclaimImport.queue";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // workers/index.ts — BullMQ worker definitions
@@ -57,7 +61,7 @@ export function startLeadImportWorker() {
       let errorFileS3Key: string | null = null;
       if (result.failedRows > 0) {
         errorFileS3Key = await buildAndUploadErrorExcel({
-          epcId,
+          filePrefix: epcId,
           logId,
           allRawRows: result.allRawRows,
           errors: result.errors,
@@ -326,6 +330,135 @@ export function startVendorOnboardingExportWorker() {
     console.error(
       `[VendorOnboardingExportWorker] Job ${job?.id} failed: ${err.message}`,
     );
+  });
+
+  return worker;
+}
+
+// ── Medical Claim Export Worker ───────────────────────────────────────────────
+// Same shape as startVendorOnboardingExportWorker — bulk export of the
+// medical claim listing.
+
+export function startMedicalClaimExportWorker() {
+  const worker = new Worker<MedicalClaimExportJobData>(
+    "medical-claim-export",
+    async (job) => {
+      const { logId, format, ...filters } = job.data;
+
+      await markLogProcessing(logId);
+
+      try {
+        const result = await exportMedicalClaimsToS3(filters, format);
+
+        await markLogCompleted(logId, {
+          totalRecords: result.totalRecords,
+          successRecords: result.totalRecords,
+          failedRecords: 0,
+          fileS3Key: result.s3Key,
+        });
+
+        await notify({
+          workspaceId: job.data.workspaceId,
+          recipientId: job.data.userId,
+          type: "REPORT_STATUS",
+          title: "Medical claim export ready",
+          body: `Your export of ${result.totalRecords} record${result.totalRecords === 1 ? "" : "s"} is ready to download.`,
+          metadata: { downloadable: true, logId },
+        });
+
+        const downloadUrl = await getSignedReportUrl(result.s3Key);
+        await job.updateProgress({ downloadUrl });
+
+        return result;
+      } catch (error) {
+        const reason =
+          error instanceof Error ? error.message : "Unknown export failure";
+        await markLogFailed(logId, reason);
+        throw error;
+      }
+    },
+    { connection: redisConnectionQueue, concurrency: 2 },
+  );
+
+  worker.on("failed", (job, err) => {
+    console.error(
+      `[MedicalClaimExportWorker] Job ${job?.id} failed: ${err.message}`,
+    );
+  });
+
+  return worker;
+}
+
+// ── Medical Claim Import Worker ───────────────────────────────────────────────
+// Same shape as startLeadImportWorker — bulk-initiates claims from an
+// uploaded file, one row per ex-employee.
+
+export function startMedicalClaimImportWorker() {
+  const worker = new Worker<MedicalClaimImportJobData>(
+    "medical-claim-import",
+    async (job: Job<MedicalClaimImportJobData>) => {
+      const { workspaceId, fileS3Key, fileMimeType, requestedBy, logId } =
+        job.data;
+
+      await markLogProcessing(logId);
+      await job.updateProgress({ status: "parsing", processedRows: 0 });
+
+      const result = await importMedicalClaimsFromS3(
+        workspaceId,
+        requestedBy,
+        fileS3Key,
+        fileMimeType,
+      );
+
+      let errorFileS3Key: string | null = null;
+      if (result.failedRows > 0) {
+        errorFileS3Key = await buildAndUploadErrorExcel({
+          filePrefix: workspaceId,
+          logId,
+          allRawRows: result.allRawRows,
+          errors: result.errors,
+        });
+      }
+
+      await markLogCompleted(logId, {
+        totalRecords: result.totalRows,
+        successRecords: result.processedRows,
+        failedRecords: result.failedRows,
+        errorFileS3Key: errorFileS3Key ?? undefined,
+      });
+
+      await job.updateProgress({
+        totalRows: result.totalRows,
+        processedRows: result.processedRows,
+        failedRows: result.failedRows,
+        errors: result.errors,
+      });
+
+      return result;
+    },
+    {
+      connection: redisConnectionQueue,
+      concurrency: 3,
+    },
+  );
+
+  worker.on("completed", (job) => {
+    console.info(`[medical-claim-import] Job ${job.id} completed`);
+  });
+
+  worker.on("failed", async (job, error) => {
+    console.error(
+      `[medical-claim-import] Job ${job?.id} failed:`,
+      error.message,
+    );
+    if (job?.data?.logId) {
+      await markLogFailed(job.data.logId, error.message).catch((logError) =>
+        console.error(
+          "[medical-claim-import] Failed to update log on failure:",
+          logError,
+        ),
+      );
+    }
   });
 
   return worker;

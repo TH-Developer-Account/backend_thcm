@@ -22,7 +22,9 @@ export type ImportExportType =
   | "LEAD_IMPORT"
   | "LEAD_EXPORT"
   | "EPC_EXPORT"
-  | "VENDOR_ONBOARDING_EXPORT";
+  | "VENDOR_ONBOARDING_EXPORT"
+  | "MEDICAL_CLAIM_EXPORT"
+  | "MEDICAL_CLAIM_IMPORT";
 export type ImportExportStatus =
   | "PENDING"
   | "PROCESSING"
