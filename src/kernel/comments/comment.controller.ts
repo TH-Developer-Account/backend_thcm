@@ -1,0 +1,719 @@
+import { Request, Response, NextFunction } from "express";
+
+import { prisma } from "@shared/config/prisma";
+import ApiError from "@shared/utils/apiError";
+
+import { notify } from "@notifications/notification.services";
+import { getSubjectNotificationMeta } from "@notifications/notification.helper";
+import { addMailJob } from "@mail/mail.service";
+
+import {
+  getSubjectOwnerId,
+  findSubjectById,
+  getActiveWorkflowForSubject,
+} from "@workflow/workflowSubject.helper";
+import { WorkflowSubjectType } from "../../prisma/generated/prisma/client";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// notifyCommentRecipients  ✅ NEW
+//
+// Shared by addComment and addCreatorComment — both need the same thing:
+// given a set of recipient user ids and the subject a comment was posted
+// against, look up that subject's display label/link once and fire one
+// notification per recipient. Extracted so "what a comment notification
+// looks like" lives in one place rather than being duplicated per endpoint.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const notifyCommentRecipients = async ({
+  recipientIds,
+  workspaceId,
+  subjectType,
+  subjectId,
+  commenterName,
+  message,
+}: {
+  recipientIds: string[];
+  workspaceId: string;
+  subjectType: WorkflowSubjectType;
+  subjectId: string;
+  commenterName: string;
+  message: string;
+}) => {
+  if (!recipientIds.length) return;
+
+  const subjectMeta = await getSubjectNotificationMeta(subjectType, subjectId);
+
+  await Promise.all(
+    recipientIds.map((recipientId) =>
+      notify({
+        workspaceId,
+        recipientId,
+        type: "GENERIC",
+        title: "New comment",
+        body: `${commenterName} commented on ${subjectMeta.displayLabel}: ${message}`,
+        link: subjectMeta.link,
+        metadata: { subjectType, subjectId },
+      }),
+    ),
+  );
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// resolveUserIdsByEmail
+//
+// Mentions are captured as emails today (the `to`/`cc` fields, reused from
+// the mail job payload) rather than user ids. This is the one place that
+// translates email → User.id for notification purposes, so if mentions
+// switch to carrying user ids directly later, only this function changes.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const resolveUserIdsByEmail = async (
+  emails: string[],
+  excludeUserId: string,
+): Promise<string[]> => {
+  if (!emails.length) return [];
+
+  const users = await prisma.user.findMany({
+    where: { email: { in: emails } },
+    select: { id: true },
+  });
+
+  return users.map((u) => u.id).filter((id) => id !== excludeUserId);
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// notifyMentionedUsers
+//
+// Shared by addComment and addCreatorComment — both accept `to`/`cc` email
+// arrays for @mentions and need to: email the mentioned addresses, resolve
+// them to user ids, and fire the same in-app notification used for other
+// comment recipients. Extracted so "what a mention triggers" lives in one
+// place rather than being duplicated per endpoint.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const notifyMentionedUsers = async ({
+  to,
+  cc,
+  actorUserId,
+  workspaceId,
+  subjectType,
+  subjectId,
+  commenterName,
+  message,
+}: {
+  to: string[];
+  cc: string[];
+  actorUserId: string;
+  workspaceId: string;
+  subjectType: WorkflowSubjectType;
+  subjectId: string;
+  commenterName: string;
+  message: string;
+}) => {
+  const mentionedEmails = [
+    ...(Array.isArray(to) ? to : []),
+    ...(Array.isArray(cc) ? cc : []),
+  ];
+
+  if (!mentionedEmails.length) return;
+
+  await addMailJob({
+    to,
+    cc: Array.isArray(cc) && cc.length ? cc : undefined,
+    subject: `Please check someone has mentioned you in a comment..!!`,
+    templateName: "comment-mentioned",
+    templateData: {
+      appName: "Marketing Activity Planner",
+      epcName: "test-epc",
+      comment: message,
+      approverName: commenterName,
+      dashboardUrl: `www.google.com`,
+    },
+  });
+
+  const mentionedUserIds = await resolveUserIdsByEmail(
+    mentionedEmails,
+    actorUserId,
+  );
+
+  await notifyCommentRecipients({
+    recipientIds: mentionedUserIds,
+    workspaceId,
+    subjectType,
+    subjectId,
+    commenterName,
+    message,
+  });
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// resolveActor
+//
+// Flattens ActivityLog's two mutually-exclusive actor relations (staff
+// User vs Guest) — and Comment's single staff-only User — into one shape
+// so the frontend never has to know two relations exist or branch on
+// which one is present. Exactly one of staffActor/guestActor is ever set
+// on a given ActivityLog row (enforced at write time); Comment call sites
+// always pass null for guestActor since guests can't post comments today
+// (comments.routes.ts is requireAuth-gated).
+// ─────────────────────────────────────────────────────────────────────────────
+
+type ActivityActorInfo = {
+  id: string;
+  name: string;
+  role: "STAFF" | "GUEST";
+  first_name: string;
+  last_name: string;
+} | null;
+
+const resolveActor = (
+  staffActor: { id: string; first_name: string; last_name: string } | null,
+  guestActor: {
+    id: string;
+    mobile: string | null;
+    email: string | null;
+    name: string | null;
+  } | null,
+): ActivityActorInfo => {
+  if (staffActor) {
+    return {
+      id: staffActor.id,
+      name: `${staffActor.first_name} ${staffActor.last_name}`.trim(),
+      first_name: staffActor.first_name,
+      last_name: staffActor.last_name,
+      role: "STAFF",
+    };
+  }
+  if (guestActor) {
+    return {
+      id: guestActor.id,
+      name: guestActor.email ?? guestActor.mobile ?? "Guest",
+      first_name: "",
+      last_name: guestActor.name || "Guest",
+      role: "GUEST",
+    };
+  }
+  return null;
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /comments
+//
+// Adds an approver's comment to an Approval. Already app-agnostic: an
+// Approval's chain (approval → stage → workflow) carries its own
+// subjectType/subjectId via the WorkflowInstance, so no subject lookup
+// is needed here at all.
+// ─────────────────────────────────────────────────────────────────────────────
+export const addComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req?.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const { approvalId, message, type = "COMMENT", to, cc } = req.body;
+
+    if (!approvalId || !message) {
+      throw new ApiError(400, "approvalId and message are required");
+    }
+
+    if (String(message).trim().length < 3) {
+      throw new ApiError(400, "Comment must be at least 3 characters");
+    }
+
+    const approval = await prisma.approval.findUnique({
+      where: { id: approvalId },
+      include: {
+        stage: { include: { workflow: true } },
+        approver: { select: { id: true, first_name: true, last_name: true } },
+      },
+    });
+
+    if (!approval) throw new ApiError(404, "Approval not found");
+
+    const stage = approval.stage;
+    const workflow = stage.workflow;
+
+    if (approval.approverId !== userId) {
+      throw new ApiError(403, "You are not assigned to this approval");
+    }
+
+    if (!workflow.isActive) {
+      throw new ApiError(
+        400,
+        "This workflow has been superseded by a deviation and is now read-only",
+      );
+    }
+
+    if (!stage.isCurrentIteration) {
+      throw new ApiError(
+        400,
+        "This stage belongs to a past clarification iteration and cannot receive new comments",
+      );
+    }
+
+    if (workflow.currentStage !== stage.stageOrder) {
+      throw new ApiError(400, "This stage is not currently active");
+    }
+
+    if (stage.status !== "IN_PROGRESS") {
+      throw new ApiError(400, "Stage is not in progress");
+    }
+
+    if (approval.status !== "PENDING") {
+      throw new ApiError(400, "You have already acted on this approval");
+    }
+
+    const comment = await prisma.comment.create({
+      data: {
+        message: String(message).trim(),
+        type,
+        userId,
+        approvalId,
+      },
+      include: {
+        user: { select: { id: true, first_name: true, last_name: true } },
+      },
+    });
+
+    await notifyMentionedUsers({
+      to,
+      cc,
+      actorUserId: userId,
+      workspaceId: workflow.workspaceId,
+      subjectType: workflow.subjectType,
+      subjectId: workflow.subjectId,
+      commenterName: `${approval.approver.first_name} ${approval.approver.last_name}`,
+      message: String(message).trim(),
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Comment added successfully",
+      data: comment,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /comments/:subjectType/:subjectId/creator
+//
+// Adds a "creator" comment — one anchored directly to the active
+// WorkflowInstance rather than to a specific Approval. Generic across any
+// subjectType registered in workflowSubject.helper's resolver maps.
+//
+// getSubjectOwnerId does double duty here: it 404s if the subject doesn't
+// exist, and returns the owning user id in the same round trip — no
+// separate existence check needed before the ownership guard.
+//
+// Notifies the current stage's approvers, since they're the ones waiting
+// to act and wouldn't otherwise see that the creator has responded.
+// Also accepts `to`/`cc` mention emails (same as addComment) — mentioned
+// users get an email + in-app notification in addition to the approvers.
+// ─────────────────────────────────────────────────────────────────────────────
+export const addCreatorComment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req?.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const subjectType = req.params.subjectType as WorkflowSubjectType;
+    const { subjectId } = req.params;
+    const { message, type = "COMMENT", to, cc } = req.body;
+
+    if (!message) throw new ApiError(400, "message is required");
+    if (String(message).trim().length < 3) {
+      throw new ApiError(400, "Comment must be at least 3 characters");
+    }
+
+    const ownerId = await getSubjectOwnerId(subjectType, subjectId as string);
+    if (ownerId !== userId) {
+      throw new ApiError(
+        403,
+        "Only the creator of this record can post a creator comment",
+      );
+    }
+
+    const activeWorkflow = await getActiveWorkflowForSubject(
+      subjectType,
+      subjectId as string,
+    );
+
+    if (!activeWorkflow) {
+      throw new ApiError(404, "No active workflow found for this subject");
+    }
+
+    const comment = await prisma.comment.create({
+      data: {
+        message: String(message).trim(),
+        type,
+        userId,
+        workflowId: activeWorkflow.id,
+      },
+      include: {
+        user: { select: { id: true, first_name: true, last_name: true } },
+      },
+    });
+
+    const currentStageApprovals = await prisma.approval.findMany({
+      where: {
+        stage: {
+          workflowId: activeWorkflow.id,
+          isCurrentIteration: true,
+          stageOrder: activeWorkflow.currentStage,
+        },
+      },
+      select: { approverId: true },
+    });
+
+    await notifyCommentRecipients({
+      recipientIds: currentStageApprovals.map((a) => a.approverId),
+      workspaceId: activeWorkflow.workspaceId,
+      subjectType,
+      subjectId: subjectId as string,
+      commenterName: `${comment.user.first_name} ${comment.user.last_name}`,
+      message: String(message).trim(),
+    });
+
+    await notifyMentionedUsers({
+      to,
+      cc,
+      actorUserId: userId,
+      workspaceId: activeWorkflow.workspaceId,
+      subjectType,
+      subjectId: subjectId as string,
+      commenterName: `${comment.user.first_name} ${comment.user.last_name}`,
+      message: String(message).trim(),
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Comment added successfully",
+      data: comment,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// WorkflowContext / getWorkflowContextForSubject
+//
+// Shared prefix for both getComments and getActivityLog: validate the
+// subject exists, then pull every WorkflowInstance (across iterations,
+// clarify forks, etc.) tied to it, plus a workflowId → {type, isActive}
+// lookup map. Extracted so this isn't duplicated across the two endpoints
+// and so each endpoint's remaining query only fetches what it actually
+// needs (comments vs. activity log), instead of always paying for both.
+// ─────────────────────────────────────────────────────────────────────────────
+
+type WorkflowContext = {
+  workflowIds: string[];
+  workflowMeta: Map<string, { workflowType: string; isActive: boolean }>;
+};
+
+const getWorkflowContextForSubject = async (
+  subjectType: WorkflowSubjectType,
+  subjectId: string,
+): Promise<WorkflowContext> => {
+  await findSubjectById(subjectType, subjectId);
+
+  const workflows = await prisma.workflowInstance.findMany({
+    where: { subjectType, subjectId },
+    select: { id: true, workflowType: true, isActive: true },
+  });
+
+  return {
+    workflowIds: workflows.map((w) => w.id),
+    workflowMeta: new Map(
+      workflows.map((w) => [
+        w.id,
+        { workflowType: w.workflowType, isActive: w.isActive },
+      ]),
+    ),
+  };
+};
+
+type StageContext = {
+  stageOrder: number | null;
+  stageName: string | null;
+  iteration: number | null;
+  isCurrentIteration: boolean | null;
+};
+
+type ApproverCommentEntry = {
+  entryType: "COMMENT";
+  id: string;
+  message: string;
+  actor: ActivityActorInfo;
+  workflowId: string;
+  workflowType: string | null;
+  isActiveWorkflow: boolean | null;
+  createdAt: string;
+} & StageContext;
+
+type CreatorCommentEntry = {
+  entryType: "CREATOR_COMMENT";
+  id: string;
+  message: string;
+  actor: ActivityActorInfo;
+  workflowId: string;
+  workflowType: string | null;
+  isActiveWorkflow: boolean | null;
+  stageOrder: null;
+  stageName: null;
+  iteration: null;
+  isCurrentIteration: null;
+  createdAt: string;
+};
+
+type CommentEntry = ApproverCommentEntry | CreatorCommentEntry;
+
+type ActivityLogEntry = {
+  entryType: "ACTIVITY_LOG";
+  id: string;
+  action: string;
+  metadata: unknown;
+  actor: ActivityActorInfo;
+  workflowId: string | null;
+  workflowType: string | null;
+  isActiveWorkflow: boolean | null;
+  createdAt: string;
+} & StageContext;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /comments/:subjectType/:subjectId/comments
+//
+// Chronological feed of a subject's comments only. Merges:
+//   entryType: "COMMENT"         — approver comment (via approvalId chain)
+//   entryType: "CREATOR_COMMENT" — creator comment (via workflowId directly)
+//
+// DB round-trips: 3
+//   1. findSubjectById   → validate subject exists (404s internally)
+//   2. workflowInstance  → pull all workflowIds + metadata for this subject
+//   3+4. comment (x2)    → gather approver + creator comments
+// ─────────────────────────────────────────────────────────────────────────────
+export const getComments = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const subjectType = req.params.subjectType as WorkflowSubjectType;
+    const { subjectId } = req.params;
+
+    const { workflowIds, workflowMeta } = await getWorkflowContextForSubject(
+      subjectType,
+      subjectId as string,
+    );
+
+    if (!workflowIds.length) {
+      res.status(200).json({
+        success: true,
+        subjectType,
+        subjectId,
+        totalEntries: 0,
+        data: [],
+      });
+      return;
+    }
+
+    const approverComments = await prisma.comment.findMany({
+      where: {
+        approvalId: { not: null },
+        approval: { stage: { workflowId: { in: workflowIds } } },
+      },
+      select: {
+        id: true,
+        message: true,
+        createdAt: true,
+        user: { select: { id: true, first_name: true, last_name: true } },
+        approval: {
+          select: {
+            stage: {
+              select: {
+                workflowId: true,
+                stageOrder: true,
+                stageName: true,
+                iteration: true,
+                isCurrentIteration: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+
+    const creatorComments = await prisma.comment.findMany({
+      where: {
+        workflowId: { in: workflowIds },
+        approvalId: null,
+      },
+      select: {
+        id: true,
+        message: true,
+        createdAt: true,
+        workflowId: true,
+        user: { select: { id: true, first_name: true, last_name: true } },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+
+    const approverCommentEntries: ApproverCommentEntry[] = approverComments.map(
+      (c) => {
+        const wf = workflowMeta.get(c.approval!.stage.workflowId);
+        return {
+          entryType: "COMMENT",
+          id: c.id,
+          message: c.message,
+          actor: resolveActor(c.user, null),
+          workflowId: c.approval!.stage.workflowId,
+          workflowType: wf?.workflowType ?? null,
+          isActiveWorkflow: wf?.isActive ?? null,
+          stageOrder: c.approval!.stage.stageOrder,
+          stageName: c.approval!.stage.stageName,
+          iteration: c.approval!.stage.iteration,
+          isCurrentIteration: c.approval!.stage.isCurrentIteration,
+          createdAt: c.createdAt.toISOString(),
+        };
+      },
+    );
+
+    const creatorCommentEntries: CreatorCommentEntry[] = creatorComments.map(
+      (c) => {
+        const wf = workflowMeta.get(c.workflowId!);
+        return {
+          entryType: "CREATOR_COMMENT",
+          id: c.id,
+          message: c.message,
+          actor: resolveActor(c.user, null),
+          workflowId: c.workflowId!,
+          workflowType: wf?.workflowType ?? null,
+          isActiveWorkflow: wf?.isActive ?? null,
+          stageOrder: null,
+          stageName: null,
+          iteration: null,
+          isCurrentIteration: null,
+          createdAt: c.createdAt.toISOString(),
+        };
+      },
+    );
+
+    const comments: CommentEntry[] = [
+      ...approverCommentEntries,
+      ...creatorCommentEntries,
+    ].sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    );
+
+    res.status(200).json({
+      success: true,
+      subjectType,
+      subjectId,
+      totalEntries: comments.length,
+      data: comments,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /comments/:subjectType/:subjectId/activity-log
+//
+// Chronological feed of system events (ActivityLog) for a subject's
+// lifecycle — approvals, clarifications, resubmits, etc. No comments here;
+// see getComments for those. Kept as its own query so this endpoint never
+// pays for the two comment lookups it doesn't need.
+//
+// DB round-trips: 3
+//   1. findSubjectById   → validate subject exists (404s internally)
+//   2. workflowInstance  → pull all workflowIds + metadata for this subject
+//   3. activityLog       → gather system events
+// ─────────────────────────────────────────────────────────────────────────────
+export const getActivityLog = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const subjectType = req.params.subjectType as WorkflowSubjectType;
+    const { subjectId } = req.params;
+
+    const { workflowIds } = await getWorkflowContextForSubject(
+      subjectType,
+      subjectId as string,
+    );
+
+    if (!workflowIds.length) {
+      res.status(200).json({
+        success: true,
+        subjectType,
+        subjectId,
+        totalEntries: 0,
+        data: [],
+      });
+      return;
+    }
+
+    const activityLogs = await prisma.activityLog.findMany({
+      where: { subjectType, subjectId: subjectId as string },
+      select: {
+        id: true,
+        action: true,
+        metadata: true,
+        workflowId: true,
+        createdAt: true,
+        actor: { select: { id: true, first_name: true, last_name: true } },
+        actorGuest: {
+          select: { id: true, mobile: true, email: true, name: true },
+        },
+        stage: {
+          select: {
+            stageOrder: true,
+            stageName: true,
+            iteration: true,
+            isCurrentIteration: true,
+          },
+        },
+        workflow: { select: { workflowType: true, isActive: true } },
+      },
+      orderBy: { createdAt: "asc" },
+    });
+
+    const activityLogEntries: ActivityLogEntry[] = activityLogs.map((a) => ({
+      entryType: "ACTIVITY_LOG",
+      id: a.id,
+      action: a.action,
+      metadata: a.metadata ?? null,
+      actor: resolveActor(a.actor, a.actorGuest),
+      workflowId: a.workflowId ?? null,
+      workflowType: a.workflow?.workflowType ?? null,
+      isActiveWorkflow: a.workflow?.isActive ?? null,
+      stageOrder: a.stage?.stageOrder ?? null,
+      stageName: a.stage?.stageName ?? null,
+      iteration: a.stage?.iteration ?? null,
+      isCurrentIteration: a.stage?.isCurrentIteration ?? null,
+      createdAt: a.createdAt.toISOString(),
+    }));
+
+    res.status(200).json({
+      success: true,
+      subjectType,
+      subjectId,
+      totalEntries: activityLogEntries.length,
+      data: activityLogEntries,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -7,54 +7,1195 @@ datasource db {
   provider = "postgresql"
 }
 
-model users {
-  id            String       @id @default(uuid())
-  first_name    String   @db.VarChar(50)
-  last_name     String   @db.VarChar(50)
-  email         String    @unique @db.VarChar(100)
-  phone_number  String  @unique @db.VarChar(15)
-  password      String    @db.VarChar(255)
-  is_active     Boolean  @default(true)
-  is_default_login  Boolean         @default(true) 
-  refresh_tokens     refresh_token[]
-  password_reset_tokens  password_reset_token[] 
-  created_at    DateTime @default(now()) @db.Timestamp(6)
-  updated_at    DateTime @default(now()) @db.Timestamp(6)
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum PermissionAction {
+  read
+  write
 }
 
-model password_reset_token {
+enum TemplateOwnerType {
+  ADMIN
+  USER
+}
+
+enum ScopeType {
+  MODULE
+  APP
+}
+
+enum StrategyType {
+  ALL
+  ANY
+  SOME
+}
+
+enum WorkflowStatus {
+  IN_PROGRESS
+  APPROVED
+  REJECTED
+  SUPERSEDED
+}
+
+enum StageStatus {
+  PENDING
+  IN_PROGRESS
+  APPROVED
+  REJECTED
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CLARIFY
+}
+
+enum WorkflowType {
+  STANDARD
+  DEVIATION
+}
+
+enum AccessTokenSubjectType {
+  VENDOR_ONBOARDING
+  MEDICAL_CLAIM
+}
+
+enum ActivityAction {
+   // Proposer domain
+  EPC_CREATED
+  EPC_UPDATED
+  EPF_CREATED
+  EPF_UPDATED
+  CRF_CREATED
+  CRF_UPDATED
+  EPC_RESUBMITTED         // after a CLARIFY round
+
+  // Post-event domain
+  EPC_CONDUCTED           // proposer marks event as happened
+  EPC_CANCELLED           // proposer cancels event after approval
+  REPORT_SUBMITTED        // proposer submits PDF report
+  REPORT_RESUBMITTED      // proposer resubmits after rejection
+  REPORT_VALIDATED        // validator approves report
+  REPORT_REJECTED         // validator rejects report
+  REPORT_CLARIFICATION_REQUESTED // validator requests clarification on report
+  EPC_CLOSED              // proposer closes after validation or deviation approval
+
+  // Vendor Onboarding
+  VENDOR_ONBOARDING_INITIATED
+  VENDOR_FORM_SUBMITTED
+  VENDOR_ONBOARDING_SENT_FOR_APPROVAL
+  VENDOR_ONBOARDING_CLOSED
+
+  //Medical Claim
+  MEDICAL_CLAIM_INITIATED
+  MEDICAL_CLAIM_SUBMITTED
+  MEDICAL_CLAIM_RESUBMITTED
+  MEDICAL_CLAIM_SENT_FOR_APPROVAL
+  MEDICAL_CLAIM_CLOSED
+
+  // Approval/workflow domain
+  APPROVED
+  REJECTED
+  CLARIFY
+  DEVIATION_RAISED   
+
+}
+
+enum ProductType {
+  EPF
+  CRF
+}
+
+enum ProductCategory {
+  EVENT_OVERHEAD
+  PRINTED_MATERIAL
+  SOUVENIR
+  ARTWORK
+}
+
+enum ReportStatus {
+  SUBMITTED
+  VALIDATED
+  REJECTED
+  CLARIFICATION_REQUESTED
+}
+
+enum OutcomeStatus {
+  SUCCESSFUL
+  PARTIALLY_SUCCESSFUL
+  UNSUCCESSFUL
+}
+
+enum ImportExportType {
+  LEAD_IMPORT
+  LEAD_EXPORT
+  EPC_EXPORT
+  VENDOR_ONBOARDING_EXPORT
+  MEDICAL_CLAIM_EXPORT
+  MEDICAL_CLAIM_IMPORT
+}
+
+enum ImportExportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum WorkflowSubjectType {
+  EVENT_PROPOSAL
+  VENDOR_ONBOARDING
+  MEDICAL_CLAIM 
+}
+
+enum NotificationType {
+  APPROVAL_PENDING   // a workflow stage now requires this user's approval
+  APPROVAL_DECISION  // an approval/rejection/clarify happened on something this user owns
+  REPORT_STATUS      // event report validated/rejected/clarification requested
+  GENERIC            // catch-all for future apps that don't fit the above
+}
+
+enum ClaimCover {
+  SELF
+  SPOUSE
+  BOTH
+}
+
+enum ClaimHead {
+  VISIT_FEES
+  MEDICINES_INVESTIGATIONS
+  OPHTHALMIC_TREATMENT
+  EXECUTIVE_HEALTH_CHECKUP
+  EXCESS_HOSPITALISATION
+}
+
+// ─────────────────────────────────────────────
+// AUTH MODELS
+// ─────────────────────────────────────────────
+
+model User {
+  id                    String               @id @default(uuid())
+  first_name            String               @db.VarChar(50)
+  last_name             String               @db.VarChar(50)
+  email                 String               @unique @db.VarChar(100)
+  phone_number          String               @unique @db.VarChar(15)
+  password              String               @db.VarChar(255)
+  is_active             Boolean              @default(true)
+  is_default_login      Boolean              @default(true)
+  refresh_tokens        RefreshToken[]
+  password_reset_tokens PasswordResetToken[]
+
+  workspaceUsers WorkspaceUser[]
+  userProfiles   UserProfile[]
+
+  notifications     Notification[]
+  pushSubscriptions PushSubscription[]
+
+  created_event_proposals EventProposal[] @relation("EventCreatedBy")
+  updated_event_proposals EventProposal[] @relation("EventUpdatedBy")
+
+  created_workflow WorkflowTemplate[] @relation("WorkFlowCreatedBy")
+  updated_workflow WorkflowTemplate[] @relation("WorkFlowUpdatedBy")
+
+  initiated_vendor_onboardings VendorOnboarding[] @relation("VendorOnboardingInitiatedBy")
+  initiated_medical_claims MedicalClaim[] @relation("MedicalClaimInitiatedBy")
+
+  approvals         Approval[]
+  templateApprovals TemplateApprover[]
+  workFlowUsers     WorkFlowTemplateUser[]
+  comments          Comment[]
+  reportValidations EventReport[] @relation("ReportValidator")
+
+  // ✅ Back-relation for ActivityLog.actor
+  activityLogs   ActivityLog[]
+  importExportLogs ImportExportLog[]
+
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
+}
+
+model PasswordResetToken {
   id         String   @id @default(uuid())
   user_id    String
-  user       users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   token      String   @unique @db.VarChar(255)
   expires_at DateTime
   used       Boolean  @default(false)
   created_at DateTime @default(now())
 }
 
-model user_otps {
-  id          String      @id @default(uuid())
-  phone       String
-  otp_hash    String
-  expires_at  DateTime
-  is_used     Boolean  @default(false)
-  created_at  DateTime @default(now())
-
-  @@index([phone])
-}
-
-model refresh_token {
-  id        String   @id @default(uuid())
-  token_id      String   @unique @db.VarChar(36) // UUID
-  token_hash    String   @db.VarChar(255)
-  token     String   @unique
+model RefreshToken {
+  id         String   @id @default(uuid())
+  token_id   String   @unique @db.VarChar(36)
+  token_hash String   @db.VarChar(255)
+  token      String   @unique
   user_id    String
-  user      users    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_agent    String?
-  ip_address    String?
-  revoked       Boolean  @default(false)
-  expires_at    DateTime
-  created_at    DateTime @default(now())
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_agent String?
+  ip_address String?
+  revoked    Boolean  @default(false)
+  expires_at DateTime
+  created_at DateTime @default(now())
 }
+
+model DailyVisitors {
+  id           String   @id @default(uuid())
+  date         DateTime @unique @db.Date
+  total_visits Int      @default(0)
+  created_at   DateTime @default(now())
+
+  @@index([date])
+}
+
+// ─────────────────────────────────────────────
+// WORKSPACE
+// ─────────────────────────────────────────────
+
+model Workspace {
+  id   String @id @default(uuid())
+  name String
+
+  users        WorkspaceUser[]
+  apps         WorkspaceApp[]
+  profiles     Profile[]
+  userProfiles UserProfile[]
+  vendorOnboardings VendorOnboarding[]
+  medicalClaims MedicalClaim[]
+
+  workflowTemplates WorkflowTemplate[]
+  workflows         WorkflowInstance[]
+  importExportLogs  ImportExportLog[]
+  notifications Notification[]
+
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
+}
+
+model WorkspaceUser {
+  userId       String
+  workspaceId  String
+  isSuperAdmin Boolean  @default(false)
+  joinedAt     DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@id([userId, workspaceId])
+  @@index([workspaceId])
+}
+
+// ─────────────────────────────────────────────
+// APP + MODULE
+// ─────────────────────────────────────────────
+
+model App {
+  id   String @id @default(uuid())
+  key  String @unique
+  name String
+
+  workspaceApps      WorkspaceApp[]
+  modules            Module[]
+  workFlowTemplate   WorkflowTemplate[]
+  profilePermissions ProfilePermission[]   
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
+
+model WorkspaceApp {
+  workspaceId String
+  appId       String
+  enabled     Boolean  @default(true)
+  enabledAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  app       App       @relation(fields: [appId], references: [id])
+
+  @@id([workspaceId, appId])
+  @@index([workspaceId])
+}
+
+model Module {
+  id         String   @id @default(uuid())
+  key        String
+  name       String
+  appId      String
+  created_at DateTime @default(now()) @db.Timestamp(6)
+  updated_at DateTime @default(now()) @db.Timestamp(6)
+
+  app                App                 @relation(fields: [appId], references: [id])
+  profilePermissions ProfilePermission[]
+
+  @@unique([appId, key])
+}
+
+// ─────────────────────────────────────────────
+// PROFILE
+// ─────────────────────────────────────────────
+
+model Profile {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  workspaceId     String
+  isSystemProfile Boolean  @default(false)
+  created_at      DateTime @default(now()) @db.Timestamp(6)
+  updated_at      DateTime @default(now()) @db.Timestamp(6)
+
+  workspace    Workspace           @relation(fields: [workspaceId], references: [id])
+  permissions  ProfilePermission[]
+  userProfiles UserProfile[]
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId])
+}
+
+model ProfilePermission {
+  id        String           @id @default(uuid())
+  profileId String
+  action    PermissionAction
+  scope     ScopeType        @default(MODULE)   // ✅ NEW
+  moduleId  String?                              // ← was required, now optional
+  appId     String?                              // ✅ NEW
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  module  Module? @relation(fields: [moduleId], references: [id])   // ← was required
+  app     App?    @relation(fields: [appId], references: [id])       // ✅ NEW
+
+  @@unique([profileId, action, moduleId])
+  @@unique([profileId, action, appId])   // ✅ NEW
+  @@index([profileId, moduleId])
+  @@index([profileId, appId])            // ✅ NEW
+}
+
+model UserProfile {
+  id          String   @id @default(uuid())
+  userId      String
+  workspaceId String
+  profileId   String
+  assignedAt  DateTime @default(now())
+  assignedBy  String?
+
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  profile   Profile   @relation(fields: [profileId], references: [id])
+
+  @@unique([userId, workspaceId, profileId])
+  @@index([userId, workspaceId, profileId])
+}
+
+// ─────────────────────────────────────────────
+// BUSINESS DATA
+// ─────────────────────────────────────────────
+
+model EventProposal {
+  id                String   @id @default(uuid())
+  proposal_number   String   @unique
+  event_from_date   DateTime
+  event_to_date     DateTime
+  event_description String
+  location          String
+  event_objective   String
+  status            String   @default("PENDING")
+
+  created_by_id    String
+  updated_by_id    String
+  department_id    String
+  region_id        String
+  branch_id        String
+  event_scale      Int
+  budget_master_id String
+  event_name_id    String
+  vertical_id      String
+  deviationReason String?
+  deviationAmount Decimal? @db.Decimal(12, 2)
+  deviationDocUrl String?
+  deviationDocS3Key String?
+  locationMeta     Json?    
+
+  department    Department   @relation(fields: [department_id], references: [id])
+  vertical      Vertical     @relation(fields: [vertical_id], references: [id])
+  region        Region       @relation(fields: [region_id], references: [id])
+  branch        Branch       @relation(fields: [branch_id], references: [id])
+  budget_master BudgetMaster @relation(fields: [budget_master_id], references: [id])
+  event_name    EventName    @relation(fields: [event_name_id], references: [id])
+  created_by    User         @relation("EventCreatedBy", fields: [created_by_id], references: [id])
+  updated_by    User         @relation("EventUpdatedBy", fields: [updated_by_id], references: [id])
+
+  epf EPF?
+  crf CRF?
+  report EventReport?
+
+  leads     Lead[]
+  importExportLogs ImportExportLog[]
+
+  search_vector Unsupported("tsvector")?
+  created_at    DateTime                 @default(now())
+  updated_at    DateTime                 @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// WORKFLOW TEMPLATE SYSTEM
+// ─────────────────────────────────────────────
+
+model WorkflowTemplate {
+  id          String  @id @default(uuid())
+  name        String
+  description String
+
+  workspaceId String
+  isActive    Boolean @default(true)
+  appId       String
+  ownerType  TemplateOwnerType @default(ADMIN)
+  isReusable Boolean           @default(true)
+  metaData_1  String
+  metaData_2  String
+  metaData_3  String
+
+  created_by_id String
+  updated_by_id String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  stages            TemplateStage[]
+  workflowInstances WorkflowInstance[]
+  workFlowUsers     WorkFlowTemplateUser[]
+
+  app        App              @relation(fields: [appId], references: [id])
+  workspace  Workspace        @relation(fields: [workspaceId], references: [id])
+  created_by User             @relation("WorkFlowCreatedBy", fields: [created_by_id], references: [id])
+  updated_by User             @relation("WorkFlowUpdatedBy", fields: [updated_by_id], references: [id])
+
+  @@index([ownerType])      
+  @@index([isReusable]) 
+}
+
+model TemplateStage {
+  id           String       @id @default(uuid())
+  name         String
+  templateId   String
+  stageOrder   Int
+  strategy     StrategyType
+  minApprovals Int?
+
+  template  WorkflowTemplate  @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  approvers TemplateApprover[]
+
+  @@unique([templateId, stageOrder])
+}
+
+model TemplateApprover {
+  id      String @id @default(uuid())
+  stageId String
+  userId  String
+  isExternalApprover Boolean @default(false)
+
+  stage TemplateStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  user  User          @relation(fields: [userId], references: [id])
+
+  @@unique([stageId, userId])
+}
+
+// ─────────────────────────────────────────────
+// RUNTIME WORKFLOW
+// ─────────────────────────────────────────────
+
+model WorkflowInstance {
+  id              String @id @default(uuid())
+  templateId      String
+  workspaceId     String
+  iteration       Int    @default(1)
+  isActive        Boolean      @default(true)
+  workflowType    WorkflowType @default(STANDARD)
+  status          WorkflowStatus @default(IN_PROGRESS)
+  currentStage    Int
+  appId       String             
+  subjectType WorkflowSubjectType 
+  subjectId   String              
+
+  template  WorkflowTemplate @relation(fields: [templateId], references: [id])
+  workspace Workspace        @relation(fields: [workspaceId], references: [id])
+  stages    StageInstance[]
+  comments  Comment[]
+
+  // ✅ Back-relation for ActivityLog.workflow
+  activityLogs   ActivityLog[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([subjectType, subjectId, isActive])
+  @@index([appId, isActive])
+}
+
+model StageInstance {
+  id                 String       @id @default(uuid())
+  workflowId         String
+  stageOrder         Int
+  stageName          String?
+  iteration          Int          @default(1)
+  isCurrentIteration Boolean      @default(true)
+  strategy           StrategyType
+  minApprovals       Int?
+  startedAt          DateTime?
+  dueAt              DateTime?
+  escalatedTo        String?
+  status             StageStatus  @default(PENDING)
+
+  workflow  WorkflowInstance @relation(fields: [workflowId], references: [id])
+  approvals Approval[]
+
+  // ✅ Back-relation for ActivityLog.stage
+  // nullable because DEVIATION audit rows have no specific triggering stage
+  activityLogs   ActivityLog[]
+
+  @@unique([workflowId, stageOrder, iteration])
+  @@index([workflowId, isCurrentIteration])
+}
+
+model Approval {
+  id         String         @id @default(uuid())
+  stageId    String
+  approverId String
+  status     ApprovalStatus @default(PENDING)
+  actedAt    DateTime?
+  reason     String?
+  isExternalApprover Boolean @default(false)
+
+  stage    StageInstance @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  approver User          @relation(fields: [approverId], references: [id])
+  comments Comment[]
+
+  @@unique([stageId, approverId])
+}
+
+model WorkFlowTemplateUser {
+  id         String   @id @default(uuid())
+  templateId String
+  userId     String
+  created_at DateTime @default(now())
+
+  template WorkflowTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  user     User             @relation(fields: [userId], references: [id])
+
+  @@unique([templateId, userId])
+  @@index([templateId, userId])
+}
+
+// ─────────────────────────────────────────────
+// APPROVAL AUDIT
+//
+// Records every system-level event in the workflow lifecycle.
+//
+// CHANGES from original:
+//   ✅ approverId  → now a proper FK to User   (was plain String)
+//   ✅ workflowId  → now a proper FK to WorkflowInstance (was plain String)
+//   ✅ stageId     → now nullable String? + optional FK to StageInstance
+//
+// Why stageId is nullable:
+//   DEVIATION audit rows have no single triggering stage — the event applies
+//   to the entire old workflow. Storing null here is semantically correct and
+//   removes the previous sentinel hack (storing workflowId in the stageId column).
+//
+// Migration note:
+//   Before running `prisma migrate`, update the existing DEVIATION rows in
+//   ApprovalAudit to set stageId = NULL where stageId = workflowId.
+//   SQL:  UPDATE "ApprovalAudit" a
+//         SET    "stageId" = NULL
+//         WHERE  a."stageId" = a."workflowId";
+// ─────────────────────────────────────────────
+
+model ActivityLog {
+  id           String         @id @default(uuid())
+  actorId      String?                          // ← now optional
+  actorGuestId String?                          // ← new
+  action       ActivityAction
+  workflowId   String?
+  stageId      String?
+  metadata     Json?
+  createdAt    DateTime       @default(now())
+  subjectType  WorkflowSubjectType
+  subjectId    String
+ 
+  actor      User?             @relation(fields: [actorId], references: [id])
+  actorGuest Guest?            @relation(fields: [actorGuestId], references: [id])
+  workflow   WorkflowInstance? @relation(fields: [workflowId], references: [id])
+  stage      StageInstance?    @relation(fields: [stageId], references: [id])
+ 
+  @@index([subjectId])
+  @@index([actorId])
+  @@index([actorGuestId])
+  @@index([workflowId])
+}
+
+// ─────────────────────────────────────────────
+// OTHER MODELS
+// ─────────────────────────────────────────────
+
+model Department {
+  id              String          @id @default(uuid())
+  department_code String          @unique
+  department_name String
+  isActive        Boolean         @default(true)
+  event_proposals EventProposal[]
+  verticals       Vertical[]
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+}
+
+model Vertical {
+  id              String          @id @default(uuid())
+  name            String
+  code            String
+  departmentId    String
+  department      Department      @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  event_proposals EventProposal[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model Region {
+  id              String          @id @default(uuid())
+  region_code     String          @unique
+  region_name     String
+  isActive        Boolean         @default(true)
+  event_proposals EventProposal[]
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+}
+
+model Branch {
+  id              String          @id @default(uuid())
+  branch_code     String          @unique
+  branch_name     String
+  isActive        Boolean         @default(true)
+  event_proposals EventProposal[]
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+}
+
+model BudgetMaster {
+  id              String          @id @default(uuid())
+  fiscal_year     String
+  code            String
+  id_desc         String
+  value           Decimal
+  event_proposals EventProposal[]
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+}
+
+model EventName {
+  id     String          @id @default(uuid())
+  title  String
+  events EventProposal[]
+}
+
+model ProductMaster {
+  id          String          @id @default(uuid())
+  productType ProductType
+  category    ProductCategory
+  partNumber  String          @unique
+  name        String
+  description String?
+  unitRate    Decimal?         @db.Decimal(10, 2)
+  isActive    Boolean         @default(true)
+  created_at  DateTime        @default(now())
+  updated_at  DateTime        @updatedAt
+
+  lineItems LineItem[]
+}
+
+model EPF {
+  id    String  @id @default(uuid())
+  epcId String  @unique
+  status String?
+
+  epc EventProposal @relation(fields: [epcId], references: [id], onDelete: Cascade)
+
+  externalParticipants Int?
+  internalParticipants Int?
+  eventBudget          Decimal? @db.Decimal(12, 2)
+  annualBudget         Decimal? @db.Decimal(12, 2)
+  availableBudget      Decimal? @db.Decimal(12, 2)
+  dealerName           String?
+  dealerPercent        Int?
+  dealerShare          Int?
+  tataHitachiPoAmount  Int?
+
+  lineItems  LineItem[]
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+}
+
+model CRF {
+  id    String @id @default(uuid())
+  epcId String @unique
+
+  epc EventProposal @relation(fields: [epcId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  lineItems LineItem[]
+}
+
+model LineItem {
+  id        String  @id @default(uuid())
+  epfId     String?
+  crfId     String?
+  productId String
+
+  quantity Decimal? @db.Decimal(10, 2)
+  rate     Decimal? @db.Decimal(10, 2)
+  amount   Decimal? @db.Decimal(12, 2)
+  height   String?
+  width    String?
+  unit     String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  epf     EPF?          @relation(fields: [epfId], references: [id], onDelete: Cascade)
+  crf     CRF?          @relation(fields: [crfId], references: [id], onDelete: Cascade)
+  product ProductMaster @relation(fields: [productId], references: [id])
+
+  @@index([epfId])
+  @@index([crfId])
+}
+
+model Comment {
+  id         String   @id @default(uuid())
+  message    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  userId     String
+  approvalId String?
+  type       String   @default("COMMENT")
+  workflowId String?
+
+  user     User     @relation(fields: [userId], references: [id])
+  approval Approval? @relation(fields: [approvalId], references: [id], onDelete: Cascade)
+  workflow   WorkflowInstance? @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+
+  @@index([userId])
+}
+
+model Operator {
+  id             Int               @id @default(autoincrement())
+  name           String
+  phone          String            @unique
+  machineSerial  String
+  operatorType   String
+  submittedBy    String           
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  @@index([machineSerial])         // look up operators by machine quickly
+  @@index([submittedBy])           // look up all registrations a dealer submitted
+}
+
+model Lead {
+  id             String      @id @default(uuid())
+  epcId          String
+  name           String      @db.VarChar(100)
+  email          String?     @db.VarChar(100)
+  phone          String?     @db.VarChar(15)
+  notes          String?
+  epc            EventProposal @relation(fields: [epcId], references: [id])
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+
+  @@index([epcId])
+}
+
+model Pincode {
+  id           String  @id @default(uuid())
+  pincode      String
+  officeName   String
+  officeType   String  // BO | SO | HO
+  delivery     String
+  district     String
+  stateName    String
+  circleName   String
+  regionName   String
+  divisionName String
+  latitude     Float
+  longitude    Float
+
+  // Full-text search vector — weighted combination of all searchable fields.
+  // Populated and kept fresh by trigger: pincode_search_vector_update
+  searchVector Unsupported("tsvector")?
+
+  @@index([pincode])           // fast exact pincode lookups
+  @@index([stateName])         // reporting: group by state
+  @@index([district])          // reporting: group by district
+}
+
+// ─────────────────────────────────────────────
+// POST-EVENT REPORT
+//
+// Submitted by the proposer after the event is CONDUCTED.
+// Contains 4 event images (stored on S3), structured outcome data,
+// and spend information. A validator reviews and either approves
+// (VALIDATED) or rejects (REJECTED) with a mandatory reason.
+//
+// On rejection the proposer can resubmit — individual images can be
+// selectively replaced (delete old S3 object, upload new one at same
+// position key). Scalar fields can also be updated on resubmit.
+// ─────────────────────────────────────────────
+
+model EventReport {
+  id                   String        @id @default(uuid())
+  epcId                String        @unique
+  outcomeStatus        OutcomeStatus
+  totalLeadsGenerated  Int
+  approvedEventCost    Decimal       @db.Decimal(12, 2)
+  expectedConversion   String?
+  remarks              String?
+  status               ReportStatus  @default(SUBMITTED)
+  rejectionReason      String?
+  clarificationReason  String?
+  submittedAt          DateTime      @default(now())
+  resubmittedAt        DateTime?
+  validatedAt          DateTime?
+  validatorId          String
+
+  epc       EventProposal      @relation(fields: [epcId], references: [id], onDelete: Cascade)
+  validator User               @relation("ReportValidator", fields: [validatorId], references: [id])
+  images    EventReportImage[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────
+// EVENT REPORT IMAGE
+//
+// Exactly 4 images per report (position 1–4).
+// Each image is stored independently in S3 so the proposer can
+// selectively replace individual positions on resubmit without
+// touching the others.
+//
+// S3 key pattern: report-images/{epcId}/{position}.jpg
+// Position-keyed (not uuid) so the key is deterministic — uploading
+// to the same position automatically shadows the old object in S3.
+// ─────────────────────────────────────────────
+
+model EventReportImage {
+  id       String @id @default(uuid())
+  reportId String
+  position Int    // 1 | 2 | 3 | 4
+  s3Key    String
+  fileUrl  String
+
+  report EventReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@unique([reportId, position])
+  @@index([reportId])
+}
+
+// ─────────────────────────────────────────────
+// IMPORT / EXPORT LOG
+//
+// Tracks every lead import, lead export, and EPC export job.
+// Created on enqueue (PENDING), updated as the worker progresses.
+//
+// epcId is nullable — populated for LEAD_IMPORT and LEAD_EXPORT
+// (which are always scoped to an EPC), null for EPC_EXPORT (workspace-wide).
+//
+// fileS3Key        — output file (exports) or original input file (import)
+// errorFileS3Key   — XLSX of failed rows, only set for LEAD_IMPORT with errors
+//
+// WHY store only S3 keys and not pre-signed URLs:
+//   Pre-signed URLs have a hard AWS cap of 7 days. We generate a fresh
+//   URL on every download/error-file GET request instead, so access
+//   never expires.
+// ─────────────────────────────────────────────
+
+model ImportExportLog {
+  id               String             @id @default(uuid())
+  type             ImportExportType
+  status           ImportExportStatus @default(PENDING)
+  triggeredById    String
+  workspaceId      String
+  epcId            String?            // null for EPC_EXPORT
+  jobId            String             // BullMQ job ID
+  totalRecords     Int?               // null until job completes
+  successRecords   Int?
+  failedRecords    Int?
+  fileS3Key        String?            // output file key
+  errorFileS3Key   String?            // failed-rows XLSX key (LEAD_IMPORT only)
+  failureReason    String?            // top-level job failure message
+  created_at       DateTime           @default(now())
+  updated_at       DateTime           @updatedAt
+
+  triggeredBy User           @relation(fields: [triggeredById], references: [id])
+  workspace   Workspace      @relation(fields: [workspaceId], references: [id])
+  epc         EventProposal? @relation(fields: [epcId], references: [id])
+
+  @@index([workspaceId, type])
+  @@index([triggeredById])
+  @@index([epcId])
+  @@index([jobId])
+}
+
+// ─────────────────────────────────────────────
+// NOTIFICATION SYSTEM
+//
+// Generic, cross-app notification pipeline. Any app (MAP, DIA, Dealer Claims,
+// future apps) writes a Notification row via notificationService.notify().
+// Delivery (Web Push, SSE) happens asynchronously via a BullMQ worker —
+// this table is the source of truth for the in-app notification list,
+// independent of whether real-time delivery succeeded.
+//
+// appKey/entityType/entityId live in `metadata` (Json) rather than as typed
+// columns — keeps this model app-agnostic. Apps that need to query/filter
+// by their own entity types do so via metadata, not by adding columns here.
+// ─────────────────────────────────────────────
+
+model Notification {
+  id          String            @id @default(uuid())
+  workspaceId String
+  recipientId String
+  type        String
+  title       String
+  body        String
+  link        String?           // deep link, e.g. /map/epc/:id
+  metadata    Json?             // { appKey, epcId, ... } — typed in app layer
+  isRead      Boolean           @default(false)
+  readAt      DateTime?
+  createdAt   DateTime          @default(now())
+
+  recipient User      @relation(fields: [recipientId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  // Primary query: "give me this user's notifications, newest first"
+  @@index([recipientId, createdAt])
+  // Unread-count query: "how many unread does this user have"
+  @@index([recipientId, isRead])
+}
+
+// ─────────────────────────────────────────────
+// PUSH SUBSCRIPTION
+//
+// One row per browser/device subscription (Web Push API, VAPID).
+// A user can have multiple active subscriptions (multiple devices/browsers).
+// endpoint is unique per the Push API spec — re-subscribing with the same
+// endpoint (e.g. browser re-registers service worker) upserts in place.
+// ─────────────────────────────────────────────
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+// VENDOR ONBOARDING
+//
+// Two-phase lifecycle:
+//   Phase 1 (no WorkflowInstance yet): AWAITING_VENDOR → VENDOR_SUBMITTED → IN_REVIEW
+//   Phase 2 (WorkflowInstance drives it): IN_PROGRESS → APPROVED → CLOSED
+//
+// Vendor never becomes a User — access is via VendorAccessToken, not JWT.
+// Status is a plain string (same convention as EventProposal.status).
+// ─────────────────────────────────────────────
+
+model VendorOnboarding {
+  id            String   @id @default(uuid())
+  referenceNumber String @unique 
+  workspaceId   String
+  initiatedById String
+  status        String   @default("AWAITING_VENDOR")
+
+  // ── Vendor-filled (Phase 1) ──
+  vendorReferenceName String?
+  vendorName        String?
+  state             String?
+  city              String?
+  pinCode           String?
+  address           String?
+  mobile            String?
+  email             String?
+  msmeVendor        Boolean?
+  bankName          String?
+  bankBranch        String?
+  ifscCode          String?
+  bankAddress       String?
+  accountNumber     String?
+  gstin             String?
+  pan               String?
+  entityRegNo       String?
+  dpdpConsentedAt   DateTime?
+  dpdpConsentIp     String?
+  vendorSubmittedAt DateTime?
+
+  // ── Employee-filled (after vendor submission, before approval) ──
+  vendorCode                String?
+  vendorType                String?
+  companyCode               String?
+  purchaseOrg               String?
+  paymentTerm               String?
+  tds                       String?
+  vendorCategory            String?
+  materialType              String?
+  materialSubType           String?
+  selfAssessmentObtained    Boolean?
+  ndaObtained               Boolean?
+  gpaObtained               Boolean?
+  isRelatedParty            Boolean?
+  vendorAuditReportPrepared Boolean?
+  natureOfService           String?
+  onboardingReason          String?
+  guestId                   String?
+
+
+  workspace   Workspace                  @relation(fields: [workspaceId], references: [id])
+  initiatedBy User                       @relation("VendorOnboardingInitiatedBy", fields: [initiatedById], references: [id])
+  guest   Guest? @relation(fields: [guestId], references: [id])
+  documents   VendorOnboardingDocument[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([workspaceId, status])
+}
+
+model VendorOnboardingDocument {
+  id           String   @id @default(uuid())
+  onboardingId String
+  documentType String   // GST_CERTIFICATE | PAN_DOCUMENT | CANCELLED_CHEQUE
+                         // | INCORPORATION_CERTIFICATE | MSME_CERTIFICATE | NDA_CERTIFICATE
+  s3Key        String
+  uploadedAt   DateTime @default(now())
+
+  onboarding VendorOnboarding @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
+
+  @@unique([onboardingId, documentType])
+  @@index([onboardingId])
+}
+
+model AccessToken  {
+  id           String    @id @default(uuid())
+  subjectType  AccessTokenSubjectType
+  subjectId    String
+  token        String    @unique
+  used         Boolean   @default(false)
+  purpose      String
+  usedAt       DateTime?
+  created_at   DateTime  @default(now())
+
+
+ @@index([subjectType, subjectId])
+}
+
+
+
+// MEDICAL CLAIM
+//
+// Same two-phase lifecycle shape as VendorOnboarding, with one addition:
+// after a CLARIFY, the ex-employee (not the initiator) makes the edit —
+// see CLARIFICATION_REQUESTED in the status machine comment above.
+//
+// Ex-employee never becomes a User — access is via AccessToken + Guest,
+// same pattern as vendor onboarding. Status is a plain string (same
+// convention as VendorOnboarding.status / EventProposal.status).
+// ─────────────────────────────────────────────
+
+model MedicalClaim {
+  id              String   @id @default(uuid())
+  referenceNumber String   @unique
+  workspaceId     String
+  initiatedById   String
+  guestId         String?
+  status          String   @default("AWAITING_EX_EMPLOYEE")
+  mobile       String?
+  email        String?
+
+  // ── Ex-employee-filled ──
+  ticketNumber      String?
+  grade             String?
+  location          String?
+  employeeName      String?
+  patientName       String?
+  claimCover        ClaimCover?
+  spouseName        String?
+  medicalAdvanceTaken Decimal? @db.Decimal(12, 2)
+
+  // ── Computed server-side at submission — never trust client input ──
+  eligibleAmount    Decimal? @db.Decimal(12, 2) // grade cap, looked up at submit time
+  alreadySettled    Decimal? @db.Decimal(12, 2) // sum of this guest's approved claims this calendar year
+  totalClaimed      Decimal? @db.Decimal(12, 2) // sum of MedicalClaimBill.amount, stored for audit
+
+  declarationAcceptedAt DateTime?
+  signatureName          String?
+  signatureDate           DateTime?
+  submittedAt             DateTime?
+
+  workspace   Workspace          @relation(fields: [workspaceId], references: [id])
+  initiatedBy User               @relation("MedicalClaimInitiatedBy", fields: [initiatedById], references: [id])
+  guest       Guest?             @relation(fields: [guestId], references: [id])
+  bills       MedicalClaimBill[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([workspaceId, status])
+  @@index([guestId])
+}
+
+model MedicalClaimBill {
+  id        String    @id @default(uuid())
+  claimId   String
+  claimHead ClaimHead
+  billNo    String?
+  billName  String?
+  billDate  DateTime?
+  amount    Decimal   @db.Decimal(12, 2)
+  approvedClaimAmount    Decimal?   @db.Decimal(12, 2)
+  remarks   String?
+  approved  Boolean   @default(false)
+  s3Key     String?   // presigned at read time, same convention as every other attachment
+
+  claim MedicalClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@index([claimId])
+}
+
+// Newly created for this app — no existing grade→amount lookup exists yet.
+model MedicalClaimGradeEligibility {
+  id         String  @id @default(uuid())
+  grade      String  @unique
+  annualCap  Decimal @db.Decimal(12, 2)
+}
+
+model Guest {
+  id        String   @id @default(uuid())
+  mobile    String?  @unique
+  email     String?  @unique
+  password  String? 
+  name String? 
+  createdAt DateTime @default(now())
+
+  vendorOnboardings VendorOnboarding[]
+  medicalClaims MedicalClaim[]
+  activityLogs ActivityLog[]
+ 
+  @@index([mobile])
+  @@index([email])
+}
+
 
 

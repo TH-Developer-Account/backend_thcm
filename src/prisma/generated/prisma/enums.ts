@@ -9,7 +9,212 @@
 * 🟢 You can import this file directly.
 */
 
+export const PermissionAction = {
+  read: 'read',
+  write: 'write'
+} as const
+
+export type PermissionAction = (typeof PermissionAction)[keyof typeof PermissionAction]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const TemplateOwnerType = {
+  ADMIN: 'ADMIN',
+  USER: 'USER'
+} as const
+
+export type TemplateOwnerType = (typeof TemplateOwnerType)[keyof typeof TemplateOwnerType]
+
+
+export const ScopeType = {
+  MODULE: 'MODULE',
+  APP: 'APP'
+} as const
+
+export type ScopeType = (typeof ScopeType)[keyof typeof ScopeType]
+
+
+export const StrategyType = {
+  ALL: 'ALL',
+  ANY: 'ANY',
+  SOME: 'SOME'
+} as const
+
+export type StrategyType = (typeof StrategyType)[keyof typeof StrategyType]
+
+
+export const WorkflowStatus = {
+  IN_PROGRESS: 'IN_PROGRESS',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  SUPERSEDED: 'SUPERSEDED'
+} as const
+
+export type WorkflowStatus = (typeof WorkflowStatus)[keyof typeof WorkflowStatus]
+
+
+export const StageStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type StageStatus = (typeof StageStatus)[keyof typeof StageStatus]
+
+
+export const ApprovalStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CLARIFY: 'CLARIFY'
+} as const
+
+export type ApprovalStatus = (typeof ApprovalStatus)[keyof typeof ApprovalStatus]
+
+
+export const WorkflowType = {
+  STANDARD: 'STANDARD',
+  DEVIATION: 'DEVIATION'
+} as const
+
+export type WorkflowType = (typeof WorkflowType)[keyof typeof WorkflowType]
+
+
+export const AccessTokenSubjectType = {
+  VENDOR_ONBOARDING: 'VENDOR_ONBOARDING',
+  MEDICAL_CLAIM: 'MEDICAL_CLAIM'
+} as const
+
+export type AccessTokenSubjectType = (typeof AccessTokenSubjectType)[keyof typeof AccessTokenSubjectType]
+
+
+export const ActivityAction = {
+  EPC_CREATED: 'EPC_CREATED',
+  EPC_UPDATED: 'EPC_UPDATED',
+  EPF_CREATED: 'EPF_CREATED',
+  EPF_UPDATED: 'EPF_UPDATED',
+  CRF_CREATED: 'CRF_CREATED',
+  CRF_UPDATED: 'CRF_UPDATED',
+  EPC_RESUBMITTED: 'EPC_RESUBMITTED',
+  EPC_CONDUCTED: 'EPC_CONDUCTED',
+  EPC_CANCELLED: 'EPC_CANCELLED',
+  REPORT_SUBMITTED: 'REPORT_SUBMITTED',
+  REPORT_RESUBMITTED: 'REPORT_RESUBMITTED',
+  REPORT_VALIDATED: 'REPORT_VALIDATED',
+  REPORT_REJECTED: 'REPORT_REJECTED',
+  REPORT_CLARIFICATION_REQUESTED: 'REPORT_CLARIFICATION_REQUESTED',
+  EPC_CLOSED: 'EPC_CLOSED',
+  VENDOR_ONBOARDING_INITIATED: 'VENDOR_ONBOARDING_INITIATED',
+  VENDOR_FORM_SUBMITTED: 'VENDOR_FORM_SUBMITTED',
+  VENDOR_ONBOARDING_SENT_FOR_APPROVAL: 'VENDOR_ONBOARDING_SENT_FOR_APPROVAL',
+  VENDOR_ONBOARDING_CLOSED: 'VENDOR_ONBOARDING_CLOSED',
+  MEDICAL_CLAIM_INITIATED: 'MEDICAL_CLAIM_INITIATED',
+  MEDICAL_CLAIM_SUBMITTED: 'MEDICAL_CLAIM_SUBMITTED',
+  MEDICAL_CLAIM_RESUBMITTED: 'MEDICAL_CLAIM_RESUBMITTED',
+  MEDICAL_CLAIM_SENT_FOR_APPROVAL: 'MEDICAL_CLAIM_SENT_FOR_APPROVAL',
+  MEDICAL_CLAIM_CLOSED: 'MEDICAL_CLAIM_CLOSED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CLARIFY: 'CLARIFY',
+  DEVIATION_RAISED: 'DEVIATION_RAISED'
+} as const
+
+export type ActivityAction = (typeof ActivityAction)[keyof typeof ActivityAction]
+
+
+export const ProductType = {
+  EPF: 'EPF',
+  CRF: 'CRF'
+} as const
+
+export type ProductType = (typeof ProductType)[keyof typeof ProductType]
+
+
+export const ProductCategory = {
+  EVENT_OVERHEAD: 'EVENT_OVERHEAD',
+  PRINTED_MATERIAL: 'PRINTED_MATERIAL',
+  SOUVENIR: 'SOUVENIR',
+  ARTWORK: 'ARTWORK'
+} as const
+
+export type ProductCategory = (typeof ProductCategory)[keyof typeof ProductCategory]
+
+
+export const ReportStatus = {
+  SUBMITTED: 'SUBMITTED',
+  VALIDATED: 'VALIDATED',
+  REJECTED: 'REJECTED',
+  CLARIFICATION_REQUESTED: 'CLARIFICATION_REQUESTED'
+} as const
+
+export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
+
+
+export const OutcomeStatus = {
+  SUCCESSFUL: 'SUCCESSFUL',
+  PARTIALLY_SUCCESSFUL: 'PARTIALLY_SUCCESSFUL',
+  UNSUCCESSFUL: 'UNSUCCESSFUL'
+} as const
+
+export type OutcomeStatus = (typeof OutcomeStatus)[keyof typeof OutcomeStatus]
+
+
+export const ImportExportType = {
+  LEAD_IMPORT: 'LEAD_IMPORT',
+  LEAD_EXPORT: 'LEAD_EXPORT',
+  EPC_EXPORT: 'EPC_EXPORT',
+  VENDOR_ONBOARDING_EXPORT: 'VENDOR_ONBOARDING_EXPORT',
+  MEDICAL_CLAIM_EXPORT: 'MEDICAL_CLAIM_EXPORT',
+  MEDICAL_CLAIM_IMPORT: 'MEDICAL_CLAIM_IMPORT'
+} as const
+
+export type ImportExportType = (typeof ImportExportType)[keyof typeof ImportExportType]
+
+
+export const ImportExportStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type ImportExportStatus = (typeof ImportExportStatus)[keyof typeof ImportExportStatus]
+
+
+export const WorkflowSubjectType = {
+  EVENT_PROPOSAL: 'EVENT_PROPOSAL',
+  VENDOR_ONBOARDING: 'VENDOR_ONBOARDING',
+  MEDICAL_CLAIM: 'MEDICAL_CLAIM'
+} as const
+
+export type WorkflowSubjectType = (typeof WorkflowSubjectType)[keyof typeof WorkflowSubjectType]
+
+
+export const NotificationType = {
+  APPROVAL_PENDING: 'APPROVAL_PENDING',
+  APPROVAL_DECISION: 'APPROVAL_DECISION',
+  REPORT_STATUS: 'REPORT_STATUS',
+  GENERIC: 'GENERIC'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const ClaimCover = {
+  SELF: 'SELF',
+  SPOUSE: 'SPOUSE',
+  BOTH: 'BOTH'
+} as const
+
+export type ClaimCover = (typeof ClaimCover)[keyof typeof ClaimCover]
+
+
+export const ClaimHead = {
+  VISIT_FEES: 'VISIT_FEES',
+  MEDICINES_INVESTIGATIONS: 'MEDICINES_INVESTIGATIONS',
+  OPHTHALMIC_TREATMENT: 'OPHTHALMIC_TREATMENT',
+  EXECUTIVE_HEALTH_CHECKUP: 'EXECUTIVE_HEALTH_CHECKUP',
+  EXCESS_HOSPITALISATION: 'EXCESS_HOSPITALISATION'
+} as const
+
+export type ClaimHead = (typeof ClaimHead)[keyof typeof ClaimHead]
