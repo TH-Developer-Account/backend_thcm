@@ -241,6 +241,7 @@ export type UserWhereInput = {
   reportValidations?: Prisma.EventReportListRelationFilter
   activityLogs?: Prisma.ActivityLogListRelationFilter
   importExportLogs?: Prisma.ImportExportLogListRelationFilter
+  businessPartnerContact?: Prisma.BusinessPartnerContactListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -273,6 +274,7 @@ export type UserOrderByWithRelationInput = {
   reportValidations?: Prisma.EventReportOrderByRelationAggregateInput
   activityLogs?: Prisma.ActivityLogOrderByRelationAggregateInput
   importExportLogs?: Prisma.ImportExportLogOrderByRelationAggregateInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -308,6 +310,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   reportValidations?: Prisma.EventReportListRelationFilter
   activityLogs?: Prisma.ActivityLogListRelationFilter
   importExportLogs?: Prisma.ImportExportLogListRelationFilter
+  businessPartnerContact?: Prisma.BusinessPartnerContactListRelationFilter
 }, "id" | "email" | "phone_number">
 
 export type UserOrderByWithAggregationInput = {
@@ -372,6 +375,7 @@ export type UserCreateInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -404,6 +408,7 @@ export type UserUncheckedCreateInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -436,6 +441,7 @@ export type UserUpdateInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -468,6 +474,7 @@ export type UserUncheckedUpdateInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -838,6 +845,22 @@ export type UserUpdateOneRequiredWithoutInitiated_medical_claimsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInitiated_medical_claimsInput, Prisma.UserUpdateWithoutInitiated_medical_claimsInput>, Prisma.UserUncheckedUpdateWithoutInitiated_medical_claimsInput>
 }
 
+export type UserCreateNestedOneWithoutBusinessPartnerContactInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBusinessPartnerContactInput, Prisma.UserUncheckedCreateWithoutBusinessPartnerContactInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBusinessPartnerContactInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutBusinessPartnerContactNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBusinessPartnerContactInput, Prisma.UserUncheckedCreateWithoutBusinessPartnerContactInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBusinessPartnerContactInput
+  upsert?: Prisma.UserUpsertWithoutBusinessPartnerContactInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBusinessPartnerContactInput, Prisma.UserUpdateWithoutBusinessPartnerContactInput>, Prisma.UserUncheckedUpdateWithoutBusinessPartnerContactInput>
+}
+
 export type UserCreateWithoutPassword_reset_tokensInput = {
   id?: string
   first_name: string
@@ -867,6 +890,7 @@ export type UserCreateWithoutPassword_reset_tokensInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
@@ -898,6 +922,7 @@ export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPassword_reset_tokensInput = {
@@ -945,6 +970,7 @@ export type UserUpdateWithoutPassword_reset_tokensInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
@@ -976,6 +1002,7 @@ export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRefresh_tokensInput = {
@@ -1007,6 +1034,7 @@ export type UserCreateWithoutRefresh_tokensInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefresh_tokensInput = {
@@ -1038,6 +1066,7 @@ export type UserUncheckedCreateWithoutRefresh_tokensInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefresh_tokensInput = {
@@ -1085,6 +1114,7 @@ export type UserUpdateWithoutRefresh_tokensInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
@@ -1116,6 +1146,7 @@ export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutWorkspaceUsersInput = {
@@ -1147,6 +1178,7 @@ export type UserCreateWithoutWorkspaceUsersInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
@@ -1178,6 +1210,7 @@ export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWorkspaceUsersInput = {
@@ -1225,6 +1258,7 @@ export type UserUpdateWithoutWorkspaceUsersInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
@@ -1256,6 +1290,7 @@ export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutUserProfilesInput = {
@@ -1287,6 +1322,7 @@ export type UserCreateWithoutUserProfilesInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUserProfilesInput = {
@@ -1318,6 +1354,7 @@ export type UserUncheckedCreateWithoutUserProfilesInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUserProfilesInput = {
@@ -1365,6 +1402,7 @@ export type UserUpdateWithoutUserProfilesInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserProfilesInput = {
@@ -1396,6 +1434,7 @@ export type UserUncheckedUpdateWithoutUserProfilesInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreated_event_proposalsInput = {
@@ -1427,6 +1466,7 @@ export type UserCreateWithoutCreated_event_proposalsInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
@@ -1458,6 +1498,7 @@ export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreated_event_proposalsInput = {
@@ -1494,6 +1535,7 @@ export type UserCreateWithoutUpdated_event_proposalsInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
@@ -1525,6 +1567,7 @@ export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUpdated_event_proposalsInput = {
@@ -1572,6 +1615,7 @@ export type UserUpdateWithoutCreated_event_proposalsInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
@@ -1603,6 +1647,7 @@ export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutUpdated_event_proposalsInput = {
@@ -1645,6 +1690,7 @@ export type UserUpdateWithoutUpdated_event_proposalsInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
@@ -1676,6 +1722,7 @@ export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreated_workflowInput = {
@@ -1707,6 +1754,7 @@ export type UserCreateWithoutCreated_workflowInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreated_workflowInput = {
@@ -1738,6 +1786,7 @@ export type UserUncheckedCreateWithoutCreated_workflowInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreated_workflowInput = {
@@ -1774,6 +1823,7 @@ export type UserCreateWithoutUpdated_workflowInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutUpdated_workflowInput = {
@@ -1805,6 +1855,7 @@ export type UserUncheckedCreateWithoutUpdated_workflowInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutUpdated_workflowInput = {
@@ -1852,6 +1903,7 @@ export type UserUpdateWithoutCreated_workflowInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreated_workflowInput = {
@@ -1883,6 +1935,7 @@ export type UserUncheckedUpdateWithoutCreated_workflowInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutUpdated_workflowInput = {
@@ -1925,6 +1978,7 @@ export type UserUpdateWithoutUpdated_workflowInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
@@ -1956,6 +2010,7 @@ export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTemplateApprovalsInput = {
@@ -1987,6 +2042,7 @@ export type UserCreateWithoutTemplateApprovalsInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
@@ -2018,6 +2074,7 @@ export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTemplateApprovalsInput = {
@@ -2065,6 +2122,7 @@ export type UserUpdateWithoutTemplateApprovalsInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
@@ -2096,6 +2154,7 @@ export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutApprovalsInput = {
@@ -2127,6 +2186,7 @@ export type UserCreateWithoutApprovalsInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutApprovalsInput = {
@@ -2158,6 +2218,7 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutApprovalsInput = {
@@ -2205,6 +2266,7 @@ export type UserUpdateWithoutApprovalsInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovalsInput = {
@@ -2236,6 +2298,7 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutWorkFlowUsersInput = {
@@ -2267,6 +2330,7 @@ export type UserCreateWithoutWorkFlowUsersInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
@@ -2298,6 +2362,7 @@ export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWorkFlowUsersInput = {
@@ -2345,6 +2410,7 @@ export type UserUpdateWithoutWorkFlowUsersInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
@@ -2376,6 +2442,7 @@ export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutActivityLogsInput = {
@@ -2407,6 +2474,7 @@ export type UserCreateWithoutActivityLogsInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutActivityLogsInput = {
@@ -2438,6 +2506,7 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutActivityLogsInput = {
@@ -2485,6 +2554,7 @@ export type UserUpdateWithoutActivityLogsInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivityLogsInput = {
@@ -2516,6 +2586,7 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -2547,6 +2618,7 @@ export type UserCreateWithoutCommentsInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -2578,6 +2650,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -2625,6 +2698,7 @@ export type UserUpdateWithoutCommentsInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -2656,6 +2730,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutReportValidationsInput = {
@@ -2687,6 +2762,7 @@ export type UserCreateWithoutReportValidationsInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutReportValidationsInput = {
@@ -2718,6 +2794,7 @@ export type UserUncheckedCreateWithoutReportValidationsInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutReportValidationsInput = {
@@ -2765,6 +2842,7 @@ export type UserUpdateWithoutReportValidationsInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportValidationsInput = {
@@ -2796,6 +2874,7 @@ export type UserUncheckedUpdateWithoutReportValidationsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutImportExportLogsInput = {
@@ -2827,6 +2906,7 @@ export type UserCreateWithoutImportExportLogsInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutImportExportLogsInput = {
@@ -2858,6 +2938,7 @@ export type UserUncheckedCreateWithoutImportExportLogsInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutImportExportLogsInput = {
@@ -2905,6 +2986,7 @@ export type UserUpdateWithoutImportExportLogsInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutImportExportLogsInput = {
@@ -2936,6 +3018,7 @@ export type UserUncheckedUpdateWithoutImportExportLogsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2967,6 +3050,7 @@ export type UserCreateWithoutNotificationsInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2998,6 +3082,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -3045,6 +3130,7 @@ export type UserUpdateWithoutNotificationsInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -3076,6 +3162,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPushSubscriptionsInput = {
@@ -3107,6 +3194,7 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
@@ -3138,6 +3226,7 @@ export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPushSubscriptionsInput = {
@@ -3185,6 +3274,7 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
@@ -3216,6 +3306,7 @@ export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutInitiated_vendor_onboardingsInput = {
@@ -3247,6 +3338,7 @@ export type UserCreateWithoutInitiated_vendor_onboardingsInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput = {
@@ -3278,6 +3370,7 @@ export type UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInitiated_vendor_onboardingsInput = {
@@ -3325,6 +3418,7 @@ export type UserUpdateWithoutInitiated_vendor_onboardingsInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput = {
@@ -3356,6 +3450,7 @@ export type UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutInitiated_medical_claimsInput = {
@@ -3387,6 +3482,7 @@ export type UserCreateWithoutInitiated_medical_claimsInput = {
   reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutInitiated_medical_claimsInput = {
@@ -3418,6 +3514,7 @@ export type UserUncheckedCreateWithoutInitiated_medical_claimsInput = {
   reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutInitiated_medical_claimsInput = {
@@ -3465,6 +3562,7 @@ export type UserUpdateWithoutInitiated_medical_claimsInput = {
   reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInitiated_medical_claimsInput = {
@@ -3489,6 +3587,151 @@ export type UserUncheckedUpdateWithoutInitiated_medical_claimsInput = {
   created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
   initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutBusinessPartnerContactInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+}
+
+export type UserUncheckedCreateWithoutBusinessPartnerContactInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email: string
+  phone_number: string
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+}
+
+export type UserCreateOrConnectWithoutBusinessPartnerContactInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBusinessPartnerContactInput, Prisma.UserUncheckedCreateWithoutBusinessPartnerContactInput>
+}
+
+export type UserUpsertWithoutBusinessPartnerContactInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBusinessPartnerContactInput, Prisma.UserUncheckedUpdateWithoutBusinessPartnerContactInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBusinessPartnerContactInput, Prisma.UserUncheckedCreateWithoutBusinessPartnerContactInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBusinessPartnerContactInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBusinessPartnerContactInput, Prisma.UserUncheckedUpdateWithoutBusinessPartnerContactInput>
+}
+
+export type UserUpdateWithoutBusinessPartnerContactInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBusinessPartnerContactInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
   approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
   templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
   workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
@@ -3523,6 +3766,7 @@ export type UserCountOutputType = {
   reportValidations: number
   activityLogs: number
   importExportLogs: number
+  businessPartnerContact: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3545,6 +3789,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   reportValidations?: boolean | UserCountOutputTypeCountReportValidationsArgs
   activityLogs?: boolean | UserCountOutputTypeCountActivityLogsArgs
   importExportLogs?: boolean | UserCountOutputTypeCountImportExportLogsArgs
+  businessPartnerContact?: boolean | UserCountOutputTypeCountBusinessPartnerContactArgs
 }
 
 /**
@@ -3690,6 +3935,13 @@ export type UserCountOutputTypeCountImportExportLogsArgs<ExtArgs extends runtime
   where?: Prisma.ImportExportLogWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBusinessPartnerContactArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BusinessPartnerContactWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3721,6 +3973,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   reportValidations?: boolean | Prisma.User$reportValidationsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.User$activityLogsArgs<ExtArgs>
   importExportLogs?: boolean | Prisma.User$importExportLogsArgs<ExtArgs>
+  businessPartnerContact?: boolean | Prisma.User$businessPartnerContactArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3784,6 +4037,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   reportValidations?: boolean | Prisma.User$reportValidationsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.User$activityLogsArgs<ExtArgs>
   importExportLogs?: boolean | Prisma.User$importExportLogsArgs<ExtArgs>
+  businessPartnerContact?: boolean | Prisma.User$businessPartnerContactArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -3811,6 +4065,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     reportValidations: Prisma.$EventReportPayload<ExtArgs>[]
     activityLogs: Prisma.$ActivityLogPayload<ExtArgs>[]
     importExportLogs: Prisma.$ImportExportLogPayload<ExtArgs>[]
+    businessPartnerContact: Prisma.$BusinessPartnerContactPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4236,6 +4491,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   reportValidations<T extends Prisma.User$reportValidationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$reportValidationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activityLogs<T extends Prisma.User$activityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   importExportLogs<T extends Prisma.User$importExportLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$importExportLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImportExportLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  businessPartnerContact<T extends Prisma.User$businessPartnerContactArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$businessPartnerContactArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5121,6 +5377,30 @@ export type User$importExportLogsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.ImportExportLogScalarFieldEnum | Prisma.ImportExportLogScalarFieldEnum[]
+}
+
+/**
+ * User.businessPartnerContact
+ */
+export type User$businessPartnerContactArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BusinessPartnerContact
+   */
+  select?: Prisma.BusinessPartnerContactSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BusinessPartnerContact
+   */
+  omit?: Prisma.BusinessPartnerContactOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BusinessPartnerContactInclude<ExtArgs> | null
+  where?: Prisma.BusinessPartnerContactWhereInput
+  orderBy?: Prisma.BusinessPartnerContactOrderByWithRelationInput | Prisma.BusinessPartnerContactOrderByWithRelationInput[]
+  cursor?: Prisma.BusinessPartnerContactWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BusinessPartnerContactScalarFieldEnum | Prisma.BusinessPartnerContactScalarFieldEnum[]
 }
 
 /**

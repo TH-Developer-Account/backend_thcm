@@ -97,7 +97,10 @@ export const ModelName = {
   MedicalClaim: 'MedicalClaim',
   MedicalClaimBill: 'MedicalClaimBill',
   MedicalClaimGradeEligibility: 'MedicalClaimGradeEligibility',
-  Guest: 'Guest'
+  Guest: 'Guest',
+  BusinessPartner: 'BusinessPartner',
+  BusinessPartnerAddress: 'BusinessPartnerAddress',
+  BusinessPartnerContact: 'BusinessPartnerContact'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -828,6 +831,75 @@ export const GuestScalarFieldEnum = {
 } as const
 
 export type GuestScalarFieldEnum = (typeof GuestScalarFieldEnum)[keyof typeof GuestScalarFieldEnum]
+
+
+export const BusinessPartnerScalarFieldEnum = {
+  id: 'id',
+  internalId: 'internalId',
+  vendorId: 'vendorId',
+  bpId: 'bpId',
+  s4Id: 's4Id',
+  bydId: 'bydId',
+  c4cId: 'c4cId',
+  bpName: 'bpName',
+  bpShortName: 'bpShortName',
+  isKeyAccount: 'isKeyAccount',
+  gst: 'gst',
+  panNumber: 'panNumber',
+  legalTradeName: 'legalTradeName',
+  officeType: 'officeType',
+  bpType: 'bpType',
+  entityType: 'entityType',
+  vendorCode: 'vendorCode',
+  isActive: 'isActive',
+  joinedOn: 'joinedOn',
+  parentId: 'parentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BusinessPartnerScalarFieldEnum = (typeof BusinessPartnerScalarFieldEnum)[keyof typeof BusinessPartnerScalarFieldEnum]
+
+
+export const BusinessPartnerAddressScalarFieldEnum = {
+  id: 'id',
+  businessPartnerId: 'businessPartnerId',
+  address: 'address',
+  city: 'city',
+  state: 'state',
+  country: 'country',
+  pincode: 'pincode',
+  region: 'region',
+  zone: 'zone',
+  branch: 'branch',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  email: 'email',
+  phoneNo: 'phoneNo',
+  website: 'website',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BusinessPartnerAddressScalarFieldEnum = (typeof BusinessPartnerAddressScalarFieldEnum)[keyof typeof BusinessPartnerAddressScalarFieldEnum]
+
+
+export const BusinessPartnerContactScalarFieldEnum = {
+  id: 'id',
+  businessPartnerId: 'businessPartnerId',
+  userId: 'userId',
+  name: 'name',
+  phoneNumber: 'phoneNumber',
+  email: 'email',
+  panNumber: 'panNumber',
+  isOwner: 'isOwner',
+  isMainContact: 'isMainContact',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BusinessPartnerContactScalarFieldEnum = (typeof BusinessPartnerContactScalarFieldEnum)[keyof typeof BusinessPartnerContactScalarFieldEnum]
 
 
 export const SortOrder = {

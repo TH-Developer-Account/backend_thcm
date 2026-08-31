@@ -430,7 +430,10 @@ export const ModelName = {
   MedicalClaim: 'MedicalClaim',
   MedicalClaimBill: 'MedicalClaimBill',
   MedicalClaimGradeEligibility: 'MedicalClaimGradeEligibility',
-  Guest: 'Guest'
+  Guest: 'Guest',
+  BusinessPartner: 'BusinessPartner',
+  BusinessPartnerAddress: 'BusinessPartnerAddress',
+  BusinessPartnerContact: 'BusinessPartnerContact'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -446,7 +449,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "medicalClaimGradeEligibility" | "guest"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "medicalClaimGradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3928,6 +3931,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BusinessPartner: {
+      payload: Prisma.$BusinessPartnerPayload<ExtArgs>
+      fields: Prisma.BusinessPartnerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BusinessPartnerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BusinessPartnerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerPayload>
+        }
+        findFirst: {
+          args: Prisma.BusinessPartnerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BusinessPartnerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerPayload>
+        }
+        findMany: {
+          args: Prisma.BusinessPartnerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerPayload>[]
+        }
+        create: {
+          args: Prisma.BusinessPartnerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerPayload>
+        }
+        createMany: {
+          args: Prisma.BusinessPartnerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BusinessPartnerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerPayload>[]
+        }
+        delete: {
+          args: Prisma.BusinessPartnerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerPayload>
+        }
+        update: {
+          args: Prisma.BusinessPartnerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerPayload>
+        }
+        deleteMany: {
+          args: Prisma.BusinessPartnerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BusinessPartnerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BusinessPartnerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerPayload>[]
+        }
+        upsert: {
+          args: Prisma.BusinessPartnerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerPayload>
+        }
+        aggregate: {
+          args: Prisma.BusinessPartnerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBusinessPartner>
+        }
+        groupBy: {
+          args: Prisma.BusinessPartnerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BusinessPartnerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BusinessPartnerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BusinessPartnerCountAggregateOutputType> | number
+        }
+      }
+    }
+    BusinessPartnerAddress: {
+      payload: Prisma.$BusinessPartnerAddressPayload<ExtArgs>
+      fields: Prisma.BusinessPartnerAddressFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BusinessPartnerAddressFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerAddressPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BusinessPartnerAddressFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerAddressPayload>
+        }
+        findFirst: {
+          args: Prisma.BusinessPartnerAddressFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerAddressPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BusinessPartnerAddressFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerAddressPayload>
+        }
+        findMany: {
+          args: Prisma.BusinessPartnerAddressFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerAddressPayload>[]
+        }
+        create: {
+          args: Prisma.BusinessPartnerAddressCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerAddressPayload>
+        }
+        createMany: {
+          args: Prisma.BusinessPartnerAddressCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BusinessPartnerAddressCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerAddressPayload>[]
+        }
+        delete: {
+          args: Prisma.BusinessPartnerAddressDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerAddressPayload>
+        }
+        update: {
+          args: Prisma.BusinessPartnerAddressUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerAddressPayload>
+        }
+        deleteMany: {
+          args: Prisma.BusinessPartnerAddressDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BusinessPartnerAddressUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BusinessPartnerAddressUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerAddressPayload>[]
+        }
+        upsert: {
+          args: Prisma.BusinessPartnerAddressUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerAddressPayload>
+        }
+        aggregate: {
+          args: Prisma.BusinessPartnerAddressAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBusinessPartnerAddress>
+        }
+        groupBy: {
+          args: Prisma.BusinessPartnerAddressGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BusinessPartnerAddressGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BusinessPartnerAddressCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BusinessPartnerAddressCountAggregateOutputType> | number
+        }
+      }
+    }
+    BusinessPartnerContact: {
+      payload: Prisma.$BusinessPartnerContactPayload<ExtArgs>
+      fields: Prisma.BusinessPartnerContactFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BusinessPartnerContactFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerContactPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BusinessPartnerContactFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerContactPayload>
+        }
+        findFirst: {
+          args: Prisma.BusinessPartnerContactFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerContactPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BusinessPartnerContactFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerContactPayload>
+        }
+        findMany: {
+          args: Prisma.BusinessPartnerContactFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerContactPayload>[]
+        }
+        create: {
+          args: Prisma.BusinessPartnerContactCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerContactPayload>
+        }
+        createMany: {
+          args: Prisma.BusinessPartnerContactCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BusinessPartnerContactCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerContactPayload>[]
+        }
+        delete: {
+          args: Prisma.BusinessPartnerContactDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerContactPayload>
+        }
+        update: {
+          args: Prisma.BusinessPartnerContactUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerContactPayload>
+        }
+        deleteMany: {
+          args: Prisma.BusinessPartnerContactDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BusinessPartnerContactUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BusinessPartnerContactUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerContactPayload>[]
+        }
+        upsert: {
+          args: Prisma.BusinessPartnerContactUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BusinessPartnerContactPayload>
+        }
+        aggregate: {
+          args: Prisma.BusinessPartnerContactAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBusinessPartnerContact>
+        }
+        groupBy: {
+          args: Prisma.BusinessPartnerContactGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BusinessPartnerContactGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BusinessPartnerContactCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BusinessPartnerContactCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4681,6 +4906,75 @@ export const GuestScalarFieldEnum = {
 export type GuestScalarFieldEnum = (typeof GuestScalarFieldEnum)[keyof typeof GuestScalarFieldEnum]
 
 
+export const BusinessPartnerScalarFieldEnum = {
+  id: 'id',
+  internalId: 'internalId',
+  vendorId: 'vendorId',
+  bpId: 'bpId',
+  s4Id: 's4Id',
+  bydId: 'bydId',
+  c4cId: 'c4cId',
+  bpName: 'bpName',
+  bpShortName: 'bpShortName',
+  isKeyAccount: 'isKeyAccount',
+  gst: 'gst',
+  panNumber: 'panNumber',
+  legalTradeName: 'legalTradeName',
+  officeType: 'officeType',
+  bpType: 'bpType',
+  entityType: 'entityType',
+  vendorCode: 'vendorCode',
+  isActive: 'isActive',
+  joinedOn: 'joinedOn',
+  parentId: 'parentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BusinessPartnerScalarFieldEnum = (typeof BusinessPartnerScalarFieldEnum)[keyof typeof BusinessPartnerScalarFieldEnum]
+
+
+export const BusinessPartnerAddressScalarFieldEnum = {
+  id: 'id',
+  businessPartnerId: 'businessPartnerId',
+  address: 'address',
+  city: 'city',
+  state: 'state',
+  country: 'country',
+  pincode: 'pincode',
+  region: 'region',
+  zone: 'zone',
+  branch: 'branch',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  email: 'email',
+  phoneNo: 'phoneNo',
+  website: 'website',
+  isDefault: 'isDefault',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BusinessPartnerAddressScalarFieldEnum = (typeof BusinessPartnerAddressScalarFieldEnum)[keyof typeof BusinessPartnerAddressScalarFieldEnum]
+
+
+export const BusinessPartnerContactScalarFieldEnum = {
+  id: 'id',
+  businessPartnerId: 'businessPartnerId',
+  userId: 'userId',
+  name: 'name',
+  phoneNumber: 'phoneNumber',
+  email: 'email',
+  panNumber: 'panNumber',
+  isOwner: 'isOwner',
+  isMainContact: 'isMainContact',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BusinessPartnerContactScalarFieldEnum = (typeof BusinessPartnerContactScalarFieldEnum)[keyof typeof BusinessPartnerContactScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -5084,6 +5378,20 @@ export type EnumClaimHeadFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 export type ListEnumClaimHeadFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ClaimHead[]'>
     
 
+
+/**
+ * Reference to a field of type 'BusinessPartnerOfficeType'
+ */
+export type EnumBusinessPartnerOfficeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BusinessPartnerOfficeType'>
+    
+
+
+/**
+ * Reference to a field of type 'BusinessPartnerOfficeType[]'
+ */
+export type ListEnumBusinessPartnerOfficeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BusinessPartnerOfficeType[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -5241,6 +5549,9 @@ export type GlobalOmitConfig = {
   medicalClaimBill?: Prisma.MedicalClaimBillOmit
   medicalClaimGradeEligibility?: Prisma.MedicalClaimGradeEligibilityOmit
   guest?: Prisma.GuestOmit
+  businessPartner?: Prisma.BusinessPartnerOmit
+  businessPartnerAddress?: Prisma.BusinessPartnerAddressOmit
+  businessPartnerContact?: Prisma.BusinessPartnerContactOmit
 }
 
 /* Types for Logging */
