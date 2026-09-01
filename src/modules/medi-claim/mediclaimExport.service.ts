@@ -1,5 +1,5 @@
 import { prisma } from "@shared/config/prisma";
-import { rowsToCsvBuffer } from "@import-export/utils/csvWriter";
+import { rowsToCsvBuffer, toCsvRow } from "@import-export/utils/csvWriter";
 import { buildXlsxBuffer } from "@import-export/utils/xlsxWriter";
 import { uploadBufferToS3 } from "@shared/utils/aws-s3.services";
 import {
@@ -65,7 +65,7 @@ export async function exportMedicalClaimsToS3(
   let filename: string;
 
   if (format === "csv") {
-    buffer = rowsToCsvBuffer(rows);
+    buffer = rowsToCsvBuffer(rows.map(toCsvRow));
     filename = `medical-claims-${filters.tab}-${timestamp}.csv`;
   } else {
     buffer = buildXlsxBuffer([
