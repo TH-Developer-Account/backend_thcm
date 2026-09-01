@@ -181,7 +181,7 @@ export async function importMedicalClaimsFromS3(
   for (let i = 0; i < rows.length; i++) {
     const validated = validateRow(rows[i], i);
 
-    if (!validated.valid) {
+    if (validated.valid === false) {
       allErrors.push(...validated.errors);
       continue;
     }
