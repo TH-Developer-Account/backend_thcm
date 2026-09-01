@@ -1,4 +1,5 @@
 import Papa from "papaparse";
+import { XlsxRow } from "@import-export/utils/xlsxWriter";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // csvWriter.ts — pure Row[] → CSV Buffer, no side effects
@@ -8,6 +9,14 @@ import Papa from "papaparse";
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type CsvRow = Record<string, string | number | boolean | null>;
+
+export function toCsvRow(row: XlsxRow): CsvRow {
+  const result: CsvRow = {};
+  for (const [key, value] of Object.entries(row)) {
+    result[key] = value instanceof Date ? value.toISOString() : value;
+  }
+  return result;
+}
 
 export function rowsToCsvBuffer(rows: CsvRow[]): Buffer {
   if (rows.length === 0) {
