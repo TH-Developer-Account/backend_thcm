@@ -26,6 +26,7 @@ export type LeadExportJobData = {
   epcId?: string; // undefined = export all leads (admin)
   format: "csv" | "xlsx";
   requestedBy: string;
+  workspaceId: string; // needed by the worker to raise the "export ready" notification
   logId: string; // ImportExportLog record ID
 };
 

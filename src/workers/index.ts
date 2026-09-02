@@ -44,6 +44,40 @@ import { MedicalClaimImportJobData } from "@medi-claim/mediclaimImport.queue";
 //   is for persistent history; job progress is for live polling.
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ── notifyExportReady ─────────────────────────────────────────────────────────
+// Shared by all four export workers (EPC, Lead, Vendor Onboarding, Medical
+// Claim) — each one hits the same "export finished, tell the requester"
+// step, differing only in what to call the exported entity. Kept local to
+// this file since it's only ever called from within these worker functions.
+//
+// Notification carries logId only, not a presigned URL — the URL is
+// generated fresh when the user actually clicks download (see
+// getSignedReportUrl call sites below), since presigned URLs expire and we
+// don't want a stale one sitting in a notification's metadata.
+
+async function notifyExportReady({
+  workspaceId,
+  recipientId,
+  entityLabel,
+  totalRecords,
+  logId,
+}: {
+  workspaceId: string;
+  recipientId: string;
+  entityLabel: string;
+  totalRecords: number;
+  logId: string;
+}): Promise<void> {
+  await notify({
+    workspaceId,
+    recipientId,
+    type: "REPORT_STATUS",
+    title: `${entityLabel} export ready`,
+    body: `Your export of ${totalRecords} record${totalRecords === 1 ? "" : "s"} is ready to download.`,
+    metadata: { downloadable: true, logId },
+  });
+}
+
 // ── Lead Import Worker ────────────────────────────────────────────────────────
 
 export function startLeadImportWorker() {
@@ -116,7 +150,7 @@ export function startLeadExportWorker() {
   const worker = new Worker<LeadExportJobData>(
     "lead-export",
     async (job: Job<LeadExportJobData>) => {
-      const { epcId, format, logId } = job.data;
+      const { epcId, format, requestedBy, workspaceId, logId } = job.data;
 
       await markLogProcessing(logId);
       await job.updateProgress({ status: "generating" });
@@ -141,6 +175,14 @@ export function startLeadExportWorker() {
         successRecords: 0,
         failedRecords: 0,
         fileS3Key: s3Key,
+      });
+
+      await notifyExportReady({
+        workspaceId,
+        recipientId: requestedBy,
+        entityLabel: "Lead",
+        totalRecords: 0, // same placeholder as markLogCompleted above — see TODO
+        logId,
       });
 
       await job.updateProgress({ status: "completed", downloadUrl });
@@ -179,7 +221,7 @@ export function startEpcExportWorker() {
   const worker = new Worker<EpcExportJobData>(
     "epc-export",
     async (job: Job<EpcExportJobData>) => {
-      const { filters, format, logId } = job.data;
+      const { filters, format, requestedBy, workspaceId, logId } = job.data;
 
       await markLogProcessing(logId);
       await job.updateProgress({ status: "exporting", processedEpcs: 0 });
@@ -199,6 +241,14 @@ export function startEpcExportWorker() {
         successRecords: result.totalEpcs,
         failedRecords: 0, // EPC export is all-or-nothing; no per-row failures
         fileS3Key: result.s3Key,
+      });
+
+      await notifyExportReady({
+        workspaceId,
+        recipientId: requestedBy,
+        entityLabel: "EPC",
+        totalRecords: result.totalEpcs,
+        logId,
       });
 
       await job.updateProgress({
@@ -298,18 +348,12 @@ export function startVendorOnboardingExportWorker() {
           fileS3Key: result.s3Key,
         });
 
-        // Notification carries logId only, not a presigned URL — the URL
-        // is generated fresh when the user actually clicks download (see
-        // getOutputFileUrl), same reasoning as the poll endpoint's downloadUrl
-        // staleness note above but permanent here since there's no expiry
-        // window to outlive.
-        await notify({
+        await notifyExportReady({
           workspaceId: job.data.workspaceId,
           recipientId: job.data.userId,
-          type: "REPORT_STATUS",
-          title: "Vendor onboarding export ready",
-          body: `Your export of ${result.totalRecords} record${result.totalRecords === 1 ? "" : "s"} is ready to download.`,
-          metadata: { downloadable: true, logId },
+          entityLabel: "Vendor onboarding",
+          totalRecords: result.totalRecords,
+          logId,
         });
 
         const downloadUrl = await getSignedReportUrl(result.s3Key);
@@ -357,13 +401,12 @@ export function startMedicalClaimExportWorker() {
           fileS3Key: result.s3Key,
         });
 
-        await notify({
+        await notifyExportReady({
           workspaceId: job.data.workspaceId,
           recipientId: job.data.userId,
-          type: "REPORT_STATUS",
-          title: "Medical claim export ready",
-          body: `Your export of ${result.totalRecords} record${result.totalRecords === 1 ? "" : "s"} is ready to download.`,
-          metadata: { downloadable: true, logId },
+          entityLabel: "Medical claim",
+          totalRecords: result.totalRecords,
+          logId,
         });
 
         const downloadUrl = await getSignedReportUrl(result.s3Key);
