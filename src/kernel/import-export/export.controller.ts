@@ -6,7 +6,6 @@ import ApiError from "@shared/utils/apiError";
 import { epcExportQueue } from "../../modules/map/epc.queue";
 import { leadExportQueue } from "../../modules/leads/lead.queue";
 import { createPendingLog } from "./importExportLog.services";
-import { ImportExportType } from "./importExportLog.services";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // export.controller.ts
