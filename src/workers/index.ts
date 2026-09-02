@@ -78,6 +78,50 @@ async function notifyExportReady({
   });
 }
 
+// ── notifyImportComplete ──────────────────────────────────────────────────────
+// Import workers' completion shape differs from exports' — no single file
+// that's always ready, just a success/failed count and, sometimes, an error
+// file. Kept separate from notifyExportReady rather than forcing both into
+// one signature: the two aren't the same notification with different labels,
+// they carry genuinely different information.
+//
+// hasErrorFile only flags that one exists — the actual signed URL is fetched
+// fresh at download time via the existing GET .../error-file endpoint
+// (importExportLog.controller.ts), same "don't persist presigned URLs"
+// reasoning as notifyExportReady above.
+
+async function notifyImportComplete({
+  workspaceId,
+  recipientId,
+  entityLabel,
+  successRecords,
+  failedRecords,
+  hasErrorFile,
+  logId,
+}: {
+  workspaceId: string;
+  recipientId: string;
+  entityLabel: string;
+  successRecords: number;
+  failedRecords: number;
+  hasErrorFile: boolean;
+  logId: string;
+}): Promise<void> {
+  const body =
+    failedRecords > 0
+      ? `${successRecords} record${successRecords === 1 ? "" : "s"} imported successfully, ${failedRecords} failed.`
+      : `All ${successRecords} record${successRecords === 1 ? "" : "s"} imported successfully.`;
+
+  await notify({
+    workspaceId,
+    recipientId,
+    type: "REPORT_STATUS",
+    title: `${entityLabel} import complete`,
+    body,
+    metadata: { downloadable: hasErrorFile, hasErrorFile, logId },
+  });
+}
+
 // ── Lead Import Worker ────────────────────────────────────────────────────────
 
 export function startLeadImportWorker() {
@@ -468,6 +512,16 @@ export function startMedicalClaimImportWorker() {
         successRecords: result.processedRows,
         failedRecords: result.failedRows,
         errorFileS3Key: errorFileS3Key ?? undefined,
+      });
+
+      await notifyImportComplete({
+        workspaceId,
+        recipientId: requestedBy,
+        entityLabel: "Medical claim",
+        successRecords: result.processedRows,
+        failedRecords: result.failedRows,
+        hasErrorFile: !!errorFileS3Key,
+        logId,
       });
 
       await job.updateProgress({
