@@ -9,6 +9,8 @@ import {
   MedicalClaimPdfData,
 } from "@medi-claim/mediclaimAssembler";
 import { buildMedicalClaimDocDefinition } from "@medi-claim/mediclaimDocDefination";
+import { assembleEpcPdfData, EpcPdfData } from "@map/epcAssembler";
+import { buildEpcDocDefinition } from "@map/epcDocDefination";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PDF DOCUMENT REGISTRY
@@ -19,7 +21,10 @@ import { buildMedicalClaimDocDefinition } from "@medi-claim/mediclaimDocDefinati
 // an S3 key builder (storage location) for exactly one document type.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export type PdfDocumentType = "VENDOR_ONBOARDING" | "MEDICAL_CLAIM";
+export type PdfDocumentType =
+  | "VENDOR_ONBOARDING"
+  | "MEDICAL_CLAIM"
+  | "EVENT_PROPOSAL";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface PdfDocumentDefinition<TData = any> {
@@ -44,6 +49,11 @@ export const pdfDocumentRegistry: Record<
     buildDocDefinition: (data: MedicalClaimPdfData) =>
       buildMedicalClaimDocDefinition(data),
     buildS3Key: (claimId: string) => `medical-claim-pdfs/${claimId}.pdf`,
+  },
+  EVENT_PROPOSAL: {
+    assembleData: assembleEpcPdfData,
+    buildDocDefinition: (data: EpcPdfData) => buildEpcDocDefinition(data),
+    buildS3Key: (epcId: string) => `epc-pdfs/${epcId}.pdf`,
   },
 };
 
