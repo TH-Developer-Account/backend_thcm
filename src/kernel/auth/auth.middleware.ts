@@ -91,6 +91,17 @@ export const requireAuth = async (req, res, next) => {
   }
 };
 
+export const requireSuperAdmin = (req, res, next) => {
+  try {
+    if (!req.user?.isSuperAdmin) {
+      return next(new ApiError(403, "Only a super admin can manage users"));
+    }
+    next();
+  } catch (error) {
+    res.sendStatus(401);
+  }
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // authorize
 //
