@@ -180,42 +180,64 @@ model User {
   id                    String               @id @default(uuid())
   first_name            String               @db.VarChar(50)
   last_name             String               @db.VarChar(50)
-  email                 String               @unique @db.VarChar(100)
-  phone_number          String               @unique @db.VarChar(15)
+  email                 String?              @unique @db.VarChar(100)   // was: String @unique
+  phone_number          String?              @unique @db.VarChar(15)    // was: String @unique
   password              String               @db.VarChar(255)
   is_active             Boolean              @default(true)
   is_default_login      Boolean              @default(true)
+
+  // ── HR / org master fields (new) ──────────────────────────────────────
+  employeeCode     String?
+  bydId            String?
+  s4Id             String?
+  tallyId          String?
+  c4cId            String?
+  region           String?
+  address          String?
+  zone             String?
+  branch           String?
+  department       String?
+  role             String?
+  designation      String?
+  vertical         String?
+  managerCode1     String?
+  managerCode2     String?
+  isDefaultContact Boolean             @default(false)
+  userType         String? // reuses the existing THCM/DEALER/CUSTOMER enum — nullable since not every User is one of these
+  joinedOn         DateTime?
+
+  // Dealer users only — links to the Company code on the source row,
+  // matched against BusinessPartner.internalId. Null for THCM/other users.
+  businessPartnerId String?
+  businessPartner   BusinessPartner? @relation(fields: [businessPartnerId], references: [id])
+
+  // ── existing relations below, unchanged ─────────────────────────────
   refresh_tokens        RefreshToken[]
   password_reset_tokens PasswordResetToken[]
-
   workspaceUsers WorkspaceUser[]
   userProfiles   UserProfile[]
-
   notifications     Notification[]
   pushSubscriptions PushSubscription[]
-
   created_event_proposals EventProposal[] @relation("EventCreatedBy")
   updated_event_proposals EventProposal[] @relation("EventUpdatedBy")
-
   created_workflow WorkflowTemplate[] @relation("WorkFlowCreatedBy")
   updated_workflow WorkflowTemplate[] @relation("WorkFlowUpdatedBy")
-
   initiated_vendor_onboardings VendorOnboarding[] @relation("VendorOnboardingInitiatedBy")
   initiated_medical_claims MedicalClaim[] @relation("MedicalClaimInitiatedBy")
-
   approvals         Approval[]
   templateApprovals TemplateApprover[]
   workFlowUsers     WorkFlowTemplateUser[]
   comments          Comment[]
   reportValidations EventReport[] @relation("ReportValidator")
-
-  // ✅ Back-relation for ActivityLog.actor
   activityLogs   ActivityLog[]
   importExportLogs ImportExportLog[]
   businessPartnerContact BusinessPartnerContact[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
+
+  @@index([employeeCode, userType])
+  @@index([businessPartnerId])
 }
 
 model PasswordResetToken {
@@ -1240,6 +1262,7 @@ model BusinessPartner {
 
   addresses      BusinessPartnerAddress[]
   contacts       BusinessPartnerContact[]
+  users          User[]
 
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -1271,6 +1294,8 @@ model BusinessPartnerAddress {
   phoneNo           String?
   website           String?
   isDefault         Boolean @default(false)
+  isBillingAddress  Boolean @default(false)
+  isShippingAddress Boolean @default(false)
 
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt

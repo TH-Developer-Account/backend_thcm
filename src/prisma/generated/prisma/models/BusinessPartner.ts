@@ -322,6 +322,7 @@ export type BusinessPartnerWhereInput = {
   branches?: Prisma.BusinessPartnerListRelationFilter
   addresses?: Prisma.BusinessPartnerAddressListRelationFilter
   contacts?: Prisma.BusinessPartnerContactListRelationFilter
+  users?: Prisma.UserListRelationFilter
 }
 
 export type BusinessPartnerOrderByWithRelationInput = {
@@ -351,6 +352,7 @@ export type BusinessPartnerOrderByWithRelationInput = {
   branches?: Prisma.BusinessPartnerOrderByRelationAggregateInput
   addresses?: Prisma.BusinessPartnerAddressOrderByRelationAggregateInput
   contacts?: Prisma.BusinessPartnerContactOrderByRelationAggregateInput
+  users?: Prisma.UserOrderByRelationAggregateInput
 }
 
 export type BusinessPartnerWhereUniqueInput = Prisma.AtLeast<{
@@ -383,6 +385,7 @@ export type BusinessPartnerWhereUniqueInput = Prisma.AtLeast<{
   branches?: Prisma.BusinessPartnerListRelationFilter
   addresses?: Prisma.BusinessPartnerAddressListRelationFilter
   contacts?: Prisma.BusinessPartnerContactListRelationFilter
+  users?: Prisma.UserListRelationFilter
 }, "id" | "internalId">
 
 export type BusinessPartnerOrderByWithAggregationInput = {
@@ -467,6 +470,7 @@ export type BusinessPartnerCreateInput = {
   branches?: Prisma.BusinessPartnerCreateNestedManyWithoutParentInput
   addresses?: Prisma.BusinessPartnerAddressCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactCreateNestedManyWithoutBusinessPartnerInput
+  users?: Prisma.UserCreateNestedManyWithoutBusinessPartnerInput
 }
 
 export type BusinessPartnerUncheckedCreateInput = {
@@ -495,6 +499,7 @@ export type BusinessPartnerUncheckedCreateInput = {
   branches?: Prisma.BusinessPartnerUncheckedCreateNestedManyWithoutParentInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutBusinessPartnerInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutBusinessPartnerInput
 }
 
 export type BusinessPartnerUpdateInput = {
@@ -523,6 +528,7 @@ export type BusinessPartnerUpdateInput = {
   branches?: Prisma.BusinessPartnerUpdateManyWithoutParentNestedInput
   addresses?: Prisma.BusinessPartnerAddressUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUpdateManyWithoutBusinessPartnerNestedInput
+  users?: Prisma.UserUpdateManyWithoutBusinessPartnerNestedInput
 }
 
 export type BusinessPartnerUncheckedUpdateInput = {
@@ -551,6 +557,7 @@ export type BusinessPartnerUncheckedUpdateInput = {
   branches?: Prisma.BusinessPartnerUncheckedUpdateManyWithoutParentNestedInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutBusinessPartnerNestedInput
 }
 
 export type BusinessPartnerCreateManyInput = {
@@ -722,6 +729,22 @@ export type BusinessPartnerScalarRelationFilter = {
   isNot?: Prisma.BusinessPartnerWhereInput
 }
 
+export type BusinessPartnerCreateNestedOneWithoutUsersInput = {
+  create?: Prisma.XOR<Prisma.BusinessPartnerCreateWithoutUsersInput, Prisma.BusinessPartnerUncheckedCreateWithoutUsersInput>
+  connectOrCreate?: Prisma.BusinessPartnerCreateOrConnectWithoutUsersInput
+  connect?: Prisma.BusinessPartnerWhereUniqueInput
+}
+
+export type BusinessPartnerUpdateOneWithoutUsersNestedInput = {
+  create?: Prisma.XOR<Prisma.BusinessPartnerCreateWithoutUsersInput, Prisma.BusinessPartnerUncheckedCreateWithoutUsersInput>
+  connectOrCreate?: Prisma.BusinessPartnerCreateOrConnectWithoutUsersInput
+  upsert?: Prisma.BusinessPartnerUpsertWithoutUsersInput
+  disconnect?: Prisma.BusinessPartnerWhereInput | boolean
+  delete?: Prisma.BusinessPartnerWhereInput | boolean
+  connect?: Prisma.BusinessPartnerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BusinessPartnerUpdateToOneWithWhereWithoutUsersInput, Prisma.BusinessPartnerUpdateWithoutUsersInput>, Prisma.BusinessPartnerUncheckedUpdateWithoutUsersInput>
+}
+
 export type BusinessPartnerCreateNestedOneWithoutBranchesInput = {
   create?: Prisma.XOR<Prisma.BusinessPartnerCreateWithoutBranchesInput, Prisma.BusinessPartnerUncheckedCreateWithoutBranchesInput>
   connectOrCreate?: Prisma.BusinessPartnerCreateOrConnectWithoutBranchesInput
@@ -812,6 +835,134 @@ export type BusinessPartnerUpdateOneRequiredWithoutContactsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BusinessPartnerUpdateToOneWithWhereWithoutContactsInput, Prisma.BusinessPartnerUpdateWithoutContactsInput>, Prisma.BusinessPartnerUncheckedUpdateWithoutContactsInput>
 }
 
+export type BusinessPartnerCreateWithoutUsersInput = {
+  id?: string
+  internalId?: string | null
+  vendorId?: string | null
+  bpId?: string | null
+  s4Id?: string | null
+  bydId?: string | null
+  c4cId?: string | null
+  bpName: string
+  bpShortName?: string | null
+  isKeyAccount?: boolean
+  gst?: string | null
+  panNumber?: string | null
+  legalTradeName?: string | null
+  officeType: $Enums.BusinessPartnerOfficeType
+  bpType?: string | null
+  entityType?: string | null
+  vendorCode?: string | null
+  isActive?: boolean
+  joinedOn?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.BusinessPartnerCreateNestedOneWithoutBranchesInput
+  branches?: Prisma.BusinessPartnerCreateNestedManyWithoutParentInput
+  addresses?: Prisma.BusinessPartnerAddressCreateNestedManyWithoutBusinessPartnerInput
+  contacts?: Prisma.BusinessPartnerContactCreateNestedManyWithoutBusinessPartnerInput
+}
+
+export type BusinessPartnerUncheckedCreateWithoutUsersInput = {
+  id?: string
+  internalId?: string | null
+  vendorId?: string | null
+  bpId?: string | null
+  s4Id?: string | null
+  bydId?: string | null
+  c4cId?: string | null
+  bpName: string
+  bpShortName?: string | null
+  isKeyAccount?: boolean
+  gst?: string | null
+  panNumber?: string | null
+  legalTradeName?: string | null
+  officeType: $Enums.BusinessPartnerOfficeType
+  bpType?: string | null
+  entityType?: string | null
+  vendorCode?: string | null
+  isActive?: boolean
+  joinedOn?: Date | string | null
+  parentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BusinessPartnerUncheckedCreateNestedManyWithoutParentInput
+  addresses?: Prisma.BusinessPartnerAddressUncheckedCreateNestedManyWithoutBusinessPartnerInput
+  contacts?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutBusinessPartnerInput
+}
+
+export type BusinessPartnerCreateOrConnectWithoutUsersInput = {
+  where: Prisma.BusinessPartnerWhereUniqueInput
+  create: Prisma.XOR<Prisma.BusinessPartnerCreateWithoutUsersInput, Prisma.BusinessPartnerUncheckedCreateWithoutUsersInput>
+}
+
+export type BusinessPartnerUpsertWithoutUsersInput = {
+  update: Prisma.XOR<Prisma.BusinessPartnerUpdateWithoutUsersInput, Prisma.BusinessPartnerUncheckedUpdateWithoutUsersInput>
+  create: Prisma.XOR<Prisma.BusinessPartnerCreateWithoutUsersInput, Prisma.BusinessPartnerUncheckedCreateWithoutUsersInput>
+  where?: Prisma.BusinessPartnerWhereInput
+}
+
+export type BusinessPartnerUpdateToOneWithWhereWithoutUsersInput = {
+  where?: Prisma.BusinessPartnerWhereInput
+  data: Prisma.XOR<Prisma.BusinessPartnerUpdateWithoutUsersInput, Prisma.BusinessPartnerUncheckedUpdateWithoutUsersInput>
+}
+
+export type BusinessPartnerUpdateWithoutUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  internalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bpId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bpName?: Prisma.StringFieldUpdateOperationsInput | string
+  bpShortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isKeyAccount?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gst?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalTradeName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
+  bpType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.BusinessPartnerUpdateOneWithoutBranchesNestedInput
+  branches?: Prisma.BusinessPartnerUpdateManyWithoutParentNestedInput
+  addresses?: Prisma.BusinessPartnerAddressUpdateManyWithoutBusinessPartnerNestedInput
+  contacts?: Prisma.BusinessPartnerContactUpdateManyWithoutBusinessPartnerNestedInput
+}
+
+export type BusinessPartnerUncheckedUpdateWithoutUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  internalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bpId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bpName?: Prisma.StringFieldUpdateOperationsInput | string
+  bpShortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isKeyAccount?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gst?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalTradeName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
+  bpType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BusinessPartnerUncheckedUpdateManyWithoutParentNestedInput
+  addresses?: Prisma.BusinessPartnerAddressUncheckedUpdateManyWithoutBusinessPartnerNestedInput
+  contacts?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerNestedInput
+}
+
 export type BusinessPartnerCreateWithoutBranchesInput = {
   id?: string
   internalId?: string | null
@@ -837,6 +988,7 @@ export type BusinessPartnerCreateWithoutBranchesInput = {
   parent?: Prisma.BusinessPartnerCreateNestedOneWithoutBranchesInput
   addresses?: Prisma.BusinessPartnerAddressCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactCreateNestedManyWithoutBusinessPartnerInput
+  users?: Prisma.UserCreateNestedManyWithoutBusinessPartnerInput
 }
 
 export type BusinessPartnerUncheckedCreateWithoutBranchesInput = {
@@ -864,6 +1016,7 @@ export type BusinessPartnerUncheckedCreateWithoutBranchesInput = {
   updatedAt?: Date | string
   addresses?: Prisma.BusinessPartnerAddressUncheckedCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutBusinessPartnerInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutBusinessPartnerInput
 }
 
 export type BusinessPartnerCreateOrConnectWithoutBranchesInput = {
@@ -896,6 +1049,7 @@ export type BusinessPartnerCreateWithoutParentInput = {
   branches?: Prisma.BusinessPartnerCreateNestedManyWithoutParentInput
   addresses?: Prisma.BusinessPartnerAddressCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactCreateNestedManyWithoutBusinessPartnerInput
+  users?: Prisma.UserCreateNestedManyWithoutBusinessPartnerInput
 }
 
 export type BusinessPartnerUncheckedCreateWithoutParentInput = {
@@ -923,6 +1077,7 @@ export type BusinessPartnerUncheckedCreateWithoutParentInput = {
   branches?: Prisma.BusinessPartnerUncheckedCreateNestedManyWithoutParentInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutBusinessPartnerInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutBusinessPartnerInput
 }
 
 export type BusinessPartnerCreateOrConnectWithoutParentInput = {
@@ -971,6 +1126,7 @@ export type BusinessPartnerUpdateWithoutBranchesInput = {
   parent?: Prisma.BusinessPartnerUpdateOneWithoutBranchesNestedInput
   addresses?: Prisma.BusinessPartnerAddressUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUpdateManyWithoutBusinessPartnerNestedInput
+  users?: Prisma.UserUpdateManyWithoutBusinessPartnerNestedInput
 }
 
 export type BusinessPartnerUncheckedUpdateWithoutBranchesInput = {
@@ -998,6 +1154,7 @@ export type BusinessPartnerUncheckedUpdateWithoutBranchesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   addresses?: Prisma.BusinessPartnerAddressUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutBusinessPartnerNestedInput
 }
 
 export type BusinessPartnerUpsertWithWhereUniqueWithoutParentInput = {
@@ -1069,6 +1226,7 @@ export type BusinessPartnerCreateWithoutAddressesInput = {
   parent?: Prisma.BusinessPartnerCreateNestedOneWithoutBranchesInput
   branches?: Prisma.BusinessPartnerCreateNestedManyWithoutParentInput
   contacts?: Prisma.BusinessPartnerContactCreateNestedManyWithoutBusinessPartnerInput
+  users?: Prisma.UserCreateNestedManyWithoutBusinessPartnerInput
 }
 
 export type BusinessPartnerUncheckedCreateWithoutAddressesInput = {
@@ -1096,6 +1254,7 @@ export type BusinessPartnerUncheckedCreateWithoutAddressesInput = {
   updatedAt?: Date | string
   branches?: Prisma.BusinessPartnerUncheckedCreateNestedManyWithoutParentInput
   contacts?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutBusinessPartnerInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutBusinessPartnerInput
 }
 
 export type BusinessPartnerCreateOrConnectWithoutAddressesInput = {
@@ -1139,6 +1298,7 @@ export type BusinessPartnerUpdateWithoutAddressesInput = {
   parent?: Prisma.BusinessPartnerUpdateOneWithoutBranchesNestedInput
   branches?: Prisma.BusinessPartnerUpdateManyWithoutParentNestedInput
   contacts?: Prisma.BusinessPartnerContactUpdateManyWithoutBusinessPartnerNestedInput
+  users?: Prisma.UserUpdateManyWithoutBusinessPartnerNestedInput
 }
 
 export type BusinessPartnerUncheckedUpdateWithoutAddressesInput = {
@@ -1166,6 +1326,7 @@ export type BusinessPartnerUncheckedUpdateWithoutAddressesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BusinessPartnerUncheckedUpdateManyWithoutParentNestedInput
   contacts?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutBusinessPartnerNestedInput
 }
 
 export type BusinessPartnerCreateWithoutContactsInput = {
@@ -1193,6 +1354,7 @@ export type BusinessPartnerCreateWithoutContactsInput = {
   parent?: Prisma.BusinessPartnerCreateNestedOneWithoutBranchesInput
   branches?: Prisma.BusinessPartnerCreateNestedManyWithoutParentInput
   addresses?: Prisma.BusinessPartnerAddressCreateNestedManyWithoutBusinessPartnerInput
+  users?: Prisma.UserCreateNestedManyWithoutBusinessPartnerInput
 }
 
 export type BusinessPartnerUncheckedCreateWithoutContactsInput = {
@@ -1220,6 +1382,7 @@ export type BusinessPartnerUncheckedCreateWithoutContactsInput = {
   updatedAt?: Date | string
   branches?: Prisma.BusinessPartnerUncheckedCreateNestedManyWithoutParentInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedCreateNestedManyWithoutBusinessPartnerInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutBusinessPartnerInput
 }
 
 export type BusinessPartnerCreateOrConnectWithoutContactsInput = {
@@ -1263,6 +1426,7 @@ export type BusinessPartnerUpdateWithoutContactsInput = {
   parent?: Prisma.BusinessPartnerUpdateOneWithoutBranchesNestedInput
   branches?: Prisma.BusinessPartnerUpdateManyWithoutParentNestedInput
   addresses?: Prisma.BusinessPartnerAddressUpdateManyWithoutBusinessPartnerNestedInput
+  users?: Prisma.UserUpdateManyWithoutBusinessPartnerNestedInput
 }
 
 export type BusinessPartnerUncheckedUpdateWithoutContactsInput = {
@@ -1290,6 +1454,7 @@ export type BusinessPartnerUncheckedUpdateWithoutContactsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BusinessPartnerUncheckedUpdateManyWithoutParentNestedInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedUpdateManyWithoutBusinessPartnerNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutBusinessPartnerNestedInput
 }
 
 export type BusinessPartnerCreateManyParentInput = {
@@ -1341,6 +1506,7 @@ export type BusinessPartnerUpdateWithoutParentInput = {
   branches?: Prisma.BusinessPartnerUpdateManyWithoutParentNestedInput
   addresses?: Prisma.BusinessPartnerAddressUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUpdateManyWithoutBusinessPartnerNestedInput
+  users?: Prisma.UserUpdateManyWithoutBusinessPartnerNestedInput
 }
 
 export type BusinessPartnerUncheckedUpdateWithoutParentInput = {
@@ -1368,6 +1534,7 @@ export type BusinessPartnerUncheckedUpdateWithoutParentInput = {
   branches?: Prisma.BusinessPartnerUncheckedUpdateManyWithoutParentNestedInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutBusinessPartnerNestedInput
 }
 
 export type BusinessPartnerUncheckedUpdateManyWithoutParentInput = {
@@ -1403,12 +1570,14 @@ export type BusinessPartnerCountOutputType = {
   branches: number
   addresses: number
   contacts: number
+  users: number
 }
 
 export type BusinessPartnerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   branches?: boolean | BusinessPartnerCountOutputTypeCountBranchesArgs
   addresses?: boolean | BusinessPartnerCountOutputTypeCountAddressesArgs
   contacts?: boolean | BusinessPartnerCountOutputTypeCountContactsArgs
+  users?: boolean | BusinessPartnerCountOutputTypeCountUsersArgs
 }
 
 /**
@@ -1442,6 +1611,13 @@ export type BusinessPartnerCountOutputTypeCountContactsArgs<ExtArgs extends runt
   where?: Prisma.BusinessPartnerContactWhereInput
 }
 
+/**
+ * BusinessPartnerCountOutputType without action
+ */
+export type BusinessPartnerCountOutputTypeCountUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserWhereInput
+}
+
 
 export type BusinessPartnerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1470,6 +1646,7 @@ export type BusinessPartnerSelect<ExtArgs extends runtime.Types.Extensions.Inter
   branches?: boolean | Prisma.BusinessPartner$branchesArgs<ExtArgs>
   addresses?: boolean | Prisma.BusinessPartner$addressesArgs<ExtArgs>
   contacts?: boolean | Prisma.BusinessPartner$contactsArgs<ExtArgs>
+  users?: boolean | Prisma.BusinessPartner$usersArgs<ExtArgs>
   _count?: boolean | Prisma.BusinessPartnerCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["businessPartner"]>
 
@@ -1556,6 +1733,7 @@ export type BusinessPartnerInclude<ExtArgs extends runtime.Types.Extensions.Inte
   branches?: boolean | Prisma.BusinessPartner$branchesArgs<ExtArgs>
   addresses?: boolean | Prisma.BusinessPartner$addressesArgs<ExtArgs>
   contacts?: boolean | Prisma.BusinessPartner$contactsArgs<ExtArgs>
+  users?: boolean | Prisma.BusinessPartner$usersArgs<ExtArgs>
   _count?: boolean | Prisma.BusinessPartnerCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BusinessPartnerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1572,6 +1750,7 @@ export type $BusinessPartnerPayload<ExtArgs extends runtime.Types.Extensions.Int
     branches: Prisma.$BusinessPartnerPayload<ExtArgs>[]
     addresses: Prisma.$BusinessPartnerAddressPayload<ExtArgs>[]
     contacts: Prisma.$BusinessPartnerContactPayload<ExtArgs>[]
+    users: Prisma.$UserPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1994,6 +2173,7 @@ export interface Prisma__BusinessPartnerClient<T, Null = never, ExtArgs extends 
   branches<T extends Prisma.BusinessPartner$branchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartner$branchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   addresses<T extends Prisma.BusinessPartner$addressesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartner$addressesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerAddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contacts<T extends Prisma.BusinessPartner$contactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartner$contactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  users<T extends Prisma.BusinessPartner$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartner$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2534,6 +2714,30 @@ export type BusinessPartner$contactsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.BusinessPartnerContactScalarFieldEnum | Prisma.BusinessPartnerContactScalarFieldEnum[]
+}
+
+/**
+ * BusinessPartner.users
+ */
+export type BusinessPartner$usersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+  orderBy?: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[]
+  cursor?: Prisma.UserWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
 }
 
 /**

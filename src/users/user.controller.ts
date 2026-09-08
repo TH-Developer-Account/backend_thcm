@@ -16,6 +16,12 @@ declare module "express-serve-static-core" {
   }
 }
 
+// Placeholder password for admin-created users — stored as PLAIN TEXT with
+// is_default_login: true, matching the bulk-import scripts. Your login flow
+// (auth.controller.ts) already branches on is_default_login to do a plain
+// comparison instead of bcrypt, so this is consistent, not a shortcut.
+const DEFAULT_PASSWORD = "Welcome@2026";
+
 export const getUsers = async (
   req: Request,
   res: Response,
@@ -140,6 +146,212 @@ export const getCurrentUser = async (
     next(error);
   }
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /:id
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function getUserById(req: Request, res: Response) {
+  const { id } = req.params;
+
+  const user = await prisma.user.findUnique({
+    where: { id: id as string },
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+      phone_number: true,
+      is_active: true,
+      is_default_login: true,
+      employeeCode: true,
+      bydId: true,
+      s4Id: true,
+      tallyId: true,
+      c4cId: true,
+      region: true,
+      address: true,
+      zone: true,
+      branch: true,
+      department: true,
+      role: true,
+      designation: true,
+      vertical: true,
+      managerCode1: true,
+      managerCode2: true,
+      isDefaultContact: true,
+      userType: true,
+      joinedOn: true,
+      businessPartnerId: true,
+      businessPartner: {
+        select: { id: true, bpName: true, officeType: true },
+      },
+      workspaceUsers: {
+        select: { workspaceId: true, isSuperAdmin: true },
+      },
+      created_at: true,
+      updated_at: true,
+    },
+  });
+
+  if (!user) throw new ApiError(404, "User not found");
+
+  res.status(200).json(user);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /
+//
+// Admin-created user. Requires workspaceId so the new user gets a
+// WorkspaceUser row immediately — requireAuth rejects any User with none,
+// so this isn't optional bookkeeping, it's what makes the account usable.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function createUser(req: Request, res: Response) {
+  const {
+    first_name,
+    last_name,
+    email,
+    phone_number,
+    workspaceId,
+    employeeCode,
+    bydId,
+    s4Id,
+    tallyId,
+    c4cId,
+    region,
+    address,
+    zone,
+    branch,
+    department,
+    role,
+    designation,
+    vertical,
+    managerCode1,
+    managerCode2,
+    isDefaultContact,
+    userType,
+    joinedOn,
+    businessPartnerId,
+  } = req.body;
+
+  if (!first_name?.trim() || !last_name?.trim()) {
+    throw new ApiError(400, "first_name and last_name are required");
+  }
+  if (!workspaceId) {
+    throw new ApiError(400, "workspaceId is required");
+  }
+
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+  });
+  if (!workspace) throw new ApiError(404, "Workspace not found");
+
+  if (businessPartnerId) {
+    const businessPartner = await prisma.businessPartner.findUnique({
+      where: { id: businessPartnerId },
+    });
+    if (!businessPartner) throw new ApiError(404, "Business partner not found");
+  }
+
+  const user = await prisma.$transaction(async (tx) => {
+    const created = await tx.user.create({
+      data: {
+        first_name,
+        last_name,
+        email: email || null,
+        phone_number: phone_number || null,
+        password: DEFAULT_PASSWORD,
+        is_active: true,
+        is_default_login: true,
+        employeeCode,
+        bydId,
+        s4Id,
+        tallyId,
+        c4cId,
+        region,
+        address,
+        zone,
+        branch,
+        department,
+        role,
+        designation,
+        vertical,
+        managerCode1,
+        managerCode2,
+        isDefaultContact: isDefaultContact ?? false,
+        userType,
+        joinedOn: joinedOn ? new Date(joinedOn) : undefined,
+        businessPartnerId,
+      },
+    });
+
+    await tx.workspaceUser.create({
+      data: { userId: created.id, workspaceId, isSuperAdmin: false },
+    });
+
+    return created;
+  });
+
+  res.status(201).json({ message: "User created successfully", user });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PATCH /:id
+//
+// Attribute-only update — does not touch password, is_active, or workspace
+// membership. Use dedicated endpoints for those (deactivateUser,
+// removeUserFromWorkspace, assignUserProfiles).
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function updateUser(req: Request, res: Response) {
+  const { id } = req.params;
+  const { password, is_active, is_default_login, ...updateableFields } =
+    req.body;
+
+  const existing = await prisma.user.findUnique({
+    where: { id: id as string },
+  });
+  if (!existing) throw new ApiError(404, "User not found");
+
+  if (updateableFields.businessPartnerId) {
+    const businessPartner = await prisma.businessPartner.findUnique({
+      where: { id: updateableFields.businessPartnerId },
+    });
+    if (!businessPartner) throw new ApiError(404, "Business partner not found");
+  }
+
+  if (updateableFields.joinedOn) {
+    updateableFields.joinedOn = new Date(updateableFields.joinedOn);
+  }
+
+  const user = await prisma.user.update({
+    where: { id: id as string },
+    data: updateableFields,
+  });
+
+  res.status(200).json({ message: "User updated successfully", user });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DELETE /:id  (soft delete: is_active = false)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function deactivateUser(req: Request, res: Response) {
+  const { id } = req.params;
+
+  const existing = await prisma.user.findUnique({
+    where: { id: id as string },
+  });
+  if (!existing) throw new ApiError(404, "User not found");
+
+  const user = await prisma.user.update({
+    where: { id: id as string },
+    data: { is_active: false },
+  });
+
+  res.status(200).json({ message: "User deactivated successfully", user });
+}
 
 export async function getByDEmployees(
   req: Request,

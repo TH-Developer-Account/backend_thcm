@@ -600,10 +600,6 @@ export type StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput = {
   deleteMany?: Prisma.StageInstanceScalarWhereInput | Prisma.StageInstanceScalarWhereInput[]
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type EnumStageStatusFieldUpdateOperationsInput = {
   set?: $Enums.StageStatus
 }

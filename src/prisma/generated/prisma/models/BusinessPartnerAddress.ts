@@ -53,6 +53,8 @@ export type BusinessPartnerAddressMinAggregateOutputType = {
   phoneNo: string | null
   website: string | null
   isDefault: boolean | null
+  isBillingAddress: boolean | null
+  isShippingAddress: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -74,6 +76,8 @@ export type BusinessPartnerAddressMaxAggregateOutputType = {
   phoneNo: string | null
   website: string | null
   isDefault: boolean | null
+  isBillingAddress: boolean | null
+  isShippingAddress: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -95,6 +99,8 @@ export type BusinessPartnerAddressCountAggregateOutputType = {
   phoneNo: number
   website: number
   isDefault: number
+  isBillingAddress: number
+  isShippingAddress: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -128,6 +134,8 @@ export type BusinessPartnerAddressMinAggregateInputType = {
   phoneNo?: true
   website?: true
   isDefault?: true
+  isBillingAddress?: true
+  isShippingAddress?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -149,6 +157,8 @@ export type BusinessPartnerAddressMaxAggregateInputType = {
   phoneNo?: true
   website?: true
   isDefault?: true
+  isBillingAddress?: true
+  isShippingAddress?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -170,6 +180,8 @@ export type BusinessPartnerAddressCountAggregateInputType = {
   phoneNo?: true
   website?: true
   isDefault?: true
+  isBillingAddress?: true
+  isShippingAddress?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -278,6 +290,8 @@ export type BusinessPartnerAddressGroupByOutputType = {
   phoneNo: string | null
   website: string | null
   isDefault: boolean
+  isBillingAddress: boolean
+  isShippingAddress: boolean
   createdAt: Date
   updatedAt: Date
   _count: BusinessPartnerAddressCountAggregateOutputType | null
@@ -322,6 +336,8 @@ export type BusinessPartnerAddressWhereInput = {
   phoneNo?: Prisma.StringNullableFilter<"BusinessPartnerAddress"> | string | null
   website?: Prisma.StringNullableFilter<"BusinessPartnerAddress"> | string | null
   isDefault?: Prisma.BoolFilter<"BusinessPartnerAddress"> | boolean
+  isBillingAddress?: Prisma.BoolFilter<"BusinessPartnerAddress"> | boolean
+  isShippingAddress?: Prisma.BoolFilter<"BusinessPartnerAddress"> | boolean
   createdAt?: Prisma.DateTimeFilter<"BusinessPartnerAddress"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BusinessPartnerAddress"> | Date | string
   businessPartner?: Prisma.XOR<Prisma.BusinessPartnerScalarRelationFilter, Prisma.BusinessPartnerWhereInput>
@@ -344,6 +360,8 @@ export type BusinessPartnerAddressOrderByWithRelationInput = {
   phoneNo?: Prisma.SortOrderInput | Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isBillingAddress?: Prisma.SortOrder
+  isShippingAddress?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   businessPartner?: Prisma.BusinessPartnerOrderByWithRelationInput
@@ -369,6 +387,8 @@ export type BusinessPartnerAddressWhereUniqueInput = Prisma.AtLeast<{
   phoneNo?: Prisma.StringNullableFilter<"BusinessPartnerAddress"> | string | null
   website?: Prisma.StringNullableFilter<"BusinessPartnerAddress"> | string | null
   isDefault?: Prisma.BoolFilter<"BusinessPartnerAddress"> | boolean
+  isBillingAddress?: Prisma.BoolFilter<"BusinessPartnerAddress"> | boolean
+  isShippingAddress?: Prisma.BoolFilter<"BusinessPartnerAddress"> | boolean
   createdAt?: Prisma.DateTimeFilter<"BusinessPartnerAddress"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BusinessPartnerAddress"> | Date | string
   businessPartner?: Prisma.XOR<Prisma.BusinessPartnerScalarRelationFilter, Prisma.BusinessPartnerWhereInput>
@@ -391,6 +411,8 @@ export type BusinessPartnerAddressOrderByWithAggregationInput = {
   phoneNo?: Prisma.SortOrderInput | Prisma.SortOrder
   website?: Prisma.SortOrderInput | Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isBillingAddress?: Prisma.SortOrder
+  isShippingAddress?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.BusinessPartnerAddressCountOrderByAggregateInput
@@ -420,6 +442,8 @@ export type BusinessPartnerAddressScalarWhereWithAggregatesInput = {
   phoneNo?: Prisma.StringNullableWithAggregatesFilter<"BusinessPartnerAddress"> | string | null
   website?: Prisma.StringNullableWithAggregatesFilter<"BusinessPartnerAddress"> | string | null
   isDefault?: Prisma.BoolWithAggregatesFilter<"BusinessPartnerAddress"> | boolean
+  isBillingAddress?: Prisma.BoolWithAggregatesFilter<"BusinessPartnerAddress"> | boolean
+  isShippingAddress?: Prisma.BoolWithAggregatesFilter<"BusinessPartnerAddress"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BusinessPartnerAddress"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"BusinessPartnerAddress"> | Date | string
 }
@@ -440,6 +464,8 @@ export type BusinessPartnerAddressCreateInput = {
   phoneNo?: string | null
   website?: string | null
   isDefault?: boolean
+  isBillingAddress?: boolean
+  isShippingAddress?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   businessPartner: Prisma.BusinessPartnerCreateNestedOneWithoutAddressesInput
@@ -462,6 +488,8 @@ export type BusinessPartnerAddressUncheckedCreateInput = {
   phoneNo?: string | null
   website?: string | null
   isDefault?: boolean
+  isBillingAddress?: boolean
+  isShippingAddress?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -482,6 +510,8 @@ export type BusinessPartnerAddressUpdateInput = {
   phoneNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBillingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isShippingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneRequiredWithoutAddressesNestedInput
@@ -504,6 +534,8 @@ export type BusinessPartnerAddressUncheckedUpdateInput = {
   phoneNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBillingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isShippingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -525,6 +557,8 @@ export type BusinessPartnerAddressCreateManyInput = {
   phoneNo?: string | null
   website?: string | null
   isDefault?: boolean
+  isBillingAddress?: boolean
+  isShippingAddress?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -545,6 +579,8 @@ export type BusinessPartnerAddressUpdateManyMutationInput = {
   phoneNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBillingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isShippingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -566,6 +602,8 @@ export type BusinessPartnerAddressUncheckedUpdateManyInput = {
   phoneNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBillingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isShippingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -597,6 +635,8 @@ export type BusinessPartnerAddressCountOrderByAggregateInput = {
   phoneNo?: Prisma.SortOrder
   website?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isBillingAddress?: Prisma.SortOrder
+  isShippingAddress?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -623,6 +663,8 @@ export type BusinessPartnerAddressMaxOrderByAggregateInput = {
   phoneNo?: Prisma.SortOrder
   website?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isBillingAddress?: Prisma.SortOrder
+  isShippingAddress?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -644,6 +686,8 @@ export type BusinessPartnerAddressMinOrderByAggregateInput = {
   phoneNo?: Prisma.SortOrder
   website?: Prisma.SortOrder
   isDefault?: Prisma.SortOrder
+  isBillingAddress?: Prisma.SortOrder
+  isShippingAddress?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -719,6 +763,8 @@ export type BusinessPartnerAddressCreateWithoutBusinessPartnerInput = {
   phoneNo?: string | null
   website?: string | null
   isDefault?: boolean
+  isBillingAddress?: boolean
+  isShippingAddress?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -739,6 +785,8 @@ export type BusinessPartnerAddressUncheckedCreateWithoutBusinessPartnerInput = {
   phoneNo?: string | null
   website?: string | null
   isDefault?: boolean
+  isBillingAddress?: boolean
+  isShippingAddress?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -789,6 +837,8 @@ export type BusinessPartnerAddressScalarWhereInput = {
   phoneNo?: Prisma.StringNullableFilter<"BusinessPartnerAddress"> | string | null
   website?: Prisma.StringNullableFilter<"BusinessPartnerAddress"> | string | null
   isDefault?: Prisma.BoolFilter<"BusinessPartnerAddress"> | boolean
+  isBillingAddress?: Prisma.BoolFilter<"BusinessPartnerAddress"> | boolean
+  isShippingAddress?: Prisma.BoolFilter<"BusinessPartnerAddress"> | boolean
   createdAt?: Prisma.DateTimeFilter<"BusinessPartnerAddress"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"BusinessPartnerAddress"> | Date | string
 }
@@ -809,6 +859,8 @@ export type BusinessPartnerAddressCreateManyBusinessPartnerInput = {
   phoneNo?: string | null
   website?: string | null
   isDefault?: boolean
+  isBillingAddress?: boolean
+  isShippingAddress?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -829,6 +881,8 @@ export type BusinessPartnerAddressUpdateWithoutBusinessPartnerInput = {
   phoneNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBillingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isShippingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -849,6 +903,8 @@ export type BusinessPartnerAddressUncheckedUpdateWithoutBusinessPartnerInput = {
   phoneNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBillingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isShippingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -869,6 +925,8 @@ export type BusinessPartnerAddressUncheckedUpdateManyWithoutBusinessPartnerInput
   phoneNo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   website?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDefault?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isBillingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isShippingAddress?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -892,6 +950,8 @@ export type BusinessPartnerAddressSelect<ExtArgs extends runtime.Types.Extension
   phoneNo?: boolean
   website?: boolean
   isDefault?: boolean
+  isBillingAddress?: boolean
+  isShippingAddress?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
@@ -914,6 +974,8 @@ export type BusinessPartnerAddressSelectCreateManyAndReturn<ExtArgs extends runt
   phoneNo?: boolean
   website?: boolean
   isDefault?: boolean
+  isBillingAddress?: boolean
+  isShippingAddress?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
@@ -936,6 +998,8 @@ export type BusinessPartnerAddressSelectUpdateManyAndReturn<ExtArgs extends runt
   phoneNo?: boolean
   website?: boolean
   isDefault?: boolean
+  isBillingAddress?: boolean
+  isShippingAddress?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
@@ -958,11 +1022,13 @@ export type BusinessPartnerAddressSelectScalar = {
   phoneNo?: boolean
   website?: boolean
   isDefault?: boolean
+  isBillingAddress?: boolean
+  isShippingAddress?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type BusinessPartnerAddressOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "businessPartnerId" | "address" | "city" | "state" | "country" | "pincode" | "region" | "zone" | "branch" | "latitude" | "longitude" | "email" | "phoneNo" | "website" | "isDefault" | "createdAt" | "updatedAt", ExtArgs["result"]["businessPartnerAddress"]>
+export type BusinessPartnerAddressOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "businessPartnerId" | "address" | "city" | "state" | "country" | "pincode" | "region" | "zone" | "branch" | "latitude" | "longitude" | "email" | "phoneNo" | "website" | "isDefault" | "isBillingAddress" | "isShippingAddress" | "createdAt" | "updatedAt", ExtArgs["result"]["businessPartnerAddress"]>
 export type BusinessPartnerAddressInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
 }
@@ -995,6 +1061,8 @@ export type $BusinessPartnerAddressPayload<ExtArgs extends runtime.Types.Extensi
     phoneNo: string | null
     website: string | null
     isDefault: boolean
+    isBillingAddress: boolean
+    isShippingAddress: boolean
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["businessPartnerAddress"]>
@@ -1437,6 +1505,8 @@ export interface BusinessPartnerAddressFieldRefs {
   readonly phoneNo: Prisma.FieldRef<"BusinessPartnerAddress", 'String'>
   readonly website: Prisma.FieldRef<"BusinessPartnerAddress", 'String'>
   readonly isDefault: Prisma.FieldRef<"BusinessPartnerAddress", 'Boolean'>
+  readonly isBillingAddress: Prisma.FieldRef<"BusinessPartnerAddress", 'Boolean'>
+  readonly isShippingAddress: Prisma.FieldRef<"BusinessPartnerAddress", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"BusinessPartnerAddress", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"BusinessPartnerAddress", 'DateTime'>
 }

@@ -33,6 +33,25 @@ export type UserMinAggregateOutputType = {
   password: string | null
   is_active: boolean | null
   is_default_login: boolean | null
+  employeeCode: string | null
+  bydId: string | null
+  s4Id: string | null
+  tallyId: string | null
+  c4cId: string | null
+  region: string | null
+  address: string | null
+  zone: string | null
+  branch: string | null
+  department: string | null
+  role: string | null
+  designation: string | null
+  vertical: string | null
+  managerCode1: string | null
+  managerCode2: string | null
+  isDefaultContact: boolean | null
+  userType: string | null
+  joinedOn: Date | null
+  businessPartnerId: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -46,6 +65,25 @@ export type UserMaxAggregateOutputType = {
   password: string | null
   is_active: boolean | null
   is_default_login: boolean | null
+  employeeCode: string | null
+  bydId: string | null
+  s4Id: string | null
+  tallyId: string | null
+  c4cId: string | null
+  region: string | null
+  address: string | null
+  zone: string | null
+  branch: string | null
+  department: string | null
+  role: string | null
+  designation: string | null
+  vertical: string | null
+  managerCode1: string | null
+  managerCode2: string | null
+  isDefaultContact: boolean | null
+  userType: string | null
+  joinedOn: Date | null
+  businessPartnerId: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -59,6 +97,25 @@ export type UserCountAggregateOutputType = {
   password: number
   is_active: number
   is_default_login: number
+  employeeCode: number
+  bydId: number
+  s4Id: number
+  tallyId: number
+  c4cId: number
+  region: number
+  address: number
+  zone: number
+  branch: number
+  department: number
+  role: number
+  designation: number
+  vertical: number
+  managerCode1: number
+  managerCode2: number
+  isDefaultContact: number
+  userType: number
+  joinedOn: number
+  businessPartnerId: number
   created_at: number
   updated_at: number
   _all: number
@@ -74,6 +131,25 @@ export type UserMinAggregateInputType = {
   password?: true
   is_active?: true
   is_default_login?: true
+  employeeCode?: true
+  bydId?: true
+  s4Id?: true
+  tallyId?: true
+  c4cId?: true
+  region?: true
+  address?: true
+  zone?: true
+  branch?: true
+  department?: true
+  role?: true
+  designation?: true
+  vertical?: true
+  managerCode1?: true
+  managerCode2?: true
+  isDefaultContact?: true
+  userType?: true
+  joinedOn?: true
+  businessPartnerId?: true
   created_at?: true
   updated_at?: true
 }
@@ -87,6 +163,25 @@ export type UserMaxAggregateInputType = {
   password?: true
   is_active?: true
   is_default_login?: true
+  employeeCode?: true
+  bydId?: true
+  s4Id?: true
+  tallyId?: true
+  c4cId?: true
+  region?: true
+  address?: true
+  zone?: true
+  branch?: true
+  department?: true
+  role?: true
+  designation?: true
+  vertical?: true
+  managerCode1?: true
+  managerCode2?: true
+  isDefaultContact?: true
+  userType?: true
+  joinedOn?: true
+  businessPartnerId?: true
   created_at?: true
   updated_at?: true
 }
@@ -100,6 +195,25 @@ export type UserCountAggregateInputType = {
   password?: true
   is_active?: true
   is_default_login?: true
+  employeeCode?: true
+  bydId?: true
+  s4Id?: true
+  tallyId?: true
+  c4cId?: true
+  region?: true
+  address?: true
+  zone?: true
+  branch?: true
+  department?: true
+  role?: true
+  designation?: true
+  vertical?: true
+  managerCode1?: true
+  managerCode2?: true
+  isDefaultContact?: true
+  userType?: true
+  joinedOn?: true
+  businessPartnerId?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -181,11 +295,30 @@ export type UserGroupByOutputType = {
   id: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email: string | null
+  phone_number: string | null
   password: string
   is_active: boolean
   is_default_login: boolean
+  employeeCode: string | null
+  bydId: string | null
+  s4Id: string | null
+  tallyId: string | null
+  c4cId: string | null
+  region: string | null
+  address: string | null
+  zone: string | null
+  branch: string | null
+  department: string | null
+  role: string | null
+  designation: string | null
+  vertical: string | null
+  managerCode1: string | null
+  managerCode2: string | null
+  isDefaultContact: boolean
+  userType: string | null
+  joinedOn: Date | null
+  businessPartnerId: string | null
   created_at: Date
   updated_at: Date
   _count: UserCountAggregateOutputType | null
@@ -215,13 +348,33 @@ export type UserWhereInput = {
   id?: Prisma.StringFilter<"User"> | string
   first_name?: Prisma.StringFilter<"User"> | string
   last_name?: Prisma.StringFilter<"User"> | string
-  email?: Prisma.StringFilter<"User"> | string
-  phone_number?: Prisma.StringFilter<"User"> | string
+  email?: Prisma.StringNullableFilter<"User"> | string | null
+  phone_number?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.StringFilter<"User"> | string
   is_active?: Prisma.BoolFilter<"User"> | boolean
   is_default_login?: Prisma.BoolFilter<"User"> | boolean
+  employeeCode?: Prisma.StringNullableFilter<"User"> | string | null
+  bydId?: Prisma.StringNullableFilter<"User"> | string | null
+  s4Id?: Prisma.StringNullableFilter<"User"> | string | null
+  tallyId?: Prisma.StringNullableFilter<"User"> | string | null
+  c4cId?: Prisma.StringNullableFilter<"User"> | string | null
+  region?: Prisma.StringNullableFilter<"User"> | string | null
+  address?: Prisma.StringNullableFilter<"User"> | string | null
+  zone?: Prisma.StringNullableFilter<"User"> | string | null
+  branch?: Prisma.StringNullableFilter<"User"> | string | null
+  department?: Prisma.StringNullableFilter<"User"> | string | null
+  role?: Prisma.StringNullableFilter<"User"> | string | null
+  designation?: Prisma.StringNullableFilter<"User"> | string | null
+  vertical?: Prisma.StringNullableFilter<"User"> | string | null
+  managerCode1?: Prisma.StringNullableFilter<"User"> | string | null
+  managerCode2?: Prisma.StringNullableFilter<"User"> | string | null
+  isDefaultContact?: Prisma.BoolFilter<"User"> | boolean
+  userType?: Prisma.StringNullableFilter<"User"> | string | null
+  joinedOn?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  businessPartnerId?: Prisma.StringNullableFilter<"User"> | string | null
   created_at?: Prisma.DateTimeFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
+  businessPartner?: Prisma.XOR<Prisma.BusinessPartnerNullableScalarRelationFilter, Prisma.BusinessPartnerWhereInput> | null
   refresh_tokens?: Prisma.RefreshTokenListRelationFilter
   password_reset_tokens?: Prisma.PasswordResetTokenListRelationFilter
   workspaceUsers?: Prisma.WorkspaceUserListRelationFilter
@@ -248,13 +401,33 @@ export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   first_name?: Prisma.SortOrder
   last_name?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  phone_number?: Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone_number?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
   is_default_login?: Prisma.SortOrder
+  employeeCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  bydId?: Prisma.SortOrderInput | Prisma.SortOrder
+  s4Id?: Prisma.SortOrderInput | Prisma.SortOrder
+  tallyId?: Prisma.SortOrderInput | Prisma.SortOrder
+  c4cId?: Prisma.SortOrderInput | Prisma.SortOrder
+  region?: Prisma.SortOrderInput | Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
+  zone?: Prisma.SortOrderInput | Prisma.SortOrder
+  branch?: Prisma.SortOrderInput | Prisma.SortOrder
+  department?: Prisma.SortOrderInput | Prisma.SortOrder
+  role?: Prisma.SortOrderInput | Prisma.SortOrder
+  designation?: Prisma.SortOrderInput | Prisma.SortOrder
+  vertical?: Prisma.SortOrderInput | Prisma.SortOrder
+  managerCode1?: Prisma.SortOrderInput | Prisma.SortOrder
+  managerCode2?: Prisma.SortOrderInput | Prisma.SortOrder
+  isDefaultContact?: Prisma.SortOrder
+  userType?: Prisma.SortOrderInput | Prisma.SortOrder
+  joinedOn?: Prisma.SortOrderInput | Prisma.SortOrder
+  businessPartnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  businessPartner?: Prisma.BusinessPartnerOrderByWithRelationInput
   refresh_tokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
   password_reset_tokens?: Prisma.PasswordResetTokenOrderByRelationAggregateInput
   workspaceUsers?: Prisma.WorkspaceUserOrderByRelationAggregateInput
@@ -289,8 +462,28 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password?: Prisma.StringFilter<"User"> | string
   is_active?: Prisma.BoolFilter<"User"> | boolean
   is_default_login?: Prisma.BoolFilter<"User"> | boolean
+  employeeCode?: Prisma.StringNullableFilter<"User"> | string | null
+  bydId?: Prisma.StringNullableFilter<"User"> | string | null
+  s4Id?: Prisma.StringNullableFilter<"User"> | string | null
+  tallyId?: Prisma.StringNullableFilter<"User"> | string | null
+  c4cId?: Prisma.StringNullableFilter<"User"> | string | null
+  region?: Prisma.StringNullableFilter<"User"> | string | null
+  address?: Prisma.StringNullableFilter<"User"> | string | null
+  zone?: Prisma.StringNullableFilter<"User"> | string | null
+  branch?: Prisma.StringNullableFilter<"User"> | string | null
+  department?: Prisma.StringNullableFilter<"User"> | string | null
+  role?: Prisma.StringNullableFilter<"User"> | string | null
+  designation?: Prisma.StringNullableFilter<"User"> | string | null
+  vertical?: Prisma.StringNullableFilter<"User"> | string | null
+  managerCode1?: Prisma.StringNullableFilter<"User"> | string | null
+  managerCode2?: Prisma.StringNullableFilter<"User"> | string | null
+  isDefaultContact?: Prisma.BoolFilter<"User"> | boolean
+  userType?: Prisma.StringNullableFilter<"User"> | string | null
+  joinedOn?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  businessPartnerId?: Prisma.StringNullableFilter<"User"> | string | null
   created_at?: Prisma.DateTimeFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
+  businessPartner?: Prisma.XOR<Prisma.BusinessPartnerNullableScalarRelationFilter, Prisma.BusinessPartnerWhereInput> | null
   refresh_tokens?: Prisma.RefreshTokenListRelationFilter
   password_reset_tokens?: Prisma.PasswordResetTokenListRelationFilter
   workspaceUsers?: Prisma.WorkspaceUserListRelationFilter
@@ -317,11 +510,30 @@ export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   first_name?: Prisma.SortOrder
   last_name?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  phone_number?: Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
+  phone_number?: Prisma.SortOrderInput | Prisma.SortOrder
   password?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
   is_default_login?: Prisma.SortOrder
+  employeeCode?: Prisma.SortOrderInput | Prisma.SortOrder
+  bydId?: Prisma.SortOrderInput | Prisma.SortOrder
+  s4Id?: Prisma.SortOrderInput | Prisma.SortOrder
+  tallyId?: Prisma.SortOrderInput | Prisma.SortOrder
+  c4cId?: Prisma.SortOrderInput | Prisma.SortOrder
+  region?: Prisma.SortOrderInput | Prisma.SortOrder
+  address?: Prisma.SortOrderInput | Prisma.SortOrder
+  zone?: Prisma.SortOrderInput | Prisma.SortOrder
+  branch?: Prisma.SortOrderInput | Prisma.SortOrder
+  department?: Prisma.SortOrderInput | Prisma.SortOrder
+  role?: Prisma.SortOrderInput | Prisma.SortOrder
+  designation?: Prisma.SortOrderInput | Prisma.SortOrder
+  vertical?: Prisma.SortOrderInput | Prisma.SortOrder
+  managerCode1?: Prisma.SortOrderInput | Prisma.SortOrder
+  managerCode2?: Prisma.SortOrderInput | Prisma.SortOrder
+  isDefaultContact?: Prisma.SortOrder
+  userType?: Prisma.SortOrderInput | Prisma.SortOrder
+  joinedOn?: Prisma.SortOrderInput | Prisma.SortOrder
+  businessPartnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -336,11 +548,30 @@ export type UserScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"User"> | string
   first_name?: Prisma.StringWithAggregatesFilter<"User"> | string
   last_name?: Prisma.StringWithAggregatesFilter<"User"> | string
-  email?: Prisma.StringWithAggregatesFilter<"User"> | string
-  phone_number?: Prisma.StringWithAggregatesFilter<"User"> | string
+  email?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  phone_number?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
   is_active?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   is_default_login?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  employeeCode?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  bydId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  s4Id?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  tallyId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  c4cId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  region?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  address?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  zone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  branch?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  department?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  role?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  designation?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  vertical?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  managerCode1?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  managerCode2?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  isDefaultContact?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  userType?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  joinedOn?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  businessPartnerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -349,13 +580,32 @@ export type UserCreateInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -382,11 +632,30 @@ export type UserUncheckedCreateInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -415,13 +684,32 @@ export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -448,11 +736,30 @@ export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -481,11 +788,30 @@ export type UserCreateManyInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -494,11 +820,29 @@ export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -507,11 +851,30 @@ export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -525,6 +888,25 @@ export type UserCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
   is_default_login?: Prisma.SortOrder
+  employeeCode?: Prisma.SortOrder
+  bydId?: Prisma.SortOrder
+  s4Id?: Prisma.SortOrder
+  tallyId?: Prisma.SortOrder
+  c4cId?: Prisma.SortOrder
+  region?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  zone?: Prisma.SortOrder
+  branch?: Prisma.SortOrder
+  department?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  designation?: Prisma.SortOrder
+  vertical?: Prisma.SortOrder
+  managerCode1?: Prisma.SortOrder
+  managerCode2?: Prisma.SortOrder
+  isDefaultContact?: Prisma.SortOrder
+  userType?: Prisma.SortOrder
+  joinedOn?: Prisma.SortOrder
+  businessPartnerId?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -538,6 +920,25 @@ export type UserMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
   is_default_login?: Prisma.SortOrder
+  employeeCode?: Prisma.SortOrder
+  bydId?: Prisma.SortOrder
+  s4Id?: Prisma.SortOrder
+  tallyId?: Prisma.SortOrder
+  c4cId?: Prisma.SortOrder
+  region?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  zone?: Prisma.SortOrder
+  branch?: Prisma.SortOrder
+  department?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  designation?: Prisma.SortOrder
+  vertical?: Prisma.SortOrder
+  managerCode1?: Prisma.SortOrder
+  managerCode2?: Prisma.SortOrder
+  isDefaultContact?: Prisma.SortOrder
+  userType?: Prisma.SortOrder
+  joinedOn?: Prisma.SortOrder
+  businessPartnerId?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -551,6 +952,25 @@ export type UserMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
   is_default_login?: Prisma.SortOrder
+  employeeCode?: Prisma.SortOrder
+  bydId?: Prisma.SortOrder
+  s4Id?: Prisma.SortOrder
+  tallyId?: Prisma.SortOrder
+  c4cId?: Prisma.SortOrder
+  region?: Prisma.SortOrder
+  address?: Prisma.SortOrder
+  zone?: Prisma.SortOrder
+  branch?: Prisma.SortOrder
+  department?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  designation?: Prisma.SortOrder
+  vertical?: Prisma.SortOrder
+  managerCode1?: Prisma.SortOrder
+  managerCode2?: Prisma.SortOrder
+  isDefaultContact?: Prisma.SortOrder
+  userType?: Prisma.SortOrder
+  joinedOn?: Prisma.SortOrder
+  businessPartnerId?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -565,12 +985,30 @@ export type UserNullableScalarRelationFilter = {
   isNot?: Prisma.UserWhereInput | null
 }
 
+export type UserListRelationFilter = {
+  every?: Prisma.UserWhereInput
+  some?: Prisma.UserWhereInput
+  none?: Prisma.UserWhereInput
+}
+
+export type UserOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
 export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -845,6 +1283,48 @@ export type UserUpdateOneRequiredWithoutInitiated_medical_claimsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutInitiated_medical_claimsInput, Prisma.UserUpdateWithoutInitiated_medical_claimsInput>, Prisma.UserUncheckedUpdateWithoutInitiated_medical_claimsInput>
 }
 
+export type UserCreateNestedManyWithoutBusinessPartnerInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBusinessPartnerInput, Prisma.UserUncheckedCreateWithoutBusinessPartnerInput> | Prisma.UserCreateWithoutBusinessPartnerInput[] | Prisma.UserUncheckedCreateWithoutBusinessPartnerInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBusinessPartnerInput | Prisma.UserCreateOrConnectWithoutBusinessPartnerInput[]
+  createMany?: Prisma.UserCreateManyBusinessPartnerInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUncheckedCreateNestedManyWithoutBusinessPartnerInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBusinessPartnerInput, Prisma.UserUncheckedCreateWithoutBusinessPartnerInput> | Prisma.UserCreateWithoutBusinessPartnerInput[] | Prisma.UserUncheckedCreateWithoutBusinessPartnerInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBusinessPartnerInput | Prisma.UserCreateOrConnectWithoutBusinessPartnerInput[]
+  createMany?: Prisma.UserCreateManyBusinessPartnerInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUpdateManyWithoutBusinessPartnerNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBusinessPartnerInput, Prisma.UserUncheckedCreateWithoutBusinessPartnerInput> | Prisma.UserCreateWithoutBusinessPartnerInput[] | Prisma.UserUncheckedCreateWithoutBusinessPartnerInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBusinessPartnerInput | Prisma.UserCreateOrConnectWithoutBusinessPartnerInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutBusinessPartnerInput | Prisma.UserUpsertWithWhereUniqueWithoutBusinessPartnerInput[]
+  createMany?: Prisma.UserCreateManyBusinessPartnerInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutBusinessPartnerInput | Prisma.UserUpdateWithWhereUniqueWithoutBusinessPartnerInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutBusinessPartnerInput | Prisma.UserUpdateManyWithWhereWithoutBusinessPartnerInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUncheckedUpdateManyWithoutBusinessPartnerNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBusinessPartnerInput, Prisma.UserUncheckedCreateWithoutBusinessPartnerInput> | Prisma.UserCreateWithoutBusinessPartnerInput[] | Prisma.UserUncheckedCreateWithoutBusinessPartnerInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBusinessPartnerInput | Prisma.UserCreateOrConnectWithoutBusinessPartnerInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutBusinessPartnerInput | Prisma.UserUpsertWithWhereUniqueWithoutBusinessPartnerInput[]
+  createMany?: Prisma.UserCreateManyBusinessPartnerInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutBusinessPartnerInput | Prisma.UserUpdateWithWhereUniqueWithoutBusinessPartnerInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutBusinessPartnerInput | Prisma.UserUpdateManyWithWhereWithoutBusinessPartnerInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
 export type UserCreateNestedOneWithoutBusinessPartnerContactInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutBusinessPartnerContactInput, Prisma.UserUncheckedCreateWithoutBusinessPartnerContactInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutBusinessPartnerContactInput
@@ -865,13 +1345,32 @@ export type UserCreateWithoutPassword_reset_tokensInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
@@ -897,11 +1396,30 @@ export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -945,13 +1463,32 @@ export type UserUpdateWithoutPassword_reset_tokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
@@ -977,11 +1514,30 @@ export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1009,13 +1565,32 @@ export type UserCreateWithoutRefresh_tokensInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
@@ -1041,11 +1616,30 @@ export type UserUncheckedCreateWithoutRefresh_tokensInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1089,13 +1683,32 @@ export type UserUpdateWithoutRefresh_tokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
@@ -1121,11 +1734,30 @@ export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1153,13 +1785,32 @@ export type UserCreateWithoutWorkspaceUsersInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
@@ -1185,11 +1836,30 @@ export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1233,13 +1903,32 @@ export type UserUpdateWithoutWorkspaceUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
@@ -1265,11 +1954,30 @@ export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1297,13 +2005,32 @@ export type UserCreateWithoutUserProfilesInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -1329,11 +2056,30 @@ export type UserUncheckedCreateWithoutUserProfilesInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1377,13 +2123,32 @@ export type UserUpdateWithoutUserProfilesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -1409,11 +2174,30 @@ export type UserUncheckedUpdateWithoutUserProfilesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1441,13 +2225,32 @@ export type UserCreateWithoutCreated_event_proposalsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -1473,11 +2276,30 @@ export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1510,13 +2332,32 @@ export type UserCreateWithoutUpdated_event_proposalsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -1542,11 +2383,30 @@ export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1590,13 +2450,32 @@ export type UserUpdateWithoutCreated_event_proposalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -1622,11 +2501,30 @@ export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1665,13 +2563,32 @@ export type UserUpdateWithoutUpdated_event_proposalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -1697,11 +2614,30 @@ export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1729,13 +2665,32 @@ export type UserCreateWithoutCreated_workflowInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -1761,11 +2716,30 @@ export type UserUncheckedCreateWithoutCreated_workflowInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1798,13 +2772,32 @@ export type UserCreateWithoutUpdated_workflowInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -1830,11 +2823,30 @@ export type UserUncheckedCreateWithoutUpdated_workflowInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1878,13 +2890,32 @@ export type UserUpdateWithoutCreated_workflowInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -1910,11 +2941,30 @@ export type UserUncheckedUpdateWithoutCreated_workflowInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1953,13 +3003,32 @@ export type UserUpdateWithoutUpdated_workflowInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -1985,11 +3054,30 @@ export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2017,13 +3105,32 @@ export type UserCreateWithoutTemplateApprovalsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -2049,11 +3156,30 @@ export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2097,13 +3223,32 @@ export type UserUpdateWithoutTemplateApprovalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -2129,11 +3274,30 @@ export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2161,13 +3325,32 @@ export type UserCreateWithoutApprovalsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -2193,11 +3376,30 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2241,13 +3443,32 @@ export type UserUpdateWithoutApprovalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -2273,11 +3494,30 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2305,13 +3545,32 @@ export type UserCreateWithoutWorkFlowUsersInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -2337,11 +3596,30 @@ export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2385,13 +3663,32 @@ export type UserUpdateWithoutWorkFlowUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -2417,11 +3714,30 @@ export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2449,13 +3765,32 @@ export type UserCreateWithoutActivityLogsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -2481,11 +3816,30 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2529,13 +3883,32 @@ export type UserUpdateWithoutActivityLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -2561,11 +3934,30 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2593,13 +3985,32 @@ export type UserCreateWithoutCommentsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -2625,11 +4036,30 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2673,13 +4103,32 @@ export type UserUpdateWithoutCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -2705,11 +4154,30 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2737,13 +4205,32 @@ export type UserCreateWithoutReportValidationsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -2769,11 +4256,30 @@ export type UserUncheckedCreateWithoutReportValidationsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2817,13 +4323,32 @@ export type UserUpdateWithoutReportValidationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -2849,11 +4374,30 @@ export type UserUncheckedUpdateWithoutReportValidationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2881,13 +4425,32 @@ export type UserCreateWithoutImportExportLogsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -2913,11 +4476,30 @@ export type UserUncheckedCreateWithoutImportExportLogsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2961,13 +4543,32 @@ export type UserUpdateWithoutImportExportLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -2993,11 +4594,30 @@ export type UserUncheckedUpdateWithoutImportExportLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -3025,13 +4645,32 @@ export type UserCreateWithoutNotificationsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -3057,11 +4696,30 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -3105,13 +4763,32 @@ export type UserUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -3137,11 +4814,30 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -3169,13 +4865,32 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -3201,11 +4916,30 @@ export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -3249,13 +4983,32 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -3281,11 +5034,30 @@ export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -3313,13 +5085,32 @@ export type UserCreateWithoutInitiated_vendor_onboardingsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -3345,11 +5136,30 @@ export type UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -3393,13 +5203,32 @@ export type UserUpdateWithoutInitiated_vendor_onboardingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -3425,11 +5254,30 @@ export type UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -3457,13 +5305,32 @@ export type UserCreateWithoutInitiated_medical_claimsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -3489,11 +5356,30 @@ export type UserUncheckedCreateWithoutInitiated_medical_claimsInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -3537,13 +5423,32 @@ export type UserUpdateWithoutInitiated_medical_claimsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -3569,11 +5474,30 @@ export type UserUncheckedUpdateWithoutInitiated_medical_claimsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -3597,17 +5521,199 @@ export type UserUncheckedUpdateWithoutInitiated_medical_claimsInput = {
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
 }
 
+export type UserCreateWithoutBusinessPartnerInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutBusinessPartnerInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutBusinessPartnerInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBusinessPartnerInput, Prisma.UserUncheckedCreateWithoutBusinessPartnerInput>
+}
+
+export type UserCreateManyBusinessPartnerInputEnvelope = {
+  data: Prisma.UserCreateManyBusinessPartnerInput | Prisma.UserCreateManyBusinessPartnerInput[]
+  skipDuplicates?: boolean
+}
+
+export type UserUpsertWithWhereUniqueWithoutBusinessPartnerInput = {
+  where: Prisma.UserWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBusinessPartnerInput, Prisma.UserUncheckedUpdateWithoutBusinessPartnerInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBusinessPartnerInput, Prisma.UserUncheckedCreateWithoutBusinessPartnerInput>
+}
+
+export type UserUpdateWithWhereUniqueWithoutBusinessPartnerInput = {
+  where: Prisma.UserWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBusinessPartnerInput, Prisma.UserUncheckedUpdateWithoutBusinessPartnerInput>
+}
+
+export type UserUpdateManyWithWhereWithoutBusinessPartnerInput = {
+  where: Prisma.UserScalarWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutBusinessPartnerInput>
+}
+
+export type UserScalarWhereInput = {
+  AND?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  OR?: Prisma.UserScalarWhereInput[]
+  NOT?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+  id?: Prisma.StringFilter<"User"> | string
+  first_name?: Prisma.StringFilter<"User"> | string
+  last_name?: Prisma.StringFilter<"User"> | string
+  email?: Prisma.StringNullableFilter<"User"> | string | null
+  phone_number?: Prisma.StringNullableFilter<"User"> | string | null
+  password?: Prisma.StringFilter<"User"> | string
+  is_active?: Prisma.BoolFilter<"User"> | boolean
+  is_default_login?: Prisma.BoolFilter<"User"> | boolean
+  employeeCode?: Prisma.StringNullableFilter<"User"> | string | null
+  bydId?: Prisma.StringNullableFilter<"User"> | string | null
+  s4Id?: Prisma.StringNullableFilter<"User"> | string | null
+  tallyId?: Prisma.StringNullableFilter<"User"> | string | null
+  c4cId?: Prisma.StringNullableFilter<"User"> | string | null
+  region?: Prisma.StringNullableFilter<"User"> | string | null
+  address?: Prisma.StringNullableFilter<"User"> | string | null
+  zone?: Prisma.StringNullableFilter<"User"> | string | null
+  branch?: Prisma.StringNullableFilter<"User"> | string | null
+  department?: Prisma.StringNullableFilter<"User"> | string | null
+  role?: Prisma.StringNullableFilter<"User"> | string | null
+  designation?: Prisma.StringNullableFilter<"User"> | string | null
+  vertical?: Prisma.StringNullableFilter<"User"> | string | null
+  managerCode1?: Prisma.StringNullableFilter<"User"> | string | null
+  managerCode2?: Prisma.StringNullableFilter<"User"> | string | null
+  isDefaultContact?: Prisma.BoolFilter<"User"> | boolean
+  userType?: Prisma.StringNullableFilter<"User"> | string | null
+  joinedOn?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  businessPartnerId?: Prisma.StringNullableFilter<"User"> | string | null
+  created_at?: Prisma.DateTimeFilter<"User"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
+}
+
 export type UserCreateWithoutBusinessPartnerContactInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
   created_at?: Date | string
   updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
@@ -3633,11 +5739,30 @@ export type UserUncheckedCreateWithoutBusinessPartnerContactInput = {
   id?: string
   first_name: string
   last_name: string
-  email: string
-  phone_number: string
+  email?: string | null
+  phone_number?: string | null
   password: string
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -3681,13 +5806,32 @@ export type UserUpdateWithoutBusinessPartnerContactInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
@@ -3713,11 +5857,30 @@ export type UserUncheckedUpdateWithoutBusinessPartnerContactInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   first_name?: Prisma.StringFieldUpdateOperationsInput | string
   last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone_number?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -3739,6 +5902,170 @@ export type UserUncheckedUpdateWithoutBusinessPartnerContactInput = {
   reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+}
+
+export type UserCreateManyBusinessPartnerInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type UserUpdateWithoutBusinessPartnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBusinessPartnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateManyWithoutBusinessPartnerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -3952,8 +6279,28 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   password?: boolean
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: boolean
+  bydId?: boolean
+  s4Id?: boolean
+  tallyId?: boolean
+  c4cId?: boolean
+  region?: boolean
+  address?: boolean
+  zone?: boolean
+  branch?: boolean
+  department?: boolean
+  role?: boolean
+  designation?: boolean
+  vertical?: boolean
+  managerCode1?: boolean
+  managerCode2?: boolean
+  isDefaultContact?: boolean
+  userType?: boolean
+  joinedOn?: boolean
+  businessPartnerId?: boolean
   created_at?: boolean
   updated_at?: boolean
+  businessPartner?: boolean | Prisma.User$businessPartnerArgs<ExtArgs>
   refresh_tokens?: boolean | Prisma.User$refresh_tokensArgs<ExtArgs>
   password_reset_tokens?: boolean | Prisma.User$password_reset_tokensArgs<ExtArgs>
   workspaceUsers?: boolean | Prisma.User$workspaceUsersArgs<ExtArgs>
@@ -3986,8 +6333,28 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: boolean
+  bydId?: boolean
+  s4Id?: boolean
+  tallyId?: boolean
+  c4cId?: boolean
+  region?: boolean
+  address?: boolean
+  zone?: boolean
+  branch?: boolean
+  department?: boolean
+  role?: boolean
+  designation?: boolean
+  vertical?: boolean
+  managerCode1?: boolean
+  managerCode2?: boolean
+  isDefaultContact?: boolean
+  userType?: boolean
+  joinedOn?: boolean
+  businessPartnerId?: boolean
   created_at?: boolean
   updated_at?: boolean
+  businessPartner?: boolean | Prisma.User$businessPartnerArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -3999,8 +6366,28 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: boolean
+  bydId?: boolean
+  s4Id?: boolean
+  tallyId?: boolean
+  c4cId?: boolean
+  region?: boolean
+  address?: boolean
+  zone?: boolean
+  branch?: boolean
+  department?: boolean
+  role?: boolean
+  designation?: boolean
+  vertical?: boolean
+  managerCode1?: boolean
+  managerCode2?: boolean
+  isDefaultContact?: boolean
+  userType?: boolean
+  joinedOn?: boolean
+  businessPartnerId?: boolean
   created_at?: boolean
   updated_at?: boolean
+  businessPartner?: boolean | Prisma.User$businessPartnerArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -4012,12 +6399,32 @@ export type UserSelectScalar = {
   password?: boolean
   is_active?: boolean
   is_default_login?: boolean
+  employeeCode?: boolean
+  bydId?: boolean
+  s4Id?: boolean
+  tallyId?: boolean
+  c4cId?: boolean
+  region?: boolean
+  address?: boolean
+  zone?: boolean
+  branch?: boolean
+  department?: boolean
+  role?: boolean
+  designation?: boolean
+  vertical?: boolean
+  managerCode1?: boolean
+  managerCode2?: boolean
+  isDefaultContact?: boolean
+  userType?: boolean
+  joinedOn?: boolean
+  businessPartnerId?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "first_name" | "last_name" | "email" | "phone_number" | "password" | "is_active" | "is_default_login" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "first_name" | "last_name" | "email" | "phone_number" | "password" | "is_active" | "is_default_login" | "employeeCode" | "bydId" | "s4Id" | "tallyId" | "c4cId" | "region" | "address" | "zone" | "branch" | "department" | "role" | "designation" | "vertical" | "managerCode1" | "managerCode2" | "isDefaultContact" | "userType" | "joinedOn" | "businessPartnerId" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  businessPartner?: boolean | Prisma.User$businessPartnerArgs<ExtArgs>
   refresh_tokens?: boolean | Prisma.User$refresh_tokensArgs<ExtArgs>
   password_reset_tokens?: boolean | Prisma.User$password_reset_tokensArgs<ExtArgs>
   workspaceUsers?: boolean | Prisma.User$workspaceUsersArgs<ExtArgs>
@@ -4040,12 +6447,17 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   businessPartnerContact?: boolean | Prisma.User$businessPartnerContactArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  businessPartner?: boolean | Prisma.User$businessPartnerArgs<ExtArgs>
+}
+export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  businessPartner?: boolean | Prisma.User$businessPartnerArgs<ExtArgs>
+}
 
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    businessPartner: Prisma.$BusinessPartnerPayload<ExtArgs> | null
     refresh_tokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
     password_reset_tokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
     workspaceUsers: Prisma.$WorkspaceUserPayload<ExtArgs>[]
@@ -4071,11 +6483,30 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     id: string
     first_name: string
     last_name: string
-    email: string
-    phone_number: string
+    email: string | null
+    phone_number: string | null
     password: string
     is_active: boolean
     is_default_login: boolean
+    employeeCode: string | null
+    bydId: string | null
+    s4Id: string | null
+    tallyId: string | null
+    c4cId: string | null
+    region: string | null
+    address: string | null
+    zone: string | null
+    branch: string | null
+    department: string | null
+    role: string | null
+    designation: string | null
+    vertical: string | null
+    managerCode1: string | null
+    managerCode2: string | null
+    isDefaultContact: boolean
+    userType: string | null
+    joinedOn: Date | null
+    businessPartnerId: string | null
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["user"]>
@@ -4472,6 +6903,7 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  businessPartner<T extends Prisma.User$businessPartnerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$businessPartnerArgs<ExtArgs>>): Prisma.Prisma__BusinessPartnerClient<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   refresh_tokens<T extends Prisma.User$refresh_tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refresh_tokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   password_reset_tokens<T extends Prisma.User$password_reset_tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$password_reset_tokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workspaceUsers<T extends Prisma.User$workspaceUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workspaceUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4529,6 +6961,25 @@ export interface UserFieldRefs {
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly is_active: Prisma.FieldRef<"User", 'Boolean'>
   readonly is_default_login: Prisma.FieldRef<"User", 'Boolean'>
+  readonly employeeCode: Prisma.FieldRef<"User", 'String'>
+  readonly bydId: Prisma.FieldRef<"User", 'String'>
+  readonly s4Id: Prisma.FieldRef<"User", 'String'>
+  readonly tallyId: Prisma.FieldRef<"User", 'String'>
+  readonly c4cId: Prisma.FieldRef<"User", 'String'>
+  readonly region: Prisma.FieldRef<"User", 'String'>
+  readonly address: Prisma.FieldRef<"User", 'String'>
+  readonly zone: Prisma.FieldRef<"User", 'String'>
+  readonly branch: Prisma.FieldRef<"User", 'String'>
+  readonly department: Prisma.FieldRef<"User", 'String'>
+  readonly role: Prisma.FieldRef<"User", 'String'>
+  readonly designation: Prisma.FieldRef<"User", 'String'>
+  readonly vertical: Prisma.FieldRef<"User", 'String'>
+  readonly managerCode1: Prisma.FieldRef<"User", 'String'>
+  readonly managerCode2: Prisma.FieldRef<"User", 'String'>
+  readonly isDefaultContact: Prisma.FieldRef<"User", 'Boolean'>
+  readonly userType: Prisma.FieldRef<"User", 'String'>
+  readonly joinedOn: Prisma.FieldRef<"User", 'DateTime'>
+  readonly businessPartnerId: Prisma.FieldRef<"User", 'String'>
   readonly created_at: Prisma.FieldRef<"User", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -4785,6 +7236,10 @@ export type UserCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    */
   data: Prisma.UserCreateManyInput | Prisma.UserCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -4855,6 +7310,10 @@ export type UserUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many Users to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -4921,6 +7380,25 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.businessPartner
+ */
+export type User$businessPartnerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BusinessPartner
+   */
+  select?: Prisma.BusinessPartnerSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BusinessPartner
+   */
+  omit?: Prisma.BusinessPartnerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BusinessPartnerInclude<ExtArgs> | null
+  where?: Prisma.BusinessPartnerWhereInput
 }
 
 /**

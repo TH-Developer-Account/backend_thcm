@@ -29,6 +29,7 @@ interface ActiveDealerRow {
   dealershipShortName: string;
   fullNameOfDealership: string;
   vendorCode: string;
+  bpCode: string;
   dpName: string;
   dpEmail: string;
   dpMobile: string;
@@ -37,7 +38,7 @@ interface ActiveDealerRow {
   panNo: string;
   typeOfCompany: string;
   address: string;
-  dateOfCob: string | number | undefined;
+  dateOfCob: Date | undefined;
   websiteMailId: string;
 }
 
@@ -74,6 +75,7 @@ function parseActiveDealerSheet(sheet: XLSX.WorkSheet): ActiveDealerRow[] {
     dealershipShortName: toStringOrUndefined(r[1]) ?? "",
     fullNameOfDealership: toStringOrUndefined(r[3]) ?? "",
     vendorCode: toStringOrUndefined(r[4]) ?? "",
+    bpCode: toStringOrUndefined(r[5]) ?? "",
     dpName: toStringOrUndefined(r[6]) ?? "",
     dpEmail: toStringOrUndefined(r[7]) ?? "",
     dpMobile: toStringOrUndefined(r[8]) ?? "",
@@ -82,7 +84,7 @@ function parseActiveDealerSheet(sheet: XLSX.WorkSheet): ActiveDealerRow[] {
     panNo: toStringOrUndefined(r[14]) ?? "",
     typeOfCompany: toStringOrUndefined(r[15]) ?? "",
     address: toStringOrUndefined(r[16]) ?? "",
-    dateOfCob: r[17] as string | number | undefined,
+    dateOfCob: r[17] instanceof Date ? r[17] : undefined,
     websiteMailId: toStringOrUndefined(r[12]) ?? "",
   }));
 }
@@ -112,12 +114,16 @@ function resolveParentCode(branchCode: string): string | null {
 
 /**
  * Finds the matching Active_Dealer row for a given HO's Location/short name.
- * STRICT exact match only (after normalization) — deliberately no substring/fuzzy
- * fallback. A short dealer code (e.g. "S1", "AUTOBAHN-M") can accidentally be a
- * substring of an unrelated dealership's name, which previously caused a wrong
- * row's contact/GST/address data to be written onto the wrong BusinessPartner.
- * A missed match (returns null, logged, fixed manually) is far cheaper than a
- * false match (silently wrong data). Do not reintroduce .includes() here.
+ *
+ * Short-name match takes priority over full-name match: sibling companies in
+ * the same corporate group can share an IDENTICAL "Full Name of Dealership"
+ * (e.g. "PSN Construction Equipment Pvt. Ltd." for both PSN-K/Kochi and
+ * PSN-B/Bangalore) while their short names (PSN-K vs PSN-B) are what's
+ * actually unique. Checking full-name first previously caused a real
+ * cross-match between two unrelated dealers — see PR discussion. If a
+ * full-name match is ambiguous (matches more than one row) with no
+ * short-name match to disambiguate it, treat it as unmatched rather than
+ * guessing which sibling is correct.
  */
 function matchActiveDealerRow(
   hoLocationName: string,
@@ -127,17 +133,21 @@ function matchActiveDealerRow(
   const targetA = normalizeName(hoLocationName);
   const targetB = normalizeName(hoShortName);
 
-  for (const row of activeDealerRows) {
-    if (!row.fullNameOfDealership) continue;
-    const candidateFull = normalizeName(row.fullNameOfDealership);
-    const candidateShort = normalizeName(row.dealershipShortName ?? "");
-    const isMatch =
-      candidateFull === targetA ||
-      candidateShort === targetB ||
-      candidateFull === targetB ||
-      candidateShort === targetA;
-    if (isMatch) return row;
-  }
+  const shortNameMatch = activeDealerRows.find(
+    (row) =>
+      normalizeName(row.dealershipShortName ?? "") === targetB &&
+      targetB !== "",
+  );
+  if (shortNameMatch) return shortNameMatch;
+
+  const fullNameMatches = activeDealerRows.filter(
+    (row) =>
+      row.fullNameOfDealership &&
+      normalizeName(row.fullNameOfDealership) === targetA,
+  );
+  if (fullNameMatches.length === 1) return fullNameMatches[0];
+  // 0 matches → genuinely unmatched. >1 matches → ambiguous (e.g. the PSN case) —
+  // refusing to guess is safer than silently picking the wrong sibling.
   return null;
 }
 
@@ -178,7 +188,11 @@ async function loadBranchRows(rows: BranchRow[]): Promise<Map<string, string>> {
     if (!row.code) continue;
     const parentCode = resolveParentCode(row.code);
     const parentId = parentCode ? (codeToId.get(parentCode) ?? null) : null;
-    if (parentCode && !parentId) unresolvedParents.push(row.code);
+    // Flag EVERY non-HO row that ends up with no parent, not just ones where a
+    // parentCode was extracted but not found — some codes (e.g. "H61410",
+    // "T81011") have no dash pattern at all, so parentCode is null from the
+    // start and would otherwise skip this warning silently.
+    if (!parentId) unresolvedParents.push(row.code);
 
     const bp = await prisma.businessPartner.upsert({
       where: { internalId: row.code },
@@ -187,6 +201,10 @@ async function loadBranchRows(rows: BranchRow[]): Promise<Map<string, string>> {
         bpShortName: row.dealerShortName,
         isActive: row.status === "Active",
         parentId,
+        // A branch's own Code column IS its vendorId/bydId (unlike s4Id/bpId,
+        // which are inherited from the parent HO in propagateBpCodeToBranches).
+        vendorId: row.code,
+        bydId: row.code,
       },
       create: {
         internalId: row.code,
@@ -196,6 +214,8 @@ async function loadBranchRows(rows: BranchRow[]): Promise<Map<string, string>> {
         bpType: "DEALER",
         isActive: row.status === "Active",
         parentId,
+        vendorId: row.code,
+        bydId: row.code,
       },
     });
     codeToId.set(row.code, bp.id);
@@ -242,7 +262,13 @@ async function enrichHeadOffices(
         panNumber: match.panNo || undefined,
         entityType: match.typeOfCompany || undefined,
         vendorCode: match.vendorCode || undefined,
-        joinedOn: match.dateOfCob ? new Date(match.dateOfCob) : undefined,
+        // Vendor Code populates both vendorId and bydId; BP Code populates both
+        // s4Id and bpId. c4cId is deliberately left null for now.
+        vendorId: match.vendorCode || undefined,
+        bydId: match.vendorCode || undefined,
+        s4Id: match.bpCode || undefined,
+        bpId: match.bpCode || undefined,
+        joinedOn: match.dateOfCob ?? undefined,
       },
     });
 
@@ -320,24 +346,55 @@ async function enrichHeadOffices(
 }
 
 // ─────────────────────────────────────────────
+// Phase 3 — propagate s4Id/bpId from HO down to its branches
+//
+// Unlike GST/PAN/address (which stay independent per branch, see schema
+// comment on BusinessPartner), s4Id and bpId ARE shared: a branch's Code
+// embeds its parent's code (the same relationship resolveParentCode already
+// uses for parentId), so the branch is understood to carry the same
+// underlying BP identity as its HO. Only s4Id/bpId propagate this way —
+// vendorId/bydId do NOT inherit from the parent; a branch's own Code column
+// is its vendorId/bydId directly (set in loadBranchRows).
+// ─────────────────────────────────────────────
+
+async function propagateBpCodeToBranches(): Promise<void> {
+  const headOffices = await prisma.businessPartner.findMany({
+    where: {
+      officeType: BusinessPartnerOfficeType.HEAD_OFFICE,
+      OR: [{ s4Id: { not: null } }, { bpId: { not: null } }],
+    },
+    select: { id: true, s4Id: true, bpId: true },
+  });
+
+  for (const ho of headOffices) {
+    await prisma.businessPartner.updateMany({
+      where: { parentId: ho.id },
+      data: { s4Id: ho.s4Id, bpId: ho.bpId },
+    });
+  }
+}
+
+// ─────────────────────────────────────────────
 // Orchestration
 //
 // Note: branches are NOT enriched with GST/PAN/address/contacts from
 // Active_Dealer.xlsx or from their HO — neither source file has per-branch
 // GST/PAN data, and branches are independent entities (own GST, own PAN,
 // own address) that just happen to reference a parent HO via parentId.
-// Nothing is copied down. If per-branch GST/PAN data becomes available
-// later, load it the same way enrichHeadOffices does, keyed on branch code
-// instead of HO code — don't revive the old propagate-from-parent approach.
+// s4Id/bpId are the one deliberate exception — see propagateBpCodeToBranches.
 // ─────────────────────────────────────────────
 
 async function main(): Promise<void> {
-  const branchWorkbook = XLSX.readFile(DEALERSHIP_BRANCHES_FILE);
+  const branchWorkbook = XLSX.readFile(DEALERSHIP_BRANCHES_FILE, {
+    cellDates: true,
+  });
   const branchRows = parseBranchSheet(
     branchWorkbook.Sheets["Dealership Branches"],
   );
 
-  const activeDealerWorkbook = XLSX.readFile(ACTIVE_DEALER_FILE);
+  const activeDealerWorkbook = XLSX.readFile(ACTIVE_DEALER_FILE, {
+    cellDates: true,
+  });
   const activeDealerRows = parseActiveDealerSheet(
     activeDealerWorkbook.Sheets["Sheet1"],
   ).filter(
@@ -350,6 +407,7 @@ async function main(): Promise<void> {
 
   await loadBranchRows(branchRows);
   await enrichHeadOffices(activeDealerRows);
+  await propagateBpCodeToBranches();
 
   console.log("Import complete.");
 }
