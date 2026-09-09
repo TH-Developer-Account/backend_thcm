@@ -2,7 +2,7 @@
  * One-off data-migration script: loads Dealership_Branches.xlsx and Active_Dealer.xlsx
  * into the BusinessPartner / BusinessPartnerAddress / BusinessPartnerContact tables.
  *
- * Run manually: npx ts-node scripts/importBusinessPartners.ts
+ * Run manually: npx ts-node src/scripts/importBusinessPartners.ts
  * Safe to re-run: all writes are upserts keyed on internalId.
  */
 import * as XLSX from "xlsx";

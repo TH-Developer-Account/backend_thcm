@@ -8,7 +8,7 @@
  * The tsvector trigger fires on each inserted row automatically.
  *
  * Usage:
- *   npx ts-node scripts/importPincodes.ts ./data/All_India_Pincodes_Directory.xlsx
+ *   npx ts-node src/scripts/importPincodes.ts src/scripts/data/All_India_Pincodes_Directory.xlsx
  *
  * Dependencies (add to devDependencies if not already present):
  *   npm install --save-dev xlsx pg @types/pg
