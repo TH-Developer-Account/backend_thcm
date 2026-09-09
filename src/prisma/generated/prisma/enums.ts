@@ -218,3 +218,11 @@ export const ClaimHead = {
 } as const
 
 export type ClaimHead = (typeof ClaimHead)[keyof typeof ClaimHead]
+
+
+export const BusinessPartnerOfficeType = {
+  HEAD_OFFICE: 'HEAD_OFFICE',
+  BRANCH_OFFICE: 'BRANCH_OFFICE'
+} as const
+
+export type BusinessPartnerOfficeType = (typeof BusinessPartnerOfficeType)[keyof typeof BusinessPartnerOfficeType]

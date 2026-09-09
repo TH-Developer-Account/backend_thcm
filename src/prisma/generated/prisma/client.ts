@@ -274,3 +274,18 @@ export type MedicalClaimGradeEligibility = Prisma.MedicalClaimGradeEligibilityMo
  * 
  */
 export type Guest = Prisma.GuestModel
+/**
+ * Model BusinessPartner
+ * 
+ */
+export type BusinessPartner = Prisma.BusinessPartnerModel
+/**
+ * Model BusinessPartnerAddress
+ * 
+ */
+export type BusinessPartnerAddress = Prisma.BusinessPartnerAddressModel
+/**
+ * Model BusinessPartnerContact
+ * 
+ */
+export type BusinessPartnerContact = Prisma.BusinessPartnerContactModel
