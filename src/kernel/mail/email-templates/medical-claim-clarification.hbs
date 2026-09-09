@@ -1,0 +1,95 @@
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Medical Claim — Changes Required</title>
+	</head>
+	<body
+		style="margin:0; padding:0; background-color:#f4f4f5; font-family:Arial, Helvetica, sans-serif;"
+	>
+		<table
+			role="presentation"
+			width="100%"
+			cellpadding="0"
+			cellspacing="0"
+			style="background-color:#f4f4f5; padding:32px 0;"
+		>
+			<tr><td align="center">
+					<table
+						role="presentation"
+						width="480"
+						cellpadding="0"
+						cellspacing="0"
+						style="width:100%; max-width:480px; background-color:#ffffff; border-radius:8px; overflow:hidden;"
+					>
+						<tr><td style="background-color:#1a1a2e; padding:24px 32px;"><span
+									style="color:#ffffff; font-size:18px; font-weight:bold;"
+								>Tata Hitachi Construction Machinery</span></td></tr>
+						<tr><td style="padding:32px;">
+								<h2
+									style="margin:0 0 16px; color:#1a1a2e; font-size:20px;"
+								>Medical Claim — Changes Required</h2>
+								<p
+									style="margin:0 0 16px; color:#333333; font-size:14px; line-height:1.6;"
+								>Dear <strong>{{employeeName}}</strong>,</p>
+								<p
+									style="margin:0 0 16px; color:#333333; font-size:14px; line-height:1.6;"
+								>Your medical reimbursement claim requires additional
+									information or corrections. Please open the form, make the
+									requested changes, and resubmit it for review.</p>
+								<p
+									style="margin:0 0 12px; color:#333333; font-size:14px; line-height:1.6;"
+								><strong>Claim reference:</strong> {{claimReference}}</p>
+								<table
+									role="presentation"
+									width="100%"
+									cellpadding="0"
+									cellspacing="0"
+									style="margin:0 0 20px;"
+								><tr><td
+											style="background-color:#f8fafc; border-left:4px solid #1a1a2e; padding:14px 16px; color:#333333; font-size:13px; line-height:1.6;"
+										><strong>Requested changes:</strong><br
+											/>{{clarificationReason}}</td></tr></table>
+								<table
+									role="presentation"
+									width="100%"
+									cellpadding="0"
+									cellspacing="0"
+									style="margin:0 0 24px;"
+								><tr><td
+											style="background-color:#fff7ed; border:1px solid #fdba74; border-radius:6px; padding:14px 16px; color:#9a3412; font-size:13px; line-height:1.6;"
+										><strong>Important: Once the corrected form is resubmitted,
+												this link will become invalid and cannot be used again.</strong></td></tr></table>
+								<table
+									role="presentation"
+									cellpadding="0"
+									cellspacing="0"
+									style="margin:24px 0;"
+								><tr><td
+											align="center"
+											style="border-radius:6px; background-color:#e85d04;"
+										><a
+												href="{{formUrl}}"
+												target="_blank"
+												rel="noopener noreferrer"
+												style="display:inline-block; padding:12px 28px; color:#ffffff; font-size:14px; font-weight:bold; text-decoration:none;"
+											>Edit and Resubmit Claim</a></td></tr></table>
+								<p
+									style="margin:0 0 8px; color:#666666; font-size:12px; line-height:1.6;"
+								>If the button does not work, copy and paste this link into your
+									browser:</p>
+								<p style="margin:0; word-break:break-all;"><a
+										href="{{formUrl}}"
+										style="color:#e85d04; font-size:12px;"
+									>{{formUrl}}</a></p>
+							</td></tr>
+						<tr><td
+								style="background-color:#f4f4f5; padding:16px 32px; text-align:center;"
+							><p style="margin:0; color:#999999; font-size:11px;">&copy;
+									{{currentYear}}
+									Tata Hitachi Construction Machinery. All rights reserved.</p></td></tr>
+					</table>
+				</td></tr>
+		</table>
+	</body>
+</html>

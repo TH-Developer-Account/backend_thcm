@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "LineItem" ALTER COLUMN "quantity" DROP NOT NULL,
+ALTER COLUMN "rate" DROP NOT NULL,
+ALTER COLUMN "amount" DROP NOT NULL;
