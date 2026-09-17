@@ -157,7 +157,7 @@ export const initiateVendorOnboarding = async (
       templateName: "vendor-onboarding",
       templateData: {
         vendorReferenceName,
-        formUrl: `${process.env.FRONTEND_URL}/vendor-form/${onboarding.tokenRecord.token}`,
+        formUrl: `${process.env.FRONTEND_URL}/web/vendor-form/${onboarding.tokenRecord.token}`,
       },
     });
 
@@ -360,7 +360,7 @@ export const resendVendorLink = async (
       templateName: "vendor-onboarding-resubmit",
       templateData: {
         vendorName: onboarding.vendorName,
-        formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
+        formUrl: `${process.env.FRONTEND_URL}/web/${tokenRecord.token}`,
       },
     });
 
@@ -989,7 +989,7 @@ export const sendBackToVendor = async (
       templateName: "vendor-onboarding-resubmit",
       templateData: {
         vendorName: onboarding.vendorName,
-        formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
+        formUrl: `${process.env.FRONTEND_URL}/web/${tokenRecord.token}`,
         currentYear: new Date().getFullYear(),
       },
     });
