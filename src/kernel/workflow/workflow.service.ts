@@ -3,6 +3,7 @@ import { selectTemplate } from "./template.service";
 import { buildWorkflowStages } from "./workflow.helper";
 import { notify } from "@notifications/notification.services";
 import { addMailJob } from "@mail/mail.service";
+import { runPreApprovalValidation } from "./workflowSubject.helper";
 import ApiError from "@shared/utils/apiError";
 
 import { updateSubjectStatus } from "./workflowSubject.helper";
@@ -326,6 +327,11 @@ export const approveStage = async ({
         where: { id: stageId },
         include: { approvals: true, workflow: true },
       });
+
+      await runPreApprovalValidation(
+        stage!.workflow.subjectType,
+        stage!.workflow.subjectId,
+      );
 
       const approvedCount = stage!.approvals.filter(
         (a) => a.status === ApprovalStatus.APPROVED,

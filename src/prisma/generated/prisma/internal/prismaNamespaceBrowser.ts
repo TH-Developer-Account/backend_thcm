@@ -100,7 +100,26 @@ export const ModelName = {
   Guest: 'Guest',
   BusinessPartner: 'BusinessPartner',
   BusinessPartnerAddress: 'BusinessPartnerAddress',
-  BusinessPartnerContact: 'BusinessPartnerContact'
+  BusinessPartnerContact: 'BusinessPartnerContact',
+  Evidence: 'Evidence',
+  Supplier: 'Supplier',
+  ChecklistTemplate: 'ChecklistTemplate',
+  ChecklistItem: 'ChecklistItem',
+  DealerAuditInstance: 'DealerAuditInstance',
+  AuditItemResponse: 'AuditItemResponse',
+  FactoryAuditTemplate: 'FactoryAuditTemplate',
+  FactoryAuditSection: 'FactoryAuditSection',
+  FactoryAuditCheckpoint: 'FactoryAuditCheckpoint',
+  CheckpointRubricLevel: 'CheckpointRubricLevel',
+  FactoryClassificationBand: 'FactoryClassificationBand',
+  FactoryAuditInstance: 'FactoryAuditInstance',
+  AuditRound: 'AuditRound',
+  AuditRoundCheckpointScope: 'AuditRoundCheckpointScope',
+  AuditAssignment: 'AuditAssignment',
+  AuditAssignmentCheckpoint: 'AuditAssignmentCheckpoint',
+  AuditResponse: 'AuditResponse',
+  AuditCheckpointResult: 'AuditCheckpointResult',
+  VendorClassificationHistory: 'VendorClassificationHistory'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -409,7 +428,8 @@ export const WorkFlowTemplateUserScalarFieldEnum = {
   id: 'id',
   templateId: 'templateId',
   userId: 'userId',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  isFallbackApprover: 'isFallbackApprover'
 } as const
 
 export type WorkFlowTemplateUserScalarFieldEnum = (typeof WorkFlowTemplateUserScalarFieldEnum)[keyof typeof WorkFlowTemplateUserScalarFieldEnum]
@@ -921,6 +941,255 @@ export const BusinessPartnerContactScalarFieldEnum = {
 } as const
 
 export type BusinessPartnerContactScalarFieldEnum = (typeof BusinessPartnerContactScalarFieldEnum)[keyof typeof BusinessPartnerContactScalarFieldEnum]
+
+
+export const EvidenceScalarFieldEnum = {
+  id: 'id',
+  subjectType: 'subjectType',
+  subjectId: 'subjectId',
+  s3Key: 's3Key',
+  fileUrl: 'fileUrl',
+  uploadedBy: 'uploadedBy',
+  capturedAt: 'capturedAt',
+  geoLat: 'geoLat',
+  geoLng: 'geoLng'
+} as const
+
+export type EvidenceScalarFieldEnum = (typeof EvidenceScalarFieldEnum)[keyof typeof EvidenceScalarFieldEnum]
+
+
+export const SupplierScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  code: 'code',
+  isActive: 'isActive',
+  currentClassificationBandId: 'currentClassificationBandId',
+  currentClassificationDecidedAt: 'currentClassificationDecidedAt'
+} as const
+
+export type SupplierScalarFieldEnum = (typeof SupplierScalarFieldEnum)[keyof typeof SupplierScalarFieldEnum]
+
+
+export const ChecklistTemplateScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  officeType: 'officeType',
+  version: 'version',
+  status: 'status',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ChecklistTemplateScalarFieldEnum = (typeof ChecklistTemplateScalarFieldEnum)[keyof typeof ChecklistTemplateScalarFieldEnum]
+
+
+export const ChecklistItemScalarFieldEnum = {
+  id: 'id',
+  templateId: 'templateId',
+  sectionName: 'sectionName',
+  order: 'order',
+  label: 'label',
+  checkPoint: 'checkPoint',
+  category: 'category',
+  requiresScore: 'requiresScore',
+  requiresEvidence: 'requiresEvidence',
+  maxScore: 'maxScore',
+  scoringGuidance: 'scoringGuidance'
+} as const
+
+export type ChecklistItemScalarFieldEnum = (typeof ChecklistItemScalarFieldEnum)[keyof typeof ChecklistItemScalarFieldEnum]
+
+
+export const DealerAuditInstanceScalarFieldEnum = {
+  id: 'id',
+  dealerUserId: 'dealerUserId',
+  workspaceId: 'workspaceId',
+  officeType: 'officeType',
+  periodLabel: 'periodLabel',
+  checklistTemplateId: 'checklistTemplateId',
+  finalScore: 'finalScore',
+  maxScore: 'maxScore',
+  closedAt: 'closedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DealerAuditInstanceScalarFieldEnum = (typeof DealerAuditInstanceScalarFieldEnum)[keyof typeof DealerAuditInstanceScalarFieldEnum]
+
+
+export const AuditItemResponseScalarFieldEnum = {
+  id: 'id',
+  auditInstanceId: 'auditInstanceId',
+  itemId: 'itemId',
+  iteration: 'iteration',
+  dealerScore: 'dealerScore',
+  dealerRemark: 'dealerRemark',
+  reviewerScore: 'reviewerScore',
+  reviewerRemark: 'reviewerRemark',
+  reviewStatus: 'reviewStatus',
+  createdAt: 'createdAt'
+} as const
+
+export type AuditItemResponseScalarFieldEnum = (typeof AuditItemResponseScalarFieldEnum)[keyof typeof AuditItemResponseScalarFieldEnum]
+
+
+export const FactoryAuditTemplateScalarFieldEnum = {
+  id: 'id',
+  processCategory: 'processCategory',
+  name: 'name',
+  version: 'version',
+  isActive: 'isActive',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FactoryAuditTemplateScalarFieldEnum = (typeof FactoryAuditTemplateScalarFieldEnum)[keyof typeof FactoryAuditTemplateScalarFieldEnum]
+
+
+export const FactoryAuditSectionScalarFieldEnum = {
+  id: 'id',
+  templateId: 'templateId',
+  name: 'name',
+  order: 'order',
+  passThreshold: 'passThreshold',
+  elevatedPassThresholdForCriticalParts: 'elevatedPassThresholdForCriticalParts'
+} as const
+
+export type FactoryAuditSectionScalarFieldEnum = (typeof FactoryAuditSectionScalarFieldEnum)[keyof typeof FactoryAuditSectionScalarFieldEnum]
+
+
+export const FactoryAuditCheckpointScalarFieldEnum = {
+  id: 'id',
+  sectionId: 'sectionId',
+  order: 'order',
+  label: 'label',
+  checkPoint: 'checkPoint',
+  weight: 'weight',
+  requiresEvidence: 'requiresEvidence'
+} as const
+
+export type FactoryAuditCheckpointScalarFieldEnum = (typeof FactoryAuditCheckpointScalarFieldEnum)[keyof typeof FactoryAuditCheckpointScalarFieldEnum]
+
+
+export const CheckpointRubricLevelScalarFieldEnum = {
+  id: 'id',
+  checkpointId: 'checkpointId',
+  level: 'level',
+  description: 'description'
+} as const
+
+export type CheckpointRubricLevelScalarFieldEnum = (typeof CheckpointRubricLevelScalarFieldEnum)[keyof typeof CheckpointRubricLevelScalarFieldEnum]
+
+
+export const FactoryClassificationBandScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  minPercent: 'minPercent',
+  maxPercent: 'maxPercent',
+  qualifiesFor: 'qualifiesFor'
+} as const
+
+export type FactoryClassificationBandScalarFieldEnum = (typeof FactoryClassificationBandScalarFieldEnum)[keyof typeof FactoryClassificationBandScalarFieldEnum]
+
+
+export const FactoryAuditInstanceScalarFieldEnum = {
+  id: 'id',
+  vendorId: 'vendorId',
+  templateId: 'templateId',
+  evaluationState: 'evaluationState',
+  targetPartCategories: 'targetPartCategories',
+  reopenUsed: 'reopenUsed',
+  createdByUserId: 'createdByUserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FactoryAuditInstanceScalarFieldEnum = (typeof FactoryAuditInstanceScalarFieldEnum)[keyof typeof FactoryAuditInstanceScalarFieldEnum]
+
+
+export const AuditRoundScalarFieldEnum = {
+  id: 'id',
+  auditInstanceId: 'auditInstanceId',
+  roundNumber: 'roundNumber',
+  triggerReason: 'triggerReason',
+  triggeredByUserId: 'triggeredByUserId',
+  openedAt: 'openedAt',
+  closedAt: 'closedAt'
+} as const
+
+export type AuditRoundScalarFieldEnum = (typeof AuditRoundScalarFieldEnum)[keyof typeof AuditRoundScalarFieldEnum]
+
+
+export const AuditRoundCheckpointScopeScalarFieldEnum = {
+  id: 'id',
+  roundId: 'roundId',
+  checkpointId: 'checkpointId'
+} as const
+
+export type AuditRoundCheckpointScopeScalarFieldEnum = (typeof AuditRoundCheckpointScopeScalarFieldEnum)[keyof typeof AuditRoundCheckpointScopeScalarFieldEnum]
+
+
+export const AuditAssignmentScalarFieldEnum = {
+  id: 'id',
+  roundId: 'roundId',
+  auditorId: 'auditorId',
+  role: 'role',
+  status: 'status',
+  reassignedFromId: 'reassignedFromId'
+} as const
+
+export type AuditAssignmentScalarFieldEnum = (typeof AuditAssignmentScalarFieldEnum)[keyof typeof AuditAssignmentScalarFieldEnum]
+
+
+export const AuditAssignmentCheckpointScalarFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  checkpointId: 'checkpointId'
+} as const
+
+export type AuditAssignmentCheckpointScalarFieldEnum = (typeof AuditAssignmentCheckpointScalarFieldEnum)[keyof typeof AuditAssignmentCheckpointScalarFieldEnum]
+
+
+export const AuditResponseScalarFieldEnum = {
+  id: 'id',
+  assignmentId: 'assignmentId',
+  checkpointId: 'checkpointId',
+  score: 'score',
+  isNotApplicable: 'isNotApplicable',
+  remark: 'remark'
+} as const
+
+export type AuditResponseScalarFieldEnum = (typeof AuditResponseScalarFieldEnum)[keyof typeof AuditResponseScalarFieldEnum]
+
+
+export const AuditCheckpointResultScalarFieldEnum = {
+  id: 'id',
+  roundId: 'roundId',
+  checkpointId: 'checkpointId',
+  score: 'score',
+  computedAt: 'computedAt',
+  reviewerFlaggedForImprovement: 'reviewerFlaggedForImprovement',
+  reviewerRemark: 'reviewerRemark',
+  reviewerId: 'reviewerId',
+  reviewerRemarkedAt: 'reviewerRemarkedAt'
+} as const
+
+export type AuditCheckpointResultScalarFieldEnum = (typeof AuditCheckpointResultScalarFieldEnum)[keyof typeof AuditCheckpointResultScalarFieldEnum]
+
+
+export const VendorClassificationHistoryScalarFieldEnum = {
+  id: 'id',
+  auditInstanceId: 'auditInstanceId',
+  roundId: 'roundId',
+  bandId: 'bandId',
+  overallScorePercent: 'overallScorePercent',
+  workflowInstanceId: 'workflowInstanceId',
+  decidedAt: 'decidedAt'
+} as const
+
+export type VendorClassificationHistoryScalarFieldEnum = (typeof VendorClassificationHistoryScalarFieldEnum)[keyof typeof VendorClassificationHistoryScalarFieldEnum]
 
 
 export const SortOrder = {

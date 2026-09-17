@@ -267,3 +267,98 @@ export type BusinessPartnerAddress = Prisma.BusinessPartnerAddressModel
  * 
  */
 export type BusinessPartnerContact = Prisma.BusinessPartnerContactModel
+/**
+ * Model Evidence
+ * 
+ */
+export type Evidence = Prisma.EvidenceModel
+/**
+ * Model Supplier
+ * 
+ */
+export type Supplier = Prisma.SupplierModel
+/**
+ * Model ChecklistTemplate
+ * 
+ */
+export type ChecklistTemplate = Prisma.ChecklistTemplateModel
+/**
+ * Model ChecklistItem
+ * 
+ */
+export type ChecklistItem = Prisma.ChecklistItemModel
+/**
+ * Model DealerAuditInstance
+ * 
+ */
+export type DealerAuditInstance = Prisma.DealerAuditInstanceModel
+/**
+ * Model AuditItemResponse
+ * 
+ */
+export type AuditItemResponse = Prisma.AuditItemResponseModel
+/**
+ * Model FactoryAuditTemplate
+ * 
+ */
+export type FactoryAuditTemplate = Prisma.FactoryAuditTemplateModel
+/**
+ * Model FactoryAuditSection
+ * 
+ */
+export type FactoryAuditSection = Prisma.FactoryAuditSectionModel
+/**
+ * Model FactoryAuditCheckpoint
+ * 
+ */
+export type FactoryAuditCheckpoint = Prisma.FactoryAuditCheckpointModel
+/**
+ * Model CheckpointRubricLevel
+ * 
+ */
+export type CheckpointRubricLevel = Prisma.CheckpointRubricLevelModel
+/**
+ * Model FactoryClassificationBand
+ * 
+ */
+export type FactoryClassificationBand = Prisma.FactoryClassificationBandModel
+/**
+ * Model FactoryAuditInstance
+ * 
+ */
+export type FactoryAuditInstance = Prisma.FactoryAuditInstanceModel
+/**
+ * Model AuditRound
+ * 
+ */
+export type AuditRound = Prisma.AuditRoundModel
+/**
+ * Model AuditRoundCheckpointScope
+ * 
+ */
+export type AuditRoundCheckpointScope = Prisma.AuditRoundCheckpointScopeModel
+/**
+ * Model AuditAssignment
+ * 
+ */
+export type AuditAssignment = Prisma.AuditAssignmentModel
+/**
+ * Model AuditAssignmentCheckpoint
+ * 
+ */
+export type AuditAssignmentCheckpoint = Prisma.AuditAssignmentCheckpointModel
+/**
+ * Model AuditResponse
+ * 
+ */
+export type AuditResponse = Prisma.AuditResponseModel
+/**
+ * Model AuditCheckpointResult
+ * 
+ */
+export type AuditCheckpointResult = Prisma.AuditCheckpointResultModel
+/**
+ * Model VendorClassificationHistory
+ * 
+ */
+export type VendorClassificationHistory = Prisma.VendorClassificationHistoryModel

@@ -85,6 +85,14 @@ export const templateMatchResolvers: Record<
       (t) => t.isActive === true && t.ownerType === "ADMIN",
     );
   },
+
+  DEALER_AUDIT_INSTANCE: (templates, criteria) => {
+    const zone = criteria?.zone;
+    if (!zone) return undefined;
+    return templates.find((t) => t.metaData_1 === zone);
+  },
+
+  FACTORY_AUDIT_INSTANCE: (templates) => templates[0],
 };
 
 export const forkTemplateForClarify = async (

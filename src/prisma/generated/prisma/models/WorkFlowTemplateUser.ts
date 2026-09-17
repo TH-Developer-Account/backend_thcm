@@ -29,6 +29,7 @@ export type WorkFlowTemplateUserMinAggregateOutputType = {
   templateId: string | null
   userId: string | null
   created_at: Date | null
+  isFallbackApprover: boolean | null
 }
 
 export type WorkFlowTemplateUserMaxAggregateOutputType = {
@@ -36,6 +37,7 @@ export type WorkFlowTemplateUserMaxAggregateOutputType = {
   templateId: string | null
   userId: string | null
   created_at: Date | null
+  isFallbackApprover: boolean | null
 }
 
 export type WorkFlowTemplateUserCountAggregateOutputType = {
@@ -43,6 +45,7 @@ export type WorkFlowTemplateUserCountAggregateOutputType = {
   templateId: number
   userId: number
   created_at: number
+  isFallbackApprover: number
   _all: number
 }
 
@@ -52,6 +55,7 @@ export type WorkFlowTemplateUserMinAggregateInputType = {
   templateId?: true
   userId?: true
   created_at?: true
+  isFallbackApprover?: true
 }
 
 export type WorkFlowTemplateUserMaxAggregateInputType = {
@@ -59,6 +63,7 @@ export type WorkFlowTemplateUserMaxAggregateInputType = {
   templateId?: true
   userId?: true
   created_at?: true
+  isFallbackApprover?: true
 }
 
 export type WorkFlowTemplateUserCountAggregateInputType = {
@@ -66,6 +71,7 @@ export type WorkFlowTemplateUserCountAggregateInputType = {
   templateId?: true
   userId?: true
   created_at?: true
+  isFallbackApprover?: true
   _all?: true
 }
 
@@ -146,6 +152,7 @@ export type WorkFlowTemplateUserGroupByOutputType = {
   templateId: string
   userId: string
   created_at: Date
+  isFallbackApprover: boolean
   _count: WorkFlowTemplateUserCountAggregateOutputType | null
   _min: WorkFlowTemplateUserMinAggregateOutputType | null
   _max: WorkFlowTemplateUserMaxAggregateOutputType | null
@@ -174,6 +181,7 @@ export type WorkFlowTemplateUserWhereInput = {
   templateId?: Prisma.StringFilter<"WorkFlowTemplateUser"> | string
   userId?: Prisma.StringFilter<"WorkFlowTemplateUser"> | string
   created_at?: Prisma.DateTimeFilter<"WorkFlowTemplateUser"> | Date | string
+  isFallbackApprover?: Prisma.BoolFilter<"WorkFlowTemplateUser"> | boolean
   template?: Prisma.XOR<Prisma.WorkflowTemplateScalarRelationFilter, Prisma.WorkflowTemplateWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -183,6 +191,7 @@ export type WorkFlowTemplateUserOrderByWithRelationInput = {
   templateId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  isFallbackApprover?: Prisma.SortOrder
   template?: Prisma.WorkflowTemplateOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
 }
@@ -196,6 +205,7 @@ export type WorkFlowTemplateUserWhereUniqueInput = Prisma.AtLeast<{
   templateId?: Prisma.StringFilter<"WorkFlowTemplateUser"> | string
   userId?: Prisma.StringFilter<"WorkFlowTemplateUser"> | string
   created_at?: Prisma.DateTimeFilter<"WorkFlowTemplateUser"> | Date | string
+  isFallbackApprover?: Prisma.BoolFilter<"WorkFlowTemplateUser"> | boolean
   template?: Prisma.XOR<Prisma.WorkflowTemplateScalarRelationFilter, Prisma.WorkflowTemplateWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "templateId_userId">
@@ -205,6 +215,7 @@ export type WorkFlowTemplateUserOrderByWithAggregationInput = {
   templateId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  isFallbackApprover?: Prisma.SortOrder
   _count?: Prisma.WorkFlowTemplateUserCountOrderByAggregateInput
   _max?: Prisma.WorkFlowTemplateUserMaxOrderByAggregateInput
   _min?: Prisma.WorkFlowTemplateUserMinOrderByAggregateInput
@@ -218,11 +229,13 @@ export type WorkFlowTemplateUserScalarWhereWithAggregatesInput = {
   templateId?: Prisma.StringWithAggregatesFilter<"WorkFlowTemplateUser"> | string
   userId?: Prisma.StringWithAggregatesFilter<"WorkFlowTemplateUser"> | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"WorkFlowTemplateUser"> | Date | string
+  isFallbackApprover?: Prisma.BoolWithAggregatesFilter<"WorkFlowTemplateUser"> | boolean
 }
 
 export type WorkFlowTemplateUserCreateInput = {
   id?: string
   created_at?: Date | string
+  isFallbackApprover?: boolean
   template: Prisma.WorkflowTemplateCreateNestedOneWithoutWorkFlowUsersInput
   user: Prisma.UserCreateNestedOneWithoutWorkFlowUsersInput
 }
@@ -232,11 +245,13 @@ export type WorkFlowTemplateUserUncheckedCreateInput = {
   templateId: string
   userId: string
   created_at?: Date | string
+  isFallbackApprover?: boolean
 }
 
 export type WorkFlowTemplateUserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFallbackApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   template?: Prisma.WorkflowTemplateUpdateOneRequiredWithoutWorkFlowUsersNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutWorkFlowUsersNestedInput
 }
@@ -246,6 +261,7 @@ export type WorkFlowTemplateUserUncheckedUpdateInput = {
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFallbackApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type WorkFlowTemplateUserCreateManyInput = {
@@ -253,11 +269,13 @@ export type WorkFlowTemplateUserCreateManyInput = {
   templateId: string
   userId: string
   created_at?: Date | string
+  isFallbackApprover?: boolean
 }
 
 export type WorkFlowTemplateUserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFallbackApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type WorkFlowTemplateUserUncheckedUpdateManyInput = {
@@ -265,6 +283,7 @@ export type WorkFlowTemplateUserUncheckedUpdateManyInput = {
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFallbackApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type WorkFlowTemplateUserListRelationFilter = {
@@ -287,6 +306,7 @@ export type WorkFlowTemplateUserCountOrderByAggregateInput = {
   templateId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  isFallbackApprover?: Prisma.SortOrder
 }
 
 export type WorkFlowTemplateUserMaxOrderByAggregateInput = {
@@ -294,6 +314,7 @@ export type WorkFlowTemplateUserMaxOrderByAggregateInput = {
   templateId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  isFallbackApprover?: Prisma.SortOrder
 }
 
 export type WorkFlowTemplateUserMinOrderByAggregateInput = {
@@ -301,6 +322,7 @@ export type WorkFlowTemplateUserMinOrderByAggregateInput = {
   templateId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  isFallbackApprover?: Prisma.SortOrder
 }
 
 export type WorkFlowTemplateUserCreateNestedManyWithoutUserInput = {
@@ -390,6 +412,7 @@ export type WorkFlowTemplateUserUncheckedUpdateManyWithoutTemplateNestedInput = 
 export type WorkFlowTemplateUserCreateWithoutUserInput = {
   id?: string
   created_at?: Date | string
+  isFallbackApprover?: boolean
   template: Prisma.WorkflowTemplateCreateNestedOneWithoutWorkFlowUsersInput
 }
 
@@ -397,6 +420,7 @@ export type WorkFlowTemplateUserUncheckedCreateWithoutUserInput = {
   id?: string
   templateId: string
   created_at?: Date | string
+  isFallbackApprover?: boolean
 }
 
 export type WorkFlowTemplateUserCreateOrConnectWithoutUserInput = {
@@ -433,11 +457,13 @@ export type WorkFlowTemplateUserScalarWhereInput = {
   templateId?: Prisma.StringFilter<"WorkFlowTemplateUser"> | string
   userId?: Prisma.StringFilter<"WorkFlowTemplateUser"> | string
   created_at?: Prisma.DateTimeFilter<"WorkFlowTemplateUser"> | Date | string
+  isFallbackApprover?: Prisma.BoolFilter<"WorkFlowTemplateUser"> | boolean
 }
 
 export type WorkFlowTemplateUserCreateWithoutTemplateInput = {
   id?: string
   created_at?: Date | string
+  isFallbackApprover?: boolean
   user: Prisma.UserCreateNestedOneWithoutWorkFlowUsersInput
 }
 
@@ -445,6 +471,7 @@ export type WorkFlowTemplateUserUncheckedCreateWithoutTemplateInput = {
   id?: string
   userId: string
   created_at?: Date | string
+  isFallbackApprover?: boolean
 }
 
 export type WorkFlowTemplateUserCreateOrConnectWithoutTemplateInput = {
@@ -477,11 +504,13 @@ export type WorkFlowTemplateUserCreateManyUserInput = {
   id?: string
   templateId: string
   created_at?: Date | string
+  isFallbackApprover?: boolean
 }
 
 export type WorkFlowTemplateUserUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFallbackApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   template?: Prisma.WorkflowTemplateUpdateOneRequiredWithoutWorkFlowUsersNestedInput
 }
 
@@ -489,23 +518,27 @@ export type WorkFlowTemplateUserUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFallbackApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type WorkFlowTemplateUserUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFallbackApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type WorkFlowTemplateUserCreateManyTemplateInput = {
   id?: string
   userId: string
   created_at?: Date | string
+  isFallbackApprover?: boolean
 }
 
 export type WorkFlowTemplateUserUpdateWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFallbackApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
   user?: Prisma.UserUpdateOneRequiredWithoutWorkFlowUsersNestedInput
 }
 
@@ -513,12 +546,14 @@ export type WorkFlowTemplateUserUncheckedUpdateWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFallbackApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type WorkFlowTemplateUserUncheckedUpdateManyWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  isFallbackApprover?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -528,6 +563,7 @@ export type WorkFlowTemplateUserSelect<ExtArgs extends runtime.Types.Extensions.
   templateId?: boolean
   userId?: boolean
   created_at?: boolean
+  isFallbackApprover?: boolean
   template?: boolean | Prisma.WorkflowTemplateDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workFlowTemplateUser"]>
@@ -537,6 +573,7 @@ export type WorkFlowTemplateUserSelectCreateManyAndReturn<ExtArgs extends runtim
   templateId?: boolean
   userId?: boolean
   created_at?: boolean
+  isFallbackApprover?: boolean
   template?: boolean | Prisma.WorkflowTemplateDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workFlowTemplateUser"]>
@@ -546,6 +583,7 @@ export type WorkFlowTemplateUserSelectUpdateManyAndReturn<ExtArgs extends runtim
   templateId?: boolean
   userId?: boolean
   created_at?: boolean
+  isFallbackApprover?: boolean
   template?: boolean | Prisma.WorkflowTemplateDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workFlowTemplateUser"]>
@@ -555,9 +593,10 @@ export type WorkFlowTemplateUserSelectScalar = {
   templateId?: boolean
   userId?: boolean
   created_at?: boolean
+  isFallbackApprover?: boolean
 }
 
-export type WorkFlowTemplateUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "templateId" | "userId" | "created_at", ExtArgs["result"]["workFlowTemplateUser"]>
+export type WorkFlowTemplateUserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "templateId" | "userId" | "created_at" | "isFallbackApprover", ExtArgs["result"]["workFlowTemplateUser"]>
 export type WorkFlowTemplateUserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   template?: boolean | Prisma.WorkflowTemplateDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -582,6 +621,7 @@ export type $WorkFlowTemplateUserPayload<ExtArgs extends runtime.Types.Extension
     templateId: string
     userId: string
     created_at: Date
+    isFallbackApprover: boolean
   }, ExtArgs["result"]["workFlowTemplateUser"]>
   composites: {}
 }
@@ -1011,6 +1051,7 @@ export interface WorkFlowTemplateUserFieldRefs {
   readonly templateId: Prisma.FieldRef<"WorkFlowTemplateUser", 'String'>
   readonly userId: Prisma.FieldRef<"WorkFlowTemplateUser", 'String'>
   readonly created_at: Prisma.FieldRef<"WorkFlowTemplateUser", 'DateTime'>
+  readonly isFallbackApprover: Prisma.FieldRef<"WorkFlowTemplateUser", 'Boolean'>
 }
     
 

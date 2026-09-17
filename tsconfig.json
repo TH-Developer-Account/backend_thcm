@@ -32,7 +32,7 @@
       "@guest/*": ["./src/modules/guest/*"],
       "@vendor-onboarding/*": ["./src/modules/vendor-onboarding/*"],
       "@medi-claim/*": ["./src/modules/medi-claim/*"],
-      "@dia/*": ["./src/modules/dia/*"]
+      "@dealerAudit/*": ["./src/modules/dealer-audit/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"],

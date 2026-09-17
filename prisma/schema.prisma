@@ -96,6 +96,12 @@ enum ActivityAction {
   MEDICAL_CLAIM_SENT_FOR_APPROVAL
   MEDICAL_CLAIM_CLOSED
 
+  // Dealer Audit
+  DEALER_AUDIT_RESUBMITTED
+
+  // Factory Audit
+  FACTORY_AUDIT_RESUBMITTED
+
   // Approval/workflow domain
   APPROVED
   REJECTED
@@ -138,6 +144,11 @@ enum ImportExportType {
   MEDICAL_CLAIM_IMPORT
 }
 
+enum TemplateLifecycleStatus {
+  DRAFT
+  PUBLISHED
+}
+
 enum ImportExportStatus {
   PENDING
   PROCESSING
@@ -148,7 +159,57 @@ enum ImportExportStatus {
 enum WorkflowSubjectType {
   EVENT_PROPOSAL
   VENDOR_ONBOARDING
-  MEDICAL_CLAIM 
+  MEDICAL_CLAIM
+  DEALER_AUDIT_INSTANCE
+  FACTORY_AUDIT_INSTANCE 
+}
+
+enum EvidenceSubjectType {
+  DEALER_ITEM_RESPONSE
+  FACTORY_AUDIT_RESPONSE
+}
+
+// Inferred from the Infra checksheet's "Category" column (Infra/Process).
+// Flagged as an assumption, not a confirmed requirement — confirm before relying on it.
+enum ChecklistItemCategory {
+  INFRA
+  PROCESS
+}
+
+enum DealerReviewStatus {
+  PENDING
+  APPROVED
+  CLARIFICATION_REQUESTED
+}
+
+enum AuditorRole {
+  QUALITY
+  SCM
+  PE
+}
+
+enum PartCategory {
+  S
+  C
+  A
+  GENERAL
+}
+
+enum EvaluationState {
+  NEW
+  REAUDIT
+}
+
+enum RoundTriggerReason {
+  INITIAL
+  FAILED_REAUDIT
+  REMARKS_SUBAUDIT
+}
+
+enum AssignmentStatus {
+  ASSIGNED
+  SUBMITTED
+  REASSIGNED
 }
 
 enum NotificationType {
@@ -232,6 +293,12 @@ model User {
   activityLogs   ActivityLog[]
   importExportLogs ImportExportLog[]
   businessPartnerContact BusinessPartnerContact[]
+  dealerAuditsAsDealer          DealerAuditInstance[]     @relation("DealerAuditDealer")           
+  uploadedEvidence              Evidence[]                                                         
+  factoryAuditRoundsTriggered   AuditRound[]              @relation("FactoryAuditRoundTriggeredBy") 
+  factoryAuditAssignments       AuditAssignment[]         @relation("FactoryAuditAssignmentAuditor")
+  factoryCheckpointReviews      AuditCheckpointResult[]   @relation("FactoryAuditCheckpointReviewer")
+  factoryAuditInstancesCreated  FactoryAuditInstance[]    @relation("FactoryAuditInstanceCreatedBy")
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -546,6 +613,7 @@ model WorkflowInstance {
 
   // ✅ Back-relation for ActivityLog.workflow
   activityLogs   ActivityLog[]
+  factoryClassificationHistory VendorClassificationHistory[]
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -600,6 +668,7 @@ model WorkFlowTemplateUser {
   templateId String
   userId     String
   created_at DateTime @default(now())
+  isFallbackApprover Boolean @default(false)
 
   template WorkflowTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
   user     User             @relation(fields: [userId], references: [id])
@@ -1323,6 +1392,352 @@ model BusinessPartnerContact {
 
   @@index([businessPartnerId])
   @@index([userId])
+}
+
+model Evidence {
+  id          String              @id @default(uuid())
+  subjectType EvidenceSubjectType
+  subjectId   String
+  s3Key       String
+  fileUrl     String
+  uploadedBy  String
+  capturedAt  DateTime @default(now())
+  geoLat      Float?
+  geoLng      Float?
+
+  uploader User @relation(fields: [uploadedBy], references: [id])
+
+  @@index([subjectType, subjectId])
+}
+
+// ─────────────────────────────────────────────
+// SHARED: realizes the previously-agreed Supplier master entity
+// (decisions-and-architecture.md) — kept minimal; not today's focus.
+// ─────────────────────────────────────────────
+
+model Supplier {
+  id       String  @id @default(uuid())
+  name     String
+  code     String  @unique
+  isActive Boolean @default(true)
+  currentClassificationBandId    String?
+  currentClassificationDecidedAt DateTime?
+
+  currentClassificationBand FactoryClassificationBand? @relation(fields: [currentClassificationBandId], references: [id])
+
+  auditInstances FactoryAuditInstance[]
+}
+
+model ChecklistTemplate {
+  id         String     @id @default(uuid())
+  name       String
+  officeType BusinessPartnerOfficeType
+  version    Int        @default(1)
+  status     TemplateLifecycleStatus @default(DRAFT)
+  isActive   Boolean    @default(false) // a draft is never active; publish sets this true
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items              ChecklistItem[]
+  auditInstances     DealerAuditInstance[]
+
+  @@unique([name, officeType, version])
+}
+
+model ChecklistItem {
+  id             String  @id @default(uuid())
+  templateId     String
+  sectionName    String  
+  order          Int     
+  label          String
+  checkPoint     String
+  category       ChecklistItemCategory?
+  requiresScore  Boolean @default(true)
+  requiresEvidence Boolean @default(false)
+  maxScore       Float?
+  scoringGuidance String?
+
+  template  ChecklistTemplate    @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  responses AuditItemResponse[]
+
+  @@unique([templateId, order])
+}
+model DealerAuditInstance {
+  id                  String   @id @default(uuid())
+  dealerUserId        String
+  workspaceId         String
+  officeType          BusinessPartnerOfficeType
+  periodLabel         String
+  checklistTemplateId String
+  finalScore          Float?
+  maxScore            Float?
+  closedAt            DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  dealer   User              @relation("DealerAuditDealer", fields: [dealerUserId], references: [id])
+  template ChecklistTemplate @relation(fields: [checklistTemplateId], references: [id])
+  responses AuditItemResponse[]
+
+  @@unique([dealerUserId, officeType, periodLabel])
+}
+
+model AuditItemResponse {
+  id             String @id @default(uuid())
+  auditInstanceId String
+  itemId         String
+  iteration      Int    @default(1) 
+  dealerScore    Float?
+  dealerRemark   String?
+  reviewerScore  Float?
+  reviewerRemark String?
+  reviewStatus   DealerReviewStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+
+  auditInstance DealerAuditInstance @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
+  item          ChecklistItem       @relation(fields: [itemId], references: [id])
+
+  @@unique([auditInstanceId, itemId, iteration])
+}
+
+model FactoryAuditTemplate {
+  id             String  @id @default(uuid())
+  processCategory String // e.g. "Forging", "Machining"
+  name           String
+  version        Int     @default(1)
+  isActive       Boolean @default(true)
+  status         TemplateLifecycleStatus @default(DRAFT)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sections       FactoryAuditSection[]
+  auditInstances FactoryAuditInstance[]
+
+  @@unique([processCategory, version])
+}
+
+model FactoryAuditSection {
+  id         String @id @default(uuid())
+  templateId String
+  name       String
+  order      Int
+
+  // Regular pass bar (e.g. 0.4 = 40%).
+  passThreshold Float
+
+  // Stricter bar applied only when the instance's targetPartCategories
+  // includes S, C, or A (not GENERAL-only) — confirmed from the checksheets'
+  // "SCA category vendors: minimum 50% in Manufacturing Control & Quality
+  // Management" rule. Null means no elevated bar for this section.
+  elevatedPassThresholdForCriticalParts Float?
+
+  template    FactoryAuditTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  checkpoints FactoryAuditCheckpoint[]
+
+  @@unique([templateId, order])
+}
+
+model FactoryAuditCheckpoint {
+  id               String  @id @default(uuid())
+  sectionId        String
+  order            Int
+  label            String
+  checkPoint       String
+  weight           Float
+  requiresEvidence Boolean @default(true)
+
+  section       FactoryAuditSection       @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  rubricLevels  CheckpointRubricLevel[]
+  responses     AuditResponse[]
+  results       AuditCheckpointResult[]
+  roundScopes   AuditRoundCheckpointScope[]
+  assignmentScopes AuditAssignmentCheckpoint[]
+
+  @@unique([sectionId, order])
+}
+
+// Bespoke per checkpoint — every checkpoint's five level descriptions are
+// unique text, never reused across checkpoints, confirmed from all six
+// checksheets inspected.
+model CheckpointRubricLevel {
+  id           String @id @default(uuid())
+  checkpointId String
+  level        Int    // 0–4
+  description  String
+
+  checkpoint FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id], onDelete: Cascade)
+
+  @@unique([checkpointId, level])
+}
+
+// Global, not per-template — identical across all six checksheets checked.
+model FactoryClassificationBand {
+  id      String @id @default(uuid())
+  label   String // e.g. "Very Good", "Good", "Average", "No Approval"
+  minPercent Float
+  maxPercent Float
+
+  // Which part categories a vendor lands here is qualified to supply.
+  qualifiesFor PartCategory[]
+  currentForSuppliers Supplier[]
+
+  history VendorClassificationHistory[]
+
+  @@unique([label])
+}
+
+model FactoryAuditInstance {
+  id                   String   @id @default(uuid())
+  vendorId             String
+  templateId           String   // snapshotted at creation
+  evaluationState      EvaluationState @default(NEW)
+  targetPartCategories PartCategory[]  // which categories this audit is being run against
+  reopenUsed           Boolean  @default(false) // enforces the one-time reopen cap
+  createdByUserId      String 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  vendor   Supplier             @relation(fields: [vendorId], references: [id])
+  template FactoryAuditTemplate @relation(fields: [templateId], references: [id])
+  rounds   AuditRound[]
+  classificationHistory VendorClassificationHistory[]
+  createdBy User   @relation("FactoryAuditInstanceCreatedBy", fields: [createdByUserId], references: [id])
+
+  // No stored status field — lifecycle is read off the linked WorkflowInstance(s)
+  // via (subjectType: FACTORY_AUDIT_INSTANCE, subjectId: this.id).
+}
+
+// One row per scoring round: the initial audit, a capped fail-reopen, or an
+// uncapped remarks sub-audit. Distinguishing WHY a round exists in one place
+// rather than scattering trigger logic across other tables.
+model AuditRound {
+  id              String   @id @default(uuid())
+  auditInstanceId String
+  roundNumber     Int
+  triggerReason   RoundTriggerReason
+  triggeredByUserId String? // null for the initial round (system-scheduled, not human-triggered)
+  openedAt        DateTime @default(now())
+  closedAt        DateTime?
+
+  auditInstance FactoryAuditInstance @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
+  triggeredBy   User?                @relation("FactoryAuditRoundTriggeredBy", fields: [triggeredByUserId], references: [id])
+
+  checkpointScope AuditRoundCheckpointScope[]
+  assignments     AuditAssignment[]
+  results         AuditCheckpointResult[]
+  classificationHistory VendorClassificationHistory[]
+
+  @@unique([auditInstanceId, roundNumber])
+}
+
+// Which checkpoints are in play for a given round — all of them for round 1,
+// only the failed/remarked subset for later rounds.
+model AuditRoundCheckpointScope {
+  id           String @id @default(uuid())
+  roundId      String
+  checkpointId String
+
+  round      AuditRound             @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  checkpoint FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id])
+
+  @@unique([roundId, checkpointId])
+}
+
+model AuditAssignment {
+  id         String            @id @default(uuid())
+  roundId    String
+  auditorId  String
+  role       AuditorRole
+  status     AssignmentStatus  @default(ASSIGNED)
+
+  // Self-reference for the reassignment audit trail — the superseded
+  // assignment is kept as-is for history, a new row is created for the
+  // replacement auditor covering only the checkpoints not yet submitted.
+  reassignedFromId String?
+
+  round        AuditRound              @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  auditor      User                    @relation("FactoryAuditAssignmentAuditor", fields: [auditorId], references: [id])
+  reassignedFrom AuditAssignment?      @relation("AssignmentReassignment", fields: [reassignedFromId], references: [id])
+  reassignedTo   AuditAssignment[]     @relation("AssignmentReassignment")
+
+  checkpointScope AuditAssignmentCheckpoint[]
+  responses       AuditResponse[]
+
+  @@unique([roundId, auditorId])
+}
+
+// Explicit per-assignment checkpoint scope — needed because reassignment
+// splits one round's checkpoint set across two assignments (original auditor
+// keeps what they already submitted; replacement gets the rest).
+model AuditAssignmentCheckpoint {
+  id           String @id @default(uuid())
+  assignmentId String
+  checkpointId String
+
+  assignment AuditAssignment        @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  checkpoint FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id])
+
+  @@unique([assignmentId, checkpointId])
+}
+
+model AuditResponse {
+  id             String  @id @default(uuid())
+  assignmentId   String
+  checkpointId   String
+  score          Float?  // 0–4
+  isNotApplicable Boolean @default(false)
+  remark         String?
+
+  assignment AuditAssignment        @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  checkpoint FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id])
+
+  @@unique([assignmentId, checkpointId])
+}
+
+// The stored aggregate — averaged across that round's AuditResponse rows for
+// this checkpoint, plus the reviewer's own overlay (flag + named remark),
+// distinct from each auditor's individual remark on AuditResponse.
+model AuditCheckpointResult {
+  id           String   @id @default(uuid())
+  roundId      String
+  checkpointId String
+  score        Float?   // averaged, null if every response was NA
+  computedAt   DateTime @default(now())
+
+  reviewerFlaggedForImprovement Boolean   @default(false)
+  reviewerRemark                String?
+  reviewerId                    String?
+  reviewerRemarkedAt            DateTime?
+
+  round      AuditRound             @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  checkpoint FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id])
+  reviewer   User?                  @relation("FactoryAuditCheckpointReviewer", fields: [reviewerId], references: [id])
+
+  @@unique([roundId, checkpointId])
+}
+
+// Append-only — one row per classification decision, whichever round
+// produced it. Landing in the "No Approval" band IS the reject outcome;
+// no separate rejected/approved flag needed since that's just which band
+// was achieved.
+model VendorClassificationHistory {
+  id                 String   @id @default(uuid())
+  auditInstanceId    String
+  roundId            String
+  bandId             String
+  overallScorePercent Float
+  workflowInstanceId String   // the specific classification WorkflowInstance that produced this entry
+  decidedAt          DateTime @default(now())
+
+  auditInstance FactoryAuditInstance      @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
+  round         AuditRound                @relation(fields: [roundId], references: [id])
+  band          FactoryClassificationBand @relation(fields: [bandId], references: [id])
+  workflowInstance WorkflowInstance       @relation(fields: [workflowInstanceId], references: [id])
 }
 
 

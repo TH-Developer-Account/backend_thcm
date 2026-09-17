@@ -113,6 +113,8 @@ export const ActivityAction = {
   MEDICAL_CLAIM_RESUBMITTED: 'MEDICAL_CLAIM_RESUBMITTED',
   MEDICAL_CLAIM_SENT_FOR_APPROVAL: 'MEDICAL_CLAIM_SENT_FOR_APPROVAL',
   MEDICAL_CLAIM_CLOSED: 'MEDICAL_CLAIM_CLOSED',
+  DEALER_AUDIT_RESUBMITTED: 'DEALER_AUDIT_RESUBMITTED',
+  FACTORY_AUDIT_RESUBMITTED: 'FACTORY_AUDIT_RESUBMITTED',
   APPROVED: 'APPROVED',
   REJECTED: 'REJECTED',
   CLARIFY: 'CLARIFY',
@@ -171,6 +173,14 @@ export const ImportExportType = {
 export type ImportExportType = (typeof ImportExportType)[keyof typeof ImportExportType]
 
 
+export const TemplateLifecycleStatus = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED'
+} as const
+
+export type TemplateLifecycleStatus = (typeof TemplateLifecycleStatus)[keyof typeof TemplateLifecycleStatus]
+
+
 export const ImportExportStatus = {
   PENDING: 'PENDING',
   PROCESSING: 'PROCESSING',
@@ -184,10 +194,82 @@ export type ImportExportStatus = (typeof ImportExportStatus)[keyof typeof Import
 export const WorkflowSubjectType = {
   EVENT_PROPOSAL: 'EVENT_PROPOSAL',
   VENDOR_ONBOARDING: 'VENDOR_ONBOARDING',
-  MEDICAL_CLAIM: 'MEDICAL_CLAIM'
+  MEDICAL_CLAIM: 'MEDICAL_CLAIM',
+  DEALER_AUDIT_INSTANCE: 'DEALER_AUDIT_INSTANCE',
+  FACTORY_AUDIT_INSTANCE: 'FACTORY_AUDIT_INSTANCE'
 } as const
 
 export type WorkflowSubjectType = (typeof WorkflowSubjectType)[keyof typeof WorkflowSubjectType]
+
+
+export const EvidenceSubjectType = {
+  DEALER_ITEM_RESPONSE: 'DEALER_ITEM_RESPONSE',
+  FACTORY_AUDIT_RESPONSE: 'FACTORY_AUDIT_RESPONSE'
+} as const
+
+export type EvidenceSubjectType = (typeof EvidenceSubjectType)[keyof typeof EvidenceSubjectType]
+
+
+export const ChecklistItemCategory = {
+  INFRA: 'INFRA',
+  PROCESS: 'PROCESS'
+} as const
+
+export type ChecklistItemCategory = (typeof ChecklistItemCategory)[keyof typeof ChecklistItemCategory]
+
+
+export const DealerReviewStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  CLARIFICATION_REQUESTED: 'CLARIFICATION_REQUESTED'
+} as const
+
+export type DealerReviewStatus = (typeof DealerReviewStatus)[keyof typeof DealerReviewStatus]
+
+
+export const AuditorRole = {
+  QUALITY: 'QUALITY',
+  SCM: 'SCM',
+  PE: 'PE'
+} as const
+
+export type AuditorRole = (typeof AuditorRole)[keyof typeof AuditorRole]
+
+
+export const PartCategory = {
+  S: 'S',
+  C: 'C',
+  A: 'A',
+  GENERAL: 'GENERAL'
+} as const
+
+export type PartCategory = (typeof PartCategory)[keyof typeof PartCategory]
+
+
+export const EvaluationState = {
+  NEW: 'NEW',
+  REAUDIT: 'REAUDIT'
+} as const
+
+export type EvaluationState = (typeof EvaluationState)[keyof typeof EvaluationState]
+
+
+export const RoundTriggerReason = {
+  INITIAL: 'INITIAL',
+  FAILED_REAUDIT: 'FAILED_REAUDIT',
+  REMARKS_SUBAUDIT: 'REMARKS_SUBAUDIT'
+} as const
+
+export type RoundTriggerReason = (typeof RoundTriggerReason)[keyof typeof RoundTriggerReason]
+
+
+export const AssignmentStatus = {
+  ASSIGNED: 'ASSIGNED',
+  SUBMITTED: 'SUBMITTED',
+  REASSIGNED: 'REASSIGNED'
+} as const
+
+export type AssignmentStatus = (typeof AssignmentStatus)[keyof typeof AssignmentStatus]
 
 
 export const NotificationType = {

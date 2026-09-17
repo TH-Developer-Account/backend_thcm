@@ -289,6 +289,7 @@ export type WorkflowInstanceWhereInput = {
   stages?: Prisma.StageInstanceListRelationFilter
   comments?: Prisma.CommentListRelationFilter
   activityLogs?: Prisma.ActivityLogListRelationFilter
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryListRelationFilter
 }
 
 export type WorkflowInstanceOrderByWithRelationInput = {
@@ -310,6 +311,7 @@ export type WorkflowInstanceOrderByWithRelationInput = {
   stages?: Prisma.StageInstanceOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
   activityLogs?: Prisma.ActivityLogOrderByRelationAggregateInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryOrderByRelationAggregateInput
 }
 
 export type WorkflowInstanceWhereUniqueInput = Prisma.AtLeast<{
@@ -334,6 +336,7 @@ export type WorkflowInstanceWhereUniqueInput = Prisma.AtLeast<{
   stages?: Prisma.StageInstanceListRelationFilter
   comments?: Prisma.CommentListRelationFilter
   activityLogs?: Prisma.ActivityLogListRelationFilter
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryListRelationFilter
 }, "id">
 
 export type WorkflowInstanceOrderByWithAggregationInput = {
@@ -393,6 +396,7 @@ export type WorkflowInstanceCreateInput = {
   stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
   comments?: Prisma.CommentCreateNestedManyWithoutWorkflowInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutWorkflowInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutWorkflowInstanceInput
 }
 
 export type WorkflowInstanceUncheckedCreateInput = {
@@ -412,6 +416,7 @@ export type WorkflowInstanceUncheckedCreateInput = {
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutWorkflowInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutWorkflowInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutWorkflowInstanceInput
 }
 
 export type WorkflowInstanceUpdateInput = {
@@ -431,6 +436,7 @@ export type WorkflowInstanceUpdateInput = {
   stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
   comments?: Prisma.CommentUpdateManyWithoutWorkflowNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutWorkflowNestedInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutWorkflowInstanceNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateInput = {
@@ -450,6 +456,7 @@ export type WorkflowInstanceUncheckedUpdateInput = {
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutWorkflowNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutWorkflowNestedInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutWorkflowInstanceNestedInput
 }
 
 export type WorkflowInstanceCreateManyInput = {
@@ -718,6 +725,20 @@ export type WorkflowInstanceUpdateOneWithoutCommentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.WorkflowInstanceUpdateToOneWithWhereWithoutCommentsInput, Prisma.WorkflowInstanceUpdateWithoutCommentsInput>, Prisma.WorkflowInstanceUncheckedUpdateWithoutCommentsInput>
 }
 
+export type WorkflowInstanceCreateNestedOneWithoutFactoryClassificationHistoryInput = {
+  create?: Prisma.XOR<Prisma.WorkflowInstanceCreateWithoutFactoryClassificationHistoryInput, Prisma.WorkflowInstanceUncheckedCreateWithoutFactoryClassificationHistoryInput>
+  connectOrCreate?: Prisma.WorkflowInstanceCreateOrConnectWithoutFactoryClassificationHistoryInput
+  connect?: Prisma.WorkflowInstanceWhereUniqueInput
+}
+
+export type WorkflowInstanceUpdateOneRequiredWithoutFactoryClassificationHistoryNestedInput = {
+  create?: Prisma.XOR<Prisma.WorkflowInstanceCreateWithoutFactoryClassificationHistoryInput, Prisma.WorkflowInstanceUncheckedCreateWithoutFactoryClassificationHistoryInput>
+  connectOrCreate?: Prisma.WorkflowInstanceCreateOrConnectWithoutFactoryClassificationHistoryInput
+  upsert?: Prisma.WorkflowInstanceUpsertWithoutFactoryClassificationHistoryInput
+  connect?: Prisma.WorkflowInstanceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.WorkflowInstanceUpdateToOneWithWhereWithoutFactoryClassificationHistoryInput, Prisma.WorkflowInstanceUpdateWithoutFactoryClassificationHistoryInput>, Prisma.WorkflowInstanceUncheckedUpdateWithoutFactoryClassificationHistoryInput>
+}
+
 export type WorkflowInstanceCreateWithoutWorkspaceInput = {
   id?: string
   iteration?: number
@@ -734,6 +755,7 @@ export type WorkflowInstanceCreateWithoutWorkspaceInput = {
   stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
   comments?: Prisma.CommentCreateNestedManyWithoutWorkflowInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutWorkflowInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutWorkflowInstanceInput
 }
 
 export type WorkflowInstanceUncheckedCreateWithoutWorkspaceInput = {
@@ -752,6 +774,7 @@ export type WorkflowInstanceUncheckedCreateWithoutWorkspaceInput = {
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutWorkflowInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutWorkflowInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutWorkflowInstanceInput
 }
 
 export type WorkflowInstanceCreateOrConnectWithoutWorkspaceInput = {
@@ -815,6 +838,7 @@ export type WorkflowInstanceCreateWithoutTemplateInput = {
   stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
   comments?: Prisma.CommentCreateNestedManyWithoutWorkflowInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutWorkflowInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutWorkflowInstanceInput
 }
 
 export type WorkflowInstanceUncheckedCreateWithoutTemplateInput = {
@@ -833,6 +857,7 @@ export type WorkflowInstanceUncheckedCreateWithoutTemplateInput = {
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutWorkflowInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutWorkflowInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutWorkflowInstanceInput
 }
 
 export type WorkflowInstanceCreateOrConnectWithoutTemplateInput = {
@@ -877,6 +902,7 @@ export type WorkflowInstanceCreateWithoutStagesInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
   comments?: Prisma.CommentCreateNestedManyWithoutWorkflowInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutWorkflowInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutWorkflowInstanceInput
 }
 
 export type WorkflowInstanceUncheckedCreateWithoutStagesInput = {
@@ -895,6 +921,7 @@ export type WorkflowInstanceUncheckedCreateWithoutStagesInput = {
   updated_at?: Date | string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutWorkflowInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutWorkflowInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutWorkflowInstanceInput
 }
 
 export type WorkflowInstanceCreateOrConnectWithoutStagesInput = {
@@ -929,6 +956,7 @@ export type WorkflowInstanceUpdateWithoutStagesInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutWorkflowNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutWorkflowNestedInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutWorkflowInstanceNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateWithoutStagesInput = {
@@ -947,6 +975,7 @@ export type WorkflowInstanceUncheckedUpdateWithoutStagesInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutWorkflowNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutWorkflowNestedInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutWorkflowInstanceNestedInput
 }
 
 export type WorkflowInstanceCreateWithoutActivityLogsInput = {
@@ -965,6 +994,7 @@ export type WorkflowInstanceCreateWithoutActivityLogsInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
   stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
   comments?: Prisma.CommentCreateNestedManyWithoutWorkflowInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutWorkflowInstanceInput
 }
 
 export type WorkflowInstanceUncheckedCreateWithoutActivityLogsInput = {
@@ -983,6 +1013,7 @@ export type WorkflowInstanceUncheckedCreateWithoutActivityLogsInput = {
   updated_at?: Date | string
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutWorkflowInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutWorkflowInstanceInput
 }
 
 export type WorkflowInstanceCreateOrConnectWithoutActivityLogsInput = {
@@ -1017,6 +1048,7 @@ export type WorkflowInstanceUpdateWithoutActivityLogsInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
   stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
   comments?: Prisma.CommentUpdateManyWithoutWorkflowNestedInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutWorkflowInstanceNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateWithoutActivityLogsInput = {
@@ -1035,6 +1067,7 @@ export type WorkflowInstanceUncheckedUpdateWithoutActivityLogsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutWorkflowNestedInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutWorkflowInstanceNestedInput
 }
 
 export type WorkflowInstanceCreateWithoutCommentsInput = {
@@ -1053,6 +1086,7 @@ export type WorkflowInstanceCreateWithoutCommentsInput = {
   workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
   stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutWorkflowInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutWorkflowInstanceInput
 }
 
 export type WorkflowInstanceUncheckedCreateWithoutCommentsInput = {
@@ -1071,6 +1105,7 @@ export type WorkflowInstanceUncheckedCreateWithoutCommentsInput = {
   updated_at?: Date | string
   stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutWorkflowInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutWorkflowInstanceInput
 }
 
 export type WorkflowInstanceCreateOrConnectWithoutCommentsInput = {
@@ -1105,6 +1140,7 @@ export type WorkflowInstanceUpdateWithoutCommentsInput = {
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
   stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutWorkflowNestedInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutWorkflowInstanceNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateWithoutCommentsInput = {
@@ -1122,6 +1158,99 @@ export type WorkflowInstanceUncheckedUpdateWithoutCommentsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutWorkflowNestedInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutWorkflowInstanceNestedInput
+}
+
+export type WorkflowInstanceCreateWithoutFactoryClassificationHistoryInput = {
+  id?: string
+  iteration?: number
+  isActive?: boolean
+  workflowType?: $Enums.WorkflowType
+  status?: $Enums.WorkflowStatus
+  currentStage: number
+  appId: string
+  subjectType: $Enums.WorkflowSubjectType
+  subjectId: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  template: Prisma.WorkflowTemplateCreateNestedOneWithoutWorkflowInstancesInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutWorkflowsInput
+  stages?: Prisma.StageInstanceCreateNestedManyWithoutWorkflowInput
+  comments?: Prisma.CommentCreateNestedManyWithoutWorkflowInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutWorkflowInput
+}
+
+export type WorkflowInstanceUncheckedCreateWithoutFactoryClassificationHistoryInput = {
+  id?: string
+  templateId: string
+  workspaceId: string
+  iteration?: number
+  isActive?: boolean
+  workflowType?: $Enums.WorkflowType
+  status?: $Enums.WorkflowStatus
+  currentStage: number
+  appId: string
+  subjectType: $Enums.WorkflowSubjectType
+  subjectId: string
+  created_at?: Date | string
+  updated_at?: Date | string
+  stages?: Prisma.StageInstanceUncheckedCreateNestedManyWithoutWorkflowInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutWorkflowInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutWorkflowInput
+}
+
+export type WorkflowInstanceCreateOrConnectWithoutFactoryClassificationHistoryInput = {
+  where: Prisma.WorkflowInstanceWhereUniqueInput
+  create: Prisma.XOR<Prisma.WorkflowInstanceCreateWithoutFactoryClassificationHistoryInput, Prisma.WorkflowInstanceUncheckedCreateWithoutFactoryClassificationHistoryInput>
+}
+
+export type WorkflowInstanceUpsertWithoutFactoryClassificationHistoryInput = {
+  update: Prisma.XOR<Prisma.WorkflowInstanceUpdateWithoutFactoryClassificationHistoryInput, Prisma.WorkflowInstanceUncheckedUpdateWithoutFactoryClassificationHistoryInput>
+  create: Prisma.XOR<Prisma.WorkflowInstanceCreateWithoutFactoryClassificationHistoryInput, Prisma.WorkflowInstanceUncheckedCreateWithoutFactoryClassificationHistoryInput>
+  where?: Prisma.WorkflowInstanceWhereInput
+}
+
+export type WorkflowInstanceUpdateToOneWithWhereWithoutFactoryClassificationHistoryInput = {
+  where?: Prisma.WorkflowInstanceWhereInput
+  data: Prisma.XOR<Prisma.WorkflowInstanceUpdateWithoutFactoryClassificationHistoryInput, Prisma.WorkflowInstanceUncheckedUpdateWithoutFactoryClassificationHistoryInput>
+}
+
+export type WorkflowInstanceUpdateWithoutFactoryClassificationHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  workflowType?: Prisma.EnumWorkflowTypeFieldUpdateOperationsInput | $Enums.WorkflowType
+  status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
+  currentStage?: Prisma.IntFieldUpdateOperationsInput | number
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectType?: Prisma.EnumWorkflowSubjectTypeFieldUpdateOperationsInput | $Enums.WorkflowSubjectType
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  template?: Prisma.WorkflowTemplateUpdateOneRequiredWithoutWorkflowInstancesNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutWorkflowsNestedInput
+  stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutWorkflowNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutWorkflowNestedInput
+}
+
+export type WorkflowInstanceUncheckedUpdateWithoutFactoryClassificationHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  workflowType?: Prisma.EnumWorkflowTypeFieldUpdateOperationsInput | $Enums.WorkflowType
+  status?: Prisma.EnumWorkflowStatusFieldUpdateOperationsInput | $Enums.WorkflowStatus
+  currentStage?: Prisma.IntFieldUpdateOperationsInput | number
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectType?: Prisma.EnumWorkflowSubjectTypeFieldUpdateOperationsInput | $Enums.WorkflowSubjectType
+  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutWorkflowNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutWorkflowNestedInput
 }
 
@@ -1156,6 +1285,7 @@ export type WorkflowInstanceUpdateWithoutWorkspaceInput = {
   stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
   comments?: Prisma.CommentUpdateManyWithoutWorkflowNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutWorkflowNestedInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutWorkflowInstanceNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateWithoutWorkspaceInput = {
@@ -1174,6 +1304,7 @@ export type WorkflowInstanceUncheckedUpdateWithoutWorkspaceInput = {
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutWorkflowNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutWorkflowNestedInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutWorkflowInstanceNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateManyWithoutWorkspaceInput = {
@@ -1222,6 +1353,7 @@ export type WorkflowInstanceUpdateWithoutTemplateInput = {
   stages?: Prisma.StageInstanceUpdateManyWithoutWorkflowNestedInput
   comments?: Prisma.CommentUpdateManyWithoutWorkflowNestedInput
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutWorkflowNestedInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutWorkflowInstanceNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateWithoutTemplateInput = {
@@ -1240,6 +1372,7 @@ export type WorkflowInstanceUncheckedUpdateWithoutTemplateInput = {
   stages?: Prisma.StageInstanceUncheckedUpdateManyWithoutWorkflowNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutWorkflowNestedInput
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutWorkflowNestedInput
+  factoryClassificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutWorkflowInstanceNestedInput
 }
 
 export type WorkflowInstanceUncheckedUpdateManyWithoutTemplateInput = {
@@ -1266,12 +1399,14 @@ export type WorkflowInstanceCountOutputType = {
   stages: number
   comments: number
   activityLogs: number
+  factoryClassificationHistory: number
 }
 
 export type WorkflowInstanceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   stages?: boolean | WorkflowInstanceCountOutputTypeCountStagesArgs
   comments?: boolean | WorkflowInstanceCountOutputTypeCountCommentsArgs
   activityLogs?: boolean | WorkflowInstanceCountOutputTypeCountActivityLogsArgs
+  factoryClassificationHistory?: boolean | WorkflowInstanceCountOutputTypeCountFactoryClassificationHistoryArgs
 }
 
 /**
@@ -1305,6 +1440,13 @@ export type WorkflowInstanceCountOutputTypeCountActivityLogsArgs<ExtArgs extends
   where?: Prisma.ActivityLogWhereInput
 }
 
+/**
+ * WorkflowInstanceCountOutputType without action
+ */
+export type WorkflowInstanceCountOutputTypeCountFactoryClassificationHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorClassificationHistoryWhereInput
+}
+
 
 export type WorkflowInstanceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1325,6 +1467,7 @@ export type WorkflowInstanceSelect<ExtArgs extends runtime.Types.Extensions.Inte
   stages?: boolean | Prisma.WorkflowInstance$stagesArgs<ExtArgs>
   comments?: boolean | Prisma.WorkflowInstance$commentsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.WorkflowInstance$activityLogsArgs<ExtArgs>
+  factoryClassificationHistory?: boolean | Prisma.WorkflowInstance$factoryClassificationHistoryArgs<ExtArgs>
   _count?: boolean | Prisma.WorkflowInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["workflowInstance"]>
 
@@ -1387,6 +1530,7 @@ export type WorkflowInstanceInclude<ExtArgs extends runtime.Types.Extensions.Int
   stages?: boolean | Prisma.WorkflowInstance$stagesArgs<ExtArgs>
   comments?: boolean | Prisma.WorkflowInstance$commentsArgs<ExtArgs>
   activityLogs?: boolean | Prisma.WorkflowInstance$activityLogsArgs<ExtArgs>
+  factoryClassificationHistory?: boolean | Prisma.WorkflowInstance$factoryClassificationHistoryArgs<ExtArgs>
   _count?: boolean | Prisma.WorkflowInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type WorkflowInstanceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1406,6 +1550,7 @@ export type $WorkflowInstancePayload<ExtArgs extends runtime.Types.Extensions.In
     stages: Prisma.$StageInstancePayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
     activityLogs: Prisma.$ActivityLogPayload<ExtArgs>[]
+    factoryClassificationHistory: Prisma.$VendorClassificationHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1820,6 +1965,7 @@ export interface Prisma__WorkflowInstanceClient<T, Null = never, ExtArgs extends
   stages<T extends Prisma.WorkflowInstance$stagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkflowInstance$stagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StageInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.WorkflowInstance$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkflowInstance$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   activityLogs<T extends Prisma.WorkflowInstance$activityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkflowInstance$activityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  factoryClassificationHistory<T extends Prisma.WorkflowInstance$factoryClassificationHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkflowInstance$factoryClassificationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorClassificationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2332,6 +2478,30 @@ export type WorkflowInstance$activityLogsArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.ActivityLogScalarFieldEnum | Prisma.ActivityLogScalarFieldEnum[]
+}
+
+/**
+ * WorkflowInstance.factoryClassificationHistory
+ */
+export type WorkflowInstance$factoryClassificationHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorClassificationHistory
+   */
+  select?: Prisma.VendorClassificationHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorClassificationHistory
+   */
+  omit?: Prisma.VendorClassificationHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorClassificationHistoryInclude<ExtArgs> | null
+  where?: Prisma.VendorClassificationHistoryWhereInput
+  orderBy?: Prisma.VendorClassificationHistoryOrderByWithRelationInput | Prisma.VendorClassificationHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.VendorClassificationHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorClassificationHistoryScalarFieldEnum | Prisma.VendorClassificationHistoryScalarFieldEnum[]
 }
 
 /**
