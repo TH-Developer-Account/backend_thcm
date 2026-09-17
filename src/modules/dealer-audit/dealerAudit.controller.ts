@@ -191,6 +191,25 @@ export const setDealerAuditReviewStatus = async (
   }
 };
 
+export const generateAndSendDealerAuditReport = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+    const result = await service.generateAndSendDealerAuditReport(
+      userId,
+      req.params.id as string,
+      { ccReviewer: req.body?.ccReviewer },
+    );
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // ─────────────────────────────────────────────
 // Dealer surface
 // ─────────────────────────────────────────────

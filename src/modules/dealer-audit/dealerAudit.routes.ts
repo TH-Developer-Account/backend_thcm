@@ -21,6 +21,7 @@ import {
   getDealerAuditInstanceById,
   setDealerAuditReviewerNotes,
   setDealerAuditReviewStatus,
+  generateAndSendDealerAuditReport,
 
   // ── Dealer surface: own instances only ──
   listMyDealerAuditInstances,
@@ -161,6 +162,12 @@ router.patch(
   requireAuth,
   authorize(APP_KEY, MODULE_REVIEW, "write"),
   asyncHandler(setDealerAuditReviewStatus),
+);
+router.post(
+  "/instances/:id/report",
+  requireAuth,
+  authorize(APP_KEY, MODULE_REVIEW, "write"),
+  asyncHandler(generateAndSendDealerAuditReport),
 );
 
 // No approve/reject/clarify routes here — those go through the existing

@@ -11,6 +11,11 @@ import {
 import { buildMedicalClaimDocDefinition } from "@medi-claim/mediclaimDocDefination";
 import { assembleEpcPdfData, EpcPdfData } from "@map/epcAssembler";
 import { buildEpcDocDefinition } from "@map/epcDocDefination";
+import {
+  assembleDealerAuditPdfData,
+  DealerAuditPdfData,
+} from "@dealerAudit/dealerAuditAssembler";
+import { buildDealerAuditDocDefinition } from "@dealerAudit/dealerAuditDocDefination";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PDF DOCUMENT REGISTRY
@@ -24,7 +29,8 @@ import { buildEpcDocDefinition } from "@map/epcDocDefination";
 export type PdfDocumentType =
   | "VENDOR_ONBOARDING"
   | "MEDICAL_CLAIM"
-  | "EVENT_PROPOSAL";
+  | "EVENT_PROPOSAL"
+  | "DEALER_AUDIT";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface PdfDocumentDefinition<TData = any> {
@@ -54,6 +60,12 @@ export const pdfDocumentRegistry: Record<
     assembleData: assembleEpcPdfData,
     buildDocDefinition: (data: EpcPdfData) => buildEpcDocDefinition(data),
     buildS3Key: (epcId: string) => `epc-pdfs/${epcId}.pdf`,
+  },
+  DEALER_AUDIT: {
+    assembleData: assembleDealerAuditPdfData,
+    buildDocDefinition: (data: DealerAuditPdfData) =>
+      buildDealerAuditDocDefinition(data),
+    buildS3Key: (instanceId: string) => `dealer-audit-pdfs/${instanceId}.pdf`,
   },
 };
 

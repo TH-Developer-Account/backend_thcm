@@ -6,7 +6,6 @@ import {
   getResubmitAction,
   getResubmitStatus,
 } from "@kernel/workflow/workflowSubject.helper";
-import { uploadToS3 } from "@shared/utils/aws-s3.services";
 import {
   assignWorkflow,
   notifyStageApprovers,
@@ -16,6 +15,11 @@ import {
   Prisma,
   BusinessPartnerOfficeType,
 } from "../../prisma/generated/prisma/client";
+import { uploadToS3 } from "@shared/utils/aws-s3.services";
+import { randomUUID } from "crypto";
+import { addMailJob } from "@kernel/mail/mail.service";
+import { getOrGeneratePdfUrl } from "@pdf/pdf.services";
+import { assembleDealerAuditPdfData } from "./dealerAuditAssembler";
 
 // The one place officeType gets derived from BusinessPartner — ready for
 // whenever instance creation is actually written (scheduler or a manual
@@ -342,6 +346,90 @@ async function getInstanceOrThrow(id: string) {
   });
   if (!instance) throw new ApiError(404, "Audit instance not found");
   return instance;
+}
+
+// Manual, reviewer-triggered — not an automatic reaction to the workflow
+// reaching APPROVED. Deliberately doesn't hook into the generic engine's
+// approveStage at all, unlike the reviewer-notification the engine already
+// sends on its own — this is Dealer Audit's own action, living entirely in
+// its own module.
+export async function generateAndSendDealerAuditReport(
+  reviewerUserId: string,
+  instanceId: string,
+  options: { ccReviewer?: boolean } = {},
+) {
+  // Query the workflow directly by status, not via getActiveWorkflowForSubject
+  // — unsure whether isActive stays true or flips false once a workflow
+  // reaches a terminal state, so this avoids relying on that assumption.
+  const workflow = await prisma.workflowInstance.findFirst({
+    where: {
+      subjectType: "DEALER_AUDIT_INSTANCE" as never,
+      subjectId: instanceId,
+      status: "APPROVED",
+    },
+    orderBy: { created_at: "desc" },
+    include: {
+      stages: {
+        orderBy: { stageOrder: "desc" },
+        take: 1,
+        include: { approvals: { where: { status: "APPROVED" } } },
+      },
+    },
+  });
+  if (!workflow) {
+    throw new ApiError(
+      400,
+      "This audit has not been closed with an approved score yet",
+    );
+  }
+
+  const reportUrl = await getOrGeneratePdfUrl(
+    "DEALER_AUDIT" as never,
+    instanceId,
+  );
+
+  const { dealerName, dealerEmail } =
+    await assembleDealerAuditPdfData(instanceId);
+  if (!dealerEmail) {
+    throw new ApiError(
+      400,
+      "Dealer has no email on file — cannot send the report",
+    );
+  }
+
+  // Defaults to true per the original "and a copy for the reviewer"
+  // requirement — flip to false if that's no longer wanted now that the
+  // reviewer is the one triggering this themselves.
+  const ccReviewer = options.ccReviewer ?? true;
+  let cc: string | undefined;
+  if (ccReviewer) {
+    const finalStage = workflow.stages[0];
+    const approverId = finalStage?.approvals[0]?.approverId;
+    if (approverId) {
+      const reviewer = await prisma.user.findUnique({
+        where: { id: approverId },
+        select: { email: true },
+      });
+      cc = reviewer?.email ?? undefined;
+    }
+  }
+
+  await addMailJob({
+    to: dealerEmail,
+    cc,
+    subject: `Your Dealer Audit Report — ${dealerName}`,
+    templateName: "dealer-audit-report", // .hbs template still needs creating
+    templateData: { dealerName, reportUrl },
+  });
+
+  await logActivity({
+    actorId: reviewerUserId,
+    action: "DEALER_AUDIT_REPORT_SENT" as never,
+    subjectId: instanceId,
+    workflowId: workflow.id,
+  });
+
+  return { reportUrl };
 }
 
 export async function getDealerAuditInstanceById(id: string) {
@@ -819,8 +907,7 @@ export async function uploadMyDealerAuditItemEvidence(
       // Unique per upload, not overwrite-style like uploadReportImage's
       // position-keyed pattern — each round's evidence must survive
       // later rounds, same reasoning as AuditItemResponse's history.
-      const timestamp = Date.now();
-      const s3Key = `dealer-audit-evidence/${instanceId}/${itemId}/${response.id}/${timestamp}-${file.originalname}`;
+      const s3Key = `dealer-audit-evidence/${instanceId}/${itemId}/${response.id}/${randomUUID()}-${file.originalname}`;
       await uploadToS3(s3Key, file.buffer, file.mimetype);
       // Record/display value only, per the existing uploadReportImage
       // convention — the bucket is private; actual access always goes

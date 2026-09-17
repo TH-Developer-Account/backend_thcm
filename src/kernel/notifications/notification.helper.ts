@@ -78,6 +78,40 @@ const notificationMetaResolvers: Record<
       link: `/medical-claims/${subjectId}`,
     };
   },
+  DEALER_AUDIT_INSTANCE: async (subjectId) => {
+    const instance = await prisma.dealerAuditInstance.findUnique({
+      where: { id: subjectId },
+      select: {
+        dealerUserId: true,
+        periodLabel: true,
+        dealer: { select: { first_name: true, last_name: true } },
+      },
+    });
+    if (!instance) return null;
+
+    return {
+      ownerId: instance.dealerUserId,
+      displayLabel: `Dealer Audit — ${instance.dealer.first_name} ${instance.dealer.last_name} (${instance.periodLabel})`,
+      link: `/dealer-audit/instances/${subjectId}`,
+    };
+  },
+
+  FACTORY_AUDIT_INSTANCE: async (subjectId) => {
+    const instance = await prisma.factoryAuditInstance.findUnique({
+      where: { id: subjectId },
+      select: {
+        createdByUserId: true,
+        vendor: { select: { name: true } },
+      },
+    });
+    if (!instance) return null;
+
+    return {
+      ownerId: instance.createdByUserId,
+      displayLabel: `Factory Audit — ${instance.vendor.name}`,
+      link: `/factory-audit/instances/${subjectId}`,
+    };
+  },
 };
 
 export async function getSubjectNotificationMeta(
