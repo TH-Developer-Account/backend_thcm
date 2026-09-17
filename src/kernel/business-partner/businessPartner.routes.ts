@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
 
 import asyncHandler from "@shared/middleware/async.middleware";
 import { requireAuth, requireSuperAdmin } from "@auth/auth.middleware";
@@ -16,10 +16,10 @@ const router = Router();
 router.use(requireAuth);
 router.use(requireSuperAdmin);
 
-router.post("/create", asyncHandler(createBusinessPartner));
-router.get("/all", asyncHandler(listBusinessPartners));
-router.get("/id/:id", asyncHandler(getBusinessPartnerById));
-router.patch("/id/:id", asyncHandler(updateBusinessPartner));
-router.delete("/id/:id", asyncHandler(deactivateBusinessPartner));
+router.post("/", asyncHandler(createBusinessPartner));
+router.get("/", asyncHandler(listBusinessPartners));
+router.get("/:id", asyncHandler(getBusinessPartnerById));
+router.patch("/:id", asyncHandler(updateBusinessPartner));
+router.delete("/:id", asyncHandler(deactivateBusinessPartner));
 
 export default router;
