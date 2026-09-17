@@ -16,10 +16,10 @@ const router = Router();
 router.use(requireAuth);
 router.use(requireSuperAdmin);
 
-router.post("/", asyncHandler(createBusinessPartner));
-router.get("/", asyncHandler(listBusinessPartners));
-router.get("/:id", asyncHandler(getBusinessPartnerById));
-router.patch("/:id", asyncHandler(updateBusinessPartner));
-router.delete("/:id", asyncHandler(deactivateBusinessPartner));
+router.post("/create", asyncHandler(createBusinessPartner));
+router.get("/all", asyncHandler(listBusinessPartners));
+router.get("/id/:id", asyncHandler(getBusinessPartnerById));
+router.patch("/id/:id", asyncHandler(updateBusinessPartner));
+router.delete("/id/:id", asyncHandler(deactivateBusinessPartner));
 
 export default router;
