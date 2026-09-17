@@ -29,6 +29,7 @@ import crfRoutes from "@map/crf.routes";
 import guestRoutes from "@guest/guest.routes";
 import bpRoutes from "@business-partner/businessPartner.routes";
 import healthRouter from "@kernel/health/health.routes";
+import testRouter from "@kernel/test-path/test.routers";
 import errorHandler from "@shared/middleware/error.middleware";
 import ApiError from "@shared/utils/apiError";
 import { startJobs } from "@shared/jobs/scheduler";
@@ -47,7 +48,8 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
-app.use("/api", healthRouter); // exposes GET /api/health
+app.use("/api", healthRouter);
+app.use("/api/test", testRouter);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/epc", epcRoutes);
