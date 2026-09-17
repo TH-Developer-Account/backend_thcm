@@ -149,7 +149,7 @@ async function initiateClaimFromRow(
     templateName: "medi-claim-initiation",
     templateData: {
       employeeName: row.employeeName,
-      formUrl: `${process.env.FRONTEND_URL}/web/medical-claim-form/${result.tokenRecord.token}`,
+      formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${result.tokenRecord.token}`,
     },
   });
 }

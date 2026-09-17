@@ -284,7 +284,7 @@ export async function notifyGuestOfClarification(
       clarificationReason:
         (latestClarification?.metadata as { reason?: string } | null)?.reason ??
         null,
-      formUrl: `${process.env.FRONTEND_URL}/web/guest/login`,
+      formUrl: `${process.env.FRONTEND_URL}/guest/login`,
     },
   });
 }
