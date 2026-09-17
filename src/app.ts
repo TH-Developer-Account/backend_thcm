@@ -61,7 +61,6 @@ app.use("/api/v1/crf", crfRoutes);
 app.use("/api/v1/comment", commentRoutes);
 app.use("/api/v1/operator", operatorRoutes);
 app.use("/api/v1/leads", leadRoutes);
-app.use("/api/v1/business-partner", bpRoutes);
 app.use("/api/v1/pincodes", pincodeRoutes);
 app.use("/api/v1/report", reportRoutes);
 app.use("/api/v1/import", importRoutes);
@@ -72,6 +71,7 @@ app.use("/api/v1/vendor-onboarding", vendorOnboardRoutes);
 app.use("/api/v1/medi-claim", mediClaimRoutes);
 app.use("/api/v1/pdf", pdfRoutes);
 app.use("/api/v1/guest", guestRoutes);
+app.use("/api/v1/business-partner", bpRoutes);
 
 // Scheduler
 startJobs();
