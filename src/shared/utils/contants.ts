@@ -242,6 +242,8 @@ export const REQUIRED_VENDOR_DOCUMENT_TYPES = [
 export const OPTIONAL_VENDOR_DOCUMENT_TYPES = [
   "ADDITIONAL_DOC_1",
   "ADDITIONAL_DOC_2",
+  "ADDITIONAL_DOC_3",
+  "ADDITIONAL_DOC_4",
   // add more here as needed — no other code changes required
 ] as const;
 
