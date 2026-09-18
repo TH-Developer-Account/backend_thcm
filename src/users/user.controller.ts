@@ -6,6 +6,11 @@ import ApiError from "@shared/utils/apiError";
 import { formatProfile, profileInclude } from "@shared/utils/contants";
 
 import { buildUserPermissions } from "@kernel/rbac/userPermission";
+import {
+  parsePaginationParams,
+  buildEqualityFilters,
+  businessPartnerSelect,
+} from "@shared/utils/helpers";
 
 // Extend Request interface
 declare module "express-serve-static-core" {
@@ -22,58 +27,91 @@ declare module "express-serve-static-core" {
 // comparison instead of bcrypt, so this is consistent, not a shortcut.
 const DEFAULT_PASSWORD = "Welcome@2026";
 
+// Query params that filter getUsers by a plain equality match on a scalar
+// User column. Add a new filter here (frontend + this array) — no other
+// code changes needed since buildEqualityFilters picks it up automatically.
+const USER_LIST_EQUALITY_FILTERS = ["businessPartnerId"];
+
 export const getUsers = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const { profile, search = "" } = req.query as {
+    const {
+      profile,
+      search = "",
+      pageIndex,
+      pageSize,
+    } = req.query as {
       profile?: string;
       search?: string;
+      pageIndex?: string;
+      pageSize?: string;
     };
 
-    const users = await prisma.user.findMany({
-      where: {
-        AND: [
-          profile && profile !== "all"
-            ? {
-                userProfiles: {
-                  some: {
-                    profile: { name: profile },
+    const { reqPageIndex, reqPageSize } = parsePaginationParams(
+      pageIndex,
+      pageSize,
+    );
+
+    const where = {
+      AND: [
+        profile && profile !== "all"
+          ? {
+              userProfiles: {
+                some: {
+                  profile: { name: profile },
+                },
+              },
+            }
+          : {},
+        ...buildEqualityFilters(req.query, USER_LIST_EQUALITY_FILTERS),
+        search
+          ? {
+              OR: [
+                {
+                  first_name: {
+                    contains: search,
+                    mode: "insensitive" as const,
                   },
                 },
-              }
-            : {},
-          search
-            ? {
-                OR: [
-                  {
-                    first_name: {
-                      contains: search,
-                      mode: "insensitive",
-                    },
+                {
+                  last_name: {
+                    contains: search,
+                    mode: "insensitive" as const,
                   },
-                  {
-                    last_name: {
-                      contains: search,
-                      mode: "insensitive",
-                    },
+                },
+                {
+                  email: {
+                    contains: search,
+                    mode: "insensitive" as const,
                   },
-                  {
-                    email: {
-                      contains: search,
-                      mode: "insensitive",
-                    },
-                  },
-                ],
-              }
-            : {},
-        ],
-      },
-    });
+                },
+              ],
+            }
+          : {},
+      ],
+    };
 
-    res.status(200).json(users);
+    const [rows, totalCount] = await Promise.all([
+      prisma.user.findMany({
+        where,
+        skip: reqPageIndex * reqPageSize,
+        take: reqPageSize,
+        include: {
+          businessPartner: { select: businessPartnerSelect },
+        },
+      }),
+      prisma.user.count({ where }),
+    ]);
+
+    res.status(200).json({
+      rows,
+      totalCount,
+      pageIndex: reqPageIndex,
+      pageSize: reqPageSize,
+    });
   } catch (error: any) {
     console.error("getUsers failed:", error);
     res.status(500).json({

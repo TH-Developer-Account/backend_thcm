@@ -79,7 +79,7 @@ export const loginWithPassword = async (
 
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email, is_active: true },
     });
 
     if (!existingUser) {
@@ -192,7 +192,7 @@ export const sendOtp = async (
     }
 
     const user = await prisma.user.findUnique({
-      where: { phone_number },
+      where: { phone_number, is_active: true },
     });
 
     if (!user) {
