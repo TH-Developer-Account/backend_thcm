@@ -280,6 +280,10 @@ export async function createUser(req: Request, res: Response) {
     throw new ApiError(400, "workspaceId is required");
   }
 
+  if (!businessPartnerId) {
+    throw new ApiError(404, "Business Id is Required");
+  }
+
   const workspace = await prisma.workspace.findUnique({
     where: { id: workspaceId },
   });
