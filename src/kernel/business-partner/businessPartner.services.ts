@@ -215,3 +215,278 @@ export async function deactivateBusinessPartner(
 
   return deactivated;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Types — Contact / Address
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface CreateBusinessPartnerContactInput {
+  name: string;
+  phoneNumber?: string;
+  email?: string;
+  panNumber?: string;
+  isOwner?: boolean;
+  isMainContact?: boolean;
+  userId?: string;
+}
+export type UpdateBusinessPartnerContactInput =
+  Partial<CreateBusinessPartnerContactInput>;
+
+export interface CreateBusinessPartnerAddressInput {
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  pincode?: string;
+  region?: string;
+  zone?: string;
+  branch?: string;
+  latitude?: number;
+  longitude?: number;
+  email?: string;
+  phoneNo?: string;
+  website?: string;
+  isDefault?: boolean;
+  isBillingAddress?: boolean;
+  isShippingAddress?: boolean;
+}
+export type UpdateBusinessPartnerAddressInput =
+  Partial<CreateBusinessPartnerAddressInput>;
+
+// Included on every contact read so the caller gets user details for free
+// instead of making a second round trip.
+const contactUserSelect = {
+  select: { id: true, first_name: true, last_name: true, email: true },
+} as const;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// assertBusinessPartnerExists
+//
+// Shared 404 guard for the contact/address services below — gives a clean
+// ApiError instead of letting Prisma's FK constraint surface a raw DB error.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function assertBusinessPartnerExists(id: string): Promise<void> {
+  const businessPartner = await prisma.businessPartner.findUnique({
+    where: { id },
+    select: { id: true },
+  });
+  if (!businessPartner) throw new ApiError(404, "Business partner not found");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BusinessPartnerContact
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function fetchUserOrThrow(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      email: true,
+      phone_number: true,
+    },
+  });
+  if (!user) throw new ApiError(404, "User not found");
+  return user;
+}
+
+function resolveContactFieldsFromUser(user: {
+  first_name: string;
+  last_name: string;
+  email: string | null;
+  phone_number: string | null;
+}) {
+  return {
+    name: `${user.first_name} ${user.last_name}`.trim(),
+    email: user.email ?? undefined,
+    phoneNumber: user.phone_number ?? undefined,
+  };
+}
+
+export async function createBusinessPartnerContact(
+  businessPartnerId: string,
+  input: CreateBusinessPartnerContactInput,
+) {
+  await assertBusinessPartnerExists(businessPartnerId);
+
+  const resolvedFields = input.userId
+    ? resolveContactFieldsFromUser(await fetchUserOrThrow(input.userId))
+    : {};
+
+  return prisma.businessPartnerContact.create({
+    data: { ...input, ...resolvedFields, businessPartnerId },
+    include: { user: contactUserSelect },
+  });
+}
+
+export async function listBusinessPartnerContacts(businessPartnerId: string) {
+  await assertBusinessPartnerExists(businessPartnerId);
+
+  return prisma.businessPartnerContact.findMany({
+    where: { businessPartnerId },
+    include: { user: contactUserSelect },
+    orderBy: { createdAt: "asc" },
+  });
+}
+
+export async function getBusinessPartnerContactById(
+  businessPartnerId: string,
+  id: string,
+) {
+  const contact = await prisma.businessPartnerContact.findFirst({
+    where: { id, businessPartnerId },
+    include: { user: contactUserSelect },
+  });
+  if (!contact) throw new ApiError(404, "Contact not found");
+  return contact;
+}
+
+export async function updateBusinessPartnerContact(
+  businessPartnerId: string,
+  id: string,
+  input: UpdateBusinessPartnerContactInput,
+) {
+  await getBusinessPartnerContactById(businessPartnerId, id); // 404 guard
+
+  const resolvedFields = input.userId
+    ? resolveContactFieldsFromUser(await fetchUserOrThrow(input.userId))
+    : {};
+
+  return prisma.businessPartnerContact.update({
+    where: { id },
+    data: { ...input, ...resolvedFields },
+    include: { user: contactUserSelect },
+  });
+}
+
+export async function deleteBusinessPartnerContact(
+  businessPartnerId: string,
+  id: string,
+): Promise<void> {
+  const contact = await getBusinessPartnerContactById(businessPartnerId, id); // 404 guard
+
+  if (contact.isMainContact) {
+    throw new ApiError(
+      400,
+      "Cannot delete the main contact. Set another contact as the main contact before deleting this one.",
+    );
+  }
+
+  await prisma.businessPartnerContact.delete({ where: { id } });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BusinessPartnerAddress
+// ─────────────────────────────────────────────────────────────────────────────
+
+type ExclusiveAddressFlag =
+  | "isDefault"
+  | "isBillingAddress"
+  | "isShippingAddress";
+const EXCLUSIVE_ADDRESS_FLAGS: ExclusiveAddressFlag[] = [
+  "isDefault",
+  "isBillingAddress",
+  "isShippingAddress",
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// resetExclusiveAddressFlags
+//
+// isDefault / isBillingAddress / isShippingAddress are single-select per BP:
+// turning one on for an address must turn it off everywhere else on the same
+// BP. Runs inside the caller's transaction so the "unset old, set new" pair
+// is atomic — excludeId keeps an update from unsetting the very row it's
+// about to set the flag on.
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function resetExclusiveAddressFlags(
+  tx: Prisma.TransactionClient,
+  businessPartnerId: string,
+  input: CreateBusinessPartnerAddressInput | UpdateBusinessPartnerAddressInput,
+  excludeId?: string,
+): Promise<void> {
+  for (const flag of EXCLUSIVE_ADDRESS_FLAGS) {
+    if (input[flag] !== true) continue;
+
+    await tx.businessPartnerAddress.updateMany({
+      where: {
+        businessPartnerId,
+        [flag]: true,
+        ...(excludeId && { id: { not: excludeId } }),
+      } as Prisma.BusinessPartnerAddressWhereInput,
+      data: {
+        [flag]: false,
+      } as Prisma.BusinessPartnerAddressUpdateManyMutationInput,
+    });
+  }
+}
+
+export async function createBusinessPartnerAddress(
+  businessPartnerId: string,
+  input: CreateBusinessPartnerAddressInput,
+) {
+  await assertBusinessPartnerExists(businessPartnerId);
+
+  return prisma.$transaction(async (tx) => {
+    await resetExclusiveAddressFlags(tx, businessPartnerId, input);
+    return tx.businessPartnerAddress.create({
+      data: { ...input, businessPartnerId },
+    });
+  });
+}
+
+export async function updateBusinessPartnerAddress(
+  businessPartnerId: string,
+  id: string,
+  input: UpdateBusinessPartnerAddressInput,
+) {
+  await getBusinessPartnerAddressById(businessPartnerId, id); // 404 guard
+
+  return prisma.$transaction(async (tx) => {
+    await resetExclusiveAddressFlags(tx, businessPartnerId, input, id);
+    return tx.businessPartnerAddress.update({
+      where: { id },
+      data: input,
+    });
+  });
+}
+
+export async function listBusinessPartnerAddresses(businessPartnerId: string) {
+  await assertBusinessPartnerExists(businessPartnerId);
+
+  return prisma.businessPartnerAddress.findMany({
+    where: { businessPartnerId },
+    orderBy: { createdAt: "asc" },
+  });
+}
+
+export async function getBusinessPartnerAddressById(
+  businessPartnerId: string,
+  id: string,
+) {
+  const address = await prisma.businessPartnerAddress.findFirst({
+    where: { id, businessPartnerId },
+  });
+  if (!address) throw new ApiError(404, "Address not found");
+  return address;
+}
+
+export async function deleteBusinessPartnerAddress(
+  businessPartnerId: string,
+  id: string,
+): Promise<void> {
+  const address = await getBusinessPartnerAddressById(businessPartnerId, id); // 404 guard
+
+  const activeFlags = EXCLUSIVE_ADDRESS_FLAGS.filter((flag) => address[flag]);
+  if (activeFlags.length > 0) {
+    throw new ApiError(
+      400,
+      `Cannot delete an address marked as ${activeFlags.join(", ")}. Unset it, or set another address as the new one, before deleting.`,
+    );
+  }
+
+  await prisma.businessPartnerAddress.delete({ where: { id } });
+}

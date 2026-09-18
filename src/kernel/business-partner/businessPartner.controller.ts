@@ -131,3 +131,207 @@ export const deactivateBusinessPartner = async (
     next(err);
   }
 };
+
+// -----------------------------------------------------------------------------
+// POST /business-partner/:businessPartnerId/contacts
+// -----------------------------------------------------------------------------
+
+export const createBusinessPartnerContact = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    if (!req.body.name?.trim()) {
+      throw new ApiError(400, "name is required");
+    }
+
+    const contact = await businessPartnerService.createBusinessPartnerContact(
+      req.params.businessPartnerId as string,
+      req.body,
+    );
+    res.status(201).json({ success: true, data: contact });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// -----------------------------------------------------------------------------
+// GET /business-partner/:businessPartnerId/contacts
+// -----------------------------------------------------------------------------
+
+export const listBusinessPartnerContacts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const contacts = await businessPartnerService.listBusinessPartnerContacts(
+      req.params.businessPartnerId as string,
+    );
+    res.status(200).json({ success: true, data: contacts });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// -----------------------------------------------------------------------------
+// GET /business-partner/:businessPartnerId/contacts/:id
+// -----------------------------------------------------------------------------
+
+export const getBusinessPartnerContactById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const contact = await businessPartnerService.getBusinessPartnerContactById(
+      req.params.businessPartnerId as string,
+      req.params.id as string,
+    );
+    res.status(200).json({ success: true, data: contact });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// -----------------------------------------------------------------------------
+// PATCH /business-partner/:businessPartnerId/contacts/:id
+// -----------------------------------------------------------------------------
+
+export const updateBusinessPartnerContact = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const contact = await businessPartnerService.updateBusinessPartnerContact(
+      req.params.businessPartnerId as string,
+      req.params.id as string,
+      req.body,
+    );
+    res.status(200).json({ success: true, data: contact });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// -----------------------------------------------------------------------------
+// DELETE /business-partner/:businessPartnerId/contacts/:id
+// -----------------------------------------------------------------------------
+
+export const deleteBusinessPartnerContact = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    await businessPartnerService.deleteBusinessPartnerContact(
+      req.params.businessPartnerId as string,
+      req.params.id as string,
+    );
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+};
+
+// -----------------------------------------------------------------------------
+// POST /business-partner/:businessPartnerId/addresses
+// -----------------------------------------------------------------------------
+
+export const createBusinessPartnerAddress = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const address = await businessPartnerService.createBusinessPartnerAddress(
+      req.params.businessPartnerId as string,
+      req.body,
+    );
+    res.status(201).json({ success: true, data: address });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// -----------------------------------------------------------------------------
+// GET /business-partner/:businessPartnerId/addresses
+// -----------------------------------------------------------------------------
+
+export const listBusinessPartnerAddresses = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const addresses = await businessPartnerService.listBusinessPartnerAddresses(
+      req.params.businessPartnerId as string,
+    );
+    res.status(200).json({ success: true, data: addresses });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// -----------------------------------------------------------------------------
+// GET /business-partner/:businessPartnerId/addresses/:id
+// -----------------------------------------------------------------------------
+
+export const getBusinessPartnerAddressById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const address = await businessPartnerService.getBusinessPartnerAddressById(
+      req.params.businessPartnerId as string,
+      req.params.id as string,
+    );
+    res.status(200).json({ success: true, data: address });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// -----------------------------------------------------------------------------
+// PATCH /business-partner/:businessPartnerId/addresses/:id
+// -----------------------------------------------------------------------------
+
+export const updateBusinessPartnerAddress = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const address = await businessPartnerService.updateBusinessPartnerAddress(
+      req.params.businessPartnerId as string,
+      req.params.id as string,
+      req.body,
+    );
+    res.status(200).json({ success: true, data: address });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// -----------------------------------------------------------------------------
+// DELETE /business-partner/:businessPartnerId/addresses/:id
+// -----------------------------------------------------------------------------
+
+export const deleteBusinessPartnerAddress = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    await businessPartnerService.deleteBusinessPartnerAddress(
+      req.params.businessPartnerId as string,
+      req.params.id as string,
+    );
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
+};
