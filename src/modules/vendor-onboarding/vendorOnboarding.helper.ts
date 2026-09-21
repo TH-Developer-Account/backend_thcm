@@ -286,7 +286,7 @@ export function generateVendorOnboardingReferenceNumber(
     getReferenceNumberDateTimeParts(now);
   const milliseconds = String(now.getMilliseconds()).padStart(3, "0");
 
-  return `VON-${vendorCode}-${day}${month}${year}-${hour}${minute}${second}-${milliseconds}`;
+  return `VON-${vendorCode}-${day}${month}${year}-${hour}${minute}${second}${milliseconds}`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
