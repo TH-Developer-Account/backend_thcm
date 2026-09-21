@@ -1,17 +1,32 @@
-import type { TDocumentDefinitions, Content } from "pdfmake/interfaces";
+import type {
+  TDocumentDefinitions,
+  Content,
+  StyleDictionary,
+  Style,
+} from "pdfmake/interfaces";
 import { VendorOnboardingPdfData } from "./vendorOnboardingAssembler";
 import {
   displayValue,
   displayBoolean,
   displayDate,
+  displayDateTime,
 } from "@pdf/pdfFieldFormatter";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// VENDOR ONBOARDING — DOC DEFINITION BUILDER
+// VENDOR ONBOARDING — DOC DEFINITION BUILDERS
 //
-// Pure function: VendorOnboardingPdfData in, pdfmake TDocumentDefinitions out.
-// No I/O, no S3, no rendering — just layout. This is the pdfmake equivalent
-// of an .hbs template, kept in TS since pdfmake has no external template file.
+// Pure functions: VendorOnboardingPdfData in, pdfmake TDocumentDefinitions
+// out. No I/O, no S3, no rendering — just layout. This is the pdfmake
+// equivalent of an .hbs template, kept in TS since pdfmake has no external
+// template file.
+//
+// Two builders live here, sharing the section helpers below:
+//   - buildVendorOnboardingDocDefinition        → internal/employee copy,
+//     everything including Procurement Details (employee-owned fields).
+//   - buildVendorOnboardingVendorCopyDocDefinition → vendor-facing copy,
+//     only the fields the vendor themselves submitted (Vendor + Bank +
+//     Documents) — served on the public, unauthenticated view link, so it
+//     must never carry internal procurement data.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const SECTION_HEADER_STYLE = "sectionHeader";
@@ -34,9 +49,35 @@ function buildTwoColumnTable(rows: Content[][]): Content {
   };
 }
 
-export function buildVendorOnboardingDocDefinition(
-  data: VendorOnboardingPdfData,
-): TDocumentDefinitions {
+// Explicitly typed as StyleDictionary/Style rather than `as const` — `as
+// const` makes every nested array (including each style's `margin` tuple)
+// readonly, and pdfmake's Margins type wants a mutable [number, number,
+// number, number]. An explicit pdfmake type gives every literal its correct
+// shape up front instead.
+const STYLES: StyleDictionary = {
+  letterheadTitle: { fontSize: 14, bold: true },
+  letterheadSubtitle: { fontSize: 10, color: "#555555" },
+  sectionHeader: {
+    fontSize: 12,
+    bold: true,
+    margin: [0, 12, 0, 6],
+    color: "#1a1a1a",
+  },
+  fieldLabel: { bold: true, color: "#444444" },
+  footerText: { fontSize: 8, color: "#888888" },
+};
+
+const DEFAULT_STYLE: Style = {
+  font: "Helvetica",
+  fontSize: 10,
+};
+
+// ── shared section builders ─────────────────────────────────────────────
+// Both doc definitions below render the same Vendor Details, Bank Details
+// and Attached Documents sections identically — built once here so the two
+// PDFs can never silently drift apart on shared fields.
+
+function buildVendorDetailsSection(data: VendorOnboardingPdfData): Content[] {
   const vendorRows = [
     fieldRow("Vendor Name", displayValue(data.vendor.vendorName)),
     fieldRow(
@@ -55,6 +96,13 @@ export function buildVendorOnboardingDocDefinition(
     fieldRow("Vendor Submitted On", displayDate(data.vendor.vendorSubmittedAt)),
   ];
 
+  return [
+    { text: "Vendor Details", style: SECTION_HEADER_STYLE },
+    buildTwoColumnTable(vendorRows),
+  ];
+}
+
+function buildBankDetailsSection(data: VendorOnboardingPdfData): Content[] {
   const bankRows = [
     fieldRow("Bank Name", displayValue(data.bank.bankName)),
     fieldRow("Branch", displayValue(data.bank.bankBranch)),
@@ -63,6 +111,15 @@ export function buildVendorOnboardingDocDefinition(
     fieldRow("Bank Address", displayValue(data.bank.bankAddress)),
   ];
 
+  return [
+    { text: "Bank Details", style: SECTION_HEADER_STYLE },
+    buildTwoColumnTable(bankRows),
+  ];
+}
+
+function buildProcurementDetailsSection(
+  data: VendorOnboardingPdfData,
+): Content[] {
   const procurementRows = [
     fieldRow("Vendor Code", displayValue(data.procurement.vendorCode)),
     fieldRow("Vendor Type", displayValue(data.procurement.vendorType)),
@@ -97,11 +154,21 @@ export function buildVendorOnboardingDocDefinition(
     ),
   ];
 
+  return [
+    { text: "Procurement Details", style: SECTION_HEADER_STYLE },
+    buildTwoColumnTable(procurementRows),
+  ];
+}
+
+// "Uploaded On" uses displayDateTime (date + seconds) rather than
+// displayDate — these are the vendor's attached documents, and the exact
+// submission time is the whole point of stamping it here.
+function buildDocumentsSection(data: VendorOnboardingPdfData): Content[] {
   const documentsTable: Content =
     data.documents.length > 0
       ? {
           table: {
-            widths: ["60%", "40%"],
+            widths: ["50%", "50%"],
             body: [
               [
                 { text: "Document Type", style: LABEL_STYLE },
@@ -109,7 +176,7 @@ export function buildVendorOnboardingDocDefinition(
               ],
               ...data.documents.map((doc) => [
                 { text: doc.documentType },
-                { text: displayDate(doc.uploadedAt) },
+                { text: displayDateTime(doc.uploadedAt) },
               ]),
             ],
           },
@@ -122,51 +189,68 @@ export function buildVendorOnboardingDocDefinition(
           margin: [0, 0, 0, 16],
         };
 
+  return [
+    { text: "Attached Documents", style: SECTION_HEADER_STYLE },
+    documentsTable,
+  ];
+}
+
+// Explicit `: Content` (and, for the footer, its full function-signature)
+// return types below are load-bearing, not decorative — without them, TS
+// widens the `margin` tuple literal to `number[]`, which pdfmake's Margins
+// type rejects. buildTwoColumnTable/buildDocumentsSection avoid this the
+// same way, just implicitly: their surrounding `Content`-typed variable or
+// return position already gives the array literal its tuple context.
+
+function buildLetterheadHeader(subtitle: string): Content {
+  return {
+    margin: [40, 20, 40, 0],
+    columns: [
+      {
+        text: "Tata Hitachi Construction Machinery",
+        style: "letterheadTitle",
+      },
+      {
+        text: subtitle,
+        style: "letterheadSubtitle",
+        alignment: "right" as const,
+      },
+    ],
+  };
+}
+
+function buildStatusFooter(
+  status: string,
+): (currentPage: number, pageCount: number) => Content {
+  return (currentPage: number, pageCount: number): Content => ({
+    margin: [40, 0, 40, 20],
+    columns: [
+      { text: `Status: ${status}`, style: "footerText" },
+      {
+        text: `Page ${currentPage} of ${pageCount}`,
+        alignment: "right" as const,
+        style: "footerText",
+      },
+    ],
+  });
+}
+
+// ── internal / employee copy — everything ─────────────────────────────────
+
+export function buildVendorOnboardingDocDefinition(
+  data: VendorOnboardingPdfData,
+): TDocumentDefinitions {
   return {
     pageSize: "A4",
     pageMargins: [40, 100, 40, 60],
-
-    // Letterhead — repeats on every page.
-    header: {
-      margin: [40, 20, 40, 0],
-      columns: [
-        {
-          text: "Tata Hitachi Construction Machinery",
-          style: "letterheadTitle",
-        },
-        {
-          text: "Vendor Onboarding Record",
-          style: "letterheadSubtitle",
-          alignment: "right",
-        },
-      ],
-    },
-
-    footer: (currentPage: number, pageCount: number) => ({
-      margin: [40, 0, 40, 20],
-      columns: [
-        { text: `Status: ${data.status}`, style: "footerText" },
-        {
-          text: `Page ${currentPage} of ${pageCount}`,
-          alignment: "right",
-          style: "footerText",
-        },
-      ],
-    }),
+    header: buildLetterheadHeader("Vendor Onboarding Record"),
+    footer: buildStatusFooter(data.status),
 
     content: [
-      { text: "Vendor Details", style: SECTION_HEADER_STYLE },
-      buildTwoColumnTable(vendorRows),
-
-      { text: "Bank Details", style: SECTION_HEADER_STYLE },
-      buildTwoColumnTable(bankRows),
-
-      { text: "Procurement Details", style: SECTION_HEADER_STYLE },
-      buildTwoColumnTable(procurementRows),
-
-      { text: "Attached Documents", style: SECTION_HEADER_STYLE },
-      documentsTable,
-
+      ...buildVendorDetailsSection(data),
+      ...buildBankDetailsSection(data),
+      ...buildProcurementDetailsSection(data),
+      ...buildDocumentsSection(data),
       {
         text: `Generated on ${displayDate(data.generatedAt)}`,
         style: "footerText",
@@ -174,22 +258,36 @@ export function buildVendorOnboardingDocDefinition(
       },
     ],
 
-    styles: {
-      letterheadTitle: { fontSize: 14, bold: true },
-      letterheadSubtitle: { fontSize: 10, color: "#555555" },
-      sectionHeader: {
-        fontSize: 12,
-        bold: true,
-        margin: [0, 12, 0, 6],
-        color: "#1a1a1a",
-      },
-      fieldLabel: { bold: true, color: "#444444" },
-      footerText: { fontSize: 8, color: "#888888" },
-    },
+    styles: STYLES,
+    defaultStyle: DEFAULT_STYLE,
+  };
+}
 
-    defaultStyle: {
-      font: "Helvetica",
-      fontSize: 10,
-    },
+// ── vendor-facing copy — vendor-submitted fields only ─────────────────────
+// No Procurement Details section: those are employee-owned fields the
+// vendor never provided and should never see on the public view link.
+
+export function buildVendorOnboardingVendorCopyDocDefinition(
+  data: VendorOnboardingPdfData,
+): TDocumentDefinitions {
+  return {
+    pageSize: "A4",
+    pageMargins: [40, 100, 40, 60],
+    header: buildLetterheadHeader("Vendor Submission Copy"),
+    footer: buildStatusFooter(data.status),
+
+    content: [
+      ...buildVendorDetailsSection(data),
+      ...buildBankDetailsSection(data),
+      ...buildDocumentsSection(data),
+      {
+        text: `Generated on ${displayDate(data.generatedAt)}`,
+        style: "footerText",
+        margin: [0, 8, 0, 0],
+      },
+    ],
+
+    styles: STYLES,
+    defaultStyle: DEFAULT_STYLE,
   };
 }

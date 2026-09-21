@@ -25,3 +25,19 @@ export function displayDate(value: Date | null | undefined): string {
     year: "numeric",
   });
 }
+
+// Same date rendering as displayDate, with time down to the second appended.
+// Kept as a separate function rather than a parameter on displayDate so
+// existing callers (e.g. Medical Claim's docDefinition) keep their current
+// date-only output — this is opt-in for fields that need proof of exact
+// submission time, such as a document's upload timestamp.
+export function displayDateTime(value: Date | null | undefined): string {
+  if (!value) return "—";
+  const date = new Date(value);
+  return `${displayDate(date)}, ${date.toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  })}`;
+}

@@ -238,8 +238,8 @@ export const resolveVendorListingOrderBy = (
 // ─────────────────────────────────────────────────────────────────────────────
 // generateVendorOnboardingReferenceNumber
 //
-// Format: VON-<4-letter vendor code>-<timestamp>
-//   e.g. VON-RAJE-20260720143205
+// Format: VON-<4-letter vendor code>-<ddmmyy>-<hhmmss>-<SSS>  (IST, ms precision)
+//   e.g. VON-RAJE-210926-153042-123
 //
 // The 4-letter segment is derived from vendorName (letters only, uppercased,
 // padded with X if the name is shorter than 4 letters) — purely cosmetic,
@@ -248,7 +248,32 @@ export const resolveVendorListingOrderBy = (
 // millisecond collision is practically impossible for this app's traffic,
 // but the DB constraint means a theoretical collision fails loudly (P2002)
 // rather than silently overwriting/duplicating.
+//
+// The date/time segment is deliberately read in IST rather than the server's
+// own timezone (EC2 runs UTC) — this is a human-facing reference number, and
+// staff/vendors reading it expect it to match their own clock.
 // ─────────────────────────────────────────────────────────────────────────────
+
+const REFERENCE_NUMBER_TIMEZONE = "Asia/Kolkata";
+
+// Intl.DateTimeFormat.formatToParts gives zero-padded, named date/time parts
+// for an arbitrary timezone without pulling in a date library for one
+// function. hourCycle: "h23" avoids the "24:00" quirk some environments
+// produce at midnight with hour12: false.
+function getReferenceNumberDateTimeParts(date: Date): Record<string, string> {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: REFERENCE_NUMBER_TIMEZONE,
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hourCycle: "h23",
+  }).formatToParts(date);
+
+  return Object.fromEntries(parts.map((part) => [part.type, part.value]));
+}
 
 export function generateVendorOnboardingReferenceNumber(
   vendorName: string,
@@ -256,12 +281,12 @@ export function generateVendorOnboardingReferenceNumber(
   const letters = vendorName.replace(/[^a-zA-Z]/g, "").toUpperCase();
   const vendorCode = (letters + "XXXX").slice(0, 4);
 
-  const timestamp = new Date()
-    .toISOString()
-    .replace(/[-:T.]/g, "")
-    .slice(0, 14); // YYYYMMDDHHmmss
+  const now = new Date();
+  const { day, month, year, hour, minute, second } =
+    getReferenceNumberDateTimeParts(now);
+  const milliseconds = String(now.getMilliseconds()).padStart(3, "0");
 
-  return `VON-${vendorCode}-${timestamp}`;
+  return `VON-${vendorCode}-${day}${month}${year}-${hour}${minute}${second}-${milliseconds}`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

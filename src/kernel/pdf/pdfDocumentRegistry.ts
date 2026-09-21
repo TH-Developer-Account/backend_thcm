@@ -3,14 +3,15 @@ import {
   assembleVendorOnboardingPdfData,
   VendorOnboardingPdfData,
 } from "@vendor-onboarding/vendorOnboardingAssembler";
-import { buildVendorOnboardingDocDefinition } from "@vendor-onboarding/vendorOnboardingDocDofination";
+import {
+  buildVendorOnboardingDocDefinition,
+  buildVendorOnboardingVendorCopyDocDefinition,
+} from "@vendor-onboarding/vendorOnboardingDocDofination";
 import {
   assembleMedicalClaimPdfData,
   MedicalClaimPdfData,
 } from "@medi-claim/mediclaimAssembler";
 import { buildMedicalClaimDocDefinition } from "@medi-claim/mediclaimDocDefination";
-import { assembleEpcPdfData, EpcPdfData } from "@map/epcAssembler";
-import { buildEpcDocDefinition } from "@map/epcDocDefination";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PDF DOCUMENT REGISTRY
@@ -19,12 +20,17 @@ import { buildEpcDocDefinition } from "@map/epcDocDefination";
 // means adding one entry here, not touching pdf.service.ts. Each entry wires
 // together an assembler (data fetch), a docDefinition builder (layout), and
 // an S3 key builder (storage location) for exactly one document type.
+//
+// VENDOR_ONBOARDING and VENDOR_ONBOARDING_VENDOR_COPY intentionally share
+// the same assembler — the underlying data is identical, only the layout
+// (which sections get rendered) differs between the internal and
+// vendor-facing copies.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type PdfDocumentType =
   | "VENDOR_ONBOARDING"
-  | "MEDICAL_CLAIM"
-  | "EVENT_PROPOSAL";
+  | "VENDOR_ONBOARDING_VENDOR_COPY"
+  | "MEDICAL_CLAIM";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface PdfDocumentDefinition<TData = any> {
@@ -44,16 +50,18 @@ export const pdfDocumentRegistry: Record<
     buildS3Key: (onboardingId: string) =>
       `vendor-onboarding-pdfs/${onboardingId}.pdf`,
   },
+  VENDOR_ONBOARDING_VENDOR_COPY: {
+    assembleData: assembleVendorOnboardingPdfData,
+    buildDocDefinition: (data: VendorOnboardingPdfData) =>
+      buildVendorOnboardingVendorCopyDocDefinition(data),
+    buildS3Key: (onboardingId: string) =>
+      `vendor-onboarding-pdfs/${onboardingId}-vendor-copy.pdf`,
+  },
   MEDICAL_CLAIM: {
     assembleData: assembleMedicalClaimPdfData,
     buildDocDefinition: (data: MedicalClaimPdfData) =>
       buildMedicalClaimDocDefinition(data),
     buildS3Key: (claimId: string) => `medical-claim-pdfs/${claimId}.pdf`,
-  },
-  EVENT_PROPOSAL: {
-    assembleData: assembleEpcPdfData,
-    buildDocDefinition: (data: EpcPdfData) => buildEpcDocDefinition(data),
-    buildS3Key: (epcId: string) => `epc-pdfs/${epcId}.pdf`,
   },
 };
 

@@ -591,9 +591,6 @@ export const sendForApproval = async (
 // POST /vendor-onboarding/:id/close
 // Final approver's explicit close action, after WorkflowInstance reaches APPROVED —
 // same two-step shape as EPC_CLOSED.
-// POST /vendor-onboarding/:id/close
-// Final approver's explicit close action, after WorkflowInstance reaches APPROVED —
-// same two-step shape as EPC_CLOSED.
 //
 // After close, notifies the initiator (to) with every approver from the
 // workflow's final iteration in cc — so everyone who acted on the request
@@ -907,8 +904,18 @@ export const submitVendorForm = async (
       "VIEW_PDF",
     );
 
+    // req.vendorAccessToken.onboarding is the bare row the token middleware
+    // loads (no relations) — the draft-save path shares that same middleware
+    // and has no need for the initiator's email, so it's fetched here rather
+    // than added to the middleware's query for every vendor-token route.
+    const initiator = await prisma.user.findUnique({
+      where: { id: onboarding.initiatedById },
+      select: { email: true },
+    });
+
     await addMailJob({
-      to: onboarding.email as string,
+      to: initiator?.email as string,
+      cc: onboarding.email ? [onboarding.email] : undefined,
       subject: "Vendor Onboarding — Submission Received",
       templateName: "vendor-onboarding-submitted",
       templateData: {
@@ -1004,6 +1011,9 @@ export const sendBackToVendor = async (
 
 // GET /public/vendor-onboarding/pdf/:token
 // Long-lived view link — never marked "used", so it works indefinitely.
+// Serves the vendor-copy PDF (vendor-submitted fields only): this link is
+// unauthenticated and now also reaches the vendor via the submission-received
+// mail's cc, so it must never carry internal procurement data.
 export const getVendorOnboardingPdfByToken = async (
   req: Request,
   res: Response,
@@ -1025,7 +1035,7 @@ export const getVendorOnboardingPdfByToken = async (
     }
 
     const url = await getOrGeneratePdfUrl(
-      "VENDOR_ONBOARDING",
+      "VENDOR_ONBOARDING_VENDOR_COPY",
       tokenRecord.subjectId,
     );
 
