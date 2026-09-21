@@ -142,7 +142,7 @@ export const createBusinessPartnerContact = async (
   next: NextFunction,
 ) => {
   try {
-    if (!req.body.name?.trim()) {
+    if (!req.body.userId && !req.body.name?.trim()) {
       throw new ApiError(400, "name is required");
     }
 
