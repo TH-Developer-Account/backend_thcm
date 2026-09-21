@@ -48,6 +48,7 @@ export type AuditItemResponseMinAggregateOutputType = {
   reviewerScore: number | null
   reviewerRemark: string | null
   reviewStatus: $Enums.DealerReviewStatus | null
+  respondedByUserId: string | null
   createdAt: Date | null
 }
 
@@ -61,6 +62,7 @@ export type AuditItemResponseMaxAggregateOutputType = {
   reviewerScore: number | null
   reviewerRemark: string | null
   reviewStatus: $Enums.DealerReviewStatus | null
+  respondedByUserId: string | null
   createdAt: Date | null
 }
 
@@ -74,6 +76,7 @@ export type AuditItemResponseCountAggregateOutputType = {
   reviewerScore: number
   reviewerRemark: number
   reviewStatus: number
+  respondedByUserId: number
   createdAt: number
   _all: number
 }
@@ -101,6 +104,7 @@ export type AuditItemResponseMinAggregateInputType = {
   reviewerScore?: true
   reviewerRemark?: true
   reviewStatus?: true
+  respondedByUserId?: true
   createdAt?: true
 }
 
@@ -114,6 +118,7 @@ export type AuditItemResponseMaxAggregateInputType = {
   reviewerScore?: true
   reviewerRemark?: true
   reviewStatus?: true
+  respondedByUserId?: true
   createdAt?: true
 }
 
@@ -127,6 +132,7 @@ export type AuditItemResponseCountAggregateInputType = {
   reviewerScore?: true
   reviewerRemark?: true
   reviewStatus?: true
+  respondedByUserId?: true
   createdAt?: true
   _all?: true
 }
@@ -227,6 +233,7 @@ export type AuditItemResponseGroupByOutputType = {
   reviewerScore: number | null
   reviewerRemark: string | null
   reviewStatus: $Enums.DealerReviewStatus
+  respondedByUserId: string | null
   createdAt: Date
   _count: AuditItemResponseCountAggregateOutputType | null
   _avg: AuditItemResponseAvgAggregateOutputType | null
@@ -263,9 +270,11 @@ export type AuditItemResponseWhereInput = {
   reviewerScore?: Prisma.FloatNullableFilter<"AuditItemResponse"> | number | null
   reviewerRemark?: Prisma.StringNullableFilter<"AuditItemResponse"> | string | null
   reviewStatus?: Prisma.EnumDealerReviewStatusFilter<"AuditItemResponse"> | $Enums.DealerReviewStatus
+  respondedByUserId?: Prisma.StringNullableFilter<"AuditItemResponse"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AuditItemResponse"> | Date | string
   auditInstance?: Prisma.XOR<Prisma.DealerAuditInstanceScalarRelationFilter, Prisma.DealerAuditInstanceWhereInput>
   item?: Prisma.XOR<Prisma.ChecklistItemScalarRelationFilter, Prisma.ChecklistItemWhereInput>
+  respondedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type AuditItemResponseOrderByWithRelationInput = {
@@ -278,9 +287,11 @@ export type AuditItemResponseOrderByWithRelationInput = {
   reviewerScore?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewerRemark?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewStatus?: Prisma.SortOrder
+  respondedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   auditInstance?: Prisma.DealerAuditInstanceOrderByWithRelationInput
   item?: Prisma.ChecklistItemOrderByWithRelationInput
+  respondedBy?: Prisma.UserOrderByWithRelationInput
 }
 
 export type AuditItemResponseWhereUniqueInput = Prisma.AtLeast<{
@@ -297,9 +308,11 @@ export type AuditItemResponseWhereUniqueInput = Prisma.AtLeast<{
   reviewerScore?: Prisma.FloatNullableFilter<"AuditItemResponse"> | number | null
   reviewerRemark?: Prisma.StringNullableFilter<"AuditItemResponse"> | string | null
   reviewStatus?: Prisma.EnumDealerReviewStatusFilter<"AuditItemResponse"> | $Enums.DealerReviewStatus
+  respondedByUserId?: Prisma.StringNullableFilter<"AuditItemResponse"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AuditItemResponse"> | Date | string
   auditInstance?: Prisma.XOR<Prisma.DealerAuditInstanceScalarRelationFilter, Prisma.DealerAuditInstanceWhereInput>
   item?: Prisma.XOR<Prisma.ChecklistItemScalarRelationFilter, Prisma.ChecklistItemWhereInput>
+  respondedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id" | "auditInstanceId_itemId_iteration">
 
 export type AuditItemResponseOrderByWithAggregationInput = {
@@ -312,6 +325,7 @@ export type AuditItemResponseOrderByWithAggregationInput = {
   reviewerScore?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewerRemark?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewStatus?: Prisma.SortOrder
+  respondedByUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.AuditItemResponseCountOrderByAggregateInput
   _avg?: Prisma.AuditItemResponseAvgOrderByAggregateInput
@@ -333,6 +347,7 @@ export type AuditItemResponseScalarWhereWithAggregatesInput = {
   reviewerScore?: Prisma.FloatNullableWithAggregatesFilter<"AuditItemResponse"> | number | null
   reviewerRemark?: Prisma.StringNullableWithAggregatesFilter<"AuditItemResponse"> | string | null
   reviewStatus?: Prisma.EnumDealerReviewStatusWithAggregatesFilter<"AuditItemResponse"> | $Enums.DealerReviewStatus
+  respondedByUserId?: Prisma.StringNullableWithAggregatesFilter<"AuditItemResponse"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AuditItemResponse"> | Date | string
 }
 
@@ -347,6 +362,7 @@ export type AuditItemResponseCreateInput = {
   createdAt?: Date | string
   auditInstance: Prisma.DealerAuditInstanceCreateNestedOneWithoutResponsesInput
   item: Prisma.ChecklistItemCreateNestedOneWithoutResponsesInput
+  respondedBy?: Prisma.UserCreateNestedOneWithoutDealerAuditResponsesInput
 }
 
 export type AuditItemResponseUncheckedCreateInput = {
@@ -359,6 +375,7 @@ export type AuditItemResponseUncheckedCreateInput = {
   reviewerScore?: number | null
   reviewerRemark?: string | null
   reviewStatus?: $Enums.DealerReviewStatus
+  respondedByUserId?: string | null
   createdAt?: Date | string
 }
 
@@ -373,6 +390,7 @@ export type AuditItemResponseUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   auditInstance?: Prisma.DealerAuditInstanceUpdateOneRequiredWithoutResponsesNestedInput
   item?: Prisma.ChecklistItemUpdateOneRequiredWithoutResponsesNestedInput
+  respondedBy?: Prisma.UserUpdateOneWithoutDealerAuditResponsesNestedInput
 }
 
 export type AuditItemResponseUncheckedUpdateInput = {
@@ -385,6 +403,7 @@ export type AuditItemResponseUncheckedUpdateInput = {
   reviewerScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reviewerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewStatus?: Prisma.EnumDealerReviewStatusFieldUpdateOperationsInput | $Enums.DealerReviewStatus
+  respondedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -398,6 +417,7 @@ export type AuditItemResponseCreateManyInput = {
   reviewerScore?: number | null
   reviewerRemark?: string | null
   reviewStatus?: $Enums.DealerReviewStatus
+  respondedByUserId?: string | null
   createdAt?: Date | string
 }
 
@@ -422,6 +442,7 @@ export type AuditItemResponseUncheckedUpdateManyInput = {
   reviewerScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reviewerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewStatus?: Prisma.EnumDealerReviewStatusFieldUpdateOperationsInput | $Enums.DealerReviewStatus
+  respondedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -451,6 +472,7 @@ export type AuditItemResponseCountOrderByAggregateInput = {
   reviewerScore?: Prisma.SortOrder
   reviewerRemark?: Prisma.SortOrder
   reviewStatus?: Prisma.SortOrder
+  respondedByUserId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -470,6 +492,7 @@ export type AuditItemResponseMaxOrderByAggregateInput = {
   reviewerScore?: Prisma.SortOrder
   reviewerRemark?: Prisma.SortOrder
   reviewStatus?: Prisma.SortOrder
+  respondedByUserId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -483,6 +506,7 @@ export type AuditItemResponseMinOrderByAggregateInput = {
   reviewerScore?: Prisma.SortOrder
   reviewerRemark?: Prisma.SortOrder
   reviewStatus?: Prisma.SortOrder
+  respondedByUserId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -490,6 +514,48 @@ export type AuditItemResponseSumOrderByAggregateInput = {
   iteration?: Prisma.SortOrder
   dealerScore?: Prisma.SortOrder
   reviewerScore?: Prisma.SortOrder
+}
+
+export type AuditItemResponseCreateNestedManyWithoutRespondedByInput = {
+  create?: Prisma.XOR<Prisma.AuditItemResponseCreateWithoutRespondedByInput, Prisma.AuditItemResponseUncheckedCreateWithoutRespondedByInput> | Prisma.AuditItemResponseCreateWithoutRespondedByInput[] | Prisma.AuditItemResponseUncheckedCreateWithoutRespondedByInput[]
+  connectOrCreate?: Prisma.AuditItemResponseCreateOrConnectWithoutRespondedByInput | Prisma.AuditItemResponseCreateOrConnectWithoutRespondedByInput[]
+  createMany?: Prisma.AuditItemResponseCreateManyRespondedByInputEnvelope
+  connect?: Prisma.AuditItemResponseWhereUniqueInput | Prisma.AuditItemResponseWhereUniqueInput[]
+}
+
+export type AuditItemResponseUncheckedCreateNestedManyWithoutRespondedByInput = {
+  create?: Prisma.XOR<Prisma.AuditItemResponseCreateWithoutRespondedByInput, Prisma.AuditItemResponseUncheckedCreateWithoutRespondedByInput> | Prisma.AuditItemResponseCreateWithoutRespondedByInput[] | Prisma.AuditItemResponseUncheckedCreateWithoutRespondedByInput[]
+  connectOrCreate?: Prisma.AuditItemResponseCreateOrConnectWithoutRespondedByInput | Prisma.AuditItemResponseCreateOrConnectWithoutRespondedByInput[]
+  createMany?: Prisma.AuditItemResponseCreateManyRespondedByInputEnvelope
+  connect?: Prisma.AuditItemResponseWhereUniqueInput | Prisma.AuditItemResponseWhereUniqueInput[]
+}
+
+export type AuditItemResponseUpdateManyWithoutRespondedByNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditItemResponseCreateWithoutRespondedByInput, Prisma.AuditItemResponseUncheckedCreateWithoutRespondedByInput> | Prisma.AuditItemResponseCreateWithoutRespondedByInput[] | Prisma.AuditItemResponseUncheckedCreateWithoutRespondedByInput[]
+  connectOrCreate?: Prisma.AuditItemResponseCreateOrConnectWithoutRespondedByInput | Prisma.AuditItemResponseCreateOrConnectWithoutRespondedByInput[]
+  upsert?: Prisma.AuditItemResponseUpsertWithWhereUniqueWithoutRespondedByInput | Prisma.AuditItemResponseUpsertWithWhereUniqueWithoutRespondedByInput[]
+  createMany?: Prisma.AuditItemResponseCreateManyRespondedByInputEnvelope
+  set?: Prisma.AuditItemResponseWhereUniqueInput | Prisma.AuditItemResponseWhereUniqueInput[]
+  disconnect?: Prisma.AuditItemResponseWhereUniqueInput | Prisma.AuditItemResponseWhereUniqueInput[]
+  delete?: Prisma.AuditItemResponseWhereUniqueInput | Prisma.AuditItemResponseWhereUniqueInput[]
+  connect?: Prisma.AuditItemResponseWhereUniqueInput | Prisma.AuditItemResponseWhereUniqueInput[]
+  update?: Prisma.AuditItemResponseUpdateWithWhereUniqueWithoutRespondedByInput | Prisma.AuditItemResponseUpdateWithWhereUniqueWithoutRespondedByInput[]
+  updateMany?: Prisma.AuditItemResponseUpdateManyWithWhereWithoutRespondedByInput | Prisma.AuditItemResponseUpdateManyWithWhereWithoutRespondedByInput[]
+  deleteMany?: Prisma.AuditItemResponseScalarWhereInput | Prisma.AuditItemResponseScalarWhereInput[]
+}
+
+export type AuditItemResponseUncheckedUpdateManyWithoutRespondedByNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditItemResponseCreateWithoutRespondedByInput, Prisma.AuditItemResponseUncheckedCreateWithoutRespondedByInput> | Prisma.AuditItemResponseCreateWithoutRespondedByInput[] | Prisma.AuditItemResponseUncheckedCreateWithoutRespondedByInput[]
+  connectOrCreate?: Prisma.AuditItemResponseCreateOrConnectWithoutRespondedByInput | Prisma.AuditItemResponseCreateOrConnectWithoutRespondedByInput[]
+  upsert?: Prisma.AuditItemResponseUpsertWithWhereUniqueWithoutRespondedByInput | Prisma.AuditItemResponseUpsertWithWhereUniqueWithoutRespondedByInput[]
+  createMany?: Prisma.AuditItemResponseCreateManyRespondedByInputEnvelope
+  set?: Prisma.AuditItemResponseWhereUniqueInput | Prisma.AuditItemResponseWhereUniqueInput[]
+  disconnect?: Prisma.AuditItemResponseWhereUniqueInput | Prisma.AuditItemResponseWhereUniqueInput[]
+  delete?: Prisma.AuditItemResponseWhereUniqueInput | Prisma.AuditItemResponseWhereUniqueInput[]
+  connect?: Prisma.AuditItemResponseWhereUniqueInput | Prisma.AuditItemResponseWhereUniqueInput[]
+  update?: Prisma.AuditItemResponseUpdateWithWhereUniqueWithoutRespondedByInput | Prisma.AuditItemResponseUpdateWithWhereUniqueWithoutRespondedByInput[]
+  updateMany?: Prisma.AuditItemResponseUpdateManyWithWhereWithoutRespondedByInput | Prisma.AuditItemResponseUpdateManyWithWhereWithoutRespondedByInput[]
+  deleteMany?: Prisma.AuditItemResponseScalarWhereInput | Prisma.AuditItemResponseScalarWhereInput[]
 }
 
 export type AuditItemResponseCreateNestedManyWithoutItemInput = {
@@ -580,6 +646,75 @@ export type EnumDealerReviewStatusFieldUpdateOperationsInput = {
   set?: $Enums.DealerReviewStatus
 }
 
+export type AuditItemResponseCreateWithoutRespondedByInput = {
+  id?: string
+  iteration?: number
+  dealerScore?: number | null
+  dealerRemark?: string | null
+  reviewerScore?: number | null
+  reviewerRemark?: string | null
+  reviewStatus?: $Enums.DealerReviewStatus
+  createdAt?: Date | string
+  auditInstance: Prisma.DealerAuditInstanceCreateNestedOneWithoutResponsesInput
+  item: Prisma.ChecklistItemCreateNestedOneWithoutResponsesInput
+}
+
+export type AuditItemResponseUncheckedCreateWithoutRespondedByInput = {
+  id?: string
+  auditInstanceId: string
+  itemId: string
+  iteration?: number
+  dealerScore?: number | null
+  dealerRemark?: string | null
+  reviewerScore?: number | null
+  reviewerRemark?: string | null
+  reviewStatus?: $Enums.DealerReviewStatus
+  createdAt?: Date | string
+}
+
+export type AuditItemResponseCreateOrConnectWithoutRespondedByInput = {
+  where: Prisma.AuditItemResponseWhereUniqueInput
+  create: Prisma.XOR<Prisma.AuditItemResponseCreateWithoutRespondedByInput, Prisma.AuditItemResponseUncheckedCreateWithoutRespondedByInput>
+}
+
+export type AuditItemResponseCreateManyRespondedByInputEnvelope = {
+  data: Prisma.AuditItemResponseCreateManyRespondedByInput | Prisma.AuditItemResponseCreateManyRespondedByInput[]
+  skipDuplicates?: boolean
+}
+
+export type AuditItemResponseUpsertWithWhereUniqueWithoutRespondedByInput = {
+  where: Prisma.AuditItemResponseWhereUniqueInput
+  update: Prisma.XOR<Prisma.AuditItemResponseUpdateWithoutRespondedByInput, Prisma.AuditItemResponseUncheckedUpdateWithoutRespondedByInput>
+  create: Prisma.XOR<Prisma.AuditItemResponseCreateWithoutRespondedByInput, Prisma.AuditItemResponseUncheckedCreateWithoutRespondedByInput>
+}
+
+export type AuditItemResponseUpdateWithWhereUniqueWithoutRespondedByInput = {
+  where: Prisma.AuditItemResponseWhereUniqueInput
+  data: Prisma.XOR<Prisma.AuditItemResponseUpdateWithoutRespondedByInput, Prisma.AuditItemResponseUncheckedUpdateWithoutRespondedByInput>
+}
+
+export type AuditItemResponseUpdateManyWithWhereWithoutRespondedByInput = {
+  where: Prisma.AuditItemResponseScalarWhereInput
+  data: Prisma.XOR<Prisma.AuditItemResponseUpdateManyMutationInput, Prisma.AuditItemResponseUncheckedUpdateManyWithoutRespondedByInput>
+}
+
+export type AuditItemResponseScalarWhereInput = {
+  AND?: Prisma.AuditItemResponseScalarWhereInput | Prisma.AuditItemResponseScalarWhereInput[]
+  OR?: Prisma.AuditItemResponseScalarWhereInput[]
+  NOT?: Prisma.AuditItemResponseScalarWhereInput | Prisma.AuditItemResponseScalarWhereInput[]
+  id?: Prisma.StringFilter<"AuditItemResponse"> | string
+  auditInstanceId?: Prisma.StringFilter<"AuditItemResponse"> | string
+  itemId?: Prisma.StringFilter<"AuditItemResponse"> | string
+  iteration?: Prisma.IntFilter<"AuditItemResponse"> | number
+  dealerScore?: Prisma.FloatNullableFilter<"AuditItemResponse"> | number | null
+  dealerRemark?: Prisma.StringNullableFilter<"AuditItemResponse"> | string | null
+  reviewerScore?: Prisma.FloatNullableFilter<"AuditItemResponse"> | number | null
+  reviewerRemark?: Prisma.StringNullableFilter<"AuditItemResponse"> | string | null
+  reviewStatus?: Prisma.EnumDealerReviewStatusFilter<"AuditItemResponse"> | $Enums.DealerReviewStatus
+  respondedByUserId?: Prisma.StringNullableFilter<"AuditItemResponse"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"AuditItemResponse"> | Date | string
+}
+
 export type AuditItemResponseCreateWithoutItemInput = {
   id?: string
   iteration?: number
@@ -590,6 +725,7 @@ export type AuditItemResponseCreateWithoutItemInput = {
   reviewStatus?: $Enums.DealerReviewStatus
   createdAt?: Date | string
   auditInstance: Prisma.DealerAuditInstanceCreateNestedOneWithoutResponsesInput
+  respondedBy?: Prisma.UserCreateNestedOneWithoutDealerAuditResponsesInput
 }
 
 export type AuditItemResponseUncheckedCreateWithoutItemInput = {
@@ -601,6 +737,7 @@ export type AuditItemResponseUncheckedCreateWithoutItemInput = {
   reviewerScore?: number | null
   reviewerRemark?: string | null
   reviewStatus?: $Enums.DealerReviewStatus
+  respondedByUserId?: string | null
   createdAt?: Date | string
 }
 
@@ -630,22 +767,6 @@ export type AuditItemResponseUpdateManyWithWhereWithoutItemInput = {
   data: Prisma.XOR<Prisma.AuditItemResponseUpdateManyMutationInput, Prisma.AuditItemResponseUncheckedUpdateManyWithoutItemInput>
 }
 
-export type AuditItemResponseScalarWhereInput = {
-  AND?: Prisma.AuditItemResponseScalarWhereInput | Prisma.AuditItemResponseScalarWhereInput[]
-  OR?: Prisma.AuditItemResponseScalarWhereInput[]
-  NOT?: Prisma.AuditItemResponseScalarWhereInput | Prisma.AuditItemResponseScalarWhereInput[]
-  id?: Prisma.StringFilter<"AuditItemResponse"> | string
-  auditInstanceId?: Prisma.StringFilter<"AuditItemResponse"> | string
-  itemId?: Prisma.StringFilter<"AuditItemResponse"> | string
-  iteration?: Prisma.IntFilter<"AuditItemResponse"> | number
-  dealerScore?: Prisma.FloatNullableFilter<"AuditItemResponse"> | number | null
-  dealerRemark?: Prisma.StringNullableFilter<"AuditItemResponse"> | string | null
-  reviewerScore?: Prisma.FloatNullableFilter<"AuditItemResponse"> | number | null
-  reviewerRemark?: Prisma.StringNullableFilter<"AuditItemResponse"> | string | null
-  reviewStatus?: Prisma.EnumDealerReviewStatusFilter<"AuditItemResponse"> | $Enums.DealerReviewStatus
-  createdAt?: Prisma.DateTimeFilter<"AuditItemResponse"> | Date | string
-}
-
 export type AuditItemResponseCreateWithoutAuditInstanceInput = {
   id?: string
   iteration?: number
@@ -656,6 +777,7 @@ export type AuditItemResponseCreateWithoutAuditInstanceInput = {
   reviewStatus?: $Enums.DealerReviewStatus
   createdAt?: Date | string
   item: Prisma.ChecklistItemCreateNestedOneWithoutResponsesInput
+  respondedBy?: Prisma.UserCreateNestedOneWithoutDealerAuditResponsesInput
 }
 
 export type AuditItemResponseUncheckedCreateWithoutAuditInstanceInput = {
@@ -667,6 +789,7 @@ export type AuditItemResponseUncheckedCreateWithoutAuditInstanceInput = {
   reviewerScore?: number | null
   reviewerRemark?: string | null
   reviewStatus?: $Enums.DealerReviewStatus
+  respondedByUserId?: string | null
   createdAt?: Date | string
 }
 
@@ -696,6 +819,58 @@ export type AuditItemResponseUpdateManyWithWhereWithoutAuditInstanceInput = {
   data: Prisma.XOR<Prisma.AuditItemResponseUpdateManyMutationInput, Prisma.AuditItemResponseUncheckedUpdateManyWithoutAuditInstanceInput>
 }
 
+export type AuditItemResponseCreateManyRespondedByInput = {
+  id?: string
+  auditInstanceId: string
+  itemId: string
+  iteration?: number
+  dealerScore?: number | null
+  dealerRemark?: string | null
+  reviewerScore?: number | null
+  reviewerRemark?: string | null
+  reviewStatus?: $Enums.DealerReviewStatus
+  createdAt?: Date | string
+}
+
+export type AuditItemResponseUpdateWithoutRespondedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  dealerScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  dealerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  reviewerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewStatus?: Prisma.EnumDealerReviewStatusFieldUpdateOperationsInput | $Enums.DealerReviewStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  auditInstance?: Prisma.DealerAuditInstanceUpdateOneRequiredWithoutResponsesNestedInput
+  item?: Prisma.ChecklistItemUpdateOneRequiredWithoutResponsesNestedInput
+}
+
+export type AuditItemResponseUncheckedUpdateWithoutRespondedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  dealerScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  dealerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  reviewerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewStatus?: Prisma.EnumDealerReviewStatusFieldUpdateOperationsInput | $Enums.DealerReviewStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AuditItemResponseUncheckedUpdateManyWithoutRespondedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  iteration?: Prisma.IntFieldUpdateOperationsInput | number
+  dealerScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  dealerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  reviewerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewStatus?: Prisma.EnumDealerReviewStatusFieldUpdateOperationsInput | $Enums.DealerReviewStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type AuditItemResponseCreateManyItemInput = {
   id?: string
   auditInstanceId: string
@@ -705,6 +880,7 @@ export type AuditItemResponseCreateManyItemInput = {
   reviewerScore?: number | null
   reviewerRemark?: string | null
   reviewStatus?: $Enums.DealerReviewStatus
+  respondedByUserId?: string | null
   createdAt?: Date | string
 }
 
@@ -718,6 +894,7 @@ export type AuditItemResponseUpdateWithoutItemInput = {
   reviewStatus?: Prisma.EnumDealerReviewStatusFieldUpdateOperationsInput | $Enums.DealerReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   auditInstance?: Prisma.DealerAuditInstanceUpdateOneRequiredWithoutResponsesNestedInput
+  respondedBy?: Prisma.UserUpdateOneWithoutDealerAuditResponsesNestedInput
 }
 
 export type AuditItemResponseUncheckedUpdateWithoutItemInput = {
@@ -729,6 +906,7 @@ export type AuditItemResponseUncheckedUpdateWithoutItemInput = {
   reviewerScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reviewerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewStatus?: Prisma.EnumDealerReviewStatusFieldUpdateOperationsInput | $Enums.DealerReviewStatus
+  respondedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -741,6 +919,7 @@ export type AuditItemResponseUncheckedUpdateManyWithoutItemInput = {
   reviewerScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reviewerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewStatus?: Prisma.EnumDealerReviewStatusFieldUpdateOperationsInput | $Enums.DealerReviewStatus
+  respondedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -753,6 +932,7 @@ export type AuditItemResponseCreateManyAuditInstanceInput = {
   reviewerScore?: number | null
   reviewerRemark?: string | null
   reviewStatus?: $Enums.DealerReviewStatus
+  respondedByUserId?: string | null
   createdAt?: Date | string
 }
 
@@ -766,6 +946,7 @@ export type AuditItemResponseUpdateWithoutAuditInstanceInput = {
   reviewStatus?: Prisma.EnumDealerReviewStatusFieldUpdateOperationsInput | $Enums.DealerReviewStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   item?: Prisma.ChecklistItemUpdateOneRequiredWithoutResponsesNestedInput
+  respondedBy?: Prisma.UserUpdateOneWithoutDealerAuditResponsesNestedInput
 }
 
 export type AuditItemResponseUncheckedUpdateWithoutAuditInstanceInput = {
@@ -777,6 +958,7 @@ export type AuditItemResponseUncheckedUpdateWithoutAuditInstanceInput = {
   reviewerScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reviewerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewStatus?: Prisma.EnumDealerReviewStatusFieldUpdateOperationsInput | $Enums.DealerReviewStatus
+  respondedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -789,6 +971,7 @@ export type AuditItemResponseUncheckedUpdateManyWithoutAuditInstanceInput = {
   reviewerScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   reviewerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewStatus?: Prisma.EnumDealerReviewStatusFieldUpdateOperationsInput | $Enums.DealerReviewStatus
+  respondedByUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -804,9 +987,11 @@ export type AuditItemResponseSelect<ExtArgs extends runtime.Types.Extensions.Int
   reviewerScore?: boolean
   reviewerRemark?: boolean
   reviewStatus?: boolean
+  respondedByUserId?: boolean
   createdAt?: boolean
   auditInstance?: boolean | Prisma.DealerAuditInstanceDefaultArgs<ExtArgs>
   item?: boolean | Prisma.ChecklistItemDefaultArgs<ExtArgs>
+  respondedBy?: boolean | Prisma.AuditItemResponse$respondedByArgs<ExtArgs>
 }, ExtArgs["result"]["auditItemResponse"]>
 
 export type AuditItemResponseSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -819,9 +1004,11 @@ export type AuditItemResponseSelectCreateManyAndReturn<ExtArgs extends runtime.T
   reviewerScore?: boolean
   reviewerRemark?: boolean
   reviewStatus?: boolean
+  respondedByUserId?: boolean
   createdAt?: boolean
   auditInstance?: boolean | Prisma.DealerAuditInstanceDefaultArgs<ExtArgs>
   item?: boolean | Prisma.ChecklistItemDefaultArgs<ExtArgs>
+  respondedBy?: boolean | Prisma.AuditItemResponse$respondedByArgs<ExtArgs>
 }, ExtArgs["result"]["auditItemResponse"]>
 
 export type AuditItemResponseSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -834,9 +1021,11 @@ export type AuditItemResponseSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   reviewerScore?: boolean
   reviewerRemark?: boolean
   reviewStatus?: boolean
+  respondedByUserId?: boolean
   createdAt?: boolean
   auditInstance?: boolean | Prisma.DealerAuditInstanceDefaultArgs<ExtArgs>
   item?: boolean | Prisma.ChecklistItemDefaultArgs<ExtArgs>
+  respondedBy?: boolean | Prisma.AuditItemResponse$respondedByArgs<ExtArgs>
 }, ExtArgs["result"]["auditItemResponse"]>
 
 export type AuditItemResponseSelectScalar = {
@@ -849,21 +1038,25 @@ export type AuditItemResponseSelectScalar = {
   reviewerScore?: boolean
   reviewerRemark?: boolean
   reviewStatus?: boolean
+  respondedByUserId?: boolean
   createdAt?: boolean
 }
 
-export type AuditItemResponseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auditInstanceId" | "itemId" | "iteration" | "dealerScore" | "dealerRemark" | "reviewerScore" | "reviewerRemark" | "reviewStatus" | "createdAt", ExtArgs["result"]["auditItemResponse"]>
+export type AuditItemResponseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auditInstanceId" | "itemId" | "iteration" | "dealerScore" | "dealerRemark" | "reviewerScore" | "reviewerRemark" | "reviewStatus" | "respondedByUserId" | "createdAt", ExtArgs["result"]["auditItemResponse"]>
 export type AuditItemResponseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   auditInstance?: boolean | Prisma.DealerAuditInstanceDefaultArgs<ExtArgs>
   item?: boolean | Prisma.ChecklistItemDefaultArgs<ExtArgs>
+  respondedBy?: boolean | Prisma.AuditItemResponse$respondedByArgs<ExtArgs>
 }
 export type AuditItemResponseIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   auditInstance?: boolean | Prisma.DealerAuditInstanceDefaultArgs<ExtArgs>
   item?: boolean | Prisma.ChecklistItemDefaultArgs<ExtArgs>
+  respondedBy?: boolean | Prisma.AuditItemResponse$respondedByArgs<ExtArgs>
 }
 export type AuditItemResponseIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   auditInstance?: boolean | Prisma.DealerAuditInstanceDefaultArgs<ExtArgs>
   item?: boolean | Prisma.ChecklistItemDefaultArgs<ExtArgs>
+  respondedBy?: boolean | Prisma.AuditItemResponse$respondedByArgs<ExtArgs>
 }
 
 export type $AuditItemResponsePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -871,6 +1064,7 @@ export type $AuditItemResponsePayload<ExtArgs extends runtime.Types.Extensions.I
   objects: {
     auditInstance: Prisma.$DealerAuditInstancePayload<ExtArgs>
     item: Prisma.$ChecklistItemPayload<ExtArgs>
+    respondedBy: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -882,6 +1076,7 @@ export type $AuditItemResponsePayload<ExtArgs extends runtime.Types.Extensions.I
     reviewerScore: number | null
     reviewerRemark: string | null
     reviewStatus: $Enums.DealerReviewStatus
+    respondedByUserId: string | null
     createdAt: Date
   }, ExtArgs["result"]["auditItemResponse"]>
   composites: {}
@@ -1279,6 +1474,7 @@ export interface Prisma__AuditItemResponseClient<T, Null = never, ExtArgs extend
   readonly [Symbol.toStringTag]: "PrismaPromise"
   auditInstance<T extends Prisma.DealerAuditInstanceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DealerAuditInstanceDefaultArgs<ExtArgs>>): Prisma.Prisma__DealerAuditInstanceClient<runtime.Types.Result.GetResult<Prisma.$DealerAuditInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   item<T extends Prisma.ChecklistItemDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChecklistItemDefaultArgs<ExtArgs>>): Prisma.Prisma__ChecklistItemClient<runtime.Types.Result.GetResult<Prisma.$ChecklistItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  respondedBy<T extends Prisma.AuditItemResponse$respondedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditItemResponse$respondedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1317,6 +1513,7 @@ export interface AuditItemResponseFieldRefs {
   readonly reviewerScore: Prisma.FieldRef<"AuditItemResponse", 'Float'>
   readonly reviewerRemark: Prisma.FieldRef<"AuditItemResponse", 'String'>
   readonly reviewStatus: Prisma.FieldRef<"AuditItemResponse", 'DealerReviewStatus'>
+  readonly respondedByUserId: Prisma.FieldRef<"AuditItemResponse", 'String'>
   readonly createdAt: Prisma.FieldRef<"AuditItemResponse", 'DateTime'>
 }
     
@@ -1716,6 +1913,25 @@ export type AuditItemResponseDeleteManyArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many AuditItemResponses to delete.
    */
   limit?: number
+}
+
+/**
+ * AuditItemResponse.respondedBy
+ */
+export type AuditItemResponse$respondedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

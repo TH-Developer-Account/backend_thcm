@@ -285,6 +285,7 @@ model User {
   updated_workflow WorkflowTemplate[] @relation("WorkFlowUpdatedBy")
   initiated_vendor_onboardings VendorOnboarding[] @relation("VendorOnboardingInitiatedBy")
   initiated_medical_claims MedicalClaim[] @relation("MedicalClaimInitiatedBy")
+  dealerAuditResponses  AuditItemResponse[] @relation("DealerAuditItemRespondedBy")
   approvals         Approval[]
   templateApprovals TemplateApprover[]
   workFlowUsers     WorkFlowTemplateUser[]
@@ -293,7 +294,6 @@ model User {
   activityLogs   ActivityLog[]
   importExportLogs ImportExportLog[]
   businessPartnerContact BusinessPartnerContact[]
-  dealerAuditsAsDealer          DealerAuditInstance[]     @relation("DealerAuditDealer")           
   uploadedEvidence              Evidence[]                                                         
   factoryAuditRoundsTriggered   AuditRound[]              @relation("FactoryAuditRoundTriggeredBy") 
   factoryAuditAssignments       AuditAssignment[]         @relation("FactoryAuditAssignmentAuditor")
@@ -1328,6 +1328,8 @@ model BusinessPartner {
   parentId       String?
   parent         BusinessPartner?  @relation("BusinessPartnerHierarchy", fields: [parentId], references: [id])
   branches       BusinessPartner[] @relation("BusinessPartnerHierarchy")
+  dealerAuditInstances DealerAuditInstance[]          
+
 
   addresses      BusinessPartnerAddress[]
   contacts       BusinessPartnerContact[]
@@ -1465,7 +1467,7 @@ model ChecklistItem {
 }
 model DealerAuditInstance {
   id                  String   @id @default(uuid())
-  dealerUserId        String
+  businessPartnerId   String
   workspaceId         String
   officeType          BusinessPartnerOfficeType
   periodLabel         String
@@ -1477,11 +1479,11 @@ model DealerAuditInstance {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  dealer   User              @relation("DealerAuditDealer", fields: [dealerUserId], references: [id])
+  businessPartner BusinessPartner   @relation(fields: [businessPartnerId], references: [id])
   template ChecklistTemplate @relation(fields: [checklistTemplateId], references: [id])
   responses AuditItemResponse[]
 
-  @@unique([dealerUserId, officeType, periodLabel])
+  @@unique([businessPartnerId, officeType, periodLabel])
 }
 
 model AuditItemResponse {
@@ -1494,11 +1496,13 @@ model AuditItemResponse {
   reviewerScore  Float?
   reviewerRemark String?
   reviewStatus   DealerReviewStatus @default(PENDING)
+  respondedByUserId String?
 
   createdAt DateTime @default(now())
 
   auditInstance DealerAuditInstance @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
   item          ChecklistItem       @relation(fields: [itemId], references: [id])
+  respondedBy   User?               @relation("DealerAuditItemRespondedBy", fields: [respondedByUserId], references: [id])
 
   @@unique([auditInstanceId, itemId, iteration])
 }

@@ -320,6 +320,7 @@ export type BusinessPartnerWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"BusinessPartner"> | Date | string
   parent?: Prisma.XOR<Prisma.BusinessPartnerNullableScalarRelationFilter, Prisma.BusinessPartnerWhereInput> | null
   branches?: Prisma.BusinessPartnerListRelationFilter
+  dealerAuditInstances?: Prisma.DealerAuditInstanceListRelationFilter
   addresses?: Prisma.BusinessPartnerAddressListRelationFilter
   contacts?: Prisma.BusinessPartnerContactListRelationFilter
   users?: Prisma.UserListRelationFilter
@@ -350,6 +351,7 @@ export type BusinessPartnerOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   parent?: Prisma.BusinessPartnerOrderByWithRelationInput
   branches?: Prisma.BusinessPartnerOrderByRelationAggregateInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceOrderByRelationAggregateInput
   addresses?: Prisma.BusinessPartnerAddressOrderByRelationAggregateInput
   contacts?: Prisma.BusinessPartnerContactOrderByRelationAggregateInput
   users?: Prisma.UserOrderByRelationAggregateInput
@@ -383,6 +385,7 @@ export type BusinessPartnerWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"BusinessPartner"> | Date | string
   parent?: Prisma.XOR<Prisma.BusinessPartnerNullableScalarRelationFilter, Prisma.BusinessPartnerWhereInput> | null
   branches?: Prisma.BusinessPartnerListRelationFilter
+  dealerAuditInstances?: Prisma.DealerAuditInstanceListRelationFilter
   addresses?: Prisma.BusinessPartnerAddressListRelationFilter
   contacts?: Prisma.BusinessPartnerContactListRelationFilter
   users?: Prisma.UserListRelationFilter
@@ -468,6 +471,7 @@ export type BusinessPartnerCreateInput = {
   updatedAt?: Date | string
   parent?: Prisma.BusinessPartnerCreateNestedOneWithoutBranchesInput
   branches?: Prisma.BusinessPartnerCreateNestedManyWithoutParentInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutBusinessPartnerInput
   addresses?: Prisma.BusinessPartnerAddressCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactCreateNestedManyWithoutBusinessPartnerInput
   users?: Prisma.UserCreateNestedManyWithoutBusinessPartnerInput
@@ -497,6 +501,7 @@ export type BusinessPartnerUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BusinessPartnerUncheckedCreateNestedManyWithoutParentInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutBusinessPartnerInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutBusinessPartnerInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBusinessPartnerInput
@@ -526,6 +531,7 @@ export type BusinessPartnerUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parent?: Prisma.BusinessPartnerUpdateOneWithoutBranchesNestedInput
   branches?: Prisma.BusinessPartnerUpdateManyWithoutParentNestedInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUpdateManyWithoutBusinessPartnerNestedInput
   addresses?: Prisma.BusinessPartnerAddressUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUpdateManyWithoutBusinessPartnerNestedInput
   users?: Prisma.UserUpdateManyWithoutBusinessPartnerNestedInput
@@ -555,6 +561,7 @@ export type BusinessPartnerUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BusinessPartnerUncheckedUpdateManyWithoutParentNestedInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutBusinessPartnerNestedInput
@@ -835,6 +842,20 @@ export type BusinessPartnerUpdateOneRequiredWithoutContactsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BusinessPartnerUpdateToOneWithWhereWithoutContactsInput, Prisma.BusinessPartnerUpdateWithoutContactsInput>, Prisma.BusinessPartnerUncheckedUpdateWithoutContactsInput>
 }
 
+export type BusinessPartnerCreateNestedOneWithoutDealerAuditInstancesInput = {
+  create?: Prisma.XOR<Prisma.BusinessPartnerCreateWithoutDealerAuditInstancesInput, Prisma.BusinessPartnerUncheckedCreateWithoutDealerAuditInstancesInput>
+  connectOrCreate?: Prisma.BusinessPartnerCreateOrConnectWithoutDealerAuditInstancesInput
+  connect?: Prisma.BusinessPartnerWhereUniqueInput
+}
+
+export type BusinessPartnerUpdateOneRequiredWithoutDealerAuditInstancesNestedInput = {
+  create?: Prisma.XOR<Prisma.BusinessPartnerCreateWithoutDealerAuditInstancesInput, Prisma.BusinessPartnerUncheckedCreateWithoutDealerAuditInstancesInput>
+  connectOrCreate?: Prisma.BusinessPartnerCreateOrConnectWithoutDealerAuditInstancesInput
+  upsert?: Prisma.BusinessPartnerUpsertWithoutDealerAuditInstancesInput
+  connect?: Prisma.BusinessPartnerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BusinessPartnerUpdateToOneWithWhereWithoutDealerAuditInstancesInput, Prisma.BusinessPartnerUpdateWithoutDealerAuditInstancesInput>, Prisma.BusinessPartnerUncheckedUpdateWithoutDealerAuditInstancesInput>
+}
+
 export type BusinessPartnerCreateWithoutUsersInput = {
   id?: string
   internalId?: string | null
@@ -859,6 +880,7 @@ export type BusinessPartnerCreateWithoutUsersInput = {
   updatedAt?: Date | string
   parent?: Prisma.BusinessPartnerCreateNestedOneWithoutBranchesInput
   branches?: Prisma.BusinessPartnerCreateNestedManyWithoutParentInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutBusinessPartnerInput
   addresses?: Prisma.BusinessPartnerAddressCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactCreateNestedManyWithoutBusinessPartnerInput
 }
@@ -887,6 +909,7 @@ export type BusinessPartnerUncheckedCreateWithoutUsersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BusinessPartnerUncheckedCreateNestedManyWithoutParentInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutBusinessPartnerInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutBusinessPartnerInput
 }
@@ -931,6 +954,7 @@ export type BusinessPartnerUpdateWithoutUsersInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parent?: Prisma.BusinessPartnerUpdateOneWithoutBranchesNestedInput
   branches?: Prisma.BusinessPartnerUpdateManyWithoutParentNestedInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUpdateManyWithoutBusinessPartnerNestedInput
   addresses?: Prisma.BusinessPartnerAddressUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUpdateManyWithoutBusinessPartnerNestedInput
 }
@@ -959,6 +983,7 @@ export type BusinessPartnerUncheckedUpdateWithoutUsersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BusinessPartnerUncheckedUpdateManyWithoutParentNestedInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerNestedInput
 }
@@ -986,6 +1011,7 @@ export type BusinessPartnerCreateWithoutBranchesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   parent?: Prisma.BusinessPartnerCreateNestedOneWithoutBranchesInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutBusinessPartnerInput
   addresses?: Prisma.BusinessPartnerAddressCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactCreateNestedManyWithoutBusinessPartnerInput
   users?: Prisma.UserCreateNestedManyWithoutBusinessPartnerInput
@@ -1014,6 +1040,7 @@ export type BusinessPartnerUncheckedCreateWithoutBranchesInput = {
   parentId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutBusinessPartnerInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutBusinessPartnerInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBusinessPartnerInput
@@ -1047,6 +1074,7 @@ export type BusinessPartnerCreateWithoutParentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BusinessPartnerCreateNestedManyWithoutParentInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutBusinessPartnerInput
   addresses?: Prisma.BusinessPartnerAddressCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactCreateNestedManyWithoutBusinessPartnerInput
   users?: Prisma.UserCreateNestedManyWithoutBusinessPartnerInput
@@ -1075,6 +1103,7 @@ export type BusinessPartnerUncheckedCreateWithoutParentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BusinessPartnerUncheckedCreateNestedManyWithoutParentInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutBusinessPartnerInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutBusinessPartnerInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBusinessPartnerInput
@@ -1124,6 +1153,7 @@ export type BusinessPartnerUpdateWithoutBranchesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parent?: Prisma.BusinessPartnerUpdateOneWithoutBranchesNestedInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUpdateManyWithoutBusinessPartnerNestedInput
   addresses?: Prisma.BusinessPartnerAddressUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUpdateManyWithoutBusinessPartnerNestedInput
   users?: Prisma.UserUpdateManyWithoutBusinessPartnerNestedInput
@@ -1152,6 +1182,7 @@ export type BusinessPartnerUncheckedUpdateWithoutBranchesInput = {
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutBusinessPartnerNestedInput
@@ -1225,6 +1256,7 @@ export type BusinessPartnerCreateWithoutAddressesInput = {
   updatedAt?: Date | string
   parent?: Prisma.BusinessPartnerCreateNestedOneWithoutBranchesInput
   branches?: Prisma.BusinessPartnerCreateNestedManyWithoutParentInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactCreateNestedManyWithoutBusinessPartnerInput
   users?: Prisma.UserCreateNestedManyWithoutBusinessPartnerInput
 }
@@ -1253,6 +1285,7 @@ export type BusinessPartnerUncheckedCreateWithoutAddressesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BusinessPartnerUncheckedCreateNestedManyWithoutParentInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutBusinessPartnerInput
   contacts?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutBusinessPartnerInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBusinessPartnerInput
 }
@@ -1297,6 +1330,7 @@ export type BusinessPartnerUpdateWithoutAddressesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parent?: Prisma.BusinessPartnerUpdateOneWithoutBranchesNestedInput
   branches?: Prisma.BusinessPartnerUpdateManyWithoutParentNestedInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUpdateManyWithoutBusinessPartnerNestedInput
   users?: Prisma.UserUpdateManyWithoutBusinessPartnerNestedInput
 }
@@ -1325,6 +1359,7 @@ export type BusinessPartnerUncheckedUpdateWithoutAddressesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BusinessPartnerUncheckedUpdateManyWithoutParentNestedInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutBusinessPartnerNestedInput
 }
@@ -1353,6 +1388,7 @@ export type BusinessPartnerCreateWithoutContactsInput = {
   updatedAt?: Date | string
   parent?: Prisma.BusinessPartnerCreateNestedOneWithoutBranchesInput
   branches?: Prisma.BusinessPartnerCreateNestedManyWithoutParentInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutBusinessPartnerInput
   addresses?: Prisma.BusinessPartnerAddressCreateNestedManyWithoutBusinessPartnerInput
   users?: Prisma.UserCreateNestedManyWithoutBusinessPartnerInput
 }
@@ -1381,6 +1417,7 @@ export type BusinessPartnerUncheckedCreateWithoutContactsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   branches?: Prisma.BusinessPartnerUncheckedCreateNestedManyWithoutParentInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutBusinessPartnerInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedCreateNestedManyWithoutBusinessPartnerInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutBusinessPartnerInput
 }
@@ -1425,6 +1462,7 @@ export type BusinessPartnerUpdateWithoutContactsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   parent?: Prisma.BusinessPartnerUpdateOneWithoutBranchesNestedInput
   branches?: Prisma.BusinessPartnerUpdateManyWithoutParentNestedInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUpdateManyWithoutBusinessPartnerNestedInput
   addresses?: Prisma.BusinessPartnerAddressUpdateManyWithoutBusinessPartnerNestedInput
   users?: Prisma.UserUpdateManyWithoutBusinessPartnerNestedInput
 }
@@ -1453,7 +1491,140 @@ export type BusinessPartnerUncheckedUpdateWithoutContactsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BusinessPartnerUncheckedUpdateManyWithoutParentNestedInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedUpdateManyWithoutBusinessPartnerNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutBusinessPartnerNestedInput
+}
+
+export type BusinessPartnerCreateWithoutDealerAuditInstancesInput = {
+  id?: string
+  internalId?: string | null
+  vendorId?: string | null
+  bpId?: string | null
+  s4Id?: string | null
+  bydId?: string | null
+  c4cId?: string | null
+  bpName: string
+  bpShortName?: string | null
+  isKeyAccount?: boolean
+  gst?: string | null
+  panNumber?: string | null
+  legalTradeName?: string | null
+  officeType: $Enums.BusinessPartnerOfficeType
+  bpType?: string | null
+  entityType?: string | null
+  vendorCode?: string | null
+  isActive?: boolean
+  joinedOn?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  parent?: Prisma.BusinessPartnerCreateNestedOneWithoutBranchesInput
+  branches?: Prisma.BusinessPartnerCreateNestedManyWithoutParentInput
+  addresses?: Prisma.BusinessPartnerAddressCreateNestedManyWithoutBusinessPartnerInput
+  contacts?: Prisma.BusinessPartnerContactCreateNestedManyWithoutBusinessPartnerInput
+  users?: Prisma.UserCreateNestedManyWithoutBusinessPartnerInput
+}
+
+export type BusinessPartnerUncheckedCreateWithoutDealerAuditInstancesInput = {
+  id?: string
+  internalId?: string | null
+  vendorId?: string | null
+  bpId?: string | null
+  s4Id?: string | null
+  bydId?: string | null
+  c4cId?: string | null
+  bpName: string
+  bpShortName?: string | null
+  isKeyAccount?: boolean
+  gst?: string | null
+  panNumber?: string | null
+  legalTradeName?: string | null
+  officeType: $Enums.BusinessPartnerOfficeType
+  bpType?: string | null
+  entityType?: string | null
+  vendorCode?: string | null
+  isActive?: boolean
+  joinedOn?: Date | string | null
+  parentId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BusinessPartnerUncheckedCreateNestedManyWithoutParentInput
+  addresses?: Prisma.BusinessPartnerAddressUncheckedCreateNestedManyWithoutBusinessPartnerInput
+  contacts?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutBusinessPartnerInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutBusinessPartnerInput
+}
+
+export type BusinessPartnerCreateOrConnectWithoutDealerAuditInstancesInput = {
+  where: Prisma.BusinessPartnerWhereUniqueInput
+  create: Prisma.XOR<Prisma.BusinessPartnerCreateWithoutDealerAuditInstancesInput, Prisma.BusinessPartnerUncheckedCreateWithoutDealerAuditInstancesInput>
+}
+
+export type BusinessPartnerUpsertWithoutDealerAuditInstancesInput = {
+  update: Prisma.XOR<Prisma.BusinessPartnerUpdateWithoutDealerAuditInstancesInput, Prisma.BusinessPartnerUncheckedUpdateWithoutDealerAuditInstancesInput>
+  create: Prisma.XOR<Prisma.BusinessPartnerCreateWithoutDealerAuditInstancesInput, Prisma.BusinessPartnerUncheckedCreateWithoutDealerAuditInstancesInput>
+  where?: Prisma.BusinessPartnerWhereInput
+}
+
+export type BusinessPartnerUpdateToOneWithWhereWithoutDealerAuditInstancesInput = {
+  where?: Prisma.BusinessPartnerWhereInput
+  data: Prisma.XOR<Prisma.BusinessPartnerUpdateWithoutDealerAuditInstancesInput, Prisma.BusinessPartnerUncheckedUpdateWithoutDealerAuditInstancesInput>
+}
+
+export type BusinessPartnerUpdateWithoutDealerAuditInstancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  internalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bpId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bpName?: Prisma.StringFieldUpdateOperationsInput | string
+  bpShortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isKeyAccount?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gst?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalTradeName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
+  bpType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parent?: Prisma.BusinessPartnerUpdateOneWithoutBranchesNestedInput
+  branches?: Prisma.BusinessPartnerUpdateManyWithoutParentNestedInput
+  addresses?: Prisma.BusinessPartnerAddressUpdateManyWithoutBusinessPartnerNestedInput
+  contacts?: Prisma.BusinessPartnerContactUpdateManyWithoutBusinessPartnerNestedInput
+  users?: Prisma.UserUpdateManyWithoutBusinessPartnerNestedInput
+}
+
+export type BusinessPartnerUncheckedUpdateWithoutDealerAuditInstancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  internalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bpId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bpName?: Prisma.StringFieldUpdateOperationsInput | string
+  bpShortName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isKeyAccount?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  gst?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  legalTradeName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
+  bpType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  entityType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vendorCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BusinessPartnerUncheckedUpdateManyWithoutParentNestedInput
+  addresses?: Prisma.BusinessPartnerAddressUncheckedUpdateManyWithoutBusinessPartnerNestedInput
+  contacts?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutBusinessPartnerNestedInput
 }
 
@@ -1504,6 +1675,7 @@ export type BusinessPartnerUpdateWithoutParentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BusinessPartnerUpdateManyWithoutParentNestedInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUpdateManyWithoutBusinessPartnerNestedInput
   addresses?: Prisma.BusinessPartnerAddressUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUpdateManyWithoutBusinessPartnerNestedInput
   users?: Prisma.UserUpdateManyWithoutBusinessPartnerNestedInput
@@ -1532,6 +1704,7 @@ export type BusinessPartnerUncheckedUpdateWithoutParentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branches?: Prisma.BusinessPartnerUncheckedUpdateManyWithoutParentNestedInput
+  dealerAuditInstances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   addresses?: Prisma.BusinessPartnerAddressUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   contacts?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutBusinessPartnerNestedInput
@@ -1568,6 +1741,7 @@ export type BusinessPartnerUncheckedUpdateManyWithoutParentInput = {
 
 export type BusinessPartnerCountOutputType = {
   branches: number
+  dealerAuditInstances: number
   addresses: number
   contacts: number
   users: number
@@ -1575,6 +1749,7 @@ export type BusinessPartnerCountOutputType = {
 
 export type BusinessPartnerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   branches?: boolean | BusinessPartnerCountOutputTypeCountBranchesArgs
+  dealerAuditInstances?: boolean | BusinessPartnerCountOutputTypeCountDealerAuditInstancesArgs
   addresses?: boolean | BusinessPartnerCountOutputTypeCountAddressesArgs
   contacts?: boolean | BusinessPartnerCountOutputTypeCountContactsArgs
   users?: boolean | BusinessPartnerCountOutputTypeCountUsersArgs
@@ -1595,6 +1770,13 @@ export type BusinessPartnerCountOutputTypeDefaultArgs<ExtArgs extends runtime.Ty
  */
 export type BusinessPartnerCountOutputTypeCountBranchesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.BusinessPartnerWhereInput
+}
+
+/**
+ * BusinessPartnerCountOutputType without action
+ */
+export type BusinessPartnerCountOutputTypeCountDealerAuditInstancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DealerAuditInstanceWhereInput
 }
 
 /**
@@ -1644,6 +1826,7 @@ export type BusinessPartnerSelect<ExtArgs extends runtime.Types.Extensions.Inter
   updatedAt?: boolean
   parent?: boolean | Prisma.BusinessPartner$parentArgs<ExtArgs>
   branches?: boolean | Prisma.BusinessPartner$branchesArgs<ExtArgs>
+  dealerAuditInstances?: boolean | Prisma.BusinessPartner$dealerAuditInstancesArgs<ExtArgs>
   addresses?: boolean | Prisma.BusinessPartner$addressesArgs<ExtArgs>
   contacts?: boolean | Prisma.BusinessPartner$contactsArgs<ExtArgs>
   users?: boolean | Prisma.BusinessPartner$usersArgs<ExtArgs>
@@ -1731,6 +1914,7 @@ export type BusinessPartnerOmit<ExtArgs extends runtime.Types.Extensions.Interna
 export type BusinessPartnerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parent?: boolean | Prisma.BusinessPartner$parentArgs<ExtArgs>
   branches?: boolean | Prisma.BusinessPartner$branchesArgs<ExtArgs>
+  dealerAuditInstances?: boolean | Prisma.BusinessPartner$dealerAuditInstancesArgs<ExtArgs>
   addresses?: boolean | Prisma.BusinessPartner$addressesArgs<ExtArgs>
   contacts?: boolean | Prisma.BusinessPartner$contactsArgs<ExtArgs>
   users?: boolean | Prisma.BusinessPartner$usersArgs<ExtArgs>
@@ -1748,6 +1932,7 @@ export type $BusinessPartnerPayload<ExtArgs extends runtime.Types.Extensions.Int
   objects: {
     parent: Prisma.$BusinessPartnerPayload<ExtArgs> | null
     branches: Prisma.$BusinessPartnerPayload<ExtArgs>[]
+    dealerAuditInstances: Prisma.$DealerAuditInstancePayload<ExtArgs>[]
     addresses: Prisma.$BusinessPartnerAddressPayload<ExtArgs>[]
     contacts: Prisma.$BusinessPartnerContactPayload<ExtArgs>[]
     users: Prisma.$UserPayload<ExtArgs>[]
@@ -2171,6 +2356,7 @@ export interface Prisma__BusinessPartnerClient<T, Null = never, ExtArgs extends 
   readonly [Symbol.toStringTag]: "PrismaPromise"
   parent<T extends Prisma.BusinessPartner$parentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartner$parentArgs<ExtArgs>>): Prisma.Prisma__BusinessPartnerClient<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   branches<T extends Prisma.BusinessPartner$branchesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartner$branchesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dealerAuditInstances<T extends Prisma.BusinessPartner$dealerAuditInstancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartner$dealerAuditInstancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DealerAuditInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   addresses<T extends Prisma.BusinessPartner$addressesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartner$addressesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerAddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contacts<T extends Prisma.BusinessPartner$contactsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartner$contactsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   users<T extends Prisma.BusinessPartner$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartner$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2666,6 +2852,30 @@ export type BusinessPartner$branchesArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.BusinessPartnerScalarFieldEnum | Prisma.BusinessPartnerScalarFieldEnum[]
+}
+
+/**
+ * BusinessPartner.dealerAuditInstances
+ */
+export type BusinessPartner$dealerAuditInstancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DealerAuditInstance
+   */
+  select?: Prisma.DealerAuditInstanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DealerAuditInstance
+   */
+  omit?: Prisma.DealerAuditInstanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DealerAuditInstanceInclude<ExtArgs> | null
+  where?: Prisma.DealerAuditInstanceWhereInput
+  orderBy?: Prisma.DealerAuditInstanceOrderByWithRelationInput | Prisma.DealerAuditInstanceOrderByWithRelationInput[]
+  cursor?: Prisma.DealerAuditInstanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DealerAuditInstanceScalarFieldEnum | Prisma.DealerAuditInstanceScalarFieldEnum[]
 }
 
 /**

@@ -108,10 +108,14 @@ export const triggerDealerAuditInstance = async (
   next: NextFunction,
 ) => {
   try {
-    const { dealerUserId, periodLabel } = req.body;
-    if (!dealerUserId) throw new ApiError(400, "dealerUserId is required");
+    // businessPartnerId, not a specific dealer login — a dealership can have
+    // several linked Users, and the instance belongs to the dealership, not
+    // to whichever one of them happens to be triggering it.
+    const { businessPartnerId, periodLabel } = req.body;
+    if (!businessPartnerId)
+      throw new ApiError(400, "businessPartnerId is required");
     const instance = await service.triggerDealerAuditInstance(
-      dealerUserId,
+      businessPartnerId,
       periodLabel,
     );
     res.status(201).json({ success: true, data: instance });
@@ -126,11 +130,11 @@ export const listDealerAuditInstances = async (
   next: NextFunction,
 ) => {
   try {
-    const { officeType, periodLabel, dealerUserId } = req.query;
+    const { officeType, periodLabel, businessPartnerId } = req.query;
     const instances = await service.listDealerAuditInstances({
       officeType: officeType as BusinessPartnerOfficeType,
       periodLabel: periodLabel as string | undefined,
-      dealerUserId: dealerUserId as string | undefined,
+      businessPartnerId: businessPartnerId as string | undefined,
     });
     res.status(200).json({ success: true, data: instances });
   } catch (error) {

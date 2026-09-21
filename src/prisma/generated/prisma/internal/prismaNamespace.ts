@@ -6482,7 +6482,7 @@ export type ChecklistItemScalarFieldEnum = (typeof ChecklistItemScalarFieldEnum)
 
 export const DealerAuditInstanceScalarFieldEnum = {
   id: 'id',
-  dealerUserId: 'dealerUserId',
+  businessPartnerId: 'businessPartnerId',
   workspaceId: 'workspaceId',
   officeType: 'officeType',
   periodLabel: 'periodLabel',
@@ -6507,6 +6507,7 @@ export const AuditItemResponseScalarFieldEnum = {
   reviewerScore: 'reviewerScore',
   reviewerRemark: 'reviewerRemark',
   reviewStatus: 'reviewStatus',
+  respondedByUserId: 'respondedByUserId',
   createdAt: 'createdAt'
 } as const
 

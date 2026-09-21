@@ -20,26 +20,25 @@ import { randomUUID } from "crypto";
 import { addMailJob } from "@kernel/mail/mail.service";
 import { getOrGeneratePdfUrl } from "@pdf/pdf.services";
 import { assembleDealerAuditPdfData } from "./dealerAuditAssembler";
+import logger from "@shared/utils/logger";
+import { runBatchJob, BatchRunSummary } from "@shared/jobs/batchRunner";
 
-// The one place officeType gets derived from BusinessPartner — ready for
-// whenever instance creation is actually written (scheduler or a manual
-// admin trigger; neither exists yet, that work is still pending). Never
-// trust an officeType value supplied directly in a request body for a
-// dealer's own instance — it must come from their linked BusinessPartner.
-export async function resolveOfficeTypeForDealer(
-  dealerUserId: string,
+// The one place officeType gets derived from BusinessPartner. Takes the
+// BusinessPartner directly, not a User — DealerAuditInstance belongs to the
+// dealership, and a dealership can have several linked Users
+// (BusinessPartner.users), so officeType must never be derived by walking
+// through whichever User happens to be acting.
+export async function resolveOfficeTypeForBusinessPartner(
+  businessPartnerId: string,
 ): Promise<BusinessPartnerOfficeType> {
-  const dealer = await prisma.user.findUnique({
-    where: { id: dealerUserId },
-    select: { businessPartner: { select: { officeType: true } } },
+  const businessPartner = await prisma.businessPartner.findUnique({
+    where: { id: businessPartnerId },
+    select: { officeType: true },
   });
-  if (!dealer?.businessPartner) {
-    throw new ApiError(
-      400,
-      "Dealer has no linked BusinessPartner — cannot determine office type",
-    );
+  if (!businessPartner) {
+    throw new ApiError(400, "BusinessPartner not found");
   }
-  return dealer.businessPartner.officeType;
+  return businessPartner.officeType;
 }
 
 // Zone drives WorkflowTemplate selection (which reviewer chain applies) —
@@ -47,27 +46,62 @@ export async function resolveOfficeTypeForDealer(
 // (which checklist item set applies). Assumes the isDefault address is the
 // authoritative one for zone — UNCONFIRMED, flag if isBillingAddress or
 // another address should take precedence instead.
-export async function resolveZoneForDealer(
-  dealerUserId: string,
+export async function resolveZoneForBusinessPartner(
+  businessPartnerId: string,
 ): Promise<string> {
-  const dealer = await prisma.user.findUnique({
-    where: { id: dealerUserId },
-    select: {
-      businessPartner: {
-        select: {
-          addresses: { where: { isDefault: true }, select: { zone: true } },
-        },
-      },
-    },
+  const address = await prisma.businessPartnerAddress.findFirst({
+    where: { businessPartnerId, isDefault: true },
+    select: { zone: true },
   });
-  const zone = dealer?.businessPartner?.addresses[0]?.zone;
-  if (!zone) {
+  if (!address?.zone) {
     throw new ApiError(
       400,
-      "Dealer has no zone on their default BusinessPartner address — cannot select a workflow template",
+      "This dealership has no zone on its default address — cannot select a workflow template",
     );
   }
-  return zone;
+  return address.zone;
+}
+
+// The one User allowed to act on a BusinessPartner's Dealer Audit instances
+// (view is shared by every User linked to the dealership — see
+// getOwnInstanceOrThrow — but write actions require this specific User), and
+// the recipient for anything sent back to the dealership, e.g. the PDF
+// report. A dealership can have several linked Users; only the one flagged
+// isDefaultContact is treated as its authoritative point of contact.
+async function getPrimaryContactUser(businessPartnerId: string) {
+  const user = await prisma.user.findFirst({
+    where: { businessPartnerId, isDefaultContact: true, is_active: true },
+    select: { id: true },
+  });
+  if (!user) {
+    throw new ApiError(
+      400,
+      "This dealership has no active primary contact (isDefaultContact) user — cannot proceed",
+    );
+  }
+  return user;
+}
+
+// A dealer could in principle belong to more than one workspace
+// (WorkspaceUser has no uniqueness on userId alone) — rather than silently
+// picking one and risking the audit landing in the wrong tenant, this
+// requires exactly one match and throws otherwise. Revisit if dealers
+// genuinely need multi-workspace membership someday. Takes a User id (not a
+// BusinessPartner) because workspace membership is inherently per-login —
+// callers resolve the BusinessPartner's primary contact first, then pass
+// that user's id in here.
+async function resolveWorkspaceIdForUser(userId: string): Promise<string> {
+  const memberships = await prisma.workspaceUser.findMany({
+    where: { userId },
+    select: { workspaceId: true },
+  });
+  if (memberships.length !== 1) {
+    throw new ApiError(
+      400,
+      `Expected exactly one workspace for this user, found ${memberships.length}`,
+    );
+  }
+  return memberships[0].workspaceId;
 }
 
 // ─────────────────────────────────────────────
@@ -245,53 +279,52 @@ function getCurrentQuarterLabel(): string {
   return `${now.getUTCFullYear()}-Q${quarter}`;
 }
 
-// A dealer could in principle belong to more than one workspace
-// (WorkspaceUser has no uniqueness on userId alone) — rather than silently
-// picking one and risking the audit landing in the wrong tenant, this
-// requires exactly one match and throws otherwise. Revisit if dealers
-// genuinely need multi-workspace membership someday.
-async function resolveWorkspaceIdForDealer(
-  dealerUserId: string,
-): Promise<string> {
-  const memberships = await prisma.workspaceUser.findMany({
-    where: { userId: dealerUserId },
-    select: { workspaceId: true },
-  });
-  if (memberships.length !== 1) {
-    throw new ApiError(
-      400,
-      `Expected exactly one workspace for this dealer, found ${memberships.length}`,
-    );
-  }
-  return memberships[0].workspaceId;
-}
-
-// The manual trigger this whole function exists for — creates one
-// DealerAuditInstance for a dealer, guarded by the same
-// (dealerUserId, officeType, periodLabel) uniqueness the scheduler will
-// rely on later. This is deliberately the ONLY place a DealerAuditInstance
-// gets created, so whenever the scheduler is eventually built, it should
-// call this same function rather than duplicating the resolution logic.
-export async function triggerDealerAuditInstance(
-  dealerUserId: string,
-  periodLabel?: string,
+// Shared by the manual trigger and the scheduler — the scheduler needs to
+// tell "already exists, skip quietly" apart from a real failure, which a
+// try/catch around triggerDealerAuditInstance can't do without matching on
+// error message text. Single source of truth for the duplicate check either
+// way.
+async function findExistingDealerAuditInstance(
+  businessPartnerId: string,
+  officeType: BusinessPartnerOfficeType,
+  periodLabel: string,
 ) {
-  const resolvedPeriodLabel = periodLabel ?? getCurrentQuarterLabel();
-  const officeType = await resolveOfficeTypeForDealer(dealerUserId);
-
-  const existing = await prisma.dealerAuditInstance.findUnique({
+  return prisma.dealerAuditInstance.findUnique({
     where: {
-      dealerUserId_officeType_periodLabel: {
-        dealerUserId,
+      businessPartnerId_officeType_periodLabel: {
+        businessPartnerId,
         officeType,
-        periodLabel: resolvedPeriodLabel,
+        periodLabel,
       },
     },
   });
+}
+
+// The manual trigger this whole function exists for — creates one
+// DealerAuditInstance for a dealership, guarded by the same
+// (businessPartnerId, officeType, periodLabel) uniqueness the scheduler
+// relies on. This is deliberately the ONLY place a DealerAuditInstance gets
+// created — the scheduler calls this same function rather than duplicating
+// the resolution logic. workspaceId is still resolved off a User (the
+// dealership's primary contact), since workspace membership is inherently
+// per-login, not per-dealership.
+export async function triggerDealerAuditInstance(
+  businessPartnerId: string,
+  periodLabel?: string,
+) {
+  const resolvedPeriodLabel = periodLabel ?? getCurrentQuarterLabel();
+  const officeType =
+    await resolveOfficeTypeForBusinessPartner(businessPartnerId);
+
+  const existing = await findExistingDealerAuditInstance(
+    businessPartnerId,
+    officeType,
+    resolvedPeriodLabel,
+  );
   if (existing) {
     throw new ApiError(
       400,
-      `An audit already exists for this dealer in ${resolvedPeriodLabel}`,
+      `An audit already exists for this dealership in ${resolvedPeriodLabel}`,
     );
   }
 
@@ -305,11 +338,12 @@ export async function triggerDealerAuditInstance(
     );
   }
 
-  const workspaceId = await resolveWorkspaceIdForDealer(dealerUserId);
+  const primaryContact = await getPrimaryContactUser(businessPartnerId);
+  const workspaceId = await resolveWorkspaceIdForUser(primaryContact.id);
 
   return prisma.dealerAuditInstance.create({
     data: {
-      dealerUserId,
+      businessPartnerId,
       workspaceId,
       officeType,
       periodLabel: resolvedPeriodLabel,
@@ -318,16 +352,94 @@ export async function triggerDealerAuditInstance(
   });
 }
 
+// "DEALER" per the inline comment on User.userType ("reuses the existing
+// THCM/DEALER/CUSTOMER enum"). Named as a constant, not inlined, so a wrong
+// guess is a one-line fix rather than a hunt through the query below.
+const DEALER_USER_TYPE = "DEALER";
+
+export type QuarterlyDealerAuditGenerationSummary = BatchRunSummary & {
+  periodLabel: string;
+};
+
+// The scheduler's entry point (called quarterly — see jobs/scheduler.ts).
+// Also safe to call manually for a specific quarter, e.g. to catch up a
+// quarter that was missed.
+//
+// Population is BusinessPartners, not Users — a dealership can have several
+// linked Users, and the instance belongs to the dealership (see
+// DealerAuditInstance.businessPartnerId), so iterating Users would create
+// one instance per login instead of one per dealership. A qualifying
+// dealership: active, AND has at least one active User with
+// userType === "DEALER" linked to it (the population signal originally
+// lived on the User; a dealership only counts once it actually has one).
+// A dealership with no isDefaultContact User will still fail inside
+// triggerDealerAuditInstance (via getPrimaryContactUser) — surfaced as a
+// per-item failure below, not pre-filtered out, since that's a real gap
+// worth seeing in the summary rather than silently skipping.
+//
+// The fan-out/tally mechanics (loop, catch-per-item, summary) live in the
+// shared runBatchJob — Factory Audit's equivalent generator will use the
+// same helper around its own population query and creation call. "Already
+// has an instance this quarter" is checked up front per item and reported
+// as "skipped", not "failed" — that's expected steady-state noise on a
+// re-run, not an error.
+export async function generateQuarterlyDealerAuditInstances(
+  periodLabel?: string,
+): Promise<QuarterlyDealerAuditGenerationSummary> {
+  const resolvedPeriodLabel = periodLabel ?? getCurrentQuarterLabel();
+
+  const dealerships = await prisma.businessPartner.findMany({
+    where: {
+      isActive: true,
+      users: { some: { userType: DEALER_USER_TYPE, is_active: true } },
+    },
+    select: { id: true },
+  });
+
+  const batchSummary = await runBatchJob(
+    dealerships,
+    (dealership) => dealership.id,
+    async (dealership) => {
+      const officeType = await resolveOfficeTypeForBusinessPartner(
+        dealership.id,
+      );
+      const existing = await findExistingDealerAuditInstance(
+        dealership.id,
+        officeType,
+        resolvedPeriodLabel,
+      );
+      if (existing) return "skipped";
+
+      await triggerDealerAuditInstance(dealership.id, resolvedPeriodLabel);
+      return "created";
+    },
+  );
+
+  const summary: QuarterlyDealerAuditGenerationSummary = {
+    ...batchSummary,
+    periodLabel: resolvedPeriodLabel,
+  };
+
+  logger.info(
+    `Quarterly dealer audit generation (${resolvedPeriodLabel}): ` +
+      `${summary.succeeded} created, ${summary.skipped} skipped (existing), ` +
+      `${summary.failed} failed out of ${summary.attempted} dealerships`,
+    summary.failed > 0 ? { failures: summary.failures } : undefined,
+  );
+
+  return summary;
+}
+
 export async function listDealerAuditInstances(filters: {
   officeType?: BusinessPartnerOfficeType;
   periodLabel?: string;
-  dealerUserId?: string;
+  businessPartnerId?: string;
 }) {
   return prisma.dealerAuditInstance.findMany({
     where: {
       officeType: filters.officeType,
       periodLabel: filters.periodLabel,
-      dealerUserId: filters.dealerUserId,
+      businessPartnerId: filters.businessPartnerId,
     },
     include: { template: { select: { name: true, version: true } } },
     orderBy: { createdAt: "desc" },
@@ -642,27 +754,81 @@ export async function setDealerAuditReviewStatus(
 // Dealer surface: own instances only
 // ─────────────────────────────────────────────
 
-export async function listMyDealerAuditInstances(dealerUserId: string) {
+export async function listMyDealerAuditInstances(actingUserId: string) {
+  const actingUser = await getActingDealerUserOrThrow(actingUserId);
   return prisma.dealerAuditInstance.findMany({
-    where: { dealerUserId },
+    where: { businessPartnerId: actingUser.businessPartnerId },
     include: { template: { select: { name: true, version: true } } },
     orderBy: { createdAt: "desc" },
   });
 }
 
-async function getOwnInstanceOrThrow(dealerUserId: string, instanceId: string) {
+// A dealership's linked Users all share the same set of instances — a
+// dealership can have several logged-in Users, and view access isn't
+// restricted to just the primary contact (only writes are — see
+// getOwnInstanceForEditOrThrow). Not exported: every "mine" function below
+// funnels through this and its edit-checking counterpart, so req.user.id →
+// businessPartnerId resolution and the ownership comparison live in exactly
+// one place.
+async function getActingDealerUserOrThrow(actingUserId: string) {
+  const actingUser = await prisma.user.findUnique({
+    where: { id: actingUserId },
+    select: { businessPartnerId: true, isDefaultContact: true },
+  });
+  if (!actingUser?.businessPartnerId) {
+    throw new ApiError(403, "You are not linked to a dealership");
+  }
+  return actingUser as { businessPartnerId: string; isDefaultContact: boolean };
+}
+
+async function resolveOwnInstanceAndActor(
+  actingUserId: string,
+  instanceId: string,
+) {
   const instance = await getInstanceOrThrow(instanceId);
-  if (instance.dealerUserId !== dealerUserId) {
-    throw new ApiError(403, "This audit instance does not belong to you");
+  const actingUser = await getActingDealerUserOrThrow(actingUserId);
+  if (actingUser.businessPartnerId !== instance.businessPartnerId) {
+    throw new ApiError(
+      403,
+      "This audit instance does not belong to your dealership",
+    );
+  }
+  return { instance, actingUser };
+}
+
+async function getOwnInstanceOrThrow(actingUserId: string, instanceId: string) {
+  const { instance } = await resolveOwnInstanceAndActor(
+    actingUserId,
+    instanceId,
+  );
+  return instance;
+}
+
+// Stricter than getOwnInstanceOrThrow — view access is shared by every User
+// linked to the dealership, but only the designated primary contact
+// (User.isDefaultContact) may actually change anything on the instance.
+async function getOwnInstanceForEditOrThrow(
+  actingUserId: string,
+  instanceId: string,
+) {
+  const { instance, actingUser } = await resolveOwnInstanceAndActor(
+    actingUserId,
+    instanceId,
+  );
+  if (!actingUser.isDefaultContact) {
+    throw new ApiError(
+      403,
+      "Only your dealership's primary contact can act on this audit instance",
+    );
   }
   return instance;
 }
 
 export async function getMyDealerAuditInstanceById(
-  dealerUserId: string,
+  actingUserId: string,
   instanceId: string,
 ) {
-  const instance = await getOwnInstanceOrThrow(dealerUserId, instanceId);
+  const instance = await getOwnInstanceOrThrow(actingUserId, instanceId);
   const activeWorkflow = await getActiveWorkflowForSubject(
     "DEALER_AUDIT_INSTANCE" as never,
     instanceId,
@@ -672,14 +838,14 @@ export async function getMyDealerAuditInstanceById(
 }
 
 export async function saveMyDealerAuditResponses(
-  dealerUserId: string,
+  actingUserId: string,
   instanceId: string,
   responses: { itemId: string; dealerScore?: number; dealerRemark?: string }[],
 ) {
   if (!responses?.length)
     throw new ApiError(400, "At least one response is required");
 
-  const instance = await getOwnInstanceOrThrow(dealerUserId, instanceId);
+  const instance = await getOwnInstanceForEditOrThrow(actingUserId, instanceId);
   assertItemsBelongToInstance(
     instance,
     responses.map((r) => r.itemId),
@@ -711,13 +877,18 @@ export async function saveMyDealerAuditResponses(
             iteration: 1,
           },
         },
-        update: { dealerScore: r.dealerScore, dealerRemark: r.dealerRemark },
+        update: {
+          dealerScore: r.dealerScore,
+          dealerRemark: r.dealerRemark,
+          respondedByUserId: actingUserId,
+        },
         create: {
           auditInstanceId: instanceId,
           itemId: r.itemId,
           iteration: 1,
           dealerScore: r.dealerScore,
           dealerRemark: r.dealerRemark,
+          respondedByUserId: actingUserId,
         },
       }),
     ),
@@ -725,10 +896,10 @@ export async function saveMyDealerAuditResponses(
 }
 
 export async function submitMyDealerAuditInstance(
-  dealerUserId: string,
+  actingUserId: string,
   instanceId: string,
 ) {
-  const instance = await getOwnInstanceOrThrow(dealerUserId, instanceId);
+  const instance = await getOwnInstanceForEditOrThrow(actingUserId, instanceId);
 
   const existingWorkflow = await getActiveWorkflowForSubject(
     "DEALER_AUDIT_INSTANCE" as never,
@@ -753,7 +924,7 @@ export async function submitMyDealerAuditInstance(
   // Zone (not officeType) is the actual workflow-template matching key —
   // which reviewer chain applies. officeType already did its job earlier,
   // selecting which ChecklistTemplate this instance snapshots.
-  const zone = await resolveZoneForDealer(dealerUserId);
+  const zone = await resolveZoneForBusinessPartner(instance.businessPartnerId);
 
   const result = await prisma.$transaction((tx) =>
     assignWorkflow(tx, {
@@ -761,7 +932,11 @@ export async function submitMyDealerAuditInstance(
       subjectId: instanceId,
       workspaceId: instance.workspaceId,
       appId,
-      userId: dealerUserId,
+      // The actual person submitting, not the dealership — assignWorkflow's
+      // userId is an actor reference into the User table (who to show as
+      // having submitted), unrelated to which BusinessPartner owns the
+      // instance.
+      userId: actingUserId,
       criteria: { zone },
     }),
   );
@@ -781,7 +956,7 @@ export async function submitMyDealerAuditInstance(
   }
 
   await logActivity({
-    actorId: dealerUserId,
+    actorId: actingUserId,
     action: "DEALER_AUDIT_SUBMITTED",
     subjectId: instanceId,
     workflowId: result.workflowInstance.id,
@@ -791,14 +966,14 @@ export async function submitMyDealerAuditInstance(
 }
 
 export async function resubmitMyDealerAuditInstance(
-  dealerUserId: string,
+  actingUserId: string,
   instanceId: string,
   responses: { itemId: string; dealerScore?: number; dealerRemark?: string }[],
 ) {
   if (!responses?.length)
     throw new ApiError(400, "At least one response is required");
 
-  const instance = await getOwnInstanceOrThrow(dealerUserId, instanceId);
+  const instance = await getOwnInstanceForEditOrThrow(actingUserId, instanceId);
   assertItemsBelongToInstance(
     instance,
     responses.map((r) => r.itemId),
@@ -853,6 +1028,7 @@ export async function resubmitMyDealerAuditInstance(
             dealerScore: r.dealerScore,
             dealerRemark: r.dealerRemark,
             reviewStatus: "PENDING",
+            respondedByUserId: actingUserId,
           },
         }),
       ),
@@ -861,14 +1037,14 @@ export async function resubmitMyDealerAuditInstance(
     await activateFirstStageForResubmit(
       tx,
       activeWorkflow.id,
-      { type: "user", id: dealerUserId },
+      { type: "user", id: actingUserId },
       getResubmitAction("DEALER_AUDIT_INSTANCE" as never),
       getResubmitStatus("DEALER_AUDIT_INSTANCE" as never),
     );
   });
 
   await logActivity({
-    actorId: dealerUserId,
+    actorId: actingUserId,
     action: "DEALER_AUDIT_RESUBMITTED",
     subjectId: instanceId,
     workflowId: activeWorkflow.id,
@@ -877,13 +1053,13 @@ export async function resubmitMyDealerAuditInstance(
 }
 
 export async function uploadMyDealerAuditItemEvidence(
-  dealerUserId: string,
+  actingUserId: string,
   instanceId: string,
   itemId: string,
   files: Express.Multer.File[],
   geo: { geoLat?: number; geoLng?: number },
 ) {
-  const instance = await getOwnInstanceOrThrow(dealerUserId, instanceId);
+  const instance = await getOwnInstanceForEditOrThrow(actingUserId, instanceId);
   assertItemsBelongToInstance(instance, [itemId]);
 
   if (!files?.length) throw new ApiError(400, "At least one file is required");
@@ -899,7 +1075,12 @@ export async function uploadMyDealerAuditItemEvidence(
   const response =
     existingResponse ??
     (await prisma.auditItemResponse.create({
-      data: { auditInstanceId: instanceId, itemId, iteration: 1 },
+      data: {
+        auditInstanceId: instanceId,
+        itemId,
+        iteration: 1,
+        respondedByUserId: actingUserId,
+      },
     }));
 
   const evidence = await Promise.all(
@@ -921,7 +1102,7 @@ export async function uploadMyDealerAuditItemEvidence(
           subjectId: response.id,
           s3Key,
           fileUrl,
-          uploadedBy: dealerUserId,
+          uploadedBy: actingUserId,
           geoLat: geo.geoLat,
           geoLng: geo.geoLng,
         },
@@ -930,7 +1111,7 @@ export async function uploadMyDealerAuditItemEvidence(
   );
 
   await logActivity({
-    actorId: dealerUserId,
+    actorId: actingUserId,
     action: "DEALER_AUDIT_EVIDENCE_UPLOADED",
     subjectId: instanceId,
     metadata: { itemId, fileCount: files.length },

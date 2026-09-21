@@ -36,7 +36,10 @@ import {
 // ownership/permission guard actually needs. Cheap `select`, no relations.
 //
 // EVENT_PROPOSAL          → EventProposal.created_by_id
-// DEALER_AUDIT_INSTANCE   → DealerAuditInstance.dealerUserId
+// DEALER_AUDIT_INSTANCE   → the primary contact (isDefaultContact) User of
+//   DealerAuditInstance.businessPartnerId — the instance belongs to the
+//   dealership, not to a single User (a BusinessPartner can have several
+//   linked Users), so there's no owning-user column to read directly.
 // FACTORY_AUDIT_INSTANCE  → FactoryAuditInstance.createdByUserId — the vendor
 //   (Supplier) being audited has no User/login of its own, so there's no
 //   natural single "owner" the way EVENT_PROPOSAL/VENDOR_ONBOARDING have one.
@@ -77,9 +80,25 @@ const ownerIdResolvers: Record<
   DEALER_AUDIT_INSTANCE: async (subjectId) => {
     const audit = await prisma.dealerAuditInstance.findUnique({
       where: { id: subjectId },
-      select: { dealerUserId: true },
+      select: { businessPartnerId: true },
     });
-    return audit?.dealerUserId ?? null;
+    if (!audit) return null;
+
+    // DealerAuditInstance belongs to a BusinessPartner, not a single User
+    // (a dealership can have several linked Users) — its "owner" for this
+    // generic guard is the dealership's designated primary contact.
+    // Duplicated inline rather than imported from dealerAudit.service.ts's
+    // getPrimaryContactUser, matching this file's existing boundary of not
+    // depending on app-specific service modules.
+    const primaryContact = await prisma.user.findFirst({
+      where: {
+        businessPartnerId: audit.businessPartnerId,
+        isDefaultContact: true,
+        is_active: true,
+      },
+      select: { id: true },
+    });
+    return primaryContact?.id ?? null;
   },
 
   FACTORY_AUDIT_INSTANCE: async (subjectId) => {
@@ -348,7 +367,7 @@ const resubmitActionBySubjectType: Record<WorkflowSubjectType, ActivityAction> =
     VENDOR_ONBOARDING: "VENDOR_FORM_SUBMITTED",
     MEDICAL_CLAIM: "MEDICAL_CLAIM_RESUBMITTED",
     DEALER_AUDIT_INSTANCE: "DEALER_AUDIT_RESUBMITTED",
-    FACTORY_AUDIT_INSTANCE: "FACTORY_AUDIT_RESUBMITTED",
+    FACTORY_AUDIT_INSTANCE: "FACTORY_AUDIT_RESUBMITTED", // UNVERIFIED PLACEHOLDER — see note above
   };
 
 const resubmitStatusBySubjectType: Record<WorkflowSubjectType, string> = {

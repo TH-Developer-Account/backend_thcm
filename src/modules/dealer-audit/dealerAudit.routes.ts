@@ -44,11 +44,14 @@ const upload = multer({ storage: multer.memoryStorage() });
 //
 // Two checks now, not one: authorize() gates "does this user hold Dealer
 // access at all" (revocable independently of any row they happen to own),
-// and the controller's ownership check (dealerUserId === req.user.id)
-// gates "is this specific instance theirs." Neither replaces the other —
+// and the service-layer ownership check (req.user's businessPartnerId
+// against the instance's — see getOwnInstanceOrThrow /
+// getOwnInstanceForEditOrThrow in dealerAudit.service.ts) gates "is this
+// specific instance their dealership's, and are they that dealership's
+// primary contact if the action writes." Neither replaces the other —
 // losing the module grant locks a former dealer out completely regardless
-// of what they still own; the ownership check stops one dealer from ever
-// reaching another dealer's rows regardless of module access.
+// of what their dealership still owns; the ownership check stops one
+// dealership from ever reaching another's rows regardless of module access.
 
 router.get(
   "/mine",

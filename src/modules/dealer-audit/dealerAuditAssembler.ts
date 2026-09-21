@@ -3,6 +3,10 @@ import ApiError from "@shared/utils/apiError";
 
 export interface DealerAuditPdfData {
   instanceId: string;
+  // The dealership's name (official, for the report header) and its
+  // primary contact's email (the actual send-to address) — the instance
+  // belongs to the BusinessPartner, not to one specific User, so these two
+  // no longer come off a single "dealer" relation the way they used to.
   dealerName: string;
   dealerEmail: string | null;
   officeType: string;
@@ -29,7 +33,22 @@ export async function assembleDealerAuditPdfData(
   const instance = await prisma.dealerAuditInstance.findUnique({
     where: { id: instanceId },
     include: {
-      dealer: { select: { first_name: true, last_name: true, email: true } },
+      businessPartner: {
+        select: {
+          bpName: true,
+          // Same "primary contact" concept as dealerAudit.service.ts's
+          // getPrimaryContactUser — duplicated inline rather than
+          // imported, matching this file's existing boundary (it stays a
+          // self-contained data-in/layout-out module, not a consumer of
+          // the app service; see how pickLatestPerItem is re-derived
+          // locally below instead of imported too).
+          users: {
+            where: { isDefaultContact: true, is_active: true },
+            select: { email: true },
+            take: 1,
+          },
+        },
+      },
       template: { include: { items: { orderBy: { order: "asc" } } } },
       responses: true,
     },
@@ -65,8 +84,8 @@ export async function assembleDealerAuditPdfData(
 
   return {
     instanceId: instance.id,
-    dealerName: `${instance.dealer.first_name} ${instance.dealer.last_name}`,
-    dealerEmail: instance.dealer.email,
+    dealerName: instance.businessPartner.bpName,
+    dealerEmail: instance.businessPartner.users[0]?.email ?? null,
     officeType: instance.officeType,
     periodLabel: instance.periodLabel,
     templateName: instance.template.name,

@@ -38,7 +38,7 @@ export type DealerAuditInstanceSumAggregateOutputType = {
 
 export type DealerAuditInstanceMinAggregateOutputType = {
   id: string | null
-  dealerUserId: string | null
+  businessPartnerId: string | null
   workspaceId: string | null
   officeType: $Enums.BusinessPartnerOfficeType | null
   periodLabel: string | null
@@ -52,7 +52,7 @@ export type DealerAuditInstanceMinAggregateOutputType = {
 
 export type DealerAuditInstanceMaxAggregateOutputType = {
   id: string | null
-  dealerUserId: string | null
+  businessPartnerId: string | null
   workspaceId: string | null
   officeType: $Enums.BusinessPartnerOfficeType | null
   periodLabel: string | null
@@ -66,7 +66,7 @@ export type DealerAuditInstanceMaxAggregateOutputType = {
 
 export type DealerAuditInstanceCountAggregateOutputType = {
   id: number
-  dealerUserId: number
+  businessPartnerId: number
   workspaceId: number
   officeType: number
   periodLabel: number
@@ -92,7 +92,7 @@ export type DealerAuditInstanceSumAggregateInputType = {
 
 export type DealerAuditInstanceMinAggregateInputType = {
   id?: true
-  dealerUserId?: true
+  businessPartnerId?: true
   workspaceId?: true
   officeType?: true
   periodLabel?: true
@@ -106,7 +106,7 @@ export type DealerAuditInstanceMinAggregateInputType = {
 
 export type DealerAuditInstanceMaxAggregateInputType = {
   id?: true
-  dealerUserId?: true
+  businessPartnerId?: true
   workspaceId?: true
   officeType?: true
   periodLabel?: true
@@ -120,7 +120,7 @@ export type DealerAuditInstanceMaxAggregateInputType = {
 
 export type DealerAuditInstanceCountAggregateInputType = {
   id?: true
-  dealerUserId?: true
+  businessPartnerId?: true
   workspaceId?: true
   officeType?: true
   periodLabel?: true
@@ -221,7 +221,7 @@ export type DealerAuditInstanceGroupByArgs<ExtArgs extends runtime.Types.Extensi
 
 export type DealerAuditInstanceGroupByOutputType = {
   id: string
-  dealerUserId: string
+  businessPartnerId: string
   workspaceId: string
   officeType: $Enums.BusinessPartnerOfficeType
   periodLabel: string
@@ -258,7 +258,7 @@ export type DealerAuditInstanceWhereInput = {
   OR?: Prisma.DealerAuditInstanceWhereInput[]
   NOT?: Prisma.DealerAuditInstanceWhereInput | Prisma.DealerAuditInstanceWhereInput[]
   id?: Prisma.StringFilter<"DealerAuditInstance"> | string
-  dealerUserId?: Prisma.StringFilter<"DealerAuditInstance"> | string
+  businessPartnerId?: Prisma.StringFilter<"DealerAuditInstance"> | string
   workspaceId?: Prisma.StringFilter<"DealerAuditInstance"> | string
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFilter<"DealerAuditInstance"> | $Enums.BusinessPartnerOfficeType
   periodLabel?: Prisma.StringFilter<"DealerAuditInstance"> | string
@@ -268,14 +268,14 @@ export type DealerAuditInstanceWhereInput = {
   closedAt?: Prisma.DateTimeNullableFilter<"DealerAuditInstance"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DealerAuditInstance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DealerAuditInstance"> | Date | string
-  dealer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  businessPartner?: Prisma.XOR<Prisma.BusinessPartnerScalarRelationFilter, Prisma.BusinessPartnerWhereInput>
   template?: Prisma.XOR<Prisma.ChecklistTemplateScalarRelationFilter, Prisma.ChecklistTemplateWhereInput>
   responses?: Prisma.AuditItemResponseListRelationFilter
 }
 
 export type DealerAuditInstanceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  dealerUserId?: Prisma.SortOrder
+  businessPartnerId?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   officeType?: Prisma.SortOrder
   periodLabel?: Prisma.SortOrder
@@ -285,18 +285,18 @@ export type DealerAuditInstanceOrderByWithRelationInput = {
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  dealer?: Prisma.UserOrderByWithRelationInput
+  businessPartner?: Prisma.BusinessPartnerOrderByWithRelationInput
   template?: Prisma.ChecklistTemplateOrderByWithRelationInput
   responses?: Prisma.AuditItemResponseOrderByRelationAggregateInput
 }
 
 export type DealerAuditInstanceWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  dealerUserId_officeType_periodLabel?: Prisma.DealerAuditInstanceDealerUserIdOfficeTypePeriodLabelCompoundUniqueInput
+  businessPartnerId_officeType_periodLabel?: Prisma.DealerAuditInstanceBusinessPartnerIdOfficeTypePeriodLabelCompoundUniqueInput
   AND?: Prisma.DealerAuditInstanceWhereInput | Prisma.DealerAuditInstanceWhereInput[]
   OR?: Prisma.DealerAuditInstanceWhereInput[]
   NOT?: Prisma.DealerAuditInstanceWhereInput | Prisma.DealerAuditInstanceWhereInput[]
-  dealerUserId?: Prisma.StringFilter<"DealerAuditInstance"> | string
+  businessPartnerId?: Prisma.StringFilter<"DealerAuditInstance"> | string
   workspaceId?: Prisma.StringFilter<"DealerAuditInstance"> | string
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFilter<"DealerAuditInstance"> | $Enums.BusinessPartnerOfficeType
   periodLabel?: Prisma.StringFilter<"DealerAuditInstance"> | string
@@ -306,14 +306,14 @@ export type DealerAuditInstanceWhereUniqueInput = Prisma.AtLeast<{
   closedAt?: Prisma.DateTimeNullableFilter<"DealerAuditInstance"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DealerAuditInstance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DealerAuditInstance"> | Date | string
-  dealer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  businessPartner?: Prisma.XOR<Prisma.BusinessPartnerScalarRelationFilter, Prisma.BusinessPartnerWhereInput>
   template?: Prisma.XOR<Prisma.ChecklistTemplateScalarRelationFilter, Prisma.ChecklistTemplateWhereInput>
   responses?: Prisma.AuditItemResponseListRelationFilter
-}, "id" | "dealerUserId_officeType_periodLabel">
+}, "id" | "businessPartnerId_officeType_periodLabel">
 
 export type DealerAuditInstanceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  dealerUserId?: Prisma.SortOrder
+  businessPartnerId?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   officeType?: Prisma.SortOrder
   periodLabel?: Prisma.SortOrder
@@ -335,7 +335,7 @@ export type DealerAuditInstanceScalarWhereWithAggregatesInput = {
   OR?: Prisma.DealerAuditInstanceScalarWhereWithAggregatesInput[]
   NOT?: Prisma.DealerAuditInstanceScalarWhereWithAggregatesInput | Prisma.DealerAuditInstanceScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"DealerAuditInstance"> | string
-  dealerUserId?: Prisma.StringWithAggregatesFilter<"DealerAuditInstance"> | string
+  businessPartnerId?: Prisma.StringWithAggregatesFilter<"DealerAuditInstance"> | string
   workspaceId?: Prisma.StringWithAggregatesFilter<"DealerAuditInstance"> | string
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeWithAggregatesFilter<"DealerAuditInstance"> | $Enums.BusinessPartnerOfficeType
   periodLabel?: Prisma.StringWithAggregatesFilter<"DealerAuditInstance"> | string
@@ -357,14 +357,14 @@ export type DealerAuditInstanceCreateInput = {
   closedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  dealer: Prisma.UserCreateNestedOneWithoutDealerAuditsAsDealerInput
+  businessPartner: Prisma.BusinessPartnerCreateNestedOneWithoutDealerAuditInstancesInput
   template: Prisma.ChecklistTemplateCreateNestedOneWithoutAuditInstancesInput
   responses?: Prisma.AuditItemResponseCreateNestedManyWithoutAuditInstanceInput
 }
 
 export type DealerAuditInstanceUncheckedCreateInput = {
   id?: string
-  dealerUserId: string
+  businessPartnerId: string
   workspaceId: string
   officeType: $Enums.BusinessPartnerOfficeType
   periodLabel: string
@@ -387,14 +387,14 @@ export type DealerAuditInstanceUpdateInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  dealer?: Prisma.UserUpdateOneRequiredWithoutDealerAuditsAsDealerNestedInput
+  businessPartner?: Prisma.BusinessPartnerUpdateOneRequiredWithoutDealerAuditInstancesNestedInput
   template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
   responses?: Prisma.AuditItemResponseUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type DealerAuditInstanceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  dealerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  businessPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   periodLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -409,7 +409,7 @@ export type DealerAuditInstanceUncheckedUpdateInput = {
 
 export type DealerAuditInstanceCreateManyInput = {
   id?: string
-  dealerUserId: string
+  businessPartnerId: string
   workspaceId: string
   officeType: $Enums.BusinessPartnerOfficeType
   periodLabel: string
@@ -435,7 +435,7 @@ export type DealerAuditInstanceUpdateManyMutationInput = {
 
 export type DealerAuditInstanceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  dealerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  businessPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   periodLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -457,15 +457,15 @@ export type DealerAuditInstanceOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type DealerAuditInstanceDealerUserIdOfficeTypePeriodLabelCompoundUniqueInput = {
-  dealerUserId: string
+export type DealerAuditInstanceBusinessPartnerIdOfficeTypePeriodLabelCompoundUniqueInput = {
+  businessPartnerId: string
   officeType: $Enums.BusinessPartnerOfficeType
   periodLabel: string
 }
 
 export type DealerAuditInstanceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  dealerUserId?: Prisma.SortOrder
+  businessPartnerId?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   officeType?: Prisma.SortOrder
   periodLabel?: Prisma.SortOrder
@@ -484,7 +484,7 @@ export type DealerAuditInstanceAvgOrderByAggregateInput = {
 
 export type DealerAuditInstanceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  dealerUserId?: Prisma.SortOrder
+  businessPartnerId?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   officeType?: Prisma.SortOrder
   periodLabel?: Prisma.SortOrder
@@ -498,7 +498,7 @@ export type DealerAuditInstanceMaxOrderByAggregateInput = {
 
 export type DealerAuditInstanceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  dealerUserId?: Prisma.SortOrder
+  businessPartnerId?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
   officeType?: Prisma.SortOrder
   periodLabel?: Prisma.SortOrder
@@ -520,45 +520,45 @@ export type DealerAuditInstanceScalarRelationFilter = {
   isNot?: Prisma.DealerAuditInstanceWhereInput
 }
 
-export type DealerAuditInstanceCreateNestedManyWithoutDealerInput = {
-  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutDealerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutDealerInput> | Prisma.DealerAuditInstanceCreateWithoutDealerInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutDealerInput[]
-  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutDealerInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutDealerInput[]
-  createMany?: Prisma.DealerAuditInstanceCreateManyDealerInputEnvelope
+export type DealerAuditInstanceCreateNestedManyWithoutBusinessPartnerInput = {
+  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutBusinessPartnerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutBusinessPartnerInput> | Prisma.DealerAuditInstanceCreateWithoutBusinessPartnerInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutBusinessPartnerInput[]
+  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutBusinessPartnerInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutBusinessPartnerInput[]
+  createMany?: Prisma.DealerAuditInstanceCreateManyBusinessPartnerInputEnvelope
   connect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
 }
 
-export type DealerAuditInstanceUncheckedCreateNestedManyWithoutDealerInput = {
-  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutDealerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutDealerInput> | Prisma.DealerAuditInstanceCreateWithoutDealerInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutDealerInput[]
-  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutDealerInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutDealerInput[]
-  createMany?: Prisma.DealerAuditInstanceCreateManyDealerInputEnvelope
+export type DealerAuditInstanceUncheckedCreateNestedManyWithoutBusinessPartnerInput = {
+  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutBusinessPartnerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutBusinessPartnerInput> | Prisma.DealerAuditInstanceCreateWithoutBusinessPartnerInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutBusinessPartnerInput[]
+  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutBusinessPartnerInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutBusinessPartnerInput[]
+  createMany?: Prisma.DealerAuditInstanceCreateManyBusinessPartnerInputEnvelope
   connect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
 }
 
-export type DealerAuditInstanceUpdateManyWithoutDealerNestedInput = {
-  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutDealerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutDealerInput> | Prisma.DealerAuditInstanceCreateWithoutDealerInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutDealerInput[]
-  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutDealerInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutDealerInput[]
-  upsert?: Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutDealerInput | Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutDealerInput[]
-  createMany?: Prisma.DealerAuditInstanceCreateManyDealerInputEnvelope
+export type DealerAuditInstanceUpdateManyWithoutBusinessPartnerNestedInput = {
+  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutBusinessPartnerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutBusinessPartnerInput> | Prisma.DealerAuditInstanceCreateWithoutBusinessPartnerInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutBusinessPartnerInput[]
+  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutBusinessPartnerInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutBusinessPartnerInput[]
+  upsert?: Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutBusinessPartnerInput | Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutBusinessPartnerInput[]
+  createMany?: Prisma.DealerAuditInstanceCreateManyBusinessPartnerInputEnvelope
   set?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
   disconnect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
   delete?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
   connect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
-  update?: Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutDealerInput | Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutDealerInput[]
-  updateMany?: Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutDealerInput | Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutDealerInput[]
+  update?: Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutBusinessPartnerInput | Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutBusinessPartnerInput[]
+  updateMany?: Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutBusinessPartnerInput | Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutBusinessPartnerInput[]
   deleteMany?: Prisma.DealerAuditInstanceScalarWhereInput | Prisma.DealerAuditInstanceScalarWhereInput[]
 }
 
-export type DealerAuditInstanceUncheckedUpdateManyWithoutDealerNestedInput = {
-  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutDealerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutDealerInput> | Prisma.DealerAuditInstanceCreateWithoutDealerInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutDealerInput[]
-  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutDealerInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutDealerInput[]
-  upsert?: Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutDealerInput | Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutDealerInput[]
-  createMany?: Prisma.DealerAuditInstanceCreateManyDealerInputEnvelope
+export type DealerAuditInstanceUncheckedUpdateManyWithoutBusinessPartnerNestedInput = {
+  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutBusinessPartnerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutBusinessPartnerInput> | Prisma.DealerAuditInstanceCreateWithoutBusinessPartnerInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutBusinessPartnerInput[]
+  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutBusinessPartnerInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutBusinessPartnerInput[]
+  upsert?: Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutBusinessPartnerInput | Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutBusinessPartnerInput[]
+  createMany?: Prisma.DealerAuditInstanceCreateManyBusinessPartnerInputEnvelope
   set?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
   disconnect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
   delete?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
   connect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
-  update?: Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutDealerInput | Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutDealerInput[]
-  updateMany?: Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutDealerInput | Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutDealerInput[]
+  update?: Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutBusinessPartnerInput | Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutBusinessPartnerInput[]
+  updateMany?: Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutBusinessPartnerInput | Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutBusinessPartnerInput[]
   deleteMany?: Prisma.DealerAuditInstanceScalarWhereInput | Prisma.DealerAuditInstanceScalarWhereInput[]
 }
 
@@ -618,7 +618,7 @@ export type DealerAuditInstanceUpdateOneRequiredWithoutResponsesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DealerAuditInstanceUpdateToOneWithWhereWithoutResponsesInput, Prisma.DealerAuditInstanceUpdateWithoutResponsesInput>, Prisma.DealerAuditInstanceUncheckedUpdateWithoutResponsesInput>
 }
 
-export type DealerAuditInstanceCreateWithoutDealerInput = {
+export type DealerAuditInstanceCreateWithoutBusinessPartnerInput = {
   id?: string
   workspaceId: string
   officeType: $Enums.BusinessPartnerOfficeType
@@ -632,7 +632,7 @@ export type DealerAuditInstanceCreateWithoutDealerInput = {
   responses?: Prisma.AuditItemResponseCreateNestedManyWithoutAuditInstanceInput
 }
 
-export type DealerAuditInstanceUncheckedCreateWithoutDealerInput = {
+export type DealerAuditInstanceUncheckedCreateWithoutBusinessPartnerInput = {
   id?: string
   workspaceId: string
   officeType: $Enums.BusinessPartnerOfficeType
@@ -646,30 +646,30 @@ export type DealerAuditInstanceUncheckedCreateWithoutDealerInput = {
   responses?: Prisma.AuditItemResponseUncheckedCreateNestedManyWithoutAuditInstanceInput
 }
 
-export type DealerAuditInstanceCreateOrConnectWithoutDealerInput = {
+export type DealerAuditInstanceCreateOrConnectWithoutBusinessPartnerInput = {
   where: Prisma.DealerAuditInstanceWhereUniqueInput
-  create: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutDealerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutDealerInput>
+  create: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutBusinessPartnerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutBusinessPartnerInput>
 }
 
-export type DealerAuditInstanceCreateManyDealerInputEnvelope = {
-  data: Prisma.DealerAuditInstanceCreateManyDealerInput | Prisma.DealerAuditInstanceCreateManyDealerInput[]
+export type DealerAuditInstanceCreateManyBusinessPartnerInputEnvelope = {
+  data: Prisma.DealerAuditInstanceCreateManyBusinessPartnerInput | Prisma.DealerAuditInstanceCreateManyBusinessPartnerInput[]
   skipDuplicates?: boolean
 }
 
-export type DealerAuditInstanceUpsertWithWhereUniqueWithoutDealerInput = {
+export type DealerAuditInstanceUpsertWithWhereUniqueWithoutBusinessPartnerInput = {
   where: Prisma.DealerAuditInstanceWhereUniqueInput
-  update: Prisma.XOR<Prisma.DealerAuditInstanceUpdateWithoutDealerInput, Prisma.DealerAuditInstanceUncheckedUpdateWithoutDealerInput>
-  create: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutDealerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutDealerInput>
+  update: Prisma.XOR<Prisma.DealerAuditInstanceUpdateWithoutBusinessPartnerInput, Prisma.DealerAuditInstanceUncheckedUpdateWithoutBusinessPartnerInput>
+  create: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutBusinessPartnerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutBusinessPartnerInput>
 }
 
-export type DealerAuditInstanceUpdateWithWhereUniqueWithoutDealerInput = {
+export type DealerAuditInstanceUpdateWithWhereUniqueWithoutBusinessPartnerInput = {
   where: Prisma.DealerAuditInstanceWhereUniqueInput
-  data: Prisma.XOR<Prisma.DealerAuditInstanceUpdateWithoutDealerInput, Prisma.DealerAuditInstanceUncheckedUpdateWithoutDealerInput>
+  data: Prisma.XOR<Prisma.DealerAuditInstanceUpdateWithoutBusinessPartnerInput, Prisma.DealerAuditInstanceUncheckedUpdateWithoutBusinessPartnerInput>
 }
 
-export type DealerAuditInstanceUpdateManyWithWhereWithoutDealerInput = {
+export type DealerAuditInstanceUpdateManyWithWhereWithoutBusinessPartnerInput = {
   where: Prisma.DealerAuditInstanceScalarWhereInput
-  data: Prisma.XOR<Prisma.DealerAuditInstanceUpdateManyMutationInput, Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutDealerInput>
+  data: Prisma.XOR<Prisma.DealerAuditInstanceUpdateManyMutationInput, Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutBusinessPartnerInput>
 }
 
 export type DealerAuditInstanceScalarWhereInput = {
@@ -677,7 +677,7 @@ export type DealerAuditInstanceScalarWhereInput = {
   OR?: Prisma.DealerAuditInstanceScalarWhereInput[]
   NOT?: Prisma.DealerAuditInstanceScalarWhereInput | Prisma.DealerAuditInstanceScalarWhereInput[]
   id?: Prisma.StringFilter<"DealerAuditInstance"> | string
-  dealerUserId?: Prisma.StringFilter<"DealerAuditInstance"> | string
+  businessPartnerId?: Prisma.StringFilter<"DealerAuditInstance"> | string
   workspaceId?: Prisma.StringFilter<"DealerAuditInstance"> | string
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFilter<"DealerAuditInstance"> | $Enums.BusinessPartnerOfficeType
   periodLabel?: Prisma.StringFilter<"DealerAuditInstance"> | string
@@ -699,13 +699,13 @@ export type DealerAuditInstanceCreateWithoutTemplateInput = {
   closedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  dealer: Prisma.UserCreateNestedOneWithoutDealerAuditsAsDealerInput
+  businessPartner: Prisma.BusinessPartnerCreateNestedOneWithoutDealerAuditInstancesInput
   responses?: Prisma.AuditItemResponseCreateNestedManyWithoutAuditInstanceInput
 }
 
 export type DealerAuditInstanceUncheckedCreateWithoutTemplateInput = {
   id?: string
-  dealerUserId: string
+  businessPartnerId: string
   workspaceId: string
   officeType: $Enums.BusinessPartnerOfficeType
   periodLabel: string
@@ -753,13 +753,13 @@ export type DealerAuditInstanceCreateWithoutResponsesInput = {
   closedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  dealer: Prisma.UserCreateNestedOneWithoutDealerAuditsAsDealerInput
+  businessPartner: Prisma.BusinessPartnerCreateNestedOneWithoutDealerAuditInstancesInput
   template: Prisma.ChecklistTemplateCreateNestedOneWithoutAuditInstancesInput
 }
 
 export type DealerAuditInstanceUncheckedCreateWithoutResponsesInput = {
   id?: string
-  dealerUserId: string
+  businessPartnerId: string
   workspaceId: string
   officeType: $Enums.BusinessPartnerOfficeType
   periodLabel: string
@@ -797,13 +797,13 @@ export type DealerAuditInstanceUpdateWithoutResponsesInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  dealer?: Prisma.UserUpdateOneRequiredWithoutDealerAuditsAsDealerNestedInput
+  businessPartner?: Prisma.BusinessPartnerUpdateOneRequiredWithoutDealerAuditInstancesNestedInput
   template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
 }
 
 export type DealerAuditInstanceUncheckedUpdateWithoutResponsesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  dealerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  businessPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   periodLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -815,7 +815,7 @@ export type DealerAuditInstanceUncheckedUpdateWithoutResponsesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type DealerAuditInstanceCreateManyDealerInput = {
+export type DealerAuditInstanceCreateManyBusinessPartnerInput = {
   id?: string
   workspaceId: string
   officeType: $Enums.BusinessPartnerOfficeType
@@ -828,7 +828,7 @@ export type DealerAuditInstanceCreateManyDealerInput = {
   updatedAt?: Date | string
 }
 
-export type DealerAuditInstanceUpdateWithoutDealerInput = {
+export type DealerAuditInstanceUpdateWithoutBusinessPartnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
@@ -842,7 +842,7 @@ export type DealerAuditInstanceUpdateWithoutDealerInput = {
   responses?: Prisma.AuditItemResponseUpdateManyWithoutAuditInstanceNestedInput
 }
 
-export type DealerAuditInstanceUncheckedUpdateWithoutDealerInput = {
+export type DealerAuditInstanceUncheckedUpdateWithoutBusinessPartnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
@@ -856,7 +856,7 @@ export type DealerAuditInstanceUncheckedUpdateWithoutDealerInput = {
   responses?: Prisma.AuditItemResponseUncheckedUpdateManyWithoutAuditInstanceNestedInput
 }
 
-export type DealerAuditInstanceUncheckedUpdateManyWithoutDealerInput = {
+export type DealerAuditInstanceUncheckedUpdateManyWithoutBusinessPartnerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
@@ -871,7 +871,7 @@ export type DealerAuditInstanceUncheckedUpdateManyWithoutDealerInput = {
 
 export type DealerAuditInstanceCreateManyTemplateInput = {
   id?: string
-  dealerUserId: string
+  businessPartnerId: string
   workspaceId: string
   officeType: $Enums.BusinessPartnerOfficeType
   periodLabel: string
@@ -892,13 +892,13 @@ export type DealerAuditInstanceUpdateWithoutTemplateInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  dealer?: Prisma.UserUpdateOneRequiredWithoutDealerAuditsAsDealerNestedInput
+  businessPartner?: Prisma.BusinessPartnerUpdateOneRequiredWithoutDealerAuditInstancesNestedInput
   responses?: Prisma.AuditItemResponseUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type DealerAuditInstanceUncheckedUpdateWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  dealerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  businessPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   periodLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -912,7 +912,7 @@ export type DealerAuditInstanceUncheckedUpdateWithoutTemplateInput = {
 
 export type DealerAuditInstanceUncheckedUpdateManyWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  dealerUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  businessPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   periodLabel?: Prisma.StringFieldUpdateOperationsInput | string
@@ -956,7 +956,7 @@ export type DealerAuditInstanceCountOutputTypeCountResponsesArgs<ExtArgs extends
 
 export type DealerAuditInstanceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  dealerUserId?: boolean
+  businessPartnerId?: boolean
   workspaceId?: boolean
   officeType?: boolean
   periodLabel?: boolean
@@ -966,7 +966,7 @@ export type DealerAuditInstanceSelect<ExtArgs extends runtime.Types.Extensions.I
   closedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  dealer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
   responses?: boolean | Prisma.DealerAuditInstance$responsesArgs<ExtArgs>
   _count?: boolean | Prisma.DealerAuditInstanceCountOutputTypeDefaultArgs<ExtArgs>
@@ -974,7 +974,7 @@ export type DealerAuditInstanceSelect<ExtArgs extends runtime.Types.Extensions.I
 
 export type DealerAuditInstanceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  dealerUserId?: boolean
+  businessPartnerId?: boolean
   workspaceId?: boolean
   officeType?: boolean
   periodLabel?: boolean
@@ -984,13 +984,13 @@ export type DealerAuditInstanceSelectCreateManyAndReturn<ExtArgs extends runtime
   closedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  dealer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["dealerAuditInstance"]>
 
 export type DealerAuditInstanceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  dealerUserId?: boolean
+  businessPartnerId?: boolean
   workspaceId?: boolean
   officeType?: boolean
   periodLabel?: boolean
@@ -1000,13 +1000,13 @@ export type DealerAuditInstanceSelectUpdateManyAndReturn<ExtArgs extends runtime
   closedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  dealer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["dealerAuditInstance"]>
 
 export type DealerAuditInstanceSelectScalar = {
   id?: boolean
-  dealerUserId?: boolean
+  businessPartnerId?: boolean
   workspaceId?: boolean
   officeType?: boolean
   periodLabel?: boolean
@@ -1018,32 +1018,32 @@ export type DealerAuditInstanceSelectScalar = {
   updatedAt?: boolean
 }
 
-export type DealerAuditInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "dealerUserId" | "workspaceId" | "officeType" | "periodLabel" | "checklistTemplateId" | "finalScore" | "maxScore" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["dealerAuditInstance"]>
+export type DealerAuditInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "businessPartnerId" | "workspaceId" | "officeType" | "periodLabel" | "checklistTemplateId" | "finalScore" | "maxScore" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["dealerAuditInstance"]>
 export type DealerAuditInstanceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  dealer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
   responses?: boolean | Prisma.DealerAuditInstance$responsesArgs<ExtArgs>
   _count?: boolean | Prisma.DealerAuditInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DealerAuditInstanceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  dealer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
 }
 export type DealerAuditInstanceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  dealer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
 }
 
 export type $DealerAuditInstancePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "DealerAuditInstance"
   objects: {
-    dealer: Prisma.$UserPayload<ExtArgs>
+    businessPartner: Prisma.$BusinessPartnerPayload<ExtArgs>
     template: Prisma.$ChecklistTemplatePayload<ExtArgs>
     responses: Prisma.$AuditItemResponsePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    dealerUserId: string
+    businessPartnerId: string
     workspaceId: string
     officeType: $Enums.BusinessPartnerOfficeType
     periodLabel: string
@@ -1447,7 +1447,7 @@ readonly fields: DealerAuditInstanceFieldRefs;
  */
 export interface Prisma__DealerAuditInstanceClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  dealer<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  businessPartner<T extends Prisma.BusinessPartnerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartnerDefaultArgs<ExtArgs>>): Prisma.Prisma__BusinessPartnerClient<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   template<T extends Prisma.ChecklistTemplateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChecklistTemplateDefaultArgs<ExtArgs>>): Prisma.Prisma__ChecklistTemplateClient<runtime.Types.Result.GetResult<Prisma.$ChecklistTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   responses<T extends Prisma.DealerAuditInstance$responsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DealerAuditInstance$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditItemResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1480,7 +1480,7 @@ export interface Prisma__DealerAuditInstanceClient<T, Null = never, ExtArgs exte
  */
 export interface DealerAuditInstanceFieldRefs {
   readonly id: Prisma.FieldRef<"DealerAuditInstance", 'String'>
-  readonly dealerUserId: Prisma.FieldRef<"DealerAuditInstance", 'String'>
+  readonly businessPartnerId: Prisma.FieldRef<"DealerAuditInstance", 'String'>
   readonly workspaceId: Prisma.FieldRef<"DealerAuditInstance", 'String'>
   readonly officeType: Prisma.FieldRef<"DealerAuditInstance", 'BusinessPartnerOfficeType'>
   readonly periodLabel: Prisma.FieldRef<"DealerAuditInstance", 'String'>
