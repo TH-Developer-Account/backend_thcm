@@ -51,6 +51,7 @@ export type UserMinAggregateOutputType = {
   isDefaultContact: boolean | null
   userType: string | null
   joinedOn: Date | null
+  grade: string | null
   businessPartnerId: string | null
   created_at: Date | null
   updated_at: Date | null
@@ -83,6 +84,7 @@ export type UserMaxAggregateOutputType = {
   isDefaultContact: boolean | null
   userType: string | null
   joinedOn: Date | null
+  grade: string | null
   businessPartnerId: string | null
   created_at: Date | null
   updated_at: Date | null
@@ -115,6 +117,7 @@ export type UserCountAggregateOutputType = {
   isDefaultContact: number
   userType: number
   joinedOn: number
+  grade: number
   businessPartnerId: number
   created_at: number
   updated_at: number
@@ -149,6 +152,7 @@ export type UserMinAggregateInputType = {
   isDefaultContact?: true
   userType?: true
   joinedOn?: true
+  grade?: true
   businessPartnerId?: true
   created_at?: true
   updated_at?: true
@@ -181,6 +185,7 @@ export type UserMaxAggregateInputType = {
   isDefaultContact?: true
   userType?: true
   joinedOn?: true
+  grade?: true
   businessPartnerId?: true
   created_at?: true
   updated_at?: true
@@ -213,6 +218,7 @@ export type UserCountAggregateInputType = {
   isDefaultContact?: true
   userType?: true
   joinedOn?: true
+  grade?: true
   businessPartnerId?: true
   created_at?: true
   updated_at?: true
@@ -318,6 +324,7 @@ export type UserGroupByOutputType = {
   isDefaultContact: boolean
   userType: string | null
   joinedOn: Date | null
+  grade: string | null
   businessPartnerId: string | null
   created_at: Date
   updated_at: Date
@@ -371,6 +378,7 @@ export type UserWhereInput = {
   isDefaultContact?: Prisma.BoolFilter<"User"> | boolean
   userType?: Prisma.StringNullableFilter<"User"> | string | null
   joinedOn?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  grade?: Prisma.StringNullableFilter<"User"> | string | null
   businessPartnerId?: Prisma.StringNullableFilter<"User"> | string | null
   created_at?: Prisma.DateTimeFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -424,6 +432,7 @@ export type UserOrderByWithRelationInput = {
   isDefaultContact?: Prisma.SortOrder
   userType?: Prisma.SortOrderInput | Prisma.SortOrder
   joinedOn?: Prisma.SortOrderInput | Prisma.SortOrder
+  grade?: Prisma.SortOrderInput | Prisma.SortOrder
   businessPartnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -480,6 +489,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   isDefaultContact?: Prisma.BoolFilter<"User"> | boolean
   userType?: Prisma.StringNullableFilter<"User"> | string | null
   joinedOn?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  grade?: Prisma.StringNullableFilter<"User"> | string | null
   businessPartnerId?: Prisma.StringNullableFilter<"User"> | string | null
   created_at?: Prisma.DateTimeFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -533,6 +543,7 @@ export type UserOrderByWithAggregationInput = {
   isDefaultContact?: Prisma.SortOrder
   userType?: Prisma.SortOrderInput | Prisma.SortOrder
   joinedOn?: Prisma.SortOrderInput | Prisma.SortOrder
+  grade?: Prisma.SortOrderInput | Prisma.SortOrder
   businessPartnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -571,6 +582,7 @@ export type UserScalarWhereWithAggregatesInput = {
   isDefaultContact?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   userType?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   joinedOn?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  grade?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   businessPartnerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -603,6 +615,7 @@ export type UserCreateInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -655,6 +668,7 @@ export type UserUncheckedCreateInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -707,6 +721,7 @@ export type UserUpdateInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -759,6 +774,7 @@ export type UserUncheckedUpdateInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -811,6 +827,7 @@ export type UserCreateManyInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -843,6 +860,7 @@ export type UserUpdateManyMutationInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -874,6 +892,7 @@ export type UserUncheckedUpdateManyInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -906,6 +925,7 @@ export type UserCountOrderByAggregateInput = {
   isDefaultContact?: Prisma.SortOrder
   userType?: Prisma.SortOrder
   joinedOn?: Prisma.SortOrder
+  grade?: Prisma.SortOrder
   businessPartnerId?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -938,6 +958,7 @@ export type UserMaxOrderByAggregateInput = {
   isDefaultContact?: Prisma.SortOrder
   userType?: Prisma.SortOrder
   joinedOn?: Prisma.SortOrder
+  grade?: Prisma.SortOrder
   businessPartnerId?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -970,6 +991,7 @@ export type UserMinOrderByAggregateInput = {
   isDefaultContact?: Prisma.SortOrder
   userType?: Prisma.SortOrder
   joinedOn?: Prisma.SortOrder
+  grade?: Prisma.SortOrder
   businessPartnerId?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -1368,6 +1390,7 @@ export type UserCreateWithoutPassword_reset_tokensInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -1419,6 +1442,7 @@ export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -1486,6 +1510,7 @@ export type UserUpdateWithoutPassword_reset_tokensInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -1537,6 +1562,7 @@ export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1588,6 +1614,7 @@ export type UserCreateWithoutRefresh_tokensInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -1639,6 +1666,7 @@ export type UserUncheckedCreateWithoutRefresh_tokensInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -1706,6 +1734,7 @@ export type UserUpdateWithoutRefresh_tokensInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -1757,6 +1786,7 @@ export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1808,6 +1838,7 @@ export type UserCreateWithoutWorkspaceUsersInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -1859,6 +1890,7 @@ export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -1926,6 +1958,7 @@ export type UserUpdateWithoutWorkspaceUsersInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -1977,6 +2010,7 @@ export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2028,6 +2062,7 @@ export type UserCreateWithoutUserProfilesInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -2079,6 +2114,7 @@ export type UserUncheckedCreateWithoutUserProfilesInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -2146,6 +2182,7 @@ export type UserUpdateWithoutUserProfilesInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -2197,6 +2234,7 @@ export type UserUncheckedUpdateWithoutUserProfilesInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2248,6 +2286,7 @@ export type UserCreateWithoutCreated_event_proposalsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -2299,6 +2338,7 @@ export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -2355,6 +2395,7 @@ export type UserCreateWithoutUpdated_event_proposalsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -2406,6 +2447,7 @@ export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -2473,6 +2515,7 @@ export type UserUpdateWithoutCreated_event_proposalsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -2524,6 +2567,7 @@ export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2586,6 +2630,7 @@ export type UserUpdateWithoutUpdated_event_proposalsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -2637,6 +2682,7 @@ export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2688,6 +2734,7 @@ export type UserCreateWithoutCreated_workflowInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -2739,6 +2786,7 @@ export type UserUncheckedCreateWithoutCreated_workflowInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -2795,6 +2843,7 @@ export type UserCreateWithoutUpdated_workflowInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -2846,6 +2895,7 @@ export type UserUncheckedCreateWithoutUpdated_workflowInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -2913,6 +2963,7 @@ export type UserUpdateWithoutCreated_workflowInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -2964,6 +3015,7 @@ export type UserUncheckedUpdateWithoutCreated_workflowInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3026,6 +3078,7 @@ export type UserUpdateWithoutUpdated_workflowInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -3077,6 +3130,7 @@ export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3128,6 +3182,7 @@ export type UserCreateWithoutTemplateApprovalsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -3179,6 +3234,7 @@ export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -3246,6 +3302,7 @@ export type UserUpdateWithoutTemplateApprovalsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -3297,6 +3354,7 @@ export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3348,6 +3406,7 @@ export type UserCreateWithoutApprovalsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -3399,6 +3458,7 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -3466,6 +3526,7 @@ export type UserUpdateWithoutApprovalsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -3517,6 +3578,7 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3568,6 +3630,7 @@ export type UserCreateWithoutWorkFlowUsersInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -3619,6 +3682,7 @@ export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -3686,6 +3750,7 @@ export type UserUpdateWithoutWorkFlowUsersInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -3737,6 +3802,7 @@ export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3788,6 +3854,7 @@ export type UserCreateWithoutActivityLogsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -3839,6 +3906,7 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -3906,6 +3974,7 @@ export type UserUpdateWithoutActivityLogsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -3957,6 +4026,7 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4008,6 +4078,7 @@ export type UserCreateWithoutCommentsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -4059,6 +4130,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -4126,6 +4198,7 @@ export type UserUpdateWithoutCommentsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -4177,6 +4250,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4228,6 +4302,7 @@ export type UserCreateWithoutReportValidationsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -4279,6 +4354,7 @@ export type UserUncheckedCreateWithoutReportValidationsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -4346,6 +4422,7 @@ export type UserUpdateWithoutReportValidationsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -4397,6 +4474,7 @@ export type UserUncheckedUpdateWithoutReportValidationsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4448,6 +4526,7 @@ export type UserCreateWithoutImportExportLogsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -4499,6 +4578,7 @@ export type UserUncheckedCreateWithoutImportExportLogsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -4566,6 +4646,7 @@ export type UserUpdateWithoutImportExportLogsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -4617,6 +4698,7 @@ export type UserUncheckedUpdateWithoutImportExportLogsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4668,6 +4750,7 @@ export type UserCreateWithoutNotificationsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -4719,6 +4802,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -4786,6 +4870,7 @@ export type UserUpdateWithoutNotificationsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -4837,6 +4922,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4888,6 +4974,7 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -4939,6 +5026,7 @@ export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -5006,6 +5094,7 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -5057,6 +5146,7 @@ export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5108,6 +5198,7 @@ export type UserCreateWithoutInitiated_vendor_onboardingsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -5159,6 +5250,7 @@ export type UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -5226,6 +5318,7 @@ export type UserUpdateWithoutInitiated_vendor_onboardingsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -5277,6 +5370,7 @@ export type UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5328,6 +5422,7 @@ export type UserCreateWithoutInitiated_medical_claimsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -5379,6 +5474,7 @@ export type UserUncheckedCreateWithoutInitiated_medical_claimsInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -5446,6 +5542,7 @@ export type UserUpdateWithoutInitiated_medical_claimsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -5497,6 +5594,7 @@ export type UserUncheckedUpdateWithoutInitiated_medical_claimsInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5548,6 +5646,7 @@ export type UserCreateWithoutBusinessPartnerInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -5599,6 +5698,7 @@ export type UserUncheckedCreateWithoutBusinessPartnerInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -5679,6 +5779,7 @@ export type UserScalarWhereInput = {
   isDefaultContact?: Prisma.BoolFilter<"User"> | boolean
   userType?: Prisma.StringNullableFilter<"User"> | string | null
   joinedOn?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  grade?: Prisma.StringNullableFilter<"User"> | string | null
   businessPartnerId?: Prisma.StringNullableFilter<"User"> | string | null
   created_at?: Prisma.DateTimeFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
@@ -5711,6 +5812,7 @@ export type UserCreateWithoutBusinessPartnerContactInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
@@ -5762,6 +5864,7 @@ export type UserUncheckedCreateWithoutBusinessPartnerContactInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   businessPartnerId?: string | null
   created_at?: Date | string
   updated_at?: Date | string
@@ -5829,6 +5932,7 @@ export type UserUpdateWithoutBusinessPartnerContactInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
@@ -5880,6 +5984,7 @@ export type UserUncheckedUpdateWithoutBusinessPartnerContactInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5931,6 +6036,7 @@ export type UserCreateManyBusinessPartnerInput = {
   isDefaultContact?: boolean
   userType?: string | null
   joinedOn?: Date | string | null
+  grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -5962,6 +6068,7 @@ export type UserUpdateWithoutBusinessPartnerInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -6013,6 +6120,7 @@ export type UserUncheckedUpdateWithoutBusinessPartnerInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -6064,6 +6172,7 @@ export type UserUncheckedUpdateManyWithoutBusinessPartnerInput = {
   isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -6297,6 +6406,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   isDefaultContact?: boolean
   userType?: boolean
   joinedOn?: boolean
+  grade?: boolean
   businessPartnerId?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -6351,6 +6461,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isDefaultContact?: boolean
   userType?: boolean
   joinedOn?: boolean
+  grade?: boolean
   businessPartnerId?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -6384,6 +6495,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   isDefaultContact?: boolean
   userType?: boolean
   joinedOn?: boolean
+  grade?: boolean
   businessPartnerId?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -6417,12 +6529,13 @@ export type UserSelectScalar = {
   isDefaultContact?: boolean
   userType?: boolean
   joinedOn?: boolean
+  grade?: boolean
   businessPartnerId?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "first_name" | "last_name" | "email" | "phone_number" | "password" | "is_active" | "is_default_login" | "employeeCode" | "bydId" | "s4Id" | "tallyId" | "c4cId" | "region" | "address" | "zone" | "branch" | "department" | "role" | "designation" | "vertical" | "managerCode1" | "managerCode2" | "isDefaultContact" | "userType" | "joinedOn" | "businessPartnerId" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "first_name" | "last_name" | "email" | "phone_number" | "password" | "is_active" | "is_default_login" | "employeeCode" | "bydId" | "s4Id" | "tallyId" | "c4cId" | "region" | "address" | "zone" | "branch" | "department" | "role" | "designation" | "vertical" | "managerCode1" | "managerCode2" | "isDefaultContact" | "userType" | "joinedOn" | "grade" | "businessPartnerId" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   businessPartner?: boolean | Prisma.User$businessPartnerArgs<ExtArgs>
   refresh_tokens?: boolean | Prisma.User$refresh_tokensArgs<ExtArgs>
@@ -6506,6 +6619,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     isDefaultContact: boolean
     userType: string | null
     joinedOn: Date | null
+    grade: string | null
     businessPartnerId: string | null
     created_at: Date
     updated_at: Date
@@ -6979,6 +7093,7 @@ export interface UserFieldRefs {
   readonly isDefaultContact: Prisma.FieldRef<"User", 'Boolean'>
   readonly userType: Prisma.FieldRef<"User", 'String'>
   readonly joinedOn: Prisma.FieldRef<"User", 'DateTime'>
+  readonly grade: Prisma.FieldRef<"User", 'String'>
   readonly businessPartnerId: Prisma.FieldRef<"User", 'String'>
   readonly created_at: Prisma.FieldRef<"User", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"User", 'DateTime'>

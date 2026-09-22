@@ -205,6 +205,7 @@ model User {
   isDefaultContact Boolean             @default(false)
   userType         String? // reuses the existing THCM/DEALER/CUSTOMER enum — nullable since not every User is one of these
   joinedOn         DateTime?
+  grade            String?
 
   // Dealer users only — links to the Company code on the source row,
   // matched against BusinessPartner.internalId. Null for THCM/other users.

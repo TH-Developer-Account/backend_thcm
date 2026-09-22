@@ -4219,6 +4219,7 @@ export const UserScalarFieldEnum = {
   isDefaultContact: 'isDefaultContact',
   userType: 'userType',
   joinedOn: 'joinedOn',
+  grade: 'grade',
   businessPartnerId: 'businessPartnerId',
   created_at: 'created_at',
   updated_at: 'updated_at'
