@@ -270,6 +270,7 @@ export async function createUser(req: Request, res: Response) {
     isDefaultContact,
     userType,
     joinedOn,
+    grade,
     businessPartnerId,
   } = req.body;
 
@@ -325,6 +326,7 @@ export async function createUser(req: Request, res: Response) {
         userType,
         joinedOn: joinedOn ? new Date(joinedOn) : undefined,
         businessPartnerId,
+        grade,
       },
     });
 
