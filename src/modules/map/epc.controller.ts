@@ -9,7 +9,11 @@ import { getValidatorForApp } from "@shared/utils/validators.constant";
 import { addMailJob } from "@kernel/mail/mail.service";
 
 import { searchEventProposals } from "./helpers/searchEventProposal.helper";
-import { getActiveWorkflowForSubject } from "@workflow/workflowSubject.helper";
+import {
+  getActiveWorkflowForSubject,
+  getPendingOnForMany,
+  computePendingOn,
+} from "@workflow/workflowSubject.helper";
 
 const OUTCOME_STATUSES = new Set(["CONDUCTED", "CANCELLED"]);
 
@@ -196,9 +200,17 @@ export const getAllEventProposals = async (
       createdDate: createdDate ? new Date(createdDate as string) : undefined,
     });
 
+    const pendingOnBySubjectId = await getPendingOnForMany(
+      "EVENT_PROPOSAL",
+      data.map((row) => row.id),
+    );
+
     res.status(200).json({
       success: true,
-      data,
+      data: data.map((row) => ({
+        ...row,
+        pendingOn: pendingOnBySubjectId[row.id],
+      })),
       pagination: {
         total,
         page: pageNumber,
@@ -245,6 +257,7 @@ export const getEventProposalById = async (
     const response = {
       ...epc,
       activeWorkflow: activeWorkflow ?? null,
+      pendingOn: computePendingOn(activeWorkflow),
     };
 
     res.status(200).json({ success: true, data: response });

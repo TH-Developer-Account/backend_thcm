@@ -5,7 +5,6 @@ import { Prisma } from "../../prisma/generated/prisma/client";
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import {
-  REQUIRED_VENDOR_DOCUMENT_TYPES,
   ALL_VENDOR_DOCUMENT_TYPES,
   getRequiredVendorDocumentTypes,
   parseBooleanFormField,
@@ -15,7 +14,7 @@ import { getSignedImageUrl, uploadToS3 } from "@shared/utils/aws-s3.services";
 import { notify } from "@notifications/notification.services";
 import { resolveWorkspaceId } from "@import-export/export.controller";
 import { getOrGeneratePdfUrl } from "@pdf/pdf.services";
-import { buildXlsxBuffer, XlsxRow } from "@import-export/utils/xlsxWriter";
+import { buildXlsxBuffer } from "@import-export/utils/xlsxWriter";
 
 import { addMailJob } from "@mail/mail.service";
 
@@ -24,7 +23,12 @@ import {
   markAccessTokenUsed,
 } from "@shared/services/accessToken.services";
 
-import { getActiveWorkflowForSubject } from "@workflow/workflowSubject.helper";
+import {
+  getActiveWorkflowForSubject,
+  getPendingOnForMany,
+  resolveVendorOnboardingPendingOn,
+  computePendingOn,
+} from "@workflow/workflowSubject.helper";
 import {
   buildVendorOnboardingWhereClause,
   parseVendorListingPaginationParams,
@@ -250,9 +254,22 @@ export const listVendorOnboardings = async (
       prisma.vendorOnboarding.count({ where }),
     ]);
 
+    const pendingOnBySubjectId = await getPendingOnForMany(
+      "VENDOR_ONBOARDING",
+      rows.map((r) => r.id),
+    );
+
+    const rowsWithPendingOn = rows.map((row) => ({
+      ...row,
+      pendingOn: resolveVendorOnboardingPendingOn(
+        row.status,
+        pendingOnBySubjectId[row.id],
+      ),
+    }));
+
     res.status(200).json({
       success: true,
-      data: { rows, totalCount, pageIndex, pageSize },
+      data: { rows: rowsWithPendingOn, totalCount, pageIndex, pageSize },
     });
   } catch (error) {
     next(error);
@@ -293,6 +310,11 @@ export const getVendorOnboardingById = async (
       id as string,
     );
 
+    const pendingOn = resolveVendorOnboardingPendingOn(
+      onboarding.status,
+      computePendingOn(activeWorkflow),
+    );
+
     // Vendor hasn't submitted yet (still drafting or hasn't started) — no
     // point signing S3 URLs for documents that shouldn't be shown, and a
     // pre-submission record has none attached via the draft path anyway.
@@ -322,6 +344,7 @@ export const getVendorOnboardingById = async (
         documents: documentsWithSignedUrls,
         created_by: initiatedBy,
         activeWorkflow,
+        pendingOn,
       },
     });
   } catch (error) {
