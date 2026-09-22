@@ -82,17 +82,29 @@ const notificationMetaResolvers: Record<
     const instance = await prisma.dealerAuditInstance.findUnique({
       where: { id: subjectId },
       select: {
-        dealerUserId: true,
         periodLabel: true,
-        dealer: { select: { first_name: true, last_name: true } },
+        businessPartner: {
+          select: {
+            bpName: true,
+            // Same "primary contact" resolution as workflowSubject.helper.ts's
+            // getSubjectOwnerId — the instance belongs to the dealership, not
+            // a single User, so its notification owner is the dealership's
+            // designated primary contact.
+            users: {
+              where: { isDefaultContact: true, is_active: true },
+              select: { id: true },
+              take: 1,
+            },
+          },
+        },
       },
     });
     if (!instance) return null;
 
     return {
-      ownerId: instance.dealerUserId,
-      displayLabel: `Dealer Audit — ${instance.dealer.first_name} ${instance.dealer.last_name} (${instance.periodLabel})`,
-      link: `/dealer-audit/instances/${subjectId}`,
+      ownerId: instance.businessPartner.users[0]?.id ?? null,
+      displayLabel: `Dealer Audit — ${instance.businessPartner.bpName} (${instance.periodLabel})`,
+      link: `/dealer-audit/${subjectId}`,
     };
   },
 
