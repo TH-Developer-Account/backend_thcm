@@ -16,6 +16,11 @@ import {
   DealerAuditPdfData,
 } from "@dealerAudit/dealerAuditAssembler";
 import { buildDealerAuditDocDefinition } from "@dealerAudit/dealerAuditDocDefination";
+import {
+  assembleFactoryAuditPdfData,
+  FactoryAuditPdfData,
+} from "@factoryAudit/factoryAuditAssembler";
+import { buildFactoryAuditDocDefinition } from "@factoryAudit/factoryAuditDocDefination";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PDF DOCUMENT REGISTRY
@@ -30,7 +35,8 @@ export type PdfDocumentType =
   | "VENDOR_ONBOARDING"
   | "MEDICAL_CLAIM"
   | "EVENT_PROPOSAL"
-  | "DEALER_AUDIT";
+  | "DEALER_AUDIT"
+  | "FACTORY_AUDIT";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface PdfDocumentDefinition<TData = any> {
@@ -66,6 +72,12 @@ export const pdfDocumentRegistry: Record<
     buildDocDefinition: (data: DealerAuditPdfData) =>
       buildDealerAuditDocDefinition(data),
     buildS3Key: (instanceId: string) => `dealer-audit-pdfs/${instanceId}.pdf`,
+  },
+  FACTORY_AUDIT: {
+    assembleData: assembleFactoryAuditPdfData,
+    buildDocDefinition: (data: FactoryAuditPdfData) =>
+      buildFactoryAuditDocDefinition(data),
+    buildS3Key: (instanceId: string) => `factory-audit-pdfs/${instanceId}.pdf`,
   },
 };
 

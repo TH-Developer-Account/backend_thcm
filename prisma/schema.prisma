@@ -295,10 +295,9 @@ model User {
   importExportLogs ImportExportLog[]
   businessPartnerContact BusinessPartnerContact[]
   uploadedEvidence              Evidence[]                                                         
-  factoryAuditRoundsTriggered   AuditRound[]              @relation("FactoryAuditRoundTriggeredBy") 
-  factoryAuditAssignments       AuditAssignment[]         @relation("FactoryAuditAssignmentAuditor")
   factoryCheckpointReviews      AuditCheckpointResult[]   @relation("FactoryAuditCheckpointReviewer")
   factoryAuditInstancesCreated  FactoryAuditInstance[]    @relation("FactoryAuditInstanceCreatedBy")
+  factoryAuditAssignments       AuditAssignment[]         @relation("FactoryAuditAssignmentAuditor")
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -1417,19 +1416,6 @@ model Evidence {
 // (decisions-and-architecture.md) — kept minimal; not today's focus.
 // ─────────────────────────────────────────────
 
-model Supplier {
-  id       String  @id @default(uuid())
-  name     String
-  code     String  @unique
-  isActive Boolean @default(true)
-  currentClassificationBandId    String?
-  currentClassificationDecidedAt DateTime?
-
-  currentClassificationBand FactoryClassificationBand? @relation(fields: [currentClassificationBandId], references: [id])
-
-  auditInstances FactoryAuditInstance[]
-}
-
 model ChecklistTemplate {
   id         String     @id @default(uuid())
   name       String
@@ -1507,6 +1493,19 @@ model AuditItemResponse {
   @@unique([auditInstanceId, itemId, iteration])
 }
 
+model Supplier {
+  id       String  @id @default(uuid())
+  name     String
+  code     String  @unique
+  isActive Boolean @default(true)
+  processCategory String
+  currentClassificationBandLabel String?
+  currentClassificationQualifiesFor PartCategory[]
+  currentClassificationDecidedAt DateTime?
+
+  auditInstances FactoryAuditInstance[]
+}
+
 model FactoryAuditTemplate {
   id             String  @id @default(uuid())
   processCategory String // e.g. "Forging", "Machining"
@@ -1553,176 +1552,110 @@ model FactoryAuditCheckpoint {
   checkPoint       String
   weight           Float
   requiresEvidence Boolean @default(true)
+  criteria Json
 
   section       FactoryAuditSection       @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  rubricLevels  CheckpointRubricLevel[]
-  responses     AuditResponse[]
+  responses     FactoryAuditResponse[]
   results       AuditCheckpointResult[]
-  roundScopes   AuditRoundCheckpointScope[]
-  assignmentScopes AuditAssignmentCheckpoint[]
 
   @@unique([sectionId, order])
 }
 
-// Bespoke per checkpoint — every checkpoint's five level descriptions are
-// unique text, never reused across checkpoints, confirmed from all six
-// checksheets inspected.
-model CheckpointRubricLevel {
-  id           String @id @default(uuid())
-  checkpointId String
-  level        Int    // 0–4
-  description  String
-
-  checkpoint FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id], onDelete: Cascade)
-
-  @@unique([checkpointId, level])
+enum FactoryAuditInstanceType {
+  INITIAL   // the original scheduled audit — parentId is null
+  REOPEN    // capped (reopenUsed) re-evaluation after a failed initial audit
+  SUB_AUDIT // uncapped re-evaluation scoped to reviewer-flagged checkpoints only
 }
-
-// Global, not per-template — identical across all six checksheets checked.
-model FactoryClassificationBand {
-  id      String @id @default(uuid())
-  label   String // e.g. "Very Good", "Good", "Average", "No Approval"
-  minPercent Float
-  maxPercent Float
-
-  // Which part categories a vendor lands here is qualified to supply.
-  qualifiesFor PartCategory[]
-  currentForSuppliers Supplier[]
-
-  history VendorClassificationHistory[]
-
-  @@unique([label])
-}
-
 model FactoryAuditInstance {
   id                   String   @id @default(uuid())
+  workspaceId         String
+  parentId             String?  // null for the root (type: INITIAL)
+  type                 FactoryAuditInstanceType @default(INITIAL)
   vendorId             String
-  templateId           String   // snapshotted at creation
-  evaluationState      EvaluationState @default(NEW)
+  templateId           String   
+  createdByUserId      String
   targetPartCategories PartCategory[]  // which categories this audit is being run against
-  reopenUsed           Boolean  @default(false) // enforces the one-time reopen cap
-  createdByUserId      String 
+  reopenUsed           Boolean  @default(false) // one-time reopen cap; only meaningful/checked on the root row
+  closedAt             DateTime?
+  scopedCheckpointIds String[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  vendor   Supplier             @relation(fields: [vendorId], references: [id])
-  template FactoryAuditTemplate @relation(fields: [templateId], references: [id])
-  rounds   AuditRound[]
+  vendor    Supplier             @relation(fields: [vendorId], references: [id])
+  template  FactoryAuditTemplate @relation(fields: [templateId], references: [id])
+  createdBy User                 @relation("FactoryAuditInstanceCreatedBy", fields: [createdByUserId], references: [id])
+
+  parent   FactoryAuditInstance?  @relation("FactoryAuditInstanceRounds", fields: [parentId], references: [id])
+  children FactoryAuditInstance[] @relation("FactoryAuditInstanceRounds")
+
+  assignments AuditAssignment[]
+  results     AuditCheckpointResult[]
   classificationHistory VendorClassificationHistory[]
-  createdBy User   @relation("FactoryAuditInstanceCreatedBy", fields: [createdByUserId], references: [id])
 
   // No stored status field — lifecycle is read off the linked WorkflowInstance(s)
-  // via (subjectType: FACTORY_AUDIT_INSTANCE, subjectId: this.id).
-}
+  // via (subjectType: FACTORY_AUDIT_INSTANCE, subjectId: this.id) — per row,
+  // so each round has its own independently-tracked approval lifecycle.
 
-// One row per scoring round: the initial audit, a capped fail-reopen, or an
-// uncapped remarks sub-audit. Distinguishing WHY a round exists in one place
-// rather than scattering trigger logic across other tables.
-model AuditRound {
-  id              String   @id @default(uuid())
-  auditInstanceId String
-  roundNumber     Int
-  triggerReason   RoundTriggerReason
-  triggeredByUserId String? // null for the initial round (system-scheduled, not human-triggered)
-  openedAt        DateTime @default(now())
-  closedAt        DateTime?
-
-  auditInstance FactoryAuditInstance @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
-  triggeredBy   User?                @relation("FactoryAuditRoundTriggeredBy", fields: [triggeredByUserId], references: [id])
-
-  checkpointScope AuditRoundCheckpointScope[]
-  assignments     AuditAssignment[]
-  results         AuditCheckpointResult[]
-  classificationHistory VendorClassificationHistory[]
-
-  @@unique([auditInstanceId, roundNumber])
-}
-
-// Which checkpoints are in play for a given round — all of them for round 1,
-// only the failed/remarked subset for later rounds.
-model AuditRoundCheckpointScope {
-  id           String @id @default(uuid())
-  roundId      String
-  checkpointId String
-
-  round      AuditRound             @relation(fields: [roundId], references: [id], onDelete: Cascade)
-  checkpoint FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id])
-
-  @@unique([roundId, checkpointId])
+  @@index([parentId])
 }
 
 model AuditAssignment {
-  id         String            @id @default(uuid())
-  roundId    String
-  auditorId  String
-  role       AuditorRole
-  status     AssignmentStatus  @default(ASSIGNED)
-
-  // Self-reference for the reassignment audit trail — the superseded
-  // assignment is kept as-is for history, a new row is created for the
-  // replacement auditor covering only the checkpoints not yet submitted.
+  id              String            @id @default(uuid())
+  auditInstanceId String
+  auditorId       String
+  role            AuditorRole
+  status          AssignmentStatus  @default(ASSIGNED)
   reassignedFromId String?
 
-  round        AuditRound              @relation(fields: [roundId], references: [id], onDelete: Cascade)
-  auditor      User                    @relation("FactoryAuditAssignmentAuditor", fields: [auditorId], references: [id])
-  reassignedFrom AuditAssignment?      @relation("AssignmentReassignment", fields: [reassignedFromId], references: [id])
-  reassignedTo   AuditAssignment[]     @relation("AssignmentReassignment")
+  auditInstance  FactoryAuditInstance @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
+  auditor        User                 @relation("FactoryAuditAssignmentAuditor", fields: [auditorId], references: [id])
+  reassignedFrom AuditAssignment?     @relation("AssignmentReassignment", fields: [reassignedFromId], references: [id])
+  reassignedTo   AuditAssignment[]    @relation("AssignmentReassignment")
 
-  checkpointScope AuditAssignmentCheckpoint[]
-  responses       AuditResponse[]
+  responses FactoryAuditResponse[]
 
-  @@unique([roundId, auditorId])
+  @@unique([auditInstanceId, auditorId])
 }
 
-// Explicit per-assignment checkpoint scope — needed because reassignment
-// splits one round's checkpoint set across two assignments (original auditor
-// keeps what they already submitted; replacement gets the rest).
-model AuditAssignmentCheckpoint {
-  id           String @id @default(uuid())
-  assignmentId String
-  checkpointId String
-
-  assignment AuditAssignment        @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
-  checkpoint FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id])
-
-  @@unique([assignmentId, checkpointId])
-}
-
-model AuditResponse {
-  id             String  @id @default(uuid())
-  assignmentId   String
-  checkpointId   String
-  score          Float?  // 0–4
+model FactoryAuditResponse {
+  id              String  @id @default(uuid())
+  assignmentId    String
+  checkpointId    String
+  iteration       Int     @default(1) // 1 = original submission, 2 = the one
+                                        // post-revision edit before final lock.
+                                        // Never overwritten — "current" is the
+                                        // row with the highest iteration for a
+                                        // given (assignmentId, checkpointId).
+  score           Float?
   isNotApplicable Boolean @default(false)
-  remark         String?
+  remark          String?
 
   assignment AuditAssignment        @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   checkpoint FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id])
 
-  @@unique([assignmentId, checkpointId])
+  @@unique([assignmentId, checkpointId, iteration])
 }
-
 // The stored aggregate — averaged across that round's AuditResponse rows for
 // this checkpoint, plus the reviewer's own overlay (flag + named remark),
 // distinct from each auditor's individual remark on AuditResponse.
 model AuditCheckpointResult {
-  id           String   @id @default(uuid())
-  roundId      String
-  checkpointId String
-  score        Float?   // averaged, null if every response was NA
-  computedAt   DateTime @default(now())
+  id              String   @id @default(uuid())
+  auditInstanceId String
+  checkpointId    String
+  score           Float?   // averaged, null if every response was NA
+  computedAt      DateTime @default(now())
 
   reviewerFlaggedForImprovement Boolean   @default(false)
   reviewerRemark                String?
   reviewerId                    String?
   reviewerRemarkedAt            DateTime?
 
-  round      AuditRound             @relation(fields: [roundId], references: [id], onDelete: Cascade)
-  checkpoint FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id])
-  reviewer   User?                  @relation("FactoryAuditCheckpointReviewer", fields: [reviewerId], references: [id])
+  auditInstance FactoryAuditInstance   @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
+  checkpoint    FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id])
+  reviewer      User?                  @relation("FactoryAuditCheckpointReviewer", fields: [reviewerId], references: [id])
 
-  @@unique([roundId, checkpointId])
+  @@unique([auditInstanceId, checkpointId])
 }
 
 // Append-only — one row per classification decision, whichever round
@@ -1731,18 +1664,17 @@ model AuditCheckpointResult {
 // was achieved.
 model VendorClassificationHistory {
   id                 String   @id @default(uuid())
-  auditInstanceId    String
-  roundId            String
-  bandId             String
+  auditInstanceId    String   // the specific round (root or child) that produced this decision
+  bandLabel          String
+  qualifiesFor       PartCategory[]
   overallScorePercent Float
   workflowInstanceId String   // the specific classification WorkflowInstance that produced this entry
   decidedAt          DateTime @default(now())
 
-  auditInstance FactoryAuditInstance      @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
-  round         AuditRound                @relation(fields: [roundId], references: [id])
-  band          FactoryClassificationBand @relation(fields: [bandId], references: [id])
-  workflowInstance WorkflowInstance       @relation(fields: [workflowInstanceId], references: [id])
+  auditInstance    FactoryAuditInstance @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
+  workflowInstance WorkflowInstance     @relation(fields: [workflowInstanceId], references: [id])
 }
+
 
 
 

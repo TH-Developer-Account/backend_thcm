@@ -308,3 +308,12 @@ export const BusinessPartnerOfficeType = {
 } as const
 
 export type BusinessPartnerOfficeType = (typeof BusinessPartnerOfficeType)[keyof typeof BusinessPartnerOfficeType]
+
+
+export const FactoryAuditInstanceType = {
+  INITIAL: 'INITIAL',
+  REOPEN: 'REOPEN',
+  SUB_AUDIT: 'SUB_AUDIT'
+} as const
+
+export type FactoryAuditInstanceType = (typeof FactoryAuditInstanceType)[keyof typeof FactoryAuditInstanceType]

@@ -22,6 +22,7 @@ import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import { activeWorkflowInclude } from "@shared/utils/contants";
 import { notifyGuestOfClarification } from "@medi-claim/mediclaim.helper";
+import { computeFactoryAuditClassification } from "@factoryAudit/factoryAudit.helper";
 
 import {
   Prisma,
@@ -197,9 +198,9 @@ export async function getActiveWorkflowForSubject(
 // status string gets passed in.
 //
 // DEALER_AUDIT_INSTANCE and FACTORY_AUDIT_INSTANCE are both deliberate
-// no-ops: neither model has a stored status column — lifecycle for both is
-// read off their linked WorkflowInstance(s), same reasoning documented for
-// the old commented-out AUDIT_INSTANCE branch this replaces.
+// no-ops: neither model has a stored status column — lifecycle is read off
+// their linked WorkflowInstance(s), same reasoning documented for the old
+// commented-out AUDIT_INSTANCE branch this replaces.
 // ─────────────────────────────────────────────────────────────────────────────
 
 type Tx = Prisma.TransactionClient;
@@ -287,6 +288,66 @@ export async function runPostClarifyHook(
 ): Promise<void> {
   const hook = postClarifyHooks[subjectType];
   if (hook) await hook(tx, subjectId);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// postApprovalHooks / runPostApprovalHook   ✅ NEW
+//
+// Mirror-image hook to postClarifyHooks, on the opposite end of the
+// lifecycle: "something to run once a workflow's FINAL stage is approved,"
+// rather than "something to run after a clarify." Nothing previously called
+// back into subject-specific domain logic on final approval — approveStage
+// only knew how to flip the subject's generic status (updateSubjectStatus)
+// and notify its owner.
+//
+// FACTORY_AUDIT_INSTANCE needs this because VendorClassificationHistory
+// (its own model) has a *required* `workflowInstanceId` — by the schema's
+// own design, a classification decision can't be recorded until the
+// workflow that ratified it exists and has actually reached final
+// approval. There was no extension point that could satisfy that before
+// this hook.
+//
+// Called from workflow.service.ts's approveStage, INSIDE the same
+// transaction that flips WorkflowInstance.status to APPROVED — not after
+// commit like the notify() calls, because this is a data write (the
+// classification decision itself) that must be atomic with the approval,
+// not a side-effect notification.
+//
+// Partial, not a full Record — most subject types have no post-approval
+// domain action and simply have no entry here, same as postClarifyHooks.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const postApprovalHooks: Partial<
+  Record<
+    WorkflowSubjectType,
+    (tx: Tx, subjectId: string, workflowInstanceId: string) => Promise<void>
+  >
+> = {
+  FACTORY_AUDIT_INSTANCE: async (tx, subjectId, workflowInstanceId) => {
+    const classification = await computeFactoryAuditClassification(
+      subjectId,
+      tx,
+    );
+    await tx.vendorClassificationHistory.create({
+      data: {
+        auditInstanceId: subjectId,
+        workflowInstanceId,
+        bandLabel: classification.bandLabel,
+        qualifiesFor: classification.qualifiesFor,
+        overallScorePercent: classification.overallPercent,
+      },
+    });
+  },
+};
+
+export async function runPostApprovalHook(
+  tx: Tx,
+  subjectType: WorkflowSubjectType,
+  subjectId: string,
+  workflowInstanceId: string,
+): Promise<void> {
+  const hook = postApprovalHooks[subjectType];
+  if (hook) await hook(tx, subjectId, workflowInstanceId);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

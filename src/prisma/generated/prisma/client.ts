@@ -295,11 +295,6 @@ export type BusinessPartnerContact = Prisma.BusinessPartnerContactModel
  */
 export type Evidence = Prisma.EvidenceModel
 /**
- * Model Supplier
- * 
- */
-export type Supplier = Prisma.SupplierModel
-/**
  * Model ChecklistTemplate
  * 
  */
@@ -320,6 +315,11 @@ export type DealerAuditInstance = Prisma.DealerAuditInstanceModel
  */
 export type AuditItemResponse = Prisma.AuditItemResponseModel
 /**
+ * Model Supplier
+ * 
+ */
+export type Supplier = Prisma.SupplierModel
+/**
  * Model FactoryAuditTemplate
  * 
  */
@@ -335,45 +335,20 @@ export type FactoryAuditSection = Prisma.FactoryAuditSectionModel
  */
 export type FactoryAuditCheckpoint = Prisma.FactoryAuditCheckpointModel
 /**
- * Model CheckpointRubricLevel
- * 
- */
-export type CheckpointRubricLevel = Prisma.CheckpointRubricLevelModel
-/**
- * Model FactoryClassificationBand
- * 
- */
-export type FactoryClassificationBand = Prisma.FactoryClassificationBandModel
-/**
  * Model FactoryAuditInstance
  * 
  */
 export type FactoryAuditInstance = Prisma.FactoryAuditInstanceModel
-/**
- * Model AuditRound
- * 
- */
-export type AuditRound = Prisma.AuditRoundModel
-/**
- * Model AuditRoundCheckpointScope
- * 
- */
-export type AuditRoundCheckpointScope = Prisma.AuditRoundCheckpointScopeModel
 /**
  * Model AuditAssignment
  * 
  */
 export type AuditAssignment = Prisma.AuditAssignmentModel
 /**
- * Model AuditAssignmentCheckpoint
+ * Model FactoryAuditResponse
  * 
  */
-export type AuditAssignmentCheckpoint = Prisma.AuditAssignmentCheckpointModel
-/**
- * Model AuditResponse
- * 
- */
-export type AuditResponse = Prisma.AuditResponseModel
+export type FactoryAuditResponse = Prisma.FactoryAuditResponseModel
 /**
  * Model AuditCheckpointResult
  * 

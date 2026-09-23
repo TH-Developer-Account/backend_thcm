@@ -26,7 +26,7 @@ export type AggregateAuditAssignment = {
 
 export type AuditAssignmentMinAggregateOutputType = {
   id: string | null
-  roundId: string | null
+  auditInstanceId: string | null
   auditorId: string | null
   role: $Enums.AuditorRole | null
   status: $Enums.AssignmentStatus | null
@@ -35,7 +35,7 @@ export type AuditAssignmentMinAggregateOutputType = {
 
 export type AuditAssignmentMaxAggregateOutputType = {
   id: string | null
-  roundId: string | null
+  auditInstanceId: string | null
   auditorId: string | null
   role: $Enums.AuditorRole | null
   status: $Enums.AssignmentStatus | null
@@ -44,7 +44,7 @@ export type AuditAssignmentMaxAggregateOutputType = {
 
 export type AuditAssignmentCountAggregateOutputType = {
   id: number
-  roundId: number
+  auditInstanceId: number
   auditorId: number
   role: number
   status: number
@@ -55,7 +55,7 @@ export type AuditAssignmentCountAggregateOutputType = {
 
 export type AuditAssignmentMinAggregateInputType = {
   id?: true
-  roundId?: true
+  auditInstanceId?: true
   auditorId?: true
   role?: true
   status?: true
@@ -64,7 +64,7 @@ export type AuditAssignmentMinAggregateInputType = {
 
 export type AuditAssignmentMaxAggregateInputType = {
   id?: true
-  roundId?: true
+  auditInstanceId?: true
   auditorId?: true
   role?: true
   status?: true
@@ -73,7 +73,7 @@ export type AuditAssignmentMaxAggregateInputType = {
 
 export type AuditAssignmentCountAggregateInputType = {
   id?: true
-  roundId?: true
+  auditInstanceId?: true
   auditorId?: true
   role?: true
   status?: true
@@ -155,7 +155,7 @@ export type AuditAssignmentGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 
 export type AuditAssignmentGroupByOutputType = {
   id: string
-  roundId: string
+  auditInstanceId: string
   auditorId: string
   role: $Enums.AuditorRole
   status: $Enums.AssignmentStatus
@@ -185,56 +185,53 @@ export type AuditAssignmentWhereInput = {
   OR?: Prisma.AuditAssignmentWhereInput[]
   NOT?: Prisma.AuditAssignmentWhereInput | Prisma.AuditAssignmentWhereInput[]
   id?: Prisma.StringFilter<"AuditAssignment"> | string
-  roundId?: Prisma.StringFilter<"AuditAssignment"> | string
+  auditInstanceId?: Prisma.StringFilter<"AuditAssignment"> | string
   auditorId?: Prisma.StringFilter<"AuditAssignment"> | string
   role?: Prisma.EnumAuditorRoleFilter<"AuditAssignment"> | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFilter<"AuditAssignment"> | $Enums.AssignmentStatus
   reassignedFromId?: Prisma.StringNullableFilter<"AuditAssignment"> | string | null
-  round?: Prisma.XOR<Prisma.AuditRoundScalarRelationFilter, Prisma.AuditRoundWhereInput>
+  auditInstance?: Prisma.XOR<Prisma.FactoryAuditInstanceScalarRelationFilter, Prisma.FactoryAuditInstanceWhereInput>
   auditor?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   reassignedFrom?: Prisma.XOR<Prisma.AuditAssignmentNullableScalarRelationFilter, Prisma.AuditAssignmentWhereInput> | null
   reassignedTo?: Prisma.AuditAssignmentListRelationFilter
-  checkpointScope?: Prisma.AuditAssignmentCheckpointListRelationFilter
-  responses?: Prisma.AuditResponseListRelationFilter
+  responses?: Prisma.FactoryAuditResponseListRelationFilter
 }
 
 export type AuditAssignmentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
+  auditInstanceId?: Prisma.SortOrder
   auditorId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
   reassignedFromId?: Prisma.SortOrderInput | Prisma.SortOrder
-  round?: Prisma.AuditRoundOrderByWithRelationInput
+  auditInstance?: Prisma.FactoryAuditInstanceOrderByWithRelationInput
   auditor?: Prisma.UserOrderByWithRelationInput
   reassignedFrom?: Prisma.AuditAssignmentOrderByWithRelationInput
   reassignedTo?: Prisma.AuditAssignmentOrderByRelationAggregateInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointOrderByRelationAggregateInput
-  responses?: Prisma.AuditResponseOrderByRelationAggregateInput
+  responses?: Prisma.FactoryAuditResponseOrderByRelationAggregateInput
 }
 
 export type AuditAssignmentWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  roundId_auditorId?: Prisma.AuditAssignmentRoundIdAuditorIdCompoundUniqueInput
+  auditInstanceId_auditorId?: Prisma.AuditAssignmentAuditInstanceIdAuditorIdCompoundUniqueInput
   AND?: Prisma.AuditAssignmentWhereInput | Prisma.AuditAssignmentWhereInput[]
   OR?: Prisma.AuditAssignmentWhereInput[]
   NOT?: Prisma.AuditAssignmentWhereInput | Prisma.AuditAssignmentWhereInput[]
-  roundId?: Prisma.StringFilter<"AuditAssignment"> | string
+  auditInstanceId?: Prisma.StringFilter<"AuditAssignment"> | string
   auditorId?: Prisma.StringFilter<"AuditAssignment"> | string
   role?: Prisma.EnumAuditorRoleFilter<"AuditAssignment"> | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFilter<"AuditAssignment"> | $Enums.AssignmentStatus
   reassignedFromId?: Prisma.StringNullableFilter<"AuditAssignment"> | string | null
-  round?: Prisma.XOR<Prisma.AuditRoundScalarRelationFilter, Prisma.AuditRoundWhereInput>
+  auditInstance?: Prisma.XOR<Prisma.FactoryAuditInstanceScalarRelationFilter, Prisma.FactoryAuditInstanceWhereInput>
   auditor?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   reassignedFrom?: Prisma.XOR<Prisma.AuditAssignmentNullableScalarRelationFilter, Prisma.AuditAssignmentWhereInput> | null
   reassignedTo?: Prisma.AuditAssignmentListRelationFilter
-  checkpointScope?: Prisma.AuditAssignmentCheckpointListRelationFilter
-  responses?: Prisma.AuditResponseListRelationFilter
-}, "id" | "roundId_auditorId">
+  responses?: Prisma.FactoryAuditResponseListRelationFilter
+}, "id" | "auditInstanceId_auditorId">
 
 export type AuditAssignmentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
+  auditInstanceId?: Prisma.SortOrder
   auditorId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -249,7 +246,7 @@ export type AuditAssignmentScalarWhereWithAggregatesInput = {
   OR?: Prisma.AuditAssignmentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AuditAssignmentScalarWhereWithAggregatesInput | Prisma.AuditAssignmentScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"AuditAssignment"> | string
-  roundId?: Prisma.StringWithAggregatesFilter<"AuditAssignment"> | string
+  auditInstanceId?: Prisma.StringWithAggregatesFilter<"AuditAssignment"> | string
   auditorId?: Prisma.StringWithAggregatesFilter<"AuditAssignment"> | string
   role?: Prisma.EnumAuditorRoleWithAggregatesFilter<"AuditAssignment"> | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusWithAggregatesFilter<"AuditAssignment"> | $Enums.AssignmentStatus
@@ -260,53 +257,49 @@ export type AuditAssignmentCreateInput = {
   id?: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
-  round: Prisma.AuditRoundCreateNestedOneWithoutAssignmentsInput
+  auditInstance: Prisma.FactoryAuditInstanceCreateNestedOneWithoutAssignmentsInput
   auditor: Prisma.UserCreateNestedOneWithoutFactoryAuditAssignmentsInput
   reassignedFrom?: Prisma.AuditAssignmentCreateNestedOneWithoutReassignedToInput
   reassignedTo?: Prisma.AuditAssignmentCreateNestedManyWithoutReassignedFromInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointCreateNestedManyWithoutAssignmentInput
-  responses?: Prisma.AuditResponseCreateNestedManyWithoutAssignmentInput
+  responses?: Prisma.FactoryAuditResponseCreateNestedManyWithoutAssignmentInput
 }
 
 export type AuditAssignmentUncheckedCreateInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   auditorId: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
   reassignedFromId?: string | null
   reassignedTo?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutReassignedFromInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUncheckedCreateNestedManyWithoutAssignmentInput
-  responses?: Prisma.AuditResponseUncheckedCreateNestedManyWithoutAssignmentInput
+  responses?: Prisma.FactoryAuditResponseUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AuditAssignmentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutAssignmentsNestedInput
+  auditInstance?: Prisma.FactoryAuditInstanceUpdateOneRequiredWithoutAssignmentsNestedInput
   auditor?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditAssignmentsNestedInput
   reassignedFrom?: Prisma.AuditAssignmentUpdateOneWithoutReassignedToNestedInput
   reassignedTo?: Prisma.AuditAssignmentUpdateManyWithoutReassignedFromNestedInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUpdateManyWithoutAssignmentNestedInput
-  responses?: Prisma.AuditResponseUpdateManyWithoutAssignmentNestedInput
+  responses?: Prisma.FactoryAuditResponseUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AuditAssignmentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   auditorId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
   reassignedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reassignedTo?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutReassignedFromNestedInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUncheckedUpdateManyWithoutAssignmentNestedInput
-  responses?: Prisma.AuditResponseUncheckedUpdateManyWithoutAssignmentNestedInput
+  responses?: Prisma.FactoryAuditResponseUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AuditAssignmentCreateManyInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   auditorId: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
@@ -321,7 +314,7 @@ export type AuditAssignmentUpdateManyMutationInput = {
 
 export type AuditAssignmentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   auditorId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
@@ -343,14 +336,14 @@ export type AuditAssignmentNullableScalarRelationFilter = {
   isNot?: Prisma.AuditAssignmentWhereInput | null
 }
 
-export type AuditAssignmentRoundIdAuditorIdCompoundUniqueInput = {
-  roundId: string
+export type AuditAssignmentAuditInstanceIdAuditorIdCompoundUniqueInput = {
+  auditInstanceId: string
   auditorId: string
 }
 
 export type AuditAssignmentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
+  auditInstanceId?: Prisma.SortOrder
   auditorId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -359,7 +352,7 @@ export type AuditAssignmentCountOrderByAggregateInput = {
 
 export type AuditAssignmentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
+  auditInstanceId?: Prisma.SortOrder
   auditorId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -368,7 +361,7 @@ export type AuditAssignmentMaxOrderByAggregateInput = {
 
 export type AuditAssignmentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
+  auditInstanceId?: Prisma.SortOrder
   auditorId?: Prisma.SortOrder
   role?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -422,45 +415,45 @@ export type AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput = {
   deleteMany?: Prisma.AuditAssignmentScalarWhereInput | Prisma.AuditAssignmentScalarWhereInput[]
 }
 
-export type AuditAssignmentCreateNestedManyWithoutRoundInput = {
-  create?: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutRoundInput, Prisma.AuditAssignmentUncheckedCreateWithoutRoundInput> | Prisma.AuditAssignmentCreateWithoutRoundInput[] | Prisma.AuditAssignmentUncheckedCreateWithoutRoundInput[]
-  connectOrCreate?: Prisma.AuditAssignmentCreateOrConnectWithoutRoundInput | Prisma.AuditAssignmentCreateOrConnectWithoutRoundInput[]
-  createMany?: Prisma.AuditAssignmentCreateManyRoundInputEnvelope
+export type AuditAssignmentCreateNestedManyWithoutAuditInstanceInput = {
+  create?: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutAuditInstanceInput, Prisma.AuditAssignmentUncheckedCreateWithoutAuditInstanceInput> | Prisma.AuditAssignmentCreateWithoutAuditInstanceInput[] | Prisma.AuditAssignmentUncheckedCreateWithoutAuditInstanceInput[]
+  connectOrCreate?: Prisma.AuditAssignmentCreateOrConnectWithoutAuditInstanceInput | Prisma.AuditAssignmentCreateOrConnectWithoutAuditInstanceInput[]
+  createMany?: Prisma.AuditAssignmentCreateManyAuditInstanceInputEnvelope
   connect?: Prisma.AuditAssignmentWhereUniqueInput | Prisma.AuditAssignmentWhereUniqueInput[]
 }
 
-export type AuditAssignmentUncheckedCreateNestedManyWithoutRoundInput = {
-  create?: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutRoundInput, Prisma.AuditAssignmentUncheckedCreateWithoutRoundInput> | Prisma.AuditAssignmentCreateWithoutRoundInput[] | Prisma.AuditAssignmentUncheckedCreateWithoutRoundInput[]
-  connectOrCreate?: Prisma.AuditAssignmentCreateOrConnectWithoutRoundInput | Prisma.AuditAssignmentCreateOrConnectWithoutRoundInput[]
-  createMany?: Prisma.AuditAssignmentCreateManyRoundInputEnvelope
+export type AuditAssignmentUncheckedCreateNestedManyWithoutAuditInstanceInput = {
+  create?: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutAuditInstanceInput, Prisma.AuditAssignmentUncheckedCreateWithoutAuditInstanceInput> | Prisma.AuditAssignmentCreateWithoutAuditInstanceInput[] | Prisma.AuditAssignmentUncheckedCreateWithoutAuditInstanceInput[]
+  connectOrCreate?: Prisma.AuditAssignmentCreateOrConnectWithoutAuditInstanceInput | Prisma.AuditAssignmentCreateOrConnectWithoutAuditInstanceInput[]
+  createMany?: Prisma.AuditAssignmentCreateManyAuditInstanceInputEnvelope
   connect?: Prisma.AuditAssignmentWhereUniqueInput | Prisma.AuditAssignmentWhereUniqueInput[]
 }
 
-export type AuditAssignmentUpdateManyWithoutRoundNestedInput = {
-  create?: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutRoundInput, Prisma.AuditAssignmentUncheckedCreateWithoutRoundInput> | Prisma.AuditAssignmentCreateWithoutRoundInput[] | Prisma.AuditAssignmentUncheckedCreateWithoutRoundInput[]
-  connectOrCreate?: Prisma.AuditAssignmentCreateOrConnectWithoutRoundInput | Prisma.AuditAssignmentCreateOrConnectWithoutRoundInput[]
-  upsert?: Prisma.AuditAssignmentUpsertWithWhereUniqueWithoutRoundInput | Prisma.AuditAssignmentUpsertWithWhereUniqueWithoutRoundInput[]
-  createMany?: Prisma.AuditAssignmentCreateManyRoundInputEnvelope
+export type AuditAssignmentUpdateManyWithoutAuditInstanceNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutAuditInstanceInput, Prisma.AuditAssignmentUncheckedCreateWithoutAuditInstanceInput> | Prisma.AuditAssignmentCreateWithoutAuditInstanceInput[] | Prisma.AuditAssignmentUncheckedCreateWithoutAuditInstanceInput[]
+  connectOrCreate?: Prisma.AuditAssignmentCreateOrConnectWithoutAuditInstanceInput | Prisma.AuditAssignmentCreateOrConnectWithoutAuditInstanceInput[]
+  upsert?: Prisma.AuditAssignmentUpsertWithWhereUniqueWithoutAuditInstanceInput | Prisma.AuditAssignmentUpsertWithWhereUniqueWithoutAuditInstanceInput[]
+  createMany?: Prisma.AuditAssignmentCreateManyAuditInstanceInputEnvelope
   set?: Prisma.AuditAssignmentWhereUniqueInput | Prisma.AuditAssignmentWhereUniqueInput[]
   disconnect?: Prisma.AuditAssignmentWhereUniqueInput | Prisma.AuditAssignmentWhereUniqueInput[]
   delete?: Prisma.AuditAssignmentWhereUniqueInput | Prisma.AuditAssignmentWhereUniqueInput[]
   connect?: Prisma.AuditAssignmentWhereUniqueInput | Prisma.AuditAssignmentWhereUniqueInput[]
-  update?: Prisma.AuditAssignmentUpdateWithWhereUniqueWithoutRoundInput | Prisma.AuditAssignmentUpdateWithWhereUniqueWithoutRoundInput[]
-  updateMany?: Prisma.AuditAssignmentUpdateManyWithWhereWithoutRoundInput | Prisma.AuditAssignmentUpdateManyWithWhereWithoutRoundInput[]
+  update?: Prisma.AuditAssignmentUpdateWithWhereUniqueWithoutAuditInstanceInput | Prisma.AuditAssignmentUpdateWithWhereUniqueWithoutAuditInstanceInput[]
+  updateMany?: Prisma.AuditAssignmentUpdateManyWithWhereWithoutAuditInstanceInput | Prisma.AuditAssignmentUpdateManyWithWhereWithoutAuditInstanceInput[]
   deleteMany?: Prisma.AuditAssignmentScalarWhereInput | Prisma.AuditAssignmentScalarWhereInput[]
 }
 
-export type AuditAssignmentUncheckedUpdateManyWithoutRoundNestedInput = {
-  create?: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutRoundInput, Prisma.AuditAssignmentUncheckedCreateWithoutRoundInput> | Prisma.AuditAssignmentCreateWithoutRoundInput[] | Prisma.AuditAssignmentUncheckedCreateWithoutRoundInput[]
-  connectOrCreate?: Prisma.AuditAssignmentCreateOrConnectWithoutRoundInput | Prisma.AuditAssignmentCreateOrConnectWithoutRoundInput[]
-  upsert?: Prisma.AuditAssignmentUpsertWithWhereUniqueWithoutRoundInput | Prisma.AuditAssignmentUpsertWithWhereUniqueWithoutRoundInput[]
-  createMany?: Prisma.AuditAssignmentCreateManyRoundInputEnvelope
+export type AuditAssignmentUncheckedUpdateManyWithoutAuditInstanceNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutAuditInstanceInput, Prisma.AuditAssignmentUncheckedCreateWithoutAuditInstanceInput> | Prisma.AuditAssignmentCreateWithoutAuditInstanceInput[] | Prisma.AuditAssignmentUncheckedCreateWithoutAuditInstanceInput[]
+  connectOrCreate?: Prisma.AuditAssignmentCreateOrConnectWithoutAuditInstanceInput | Prisma.AuditAssignmentCreateOrConnectWithoutAuditInstanceInput[]
+  upsert?: Prisma.AuditAssignmentUpsertWithWhereUniqueWithoutAuditInstanceInput | Prisma.AuditAssignmentUpsertWithWhereUniqueWithoutAuditInstanceInput[]
+  createMany?: Prisma.AuditAssignmentCreateManyAuditInstanceInputEnvelope
   set?: Prisma.AuditAssignmentWhereUniqueInput | Prisma.AuditAssignmentWhereUniqueInput[]
   disconnect?: Prisma.AuditAssignmentWhereUniqueInput | Prisma.AuditAssignmentWhereUniqueInput[]
   delete?: Prisma.AuditAssignmentWhereUniqueInput | Prisma.AuditAssignmentWhereUniqueInput[]
   connect?: Prisma.AuditAssignmentWhereUniqueInput | Prisma.AuditAssignmentWhereUniqueInput[]
-  update?: Prisma.AuditAssignmentUpdateWithWhereUniqueWithoutRoundInput | Prisma.AuditAssignmentUpdateWithWhereUniqueWithoutRoundInput[]
-  updateMany?: Prisma.AuditAssignmentUpdateManyWithWhereWithoutRoundInput | Prisma.AuditAssignmentUpdateManyWithWhereWithoutRoundInput[]
+  update?: Prisma.AuditAssignmentUpdateWithWhereUniqueWithoutAuditInstanceInput | Prisma.AuditAssignmentUpdateWithWhereUniqueWithoutAuditInstanceInput[]
+  updateMany?: Prisma.AuditAssignmentUpdateManyWithWhereWithoutAuditInstanceInput | Prisma.AuditAssignmentUpdateManyWithWhereWithoutAuditInstanceInput[]
   deleteMany?: Prisma.AuditAssignmentScalarWhereInput | Prisma.AuditAssignmentScalarWhereInput[]
 }
 
@@ -530,20 +523,6 @@ export type AuditAssignmentUncheckedUpdateManyWithoutReassignedFromNestedInput =
   deleteMany?: Prisma.AuditAssignmentScalarWhereInput | Prisma.AuditAssignmentScalarWhereInput[]
 }
 
-export type AuditAssignmentCreateNestedOneWithoutCheckpointScopeInput = {
-  create?: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutCheckpointScopeInput, Prisma.AuditAssignmentUncheckedCreateWithoutCheckpointScopeInput>
-  connectOrCreate?: Prisma.AuditAssignmentCreateOrConnectWithoutCheckpointScopeInput
-  connect?: Prisma.AuditAssignmentWhereUniqueInput
-}
-
-export type AuditAssignmentUpdateOneRequiredWithoutCheckpointScopeNestedInput = {
-  create?: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutCheckpointScopeInput, Prisma.AuditAssignmentUncheckedCreateWithoutCheckpointScopeInput>
-  connectOrCreate?: Prisma.AuditAssignmentCreateOrConnectWithoutCheckpointScopeInput
-  upsert?: Prisma.AuditAssignmentUpsertWithoutCheckpointScopeInput
-  connect?: Prisma.AuditAssignmentWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.AuditAssignmentUpdateToOneWithWhereWithoutCheckpointScopeInput, Prisma.AuditAssignmentUpdateWithoutCheckpointScopeInput>, Prisma.AuditAssignmentUncheckedUpdateWithoutCheckpointScopeInput>
-}
-
 export type AuditAssignmentCreateNestedOneWithoutResponsesInput = {
   create?: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutResponsesInput, Prisma.AuditAssignmentUncheckedCreateWithoutResponsesInput>
   connectOrCreate?: Prisma.AuditAssignmentCreateOrConnectWithoutResponsesInput
@@ -562,22 +541,20 @@ export type AuditAssignmentCreateWithoutAuditorInput = {
   id?: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
-  round: Prisma.AuditRoundCreateNestedOneWithoutAssignmentsInput
+  auditInstance: Prisma.FactoryAuditInstanceCreateNestedOneWithoutAssignmentsInput
   reassignedFrom?: Prisma.AuditAssignmentCreateNestedOneWithoutReassignedToInput
   reassignedTo?: Prisma.AuditAssignmentCreateNestedManyWithoutReassignedFromInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointCreateNestedManyWithoutAssignmentInput
-  responses?: Prisma.AuditResponseCreateNestedManyWithoutAssignmentInput
+  responses?: Prisma.FactoryAuditResponseCreateNestedManyWithoutAssignmentInput
 }
 
 export type AuditAssignmentUncheckedCreateWithoutAuditorInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
   reassignedFromId?: string | null
   reassignedTo?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutReassignedFromInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUncheckedCreateNestedManyWithoutAssignmentInput
-  responses?: Prisma.AuditResponseUncheckedCreateNestedManyWithoutAssignmentInput
+  responses?: Prisma.FactoryAuditResponseUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AuditAssignmentCreateOrConnectWithoutAuditorInput = {
@@ -611,81 +588,77 @@ export type AuditAssignmentScalarWhereInput = {
   OR?: Prisma.AuditAssignmentScalarWhereInput[]
   NOT?: Prisma.AuditAssignmentScalarWhereInput | Prisma.AuditAssignmentScalarWhereInput[]
   id?: Prisma.StringFilter<"AuditAssignment"> | string
-  roundId?: Prisma.StringFilter<"AuditAssignment"> | string
+  auditInstanceId?: Prisma.StringFilter<"AuditAssignment"> | string
   auditorId?: Prisma.StringFilter<"AuditAssignment"> | string
   role?: Prisma.EnumAuditorRoleFilter<"AuditAssignment"> | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFilter<"AuditAssignment"> | $Enums.AssignmentStatus
   reassignedFromId?: Prisma.StringNullableFilter<"AuditAssignment"> | string | null
 }
 
-export type AuditAssignmentCreateWithoutRoundInput = {
+export type AuditAssignmentCreateWithoutAuditInstanceInput = {
   id?: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
   auditor: Prisma.UserCreateNestedOneWithoutFactoryAuditAssignmentsInput
   reassignedFrom?: Prisma.AuditAssignmentCreateNestedOneWithoutReassignedToInput
   reassignedTo?: Prisma.AuditAssignmentCreateNestedManyWithoutReassignedFromInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointCreateNestedManyWithoutAssignmentInput
-  responses?: Prisma.AuditResponseCreateNestedManyWithoutAssignmentInput
+  responses?: Prisma.FactoryAuditResponseCreateNestedManyWithoutAssignmentInput
 }
 
-export type AuditAssignmentUncheckedCreateWithoutRoundInput = {
+export type AuditAssignmentUncheckedCreateWithoutAuditInstanceInput = {
   id?: string
   auditorId: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
   reassignedFromId?: string | null
   reassignedTo?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutReassignedFromInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUncheckedCreateNestedManyWithoutAssignmentInput
-  responses?: Prisma.AuditResponseUncheckedCreateNestedManyWithoutAssignmentInput
+  responses?: Prisma.FactoryAuditResponseUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
-export type AuditAssignmentCreateOrConnectWithoutRoundInput = {
+export type AuditAssignmentCreateOrConnectWithoutAuditInstanceInput = {
   where: Prisma.AuditAssignmentWhereUniqueInput
-  create: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutRoundInput, Prisma.AuditAssignmentUncheckedCreateWithoutRoundInput>
+  create: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutAuditInstanceInput, Prisma.AuditAssignmentUncheckedCreateWithoutAuditInstanceInput>
 }
 
-export type AuditAssignmentCreateManyRoundInputEnvelope = {
-  data: Prisma.AuditAssignmentCreateManyRoundInput | Prisma.AuditAssignmentCreateManyRoundInput[]
+export type AuditAssignmentCreateManyAuditInstanceInputEnvelope = {
+  data: Prisma.AuditAssignmentCreateManyAuditInstanceInput | Prisma.AuditAssignmentCreateManyAuditInstanceInput[]
   skipDuplicates?: boolean
 }
 
-export type AuditAssignmentUpsertWithWhereUniqueWithoutRoundInput = {
+export type AuditAssignmentUpsertWithWhereUniqueWithoutAuditInstanceInput = {
   where: Prisma.AuditAssignmentWhereUniqueInput
-  update: Prisma.XOR<Prisma.AuditAssignmentUpdateWithoutRoundInput, Prisma.AuditAssignmentUncheckedUpdateWithoutRoundInput>
-  create: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutRoundInput, Prisma.AuditAssignmentUncheckedCreateWithoutRoundInput>
+  update: Prisma.XOR<Prisma.AuditAssignmentUpdateWithoutAuditInstanceInput, Prisma.AuditAssignmentUncheckedUpdateWithoutAuditInstanceInput>
+  create: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutAuditInstanceInput, Prisma.AuditAssignmentUncheckedCreateWithoutAuditInstanceInput>
 }
 
-export type AuditAssignmentUpdateWithWhereUniqueWithoutRoundInput = {
+export type AuditAssignmentUpdateWithWhereUniqueWithoutAuditInstanceInput = {
   where: Prisma.AuditAssignmentWhereUniqueInput
-  data: Prisma.XOR<Prisma.AuditAssignmentUpdateWithoutRoundInput, Prisma.AuditAssignmentUncheckedUpdateWithoutRoundInput>
+  data: Prisma.XOR<Prisma.AuditAssignmentUpdateWithoutAuditInstanceInput, Prisma.AuditAssignmentUncheckedUpdateWithoutAuditInstanceInput>
 }
 
-export type AuditAssignmentUpdateManyWithWhereWithoutRoundInput = {
+export type AuditAssignmentUpdateManyWithWhereWithoutAuditInstanceInput = {
   where: Prisma.AuditAssignmentScalarWhereInput
-  data: Prisma.XOR<Prisma.AuditAssignmentUpdateManyMutationInput, Prisma.AuditAssignmentUncheckedUpdateManyWithoutRoundInput>
+  data: Prisma.XOR<Prisma.AuditAssignmentUpdateManyMutationInput, Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditInstanceInput>
 }
 
 export type AuditAssignmentCreateWithoutReassignedToInput = {
   id?: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
-  round: Prisma.AuditRoundCreateNestedOneWithoutAssignmentsInput
+  auditInstance: Prisma.FactoryAuditInstanceCreateNestedOneWithoutAssignmentsInput
   auditor: Prisma.UserCreateNestedOneWithoutFactoryAuditAssignmentsInput
   reassignedFrom?: Prisma.AuditAssignmentCreateNestedOneWithoutReassignedToInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointCreateNestedManyWithoutAssignmentInput
-  responses?: Prisma.AuditResponseCreateNestedManyWithoutAssignmentInput
+  responses?: Prisma.FactoryAuditResponseCreateNestedManyWithoutAssignmentInput
 }
 
 export type AuditAssignmentUncheckedCreateWithoutReassignedToInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   auditorId: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
   reassignedFromId?: string | null
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUncheckedCreateNestedManyWithoutAssignmentInput
-  responses?: Prisma.AuditResponseUncheckedCreateNestedManyWithoutAssignmentInput
+  responses?: Prisma.FactoryAuditResponseUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AuditAssignmentCreateOrConnectWithoutReassignedToInput = {
@@ -697,22 +670,20 @@ export type AuditAssignmentCreateWithoutReassignedFromInput = {
   id?: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
-  round: Prisma.AuditRoundCreateNestedOneWithoutAssignmentsInput
+  auditInstance: Prisma.FactoryAuditInstanceCreateNestedOneWithoutAssignmentsInput
   auditor: Prisma.UserCreateNestedOneWithoutFactoryAuditAssignmentsInput
   reassignedTo?: Prisma.AuditAssignmentCreateNestedManyWithoutReassignedFromInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointCreateNestedManyWithoutAssignmentInput
-  responses?: Prisma.AuditResponseCreateNestedManyWithoutAssignmentInput
+  responses?: Prisma.FactoryAuditResponseCreateNestedManyWithoutAssignmentInput
 }
 
 export type AuditAssignmentUncheckedCreateWithoutReassignedFromInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   auditorId: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
   reassignedTo?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutReassignedFromInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUncheckedCreateNestedManyWithoutAssignmentInput
-  responses?: Prisma.AuditResponseUncheckedCreateNestedManyWithoutAssignmentInput
+  responses?: Prisma.FactoryAuditResponseUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AuditAssignmentCreateOrConnectWithoutReassignedFromInput = {
@@ -740,22 +711,20 @@ export type AuditAssignmentUpdateWithoutReassignedToInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutAssignmentsNestedInput
+  auditInstance?: Prisma.FactoryAuditInstanceUpdateOneRequiredWithoutAssignmentsNestedInput
   auditor?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditAssignmentsNestedInput
   reassignedFrom?: Prisma.AuditAssignmentUpdateOneWithoutReassignedToNestedInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUpdateManyWithoutAssignmentNestedInput
-  responses?: Prisma.AuditResponseUpdateManyWithoutAssignmentNestedInput
+  responses?: Prisma.FactoryAuditResponseUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AuditAssignmentUncheckedUpdateWithoutReassignedToInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   auditorId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
   reassignedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUncheckedUpdateManyWithoutAssignmentNestedInput
-  responses?: Prisma.AuditResponseUncheckedUpdateManyWithoutAssignmentNestedInput
+  responses?: Prisma.FactoryAuditResponseUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AuditAssignmentUpsertWithWhereUniqueWithoutReassignedFromInput = {
@@ -774,86 +743,24 @@ export type AuditAssignmentUpdateManyWithWhereWithoutReassignedFromInput = {
   data: Prisma.XOR<Prisma.AuditAssignmentUpdateManyMutationInput, Prisma.AuditAssignmentUncheckedUpdateManyWithoutReassignedFromInput>
 }
 
-export type AuditAssignmentCreateWithoutCheckpointScopeInput = {
-  id?: string
-  role: $Enums.AuditorRole
-  status?: $Enums.AssignmentStatus
-  round: Prisma.AuditRoundCreateNestedOneWithoutAssignmentsInput
-  auditor: Prisma.UserCreateNestedOneWithoutFactoryAuditAssignmentsInput
-  reassignedFrom?: Prisma.AuditAssignmentCreateNestedOneWithoutReassignedToInput
-  reassignedTo?: Prisma.AuditAssignmentCreateNestedManyWithoutReassignedFromInput
-  responses?: Prisma.AuditResponseCreateNestedManyWithoutAssignmentInput
-}
-
-export type AuditAssignmentUncheckedCreateWithoutCheckpointScopeInput = {
-  id?: string
-  roundId: string
-  auditorId: string
-  role: $Enums.AuditorRole
-  status?: $Enums.AssignmentStatus
-  reassignedFromId?: string | null
-  reassignedTo?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutReassignedFromInput
-  responses?: Prisma.AuditResponseUncheckedCreateNestedManyWithoutAssignmentInput
-}
-
-export type AuditAssignmentCreateOrConnectWithoutCheckpointScopeInput = {
-  where: Prisma.AuditAssignmentWhereUniqueInput
-  create: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutCheckpointScopeInput, Prisma.AuditAssignmentUncheckedCreateWithoutCheckpointScopeInput>
-}
-
-export type AuditAssignmentUpsertWithoutCheckpointScopeInput = {
-  update: Prisma.XOR<Prisma.AuditAssignmentUpdateWithoutCheckpointScopeInput, Prisma.AuditAssignmentUncheckedUpdateWithoutCheckpointScopeInput>
-  create: Prisma.XOR<Prisma.AuditAssignmentCreateWithoutCheckpointScopeInput, Prisma.AuditAssignmentUncheckedCreateWithoutCheckpointScopeInput>
-  where?: Prisma.AuditAssignmentWhereInput
-}
-
-export type AuditAssignmentUpdateToOneWithWhereWithoutCheckpointScopeInput = {
-  where?: Prisma.AuditAssignmentWhereInput
-  data: Prisma.XOR<Prisma.AuditAssignmentUpdateWithoutCheckpointScopeInput, Prisma.AuditAssignmentUncheckedUpdateWithoutCheckpointScopeInput>
-}
-
-export type AuditAssignmentUpdateWithoutCheckpointScopeInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
-  status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutAssignmentsNestedInput
-  auditor?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditAssignmentsNestedInput
-  reassignedFrom?: Prisma.AuditAssignmentUpdateOneWithoutReassignedToNestedInput
-  reassignedTo?: Prisma.AuditAssignmentUpdateManyWithoutReassignedFromNestedInput
-  responses?: Prisma.AuditResponseUpdateManyWithoutAssignmentNestedInput
-}
-
-export type AuditAssignmentUncheckedUpdateWithoutCheckpointScopeInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
-  auditorId?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
-  status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
-  reassignedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  reassignedTo?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutReassignedFromNestedInput
-  responses?: Prisma.AuditResponseUncheckedUpdateManyWithoutAssignmentNestedInput
-}
-
 export type AuditAssignmentCreateWithoutResponsesInput = {
   id?: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
-  round: Prisma.AuditRoundCreateNestedOneWithoutAssignmentsInput
+  auditInstance: Prisma.FactoryAuditInstanceCreateNestedOneWithoutAssignmentsInput
   auditor: Prisma.UserCreateNestedOneWithoutFactoryAuditAssignmentsInput
   reassignedFrom?: Prisma.AuditAssignmentCreateNestedOneWithoutReassignedToInput
   reassignedTo?: Prisma.AuditAssignmentCreateNestedManyWithoutReassignedFromInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointCreateNestedManyWithoutAssignmentInput
 }
 
 export type AuditAssignmentUncheckedCreateWithoutResponsesInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   auditorId: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
   reassignedFromId?: string | null
   reassignedTo?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutReassignedFromInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type AuditAssignmentCreateOrConnectWithoutResponsesInput = {
@@ -876,27 +783,25 @@ export type AuditAssignmentUpdateWithoutResponsesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutAssignmentsNestedInput
+  auditInstance?: Prisma.FactoryAuditInstanceUpdateOneRequiredWithoutAssignmentsNestedInput
   auditor?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditAssignmentsNestedInput
   reassignedFrom?: Prisma.AuditAssignmentUpdateOneWithoutReassignedToNestedInput
   reassignedTo?: Prisma.AuditAssignmentUpdateManyWithoutReassignedFromNestedInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AuditAssignmentUncheckedUpdateWithoutResponsesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   auditorId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
   reassignedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reassignedTo?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutReassignedFromNestedInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AuditAssignmentCreateManyAuditorInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
   reassignedFromId?: string | null
@@ -906,33 +811,31 @@ export type AuditAssignmentUpdateWithoutAuditorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutAssignmentsNestedInput
+  auditInstance?: Prisma.FactoryAuditInstanceUpdateOneRequiredWithoutAssignmentsNestedInput
   reassignedFrom?: Prisma.AuditAssignmentUpdateOneWithoutReassignedToNestedInput
   reassignedTo?: Prisma.AuditAssignmentUpdateManyWithoutReassignedFromNestedInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUpdateManyWithoutAssignmentNestedInput
-  responses?: Prisma.AuditResponseUpdateManyWithoutAssignmentNestedInput
+  responses?: Prisma.FactoryAuditResponseUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AuditAssignmentUncheckedUpdateWithoutAuditorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
   reassignedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reassignedTo?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutReassignedFromNestedInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUncheckedUpdateManyWithoutAssignmentNestedInput
-  responses?: Prisma.AuditResponseUncheckedUpdateManyWithoutAssignmentNestedInput
+  responses?: Prisma.FactoryAuditResponseUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AuditAssignmentUncheckedUpdateManyWithoutAuditorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
   reassignedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type AuditAssignmentCreateManyRoundInput = {
+export type AuditAssignmentCreateManyAuditInstanceInput = {
   id?: string
   auditorId: string
   role: $Enums.AuditorRole
@@ -940,29 +843,27 @@ export type AuditAssignmentCreateManyRoundInput = {
   reassignedFromId?: string | null
 }
 
-export type AuditAssignmentUpdateWithoutRoundInput = {
+export type AuditAssignmentUpdateWithoutAuditInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
   auditor?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditAssignmentsNestedInput
   reassignedFrom?: Prisma.AuditAssignmentUpdateOneWithoutReassignedToNestedInput
   reassignedTo?: Prisma.AuditAssignmentUpdateManyWithoutReassignedFromNestedInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUpdateManyWithoutAssignmentNestedInput
-  responses?: Prisma.AuditResponseUpdateManyWithoutAssignmentNestedInput
+  responses?: Prisma.FactoryAuditResponseUpdateManyWithoutAssignmentNestedInput
 }
 
-export type AuditAssignmentUncheckedUpdateWithoutRoundInput = {
+export type AuditAssignmentUncheckedUpdateWithoutAuditInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   auditorId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
   reassignedFromId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reassignedTo?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutReassignedFromNestedInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUncheckedUpdateManyWithoutAssignmentNestedInput
-  responses?: Prisma.AuditResponseUncheckedUpdateManyWithoutAssignmentNestedInput
+  responses?: Prisma.FactoryAuditResponseUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
-export type AuditAssignmentUncheckedUpdateManyWithoutRoundInput = {
+export type AuditAssignmentUncheckedUpdateManyWithoutAuditInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   auditorId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
@@ -972,7 +873,7 @@ export type AuditAssignmentUncheckedUpdateManyWithoutRoundInput = {
 
 export type AuditAssignmentCreateManyReassignedFromInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   auditorId: string
   role: $Enums.AuditorRole
   status?: $Enums.AssignmentStatus
@@ -982,27 +883,25 @@ export type AuditAssignmentUpdateWithoutReassignedFromInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutAssignmentsNestedInput
+  auditInstance?: Prisma.FactoryAuditInstanceUpdateOneRequiredWithoutAssignmentsNestedInput
   auditor?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditAssignmentsNestedInput
   reassignedTo?: Prisma.AuditAssignmentUpdateManyWithoutReassignedFromNestedInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUpdateManyWithoutAssignmentNestedInput
-  responses?: Prisma.AuditResponseUpdateManyWithoutAssignmentNestedInput
+  responses?: Prisma.FactoryAuditResponseUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AuditAssignmentUncheckedUpdateWithoutReassignedFromInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   auditorId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
   reassignedTo?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutReassignedFromNestedInput
-  checkpointScope?: Prisma.AuditAssignmentCheckpointUncheckedUpdateManyWithoutAssignmentNestedInput
-  responses?: Prisma.AuditResponseUncheckedUpdateManyWithoutAssignmentNestedInput
+  responses?: Prisma.FactoryAuditResponseUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type AuditAssignmentUncheckedUpdateManyWithoutReassignedFromInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   auditorId?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumAuditorRoleFieldUpdateOperationsInput | $Enums.AuditorRole
   status?: Prisma.EnumAssignmentStatusFieldUpdateOperationsInput | $Enums.AssignmentStatus
@@ -1015,13 +914,11 @@ export type AuditAssignmentUncheckedUpdateManyWithoutReassignedFromInput = {
 
 export type AuditAssignmentCountOutputType = {
   reassignedTo: number
-  checkpointScope: number
   responses: number
 }
 
 export type AuditAssignmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reassignedTo?: boolean | AuditAssignmentCountOutputTypeCountReassignedToArgs
-  checkpointScope?: boolean | AuditAssignmentCountOutputTypeCountCheckpointScopeArgs
   responses?: boolean | AuditAssignmentCountOutputTypeCountResponsesArgs
 }
 
@@ -1045,84 +942,75 @@ export type AuditAssignmentCountOutputTypeCountReassignedToArgs<ExtArgs extends 
 /**
  * AuditAssignmentCountOutputType without action
  */
-export type AuditAssignmentCountOutputTypeCountCheckpointScopeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AuditAssignmentCheckpointWhereInput
-}
-
-/**
- * AuditAssignmentCountOutputType without action
- */
 export type AuditAssignmentCountOutputTypeCountResponsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AuditResponseWhereInput
+  where?: Prisma.FactoryAuditResponseWhereInput
 }
 
 
 export type AuditAssignmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  roundId?: boolean
+  auditInstanceId?: boolean
   auditorId?: boolean
   role?: boolean
   status?: boolean
   reassignedFromId?: boolean
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
+  auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
   auditor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   reassignedFrom?: boolean | Prisma.AuditAssignment$reassignedFromArgs<ExtArgs>
   reassignedTo?: boolean | Prisma.AuditAssignment$reassignedToArgs<ExtArgs>
-  checkpointScope?: boolean | Prisma.AuditAssignment$checkpointScopeArgs<ExtArgs>
   responses?: boolean | Prisma.AuditAssignment$responsesArgs<ExtArgs>
   _count?: boolean | Prisma.AuditAssignmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["auditAssignment"]>
 
 export type AuditAssignmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  roundId?: boolean
+  auditInstanceId?: boolean
   auditorId?: boolean
   role?: boolean
   status?: boolean
   reassignedFromId?: boolean
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
+  auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
   auditor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   reassignedFrom?: boolean | Prisma.AuditAssignment$reassignedFromArgs<ExtArgs>
 }, ExtArgs["result"]["auditAssignment"]>
 
 export type AuditAssignmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  roundId?: boolean
+  auditInstanceId?: boolean
   auditorId?: boolean
   role?: boolean
   status?: boolean
   reassignedFromId?: boolean
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
+  auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
   auditor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   reassignedFrom?: boolean | Prisma.AuditAssignment$reassignedFromArgs<ExtArgs>
 }, ExtArgs["result"]["auditAssignment"]>
 
 export type AuditAssignmentSelectScalar = {
   id?: boolean
-  roundId?: boolean
+  auditInstanceId?: boolean
   auditorId?: boolean
   role?: boolean
   status?: boolean
   reassignedFromId?: boolean
 }
 
-export type AuditAssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roundId" | "auditorId" | "role" | "status" | "reassignedFromId", ExtArgs["result"]["auditAssignment"]>
+export type AuditAssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auditInstanceId" | "auditorId" | "role" | "status" | "reassignedFromId", ExtArgs["result"]["auditAssignment"]>
 export type AuditAssignmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
+  auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
   auditor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   reassignedFrom?: boolean | Prisma.AuditAssignment$reassignedFromArgs<ExtArgs>
   reassignedTo?: boolean | Prisma.AuditAssignment$reassignedToArgs<ExtArgs>
-  checkpointScope?: boolean | Prisma.AuditAssignment$checkpointScopeArgs<ExtArgs>
   responses?: boolean | Prisma.AuditAssignment$responsesArgs<ExtArgs>
   _count?: boolean | Prisma.AuditAssignmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AuditAssignmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
+  auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
   auditor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   reassignedFrom?: boolean | Prisma.AuditAssignment$reassignedFromArgs<ExtArgs>
 }
 export type AuditAssignmentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
+  auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
   auditor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   reassignedFrom?: boolean | Prisma.AuditAssignment$reassignedFromArgs<ExtArgs>
 }
@@ -1130,16 +1018,15 @@ export type AuditAssignmentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Ty
 export type $AuditAssignmentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AuditAssignment"
   objects: {
-    round: Prisma.$AuditRoundPayload<ExtArgs>
+    auditInstance: Prisma.$FactoryAuditInstancePayload<ExtArgs>
     auditor: Prisma.$UserPayload<ExtArgs>
     reassignedFrom: Prisma.$AuditAssignmentPayload<ExtArgs> | null
     reassignedTo: Prisma.$AuditAssignmentPayload<ExtArgs>[]
-    checkpointScope: Prisma.$AuditAssignmentCheckpointPayload<ExtArgs>[]
-    responses: Prisma.$AuditResponsePayload<ExtArgs>[]
+    responses: Prisma.$FactoryAuditResponsePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    roundId: string
+    auditInstanceId: string
     auditorId: string
     role: $Enums.AuditorRole
     status: $Enums.AssignmentStatus
@@ -1538,12 +1425,11 @@ readonly fields: AuditAssignmentFieldRefs;
  */
 export interface Prisma__AuditAssignmentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  round<T extends Prisma.AuditRoundDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditRoundDefaultArgs<ExtArgs>>): Prisma.Prisma__AuditRoundClient<runtime.Types.Result.GetResult<Prisma.$AuditRoundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  auditInstance<T extends Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>>): Prisma.Prisma__FactoryAuditInstanceClient<runtime.Types.Result.GetResult<Prisma.$FactoryAuditInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   auditor<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   reassignedFrom<T extends Prisma.AuditAssignment$reassignedFromArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditAssignment$reassignedFromArgs<ExtArgs>>): Prisma.Prisma__AuditAssignmentClient<runtime.Types.Result.GetResult<Prisma.$AuditAssignmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   reassignedTo<T extends Prisma.AuditAssignment$reassignedToArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditAssignment$reassignedToArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  checkpointScope<T extends Prisma.AuditAssignment$checkpointScopeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditAssignment$checkpointScopeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditAssignmentCheckpointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  responses<T extends Prisma.AuditAssignment$responsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditAssignment$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  responses<T extends Prisma.AuditAssignment$responsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditAssignment$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FactoryAuditResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1574,7 +1460,7 @@ export interface Prisma__AuditAssignmentClient<T, Null = never, ExtArgs extends 
  */
 export interface AuditAssignmentFieldRefs {
   readonly id: Prisma.FieldRef<"AuditAssignment", 'String'>
-  readonly roundId: Prisma.FieldRef<"AuditAssignment", 'String'>
+  readonly auditInstanceId: Prisma.FieldRef<"AuditAssignment", 'String'>
   readonly auditorId: Prisma.FieldRef<"AuditAssignment", 'String'>
   readonly role: Prisma.FieldRef<"AuditAssignment", 'AuditorRole'>
   readonly status: Prisma.FieldRef<"AuditAssignment", 'AssignmentStatus'>
@@ -2023,51 +1909,27 @@ export type AuditAssignment$reassignedToArgs<ExtArgs extends runtime.Types.Exten
 }
 
 /**
- * AuditAssignment.checkpointScope
- */
-export type AuditAssignment$checkpointScopeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the AuditAssignmentCheckpoint
-   */
-  select?: Prisma.AuditAssignmentCheckpointSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the AuditAssignmentCheckpoint
-   */
-  omit?: Prisma.AuditAssignmentCheckpointOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.AuditAssignmentCheckpointInclude<ExtArgs> | null
-  where?: Prisma.AuditAssignmentCheckpointWhereInput
-  orderBy?: Prisma.AuditAssignmentCheckpointOrderByWithRelationInput | Prisma.AuditAssignmentCheckpointOrderByWithRelationInput[]
-  cursor?: Prisma.AuditAssignmentCheckpointWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.AuditAssignmentCheckpointScalarFieldEnum | Prisma.AuditAssignmentCheckpointScalarFieldEnum[]
-}
-
-/**
  * AuditAssignment.responses
  */
 export type AuditAssignment$responsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the AuditResponse
+   * Select specific fields to fetch from the FactoryAuditResponse
    */
-  select?: Prisma.AuditResponseSelect<ExtArgs> | null
+  select?: Prisma.FactoryAuditResponseSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the AuditResponse
+   * Omit specific fields from the FactoryAuditResponse
    */
-  omit?: Prisma.AuditResponseOmit<ExtArgs> | null
+  omit?: Prisma.FactoryAuditResponseOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AuditResponseInclude<ExtArgs> | null
-  where?: Prisma.AuditResponseWhereInput
-  orderBy?: Prisma.AuditResponseOrderByWithRelationInput | Prisma.AuditResponseOrderByWithRelationInput[]
-  cursor?: Prisma.AuditResponseWhereUniqueInput
+  include?: Prisma.FactoryAuditResponseInclude<ExtArgs> | null
+  where?: Prisma.FactoryAuditResponseWhereInput
+  orderBy?: Prisma.FactoryAuditResponseOrderByWithRelationInput | Prisma.FactoryAuditResponseOrderByWithRelationInput[]
+  cursor?: Prisma.FactoryAuditResponseWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.AuditResponseScalarFieldEnum | Prisma.AuditResponseScalarFieldEnum[]
+  distinct?: Prisma.FactoryAuditResponseScalarFieldEnum | Prisma.FactoryAuditResponseScalarFieldEnum[]
 }
 
 /**

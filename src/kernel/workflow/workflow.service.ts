@@ -3,7 +3,10 @@ import { selectTemplate } from "./template.service";
 import { buildWorkflowStages } from "./workflow.helper";
 import { notify } from "@notifications/notification.services";
 import { addMailJob } from "@mail/mail.service";
-import { runPreApprovalValidation } from "./workflowSubject.helper";
+import {
+  runPreApprovalValidation,
+  runPostApprovalHook,
+} from "./workflowSubject.helper";
 import ApiError from "@shared/utils/apiError";
 
 import { updateSubjectStatus } from "./workflowSubject.helper";
@@ -404,6 +407,20 @@ export const approveStage = async ({
           stage!.workflow.subjectType,
           stage!.workflow.subjectId,
           "APPROVED",
+        );
+
+        // ✅ NEW — gives a subject type a chance to run its own domain logic
+        // once the workflow that governs it has been fully approved (e.g.
+        // FACTORY_AUDIT_INSTANCE writing its VendorClassificationHistory
+        // row, which requires this very workflow's id). Inside the same
+        // transaction as the two writes above, since it's a data write, not
+        // a notification — see runPostApprovalHook's own doc comment in
+        // workflowSubject.helper.ts.
+        await runPostApprovalHook(
+          tx,
+          stage!.workflow.subjectType,
+          stage!.workflow.subjectId,
+          stage!.workflowId,
         );
 
         outcome = {

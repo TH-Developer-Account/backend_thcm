@@ -37,8 +37,7 @@ export type VendorClassificationHistorySumAggregateOutputType = {
 export type VendorClassificationHistoryMinAggregateOutputType = {
   id: string | null
   auditInstanceId: string | null
-  roundId: string | null
-  bandId: string | null
+  bandLabel: string | null
   overallScorePercent: number | null
   workflowInstanceId: string | null
   decidedAt: Date | null
@@ -47,8 +46,7 @@ export type VendorClassificationHistoryMinAggregateOutputType = {
 export type VendorClassificationHistoryMaxAggregateOutputType = {
   id: string | null
   auditInstanceId: string | null
-  roundId: string | null
-  bandId: string | null
+  bandLabel: string | null
   overallScorePercent: number | null
   workflowInstanceId: string | null
   decidedAt: Date | null
@@ -57,8 +55,8 @@ export type VendorClassificationHistoryMaxAggregateOutputType = {
 export type VendorClassificationHistoryCountAggregateOutputType = {
   id: number
   auditInstanceId: number
-  roundId: number
-  bandId: number
+  bandLabel: number
+  qualifiesFor: number
   overallScorePercent: number
   workflowInstanceId: number
   decidedAt: number
@@ -77,8 +75,7 @@ export type VendorClassificationHistorySumAggregateInputType = {
 export type VendorClassificationHistoryMinAggregateInputType = {
   id?: true
   auditInstanceId?: true
-  roundId?: true
-  bandId?: true
+  bandLabel?: true
   overallScorePercent?: true
   workflowInstanceId?: true
   decidedAt?: true
@@ -87,8 +84,7 @@ export type VendorClassificationHistoryMinAggregateInputType = {
 export type VendorClassificationHistoryMaxAggregateInputType = {
   id?: true
   auditInstanceId?: true
-  roundId?: true
-  bandId?: true
+  bandLabel?: true
   overallScorePercent?: true
   workflowInstanceId?: true
   decidedAt?: true
@@ -97,8 +93,8 @@ export type VendorClassificationHistoryMaxAggregateInputType = {
 export type VendorClassificationHistoryCountAggregateInputType = {
   id?: true
   auditInstanceId?: true
-  roundId?: true
-  bandId?: true
+  bandLabel?: true
+  qualifiesFor?: true
   overallScorePercent?: true
   workflowInstanceId?: true
   decidedAt?: true
@@ -194,8 +190,8 @@ export type VendorClassificationHistoryGroupByArgs<ExtArgs extends runtime.Types
 export type VendorClassificationHistoryGroupByOutputType = {
   id: string
   auditInstanceId: string
-  roundId: string
-  bandId: string
+  bandLabel: string
+  qualifiesFor: $Enums.PartCategory[]
   overallScorePercent: number
   workflowInstanceId: string
   decidedAt: Date
@@ -227,28 +223,24 @@ export type VendorClassificationHistoryWhereInput = {
   NOT?: Prisma.VendorClassificationHistoryWhereInput | Prisma.VendorClassificationHistoryWhereInput[]
   id?: Prisma.StringFilter<"VendorClassificationHistory"> | string
   auditInstanceId?: Prisma.StringFilter<"VendorClassificationHistory"> | string
-  roundId?: Prisma.StringFilter<"VendorClassificationHistory"> | string
-  bandId?: Prisma.StringFilter<"VendorClassificationHistory"> | string
+  bandLabel?: Prisma.StringFilter<"VendorClassificationHistory"> | string
+  qualifiesFor?: Prisma.EnumPartCategoryNullableListFilter<"VendorClassificationHistory">
   overallScorePercent?: Prisma.FloatFilter<"VendorClassificationHistory"> | number
   workflowInstanceId?: Prisma.StringFilter<"VendorClassificationHistory"> | string
   decidedAt?: Prisma.DateTimeFilter<"VendorClassificationHistory"> | Date | string
   auditInstance?: Prisma.XOR<Prisma.FactoryAuditInstanceScalarRelationFilter, Prisma.FactoryAuditInstanceWhereInput>
-  round?: Prisma.XOR<Prisma.AuditRoundScalarRelationFilter, Prisma.AuditRoundWhereInput>
-  band?: Prisma.XOR<Prisma.FactoryClassificationBandScalarRelationFilter, Prisma.FactoryClassificationBandWhereInput>
   workflowInstance?: Prisma.XOR<Prisma.WorkflowInstanceScalarRelationFilter, Prisma.WorkflowInstanceWhereInput>
 }
 
 export type VendorClassificationHistoryOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   auditInstanceId?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
-  bandId?: Prisma.SortOrder
+  bandLabel?: Prisma.SortOrder
+  qualifiesFor?: Prisma.SortOrder
   overallScorePercent?: Prisma.SortOrder
   workflowInstanceId?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
   auditInstance?: Prisma.FactoryAuditInstanceOrderByWithRelationInput
-  round?: Prisma.AuditRoundOrderByWithRelationInput
-  band?: Prisma.FactoryClassificationBandOrderByWithRelationInput
   workflowInstance?: Prisma.WorkflowInstanceOrderByWithRelationInput
 }
 
@@ -258,22 +250,20 @@ export type VendorClassificationHistoryWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.VendorClassificationHistoryWhereInput[]
   NOT?: Prisma.VendorClassificationHistoryWhereInput | Prisma.VendorClassificationHistoryWhereInput[]
   auditInstanceId?: Prisma.StringFilter<"VendorClassificationHistory"> | string
-  roundId?: Prisma.StringFilter<"VendorClassificationHistory"> | string
-  bandId?: Prisma.StringFilter<"VendorClassificationHistory"> | string
+  bandLabel?: Prisma.StringFilter<"VendorClassificationHistory"> | string
+  qualifiesFor?: Prisma.EnumPartCategoryNullableListFilter<"VendorClassificationHistory">
   overallScorePercent?: Prisma.FloatFilter<"VendorClassificationHistory"> | number
   workflowInstanceId?: Prisma.StringFilter<"VendorClassificationHistory"> | string
   decidedAt?: Prisma.DateTimeFilter<"VendorClassificationHistory"> | Date | string
   auditInstance?: Prisma.XOR<Prisma.FactoryAuditInstanceScalarRelationFilter, Prisma.FactoryAuditInstanceWhereInput>
-  round?: Prisma.XOR<Prisma.AuditRoundScalarRelationFilter, Prisma.AuditRoundWhereInput>
-  band?: Prisma.XOR<Prisma.FactoryClassificationBandScalarRelationFilter, Prisma.FactoryClassificationBandWhereInput>
   workflowInstance?: Prisma.XOR<Prisma.WorkflowInstanceScalarRelationFilter, Prisma.WorkflowInstanceWhereInput>
 }, "id">
 
 export type VendorClassificationHistoryOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   auditInstanceId?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
-  bandId?: Prisma.SortOrder
+  bandLabel?: Prisma.SortOrder
+  qualifiesFor?: Prisma.SortOrder
   overallScorePercent?: Prisma.SortOrder
   workflowInstanceId?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
@@ -290,8 +280,8 @@ export type VendorClassificationHistoryScalarWhereWithAggregatesInput = {
   NOT?: Prisma.VendorClassificationHistoryScalarWhereWithAggregatesInput | Prisma.VendorClassificationHistoryScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"VendorClassificationHistory"> | string
   auditInstanceId?: Prisma.StringWithAggregatesFilter<"VendorClassificationHistory"> | string
-  roundId?: Prisma.StringWithAggregatesFilter<"VendorClassificationHistory"> | string
-  bandId?: Prisma.StringWithAggregatesFilter<"VendorClassificationHistory"> | string
+  bandLabel?: Prisma.StringWithAggregatesFilter<"VendorClassificationHistory"> | string
+  qualifiesFor?: Prisma.EnumPartCategoryNullableListFilter<"VendorClassificationHistory">
   overallScorePercent?: Prisma.FloatWithAggregatesFilter<"VendorClassificationHistory"> | number
   workflowInstanceId?: Prisma.StringWithAggregatesFilter<"VendorClassificationHistory"> | string
   decidedAt?: Prisma.DateTimeWithAggregatesFilter<"VendorClassificationHistory"> | Date | string
@@ -299,19 +289,19 @@ export type VendorClassificationHistoryScalarWhereWithAggregatesInput = {
 
 export type VendorClassificationHistoryCreateInput = {
   id?: string
+  bandLabel: string
+  qualifiesFor?: Prisma.VendorClassificationHistoryCreatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent: number
   decidedAt?: Date | string
   auditInstance: Prisma.FactoryAuditInstanceCreateNestedOneWithoutClassificationHistoryInput
-  round: Prisma.AuditRoundCreateNestedOneWithoutClassificationHistoryInput
-  band: Prisma.FactoryClassificationBandCreateNestedOneWithoutHistoryInput
   workflowInstance: Prisma.WorkflowInstanceCreateNestedOneWithoutFactoryClassificationHistoryInput
 }
 
 export type VendorClassificationHistoryUncheckedCreateInput = {
   id?: string
   auditInstanceId: string
-  roundId: string
-  bandId: string
+  bandLabel: string
+  qualifiesFor?: Prisma.VendorClassificationHistoryCreatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent: number
   workflowInstanceId: string
   decidedAt?: Date | string
@@ -319,19 +309,19 @@ export type VendorClassificationHistoryUncheckedCreateInput = {
 
 export type VendorClassificationHistoryUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  bandLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  qualifiesFor?: Prisma.VendorClassificationHistoryUpdatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   auditInstance?: Prisma.FactoryAuditInstanceUpdateOneRequiredWithoutClassificationHistoryNestedInput
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutClassificationHistoryNestedInput
-  band?: Prisma.FactoryClassificationBandUpdateOneRequiredWithoutHistoryNestedInput
   workflowInstance?: Prisma.WorkflowInstanceUpdateOneRequiredWithoutFactoryClassificationHistoryNestedInput
 }
 
 export type VendorClassificationHistoryUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
-  bandId?: Prisma.StringFieldUpdateOperationsInput | string
+  bandLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  qualifiesFor?: Prisma.VendorClassificationHistoryUpdatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
   workflowInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -340,8 +330,8 @@ export type VendorClassificationHistoryUncheckedUpdateInput = {
 export type VendorClassificationHistoryCreateManyInput = {
   id?: string
   auditInstanceId: string
-  roundId: string
-  bandId: string
+  bandLabel: string
+  qualifiesFor?: Prisma.VendorClassificationHistoryCreatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent: number
   workflowInstanceId: string
   decidedAt?: Date | string
@@ -349,6 +339,8 @@ export type VendorClassificationHistoryCreateManyInput = {
 
 export type VendorClassificationHistoryUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  bandLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  qualifiesFor?: Prisma.VendorClassificationHistoryUpdatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -356,8 +348,8 @@ export type VendorClassificationHistoryUpdateManyMutationInput = {
 export type VendorClassificationHistoryUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
-  bandId?: Prisma.StringFieldUpdateOperationsInput | string
+  bandLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  qualifiesFor?: Prisma.VendorClassificationHistoryUpdatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
   workflowInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -376,8 +368,8 @@ export type VendorClassificationHistoryOrderByRelationAggregateInput = {
 export type VendorClassificationHistoryCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   auditInstanceId?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
-  bandId?: Prisma.SortOrder
+  bandLabel?: Prisma.SortOrder
+  qualifiesFor?: Prisma.SortOrder
   overallScorePercent?: Prisma.SortOrder
   workflowInstanceId?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
@@ -390,8 +382,7 @@ export type VendorClassificationHistoryAvgOrderByAggregateInput = {
 export type VendorClassificationHistoryMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   auditInstanceId?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
-  bandId?: Prisma.SortOrder
+  bandLabel?: Prisma.SortOrder
   overallScorePercent?: Prisma.SortOrder
   workflowInstanceId?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
@@ -400,8 +391,7 @@ export type VendorClassificationHistoryMaxOrderByAggregateInput = {
 export type VendorClassificationHistoryMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   auditInstanceId?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
-  bandId?: Prisma.SortOrder
+  bandLabel?: Prisma.SortOrder
   overallScorePercent?: Prisma.SortOrder
   workflowInstanceId?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
@@ -453,48 +443,6 @@ export type VendorClassificationHistoryUncheckedUpdateManyWithoutWorkflowInstanc
   deleteMany?: Prisma.VendorClassificationHistoryScalarWhereInput | Prisma.VendorClassificationHistoryScalarWhereInput[]
 }
 
-export type VendorClassificationHistoryCreateNestedManyWithoutBandInput = {
-  create?: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutBandInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutBandInput> | Prisma.VendorClassificationHistoryCreateWithoutBandInput[] | Prisma.VendorClassificationHistoryUncheckedCreateWithoutBandInput[]
-  connectOrCreate?: Prisma.VendorClassificationHistoryCreateOrConnectWithoutBandInput | Prisma.VendorClassificationHistoryCreateOrConnectWithoutBandInput[]
-  createMany?: Prisma.VendorClassificationHistoryCreateManyBandInputEnvelope
-  connect?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-}
-
-export type VendorClassificationHistoryUncheckedCreateNestedManyWithoutBandInput = {
-  create?: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutBandInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutBandInput> | Prisma.VendorClassificationHistoryCreateWithoutBandInput[] | Prisma.VendorClassificationHistoryUncheckedCreateWithoutBandInput[]
-  connectOrCreate?: Prisma.VendorClassificationHistoryCreateOrConnectWithoutBandInput | Prisma.VendorClassificationHistoryCreateOrConnectWithoutBandInput[]
-  createMany?: Prisma.VendorClassificationHistoryCreateManyBandInputEnvelope
-  connect?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-}
-
-export type VendorClassificationHistoryUpdateManyWithoutBandNestedInput = {
-  create?: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutBandInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutBandInput> | Prisma.VendorClassificationHistoryCreateWithoutBandInput[] | Prisma.VendorClassificationHistoryUncheckedCreateWithoutBandInput[]
-  connectOrCreate?: Prisma.VendorClassificationHistoryCreateOrConnectWithoutBandInput | Prisma.VendorClassificationHistoryCreateOrConnectWithoutBandInput[]
-  upsert?: Prisma.VendorClassificationHistoryUpsertWithWhereUniqueWithoutBandInput | Prisma.VendorClassificationHistoryUpsertWithWhereUniqueWithoutBandInput[]
-  createMany?: Prisma.VendorClassificationHistoryCreateManyBandInputEnvelope
-  set?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  disconnect?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  delete?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  connect?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  update?: Prisma.VendorClassificationHistoryUpdateWithWhereUniqueWithoutBandInput | Prisma.VendorClassificationHistoryUpdateWithWhereUniqueWithoutBandInput[]
-  updateMany?: Prisma.VendorClassificationHistoryUpdateManyWithWhereWithoutBandInput | Prisma.VendorClassificationHistoryUpdateManyWithWhereWithoutBandInput[]
-  deleteMany?: Prisma.VendorClassificationHistoryScalarWhereInput | Prisma.VendorClassificationHistoryScalarWhereInput[]
-}
-
-export type VendorClassificationHistoryUncheckedUpdateManyWithoutBandNestedInput = {
-  create?: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutBandInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutBandInput> | Prisma.VendorClassificationHistoryCreateWithoutBandInput[] | Prisma.VendorClassificationHistoryUncheckedCreateWithoutBandInput[]
-  connectOrCreate?: Prisma.VendorClassificationHistoryCreateOrConnectWithoutBandInput | Prisma.VendorClassificationHistoryCreateOrConnectWithoutBandInput[]
-  upsert?: Prisma.VendorClassificationHistoryUpsertWithWhereUniqueWithoutBandInput | Prisma.VendorClassificationHistoryUpsertWithWhereUniqueWithoutBandInput[]
-  createMany?: Prisma.VendorClassificationHistoryCreateManyBandInputEnvelope
-  set?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  disconnect?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  delete?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  connect?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  update?: Prisma.VendorClassificationHistoryUpdateWithWhereUniqueWithoutBandInput | Prisma.VendorClassificationHistoryUpdateWithWhereUniqueWithoutBandInput[]
-  updateMany?: Prisma.VendorClassificationHistoryUpdateManyWithWhereWithoutBandInput | Prisma.VendorClassificationHistoryUpdateManyWithWhereWithoutBandInput[]
-  deleteMany?: Prisma.VendorClassificationHistoryScalarWhereInput | Prisma.VendorClassificationHistoryScalarWhereInput[]
-}
-
 export type VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput = {
   create?: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutAuditInstanceInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutAuditInstanceInput> | Prisma.VendorClassificationHistoryCreateWithoutAuditInstanceInput[] | Prisma.VendorClassificationHistoryUncheckedCreateWithoutAuditInstanceInput[]
   connectOrCreate?: Prisma.VendorClassificationHistoryCreateOrConnectWithoutAuditInstanceInput | Prisma.VendorClassificationHistoryCreateOrConnectWithoutAuditInstanceInput[]
@@ -537,62 +485,29 @@ export type VendorClassificationHistoryUncheckedUpdateManyWithoutAuditInstanceNe
   deleteMany?: Prisma.VendorClassificationHistoryScalarWhereInput | Prisma.VendorClassificationHistoryScalarWhereInput[]
 }
 
-export type VendorClassificationHistoryCreateNestedManyWithoutRoundInput = {
-  create?: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutRoundInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutRoundInput> | Prisma.VendorClassificationHistoryCreateWithoutRoundInput[] | Prisma.VendorClassificationHistoryUncheckedCreateWithoutRoundInput[]
-  connectOrCreate?: Prisma.VendorClassificationHistoryCreateOrConnectWithoutRoundInput | Prisma.VendorClassificationHistoryCreateOrConnectWithoutRoundInput[]
-  createMany?: Prisma.VendorClassificationHistoryCreateManyRoundInputEnvelope
-  connect?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
+export type VendorClassificationHistoryCreatequalifiesForInput = {
+  set: $Enums.PartCategory[]
 }
 
-export type VendorClassificationHistoryUncheckedCreateNestedManyWithoutRoundInput = {
-  create?: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutRoundInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutRoundInput> | Prisma.VendorClassificationHistoryCreateWithoutRoundInput[] | Prisma.VendorClassificationHistoryUncheckedCreateWithoutRoundInput[]
-  connectOrCreate?: Prisma.VendorClassificationHistoryCreateOrConnectWithoutRoundInput | Prisma.VendorClassificationHistoryCreateOrConnectWithoutRoundInput[]
-  createMany?: Prisma.VendorClassificationHistoryCreateManyRoundInputEnvelope
-  connect?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-}
-
-export type VendorClassificationHistoryUpdateManyWithoutRoundNestedInput = {
-  create?: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutRoundInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutRoundInput> | Prisma.VendorClassificationHistoryCreateWithoutRoundInput[] | Prisma.VendorClassificationHistoryUncheckedCreateWithoutRoundInput[]
-  connectOrCreate?: Prisma.VendorClassificationHistoryCreateOrConnectWithoutRoundInput | Prisma.VendorClassificationHistoryCreateOrConnectWithoutRoundInput[]
-  upsert?: Prisma.VendorClassificationHistoryUpsertWithWhereUniqueWithoutRoundInput | Prisma.VendorClassificationHistoryUpsertWithWhereUniqueWithoutRoundInput[]
-  createMany?: Prisma.VendorClassificationHistoryCreateManyRoundInputEnvelope
-  set?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  disconnect?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  delete?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  connect?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  update?: Prisma.VendorClassificationHistoryUpdateWithWhereUniqueWithoutRoundInput | Prisma.VendorClassificationHistoryUpdateWithWhereUniqueWithoutRoundInput[]
-  updateMany?: Prisma.VendorClassificationHistoryUpdateManyWithWhereWithoutRoundInput | Prisma.VendorClassificationHistoryUpdateManyWithWhereWithoutRoundInput[]
-  deleteMany?: Prisma.VendorClassificationHistoryScalarWhereInput | Prisma.VendorClassificationHistoryScalarWhereInput[]
-}
-
-export type VendorClassificationHistoryUncheckedUpdateManyWithoutRoundNestedInput = {
-  create?: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutRoundInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutRoundInput> | Prisma.VendorClassificationHistoryCreateWithoutRoundInput[] | Prisma.VendorClassificationHistoryUncheckedCreateWithoutRoundInput[]
-  connectOrCreate?: Prisma.VendorClassificationHistoryCreateOrConnectWithoutRoundInput | Prisma.VendorClassificationHistoryCreateOrConnectWithoutRoundInput[]
-  upsert?: Prisma.VendorClassificationHistoryUpsertWithWhereUniqueWithoutRoundInput | Prisma.VendorClassificationHistoryUpsertWithWhereUniqueWithoutRoundInput[]
-  createMany?: Prisma.VendorClassificationHistoryCreateManyRoundInputEnvelope
-  set?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  disconnect?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  delete?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  connect?: Prisma.VendorClassificationHistoryWhereUniqueInput | Prisma.VendorClassificationHistoryWhereUniqueInput[]
-  update?: Prisma.VendorClassificationHistoryUpdateWithWhereUniqueWithoutRoundInput | Prisma.VendorClassificationHistoryUpdateWithWhereUniqueWithoutRoundInput[]
-  updateMany?: Prisma.VendorClassificationHistoryUpdateManyWithWhereWithoutRoundInput | Prisma.VendorClassificationHistoryUpdateManyWithWhereWithoutRoundInput[]
-  deleteMany?: Prisma.VendorClassificationHistoryScalarWhereInput | Prisma.VendorClassificationHistoryScalarWhereInput[]
+export type VendorClassificationHistoryUpdatequalifiesForInput = {
+  set?: $Enums.PartCategory[]
+  push?: $Enums.PartCategory | $Enums.PartCategory[]
 }
 
 export type VendorClassificationHistoryCreateWithoutWorkflowInstanceInput = {
   id?: string
+  bandLabel: string
+  qualifiesFor?: Prisma.VendorClassificationHistoryCreatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent: number
   decidedAt?: Date | string
   auditInstance: Prisma.FactoryAuditInstanceCreateNestedOneWithoutClassificationHistoryInput
-  round: Prisma.AuditRoundCreateNestedOneWithoutClassificationHistoryInput
-  band: Prisma.FactoryClassificationBandCreateNestedOneWithoutHistoryInput
 }
 
 export type VendorClassificationHistoryUncheckedCreateWithoutWorkflowInstanceInput = {
   id?: string
   auditInstanceId: string
-  roundId: string
-  bandId: string
+  bandLabel: string
+  qualifiesFor?: Prisma.VendorClassificationHistoryCreatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent: number
   decidedAt?: Date | string
 }
@@ -629,70 +544,26 @@ export type VendorClassificationHistoryScalarWhereInput = {
   NOT?: Prisma.VendorClassificationHistoryScalarWhereInput | Prisma.VendorClassificationHistoryScalarWhereInput[]
   id?: Prisma.StringFilter<"VendorClassificationHistory"> | string
   auditInstanceId?: Prisma.StringFilter<"VendorClassificationHistory"> | string
-  roundId?: Prisma.StringFilter<"VendorClassificationHistory"> | string
-  bandId?: Prisma.StringFilter<"VendorClassificationHistory"> | string
+  bandLabel?: Prisma.StringFilter<"VendorClassificationHistory"> | string
+  qualifiesFor?: Prisma.EnumPartCategoryNullableListFilter<"VendorClassificationHistory">
   overallScorePercent?: Prisma.FloatFilter<"VendorClassificationHistory"> | number
   workflowInstanceId?: Prisma.StringFilter<"VendorClassificationHistory"> | string
   decidedAt?: Prisma.DateTimeFilter<"VendorClassificationHistory"> | Date | string
 }
 
-export type VendorClassificationHistoryCreateWithoutBandInput = {
-  id?: string
-  overallScorePercent: number
-  decidedAt?: Date | string
-  auditInstance: Prisma.FactoryAuditInstanceCreateNestedOneWithoutClassificationHistoryInput
-  round: Prisma.AuditRoundCreateNestedOneWithoutClassificationHistoryInput
-  workflowInstance: Prisma.WorkflowInstanceCreateNestedOneWithoutFactoryClassificationHistoryInput
-}
-
-export type VendorClassificationHistoryUncheckedCreateWithoutBandInput = {
-  id?: string
-  auditInstanceId: string
-  roundId: string
-  overallScorePercent: number
-  workflowInstanceId: string
-  decidedAt?: Date | string
-}
-
-export type VendorClassificationHistoryCreateOrConnectWithoutBandInput = {
-  where: Prisma.VendorClassificationHistoryWhereUniqueInput
-  create: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutBandInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutBandInput>
-}
-
-export type VendorClassificationHistoryCreateManyBandInputEnvelope = {
-  data: Prisma.VendorClassificationHistoryCreateManyBandInput | Prisma.VendorClassificationHistoryCreateManyBandInput[]
-  skipDuplicates?: boolean
-}
-
-export type VendorClassificationHistoryUpsertWithWhereUniqueWithoutBandInput = {
-  where: Prisma.VendorClassificationHistoryWhereUniqueInput
-  update: Prisma.XOR<Prisma.VendorClassificationHistoryUpdateWithoutBandInput, Prisma.VendorClassificationHistoryUncheckedUpdateWithoutBandInput>
-  create: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutBandInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutBandInput>
-}
-
-export type VendorClassificationHistoryUpdateWithWhereUniqueWithoutBandInput = {
-  where: Prisma.VendorClassificationHistoryWhereUniqueInput
-  data: Prisma.XOR<Prisma.VendorClassificationHistoryUpdateWithoutBandInput, Prisma.VendorClassificationHistoryUncheckedUpdateWithoutBandInput>
-}
-
-export type VendorClassificationHistoryUpdateManyWithWhereWithoutBandInput = {
-  where: Prisma.VendorClassificationHistoryScalarWhereInput
-  data: Prisma.XOR<Prisma.VendorClassificationHistoryUpdateManyMutationInput, Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutBandInput>
-}
-
 export type VendorClassificationHistoryCreateWithoutAuditInstanceInput = {
   id?: string
+  bandLabel: string
+  qualifiesFor?: Prisma.VendorClassificationHistoryCreatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent: number
   decidedAt?: Date | string
-  round: Prisma.AuditRoundCreateNestedOneWithoutClassificationHistoryInput
-  band: Prisma.FactoryClassificationBandCreateNestedOneWithoutHistoryInput
   workflowInstance: Prisma.WorkflowInstanceCreateNestedOneWithoutFactoryClassificationHistoryInput
 }
 
 export type VendorClassificationHistoryUncheckedCreateWithoutAuditInstanceInput = {
   id?: string
-  roundId: string
-  bandId: string
+  bandLabel: string
+  qualifiesFor?: Prisma.VendorClassificationHistoryCreatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent: number
   workflowInstanceId: string
   decidedAt?: Date | string
@@ -724,73 +595,29 @@ export type VendorClassificationHistoryUpdateManyWithWhereWithoutAuditInstanceIn
   data: Prisma.XOR<Prisma.VendorClassificationHistoryUpdateManyMutationInput, Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutAuditInstanceInput>
 }
 
-export type VendorClassificationHistoryCreateWithoutRoundInput = {
-  id?: string
-  overallScorePercent: number
-  decidedAt?: Date | string
-  auditInstance: Prisma.FactoryAuditInstanceCreateNestedOneWithoutClassificationHistoryInput
-  band: Prisma.FactoryClassificationBandCreateNestedOneWithoutHistoryInput
-  workflowInstance: Prisma.WorkflowInstanceCreateNestedOneWithoutFactoryClassificationHistoryInput
-}
-
-export type VendorClassificationHistoryUncheckedCreateWithoutRoundInput = {
-  id?: string
-  auditInstanceId: string
-  bandId: string
-  overallScorePercent: number
-  workflowInstanceId: string
-  decidedAt?: Date | string
-}
-
-export type VendorClassificationHistoryCreateOrConnectWithoutRoundInput = {
-  where: Prisma.VendorClassificationHistoryWhereUniqueInput
-  create: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutRoundInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutRoundInput>
-}
-
-export type VendorClassificationHistoryCreateManyRoundInputEnvelope = {
-  data: Prisma.VendorClassificationHistoryCreateManyRoundInput | Prisma.VendorClassificationHistoryCreateManyRoundInput[]
-  skipDuplicates?: boolean
-}
-
-export type VendorClassificationHistoryUpsertWithWhereUniqueWithoutRoundInput = {
-  where: Prisma.VendorClassificationHistoryWhereUniqueInput
-  update: Prisma.XOR<Prisma.VendorClassificationHistoryUpdateWithoutRoundInput, Prisma.VendorClassificationHistoryUncheckedUpdateWithoutRoundInput>
-  create: Prisma.XOR<Prisma.VendorClassificationHistoryCreateWithoutRoundInput, Prisma.VendorClassificationHistoryUncheckedCreateWithoutRoundInput>
-}
-
-export type VendorClassificationHistoryUpdateWithWhereUniqueWithoutRoundInput = {
-  where: Prisma.VendorClassificationHistoryWhereUniqueInput
-  data: Prisma.XOR<Prisma.VendorClassificationHistoryUpdateWithoutRoundInput, Prisma.VendorClassificationHistoryUncheckedUpdateWithoutRoundInput>
-}
-
-export type VendorClassificationHistoryUpdateManyWithWhereWithoutRoundInput = {
-  where: Prisma.VendorClassificationHistoryScalarWhereInput
-  data: Prisma.XOR<Prisma.VendorClassificationHistoryUpdateManyMutationInput, Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutRoundInput>
-}
-
 export type VendorClassificationHistoryCreateManyWorkflowInstanceInput = {
   id?: string
   auditInstanceId: string
-  roundId: string
-  bandId: string
+  bandLabel: string
+  qualifiesFor?: Prisma.VendorClassificationHistoryCreatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent: number
   decidedAt?: Date | string
 }
 
 export type VendorClassificationHistoryUpdateWithoutWorkflowInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  bandLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  qualifiesFor?: Prisma.VendorClassificationHistoryUpdatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   auditInstance?: Prisma.FactoryAuditInstanceUpdateOneRequiredWithoutClassificationHistoryNestedInput
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutClassificationHistoryNestedInput
-  band?: Prisma.FactoryClassificationBandUpdateOneRequiredWithoutHistoryNestedInput
 }
 
 export type VendorClassificationHistoryUncheckedUpdateWithoutWorkflowInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
-  bandId?: Prisma.StringFieldUpdateOperationsInput | string
+  bandLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  qualifiesFor?: Prisma.VendorClassificationHistoryUpdatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -798,52 +625,16 @@ export type VendorClassificationHistoryUncheckedUpdateWithoutWorkflowInstanceInp
 export type VendorClassificationHistoryUncheckedUpdateManyWithoutWorkflowInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
-  bandId?: Prisma.StringFieldUpdateOperationsInput | string
+  bandLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  qualifiesFor?: Prisma.VendorClassificationHistoryUpdatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
-  decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type VendorClassificationHistoryCreateManyBandInput = {
-  id?: string
-  auditInstanceId: string
-  roundId: string
-  overallScorePercent: number
-  workflowInstanceId: string
-  decidedAt?: Date | string
-}
-
-export type VendorClassificationHistoryUpdateWithoutBandInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
-  decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  auditInstance?: Prisma.FactoryAuditInstanceUpdateOneRequiredWithoutClassificationHistoryNestedInput
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutClassificationHistoryNestedInput
-  workflowInstance?: Prisma.WorkflowInstanceUpdateOneRequiredWithoutFactoryClassificationHistoryNestedInput
-}
-
-export type VendorClassificationHistoryUncheckedUpdateWithoutBandInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
-  overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
-  workflowInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
-  decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type VendorClassificationHistoryUncheckedUpdateManyWithoutBandInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
-  overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
-  workflowInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type VendorClassificationHistoryCreateManyAuditInstanceInput = {
   id?: string
-  roundId: string
-  bandId: string
+  bandLabel: string
+  qualifiesFor?: Prisma.VendorClassificationHistoryCreatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent: number
   workflowInstanceId: string
   decidedAt?: Date | string
@@ -851,17 +642,17 @@ export type VendorClassificationHistoryCreateManyAuditInstanceInput = {
 
 export type VendorClassificationHistoryUpdateWithoutAuditInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  bandLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  qualifiesFor?: Prisma.VendorClassificationHistoryUpdatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutClassificationHistoryNestedInput
-  band?: Prisma.FactoryClassificationBandUpdateOneRequiredWithoutHistoryNestedInput
   workflowInstance?: Prisma.WorkflowInstanceUpdateOneRequiredWithoutFactoryClassificationHistoryNestedInput
 }
 
 export type VendorClassificationHistoryUncheckedUpdateWithoutAuditInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
-  bandId?: Prisma.StringFieldUpdateOperationsInput | string
+  bandLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  qualifiesFor?: Prisma.VendorClassificationHistoryUpdatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
   workflowInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -869,44 +660,8 @@ export type VendorClassificationHistoryUncheckedUpdateWithoutAuditInstanceInput 
 
 export type VendorClassificationHistoryUncheckedUpdateManyWithoutAuditInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
-  bandId?: Prisma.StringFieldUpdateOperationsInput | string
-  overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
-  workflowInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
-  decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type VendorClassificationHistoryCreateManyRoundInput = {
-  id?: string
-  auditInstanceId: string
-  bandId: string
-  overallScorePercent: number
-  workflowInstanceId: string
-  decidedAt?: Date | string
-}
-
-export type VendorClassificationHistoryUpdateWithoutRoundInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
-  decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  auditInstance?: Prisma.FactoryAuditInstanceUpdateOneRequiredWithoutClassificationHistoryNestedInput
-  band?: Prisma.FactoryClassificationBandUpdateOneRequiredWithoutHistoryNestedInput
-  workflowInstance?: Prisma.WorkflowInstanceUpdateOneRequiredWithoutFactoryClassificationHistoryNestedInput
-}
-
-export type VendorClassificationHistoryUncheckedUpdateWithoutRoundInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
-  bandId?: Prisma.StringFieldUpdateOperationsInput | string
-  overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
-  workflowInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
-  decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-}
-
-export type VendorClassificationHistoryUncheckedUpdateManyWithoutRoundInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
-  bandId?: Prisma.StringFieldUpdateOperationsInput | string
+  bandLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  qualifiesFor?: Prisma.VendorClassificationHistoryUpdatequalifiesForInput | $Enums.PartCategory[]
   overallScorePercent?: Prisma.FloatFieldUpdateOperationsInput | number
   workflowInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   decidedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -917,72 +672,60 @@ export type VendorClassificationHistoryUncheckedUpdateManyWithoutRoundInput = {
 export type VendorClassificationHistorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   auditInstanceId?: boolean
-  roundId?: boolean
-  bandId?: boolean
+  bandLabel?: boolean
+  qualifiesFor?: boolean
   overallScorePercent?: boolean
   workflowInstanceId?: boolean
   decidedAt?: boolean
   auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
-  band?: boolean | Prisma.FactoryClassificationBandDefaultArgs<ExtArgs>
   workflowInstance?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vendorClassificationHistory"]>
 
 export type VendorClassificationHistorySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   auditInstanceId?: boolean
-  roundId?: boolean
-  bandId?: boolean
+  bandLabel?: boolean
+  qualifiesFor?: boolean
   overallScorePercent?: boolean
   workflowInstanceId?: boolean
   decidedAt?: boolean
   auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
-  band?: boolean | Prisma.FactoryClassificationBandDefaultArgs<ExtArgs>
   workflowInstance?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vendorClassificationHistory"]>
 
 export type VendorClassificationHistorySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   auditInstanceId?: boolean
-  roundId?: boolean
-  bandId?: boolean
+  bandLabel?: boolean
+  qualifiesFor?: boolean
   overallScorePercent?: boolean
   workflowInstanceId?: boolean
   decidedAt?: boolean
   auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
-  band?: boolean | Prisma.FactoryClassificationBandDefaultArgs<ExtArgs>
   workflowInstance?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vendorClassificationHistory"]>
 
 export type VendorClassificationHistorySelectScalar = {
   id?: boolean
   auditInstanceId?: boolean
-  roundId?: boolean
-  bandId?: boolean
+  bandLabel?: boolean
+  qualifiesFor?: boolean
   overallScorePercent?: boolean
   workflowInstanceId?: boolean
   decidedAt?: boolean
 }
 
-export type VendorClassificationHistoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auditInstanceId" | "roundId" | "bandId" | "overallScorePercent" | "workflowInstanceId" | "decidedAt", ExtArgs["result"]["vendorClassificationHistory"]>
+export type VendorClassificationHistoryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auditInstanceId" | "bandLabel" | "qualifiesFor" | "overallScorePercent" | "workflowInstanceId" | "decidedAt", ExtArgs["result"]["vendorClassificationHistory"]>
 export type VendorClassificationHistoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
-  band?: boolean | Prisma.FactoryClassificationBandDefaultArgs<ExtArgs>
   workflowInstance?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
 }
 export type VendorClassificationHistoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
-  band?: boolean | Prisma.FactoryClassificationBandDefaultArgs<ExtArgs>
   workflowInstance?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
 }
 export type VendorClassificationHistoryIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
-  band?: boolean | Prisma.FactoryClassificationBandDefaultArgs<ExtArgs>
   workflowInstance?: boolean | Prisma.WorkflowInstanceDefaultArgs<ExtArgs>
 }
 
@@ -990,15 +733,13 @@ export type $VendorClassificationHistoryPayload<ExtArgs extends runtime.Types.Ex
   name: "VendorClassificationHistory"
   objects: {
     auditInstance: Prisma.$FactoryAuditInstancePayload<ExtArgs>
-    round: Prisma.$AuditRoundPayload<ExtArgs>
-    band: Prisma.$FactoryClassificationBandPayload<ExtArgs>
     workflowInstance: Prisma.$WorkflowInstancePayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     auditInstanceId: string
-    roundId: string
-    bandId: string
+    bandLabel: string
+    qualifiesFor: $Enums.PartCategory[]
     overallScorePercent: number
     workflowInstanceId: string
     decidedAt: Date
@@ -1397,8 +1138,6 @@ readonly fields: VendorClassificationHistoryFieldRefs;
 export interface Prisma__VendorClassificationHistoryClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   auditInstance<T extends Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>>): Prisma.Prisma__FactoryAuditInstanceClient<runtime.Types.Result.GetResult<Prisma.$FactoryAuditInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  round<T extends Prisma.AuditRoundDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditRoundDefaultArgs<ExtArgs>>): Prisma.Prisma__AuditRoundClient<runtime.Types.Result.GetResult<Prisma.$AuditRoundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  band<T extends Prisma.FactoryClassificationBandDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryClassificationBandDefaultArgs<ExtArgs>>): Prisma.Prisma__FactoryClassificationBandClient<runtime.Types.Result.GetResult<Prisma.$FactoryClassificationBandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   workflowInstance<T extends Prisma.WorkflowInstanceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkflowInstanceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkflowInstanceClient<runtime.Types.Result.GetResult<Prisma.$WorkflowInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1431,8 +1170,8 @@ export interface Prisma__VendorClassificationHistoryClient<T, Null = never, ExtA
 export interface VendorClassificationHistoryFieldRefs {
   readonly id: Prisma.FieldRef<"VendorClassificationHistory", 'String'>
   readonly auditInstanceId: Prisma.FieldRef<"VendorClassificationHistory", 'String'>
-  readonly roundId: Prisma.FieldRef<"VendorClassificationHistory", 'String'>
-  readonly bandId: Prisma.FieldRef<"VendorClassificationHistory", 'String'>
+  readonly bandLabel: Prisma.FieldRef<"VendorClassificationHistory", 'String'>
+  readonly qualifiesFor: Prisma.FieldRef<"VendorClassificationHistory", 'PartCategory[]'>
   readonly overallScorePercent: Prisma.FieldRef<"VendorClassificationHistory", 'Float'>
   readonly workflowInstanceId: Prisma.FieldRef<"VendorClassificationHistory", 'String'>
   readonly decidedAt: Prisma.FieldRef<"VendorClassificationHistory", 'DateTime'>

@@ -36,7 +36,7 @@ export type AuditCheckpointResultSumAggregateOutputType = {
 
 export type AuditCheckpointResultMinAggregateOutputType = {
   id: string | null
-  roundId: string | null
+  auditInstanceId: string | null
   checkpointId: string | null
   score: number | null
   computedAt: Date | null
@@ -48,7 +48,7 @@ export type AuditCheckpointResultMinAggregateOutputType = {
 
 export type AuditCheckpointResultMaxAggregateOutputType = {
   id: string | null
-  roundId: string | null
+  auditInstanceId: string | null
   checkpointId: string | null
   score: number | null
   computedAt: Date | null
@@ -60,7 +60,7 @@ export type AuditCheckpointResultMaxAggregateOutputType = {
 
 export type AuditCheckpointResultCountAggregateOutputType = {
   id: number
-  roundId: number
+  auditInstanceId: number
   checkpointId: number
   score: number
   computedAt: number
@@ -82,7 +82,7 @@ export type AuditCheckpointResultSumAggregateInputType = {
 
 export type AuditCheckpointResultMinAggregateInputType = {
   id?: true
-  roundId?: true
+  auditInstanceId?: true
   checkpointId?: true
   score?: true
   computedAt?: true
@@ -94,7 +94,7 @@ export type AuditCheckpointResultMinAggregateInputType = {
 
 export type AuditCheckpointResultMaxAggregateInputType = {
   id?: true
-  roundId?: true
+  auditInstanceId?: true
   checkpointId?: true
   score?: true
   computedAt?: true
@@ -106,7 +106,7 @@ export type AuditCheckpointResultMaxAggregateInputType = {
 
 export type AuditCheckpointResultCountAggregateInputType = {
   id?: true
-  roundId?: true
+  auditInstanceId?: true
   checkpointId?: true
   score?: true
   computedAt?: true
@@ -205,7 +205,7 @@ export type AuditCheckpointResultGroupByArgs<ExtArgs extends runtime.Types.Exten
 
 export type AuditCheckpointResultGroupByOutputType = {
   id: string
-  roundId: string
+  auditInstanceId: string
   checkpointId: string
   score: number | null
   computedAt: Date
@@ -240,7 +240,7 @@ export type AuditCheckpointResultWhereInput = {
   OR?: Prisma.AuditCheckpointResultWhereInput[]
   NOT?: Prisma.AuditCheckpointResultWhereInput | Prisma.AuditCheckpointResultWhereInput[]
   id?: Prisma.StringFilter<"AuditCheckpointResult"> | string
-  roundId?: Prisma.StringFilter<"AuditCheckpointResult"> | string
+  auditInstanceId?: Prisma.StringFilter<"AuditCheckpointResult"> | string
   checkpointId?: Prisma.StringFilter<"AuditCheckpointResult"> | string
   score?: Prisma.FloatNullableFilter<"AuditCheckpointResult"> | number | null
   computedAt?: Prisma.DateTimeFilter<"AuditCheckpointResult"> | Date | string
@@ -248,14 +248,14 @@ export type AuditCheckpointResultWhereInput = {
   reviewerRemark?: Prisma.StringNullableFilter<"AuditCheckpointResult"> | string | null
   reviewerId?: Prisma.StringNullableFilter<"AuditCheckpointResult"> | string | null
   reviewerRemarkedAt?: Prisma.DateTimeNullableFilter<"AuditCheckpointResult"> | Date | string | null
-  round?: Prisma.XOR<Prisma.AuditRoundScalarRelationFilter, Prisma.AuditRoundWhereInput>
+  auditInstance?: Prisma.XOR<Prisma.FactoryAuditInstanceScalarRelationFilter, Prisma.FactoryAuditInstanceWhereInput>
   checkpoint?: Prisma.XOR<Prisma.FactoryAuditCheckpointScalarRelationFilter, Prisma.FactoryAuditCheckpointWhereInput>
   reviewer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type AuditCheckpointResultOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
+  auditInstanceId?: Prisma.SortOrder
   checkpointId?: Prisma.SortOrder
   score?: Prisma.SortOrderInput | Prisma.SortOrder
   computedAt?: Prisma.SortOrder
@@ -263,18 +263,18 @@ export type AuditCheckpointResultOrderByWithRelationInput = {
   reviewerRemark?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
   reviewerRemarkedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  round?: Prisma.AuditRoundOrderByWithRelationInput
+  auditInstance?: Prisma.FactoryAuditInstanceOrderByWithRelationInput
   checkpoint?: Prisma.FactoryAuditCheckpointOrderByWithRelationInput
   reviewer?: Prisma.UserOrderByWithRelationInput
 }
 
 export type AuditCheckpointResultWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  roundId_checkpointId?: Prisma.AuditCheckpointResultRoundIdCheckpointIdCompoundUniqueInput
+  auditInstanceId_checkpointId?: Prisma.AuditCheckpointResultAuditInstanceIdCheckpointIdCompoundUniqueInput
   AND?: Prisma.AuditCheckpointResultWhereInput | Prisma.AuditCheckpointResultWhereInput[]
   OR?: Prisma.AuditCheckpointResultWhereInput[]
   NOT?: Prisma.AuditCheckpointResultWhereInput | Prisma.AuditCheckpointResultWhereInput[]
-  roundId?: Prisma.StringFilter<"AuditCheckpointResult"> | string
+  auditInstanceId?: Prisma.StringFilter<"AuditCheckpointResult"> | string
   checkpointId?: Prisma.StringFilter<"AuditCheckpointResult"> | string
   score?: Prisma.FloatNullableFilter<"AuditCheckpointResult"> | number | null
   computedAt?: Prisma.DateTimeFilter<"AuditCheckpointResult"> | Date | string
@@ -282,14 +282,14 @@ export type AuditCheckpointResultWhereUniqueInput = Prisma.AtLeast<{
   reviewerRemark?: Prisma.StringNullableFilter<"AuditCheckpointResult"> | string | null
   reviewerId?: Prisma.StringNullableFilter<"AuditCheckpointResult"> | string | null
   reviewerRemarkedAt?: Prisma.DateTimeNullableFilter<"AuditCheckpointResult"> | Date | string | null
-  round?: Prisma.XOR<Prisma.AuditRoundScalarRelationFilter, Prisma.AuditRoundWhereInput>
+  auditInstance?: Prisma.XOR<Prisma.FactoryAuditInstanceScalarRelationFilter, Prisma.FactoryAuditInstanceWhereInput>
   checkpoint?: Prisma.XOR<Prisma.FactoryAuditCheckpointScalarRelationFilter, Prisma.FactoryAuditCheckpointWhereInput>
   reviewer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
-}, "id" | "roundId_checkpointId">
+}, "id" | "auditInstanceId_checkpointId">
 
 export type AuditCheckpointResultOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
+  auditInstanceId?: Prisma.SortOrder
   checkpointId?: Prisma.SortOrder
   score?: Prisma.SortOrderInput | Prisma.SortOrder
   computedAt?: Prisma.SortOrder
@@ -309,7 +309,7 @@ export type AuditCheckpointResultScalarWhereWithAggregatesInput = {
   OR?: Prisma.AuditCheckpointResultScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AuditCheckpointResultScalarWhereWithAggregatesInput | Prisma.AuditCheckpointResultScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"AuditCheckpointResult"> | string
-  roundId?: Prisma.StringWithAggregatesFilter<"AuditCheckpointResult"> | string
+  auditInstanceId?: Prisma.StringWithAggregatesFilter<"AuditCheckpointResult"> | string
   checkpointId?: Prisma.StringWithAggregatesFilter<"AuditCheckpointResult"> | string
   score?: Prisma.FloatNullableWithAggregatesFilter<"AuditCheckpointResult"> | number | null
   computedAt?: Prisma.DateTimeWithAggregatesFilter<"AuditCheckpointResult"> | Date | string
@@ -326,14 +326,14 @@ export type AuditCheckpointResultCreateInput = {
   reviewerFlaggedForImprovement?: boolean
   reviewerRemark?: string | null
   reviewerRemarkedAt?: Date | string | null
-  round: Prisma.AuditRoundCreateNestedOneWithoutResultsInput
+  auditInstance: Prisma.FactoryAuditInstanceCreateNestedOneWithoutResultsInput
   checkpoint: Prisma.FactoryAuditCheckpointCreateNestedOneWithoutResultsInput
   reviewer?: Prisma.UserCreateNestedOneWithoutFactoryCheckpointReviewsInput
 }
 
 export type AuditCheckpointResultUncheckedCreateInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   checkpointId: string
   score?: number | null
   computedAt?: Date | string
@@ -350,14 +350,14 @@ export type AuditCheckpointResultUpdateInput = {
   reviewerFlaggedForImprovement?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reviewerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerRemarkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutResultsNestedInput
+  auditInstance?: Prisma.FactoryAuditInstanceUpdateOneRequiredWithoutResultsNestedInput
   checkpoint?: Prisma.FactoryAuditCheckpointUpdateOneRequiredWithoutResultsNestedInput
   reviewer?: Prisma.UserUpdateOneWithoutFactoryCheckpointReviewsNestedInput
 }
 
 export type AuditCheckpointResultUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   checkpointId?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -369,7 +369,7 @@ export type AuditCheckpointResultUncheckedUpdateInput = {
 
 export type AuditCheckpointResultCreateManyInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   checkpointId: string
   score?: number | null
   computedAt?: Date | string
@@ -390,7 +390,7 @@ export type AuditCheckpointResultUpdateManyMutationInput = {
 
 export type AuditCheckpointResultUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   checkpointId?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -410,14 +410,14 @@ export type AuditCheckpointResultOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type AuditCheckpointResultRoundIdCheckpointIdCompoundUniqueInput = {
-  roundId: string
+export type AuditCheckpointResultAuditInstanceIdCheckpointIdCompoundUniqueInput = {
+  auditInstanceId: string
   checkpointId: string
 }
 
 export type AuditCheckpointResultCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
+  auditInstanceId?: Prisma.SortOrder
   checkpointId?: Prisma.SortOrder
   score?: Prisma.SortOrder
   computedAt?: Prisma.SortOrder
@@ -433,7 +433,7 @@ export type AuditCheckpointResultAvgOrderByAggregateInput = {
 
 export type AuditCheckpointResultMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
+  auditInstanceId?: Prisma.SortOrder
   checkpointId?: Prisma.SortOrder
   score?: Prisma.SortOrder
   computedAt?: Prisma.SortOrder
@@ -445,7 +445,7 @@ export type AuditCheckpointResultMaxOrderByAggregateInput = {
 
 export type AuditCheckpointResultMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  roundId?: Prisma.SortOrder
+  auditInstanceId?: Prisma.SortOrder
   checkpointId?: Prisma.SortOrder
   score?: Prisma.SortOrder
   computedAt?: Prisma.SortOrder
@@ -543,45 +543,45 @@ export type AuditCheckpointResultUncheckedUpdateManyWithoutCheckpointNestedInput
   deleteMany?: Prisma.AuditCheckpointResultScalarWhereInput | Prisma.AuditCheckpointResultScalarWhereInput[]
 }
 
-export type AuditCheckpointResultCreateNestedManyWithoutRoundInput = {
-  create?: Prisma.XOR<Prisma.AuditCheckpointResultCreateWithoutRoundInput, Prisma.AuditCheckpointResultUncheckedCreateWithoutRoundInput> | Prisma.AuditCheckpointResultCreateWithoutRoundInput[] | Prisma.AuditCheckpointResultUncheckedCreateWithoutRoundInput[]
-  connectOrCreate?: Prisma.AuditCheckpointResultCreateOrConnectWithoutRoundInput | Prisma.AuditCheckpointResultCreateOrConnectWithoutRoundInput[]
-  createMany?: Prisma.AuditCheckpointResultCreateManyRoundInputEnvelope
+export type AuditCheckpointResultCreateNestedManyWithoutAuditInstanceInput = {
+  create?: Prisma.XOR<Prisma.AuditCheckpointResultCreateWithoutAuditInstanceInput, Prisma.AuditCheckpointResultUncheckedCreateWithoutAuditInstanceInput> | Prisma.AuditCheckpointResultCreateWithoutAuditInstanceInput[] | Prisma.AuditCheckpointResultUncheckedCreateWithoutAuditInstanceInput[]
+  connectOrCreate?: Prisma.AuditCheckpointResultCreateOrConnectWithoutAuditInstanceInput | Prisma.AuditCheckpointResultCreateOrConnectWithoutAuditInstanceInput[]
+  createMany?: Prisma.AuditCheckpointResultCreateManyAuditInstanceInputEnvelope
   connect?: Prisma.AuditCheckpointResultWhereUniqueInput | Prisma.AuditCheckpointResultWhereUniqueInput[]
 }
 
-export type AuditCheckpointResultUncheckedCreateNestedManyWithoutRoundInput = {
-  create?: Prisma.XOR<Prisma.AuditCheckpointResultCreateWithoutRoundInput, Prisma.AuditCheckpointResultUncheckedCreateWithoutRoundInput> | Prisma.AuditCheckpointResultCreateWithoutRoundInput[] | Prisma.AuditCheckpointResultUncheckedCreateWithoutRoundInput[]
-  connectOrCreate?: Prisma.AuditCheckpointResultCreateOrConnectWithoutRoundInput | Prisma.AuditCheckpointResultCreateOrConnectWithoutRoundInput[]
-  createMany?: Prisma.AuditCheckpointResultCreateManyRoundInputEnvelope
+export type AuditCheckpointResultUncheckedCreateNestedManyWithoutAuditInstanceInput = {
+  create?: Prisma.XOR<Prisma.AuditCheckpointResultCreateWithoutAuditInstanceInput, Prisma.AuditCheckpointResultUncheckedCreateWithoutAuditInstanceInput> | Prisma.AuditCheckpointResultCreateWithoutAuditInstanceInput[] | Prisma.AuditCheckpointResultUncheckedCreateWithoutAuditInstanceInput[]
+  connectOrCreate?: Prisma.AuditCheckpointResultCreateOrConnectWithoutAuditInstanceInput | Prisma.AuditCheckpointResultCreateOrConnectWithoutAuditInstanceInput[]
+  createMany?: Prisma.AuditCheckpointResultCreateManyAuditInstanceInputEnvelope
   connect?: Prisma.AuditCheckpointResultWhereUniqueInput | Prisma.AuditCheckpointResultWhereUniqueInput[]
 }
 
-export type AuditCheckpointResultUpdateManyWithoutRoundNestedInput = {
-  create?: Prisma.XOR<Prisma.AuditCheckpointResultCreateWithoutRoundInput, Prisma.AuditCheckpointResultUncheckedCreateWithoutRoundInput> | Prisma.AuditCheckpointResultCreateWithoutRoundInput[] | Prisma.AuditCheckpointResultUncheckedCreateWithoutRoundInput[]
-  connectOrCreate?: Prisma.AuditCheckpointResultCreateOrConnectWithoutRoundInput | Prisma.AuditCheckpointResultCreateOrConnectWithoutRoundInput[]
-  upsert?: Prisma.AuditCheckpointResultUpsertWithWhereUniqueWithoutRoundInput | Prisma.AuditCheckpointResultUpsertWithWhereUniqueWithoutRoundInput[]
-  createMany?: Prisma.AuditCheckpointResultCreateManyRoundInputEnvelope
+export type AuditCheckpointResultUpdateManyWithoutAuditInstanceNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditCheckpointResultCreateWithoutAuditInstanceInput, Prisma.AuditCheckpointResultUncheckedCreateWithoutAuditInstanceInput> | Prisma.AuditCheckpointResultCreateWithoutAuditInstanceInput[] | Prisma.AuditCheckpointResultUncheckedCreateWithoutAuditInstanceInput[]
+  connectOrCreate?: Prisma.AuditCheckpointResultCreateOrConnectWithoutAuditInstanceInput | Prisma.AuditCheckpointResultCreateOrConnectWithoutAuditInstanceInput[]
+  upsert?: Prisma.AuditCheckpointResultUpsertWithWhereUniqueWithoutAuditInstanceInput | Prisma.AuditCheckpointResultUpsertWithWhereUniqueWithoutAuditInstanceInput[]
+  createMany?: Prisma.AuditCheckpointResultCreateManyAuditInstanceInputEnvelope
   set?: Prisma.AuditCheckpointResultWhereUniqueInput | Prisma.AuditCheckpointResultWhereUniqueInput[]
   disconnect?: Prisma.AuditCheckpointResultWhereUniqueInput | Prisma.AuditCheckpointResultWhereUniqueInput[]
   delete?: Prisma.AuditCheckpointResultWhereUniqueInput | Prisma.AuditCheckpointResultWhereUniqueInput[]
   connect?: Prisma.AuditCheckpointResultWhereUniqueInput | Prisma.AuditCheckpointResultWhereUniqueInput[]
-  update?: Prisma.AuditCheckpointResultUpdateWithWhereUniqueWithoutRoundInput | Prisma.AuditCheckpointResultUpdateWithWhereUniqueWithoutRoundInput[]
-  updateMany?: Prisma.AuditCheckpointResultUpdateManyWithWhereWithoutRoundInput | Prisma.AuditCheckpointResultUpdateManyWithWhereWithoutRoundInput[]
+  update?: Prisma.AuditCheckpointResultUpdateWithWhereUniqueWithoutAuditInstanceInput | Prisma.AuditCheckpointResultUpdateWithWhereUniqueWithoutAuditInstanceInput[]
+  updateMany?: Prisma.AuditCheckpointResultUpdateManyWithWhereWithoutAuditInstanceInput | Prisma.AuditCheckpointResultUpdateManyWithWhereWithoutAuditInstanceInput[]
   deleteMany?: Prisma.AuditCheckpointResultScalarWhereInput | Prisma.AuditCheckpointResultScalarWhereInput[]
 }
 
-export type AuditCheckpointResultUncheckedUpdateManyWithoutRoundNestedInput = {
-  create?: Prisma.XOR<Prisma.AuditCheckpointResultCreateWithoutRoundInput, Prisma.AuditCheckpointResultUncheckedCreateWithoutRoundInput> | Prisma.AuditCheckpointResultCreateWithoutRoundInput[] | Prisma.AuditCheckpointResultUncheckedCreateWithoutRoundInput[]
-  connectOrCreate?: Prisma.AuditCheckpointResultCreateOrConnectWithoutRoundInput | Prisma.AuditCheckpointResultCreateOrConnectWithoutRoundInput[]
-  upsert?: Prisma.AuditCheckpointResultUpsertWithWhereUniqueWithoutRoundInput | Prisma.AuditCheckpointResultUpsertWithWhereUniqueWithoutRoundInput[]
-  createMany?: Prisma.AuditCheckpointResultCreateManyRoundInputEnvelope
+export type AuditCheckpointResultUncheckedUpdateManyWithoutAuditInstanceNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditCheckpointResultCreateWithoutAuditInstanceInput, Prisma.AuditCheckpointResultUncheckedCreateWithoutAuditInstanceInput> | Prisma.AuditCheckpointResultCreateWithoutAuditInstanceInput[] | Prisma.AuditCheckpointResultUncheckedCreateWithoutAuditInstanceInput[]
+  connectOrCreate?: Prisma.AuditCheckpointResultCreateOrConnectWithoutAuditInstanceInput | Prisma.AuditCheckpointResultCreateOrConnectWithoutAuditInstanceInput[]
+  upsert?: Prisma.AuditCheckpointResultUpsertWithWhereUniqueWithoutAuditInstanceInput | Prisma.AuditCheckpointResultUpsertWithWhereUniqueWithoutAuditInstanceInput[]
+  createMany?: Prisma.AuditCheckpointResultCreateManyAuditInstanceInputEnvelope
   set?: Prisma.AuditCheckpointResultWhereUniqueInput | Prisma.AuditCheckpointResultWhereUniqueInput[]
   disconnect?: Prisma.AuditCheckpointResultWhereUniqueInput | Prisma.AuditCheckpointResultWhereUniqueInput[]
   delete?: Prisma.AuditCheckpointResultWhereUniqueInput | Prisma.AuditCheckpointResultWhereUniqueInput[]
   connect?: Prisma.AuditCheckpointResultWhereUniqueInput | Prisma.AuditCheckpointResultWhereUniqueInput[]
-  update?: Prisma.AuditCheckpointResultUpdateWithWhereUniqueWithoutRoundInput | Prisma.AuditCheckpointResultUpdateWithWhereUniqueWithoutRoundInput[]
-  updateMany?: Prisma.AuditCheckpointResultUpdateManyWithWhereWithoutRoundInput | Prisma.AuditCheckpointResultUpdateManyWithWhereWithoutRoundInput[]
+  update?: Prisma.AuditCheckpointResultUpdateWithWhereUniqueWithoutAuditInstanceInput | Prisma.AuditCheckpointResultUpdateWithWhereUniqueWithoutAuditInstanceInput[]
+  updateMany?: Prisma.AuditCheckpointResultUpdateManyWithWhereWithoutAuditInstanceInput | Prisma.AuditCheckpointResultUpdateManyWithWhereWithoutAuditInstanceInput[]
   deleteMany?: Prisma.AuditCheckpointResultScalarWhereInput | Prisma.AuditCheckpointResultScalarWhereInput[]
 }
 
@@ -592,13 +592,13 @@ export type AuditCheckpointResultCreateWithoutReviewerInput = {
   reviewerFlaggedForImprovement?: boolean
   reviewerRemark?: string | null
   reviewerRemarkedAt?: Date | string | null
-  round: Prisma.AuditRoundCreateNestedOneWithoutResultsInput
+  auditInstance: Prisma.FactoryAuditInstanceCreateNestedOneWithoutResultsInput
   checkpoint: Prisma.FactoryAuditCheckpointCreateNestedOneWithoutResultsInput
 }
 
 export type AuditCheckpointResultUncheckedCreateWithoutReviewerInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   checkpointId: string
   score?: number | null
   computedAt?: Date | string
@@ -638,7 +638,7 @@ export type AuditCheckpointResultScalarWhereInput = {
   OR?: Prisma.AuditCheckpointResultScalarWhereInput[]
   NOT?: Prisma.AuditCheckpointResultScalarWhereInput | Prisma.AuditCheckpointResultScalarWhereInput[]
   id?: Prisma.StringFilter<"AuditCheckpointResult"> | string
-  roundId?: Prisma.StringFilter<"AuditCheckpointResult"> | string
+  auditInstanceId?: Prisma.StringFilter<"AuditCheckpointResult"> | string
   checkpointId?: Prisma.StringFilter<"AuditCheckpointResult"> | string
   score?: Prisma.FloatNullableFilter<"AuditCheckpointResult"> | number | null
   computedAt?: Prisma.DateTimeFilter<"AuditCheckpointResult"> | Date | string
@@ -655,13 +655,13 @@ export type AuditCheckpointResultCreateWithoutCheckpointInput = {
   reviewerFlaggedForImprovement?: boolean
   reviewerRemark?: string | null
   reviewerRemarkedAt?: Date | string | null
-  round: Prisma.AuditRoundCreateNestedOneWithoutResultsInput
+  auditInstance: Prisma.FactoryAuditInstanceCreateNestedOneWithoutResultsInput
   reviewer?: Prisma.UserCreateNestedOneWithoutFactoryCheckpointReviewsInput
 }
 
 export type AuditCheckpointResultUncheckedCreateWithoutCheckpointInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   score?: number | null
   computedAt?: Date | string
   reviewerFlaggedForImprovement?: boolean
@@ -696,7 +696,7 @@ export type AuditCheckpointResultUpdateManyWithWhereWithoutCheckpointInput = {
   data: Prisma.XOR<Prisma.AuditCheckpointResultUpdateManyMutationInput, Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutCheckpointInput>
 }
 
-export type AuditCheckpointResultCreateWithoutRoundInput = {
+export type AuditCheckpointResultCreateWithoutAuditInstanceInput = {
   id?: string
   score?: number | null
   computedAt?: Date | string
@@ -707,7 +707,7 @@ export type AuditCheckpointResultCreateWithoutRoundInput = {
   reviewer?: Prisma.UserCreateNestedOneWithoutFactoryCheckpointReviewsInput
 }
 
-export type AuditCheckpointResultUncheckedCreateWithoutRoundInput = {
+export type AuditCheckpointResultUncheckedCreateWithoutAuditInstanceInput = {
   id?: string
   checkpointId: string
   score?: number | null
@@ -718,35 +718,35 @@ export type AuditCheckpointResultUncheckedCreateWithoutRoundInput = {
   reviewerRemarkedAt?: Date | string | null
 }
 
-export type AuditCheckpointResultCreateOrConnectWithoutRoundInput = {
+export type AuditCheckpointResultCreateOrConnectWithoutAuditInstanceInput = {
   where: Prisma.AuditCheckpointResultWhereUniqueInput
-  create: Prisma.XOR<Prisma.AuditCheckpointResultCreateWithoutRoundInput, Prisma.AuditCheckpointResultUncheckedCreateWithoutRoundInput>
+  create: Prisma.XOR<Prisma.AuditCheckpointResultCreateWithoutAuditInstanceInput, Prisma.AuditCheckpointResultUncheckedCreateWithoutAuditInstanceInput>
 }
 
-export type AuditCheckpointResultCreateManyRoundInputEnvelope = {
-  data: Prisma.AuditCheckpointResultCreateManyRoundInput | Prisma.AuditCheckpointResultCreateManyRoundInput[]
+export type AuditCheckpointResultCreateManyAuditInstanceInputEnvelope = {
+  data: Prisma.AuditCheckpointResultCreateManyAuditInstanceInput | Prisma.AuditCheckpointResultCreateManyAuditInstanceInput[]
   skipDuplicates?: boolean
 }
 
-export type AuditCheckpointResultUpsertWithWhereUniqueWithoutRoundInput = {
+export type AuditCheckpointResultUpsertWithWhereUniqueWithoutAuditInstanceInput = {
   where: Prisma.AuditCheckpointResultWhereUniqueInput
-  update: Prisma.XOR<Prisma.AuditCheckpointResultUpdateWithoutRoundInput, Prisma.AuditCheckpointResultUncheckedUpdateWithoutRoundInput>
-  create: Prisma.XOR<Prisma.AuditCheckpointResultCreateWithoutRoundInput, Prisma.AuditCheckpointResultUncheckedCreateWithoutRoundInput>
+  update: Prisma.XOR<Prisma.AuditCheckpointResultUpdateWithoutAuditInstanceInput, Prisma.AuditCheckpointResultUncheckedUpdateWithoutAuditInstanceInput>
+  create: Prisma.XOR<Prisma.AuditCheckpointResultCreateWithoutAuditInstanceInput, Prisma.AuditCheckpointResultUncheckedCreateWithoutAuditInstanceInput>
 }
 
-export type AuditCheckpointResultUpdateWithWhereUniqueWithoutRoundInput = {
+export type AuditCheckpointResultUpdateWithWhereUniqueWithoutAuditInstanceInput = {
   where: Prisma.AuditCheckpointResultWhereUniqueInput
-  data: Prisma.XOR<Prisma.AuditCheckpointResultUpdateWithoutRoundInput, Prisma.AuditCheckpointResultUncheckedUpdateWithoutRoundInput>
+  data: Prisma.XOR<Prisma.AuditCheckpointResultUpdateWithoutAuditInstanceInput, Prisma.AuditCheckpointResultUncheckedUpdateWithoutAuditInstanceInput>
 }
 
-export type AuditCheckpointResultUpdateManyWithWhereWithoutRoundInput = {
+export type AuditCheckpointResultUpdateManyWithWhereWithoutAuditInstanceInput = {
   where: Prisma.AuditCheckpointResultScalarWhereInput
-  data: Prisma.XOR<Prisma.AuditCheckpointResultUpdateManyMutationInput, Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutRoundInput>
+  data: Prisma.XOR<Prisma.AuditCheckpointResultUpdateManyMutationInput, Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutAuditInstanceInput>
 }
 
 export type AuditCheckpointResultCreateManyReviewerInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   checkpointId: string
   score?: number | null
   computedAt?: Date | string
@@ -762,13 +762,13 @@ export type AuditCheckpointResultUpdateWithoutReviewerInput = {
   reviewerFlaggedForImprovement?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reviewerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerRemarkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutResultsNestedInput
+  auditInstance?: Prisma.FactoryAuditInstanceUpdateOneRequiredWithoutResultsNestedInput
   checkpoint?: Prisma.FactoryAuditCheckpointUpdateOneRequiredWithoutResultsNestedInput
 }
 
 export type AuditCheckpointResultUncheckedUpdateWithoutReviewerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   checkpointId?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -779,7 +779,7 @@ export type AuditCheckpointResultUncheckedUpdateWithoutReviewerInput = {
 
 export type AuditCheckpointResultUncheckedUpdateManyWithoutReviewerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   checkpointId?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -790,7 +790,7 @@ export type AuditCheckpointResultUncheckedUpdateManyWithoutReviewerInput = {
 
 export type AuditCheckpointResultCreateManyCheckpointInput = {
   id?: string
-  roundId: string
+  auditInstanceId: string
   score?: number | null
   computedAt?: Date | string
   reviewerFlaggedForImprovement?: boolean
@@ -806,13 +806,13 @@ export type AuditCheckpointResultUpdateWithoutCheckpointInput = {
   reviewerFlaggedForImprovement?: Prisma.BoolFieldUpdateOperationsInput | boolean
   reviewerRemark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reviewerRemarkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  round?: Prisma.AuditRoundUpdateOneRequiredWithoutResultsNestedInput
+  auditInstance?: Prisma.FactoryAuditInstanceUpdateOneRequiredWithoutResultsNestedInput
   reviewer?: Prisma.UserUpdateOneWithoutFactoryCheckpointReviewsNestedInput
 }
 
 export type AuditCheckpointResultUncheckedUpdateWithoutCheckpointInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviewerFlaggedForImprovement?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -823,7 +823,7 @@ export type AuditCheckpointResultUncheckedUpdateWithoutCheckpointInput = {
 
 export type AuditCheckpointResultUncheckedUpdateManyWithoutCheckpointInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  roundId?: Prisma.StringFieldUpdateOperationsInput | string
+  auditInstanceId?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviewerFlaggedForImprovement?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -832,7 +832,7 @@ export type AuditCheckpointResultUncheckedUpdateManyWithoutCheckpointInput = {
   reviewerRemarkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type AuditCheckpointResultCreateManyRoundInput = {
+export type AuditCheckpointResultCreateManyAuditInstanceInput = {
   id?: string
   checkpointId: string
   score?: number | null
@@ -843,7 +843,7 @@ export type AuditCheckpointResultCreateManyRoundInput = {
   reviewerRemarkedAt?: Date | string | null
 }
 
-export type AuditCheckpointResultUpdateWithoutRoundInput = {
+export type AuditCheckpointResultUpdateWithoutAuditInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   computedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -854,7 +854,7 @@ export type AuditCheckpointResultUpdateWithoutRoundInput = {
   reviewer?: Prisma.UserUpdateOneWithoutFactoryCheckpointReviewsNestedInput
 }
 
-export type AuditCheckpointResultUncheckedUpdateWithoutRoundInput = {
+export type AuditCheckpointResultUncheckedUpdateWithoutAuditInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   checkpointId?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -865,7 +865,7 @@ export type AuditCheckpointResultUncheckedUpdateWithoutRoundInput = {
   reviewerRemarkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
-export type AuditCheckpointResultUncheckedUpdateManyWithoutRoundInput = {
+export type AuditCheckpointResultUncheckedUpdateManyWithoutAuditInstanceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   checkpointId?: Prisma.StringFieldUpdateOperationsInput | string
   score?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
@@ -880,7 +880,7 @@ export type AuditCheckpointResultUncheckedUpdateManyWithoutRoundInput = {
 
 export type AuditCheckpointResultSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  roundId?: boolean
+  auditInstanceId?: boolean
   checkpointId?: boolean
   score?: boolean
   computedAt?: boolean
@@ -888,14 +888,14 @@ export type AuditCheckpointResultSelect<ExtArgs extends runtime.Types.Extensions
   reviewerRemark?: boolean
   reviewerId?: boolean
   reviewerRemarkedAt?: boolean
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
+  auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
   checkpoint?: boolean | Prisma.FactoryAuditCheckpointDefaultArgs<ExtArgs>
   reviewer?: boolean | Prisma.AuditCheckpointResult$reviewerArgs<ExtArgs>
 }, ExtArgs["result"]["auditCheckpointResult"]>
 
 export type AuditCheckpointResultSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  roundId?: boolean
+  auditInstanceId?: boolean
   checkpointId?: boolean
   score?: boolean
   computedAt?: boolean
@@ -903,14 +903,14 @@ export type AuditCheckpointResultSelectCreateManyAndReturn<ExtArgs extends runti
   reviewerRemark?: boolean
   reviewerId?: boolean
   reviewerRemarkedAt?: boolean
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
+  auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
   checkpoint?: boolean | Prisma.FactoryAuditCheckpointDefaultArgs<ExtArgs>
   reviewer?: boolean | Prisma.AuditCheckpointResult$reviewerArgs<ExtArgs>
 }, ExtArgs["result"]["auditCheckpointResult"]>
 
 export type AuditCheckpointResultSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  roundId?: boolean
+  auditInstanceId?: boolean
   checkpointId?: boolean
   score?: boolean
   computedAt?: boolean
@@ -918,14 +918,14 @@ export type AuditCheckpointResultSelectUpdateManyAndReturn<ExtArgs extends runti
   reviewerRemark?: boolean
   reviewerId?: boolean
   reviewerRemarkedAt?: boolean
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
+  auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
   checkpoint?: boolean | Prisma.FactoryAuditCheckpointDefaultArgs<ExtArgs>
   reviewer?: boolean | Prisma.AuditCheckpointResult$reviewerArgs<ExtArgs>
 }, ExtArgs["result"]["auditCheckpointResult"]>
 
 export type AuditCheckpointResultSelectScalar = {
   id?: boolean
-  roundId?: boolean
+  auditInstanceId?: boolean
   checkpointId?: boolean
   score?: boolean
   computedAt?: boolean
@@ -935,19 +935,19 @@ export type AuditCheckpointResultSelectScalar = {
   reviewerRemarkedAt?: boolean
 }
 
-export type AuditCheckpointResultOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "roundId" | "checkpointId" | "score" | "computedAt" | "reviewerFlaggedForImprovement" | "reviewerRemark" | "reviewerId" | "reviewerRemarkedAt", ExtArgs["result"]["auditCheckpointResult"]>
+export type AuditCheckpointResultOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auditInstanceId" | "checkpointId" | "score" | "computedAt" | "reviewerFlaggedForImprovement" | "reviewerRemark" | "reviewerId" | "reviewerRemarkedAt", ExtArgs["result"]["auditCheckpointResult"]>
 export type AuditCheckpointResultInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
+  auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
   checkpoint?: boolean | Prisma.FactoryAuditCheckpointDefaultArgs<ExtArgs>
   reviewer?: boolean | Prisma.AuditCheckpointResult$reviewerArgs<ExtArgs>
 }
 export type AuditCheckpointResultIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
+  auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
   checkpoint?: boolean | Prisma.FactoryAuditCheckpointDefaultArgs<ExtArgs>
   reviewer?: boolean | Prisma.AuditCheckpointResult$reviewerArgs<ExtArgs>
 }
 export type AuditCheckpointResultIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  round?: boolean | Prisma.AuditRoundDefaultArgs<ExtArgs>
+  auditInstance?: boolean | Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>
   checkpoint?: boolean | Prisma.FactoryAuditCheckpointDefaultArgs<ExtArgs>
   reviewer?: boolean | Prisma.AuditCheckpointResult$reviewerArgs<ExtArgs>
 }
@@ -955,13 +955,13 @@ export type AuditCheckpointResultIncludeUpdateManyAndReturn<ExtArgs extends runt
 export type $AuditCheckpointResultPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AuditCheckpointResult"
   objects: {
-    round: Prisma.$AuditRoundPayload<ExtArgs>
+    auditInstance: Prisma.$FactoryAuditInstancePayload<ExtArgs>
     checkpoint: Prisma.$FactoryAuditCheckpointPayload<ExtArgs>
     reviewer: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    roundId: string
+    auditInstanceId: string
     checkpointId: string
     score: number | null
     computedAt: Date
@@ -1363,7 +1363,7 @@ readonly fields: AuditCheckpointResultFieldRefs;
  */
 export interface Prisma__AuditCheckpointResultClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  round<T extends Prisma.AuditRoundDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditRoundDefaultArgs<ExtArgs>>): Prisma.Prisma__AuditRoundClient<runtime.Types.Result.GetResult<Prisma.$AuditRoundPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  auditInstance<T extends Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditInstanceDefaultArgs<ExtArgs>>): Prisma.Prisma__FactoryAuditInstanceClient<runtime.Types.Result.GetResult<Prisma.$FactoryAuditInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   checkpoint<T extends Prisma.FactoryAuditCheckpointDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditCheckpointDefaultArgs<ExtArgs>>): Prisma.Prisma__FactoryAuditCheckpointClient<runtime.Types.Result.GetResult<Prisma.$FactoryAuditCheckpointPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   reviewer<T extends Prisma.AuditCheckpointResult$reviewerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditCheckpointResult$reviewerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1396,7 +1396,7 @@ export interface Prisma__AuditCheckpointResultClient<T, Null = never, ExtArgs ex
  */
 export interface AuditCheckpointResultFieldRefs {
   readonly id: Prisma.FieldRef<"AuditCheckpointResult", 'String'>
-  readonly roundId: Prisma.FieldRef<"AuditCheckpointResult", 'String'>
+  readonly auditInstanceId: Prisma.FieldRef<"AuditCheckpointResult", 'String'>
   readonly checkpointId: Prisma.FieldRef<"AuditCheckpointResult", 'String'>
   readonly score: Prisma.FieldRef<"AuditCheckpointResult", 'Float'>
   readonly computedAt: Prisma.FieldRef<"AuditCheckpointResult", 'DateTime'>

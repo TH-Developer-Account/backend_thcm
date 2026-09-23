@@ -64,6 +64,7 @@ export type FactoryAuditCheckpointCountAggregateOutputType = {
   checkPoint: number
   weight: number
   requiresEvidence: number
+  criteria: number
   _all: number
 }
 
@@ -106,6 +107,7 @@ export type FactoryAuditCheckpointCountAggregateInputType = {
   checkPoint?: true
   weight?: true
   requiresEvidence?: true
+  criteria?: true
   _all?: true
 }
 
@@ -203,6 +205,7 @@ export type FactoryAuditCheckpointGroupByOutputType = {
   checkPoint: string
   weight: number
   requiresEvidence: boolean
+  criteria: runtime.JsonValue
   _count: FactoryAuditCheckpointCountAggregateOutputType | null
   _avg: FactoryAuditCheckpointAvgAggregateOutputType | null
   _sum: FactoryAuditCheckpointSumAggregateOutputType | null
@@ -236,12 +239,10 @@ export type FactoryAuditCheckpointWhereInput = {
   checkPoint?: Prisma.StringFilter<"FactoryAuditCheckpoint"> | string
   weight?: Prisma.FloatFilter<"FactoryAuditCheckpoint"> | number
   requiresEvidence?: Prisma.BoolFilter<"FactoryAuditCheckpoint"> | boolean
+  criteria?: Prisma.JsonFilter<"FactoryAuditCheckpoint">
   section?: Prisma.XOR<Prisma.FactoryAuditSectionScalarRelationFilter, Prisma.FactoryAuditSectionWhereInput>
-  rubricLevels?: Prisma.CheckpointRubricLevelListRelationFilter
-  responses?: Prisma.AuditResponseListRelationFilter
+  responses?: Prisma.FactoryAuditResponseListRelationFilter
   results?: Prisma.AuditCheckpointResultListRelationFilter
-  roundScopes?: Prisma.AuditRoundCheckpointScopeListRelationFilter
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointListRelationFilter
 }
 
 export type FactoryAuditCheckpointOrderByWithRelationInput = {
@@ -252,12 +253,10 @@ export type FactoryAuditCheckpointOrderByWithRelationInput = {
   checkPoint?: Prisma.SortOrder
   weight?: Prisma.SortOrder
   requiresEvidence?: Prisma.SortOrder
+  criteria?: Prisma.SortOrder
   section?: Prisma.FactoryAuditSectionOrderByWithRelationInput
-  rubricLevels?: Prisma.CheckpointRubricLevelOrderByRelationAggregateInput
-  responses?: Prisma.AuditResponseOrderByRelationAggregateInput
+  responses?: Prisma.FactoryAuditResponseOrderByRelationAggregateInput
   results?: Prisma.AuditCheckpointResultOrderByRelationAggregateInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeOrderByRelationAggregateInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointOrderByRelationAggregateInput
 }
 
 export type FactoryAuditCheckpointWhereUniqueInput = Prisma.AtLeast<{
@@ -272,12 +271,10 @@ export type FactoryAuditCheckpointWhereUniqueInput = Prisma.AtLeast<{
   checkPoint?: Prisma.StringFilter<"FactoryAuditCheckpoint"> | string
   weight?: Prisma.FloatFilter<"FactoryAuditCheckpoint"> | number
   requiresEvidence?: Prisma.BoolFilter<"FactoryAuditCheckpoint"> | boolean
+  criteria?: Prisma.JsonFilter<"FactoryAuditCheckpoint">
   section?: Prisma.XOR<Prisma.FactoryAuditSectionScalarRelationFilter, Prisma.FactoryAuditSectionWhereInput>
-  rubricLevels?: Prisma.CheckpointRubricLevelListRelationFilter
-  responses?: Prisma.AuditResponseListRelationFilter
+  responses?: Prisma.FactoryAuditResponseListRelationFilter
   results?: Prisma.AuditCheckpointResultListRelationFilter
-  roundScopes?: Prisma.AuditRoundCheckpointScopeListRelationFilter
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointListRelationFilter
 }, "id" | "sectionId_order">
 
 export type FactoryAuditCheckpointOrderByWithAggregationInput = {
@@ -288,6 +285,7 @@ export type FactoryAuditCheckpointOrderByWithAggregationInput = {
   checkPoint?: Prisma.SortOrder
   weight?: Prisma.SortOrder
   requiresEvidence?: Prisma.SortOrder
+  criteria?: Prisma.SortOrder
   _count?: Prisma.FactoryAuditCheckpointCountOrderByAggregateInput
   _avg?: Prisma.FactoryAuditCheckpointAvgOrderByAggregateInput
   _max?: Prisma.FactoryAuditCheckpointMaxOrderByAggregateInput
@@ -306,6 +304,7 @@ export type FactoryAuditCheckpointScalarWhereWithAggregatesInput = {
   checkPoint?: Prisma.StringWithAggregatesFilter<"FactoryAuditCheckpoint"> | string
   weight?: Prisma.FloatWithAggregatesFilter<"FactoryAuditCheckpoint"> | number
   requiresEvidence?: Prisma.BoolWithAggregatesFilter<"FactoryAuditCheckpoint"> | boolean
+  criteria?: Prisma.JsonWithAggregatesFilter<"FactoryAuditCheckpoint">
 }
 
 export type FactoryAuditCheckpointCreateInput = {
@@ -315,12 +314,10 @@ export type FactoryAuditCheckpointCreateInput = {
   checkPoint: string
   weight: number
   requiresEvidence?: boolean
+  criteria: Prisma.JsonNullValueInput | runtime.InputJsonValue
   section: Prisma.FactoryAuditSectionCreateNestedOneWithoutCheckpointsInput
-  rubricLevels?: Prisma.CheckpointRubricLevelCreateNestedManyWithoutCheckpointInput
-  responses?: Prisma.AuditResponseCreateNestedManyWithoutCheckpointInput
+  responses?: Prisma.FactoryAuditResponseCreateNestedManyWithoutCheckpointInput
   results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutCheckpointInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeCreateNestedManyWithoutCheckpointInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointCreateNestedManyWithoutCheckpointInput
 }
 
 export type FactoryAuditCheckpointUncheckedCreateInput = {
@@ -331,11 +328,9 @@ export type FactoryAuditCheckpointUncheckedCreateInput = {
   checkPoint: string
   weight: number
   requiresEvidence?: boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUncheckedCreateNestedManyWithoutCheckpointInput
-  responses?: Prisma.AuditResponseUncheckedCreateNestedManyWithoutCheckpointInput
+  criteria: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  responses?: Prisma.FactoryAuditResponseUncheckedCreateNestedManyWithoutCheckpointInput
   results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutCheckpointInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUncheckedCreateNestedManyWithoutCheckpointInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUncheckedCreateNestedManyWithoutCheckpointInput
 }
 
 export type FactoryAuditCheckpointUpdateInput = {
@@ -345,12 +340,10 @@ export type FactoryAuditCheckpointUpdateInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   weight?: Prisma.FloatFieldUpdateOperationsInput | number
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  criteria?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   section?: Prisma.FactoryAuditSectionUpdateOneRequiredWithoutCheckpointsNestedInput
-  rubricLevels?: Prisma.CheckpointRubricLevelUpdateManyWithoutCheckpointNestedInput
-  responses?: Prisma.AuditResponseUpdateManyWithoutCheckpointNestedInput
+  responses?: Prisma.FactoryAuditResponseUpdateManyWithoutCheckpointNestedInput
   results?: Prisma.AuditCheckpointResultUpdateManyWithoutCheckpointNestedInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUpdateManyWithoutCheckpointNestedInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUpdateManyWithoutCheckpointNestedInput
 }
 
 export type FactoryAuditCheckpointUncheckedUpdateInput = {
@@ -361,11 +354,9 @@ export type FactoryAuditCheckpointUncheckedUpdateInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   weight?: Prisma.FloatFieldUpdateOperationsInput | number
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUncheckedUpdateManyWithoutCheckpointNestedInput
-  responses?: Prisma.AuditResponseUncheckedUpdateManyWithoutCheckpointNestedInput
+  criteria?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  responses?: Prisma.FactoryAuditResponseUncheckedUpdateManyWithoutCheckpointNestedInput
   results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutCheckpointNestedInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUncheckedUpdateManyWithoutCheckpointNestedInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUncheckedUpdateManyWithoutCheckpointNestedInput
 }
 
 export type FactoryAuditCheckpointCreateManyInput = {
@@ -376,6 +367,7 @@ export type FactoryAuditCheckpointCreateManyInput = {
   checkPoint: string
   weight: number
   requiresEvidence?: boolean
+  criteria: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type FactoryAuditCheckpointUpdateManyMutationInput = {
@@ -385,6 +377,7 @@ export type FactoryAuditCheckpointUpdateManyMutationInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   weight?: Prisma.FloatFieldUpdateOperationsInput | number
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  criteria?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type FactoryAuditCheckpointUncheckedUpdateManyInput = {
@@ -395,6 +388,7 @@ export type FactoryAuditCheckpointUncheckedUpdateManyInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   weight?: Prisma.FloatFieldUpdateOperationsInput | number
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  criteria?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type FactoryAuditCheckpointListRelationFilter = {
@@ -420,6 +414,7 @@ export type FactoryAuditCheckpointCountOrderByAggregateInput = {
   checkPoint?: Prisma.SortOrder
   weight?: Prisma.SortOrder
   requiresEvidence?: Prisma.SortOrder
+  criteria?: Prisma.SortOrder
 }
 
 export type FactoryAuditCheckpointAvgOrderByAggregateInput = {
@@ -499,48 +494,6 @@ export type FactoryAuditCheckpointUncheckedUpdateManyWithoutSectionNestedInput =
   deleteMany?: Prisma.FactoryAuditCheckpointScalarWhereInput | Prisma.FactoryAuditCheckpointScalarWhereInput[]
 }
 
-export type FactoryAuditCheckpointCreateNestedOneWithoutRubricLevelsInput = {
-  create?: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutRubricLevelsInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutRubricLevelsInput>
-  connectOrCreate?: Prisma.FactoryAuditCheckpointCreateOrConnectWithoutRubricLevelsInput
-  connect?: Prisma.FactoryAuditCheckpointWhereUniqueInput
-}
-
-export type FactoryAuditCheckpointUpdateOneRequiredWithoutRubricLevelsNestedInput = {
-  create?: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutRubricLevelsInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutRubricLevelsInput>
-  connectOrCreate?: Prisma.FactoryAuditCheckpointCreateOrConnectWithoutRubricLevelsInput
-  upsert?: Prisma.FactoryAuditCheckpointUpsertWithoutRubricLevelsInput
-  connect?: Prisma.FactoryAuditCheckpointWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.FactoryAuditCheckpointUpdateToOneWithWhereWithoutRubricLevelsInput, Prisma.FactoryAuditCheckpointUpdateWithoutRubricLevelsInput>, Prisma.FactoryAuditCheckpointUncheckedUpdateWithoutRubricLevelsInput>
-}
-
-export type FactoryAuditCheckpointCreateNestedOneWithoutRoundScopesInput = {
-  create?: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutRoundScopesInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutRoundScopesInput>
-  connectOrCreate?: Prisma.FactoryAuditCheckpointCreateOrConnectWithoutRoundScopesInput
-  connect?: Prisma.FactoryAuditCheckpointWhereUniqueInput
-}
-
-export type FactoryAuditCheckpointUpdateOneRequiredWithoutRoundScopesNestedInput = {
-  create?: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutRoundScopesInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutRoundScopesInput>
-  connectOrCreate?: Prisma.FactoryAuditCheckpointCreateOrConnectWithoutRoundScopesInput
-  upsert?: Prisma.FactoryAuditCheckpointUpsertWithoutRoundScopesInput
-  connect?: Prisma.FactoryAuditCheckpointWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.FactoryAuditCheckpointUpdateToOneWithWhereWithoutRoundScopesInput, Prisma.FactoryAuditCheckpointUpdateWithoutRoundScopesInput>, Prisma.FactoryAuditCheckpointUncheckedUpdateWithoutRoundScopesInput>
-}
-
-export type FactoryAuditCheckpointCreateNestedOneWithoutAssignmentScopesInput = {
-  create?: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutAssignmentScopesInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutAssignmentScopesInput>
-  connectOrCreate?: Prisma.FactoryAuditCheckpointCreateOrConnectWithoutAssignmentScopesInput
-  connect?: Prisma.FactoryAuditCheckpointWhereUniqueInput
-}
-
-export type FactoryAuditCheckpointUpdateOneRequiredWithoutAssignmentScopesNestedInput = {
-  create?: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutAssignmentScopesInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutAssignmentScopesInput>
-  connectOrCreate?: Prisma.FactoryAuditCheckpointCreateOrConnectWithoutAssignmentScopesInput
-  upsert?: Prisma.FactoryAuditCheckpointUpsertWithoutAssignmentScopesInput
-  connect?: Prisma.FactoryAuditCheckpointWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.FactoryAuditCheckpointUpdateToOneWithWhereWithoutAssignmentScopesInput, Prisma.FactoryAuditCheckpointUpdateWithoutAssignmentScopesInput>, Prisma.FactoryAuditCheckpointUncheckedUpdateWithoutAssignmentScopesInput>
-}
-
 export type FactoryAuditCheckpointCreateNestedOneWithoutResponsesInput = {
   create?: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutResponsesInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutResponsesInput>
   connectOrCreate?: Prisma.FactoryAuditCheckpointCreateOrConnectWithoutResponsesInput
@@ -576,11 +529,9 @@ export type FactoryAuditCheckpointCreateWithoutSectionInput = {
   checkPoint: string
   weight: number
   requiresEvidence?: boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelCreateNestedManyWithoutCheckpointInput
-  responses?: Prisma.AuditResponseCreateNestedManyWithoutCheckpointInput
+  criteria: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  responses?: Prisma.FactoryAuditResponseCreateNestedManyWithoutCheckpointInput
   results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutCheckpointInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeCreateNestedManyWithoutCheckpointInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointCreateNestedManyWithoutCheckpointInput
 }
 
 export type FactoryAuditCheckpointUncheckedCreateWithoutSectionInput = {
@@ -590,11 +541,9 @@ export type FactoryAuditCheckpointUncheckedCreateWithoutSectionInput = {
   checkPoint: string
   weight: number
   requiresEvidence?: boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUncheckedCreateNestedManyWithoutCheckpointInput
-  responses?: Prisma.AuditResponseUncheckedCreateNestedManyWithoutCheckpointInput
+  criteria: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  responses?: Prisma.FactoryAuditResponseUncheckedCreateNestedManyWithoutCheckpointInput
   results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutCheckpointInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUncheckedCreateNestedManyWithoutCheckpointInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUncheckedCreateNestedManyWithoutCheckpointInput
 }
 
 export type FactoryAuditCheckpointCreateOrConnectWithoutSectionInput = {
@@ -634,222 +583,7 @@ export type FactoryAuditCheckpointScalarWhereInput = {
   checkPoint?: Prisma.StringFilter<"FactoryAuditCheckpoint"> | string
   weight?: Prisma.FloatFilter<"FactoryAuditCheckpoint"> | number
   requiresEvidence?: Prisma.BoolFilter<"FactoryAuditCheckpoint"> | boolean
-}
-
-export type FactoryAuditCheckpointCreateWithoutRubricLevelsInput = {
-  id?: string
-  order: number
-  label: string
-  checkPoint: string
-  weight: number
-  requiresEvidence?: boolean
-  section: Prisma.FactoryAuditSectionCreateNestedOneWithoutCheckpointsInput
-  responses?: Prisma.AuditResponseCreateNestedManyWithoutCheckpointInput
-  results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutCheckpointInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeCreateNestedManyWithoutCheckpointInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointCreateNestedManyWithoutCheckpointInput
-}
-
-export type FactoryAuditCheckpointUncheckedCreateWithoutRubricLevelsInput = {
-  id?: string
-  sectionId: string
-  order: number
-  label: string
-  checkPoint: string
-  weight: number
-  requiresEvidence?: boolean
-  responses?: Prisma.AuditResponseUncheckedCreateNestedManyWithoutCheckpointInput
-  results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutCheckpointInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUncheckedCreateNestedManyWithoutCheckpointInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUncheckedCreateNestedManyWithoutCheckpointInput
-}
-
-export type FactoryAuditCheckpointCreateOrConnectWithoutRubricLevelsInput = {
-  where: Prisma.FactoryAuditCheckpointWhereUniqueInput
-  create: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutRubricLevelsInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutRubricLevelsInput>
-}
-
-export type FactoryAuditCheckpointUpsertWithoutRubricLevelsInput = {
-  update: Prisma.XOR<Prisma.FactoryAuditCheckpointUpdateWithoutRubricLevelsInput, Prisma.FactoryAuditCheckpointUncheckedUpdateWithoutRubricLevelsInput>
-  create: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutRubricLevelsInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutRubricLevelsInput>
-  where?: Prisma.FactoryAuditCheckpointWhereInput
-}
-
-export type FactoryAuditCheckpointUpdateToOneWithWhereWithoutRubricLevelsInput = {
-  where?: Prisma.FactoryAuditCheckpointWhereInput
-  data: Prisma.XOR<Prisma.FactoryAuditCheckpointUpdateWithoutRubricLevelsInput, Prisma.FactoryAuditCheckpointUncheckedUpdateWithoutRubricLevelsInput>
-}
-
-export type FactoryAuditCheckpointUpdateWithoutRubricLevelsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  label?: Prisma.StringFieldUpdateOperationsInput | string
-  checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
-  weight?: Prisma.FloatFieldUpdateOperationsInput | number
-  requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  section?: Prisma.FactoryAuditSectionUpdateOneRequiredWithoutCheckpointsNestedInput
-  responses?: Prisma.AuditResponseUpdateManyWithoutCheckpointNestedInput
-  results?: Prisma.AuditCheckpointResultUpdateManyWithoutCheckpointNestedInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUpdateManyWithoutCheckpointNestedInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUpdateManyWithoutCheckpointNestedInput
-}
-
-export type FactoryAuditCheckpointUncheckedUpdateWithoutRubricLevelsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  sectionId?: Prisma.StringFieldUpdateOperationsInput | string
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  label?: Prisma.StringFieldUpdateOperationsInput | string
-  checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
-  weight?: Prisma.FloatFieldUpdateOperationsInput | number
-  requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  responses?: Prisma.AuditResponseUncheckedUpdateManyWithoutCheckpointNestedInput
-  results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutCheckpointNestedInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUncheckedUpdateManyWithoutCheckpointNestedInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUncheckedUpdateManyWithoutCheckpointNestedInput
-}
-
-export type FactoryAuditCheckpointCreateWithoutRoundScopesInput = {
-  id?: string
-  order: number
-  label: string
-  checkPoint: string
-  weight: number
-  requiresEvidence?: boolean
-  section: Prisma.FactoryAuditSectionCreateNestedOneWithoutCheckpointsInput
-  rubricLevels?: Prisma.CheckpointRubricLevelCreateNestedManyWithoutCheckpointInput
-  responses?: Prisma.AuditResponseCreateNestedManyWithoutCheckpointInput
-  results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutCheckpointInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointCreateNestedManyWithoutCheckpointInput
-}
-
-export type FactoryAuditCheckpointUncheckedCreateWithoutRoundScopesInput = {
-  id?: string
-  sectionId: string
-  order: number
-  label: string
-  checkPoint: string
-  weight: number
-  requiresEvidence?: boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUncheckedCreateNestedManyWithoutCheckpointInput
-  responses?: Prisma.AuditResponseUncheckedCreateNestedManyWithoutCheckpointInput
-  results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutCheckpointInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUncheckedCreateNestedManyWithoutCheckpointInput
-}
-
-export type FactoryAuditCheckpointCreateOrConnectWithoutRoundScopesInput = {
-  where: Prisma.FactoryAuditCheckpointWhereUniqueInput
-  create: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutRoundScopesInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutRoundScopesInput>
-}
-
-export type FactoryAuditCheckpointUpsertWithoutRoundScopesInput = {
-  update: Prisma.XOR<Prisma.FactoryAuditCheckpointUpdateWithoutRoundScopesInput, Prisma.FactoryAuditCheckpointUncheckedUpdateWithoutRoundScopesInput>
-  create: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutRoundScopesInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutRoundScopesInput>
-  where?: Prisma.FactoryAuditCheckpointWhereInput
-}
-
-export type FactoryAuditCheckpointUpdateToOneWithWhereWithoutRoundScopesInput = {
-  where?: Prisma.FactoryAuditCheckpointWhereInput
-  data: Prisma.XOR<Prisma.FactoryAuditCheckpointUpdateWithoutRoundScopesInput, Prisma.FactoryAuditCheckpointUncheckedUpdateWithoutRoundScopesInput>
-}
-
-export type FactoryAuditCheckpointUpdateWithoutRoundScopesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  label?: Prisma.StringFieldUpdateOperationsInput | string
-  checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
-  weight?: Prisma.FloatFieldUpdateOperationsInput | number
-  requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  section?: Prisma.FactoryAuditSectionUpdateOneRequiredWithoutCheckpointsNestedInput
-  rubricLevels?: Prisma.CheckpointRubricLevelUpdateManyWithoutCheckpointNestedInput
-  responses?: Prisma.AuditResponseUpdateManyWithoutCheckpointNestedInput
-  results?: Prisma.AuditCheckpointResultUpdateManyWithoutCheckpointNestedInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUpdateManyWithoutCheckpointNestedInput
-}
-
-export type FactoryAuditCheckpointUncheckedUpdateWithoutRoundScopesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  sectionId?: Prisma.StringFieldUpdateOperationsInput | string
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  label?: Prisma.StringFieldUpdateOperationsInput | string
-  checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
-  weight?: Prisma.FloatFieldUpdateOperationsInput | number
-  requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUncheckedUpdateManyWithoutCheckpointNestedInput
-  responses?: Prisma.AuditResponseUncheckedUpdateManyWithoutCheckpointNestedInput
-  results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutCheckpointNestedInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUncheckedUpdateManyWithoutCheckpointNestedInput
-}
-
-export type FactoryAuditCheckpointCreateWithoutAssignmentScopesInput = {
-  id?: string
-  order: number
-  label: string
-  checkPoint: string
-  weight: number
-  requiresEvidence?: boolean
-  section: Prisma.FactoryAuditSectionCreateNestedOneWithoutCheckpointsInput
-  rubricLevels?: Prisma.CheckpointRubricLevelCreateNestedManyWithoutCheckpointInput
-  responses?: Prisma.AuditResponseCreateNestedManyWithoutCheckpointInput
-  results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutCheckpointInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeCreateNestedManyWithoutCheckpointInput
-}
-
-export type FactoryAuditCheckpointUncheckedCreateWithoutAssignmentScopesInput = {
-  id?: string
-  sectionId: string
-  order: number
-  label: string
-  checkPoint: string
-  weight: number
-  requiresEvidence?: boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUncheckedCreateNestedManyWithoutCheckpointInput
-  responses?: Prisma.AuditResponseUncheckedCreateNestedManyWithoutCheckpointInput
-  results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutCheckpointInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUncheckedCreateNestedManyWithoutCheckpointInput
-}
-
-export type FactoryAuditCheckpointCreateOrConnectWithoutAssignmentScopesInput = {
-  where: Prisma.FactoryAuditCheckpointWhereUniqueInput
-  create: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutAssignmentScopesInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutAssignmentScopesInput>
-}
-
-export type FactoryAuditCheckpointUpsertWithoutAssignmentScopesInput = {
-  update: Prisma.XOR<Prisma.FactoryAuditCheckpointUpdateWithoutAssignmentScopesInput, Prisma.FactoryAuditCheckpointUncheckedUpdateWithoutAssignmentScopesInput>
-  create: Prisma.XOR<Prisma.FactoryAuditCheckpointCreateWithoutAssignmentScopesInput, Prisma.FactoryAuditCheckpointUncheckedCreateWithoutAssignmentScopesInput>
-  where?: Prisma.FactoryAuditCheckpointWhereInput
-}
-
-export type FactoryAuditCheckpointUpdateToOneWithWhereWithoutAssignmentScopesInput = {
-  where?: Prisma.FactoryAuditCheckpointWhereInput
-  data: Prisma.XOR<Prisma.FactoryAuditCheckpointUpdateWithoutAssignmentScopesInput, Prisma.FactoryAuditCheckpointUncheckedUpdateWithoutAssignmentScopesInput>
-}
-
-export type FactoryAuditCheckpointUpdateWithoutAssignmentScopesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  label?: Prisma.StringFieldUpdateOperationsInput | string
-  checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
-  weight?: Prisma.FloatFieldUpdateOperationsInput | number
-  requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  section?: Prisma.FactoryAuditSectionUpdateOneRequiredWithoutCheckpointsNestedInput
-  rubricLevels?: Prisma.CheckpointRubricLevelUpdateManyWithoutCheckpointNestedInput
-  responses?: Prisma.AuditResponseUpdateManyWithoutCheckpointNestedInput
-  results?: Prisma.AuditCheckpointResultUpdateManyWithoutCheckpointNestedInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUpdateManyWithoutCheckpointNestedInput
-}
-
-export type FactoryAuditCheckpointUncheckedUpdateWithoutAssignmentScopesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  sectionId?: Prisma.StringFieldUpdateOperationsInput | string
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  label?: Prisma.StringFieldUpdateOperationsInput | string
-  checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
-  weight?: Prisma.FloatFieldUpdateOperationsInput | number
-  requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUncheckedUpdateManyWithoutCheckpointNestedInput
-  responses?: Prisma.AuditResponseUncheckedUpdateManyWithoutCheckpointNestedInput
-  results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutCheckpointNestedInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUncheckedUpdateManyWithoutCheckpointNestedInput
+  criteria?: Prisma.JsonFilter<"FactoryAuditCheckpoint">
 }
 
 export type FactoryAuditCheckpointCreateWithoutResponsesInput = {
@@ -859,11 +593,9 @@ export type FactoryAuditCheckpointCreateWithoutResponsesInput = {
   checkPoint: string
   weight: number
   requiresEvidence?: boolean
+  criteria: Prisma.JsonNullValueInput | runtime.InputJsonValue
   section: Prisma.FactoryAuditSectionCreateNestedOneWithoutCheckpointsInput
-  rubricLevels?: Prisma.CheckpointRubricLevelCreateNestedManyWithoutCheckpointInput
   results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutCheckpointInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeCreateNestedManyWithoutCheckpointInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointCreateNestedManyWithoutCheckpointInput
 }
 
 export type FactoryAuditCheckpointUncheckedCreateWithoutResponsesInput = {
@@ -874,10 +606,8 @@ export type FactoryAuditCheckpointUncheckedCreateWithoutResponsesInput = {
   checkPoint: string
   weight: number
   requiresEvidence?: boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUncheckedCreateNestedManyWithoutCheckpointInput
+  criteria: Prisma.JsonNullValueInput | runtime.InputJsonValue
   results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutCheckpointInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUncheckedCreateNestedManyWithoutCheckpointInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUncheckedCreateNestedManyWithoutCheckpointInput
 }
 
 export type FactoryAuditCheckpointCreateOrConnectWithoutResponsesInput = {
@@ -903,11 +633,9 @@ export type FactoryAuditCheckpointUpdateWithoutResponsesInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   weight?: Prisma.FloatFieldUpdateOperationsInput | number
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  criteria?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   section?: Prisma.FactoryAuditSectionUpdateOneRequiredWithoutCheckpointsNestedInput
-  rubricLevels?: Prisma.CheckpointRubricLevelUpdateManyWithoutCheckpointNestedInput
   results?: Prisma.AuditCheckpointResultUpdateManyWithoutCheckpointNestedInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUpdateManyWithoutCheckpointNestedInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUpdateManyWithoutCheckpointNestedInput
 }
 
 export type FactoryAuditCheckpointUncheckedUpdateWithoutResponsesInput = {
@@ -918,10 +646,8 @@ export type FactoryAuditCheckpointUncheckedUpdateWithoutResponsesInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   weight?: Prisma.FloatFieldUpdateOperationsInput | number
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUncheckedUpdateManyWithoutCheckpointNestedInput
+  criteria?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutCheckpointNestedInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUncheckedUpdateManyWithoutCheckpointNestedInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUncheckedUpdateManyWithoutCheckpointNestedInput
 }
 
 export type FactoryAuditCheckpointCreateWithoutResultsInput = {
@@ -931,11 +657,9 @@ export type FactoryAuditCheckpointCreateWithoutResultsInput = {
   checkPoint: string
   weight: number
   requiresEvidence?: boolean
+  criteria: Prisma.JsonNullValueInput | runtime.InputJsonValue
   section: Prisma.FactoryAuditSectionCreateNestedOneWithoutCheckpointsInput
-  rubricLevels?: Prisma.CheckpointRubricLevelCreateNestedManyWithoutCheckpointInput
-  responses?: Prisma.AuditResponseCreateNestedManyWithoutCheckpointInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeCreateNestedManyWithoutCheckpointInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointCreateNestedManyWithoutCheckpointInput
+  responses?: Prisma.FactoryAuditResponseCreateNestedManyWithoutCheckpointInput
 }
 
 export type FactoryAuditCheckpointUncheckedCreateWithoutResultsInput = {
@@ -946,10 +670,8 @@ export type FactoryAuditCheckpointUncheckedCreateWithoutResultsInput = {
   checkPoint: string
   weight: number
   requiresEvidence?: boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUncheckedCreateNestedManyWithoutCheckpointInput
-  responses?: Prisma.AuditResponseUncheckedCreateNestedManyWithoutCheckpointInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUncheckedCreateNestedManyWithoutCheckpointInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUncheckedCreateNestedManyWithoutCheckpointInput
+  criteria: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  responses?: Prisma.FactoryAuditResponseUncheckedCreateNestedManyWithoutCheckpointInput
 }
 
 export type FactoryAuditCheckpointCreateOrConnectWithoutResultsInput = {
@@ -975,11 +697,9 @@ export type FactoryAuditCheckpointUpdateWithoutResultsInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   weight?: Prisma.FloatFieldUpdateOperationsInput | number
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  criteria?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   section?: Prisma.FactoryAuditSectionUpdateOneRequiredWithoutCheckpointsNestedInput
-  rubricLevels?: Prisma.CheckpointRubricLevelUpdateManyWithoutCheckpointNestedInput
-  responses?: Prisma.AuditResponseUpdateManyWithoutCheckpointNestedInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUpdateManyWithoutCheckpointNestedInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUpdateManyWithoutCheckpointNestedInput
+  responses?: Prisma.FactoryAuditResponseUpdateManyWithoutCheckpointNestedInput
 }
 
 export type FactoryAuditCheckpointUncheckedUpdateWithoutResultsInput = {
@@ -990,10 +710,8 @@ export type FactoryAuditCheckpointUncheckedUpdateWithoutResultsInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   weight?: Prisma.FloatFieldUpdateOperationsInput | number
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUncheckedUpdateManyWithoutCheckpointNestedInput
-  responses?: Prisma.AuditResponseUncheckedUpdateManyWithoutCheckpointNestedInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUncheckedUpdateManyWithoutCheckpointNestedInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUncheckedUpdateManyWithoutCheckpointNestedInput
+  criteria?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  responses?: Prisma.FactoryAuditResponseUncheckedUpdateManyWithoutCheckpointNestedInput
 }
 
 export type FactoryAuditCheckpointCreateManySectionInput = {
@@ -1003,6 +721,7 @@ export type FactoryAuditCheckpointCreateManySectionInput = {
   checkPoint: string
   weight: number
   requiresEvidence?: boolean
+  criteria: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 export type FactoryAuditCheckpointUpdateWithoutSectionInput = {
@@ -1012,11 +731,9 @@ export type FactoryAuditCheckpointUpdateWithoutSectionInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   weight?: Prisma.FloatFieldUpdateOperationsInput | number
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUpdateManyWithoutCheckpointNestedInput
-  responses?: Prisma.AuditResponseUpdateManyWithoutCheckpointNestedInput
+  criteria?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  responses?: Prisma.FactoryAuditResponseUpdateManyWithoutCheckpointNestedInput
   results?: Prisma.AuditCheckpointResultUpdateManyWithoutCheckpointNestedInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUpdateManyWithoutCheckpointNestedInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUpdateManyWithoutCheckpointNestedInput
 }
 
 export type FactoryAuditCheckpointUncheckedUpdateWithoutSectionInput = {
@@ -1026,11 +743,9 @@ export type FactoryAuditCheckpointUncheckedUpdateWithoutSectionInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   weight?: Prisma.FloatFieldUpdateOperationsInput | number
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  rubricLevels?: Prisma.CheckpointRubricLevelUncheckedUpdateManyWithoutCheckpointNestedInput
-  responses?: Prisma.AuditResponseUncheckedUpdateManyWithoutCheckpointNestedInput
+  criteria?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  responses?: Prisma.FactoryAuditResponseUncheckedUpdateManyWithoutCheckpointNestedInput
   results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutCheckpointNestedInput
-  roundScopes?: Prisma.AuditRoundCheckpointScopeUncheckedUpdateManyWithoutCheckpointNestedInput
-  assignmentScopes?: Prisma.AuditAssignmentCheckpointUncheckedUpdateManyWithoutCheckpointNestedInput
 }
 
 export type FactoryAuditCheckpointUncheckedUpdateManyWithoutSectionInput = {
@@ -1040,6 +755,7 @@ export type FactoryAuditCheckpointUncheckedUpdateManyWithoutSectionInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   weight?: Prisma.FloatFieldUpdateOperationsInput | number
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  criteria?: Prisma.JsonNullValueInput | runtime.InputJsonValue
 }
 
 
@@ -1048,19 +764,13 @@ export type FactoryAuditCheckpointUncheckedUpdateManyWithoutSectionInput = {
  */
 
 export type FactoryAuditCheckpointCountOutputType = {
-  rubricLevels: number
   responses: number
   results: number
-  roundScopes: number
-  assignmentScopes: number
 }
 
 export type FactoryAuditCheckpointCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  rubricLevels?: boolean | FactoryAuditCheckpointCountOutputTypeCountRubricLevelsArgs
   responses?: boolean | FactoryAuditCheckpointCountOutputTypeCountResponsesArgs
   results?: boolean | FactoryAuditCheckpointCountOutputTypeCountResultsArgs
-  roundScopes?: boolean | FactoryAuditCheckpointCountOutputTypeCountRoundScopesArgs
-  assignmentScopes?: boolean | FactoryAuditCheckpointCountOutputTypeCountAssignmentScopesArgs
 }
 
 /**
@@ -1076,15 +786,8 @@ export type FactoryAuditCheckpointCountOutputTypeDefaultArgs<ExtArgs extends run
 /**
  * FactoryAuditCheckpointCountOutputType without action
  */
-export type FactoryAuditCheckpointCountOutputTypeCountRubricLevelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.CheckpointRubricLevelWhereInput
-}
-
-/**
- * FactoryAuditCheckpointCountOutputType without action
- */
 export type FactoryAuditCheckpointCountOutputTypeCountResponsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AuditResponseWhereInput
+  where?: Prisma.FactoryAuditResponseWhereInput
 }
 
 /**
@@ -1092,20 +795,6 @@ export type FactoryAuditCheckpointCountOutputTypeCountResponsesArgs<ExtArgs exte
  */
 export type FactoryAuditCheckpointCountOutputTypeCountResultsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AuditCheckpointResultWhereInput
-}
-
-/**
- * FactoryAuditCheckpointCountOutputType without action
- */
-export type FactoryAuditCheckpointCountOutputTypeCountRoundScopesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AuditRoundCheckpointScopeWhereInput
-}
-
-/**
- * FactoryAuditCheckpointCountOutputType without action
- */
-export type FactoryAuditCheckpointCountOutputTypeCountAssignmentScopesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AuditAssignmentCheckpointWhereInput
 }
 
 
@@ -1117,12 +806,10 @@ export type FactoryAuditCheckpointSelect<ExtArgs extends runtime.Types.Extension
   checkPoint?: boolean
   weight?: boolean
   requiresEvidence?: boolean
+  criteria?: boolean
   section?: boolean | Prisma.FactoryAuditSectionDefaultArgs<ExtArgs>
-  rubricLevels?: boolean | Prisma.FactoryAuditCheckpoint$rubricLevelsArgs<ExtArgs>
   responses?: boolean | Prisma.FactoryAuditCheckpoint$responsesArgs<ExtArgs>
   results?: boolean | Prisma.FactoryAuditCheckpoint$resultsArgs<ExtArgs>
-  roundScopes?: boolean | Prisma.FactoryAuditCheckpoint$roundScopesArgs<ExtArgs>
-  assignmentScopes?: boolean | Prisma.FactoryAuditCheckpoint$assignmentScopesArgs<ExtArgs>
   _count?: boolean | Prisma.FactoryAuditCheckpointCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["factoryAuditCheckpoint"]>
 
@@ -1134,6 +821,7 @@ export type FactoryAuditCheckpointSelectCreateManyAndReturn<ExtArgs extends runt
   checkPoint?: boolean
   weight?: boolean
   requiresEvidence?: boolean
+  criteria?: boolean
   section?: boolean | Prisma.FactoryAuditSectionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["factoryAuditCheckpoint"]>
 
@@ -1145,6 +833,7 @@ export type FactoryAuditCheckpointSelectUpdateManyAndReturn<ExtArgs extends runt
   checkPoint?: boolean
   weight?: boolean
   requiresEvidence?: boolean
+  criteria?: boolean
   section?: boolean | Prisma.FactoryAuditSectionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["factoryAuditCheckpoint"]>
 
@@ -1156,16 +845,14 @@ export type FactoryAuditCheckpointSelectScalar = {
   checkPoint?: boolean
   weight?: boolean
   requiresEvidence?: boolean
+  criteria?: boolean
 }
 
-export type FactoryAuditCheckpointOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sectionId" | "order" | "label" | "checkPoint" | "weight" | "requiresEvidence", ExtArgs["result"]["factoryAuditCheckpoint"]>
+export type FactoryAuditCheckpointOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sectionId" | "order" | "label" | "checkPoint" | "weight" | "requiresEvidence" | "criteria", ExtArgs["result"]["factoryAuditCheckpoint"]>
 export type FactoryAuditCheckpointInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   section?: boolean | Prisma.FactoryAuditSectionDefaultArgs<ExtArgs>
-  rubricLevels?: boolean | Prisma.FactoryAuditCheckpoint$rubricLevelsArgs<ExtArgs>
   responses?: boolean | Prisma.FactoryAuditCheckpoint$responsesArgs<ExtArgs>
   results?: boolean | Prisma.FactoryAuditCheckpoint$resultsArgs<ExtArgs>
-  roundScopes?: boolean | Prisma.FactoryAuditCheckpoint$roundScopesArgs<ExtArgs>
-  assignmentScopes?: boolean | Prisma.FactoryAuditCheckpoint$assignmentScopesArgs<ExtArgs>
   _count?: boolean | Prisma.FactoryAuditCheckpointCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type FactoryAuditCheckpointIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1179,11 +866,8 @@ export type $FactoryAuditCheckpointPayload<ExtArgs extends runtime.Types.Extensi
   name: "FactoryAuditCheckpoint"
   objects: {
     section: Prisma.$FactoryAuditSectionPayload<ExtArgs>
-    rubricLevels: Prisma.$CheckpointRubricLevelPayload<ExtArgs>[]
-    responses: Prisma.$AuditResponsePayload<ExtArgs>[]
+    responses: Prisma.$FactoryAuditResponsePayload<ExtArgs>[]
     results: Prisma.$AuditCheckpointResultPayload<ExtArgs>[]
-    roundScopes: Prisma.$AuditRoundCheckpointScopePayload<ExtArgs>[]
-    assignmentScopes: Prisma.$AuditAssignmentCheckpointPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1193,6 +877,7 @@ export type $FactoryAuditCheckpointPayload<ExtArgs extends runtime.Types.Extensi
     checkPoint: string
     weight: number
     requiresEvidence: boolean
+    criteria: runtime.JsonValue
   }, ExtArgs["result"]["factoryAuditCheckpoint"]>
   composites: {}
 }
@@ -1588,11 +1273,8 @@ readonly fields: FactoryAuditCheckpointFieldRefs;
 export interface Prisma__FactoryAuditCheckpointClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   section<T extends Prisma.FactoryAuditSectionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditSectionDefaultArgs<ExtArgs>>): Prisma.Prisma__FactoryAuditSectionClient<runtime.Types.Result.GetResult<Prisma.$FactoryAuditSectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  rubricLevels<T extends Prisma.FactoryAuditCheckpoint$rubricLevelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditCheckpoint$rubricLevelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckpointRubricLevelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  responses<T extends Prisma.FactoryAuditCheckpoint$responsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditCheckpoint$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  responses<T extends Prisma.FactoryAuditCheckpoint$responsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditCheckpoint$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FactoryAuditResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   results<T extends Prisma.FactoryAuditCheckpoint$resultsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditCheckpoint$resultsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditCheckpointResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  roundScopes<T extends Prisma.FactoryAuditCheckpoint$roundScopesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditCheckpoint$roundScopesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditRoundCheckpointScopePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  assignmentScopes<T extends Prisma.FactoryAuditCheckpoint$assignmentScopesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditCheckpoint$assignmentScopesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditAssignmentCheckpointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1629,6 +1311,7 @@ export interface FactoryAuditCheckpointFieldRefs {
   readonly checkPoint: Prisma.FieldRef<"FactoryAuditCheckpoint", 'String'>
   readonly weight: Prisma.FieldRef<"FactoryAuditCheckpoint", 'Float'>
   readonly requiresEvidence: Prisma.FieldRef<"FactoryAuditCheckpoint", 'Boolean'>
+  readonly criteria: Prisma.FieldRef<"FactoryAuditCheckpoint", 'Json'>
 }
     
 
@@ -2030,51 +1713,27 @@ export type FactoryAuditCheckpointDeleteManyArgs<ExtArgs extends runtime.Types.E
 }
 
 /**
- * FactoryAuditCheckpoint.rubricLevels
- */
-export type FactoryAuditCheckpoint$rubricLevelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the CheckpointRubricLevel
-   */
-  select?: Prisma.CheckpointRubricLevelSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the CheckpointRubricLevel
-   */
-  omit?: Prisma.CheckpointRubricLevelOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.CheckpointRubricLevelInclude<ExtArgs> | null
-  where?: Prisma.CheckpointRubricLevelWhereInput
-  orderBy?: Prisma.CheckpointRubricLevelOrderByWithRelationInput | Prisma.CheckpointRubricLevelOrderByWithRelationInput[]
-  cursor?: Prisma.CheckpointRubricLevelWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.CheckpointRubricLevelScalarFieldEnum | Prisma.CheckpointRubricLevelScalarFieldEnum[]
-}
-
-/**
  * FactoryAuditCheckpoint.responses
  */
 export type FactoryAuditCheckpoint$responsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the AuditResponse
+   * Select specific fields to fetch from the FactoryAuditResponse
    */
-  select?: Prisma.AuditResponseSelect<ExtArgs> | null
+  select?: Prisma.FactoryAuditResponseSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the AuditResponse
+   * Omit specific fields from the FactoryAuditResponse
    */
-  omit?: Prisma.AuditResponseOmit<ExtArgs> | null
+  omit?: Prisma.FactoryAuditResponseOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AuditResponseInclude<ExtArgs> | null
-  where?: Prisma.AuditResponseWhereInput
-  orderBy?: Prisma.AuditResponseOrderByWithRelationInput | Prisma.AuditResponseOrderByWithRelationInput[]
-  cursor?: Prisma.AuditResponseWhereUniqueInput
+  include?: Prisma.FactoryAuditResponseInclude<ExtArgs> | null
+  where?: Prisma.FactoryAuditResponseWhereInput
+  orderBy?: Prisma.FactoryAuditResponseOrderByWithRelationInput | Prisma.FactoryAuditResponseOrderByWithRelationInput[]
+  cursor?: Prisma.FactoryAuditResponseWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.AuditResponseScalarFieldEnum | Prisma.AuditResponseScalarFieldEnum[]
+  distinct?: Prisma.FactoryAuditResponseScalarFieldEnum | Prisma.FactoryAuditResponseScalarFieldEnum[]
 }
 
 /**
@@ -2099,54 +1758,6 @@ export type FactoryAuditCheckpoint$resultsArgs<ExtArgs extends runtime.Types.Ext
   take?: number
   skip?: number
   distinct?: Prisma.AuditCheckpointResultScalarFieldEnum | Prisma.AuditCheckpointResultScalarFieldEnum[]
-}
-
-/**
- * FactoryAuditCheckpoint.roundScopes
- */
-export type FactoryAuditCheckpoint$roundScopesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the AuditRoundCheckpointScope
-   */
-  select?: Prisma.AuditRoundCheckpointScopeSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the AuditRoundCheckpointScope
-   */
-  omit?: Prisma.AuditRoundCheckpointScopeOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.AuditRoundCheckpointScopeInclude<ExtArgs> | null
-  where?: Prisma.AuditRoundCheckpointScopeWhereInput
-  orderBy?: Prisma.AuditRoundCheckpointScopeOrderByWithRelationInput | Prisma.AuditRoundCheckpointScopeOrderByWithRelationInput[]
-  cursor?: Prisma.AuditRoundCheckpointScopeWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.AuditRoundCheckpointScopeScalarFieldEnum | Prisma.AuditRoundCheckpointScopeScalarFieldEnum[]
-}
-
-/**
- * FactoryAuditCheckpoint.assignmentScopes
- */
-export type FactoryAuditCheckpoint$assignmentScopesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the AuditAssignmentCheckpoint
-   */
-  select?: Prisma.AuditAssignmentCheckpointSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the AuditAssignmentCheckpoint
-   */
-  omit?: Prisma.AuditAssignmentCheckpointOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.AuditAssignmentCheckpointInclude<ExtArgs> | null
-  where?: Prisma.AuditAssignmentCheckpointWhereInput
-  orderBy?: Prisma.AuditAssignmentCheckpointOrderByWithRelationInput | Prisma.AuditAssignmentCheckpointOrderByWithRelationInput[]
-  cursor?: Prisma.AuditAssignmentCheckpointWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.AuditAssignmentCheckpointScalarFieldEnum | Prisma.AuditAssignmentCheckpointScalarFieldEnum[]
 }
 
 /**

@@ -32,7 +32,8 @@
       "@guest/*": ["./src/modules/guest/*"],
       "@vendor-onboarding/*": ["./src/modules/vendor-onboarding/*"],
       "@medi-claim/*": ["./src/modules/medi-claim/*"],
-      "@dealerAudit/*": ["./src/modules/dealer-audit/*"]
+      "@dealerAudit/*": ["./src/modules/dealer-audit/*"],
+      "@factoryAudit/*": ["./src/modules/factory-audit/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"],

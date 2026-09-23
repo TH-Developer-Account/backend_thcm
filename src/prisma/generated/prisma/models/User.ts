@@ -397,10 +397,9 @@ export type UserWhereInput = {
   importExportLogs?: Prisma.ImportExportLogListRelationFilter
   businessPartnerContact?: Prisma.BusinessPartnerContactListRelationFilter
   uploadedEvidence?: Prisma.EvidenceListRelationFilter
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundListRelationFilter
-  factoryAuditAssignments?: Prisma.AuditAssignmentListRelationFilter
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultListRelationFilter
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceListRelationFilter
+  factoryAuditAssignments?: Prisma.AuditAssignmentListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -456,10 +455,9 @@ export type UserOrderByWithRelationInput = {
   importExportLogs?: Prisma.ImportExportLogOrderByRelationAggregateInput
   businessPartnerContact?: Prisma.BusinessPartnerContactOrderByRelationAggregateInput
   uploadedEvidence?: Prisma.EvidenceOrderByRelationAggregateInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundOrderByRelationAggregateInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentOrderByRelationAggregateInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultOrderByRelationAggregateInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceOrderByRelationAggregateInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -518,10 +516,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   importExportLogs?: Prisma.ImportExportLogListRelationFilter
   businessPartnerContact?: Prisma.BusinessPartnerContactListRelationFilter
   uploadedEvidence?: Prisma.EvidenceListRelationFilter
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundListRelationFilter
-  factoryAuditAssignments?: Prisma.AuditAssignmentListRelationFilter
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultListRelationFilter
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceListRelationFilter
+  factoryAuditAssignments?: Prisma.AuditAssignmentListRelationFilter
 }, "id" | "email" | "phone_number">
 
 export type UserOrderByWithAggregationInput = {
@@ -646,10 +643,9 @@ export type UserCreateInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -704,10 +700,9 @@ export type UserUncheckedCreateInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUpdateInput = {
@@ -762,10 +757,9 @@ export type UserUpdateInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -820,10 +814,9 @@ export type UserUncheckedUpdateInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1427,22 +1420,6 @@ export type UserUpdateOneRequiredWithoutFactoryAuditInstancesCreatedNestedInput 
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFactoryAuditInstancesCreatedInput, Prisma.UserUpdateWithoutFactoryAuditInstancesCreatedInput>, Prisma.UserUncheckedUpdateWithoutFactoryAuditInstancesCreatedInput>
 }
 
-export type UserCreateNestedOneWithoutFactoryAuditRoundsTriggeredInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutFactoryAuditRoundsTriggeredInput, Prisma.UserUncheckedCreateWithoutFactoryAuditRoundsTriggeredInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFactoryAuditRoundsTriggeredInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneWithoutFactoryAuditRoundsTriggeredNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutFactoryAuditRoundsTriggeredInput, Prisma.UserUncheckedCreateWithoutFactoryAuditRoundsTriggeredInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFactoryAuditRoundsTriggeredInput
-  upsert?: Prisma.UserUpsertWithoutFactoryAuditRoundsTriggeredInput
-  disconnect?: Prisma.UserWhereInput | boolean
-  delete?: Prisma.UserWhereInput | boolean
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFactoryAuditRoundsTriggeredInput, Prisma.UserUpdateWithoutFactoryAuditRoundsTriggeredInput>, Prisma.UserUncheckedUpdateWithoutFactoryAuditRoundsTriggeredInput>
-}
-
 export type UserCreateNestedOneWithoutFactoryAuditAssignmentsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutFactoryAuditAssignmentsInput, Prisma.UserUncheckedCreateWithoutFactoryAuditAssignmentsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutFactoryAuditAssignmentsInput
@@ -1524,10 +1501,9 @@ export type UserCreateWithoutPassword_reset_tokensInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
@@ -1581,10 +1557,9 @@ export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutPassword_reset_tokensInput = {
@@ -1654,10 +1629,9 @@ export type UserUpdateWithoutPassword_reset_tokensInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
@@ -1711,10 +1685,9 @@ export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutRefresh_tokensInput = {
@@ -1768,10 +1741,9 @@ export type UserCreateWithoutRefresh_tokensInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutRefresh_tokensInput = {
@@ -1825,10 +1797,9 @@ export type UserUncheckedCreateWithoutRefresh_tokensInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutRefresh_tokensInput = {
@@ -1898,10 +1869,9 @@ export type UserUpdateWithoutRefresh_tokensInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
@@ -1955,10 +1925,9 @@ export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutWorkspaceUsersInput = {
@@ -2012,10 +1981,9 @@ export type UserCreateWithoutWorkspaceUsersInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
@@ -2069,10 +2037,9 @@ export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutWorkspaceUsersInput = {
@@ -2142,10 +2109,9 @@ export type UserUpdateWithoutWorkspaceUsersInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
@@ -2199,10 +2165,9 @@ export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutUserProfilesInput = {
@@ -2256,10 +2221,9 @@ export type UserCreateWithoutUserProfilesInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutUserProfilesInput = {
@@ -2313,10 +2277,9 @@ export type UserUncheckedCreateWithoutUserProfilesInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutUserProfilesInput = {
@@ -2386,10 +2349,9 @@ export type UserUpdateWithoutUserProfilesInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserProfilesInput = {
@@ -2443,10 +2405,9 @@ export type UserUncheckedUpdateWithoutUserProfilesInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutCreated_event_proposalsInput = {
@@ -2500,10 +2461,9 @@ export type UserCreateWithoutCreated_event_proposalsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
@@ -2557,10 +2517,9 @@ export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutCreated_event_proposalsInput = {
@@ -2619,10 +2578,9 @@ export type UserCreateWithoutUpdated_event_proposalsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
@@ -2676,10 +2634,9 @@ export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutUpdated_event_proposalsInput = {
@@ -2749,10 +2706,9 @@ export type UserUpdateWithoutCreated_event_proposalsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
@@ -2806,10 +2762,9 @@ export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUpsertWithoutUpdated_event_proposalsInput = {
@@ -2874,10 +2829,9 @@ export type UserUpdateWithoutUpdated_event_proposalsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
@@ -2931,10 +2885,9 @@ export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutCreated_workflowInput = {
@@ -2988,10 +2941,9 @@ export type UserCreateWithoutCreated_workflowInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutCreated_workflowInput = {
@@ -3045,10 +2997,9 @@ export type UserUncheckedCreateWithoutCreated_workflowInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutCreated_workflowInput = {
@@ -3107,10 +3058,9 @@ export type UserCreateWithoutUpdated_workflowInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutUpdated_workflowInput = {
@@ -3164,10 +3114,9 @@ export type UserUncheckedCreateWithoutUpdated_workflowInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutUpdated_workflowInput = {
@@ -3237,10 +3186,9 @@ export type UserUpdateWithoutCreated_workflowInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreated_workflowInput = {
@@ -3294,10 +3242,9 @@ export type UserUncheckedUpdateWithoutCreated_workflowInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUpsertWithoutUpdated_workflowInput = {
@@ -3362,10 +3309,9 @@ export type UserUpdateWithoutUpdated_workflowInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
@@ -3419,10 +3365,9 @@ export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutTemplateApprovalsInput = {
@@ -3476,10 +3421,9 @@ export type UserCreateWithoutTemplateApprovalsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
@@ -3533,10 +3477,9 @@ export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutTemplateApprovalsInput = {
@@ -3606,10 +3549,9 @@ export type UserUpdateWithoutTemplateApprovalsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
@@ -3663,10 +3605,9 @@ export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutApprovalsInput = {
@@ -3720,10 +3661,9 @@ export type UserCreateWithoutApprovalsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutApprovalsInput = {
@@ -3777,10 +3717,9 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutApprovalsInput = {
@@ -3850,10 +3789,9 @@ export type UserUpdateWithoutApprovalsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovalsInput = {
@@ -3907,10 +3845,9 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutWorkFlowUsersInput = {
@@ -3964,10 +3901,9 @@ export type UserCreateWithoutWorkFlowUsersInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
@@ -4021,10 +3957,9 @@ export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutWorkFlowUsersInput = {
@@ -4094,10 +4029,9 @@ export type UserUpdateWithoutWorkFlowUsersInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
@@ -4151,10 +4085,9 @@ export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutActivityLogsInput = {
@@ -4208,10 +4141,9 @@ export type UserCreateWithoutActivityLogsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutActivityLogsInput = {
@@ -4265,10 +4197,9 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutActivityLogsInput = {
@@ -4338,10 +4269,9 @@ export type UserUpdateWithoutActivityLogsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutActivityLogsInput = {
@@ -4395,10 +4325,9 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -4452,10 +4381,9 @@ export type UserCreateWithoutCommentsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -4509,10 +4437,9 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -4582,10 +4509,9 @@ export type UserUpdateWithoutCommentsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -4639,10 +4565,9 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutReportValidationsInput = {
@@ -4696,10 +4621,9 @@ export type UserCreateWithoutReportValidationsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutReportValidationsInput = {
@@ -4753,10 +4677,9 @@ export type UserUncheckedCreateWithoutReportValidationsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutReportValidationsInput = {
@@ -4826,10 +4749,9 @@ export type UserUpdateWithoutReportValidationsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReportValidationsInput = {
@@ -4883,10 +4805,9 @@ export type UserUncheckedUpdateWithoutReportValidationsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutImportExportLogsInput = {
@@ -4940,10 +4861,9 @@ export type UserCreateWithoutImportExportLogsInput = {
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutImportExportLogsInput = {
@@ -4997,10 +4917,9 @@ export type UserUncheckedCreateWithoutImportExportLogsInput = {
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutImportExportLogsInput = {
@@ -5070,10 +4989,9 @@ export type UserUpdateWithoutImportExportLogsInput = {
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutImportExportLogsInput = {
@@ -5127,10 +5045,9 @@ export type UserUncheckedUpdateWithoutImportExportLogsInput = {
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -5184,10 +5101,9 @@ export type UserCreateWithoutNotificationsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -5241,10 +5157,9 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -5314,10 +5229,9 @@ export type UserUpdateWithoutNotificationsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -5371,10 +5285,9 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutPushSubscriptionsInput = {
@@ -5428,10 +5341,9 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
@@ -5485,10 +5397,9 @@ export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutPushSubscriptionsInput = {
@@ -5558,10 +5469,9 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
@@ -5615,10 +5525,9 @@ export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutInitiated_vendor_onboardingsInput = {
@@ -5672,10 +5581,9 @@ export type UserCreateWithoutInitiated_vendor_onboardingsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput = {
@@ -5729,10 +5637,9 @@ export type UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutInitiated_vendor_onboardingsInput = {
@@ -5802,10 +5709,9 @@ export type UserUpdateWithoutInitiated_vendor_onboardingsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput = {
@@ -5859,10 +5765,9 @@ export type UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutInitiated_medical_claimsInput = {
@@ -5916,10 +5821,9 @@ export type UserCreateWithoutInitiated_medical_claimsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutInitiated_medical_claimsInput = {
@@ -5973,10 +5877,9 @@ export type UserUncheckedCreateWithoutInitiated_medical_claimsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutInitiated_medical_claimsInput = {
@@ -6046,10 +5949,9 @@ export type UserUpdateWithoutInitiated_medical_claimsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutInitiated_medical_claimsInput = {
@@ -6103,10 +6005,9 @@ export type UserUncheckedUpdateWithoutInitiated_medical_claimsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutBusinessPartnerInput = {
@@ -6160,10 +6061,9 @@ export type UserCreateWithoutBusinessPartnerInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutBusinessPartnerInput = {
@@ -6217,10 +6117,9 @@ export type UserUncheckedCreateWithoutBusinessPartnerInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutBusinessPartnerInput = {
@@ -6335,10 +6234,9 @@ export type UserCreateWithoutBusinessPartnerContactInput = {
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutBusinessPartnerContactInput = {
@@ -6392,10 +6290,9 @@ export type UserUncheckedCreateWithoutBusinessPartnerContactInput = {
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutBusinessPartnerContactInput = {
@@ -6465,10 +6362,9 @@ export type UserUpdateWithoutBusinessPartnerContactInput = {
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBusinessPartnerContactInput = {
@@ -6522,10 +6418,9 @@ export type UserUncheckedUpdateWithoutBusinessPartnerContactInput = {
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutUploadedEvidenceInput = {
@@ -6579,10 +6474,9 @@ export type UserCreateWithoutUploadedEvidenceInput = {
   activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutUploadedEvidenceInput = {
@@ -6636,10 +6530,9 @@ export type UserUncheckedCreateWithoutUploadedEvidenceInput = {
   activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutUploadedEvidenceInput = {
@@ -6709,10 +6602,9 @@ export type UserUpdateWithoutUploadedEvidenceInput = {
   activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedEvidenceInput = {
@@ -6766,10 +6658,9 @@ export type UserUncheckedUpdateWithoutUploadedEvidenceInput = {
   activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutDealerAuditResponsesInput = {
@@ -6823,10 +6714,9 @@ export type UserCreateWithoutDealerAuditResponsesInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutDealerAuditResponsesInput = {
@@ -6880,10 +6770,9 @@ export type UserUncheckedCreateWithoutDealerAuditResponsesInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutDealerAuditResponsesInput = {
@@ -6953,10 +6842,9 @@ export type UserUpdateWithoutDealerAuditResponsesInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDealerAuditResponsesInput = {
@@ -7010,10 +6898,9 @@ export type UserUncheckedUpdateWithoutDealerAuditResponsesInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateWithoutFactoryAuditInstancesCreatedInput = {
@@ -7068,9 +6955,8 @@ export type UserCreateWithoutFactoryAuditInstancesCreatedInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutFactoryAuditInstancesCreatedInput = {
@@ -7125,9 +7011,8 @@ export type UserUncheckedCreateWithoutFactoryAuditInstancesCreatedInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutFactoryAuditInstancesCreatedInput = {
@@ -7198,9 +7083,8 @@ export type UserUpdateWithoutFactoryAuditInstancesCreatedInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFactoryAuditInstancesCreatedInput = {
@@ -7255,253 +7139,8 @@ export type UserUncheckedUpdateWithoutFactoryAuditInstancesCreatedInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
-}
-
-export type UserCreateWithoutFactoryAuditRoundsTriggeredInput = {
-  id?: string
-  first_name: string
-  last_name: string
-  email?: string | null
-  phone_number?: string | null
-  password: string
-  is_active?: boolean
-  is_default_login?: boolean
-  employeeCode?: string | null
-  bydId?: string | null
-  s4Id?: string | null
-  tallyId?: string | null
-  c4cId?: string | null
-  region?: string | null
-  address?: string | null
-  zone?: string | null
-  branch?: string | null
-  department?: string | null
-  role?: string | null
-  designation?: string | null
-  vertical?: string | null
-  managerCode1?: string | null
-  managerCode2?: string | null
-  isDefaultContact?: boolean
-  userType?: string | null
-  joinedOn?: Date | string | null
-  created_at?: Date | string
-  updated_at?: Date | string
-  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
-  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
-  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
-  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
-  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
-  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
-  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
-  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
-  created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
-  updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
-  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
-  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
-  dealerAuditResponses?: Prisma.AuditItemResponseCreateNestedManyWithoutRespondedByInput
-  approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
-  templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
-  workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
-  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
-  reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
-  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
-  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
-  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
-  uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
-  factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
-  factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
-}
-
-export type UserUncheckedCreateWithoutFactoryAuditRoundsTriggeredInput = {
-  id?: string
-  first_name: string
-  last_name: string
-  email?: string | null
-  phone_number?: string | null
-  password: string
-  is_active?: boolean
-  is_default_login?: boolean
-  employeeCode?: string | null
-  bydId?: string | null
-  s4Id?: string | null
-  tallyId?: string | null
-  c4cId?: string | null
-  region?: string | null
-  address?: string | null
-  zone?: string | null
-  branch?: string | null
-  department?: string | null
-  role?: string | null
-  designation?: string | null
-  vertical?: string | null
-  managerCode1?: string | null
-  managerCode2?: string | null
-  isDefaultContact?: boolean
-  userType?: string | null
-  joinedOn?: Date | string | null
-  businessPartnerId?: string | null
-  created_at?: Date | string
-  updated_at?: Date | string
-  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
-  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
-  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
-  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
-  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
-  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
-  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
-  created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
-  updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
-  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
-  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
-  dealerAuditResponses?: Prisma.AuditItemResponseUncheckedCreateNestedManyWithoutRespondedByInput
-  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
-  templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
-  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
-  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
-  reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
-  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
-  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
-  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
-  uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
-  factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
-  factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
-}
-
-export type UserCreateOrConnectWithoutFactoryAuditRoundsTriggeredInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutFactoryAuditRoundsTriggeredInput, Prisma.UserUncheckedCreateWithoutFactoryAuditRoundsTriggeredInput>
-}
-
-export type UserUpsertWithoutFactoryAuditRoundsTriggeredInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutFactoryAuditRoundsTriggeredInput, Prisma.UserUncheckedUpdateWithoutFactoryAuditRoundsTriggeredInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutFactoryAuditRoundsTriggeredInput, Prisma.UserUncheckedCreateWithoutFactoryAuditRoundsTriggeredInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutFactoryAuditRoundsTriggeredInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutFactoryAuditRoundsTriggeredInput, Prisma.UserUncheckedUpdateWithoutFactoryAuditRoundsTriggeredInput>
-}
-
-export type UserUpdateWithoutFactoryAuditRoundsTriggeredInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
-  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
-  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
-  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
-  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
-  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
-  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
-  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
-  created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
-  updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
-  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
-  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
-  dealerAuditResponses?: Prisma.AuditItemResponseUpdateManyWithoutRespondedByNestedInput
-  approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
-  templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
-  workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
-  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
-  reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
-  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
-  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
-  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
-  uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
-  factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
-  factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
-}
-
-export type UserUncheckedUpdateWithoutFactoryAuditRoundsTriggeredInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  first_name?: Prisma.StringFieldUpdateOperationsInput | string
-  last_name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
-  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
-  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
-  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
-  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
-  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
-  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
-  created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
-  updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
-  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
-  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
-  dealerAuditResponses?: Prisma.AuditItemResponseUncheckedUpdateManyWithoutRespondedByNestedInput
-  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
-  templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
-  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
-  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
-  reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
-  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
-  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
-  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
-  uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
   factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
-  factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
-  factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
 }
 
 export type UserCreateWithoutFactoryAuditAssignmentsInput = {
@@ -7556,7 +7195,6 @@ export type UserCreateWithoutFactoryAuditAssignmentsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
 }
@@ -7613,7 +7251,6 @@ export type UserUncheckedCreateWithoutFactoryAuditAssignmentsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutReviewerInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
 }
@@ -7686,7 +7323,6 @@ export type UserUpdateWithoutFactoryAuditAssignmentsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
 }
@@ -7743,7 +7379,6 @@ export type UserUncheckedUpdateWithoutFactoryAuditAssignmentsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
 }
@@ -7800,9 +7435,8 @@ export type UserCreateWithoutFactoryCheckpointReviewsInput = {
   importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditorInput
 }
 
 export type UserUncheckedCreateWithoutFactoryCheckpointReviewsInput = {
@@ -7857,9 +7491,8 @@ export type UserUncheckedCreateWithoutFactoryCheckpointReviewsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
   uploadedEvidence?: Prisma.EvidenceUncheckedCreateNestedManyWithoutUploaderInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutTriggeredByInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutCreatedByInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditorInput
 }
 
 export type UserCreateOrConnectWithoutFactoryCheckpointReviewsInput = {
@@ -7930,9 +7563,8 @@ export type UserUpdateWithoutFactoryCheckpointReviewsInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFactoryCheckpointReviewsInput = {
@@ -7987,9 +7619,8 @@ export type UserUncheckedUpdateWithoutFactoryCheckpointReviewsInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserCreateManyBusinessPartnerInput = {
@@ -8074,10 +7705,9 @@ export type UserUpdateWithoutBusinessPartnerInput = {
   importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBusinessPartnerInput = {
@@ -8131,10 +7761,9 @@ export type UserUncheckedUpdateWithoutBusinessPartnerInput = {
   importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
   businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
   uploadedEvidence?: Prisma.EvidenceUncheckedUpdateManyWithoutUploaderNestedInput
-  factoryAuditRoundsTriggered?: Prisma.AuditRoundUncheckedUpdateManyWithoutTriggeredByNestedInput
-  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
   factoryCheckpointReviews?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutReviewerNestedInput
   factoryAuditInstancesCreated?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByNestedInput
+  factoryAuditAssignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditorNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutBusinessPartnerInput = {
@@ -8196,10 +7825,9 @@ export type UserCountOutputType = {
   importExportLogs: number
   businessPartnerContact: number
   uploadedEvidence: number
-  factoryAuditRoundsTriggered: number
-  factoryAuditAssignments: number
   factoryCheckpointReviews: number
   factoryAuditInstancesCreated: number
+  factoryAuditAssignments: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -8225,10 +7853,9 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   importExportLogs?: boolean | UserCountOutputTypeCountImportExportLogsArgs
   businessPartnerContact?: boolean | UserCountOutputTypeCountBusinessPartnerContactArgs
   uploadedEvidence?: boolean | UserCountOutputTypeCountUploadedEvidenceArgs
-  factoryAuditRoundsTriggered?: boolean | UserCountOutputTypeCountFactoryAuditRoundsTriggeredArgs
-  factoryAuditAssignments?: boolean | UserCountOutputTypeCountFactoryAuditAssignmentsArgs
   factoryCheckpointReviews?: boolean | UserCountOutputTypeCountFactoryCheckpointReviewsArgs
   factoryAuditInstancesCreated?: boolean | UserCountOutputTypeCountFactoryAuditInstancesCreatedArgs
+  factoryAuditAssignments?: boolean | UserCountOutputTypeCountFactoryAuditAssignmentsArgs
 }
 
 /**
@@ -8398,20 +8025,6 @@ export type UserCountOutputTypeCountUploadedEvidenceArgs<ExtArgs extends runtime
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountFactoryAuditRoundsTriggeredArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AuditRoundWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountFactoryAuditAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AuditAssignmentWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
 export type UserCountOutputTypeCountFactoryCheckpointReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AuditCheckpointResultWhereInput
 }
@@ -8421,6 +8034,13 @@ export type UserCountOutputTypeCountFactoryCheckpointReviewsArgs<ExtArgs extends
  */
 export type UserCountOutputTypeCountFactoryAuditInstancesCreatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.FactoryAuditInstanceWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountFactoryAuditAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditAssignmentWhereInput
 }
 
 
@@ -8477,10 +8097,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   importExportLogs?: boolean | Prisma.User$importExportLogsArgs<ExtArgs>
   businessPartnerContact?: boolean | Prisma.User$businessPartnerContactArgs<ExtArgs>
   uploadedEvidence?: boolean | Prisma.User$uploadedEvidenceArgs<ExtArgs>
-  factoryAuditRoundsTriggered?: boolean | Prisma.User$factoryAuditRoundsTriggeredArgs<ExtArgs>
-  factoryAuditAssignments?: boolean | Prisma.User$factoryAuditAssignmentsArgs<ExtArgs>
   factoryCheckpointReviews?: boolean | Prisma.User$factoryCheckpointReviewsArgs<ExtArgs>
   factoryAuditInstancesCreated?: boolean | Prisma.User$factoryAuditInstancesCreatedArgs<ExtArgs>
+  factoryAuditAssignments?: boolean | Prisma.User$factoryAuditAssignmentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -8607,10 +8226,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   importExportLogs?: boolean | Prisma.User$importExportLogsArgs<ExtArgs>
   businessPartnerContact?: boolean | Prisma.User$businessPartnerContactArgs<ExtArgs>
   uploadedEvidence?: boolean | Prisma.User$uploadedEvidenceArgs<ExtArgs>
-  factoryAuditRoundsTriggered?: boolean | Prisma.User$factoryAuditRoundsTriggeredArgs<ExtArgs>
-  factoryAuditAssignments?: boolean | Prisma.User$factoryAuditAssignmentsArgs<ExtArgs>
   factoryCheckpointReviews?: boolean | Prisma.User$factoryCheckpointReviewsArgs<ExtArgs>
   factoryAuditInstancesCreated?: boolean | Prisma.User$factoryAuditInstancesCreatedArgs<ExtArgs>
+  factoryAuditAssignments?: boolean | Prisma.User$factoryAuditAssignmentsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -8646,10 +8264,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     importExportLogs: Prisma.$ImportExportLogPayload<ExtArgs>[]
     businessPartnerContact: Prisma.$BusinessPartnerContactPayload<ExtArgs>[]
     uploadedEvidence: Prisma.$EvidencePayload<ExtArgs>[]
-    factoryAuditRoundsTriggered: Prisma.$AuditRoundPayload<ExtArgs>[]
-    factoryAuditAssignments: Prisma.$AuditAssignmentPayload<ExtArgs>[]
     factoryCheckpointReviews: Prisma.$AuditCheckpointResultPayload<ExtArgs>[]
     factoryAuditInstancesCreated: Prisma.$FactoryAuditInstancePayload<ExtArgs>[]
+    factoryAuditAssignments: Prisma.$AuditAssignmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -9098,10 +8715,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   importExportLogs<T extends Prisma.User$importExportLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$importExportLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ImportExportLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   businessPartnerContact<T extends Prisma.User$businessPartnerContactArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$businessPartnerContactArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerContactPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadedEvidence<T extends Prisma.User$uploadedEvidenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedEvidenceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  factoryAuditRoundsTriggered<T extends Prisma.User$factoryAuditRoundsTriggeredArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$factoryAuditRoundsTriggeredArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditRoundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  factoryAuditAssignments<T extends Prisma.User$factoryAuditAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$factoryAuditAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   factoryCheckpointReviews<T extends Prisma.User$factoryCheckpointReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$factoryCheckpointReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditCheckpointResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   factoryAuditInstancesCreated<T extends Prisma.User$factoryAuditInstancesCreatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$factoryAuditInstancesCreatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FactoryAuditInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  factoryAuditAssignments<T extends Prisma.User$factoryAuditAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$factoryAuditAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10108,54 +9724,6 @@ export type User$uploadedEvidenceArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
- * User.factoryAuditRoundsTriggered
- */
-export type User$factoryAuditRoundsTriggeredArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the AuditRound
-   */
-  select?: Prisma.AuditRoundSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the AuditRound
-   */
-  omit?: Prisma.AuditRoundOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.AuditRoundInclude<ExtArgs> | null
-  where?: Prisma.AuditRoundWhereInput
-  orderBy?: Prisma.AuditRoundOrderByWithRelationInput | Prisma.AuditRoundOrderByWithRelationInput[]
-  cursor?: Prisma.AuditRoundWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.AuditRoundScalarFieldEnum | Prisma.AuditRoundScalarFieldEnum[]
-}
-
-/**
- * User.factoryAuditAssignments
- */
-export type User$factoryAuditAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the AuditAssignment
-   */
-  select?: Prisma.AuditAssignmentSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the AuditAssignment
-   */
-  omit?: Prisma.AuditAssignmentOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.AuditAssignmentInclude<ExtArgs> | null
-  where?: Prisma.AuditAssignmentWhereInput
-  orderBy?: Prisma.AuditAssignmentOrderByWithRelationInput | Prisma.AuditAssignmentOrderByWithRelationInput[]
-  cursor?: Prisma.AuditAssignmentWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.AuditAssignmentScalarFieldEnum | Prisma.AuditAssignmentScalarFieldEnum[]
-}
-
-/**
  * User.factoryCheckpointReviews
  */
 export type User$factoryCheckpointReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -10201,6 +9769,30 @@ export type User$factoryAuditInstancesCreatedArgs<ExtArgs extends runtime.Types.
   take?: number
   skip?: number
   distinct?: Prisma.FactoryAuditInstanceScalarFieldEnum | Prisma.FactoryAuditInstanceScalarFieldEnum[]
+}
+
+/**
+ * User.factoryAuditAssignments
+ */
+export type User$factoryAuditAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuditAssignment
+   */
+  select?: Prisma.AuditAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuditAssignment
+   */
+  omit?: Prisma.AuditAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditAssignmentInclude<ExtArgs> | null
+  where?: Prisma.AuditAssignmentWhereInput
+  orderBy?: Prisma.AuditAssignmentOrderByWithRelationInput | Prisma.AuditAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.AuditAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuditAssignmentScalarFieldEnum | Prisma.AuditAssignmentScalarFieldEnum[]
 }
 
 /**

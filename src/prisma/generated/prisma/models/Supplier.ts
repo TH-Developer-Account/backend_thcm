@@ -29,7 +29,8 @@ export type SupplierMinAggregateOutputType = {
   name: string | null
   code: string | null
   isActive: boolean | null
-  currentClassificationBandId: string | null
+  processCategory: string | null
+  currentClassificationBandLabel: string | null
   currentClassificationDecidedAt: Date | null
 }
 
@@ -38,7 +39,8 @@ export type SupplierMaxAggregateOutputType = {
   name: string | null
   code: string | null
   isActive: boolean | null
-  currentClassificationBandId: string | null
+  processCategory: string | null
+  currentClassificationBandLabel: string | null
   currentClassificationDecidedAt: Date | null
 }
 
@@ -47,7 +49,9 @@ export type SupplierCountAggregateOutputType = {
   name: number
   code: number
   isActive: number
-  currentClassificationBandId: number
+  processCategory: number
+  currentClassificationBandLabel: number
+  currentClassificationQualifiesFor: number
   currentClassificationDecidedAt: number
   _all: number
 }
@@ -58,7 +62,8 @@ export type SupplierMinAggregateInputType = {
   name?: true
   code?: true
   isActive?: true
-  currentClassificationBandId?: true
+  processCategory?: true
+  currentClassificationBandLabel?: true
   currentClassificationDecidedAt?: true
 }
 
@@ -67,7 +72,8 @@ export type SupplierMaxAggregateInputType = {
   name?: true
   code?: true
   isActive?: true
-  currentClassificationBandId?: true
+  processCategory?: true
+  currentClassificationBandLabel?: true
   currentClassificationDecidedAt?: true
 }
 
@@ -76,7 +82,9 @@ export type SupplierCountAggregateInputType = {
   name?: true
   code?: true
   isActive?: true
-  currentClassificationBandId?: true
+  processCategory?: true
+  currentClassificationBandLabel?: true
+  currentClassificationQualifiesFor?: true
   currentClassificationDecidedAt?: true
   _all?: true
 }
@@ -158,7 +166,9 @@ export type SupplierGroupByOutputType = {
   name: string
   code: string
   isActive: boolean
-  currentClassificationBandId: string | null
+  processCategory: string
+  currentClassificationBandLabel: string | null
+  currentClassificationQualifiesFor: $Enums.PartCategory[]
   currentClassificationDecidedAt: Date | null
   _count: SupplierCountAggregateOutputType | null
   _min: SupplierMinAggregateOutputType | null
@@ -188,9 +198,10 @@ export type SupplierWhereInput = {
   name?: Prisma.StringFilter<"Supplier"> | string
   code?: Prisma.StringFilter<"Supplier"> | string
   isActive?: Prisma.BoolFilter<"Supplier"> | boolean
-  currentClassificationBandId?: Prisma.StringNullableFilter<"Supplier"> | string | null
+  processCategory?: Prisma.StringFilter<"Supplier"> | string
+  currentClassificationBandLabel?: Prisma.StringNullableFilter<"Supplier"> | string | null
+  currentClassificationQualifiesFor?: Prisma.EnumPartCategoryNullableListFilter<"Supplier">
   currentClassificationDecidedAt?: Prisma.DateTimeNullableFilter<"Supplier"> | Date | string | null
-  currentClassificationBand?: Prisma.XOR<Prisma.FactoryClassificationBandNullableScalarRelationFilter, Prisma.FactoryClassificationBandWhereInput> | null
   auditInstances?: Prisma.FactoryAuditInstanceListRelationFilter
 }
 
@@ -199,9 +210,10 @@ export type SupplierOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   code?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
-  currentClassificationBandId?: Prisma.SortOrderInput | Prisma.SortOrder
+  processCategory?: Prisma.SortOrder
+  currentClassificationBandLabel?: Prisma.SortOrderInput | Prisma.SortOrder
+  currentClassificationQualifiesFor?: Prisma.SortOrder
   currentClassificationDecidedAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  currentClassificationBand?: Prisma.FactoryClassificationBandOrderByWithRelationInput
   auditInstances?: Prisma.FactoryAuditInstanceOrderByRelationAggregateInput
 }
 
@@ -213,9 +225,10 @@ export type SupplierWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.SupplierWhereInput | Prisma.SupplierWhereInput[]
   name?: Prisma.StringFilter<"Supplier"> | string
   isActive?: Prisma.BoolFilter<"Supplier"> | boolean
-  currentClassificationBandId?: Prisma.StringNullableFilter<"Supplier"> | string | null
+  processCategory?: Prisma.StringFilter<"Supplier"> | string
+  currentClassificationBandLabel?: Prisma.StringNullableFilter<"Supplier"> | string | null
+  currentClassificationQualifiesFor?: Prisma.EnumPartCategoryNullableListFilter<"Supplier">
   currentClassificationDecidedAt?: Prisma.DateTimeNullableFilter<"Supplier"> | Date | string | null
-  currentClassificationBand?: Prisma.XOR<Prisma.FactoryClassificationBandNullableScalarRelationFilter, Prisma.FactoryClassificationBandWhereInput> | null
   auditInstances?: Prisma.FactoryAuditInstanceListRelationFilter
 }, "id" | "code">
 
@@ -224,7 +237,9 @@ export type SupplierOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   code?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
-  currentClassificationBandId?: Prisma.SortOrderInput | Prisma.SortOrder
+  processCategory?: Prisma.SortOrder
+  currentClassificationBandLabel?: Prisma.SortOrderInput | Prisma.SortOrder
+  currentClassificationQualifiesFor?: Prisma.SortOrder
   currentClassificationDecidedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.SupplierCountOrderByAggregateInput
   _max?: Prisma.SupplierMaxOrderByAggregateInput
@@ -239,7 +254,9 @@ export type SupplierScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Supplier"> | string
   code?: Prisma.StringWithAggregatesFilter<"Supplier"> | string
   isActive?: Prisma.BoolWithAggregatesFilter<"Supplier"> | boolean
-  currentClassificationBandId?: Prisma.StringNullableWithAggregatesFilter<"Supplier"> | string | null
+  processCategory?: Prisma.StringWithAggregatesFilter<"Supplier"> | string
+  currentClassificationBandLabel?: Prisma.StringNullableWithAggregatesFilter<"Supplier"> | string | null
+  currentClassificationQualifiesFor?: Prisma.EnumPartCategoryNullableListFilter<"Supplier">
   currentClassificationDecidedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Supplier"> | Date | string | null
 }
 
@@ -248,8 +265,10 @@ export type SupplierCreateInput = {
   name: string
   code: string
   isActive?: boolean
+  processCategory: string
+  currentClassificationBandLabel?: string | null
+  currentClassificationQualifiesFor?: Prisma.SupplierCreatecurrentClassificationQualifiesForInput | $Enums.PartCategory[]
   currentClassificationDecidedAt?: Date | string | null
-  currentClassificationBand?: Prisma.FactoryClassificationBandCreateNestedOneWithoutCurrentForSuppliersInput
   auditInstances?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutVendorInput
 }
 
@@ -258,7 +277,9 @@ export type SupplierUncheckedCreateInput = {
   name: string
   code: string
   isActive?: boolean
-  currentClassificationBandId?: string | null
+  processCategory: string
+  currentClassificationBandLabel?: string | null
+  currentClassificationQualifiesFor?: Prisma.SupplierCreatecurrentClassificationQualifiesForInput | $Enums.PartCategory[]
   currentClassificationDecidedAt?: Date | string | null
   auditInstances?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutVendorInput
 }
@@ -268,8 +289,10 @@ export type SupplierUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  processCategory?: Prisma.StringFieldUpdateOperationsInput | string
+  currentClassificationBandLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentClassificationQualifiesFor?: Prisma.SupplierUpdatecurrentClassificationQualifiesForInput | $Enums.PartCategory[]
   currentClassificationDecidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  currentClassificationBand?: Prisma.FactoryClassificationBandUpdateOneWithoutCurrentForSuppliersNestedInput
   auditInstances?: Prisma.FactoryAuditInstanceUpdateManyWithoutVendorNestedInput
 }
 
@@ -278,7 +301,9 @@ export type SupplierUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  currentClassificationBandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processCategory?: Prisma.StringFieldUpdateOperationsInput | string
+  currentClassificationBandLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentClassificationQualifiesFor?: Prisma.SupplierUpdatecurrentClassificationQualifiesForInput | $Enums.PartCategory[]
   currentClassificationDecidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   auditInstances?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutVendorNestedInput
 }
@@ -288,7 +313,9 @@ export type SupplierCreateManyInput = {
   name: string
   code: string
   isActive?: boolean
-  currentClassificationBandId?: string | null
+  processCategory: string
+  currentClassificationBandLabel?: string | null
+  currentClassificationQualifiesFor?: Prisma.SupplierCreatecurrentClassificationQualifiesForInput | $Enums.PartCategory[]
   currentClassificationDecidedAt?: Date | string | null
 }
 
@@ -297,6 +324,9 @@ export type SupplierUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  processCategory?: Prisma.StringFieldUpdateOperationsInput | string
+  currentClassificationBandLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentClassificationQualifiesFor?: Prisma.SupplierUpdatecurrentClassificationQualifiesForInput | $Enums.PartCategory[]
   currentClassificationDecidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
@@ -305,8 +335,18 @@ export type SupplierUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  currentClassificationBandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  processCategory?: Prisma.StringFieldUpdateOperationsInput | string
+  currentClassificationBandLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentClassificationQualifiesFor?: Prisma.SupplierUpdatecurrentClassificationQualifiesForInput | $Enums.PartCategory[]
   currentClassificationDecidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type EnumPartCategoryNullableListFilter<$PrismaModel = never> = {
+  equals?: $Enums.PartCategory[] | Prisma.ListEnumPartCategoryFieldRefInput<$PrismaModel> | null
+  has?: $Enums.PartCategory | Prisma.EnumPartCategoryFieldRefInput<$PrismaModel> | null
+  hasEvery?: $Enums.PartCategory[] | Prisma.ListEnumPartCategoryFieldRefInput<$PrismaModel>
+  hasSome?: $Enums.PartCategory[] | Prisma.ListEnumPartCategoryFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type SupplierCountOrderByAggregateInput = {
@@ -314,7 +354,9 @@ export type SupplierCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   code?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
-  currentClassificationBandId?: Prisma.SortOrder
+  processCategory?: Prisma.SortOrder
+  currentClassificationBandLabel?: Prisma.SortOrder
+  currentClassificationQualifiesFor?: Prisma.SortOrder
   currentClassificationDecidedAt?: Prisma.SortOrder
 }
 
@@ -323,7 +365,8 @@ export type SupplierMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   code?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
-  currentClassificationBandId?: Prisma.SortOrder
+  processCategory?: Prisma.SortOrder
+  currentClassificationBandLabel?: Prisma.SortOrder
   currentClassificationDecidedAt?: Prisma.SortOrder
 }
 
@@ -332,18 +375,9 @@ export type SupplierMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   code?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
-  currentClassificationBandId?: Prisma.SortOrder
+  processCategory?: Prisma.SortOrder
+  currentClassificationBandLabel?: Prisma.SortOrder
   currentClassificationDecidedAt?: Prisma.SortOrder
-}
-
-export type SupplierListRelationFilter = {
-  every?: Prisma.SupplierWhereInput
-  some?: Prisma.SupplierWhereInput
-  none?: Prisma.SupplierWhereInput
-}
-
-export type SupplierOrderByRelationAggregateInput = {
-  _count?: Prisma.SortOrder
 }
 
 export type SupplierScalarRelationFilter = {
@@ -351,46 +385,13 @@ export type SupplierScalarRelationFilter = {
   isNot?: Prisma.SupplierWhereInput
 }
 
-export type SupplierCreateNestedManyWithoutCurrentClassificationBandInput = {
-  create?: Prisma.XOR<Prisma.SupplierCreateWithoutCurrentClassificationBandInput, Prisma.SupplierUncheckedCreateWithoutCurrentClassificationBandInput> | Prisma.SupplierCreateWithoutCurrentClassificationBandInput[] | Prisma.SupplierUncheckedCreateWithoutCurrentClassificationBandInput[]
-  connectOrCreate?: Prisma.SupplierCreateOrConnectWithoutCurrentClassificationBandInput | Prisma.SupplierCreateOrConnectWithoutCurrentClassificationBandInput[]
-  createMany?: Prisma.SupplierCreateManyCurrentClassificationBandInputEnvelope
-  connect?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
+export type SupplierCreatecurrentClassificationQualifiesForInput = {
+  set: $Enums.PartCategory[]
 }
 
-export type SupplierUncheckedCreateNestedManyWithoutCurrentClassificationBandInput = {
-  create?: Prisma.XOR<Prisma.SupplierCreateWithoutCurrentClassificationBandInput, Prisma.SupplierUncheckedCreateWithoutCurrentClassificationBandInput> | Prisma.SupplierCreateWithoutCurrentClassificationBandInput[] | Prisma.SupplierUncheckedCreateWithoutCurrentClassificationBandInput[]
-  connectOrCreate?: Prisma.SupplierCreateOrConnectWithoutCurrentClassificationBandInput | Prisma.SupplierCreateOrConnectWithoutCurrentClassificationBandInput[]
-  createMany?: Prisma.SupplierCreateManyCurrentClassificationBandInputEnvelope
-  connect?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
-}
-
-export type SupplierUpdateManyWithoutCurrentClassificationBandNestedInput = {
-  create?: Prisma.XOR<Prisma.SupplierCreateWithoutCurrentClassificationBandInput, Prisma.SupplierUncheckedCreateWithoutCurrentClassificationBandInput> | Prisma.SupplierCreateWithoutCurrentClassificationBandInput[] | Prisma.SupplierUncheckedCreateWithoutCurrentClassificationBandInput[]
-  connectOrCreate?: Prisma.SupplierCreateOrConnectWithoutCurrentClassificationBandInput | Prisma.SupplierCreateOrConnectWithoutCurrentClassificationBandInput[]
-  upsert?: Prisma.SupplierUpsertWithWhereUniqueWithoutCurrentClassificationBandInput | Prisma.SupplierUpsertWithWhereUniqueWithoutCurrentClassificationBandInput[]
-  createMany?: Prisma.SupplierCreateManyCurrentClassificationBandInputEnvelope
-  set?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
-  disconnect?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
-  delete?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
-  connect?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
-  update?: Prisma.SupplierUpdateWithWhereUniqueWithoutCurrentClassificationBandInput | Prisma.SupplierUpdateWithWhereUniqueWithoutCurrentClassificationBandInput[]
-  updateMany?: Prisma.SupplierUpdateManyWithWhereWithoutCurrentClassificationBandInput | Prisma.SupplierUpdateManyWithWhereWithoutCurrentClassificationBandInput[]
-  deleteMany?: Prisma.SupplierScalarWhereInput | Prisma.SupplierScalarWhereInput[]
-}
-
-export type SupplierUncheckedUpdateManyWithoutCurrentClassificationBandNestedInput = {
-  create?: Prisma.XOR<Prisma.SupplierCreateWithoutCurrentClassificationBandInput, Prisma.SupplierUncheckedCreateWithoutCurrentClassificationBandInput> | Prisma.SupplierCreateWithoutCurrentClassificationBandInput[] | Prisma.SupplierUncheckedCreateWithoutCurrentClassificationBandInput[]
-  connectOrCreate?: Prisma.SupplierCreateOrConnectWithoutCurrentClassificationBandInput | Prisma.SupplierCreateOrConnectWithoutCurrentClassificationBandInput[]
-  upsert?: Prisma.SupplierUpsertWithWhereUniqueWithoutCurrentClassificationBandInput | Prisma.SupplierUpsertWithWhereUniqueWithoutCurrentClassificationBandInput[]
-  createMany?: Prisma.SupplierCreateManyCurrentClassificationBandInputEnvelope
-  set?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
-  disconnect?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
-  delete?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
-  connect?: Prisma.SupplierWhereUniqueInput | Prisma.SupplierWhereUniqueInput[]
-  update?: Prisma.SupplierUpdateWithWhereUniqueWithoutCurrentClassificationBandInput | Prisma.SupplierUpdateWithWhereUniqueWithoutCurrentClassificationBandInput[]
-  updateMany?: Prisma.SupplierUpdateManyWithWhereWithoutCurrentClassificationBandInput | Prisma.SupplierUpdateManyWithWhereWithoutCurrentClassificationBandInput[]
-  deleteMany?: Prisma.SupplierScalarWhereInput | Prisma.SupplierScalarWhereInput[]
+export type SupplierUpdatecurrentClassificationQualifiesForInput = {
+  set?: $Enums.PartCategory[]
+  push?: $Enums.PartCategory | $Enums.PartCategory[]
 }
 
 export type SupplierCreateNestedOneWithoutAuditInstancesInput = {
@@ -407,69 +408,15 @@ export type SupplierUpdateOneRequiredWithoutAuditInstancesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SupplierUpdateToOneWithWhereWithoutAuditInstancesInput, Prisma.SupplierUpdateWithoutAuditInstancesInput>, Prisma.SupplierUncheckedUpdateWithoutAuditInstancesInput>
 }
 
-export type SupplierCreateWithoutCurrentClassificationBandInput = {
-  id?: string
-  name: string
-  code: string
-  isActive?: boolean
-  currentClassificationDecidedAt?: Date | string | null
-  auditInstances?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutVendorInput
-}
-
-export type SupplierUncheckedCreateWithoutCurrentClassificationBandInput = {
-  id?: string
-  name: string
-  code: string
-  isActive?: boolean
-  currentClassificationDecidedAt?: Date | string | null
-  auditInstances?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutVendorInput
-}
-
-export type SupplierCreateOrConnectWithoutCurrentClassificationBandInput = {
-  where: Prisma.SupplierWhereUniqueInput
-  create: Prisma.XOR<Prisma.SupplierCreateWithoutCurrentClassificationBandInput, Prisma.SupplierUncheckedCreateWithoutCurrentClassificationBandInput>
-}
-
-export type SupplierCreateManyCurrentClassificationBandInputEnvelope = {
-  data: Prisma.SupplierCreateManyCurrentClassificationBandInput | Prisma.SupplierCreateManyCurrentClassificationBandInput[]
-  skipDuplicates?: boolean
-}
-
-export type SupplierUpsertWithWhereUniqueWithoutCurrentClassificationBandInput = {
-  where: Prisma.SupplierWhereUniqueInput
-  update: Prisma.XOR<Prisma.SupplierUpdateWithoutCurrentClassificationBandInput, Prisma.SupplierUncheckedUpdateWithoutCurrentClassificationBandInput>
-  create: Prisma.XOR<Prisma.SupplierCreateWithoutCurrentClassificationBandInput, Prisma.SupplierUncheckedCreateWithoutCurrentClassificationBandInput>
-}
-
-export type SupplierUpdateWithWhereUniqueWithoutCurrentClassificationBandInput = {
-  where: Prisma.SupplierWhereUniqueInput
-  data: Prisma.XOR<Prisma.SupplierUpdateWithoutCurrentClassificationBandInput, Prisma.SupplierUncheckedUpdateWithoutCurrentClassificationBandInput>
-}
-
-export type SupplierUpdateManyWithWhereWithoutCurrentClassificationBandInput = {
-  where: Prisma.SupplierScalarWhereInput
-  data: Prisma.XOR<Prisma.SupplierUpdateManyMutationInput, Prisma.SupplierUncheckedUpdateManyWithoutCurrentClassificationBandInput>
-}
-
-export type SupplierScalarWhereInput = {
-  AND?: Prisma.SupplierScalarWhereInput | Prisma.SupplierScalarWhereInput[]
-  OR?: Prisma.SupplierScalarWhereInput[]
-  NOT?: Prisma.SupplierScalarWhereInput | Prisma.SupplierScalarWhereInput[]
-  id?: Prisma.StringFilter<"Supplier"> | string
-  name?: Prisma.StringFilter<"Supplier"> | string
-  code?: Prisma.StringFilter<"Supplier"> | string
-  isActive?: Prisma.BoolFilter<"Supplier"> | boolean
-  currentClassificationBandId?: Prisma.StringNullableFilter<"Supplier"> | string | null
-  currentClassificationDecidedAt?: Prisma.DateTimeNullableFilter<"Supplier"> | Date | string | null
-}
-
 export type SupplierCreateWithoutAuditInstancesInput = {
   id?: string
   name: string
   code: string
   isActive?: boolean
+  processCategory: string
+  currentClassificationBandLabel?: string | null
+  currentClassificationQualifiesFor?: Prisma.SupplierCreatecurrentClassificationQualifiesForInput | $Enums.PartCategory[]
   currentClassificationDecidedAt?: Date | string | null
-  currentClassificationBand?: Prisma.FactoryClassificationBandCreateNestedOneWithoutCurrentForSuppliersInput
 }
 
 export type SupplierUncheckedCreateWithoutAuditInstancesInput = {
@@ -477,7 +424,9 @@ export type SupplierUncheckedCreateWithoutAuditInstancesInput = {
   name: string
   code: string
   isActive?: boolean
-  currentClassificationBandId?: string | null
+  processCategory: string
+  currentClassificationBandLabel?: string | null
+  currentClassificationQualifiesFor?: Prisma.SupplierCreatecurrentClassificationQualifiesForInput | $Enums.PartCategory[]
   currentClassificationDecidedAt?: Date | string | null
 }
 
@@ -502,8 +451,10 @@ export type SupplierUpdateWithoutAuditInstancesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  processCategory?: Prisma.StringFieldUpdateOperationsInput | string
+  currentClassificationBandLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentClassificationQualifiesFor?: Prisma.SupplierUpdatecurrentClassificationQualifiesForInput | $Enums.PartCategory[]
   currentClassificationDecidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  currentClassificationBand?: Prisma.FactoryClassificationBandUpdateOneWithoutCurrentForSuppliersNestedInput
 }
 
 export type SupplierUncheckedUpdateWithoutAuditInstancesInput = {
@@ -511,41 +462,9 @@ export type SupplierUncheckedUpdateWithoutAuditInstancesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   code?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  currentClassificationBandId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  currentClassificationDecidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-}
-
-export type SupplierCreateManyCurrentClassificationBandInput = {
-  id?: string
-  name: string
-  code: string
-  isActive?: boolean
-  currentClassificationDecidedAt?: Date | string | null
-}
-
-export type SupplierUpdateWithoutCurrentClassificationBandInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  currentClassificationDecidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  auditInstances?: Prisma.FactoryAuditInstanceUpdateManyWithoutVendorNestedInput
-}
-
-export type SupplierUncheckedUpdateWithoutCurrentClassificationBandInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  currentClassificationDecidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  auditInstances?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutVendorNestedInput
-}
-
-export type SupplierUncheckedUpdateManyWithoutCurrentClassificationBandInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  processCategory?: Prisma.StringFieldUpdateOperationsInput | string
+  currentClassificationBandLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  currentClassificationQualifiesFor?: Prisma.SupplierUpdatecurrentClassificationQualifiesForInput | $Enums.PartCategory[]
   currentClassificationDecidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
@@ -585,9 +504,10 @@ export type SupplierSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name?: boolean
   code?: boolean
   isActive?: boolean
-  currentClassificationBandId?: boolean
+  processCategory?: boolean
+  currentClassificationBandLabel?: boolean
+  currentClassificationQualifiesFor?: boolean
   currentClassificationDecidedAt?: boolean
-  currentClassificationBand?: boolean | Prisma.Supplier$currentClassificationBandArgs<ExtArgs>
   auditInstances?: boolean | Prisma.Supplier$auditInstancesArgs<ExtArgs>
   _count?: boolean | Prisma.SupplierCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["supplier"]>
@@ -597,9 +517,10 @@ export type SupplierSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   code?: boolean
   isActive?: boolean
-  currentClassificationBandId?: boolean
+  processCategory?: boolean
+  currentClassificationBandLabel?: boolean
+  currentClassificationQualifiesFor?: boolean
   currentClassificationDecidedAt?: boolean
-  currentClassificationBand?: boolean | Prisma.Supplier$currentClassificationBandArgs<ExtArgs>
 }, ExtArgs["result"]["supplier"]>
 
 export type SupplierSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -607,9 +528,10 @@ export type SupplierSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   code?: boolean
   isActive?: boolean
-  currentClassificationBandId?: boolean
+  processCategory?: boolean
+  currentClassificationBandLabel?: boolean
+  currentClassificationQualifiesFor?: boolean
   currentClassificationDecidedAt?: boolean
-  currentClassificationBand?: boolean | Prisma.Supplier$currentClassificationBandArgs<ExtArgs>
 }, ExtArgs["result"]["supplier"]>
 
 export type SupplierSelectScalar = {
@@ -617,27 +539,23 @@ export type SupplierSelectScalar = {
   name?: boolean
   code?: boolean
   isActive?: boolean
-  currentClassificationBandId?: boolean
+  processCategory?: boolean
+  currentClassificationBandLabel?: boolean
+  currentClassificationQualifiesFor?: boolean
   currentClassificationDecidedAt?: boolean
 }
 
-export type SupplierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "code" | "isActive" | "currentClassificationBandId" | "currentClassificationDecidedAt", ExtArgs["result"]["supplier"]>
+export type SupplierOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "code" | "isActive" | "processCategory" | "currentClassificationBandLabel" | "currentClassificationQualifiesFor" | "currentClassificationDecidedAt", ExtArgs["result"]["supplier"]>
 export type SupplierInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  currentClassificationBand?: boolean | Prisma.Supplier$currentClassificationBandArgs<ExtArgs>
   auditInstances?: boolean | Prisma.Supplier$auditInstancesArgs<ExtArgs>
   _count?: boolean | Prisma.SupplierCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type SupplierIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  currentClassificationBand?: boolean | Prisma.Supplier$currentClassificationBandArgs<ExtArgs>
-}
-export type SupplierIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  currentClassificationBand?: boolean | Prisma.Supplier$currentClassificationBandArgs<ExtArgs>
-}
+export type SupplierIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type SupplierIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $SupplierPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Supplier"
   objects: {
-    currentClassificationBand: Prisma.$FactoryClassificationBandPayload<ExtArgs> | null
     auditInstances: Prisma.$FactoryAuditInstancePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -645,7 +563,9 @@ export type $SupplierPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     name: string
     code: string
     isActive: boolean
-    currentClassificationBandId: string | null
+    processCategory: string
+    currentClassificationBandLabel: string | null
+    currentClassificationQualifiesFor: $Enums.PartCategory[]
     currentClassificationDecidedAt: Date | null
   }, ExtArgs["result"]["supplier"]>
   composites: {}
@@ -1041,7 +961,6 @@ readonly fields: SupplierFieldRefs;
  */
 export interface Prisma__SupplierClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  currentClassificationBand<T extends Prisma.Supplier$currentClassificationBandArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Supplier$currentClassificationBandArgs<ExtArgs>>): Prisma.Prisma__FactoryClassificationBandClient<runtime.Types.Result.GetResult<Prisma.$FactoryClassificationBandPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   auditInstances<T extends Prisma.Supplier$auditInstancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Supplier$auditInstancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FactoryAuditInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1076,7 +995,9 @@ export interface SupplierFieldRefs {
   readonly name: Prisma.FieldRef<"Supplier", 'String'>
   readonly code: Prisma.FieldRef<"Supplier", 'String'>
   readonly isActive: Prisma.FieldRef<"Supplier", 'Boolean'>
-  readonly currentClassificationBandId: Prisma.FieldRef<"Supplier", 'String'>
+  readonly processCategory: Prisma.FieldRef<"Supplier", 'String'>
+  readonly currentClassificationBandLabel: Prisma.FieldRef<"Supplier", 'String'>
+  readonly currentClassificationQualifiesFor: Prisma.FieldRef<"Supplier", 'PartCategory[]'>
   readonly currentClassificationDecidedAt: Prisma.FieldRef<"Supplier", 'DateTime'>
 }
     
@@ -1332,10 +1253,6 @@ export type SupplierCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    */
   data: Prisma.SupplierCreateManyInput | Prisma.SupplierCreateManyInput[]
   skipDuplicates?: boolean
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SupplierIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1406,10 +1323,6 @@ export type SupplierUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many Suppliers to update.
    */
   limit?: number
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SupplierIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1476,25 +1389,6 @@ export type SupplierDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Suppliers to delete.
    */
   limit?: number
-}
-
-/**
- * Supplier.currentClassificationBand
- */
-export type Supplier$currentClassificationBandArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the FactoryClassificationBand
-   */
-  select?: Prisma.FactoryClassificationBandSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the FactoryClassificationBand
-   */
-  omit?: Prisma.FactoryClassificationBandOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.FactoryClassificationBandInclude<ExtArgs> | null
-  where?: Prisma.FactoryClassificationBandWhereInput
 }
 
 /**

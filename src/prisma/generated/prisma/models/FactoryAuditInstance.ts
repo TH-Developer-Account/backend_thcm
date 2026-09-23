@@ -26,34 +26,44 @@ export type AggregateFactoryAuditInstance = {
 
 export type FactoryAuditInstanceMinAggregateOutputType = {
   id: string | null
+  workspaceId: string | null
+  parentId: string | null
+  type: $Enums.FactoryAuditInstanceType | null
   vendorId: string | null
   templateId: string | null
-  evaluationState: $Enums.EvaluationState | null
-  reopenUsed: boolean | null
   createdByUserId: string | null
+  reopenUsed: boolean | null
+  closedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type FactoryAuditInstanceMaxAggregateOutputType = {
   id: string | null
+  workspaceId: string | null
+  parentId: string | null
+  type: $Enums.FactoryAuditInstanceType | null
   vendorId: string | null
   templateId: string | null
-  evaluationState: $Enums.EvaluationState | null
-  reopenUsed: boolean | null
   createdByUserId: string | null
+  reopenUsed: boolean | null
+  closedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type FactoryAuditInstanceCountAggregateOutputType = {
   id: number
+  workspaceId: number
+  parentId: number
+  type: number
   vendorId: number
   templateId: number
-  evaluationState: number
+  createdByUserId: number
   targetPartCategories: number
   reopenUsed: number
-  createdByUserId: number
+  closedAt: number
+  scopedCheckpointIds: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -62,34 +72,44 @@ export type FactoryAuditInstanceCountAggregateOutputType = {
 
 export type FactoryAuditInstanceMinAggregateInputType = {
   id?: true
+  workspaceId?: true
+  parentId?: true
+  type?: true
   vendorId?: true
   templateId?: true
-  evaluationState?: true
-  reopenUsed?: true
   createdByUserId?: true
+  reopenUsed?: true
+  closedAt?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type FactoryAuditInstanceMaxAggregateInputType = {
   id?: true
+  workspaceId?: true
+  parentId?: true
+  type?: true
   vendorId?: true
   templateId?: true
-  evaluationState?: true
-  reopenUsed?: true
   createdByUserId?: true
+  reopenUsed?: true
+  closedAt?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type FactoryAuditInstanceCountAggregateInputType = {
   id?: true
+  workspaceId?: true
+  parentId?: true
+  type?: true
   vendorId?: true
   templateId?: true
-  evaluationState?: true
+  createdByUserId?: true
   targetPartCategories?: true
   reopenUsed?: true
-  createdByUserId?: true
+  closedAt?: true
+  scopedCheckpointIds?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -169,12 +189,16 @@ export type FactoryAuditInstanceGroupByArgs<ExtArgs extends runtime.Types.Extens
 
 export type FactoryAuditInstanceGroupByOutputType = {
   id: string
+  workspaceId: string
+  parentId: string | null
+  type: $Enums.FactoryAuditInstanceType
   vendorId: string
   templateId: string
-  evaluationState: $Enums.EvaluationState
+  createdByUserId: string
   targetPartCategories: $Enums.PartCategory[]
   reopenUsed: boolean
-  createdByUserId: string
+  closedAt: Date | null
+  scopedCheckpointIds: string[]
   createdAt: Date
   updatedAt: Date
   _count: FactoryAuditInstanceCountAggregateOutputType | null
@@ -202,36 +226,50 @@ export type FactoryAuditInstanceWhereInput = {
   OR?: Prisma.FactoryAuditInstanceWhereInput[]
   NOT?: Prisma.FactoryAuditInstanceWhereInput | Prisma.FactoryAuditInstanceWhereInput[]
   id?: Prisma.StringFilter<"FactoryAuditInstance"> | string
+  workspaceId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
+  parentId?: Prisma.StringNullableFilter<"FactoryAuditInstance"> | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFilter<"FactoryAuditInstance"> | $Enums.FactoryAuditInstanceType
   vendorId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
   templateId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
-  evaluationState?: Prisma.EnumEvaluationStateFilter<"FactoryAuditInstance"> | $Enums.EvaluationState
+  createdByUserId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
   targetPartCategories?: Prisma.EnumPartCategoryNullableListFilter<"FactoryAuditInstance">
   reopenUsed?: Prisma.BoolFilter<"FactoryAuditInstance"> | boolean
-  createdByUserId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
+  closedAt?: Prisma.DateTimeNullableFilter<"FactoryAuditInstance"> | Date | string | null
+  scopedCheckpointIds?: Prisma.StringNullableListFilter<"FactoryAuditInstance">
   createdAt?: Prisma.DateTimeFilter<"FactoryAuditInstance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FactoryAuditInstance"> | Date | string
   vendor?: Prisma.XOR<Prisma.SupplierScalarRelationFilter, Prisma.SupplierWhereInput>
   template?: Prisma.XOR<Prisma.FactoryAuditTemplateScalarRelationFilter, Prisma.FactoryAuditTemplateWhereInput>
-  rounds?: Prisma.AuditRoundListRelationFilter
-  classificationHistory?: Prisma.VendorClassificationHistoryListRelationFilter
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  parent?: Prisma.XOR<Prisma.FactoryAuditInstanceNullableScalarRelationFilter, Prisma.FactoryAuditInstanceWhereInput> | null
+  children?: Prisma.FactoryAuditInstanceListRelationFilter
+  assignments?: Prisma.AuditAssignmentListRelationFilter
+  results?: Prisma.AuditCheckpointResultListRelationFilter
+  classificationHistory?: Prisma.VendorClassificationHistoryListRelationFilter
 }
 
 export type FactoryAuditInstanceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  workspaceId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
-  evaluationState?: Prisma.SortOrder
+  createdByUserId?: Prisma.SortOrder
   targetPartCategories?: Prisma.SortOrder
   reopenUsed?: Prisma.SortOrder
-  createdByUserId?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  scopedCheckpointIds?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   vendor?: Prisma.SupplierOrderByWithRelationInput
   template?: Prisma.FactoryAuditTemplateOrderByWithRelationInput
-  rounds?: Prisma.AuditRoundOrderByRelationAggregateInput
-  classificationHistory?: Prisma.VendorClassificationHistoryOrderByRelationAggregateInput
   createdBy?: Prisma.UserOrderByWithRelationInput
+  parent?: Prisma.FactoryAuditInstanceOrderByWithRelationInput
+  children?: Prisma.FactoryAuditInstanceOrderByRelationAggregateInput
+  assignments?: Prisma.AuditAssignmentOrderByRelationAggregateInput
+  results?: Prisma.AuditCheckpointResultOrderByRelationAggregateInput
+  classificationHistory?: Prisma.VendorClassificationHistoryOrderByRelationAggregateInput
 }
 
 export type FactoryAuditInstanceWhereUniqueInput = Prisma.AtLeast<{
@@ -239,29 +277,40 @@ export type FactoryAuditInstanceWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.FactoryAuditInstanceWhereInput | Prisma.FactoryAuditInstanceWhereInput[]
   OR?: Prisma.FactoryAuditInstanceWhereInput[]
   NOT?: Prisma.FactoryAuditInstanceWhereInput | Prisma.FactoryAuditInstanceWhereInput[]
+  workspaceId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
+  parentId?: Prisma.StringNullableFilter<"FactoryAuditInstance"> | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFilter<"FactoryAuditInstance"> | $Enums.FactoryAuditInstanceType
   vendorId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
   templateId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
-  evaluationState?: Prisma.EnumEvaluationStateFilter<"FactoryAuditInstance"> | $Enums.EvaluationState
+  createdByUserId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
   targetPartCategories?: Prisma.EnumPartCategoryNullableListFilter<"FactoryAuditInstance">
   reopenUsed?: Prisma.BoolFilter<"FactoryAuditInstance"> | boolean
-  createdByUserId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
+  closedAt?: Prisma.DateTimeNullableFilter<"FactoryAuditInstance"> | Date | string | null
+  scopedCheckpointIds?: Prisma.StringNullableListFilter<"FactoryAuditInstance">
   createdAt?: Prisma.DateTimeFilter<"FactoryAuditInstance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FactoryAuditInstance"> | Date | string
   vendor?: Prisma.XOR<Prisma.SupplierScalarRelationFilter, Prisma.SupplierWhereInput>
   template?: Prisma.XOR<Prisma.FactoryAuditTemplateScalarRelationFilter, Prisma.FactoryAuditTemplateWhereInput>
-  rounds?: Prisma.AuditRoundListRelationFilter
-  classificationHistory?: Prisma.VendorClassificationHistoryListRelationFilter
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  parent?: Prisma.XOR<Prisma.FactoryAuditInstanceNullableScalarRelationFilter, Prisma.FactoryAuditInstanceWhereInput> | null
+  children?: Prisma.FactoryAuditInstanceListRelationFilter
+  assignments?: Prisma.AuditAssignmentListRelationFilter
+  results?: Prisma.AuditCheckpointResultListRelationFilter
+  classificationHistory?: Prisma.VendorClassificationHistoryListRelationFilter
 }, "id">
 
 export type FactoryAuditInstanceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  workspaceId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
-  evaluationState?: Prisma.SortOrder
+  createdByUserId?: Prisma.SortOrder
   targetPartCategories?: Prisma.SortOrder
   reopenUsed?: Prisma.SortOrder
-  createdByUserId?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  scopedCheckpointIds?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.FactoryAuditInstanceCountOrderByAggregateInput
@@ -274,101 +323,140 @@ export type FactoryAuditInstanceScalarWhereWithAggregatesInput = {
   OR?: Prisma.FactoryAuditInstanceScalarWhereWithAggregatesInput[]
   NOT?: Prisma.FactoryAuditInstanceScalarWhereWithAggregatesInput | Prisma.FactoryAuditInstanceScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"FactoryAuditInstance"> | string
+  workspaceId?: Prisma.StringWithAggregatesFilter<"FactoryAuditInstance"> | string
+  parentId?: Prisma.StringNullableWithAggregatesFilter<"FactoryAuditInstance"> | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeWithAggregatesFilter<"FactoryAuditInstance"> | $Enums.FactoryAuditInstanceType
   vendorId?: Prisma.StringWithAggregatesFilter<"FactoryAuditInstance"> | string
   templateId?: Prisma.StringWithAggregatesFilter<"FactoryAuditInstance"> | string
-  evaluationState?: Prisma.EnumEvaluationStateWithAggregatesFilter<"FactoryAuditInstance"> | $Enums.EvaluationState
+  createdByUserId?: Prisma.StringWithAggregatesFilter<"FactoryAuditInstance"> | string
   targetPartCategories?: Prisma.EnumPartCategoryNullableListFilter<"FactoryAuditInstance">
   reopenUsed?: Prisma.BoolWithAggregatesFilter<"FactoryAuditInstance"> | boolean
-  createdByUserId?: Prisma.StringWithAggregatesFilter<"FactoryAuditInstance"> | string
+  closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"FactoryAuditInstance"> | Date | string | null
+  scopedCheckpointIds?: Prisma.StringNullableListFilter<"FactoryAuditInstance">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FactoryAuditInstance"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"FactoryAuditInstance"> | Date | string
 }
 
 export type FactoryAuditInstanceCreateInput = {
   id?: string
-  evaluationState?: $Enums.EvaluationState
+  workspaceId: string
+  type?: $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   vendor: Prisma.SupplierCreateNestedOneWithoutAuditInstancesInput
   template: Prisma.FactoryAuditTemplateCreateNestedOneWithoutAuditInstancesInput
-  rounds?: Prisma.AuditRoundCreateNestedManyWithoutAuditInstanceInput
-  classificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput
   createdBy: Prisma.UserCreateNestedOneWithoutFactoryAuditInstancesCreatedInput
+  parent?: Prisma.FactoryAuditInstanceCreateNestedOneWithoutChildrenInput
+  children?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutAuditInstanceInput
+  classificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput
 }
 
 export type FactoryAuditInstanceUncheckedCreateInput = {
   id?: string
+  workspaceId: string
+  parentId?: string | null
+  type?: $Enums.FactoryAuditInstanceType
   vendorId: string
   templateId: string
-  evaluationState?: $Enums.EvaluationState
+  createdByUserId: string
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
-  createdByUserId: string
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
-  rounds?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutAuditInstanceInput
+  children?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutAuditInstanceInput
   classificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutAuditInstanceInput
 }
 
 export type FactoryAuditInstanceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendor?: Prisma.SupplierUpdateOneRequiredWithoutAuditInstancesNestedInput
   template?: Prisma.FactoryAuditTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
-  rounds?: Prisma.AuditRoundUpdateManyWithoutAuditInstanceNestedInput
-  classificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutAuditInstanceNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditInstancesCreatedNestedInput
+  parent?: Prisma.FactoryAuditInstanceUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.FactoryAuditInstanceUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUpdateManyWithoutAuditInstanceNestedInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type FactoryAuditInstanceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rounds?: Prisma.AuditRoundUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  children?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutAuditInstanceNestedInput
   classificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type FactoryAuditInstanceCreateManyInput = {
   id?: string
+  workspaceId: string
+  parentId?: string | null
+  type?: $Enums.FactoryAuditInstanceType
   vendorId: string
   templateId: string
-  evaluationState?: $Enums.EvaluationState
+  createdByUserId: string
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
-  createdByUserId: string
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type FactoryAuditInstanceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type FactoryAuditInstanceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -383,36 +471,59 @@ export type FactoryAuditInstanceOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
+export type FactoryAuditInstanceNullableScalarRelationFilter = {
+  is?: Prisma.FactoryAuditInstanceWhereInput | null
+  isNot?: Prisma.FactoryAuditInstanceWhereInput | null
+}
+
 export type FactoryAuditInstanceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  workspaceId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
-  evaluationState?: Prisma.SortOrder
+  createdByUserId?: Prisma.SortOrder
   targetPartCategories?: Prisma.SortOrder
   reopenUsed?: Prisma.SortOrder
-  createdByUserId?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
+  scopedCheckpointIds?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type FactoryAuditInstanceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  workspaceId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
-  evaluationState?: Prisma.SortOrder
-  reopenUsed?: Prisma.SortOrder
   createdByUserId?: Prisma.SortOrder
+  reopenUsed?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type FactoryAuditInstanceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  workspaceId?: Prisma.SortOrder
+  parentId?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   vendorId?: Prisma.SortOrder
   templateId?: Prisma.SortOrder
-  evaluationState?: Prisma.SortOrder
-  reopenUsed?: Prisma.SortOrder
   createdByUserId?: Prisma.SortOrder
+  reopenUsed?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -552,8 +663,32 @@ export type FactoryAuditInstanceCreatetargetPartCategoriesInput = {
   set: $Enums.PartCategory[]
 }
 
-export type EnumEvaluationStateFieldUpdateOperationsInput = {
-  set?: $Enums.EvaluationState
+export type FactoryAuditInstanceCreatescopedCheckpointIdsInput = {
+  set: string[]
+}
+
+export type FactoryAuditInstanceCreateNestedOneWithoutChildrenInput = {
+  create?: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutChildrenInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutChildrenInput>
+  connectOrCreate?: Prisma.FactoryAuditInstanceCreateOrConnectWithoutChildrenInput
+  connect?: Prisma.FactoryAuditInstanceWhereUniqueInput
+}
+
+export type FactoryAuditInstanceCreateNestedManyWithoutParentInput = {
+  create?: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutParentInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutParentInput> | Prisma.FactoryAuditInstanceCreateWithoutParentInput[] | Prisma.FactoryAuditInstanceUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.FactoryAuditInstanceCreateOrConnectWithoutParentInput | Prisma.FactoryAuditInstanceCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.FactoryAuditInstanceCreateManyParentInputEnvelope
+  connect?: Prisma.FactoryAuditInstanceWhereUniqueInput | Prisma.FactoryAuditInstanceWhereUniqueInput[]
+}
+
+export type FactoryAuditInstanceUncheckedCreateNestedManyWithoutParentInput = {
+  create?: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutParentInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutParentInput> | Prisma.FactoryAuditInstanceCreateWithoutParentInput[] | Prisma.FactoryAuditInstanceUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.FactoryAuditInstanceCreateOrConnectWithoutParentInput | Prisma.FactoryAuditInstanceCreateOrConnectWithoutParentInput[]
+  createMany?: Prisma.FactoryAuditInstanceCreateManyParentInputEnvelope
+  connect?: Prisma.FactoryAuditInstanceWhereUniqueInput | Prisma.FactoryAuditInstanceWhereUniqueInput[]
+}
+
+export type EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput = {
+  set?: $Enums.FactoryAuditInstanceType
 }
 
 export type FactoryAuditInstanceUpdatetargetPartCategoriesInput = {
@@ -561,18 +696,75 @@ export type FactoryAuditInstanceUpdatetargetPartCategoriesInput = {
   push?: $Enums.PartCategory | $Enums.PartCategory[]
 }
 
-export type FactoryAuditInstanceCreateNestedOneWithoutRoundsInput = {
-  create?: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutRoundsInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutRoundsInput>
-  connectOrCreate?: Prisma.FactoryAuditInstanceCreateOrConnectWithoutRoundsInput
+export type FactoryAuditInstanceUpdatescopedCheckpointIdsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type FactoryAuditInstanceUpdateOneWithoutChildrenNestedInput = {
+  create?: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutChildrenInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutChildrenInput>
+  connectOrCreate?: Prisma.FactoryAuditInstanceCreateOrConnectWithoutChildrenInput
+  upsert?: Prisma.FactoryAuditInstanceUpsertWithoutChildrenInput
+  disconnect?: Prisma.FactoryAuditInstanceWhereInput | boolean
+  delete?: Prisma.FactoryAuditInstanceWhereInput | boolean
+  connect?: Prisma.FactoryAuditInstanceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FactoryAuditInstanceUpdateToOneWithWhereWithoutChildrenInput, Prisma.FactoryAuditInstanceUpdateWithoutChildrenInput>, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutChildrenInput>
+}
+
+export type FactoryAuditInstanceUpdateManyWithoutParentNestedInput = {
+  create?: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutParentInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutParentInput> | Prisma.FactoryAuditInstanceCreateWithoutParentInput[] | Prisma.FactoryAuditInstanceUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.FactoryAuditInstanceCreateOrConnectWithoutParentInput | Prisma.FactoryAuditInstanceCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.FactoryAuditInstanceUpsertWithWhereUniqueWithoutParentInput | Prisma.FactoryAuditInstanceUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.FactoryAuditInstanceCreateManyParentInputEnvelope
+  set?: Prisma.FactoryAuditInstanceWhereUniqueInput | Prisma.FactoryAuditInstanceWhereUniqueInput[]
+  disconnect?: Prisma.FactoryAuditInstanceWhereUniqueInput | Prisma.FactoryAuditInstanceWhereUniqueInput[]
+  delete?: Prisma.FactoryAuditInstanceWhereUniqueInput | Prisma.FactoryAuditInstanceWhereUniqueInput[]
+  connect?: Prisma.FactoryAuditInstanceWhereUniqueInput | Prisma.FactoryAuditInstanceWhereUniqueInput[]
+  update?: Prisma.FactoryAuditInstanceUpdateWithWhereUniqueWithoutParentInput | Prisma.FactoryAuditInstanceUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.FactoryAuditInstanceUpdateManyWithWhereWithoutParentInput | Prisma.FactoryAuditInstanceUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.FactoryAuditInstanceScalarWhereInput | Prisma.FactoryAuditInstanceScalarWhereInput[]
+}
+
+export type FactoryAuditInstanceUncheckedUpdateManyWithoutParentNestedInput = {
+  create?: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutParentInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutParentInput> | Prisma.FactoryAuditInstanceCreateWithoutParentInput[] | Prisma.FactoryAuditInstanceUncheckedCreateWithoutParentInput[]
+  connectOrCreate?: Prisma.FactoryAuditInstanceCreateOrConnectWithoutParentInput | Prisma.FactoryAuditInstanceCreateOrConnectWithoutParentInput[]
+  upsert?: Prisma.FactoryAuditInstanceUpsertWithWhereUniqueWithoutParentInput | Prisma.FactoryAuditInstanceUpsertWithWhereUniqueWithoutParentInput[]
+  createMany?: Prisma.FactoryAuditInstanceCreateManyParentInputEnvelope
+  set?: Prisma.FactoryAuditInstanceWhereUniqueInput | Prisma.FactoryAuditInstanceWhereUniqueInput[]
+  disconnect?: Prisma.FactoryAuditInstanceWhereUniqueInput | Prisma.FactoryAuditInstanceWhereUniqueInput[]
+  delete?: Prisma.FactoryAuditInstanceWhereUniqueInput | Prisma.FactoryAuditInstanceWhereUniqueInput[]
+  connect?: Prisma.FactoryAuditInstanceWhereUniqueInput | Prisma.FactoryAuditInstanceWhereUniqueInput[]
+  update?: Prisma.FactoryAuditInstanceUpdateWithWhereUniqueWithoutParentInput | Prisma.FactoryAuditInstanceUpdateWithWhereUniqueWithoutParentInput[]
+  updateMany?: Prisma.FactoryAuditInstanceUpdateManyWithWhereWithoutParentInput | Prisma.FactoryAuditInstanceUpdateManyWithWhereWithoutParentInput[]
+  deleteMany?: Prisma.FactoryAuditInstanceScalarWhereInput | Prisma.FactoryAuditInstanceScalarWhereInput[]
+}
+
+export type FactoryAuditInstanceCreateNestedOneWithoutAssignmentsInput = {
+  create?: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutAssignmentsInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutAssignmentsInput>
+  connectOrCreate?: Prisma.FactoryAuditInstanceCreateOrConnectWithoutAssignmentsInput
   connect?: Prisma.FactoryAuditInstanceWhereUniqueInput
 }
 
-export type FactoryAuditInstanceUpdateOneRequiredWithoutRoundsNestedInput = {
-  create?: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutRoundsInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutRoundsInput>
-  connectOrCreate?: Prisma.FactoryAuditInstanceCreateOrConnectWithoutRoundsInput
-  upsert?: Prisma.FactoryAuditInstanceUpsertWithoutRoundsInput
+export type FactoryAuditInstanceUpdateOneRequiredWithoutAssignmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutAssignmentsInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutAssignmentsInput>
+  connectOrCreate?: Prisma.FactoryAuditInstanceCreateOrConnectWithoutAssignmentsInput
+  upsert?: Prisma.FactoryAuditInstanceUpsertWithoutAssignmentsInput
   connect?: Prisma.FactoryAuditInstanceWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.FactoryAuditInstanceUpdateToOneWithWhereWithoutRoundsInput, Prisma.FactoryAuditInstanceUpdateWithoutRoundsInput>, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutRoundsInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FactoryAuditInstanceUpdateToOneWithWhereWithoutAssignmentsInput, Prisma.FactoryAuditInstanceUpdateWithoutAssignmentsInput>, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutAssignmentsInput>
+}
+
+export type FactoryAuditInstanceCreateNestedOneWithoutResultsInput = {
+  create?: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutResultsInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutResultsInput>
+  connectOrCreate?: Prisma.FactoryAuditInstanceCreateOrConnectWithoutResultsInput
+  connect?: Prisma.FactoryAuditInstanceWhereUniqueInput
+}
+
+export type FactoryAuditInstanceUpdateOneRequiredWithoutResultsNestedInput = {
+  create?: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutResultsInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutResultsInput>
+  connectOrCreate?: Prisma.FactoryAuditInstanceCreateOrConnectWithoutResultsInput
+  upsert?: Prisma.FactoryAuditInstanceUpsertWithoutResultsInput
+  connect?: Prisma.FactoryAuditInstanceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FactoryAuditInstanceUpdateToOneWithWhereWithoutResultsInput, Prisma.FactoryAuditInstanceUpdateWithoutResultsInput>, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutResultsInput>
 }
 
 export type FactoryAuditInstanceCreateNestedOneWithoutClassificationHistoryInput = {
@@ -591,27 +783,39 @@ export type FactoryAuditInstanceUpdateOneRequiredWithoutClassificationHistoryNes
 
 export type FactoryAuditInstanceCreateWithoutCreatedByInput = {
   id?: string
-  evaluationState?: $Enums.EvaluationState
+  workspaceId: string
+  type?: $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   vendor: Prisma.SupplierCreateNestedOneWithoutAuditInstancesInput
   template: Prisma.FactoryAuditTemplateCreateNestedOneWithoutAuditInstancesInput
-  rounds?: Prisma.AuditRoundCreateNestedManyWithoutAuditInstanceInput
+  parent?: Prisma.FactoryAuditInstanceCreateNestedOneWithoutChildrenInput
+  children?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutAuditInstanceInput
   classificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput
 }
 
 export type FactoryAuditInstanceUncheckedCreateWithoutCreatedByInput = {
   id?: string
+  workspaceId: string
+  parentId?: string | null
+  type?: $Enums.FactoryAuditInstanceType
   vendorId: string
   templateId: string
-  evaluationState?: $Enums.EvaluationState
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
-  rounds?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutAuditInstanceInput
+  children?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutAuditInstanceInput
   classificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutAuditInstanceInput
 }
 
@@ -646,39 +850,55 @@ export type FactoryAuditInstanceScalarWhereInput = {
   OR?: Prisma.FactoryAuditInstanceScalarWhereInput[]
   NOT?: Prisma.FactoryAuditInstanceScalarWhereInput | Prisma.FactoryAuditInstanceScalarWhereInput[]
   id?: Prisma.StringFilter<"FactoryAuditInstance"> | string
+  workspaceId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
+  parentId?: Prisma.StringNullableFilter<"FactoryAuditInstance"> | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFilter<"FactoryAuditInstance"> | $Enums.FactoryAuditInstanceType
   vendorId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
   templateId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
-  evaluationState?: Prisma.EnumEvaluationStateFilter<"FactoryAuditInstance"> | $Enums.EvaluationState
+  createdByUserId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
   targetPartCategories?: Prisma.EnumPartCategoryNullableListFilter<"FactoryAuditInstance">
   reopenUsed?: Prisma.BoolFilter<"FactoryAuditInstance"> | boolean
-  createdByUserId?: Prisma.StringFilter<"FactoryAuditInstance"> | string
+  closedAt?: Prisma.DateTimeNullableFilter<"FactoryAuditInstance"> | Date | string | null
+  scopedCheckpointIds?: Prisma.StringNullableListFilter<"FactoryAuditInstance">
   createdAt?: Prisma.DateTimeFilter<"FactoryAuditInstance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"FactoryAuditInstance"> | Date | string
 }
 
 export type FactoryAuditInstanceCreateWithoutVendorInput = {
   id?: string
-  evaluationState?: $Enums.EvaluationState
+  workspaceId: string
+  type?: $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   template: Prisma.FactoryAuditTemplateCreateNestedOneWithoutAuditInstancesInput
-  rounds?: Prisma.AuditRoundCreateNestedManyWithoutAuditInstanceInput
-  classificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput
   createdBy: Prisma.UserCreateNestedOneWithoutFactoryAuditInstancesCreatedInput
+  parent?: Prisma.FactoryAuditInstanceCreateNestedOneWithoutChildrenInput
+  children?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutAuditInstanceInput
+  classificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput
 }
 
 export type FactoryAuditInstanceUncheckedCreateWithoutVendorInput = {
   id?: string
+  workspaceId: string
+  parentId?: string | null
+  type?: $Enums.FactoryAuditInstanceType
   templateId: string
-  evaluationState?: $Enums.EvaluationState
+  createdByUserId: string
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
-  createdByUserId: string
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
-  rounds?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutAuditInstanceInput
+  children?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutAuditInstanceInput
   classificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutAuditInstanceInput
 }
 
@@ -710,27 +930,39 @@ export type FactoryAuditInstanceUpdateManyWithWhereWithoutVendorInput = {
 
 export type FactoryAuditInstanceCreateWithoutTemplateInput = {
   id?: string
-  evaluationState?: $Enums.EvaluationState
+  workspaceId: string
+  type?: $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   vendor: Prisma.SupplierCreateNestedOneWithoutAuditInstancesInput
-  rounds?: Prisma.AuditRoundCreateNestedManyWithoutAuditInstanceInput
-  classificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput
   createdBy: Prisma.UserCreateNestedOneWithoutFactoryAuditInstancesCreatedInput
+  parent?: Prisma.FactoryAuditInstanceCreateNestedOneWithoutChildrenInput
+  children?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutAuditInstanceInput
+  classificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput
 }
 
 export type FactoryAuditInstanceUncheckedCreateWithoutTemplateInput = {
   id?: string
+  workspaceId: string
+  parentId?: string | null
+  type?: $Enums.FactoryAuditInstanceType
   vendorId: string
-  evaluationState?: $Enums.EvaluationState
+  createdByUserId: string
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
-  createdByUserId: string
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
-  rounds?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutAuditInstanceInput
+  children?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutAuditInstanceInput
   classificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutAuditInstanceInput
 }
 
@@ -760,98 +992,382 @@ export type FactoryAuditInstanceUpdateManyWithWhereWithoutTemplateInput = {
   data: Prisma.XOR<Prisma.FactoryAuditInstanceUpdateManyMutationInput, Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutTemplateInput>
 }
 
-export type FactoryAuditInstanceCreateWithoutRoundsInput = {
+export type FactoryAuditInstanceCreateWithoutChildrenInput = {
   id?: string
-  evaluationState?: $Enums.EvaluationState
+  workspaceId: string
+  type?: $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   vendor: Prisma.SupplierCreateNestedOneWithoutAuditInstancesInput
   template: Prisma.FactoryAuditTemplateCreateNestedOneWithoutAuditInstancesInput
-  classificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput
   createdBy: Prisma.UserCreateNestedOneWithoutFactoryAuditInstancesCreatedInput
+  parent?: Prisma.FactoryAuditInstanceCreateNestedOneWithoutChildrenInput
+  assignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutAuditInstanceInput
+  classificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput
 }
 
-export type FactoryAuditInstanceUncheckedCreateWithoutRoundsInput = {
+export type FactoryAuditInstanceUncheckedCreateWithoutChildrenInput = {
   id?: string
+  workspaceId: string
+  parentId?: string | null
+  type?: $Enums.FactoryAuditInstanceType
   vendorId: string
   templateId: string
-  evaluationState?: $Enums.EvaluationState
+  createdByUserId: string
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
-  createdByUserId: string
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
+  assignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutAuditInstanceInput
   classificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutAuditInstanceInput
 }
 
-export type FactoryAuditInstanceCreateOrConnectWithoutRoundsInput = {
+export type FactoryAuditInstanceCreateOrConnectWithoutChildrenInput = {
   where: Prisma.FactoryAuditInstanceWhereUniqueInput
-  create: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutRoundsInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutRoundsInput>
+  create: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutChildrenInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutChildrenInput>
 }
 
-export type FactoryAuditInstanceUpsertWithoutRoundsInput = {
-  update: Prisma.XOR<Prisma.FactoryAuditInstanceUpdateWithoutRoundsInput, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutRoundsInput>
-  create: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutRoundsInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutRoundsInput>
+export type FactoryAuditInstanceCreateWithoutParentInput = {
+  id?: string
+  workspaceId: string
+  type?: $Enums.FactoryAuditInstanceType
+  targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vendor: Prisma.SupplierCreateNestedOneWithoutAuditInstancesInput
+  template: Prisma.FactoryAuditTemplateCreateNestedOneWithoutAuditInstancesInput
+  createdBy: Prisma.UserCreateNestedOneWithoutFactoryAuditInstancesCreatedInput
+  children?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutAuditInstanceInput
+  classificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput
+}
+
+export type FactoryAuditInstanceUncheckedCreateWithoutParentInput = {
+  id?: string
+  workspaceId: string
+  type?: $Enums.FactoryAuditInstanceType
+  vendorId: string
+  templateId: string
+  createdByUserId: string
+  targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutAuditInstanceInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutAuditInstanceInput
+}
+
+export type FactoryAuditInstanceCreateOrConnectWithoutParentInput = {
+  where: Prisma.FactoryAuditInstanceWhereUniqueInput
+  create: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutParentInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutParentInput>
+}
+
+export type FactoryAuditInstanceCreateManyParentInputEnvelope = {
+  data: Prisma.FactoryAuditInstanceCreateManyParentInput | Prisma.FactoryAuditInstanceCreateManyParentInput[]
+  skipDuplicates?: boolean
+}
+
+export type FactoryAuditInstanceUpsertWithoutChildrenInput = {
+  update: Prisma.XOR<Prisma.FactoryAuditInstanceUpdateWithoutChildrenInput, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutChildrenInput>
+  create: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutChildrenInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutChildrenInput>
   where?: Prisma.FactoryAuditInstanceWhereInput
 }
 
-export type FactoryAuditInstanceUpdateToOneWithWhereWithoutRoundsInput = {
+export type FactoryAuditInstanceUpdateToOneWithWhereWithoutChildrenInput = {
   where?: Prisma.FactoryAuditInstanceWhereInput
-  data: Prisma.XOR<Prisma.FactoryAuditInstanceUpdateWithoutRoundsInput, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutRoundsInput>
+  data: Prisma.XOR<Prisma.FactoryAuditInstanceUpdateWithoutChildrenInput, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutChildrenInput>
 }
 
-export type FactoryAuditInstanceUpdateWithoutRoundsInput = {
+export type FactoryAuditInstanceUpdateWithoutChildrenInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendor?: Prisma.SupplierUpdateOneRequiredWithoutAuditInstancesNestedInput
   template?: Prisma.FactoryAuditTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
-  classificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutAuditInstanceNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditInstancesCreatedNestedInput
+  parent?: Prisma.FactoryAuditInstanceUpdateOneWithoutChildrenNestedInput
+  assignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUpdateManyWithoutAuditInstanceNestedInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutAuditInstanceNestedInput
 }
 
-export type FactoryAuditInstanceUncheckedUpdateWithoutRoundsInput = {
+export type FactoryAuditInstanceUncheckedUpdateWithoutChildrenInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutAuditInstanceNestedInput
+}
+
+export type FactoryAuditInstanceUpsertWithWhereUniqueWithoutParentInput = {
+  where: Prisma.FactoryAuditInstanceWhereUniqueInput
+  update: Prisma.XOR<Prisma.FactoryAuditInstanceUpdateWithoutParentInput, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutParentInput>
+  create: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutParentInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutParentInput>
+}
+
+export type FactoryAuditInstanceUpdateWithWhereUniqueWithoutParentInput = {
+  where: Prisma.FactoryAuditInstanceWhereUniqueInput
+  data: Prisma.XOR<Prisma.FactoryAuditInstanceUpdateWithoutParentInput, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutParentInput>
+}
+
+export type FactoryAuditInstanceUpdateManyWithWhereWithoutParentInput = {
+  where: Prisma.FactoryAuditInstanceScalarWhereInput
+  data: Prisma.XOR<Prisma.FactoryAuditInstanceUpdateManyMutationInput, Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutParentInput>
+}
+
+export type FactoryAuditInstanceCreateWithoutAssignmentsInput = {
+  id?: string
+  workspaceId: string
+  type?: $Enums.FactoryAuditInstanceType
+  targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vendor: Prisma.SupplierCreateNestedOneWithoutAuditInstancesInput
+  template: Prisma.FactoryAuditTemplateCreateNestedOneWithoutAuditInstancesInput
+  createdBy: Prisma.UserCreateNestedOneWithoutFactoryAuditInstancesCreatedInput
+  parent?: Prisma.FactoryAuditInstanceCreateNestedOneWithoutChildrenInput
+  children?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutParentInput
+  results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutAuditInstanceInput
+  classificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput
+}
+
+export type FactoryAuditInstanceUncheckedCreateWithoutAssignmentsInput = {
+  id?: string
+  workspaceId: string
+  parentId?: string | null
+  type?: $Enums.FactoryAuditInstanceType
+  vendorId: string
+  templateId: string
+  createdByUserId: string
+  targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutParentInput
+  results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutAuditInstanceInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutAuditInstanceInput
+}
+
+export type FactoryAuditInstanceCreateOrConnectWithoutAssignmentsInput = {
+  where: Prisma.FactoryAuditInstanceWhereUniqueInput
+  create: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutAssignmentsInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutAssignmentsInput>
+}
+
+export type FactoryAuditInstanceUpsertWithoutAssignmentsInput = {
+  update: Prisma.XOR<Prisma.FactoryAuditInstanceUpdateWithoutAssignmentsInput, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutAssignmentsInput>
+  create: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutAssignmentsInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutAssignmentsInput>
+  where?: Prisma.FactoryAuditInstanceWhereInput
+}
+
+export type FactoryAuditInstanceUpdateToOneWithWhereWithoutAssignmentsInput = {
+  where?: Prisma.FactoryAuditInstanceWhereInput
+  data: Prisma.XOR<Prisma.FactoryAuditInstanceUpdateWithoutAssignmentsInput, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutAssignmentsInput>
+}
+
+export type FactoryAuditInstanceUpdateWithoutAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
+  targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendor?: Prisma.SupplierUpdateOneRequiredWithoutAuditInstancesNestedInput
+  template?: Prisma.FactoryAuditTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditInstancesCreatedNestedInput
+  parent?: Prisma.FactoryAuditInstanceUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.FactoryAuditInstanceUpdateManyWithoutParentNestedInput
+  results?: Prisma.AuditCheckpointResultUpdateManyWithoutAuditInstanceNestedInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutAuditInstanceNestedInput
+}
+
+export type FactoryAuditInstanceUncheckedUpdateWithoutAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
+  vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutParentNestedInput
+  results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutAuditInstanceNestedInput
+}
+
+export type FactoryAuditInstanceCreateWithoutResultsInput = {
+  id?: string
+  workspaceId: string
+  type?: $Enums.FactoryAuditInstanceType
+  targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vendor: Prisma.SupplierCreateNestedOneWithoutAuditInstancesInput
+  template: Prisma.FactoryAuditTemplateCreateNestedOneWithoutAuditInstancesInput
+  createdBy: Prisma.UserCreateNestedOneWithoutFactoryAuditInstancesCreatedInput
+  parent?: Prisma.FactoryAuditInstanceCreateNestedOneWithoutChildrenInput
+  children?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditInstanceInput
+  classificationHistory?: Prisma.VendorClassificationHistoryCreateNestedManyWithoutAuditInstanceInput
+}
+
+export type FactoryAuditInstanceUncheckedCreateWithoutResultsInput = {
+  id?: string
+  workspaceId: string
+  parentId?: string | null
+  type?: $Enums.FactoryAuditInstanceType
+  vendorId: string
+  templateId: string
+  createdByUserId: string
+  targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  children?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditInstanceInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUncheckedCreateNestedManyWithoutAuditInstanceInput
+}
+
+export type FactoryAuditInstanceCreateOrConnectWithoutResultsInput = {
+  where: Prisma.FactoryAuditInstanceWhereUniqueInput
+  create: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutResultsInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutResultsInput>
+}
+
+export type FactoryAuditInstanceUpsertWithoutResultsInput = {
+  update: Prisma.XOR<Prisma.FactoryAuditInstanceUpdateWithoutResultsInput, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutResultsInput>
+  create: Prisma.XOR<Prisma.FactoryAuditInstanceCreateWithoutResultsInput, Prisma.FactoryAuditInstanceUncheckedCreateWithoutResultsInput>
+  where?: Prisma.FactoryAuditInstanceWhereInput
+}
+
+export type FactoryAuditInstanceUpdateToOneWithWhereWithoutResultsInput = {
+  where?: Prisma.FactoryAuditInstanceWhereInput
+  data: Prisma.XOR<Prisma.FactoryAuditInstanceUpdateWithoutResultsInput, Prisma.FactoryAuditInstanceUncheckedUpdateWithoutResultsInput>
+}
+
+export type FactoryAuditInstanceUpdateWithoutResultsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
+  targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendor?: Prisma.SupplierUpdateOneRequiredWithoutAuditInstancesNestedInput
+  template?: Prisma.FactoryAuditTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditInstancesCreatedNestedInput
+  parent?: Prisma.FactoryAuditInstanceUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.FactoryAuditInstanceUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditInstanceNestedInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutAuditInstanceNestedInput
+}
+
+export type FactoryAuditInstanceUncheckedUpdateWithoutResultsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
+  vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditInstanceNestedInput
   classificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type FactoryAuditInstanceCreateWithoutClassificationHistoryInput = {
   id?: string
-  evaluationState?: $Enums.EvaluationState
+  workspaceId: string
+  type?: $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
   vendor: Prisma.SupplierCreateNestedOneWithoutAuditInstancesInput
   template: Prisma.FactoryAuditTemplateCreateNestedOneWithoutAuditInstancesInput
-  rounds?: Prisma.AuditRoundCreateNestedManyWithoutAuditInstanceInput
   createdBy: Prisma.UserCreateNestedOneWithoutFactoryAuditInstancesCreatedInput
+  parent?: Prisma.FactoryAuditInstanceCreateNestedOneWithoutChildrenInput
+  children?: Prisma.FactoryAuditInstanceCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultCreateNestedManyWithoutAuditInstanceInput
 }
 
 export type FactoryAuditInstanceUncheckedCreateWithoutClassificationHistoryInput = {
   id?: string
+  workspaceId: string
+  parentId?: string | null
+  type?: $Enums.FactoryAuditInstanceType
   vendorId: string
   templateId: string
-  evaluationState?: $Enums.EvaluationState
+  createdByUserId: string
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
-  createdByUserId: string
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
-  rounds?: Prisma.AuditRoundUncheckedCreateNestedManyWithoutAuditInstanceInput
+  children?: Prisma.FactoryAuditInstanceUncheckedCreateNestedManyWithoutParentInput
+  assignments?: Prisma.AuditAssignmentUncheckedCreateNestedManyWithoutAuditInstanceInput
+  results?: Prisma.AuditCheckpointResultUncheckedCreateNestedManyWithoutAuditInstanceInput
 }
 
 export type FactoryAuditInstanceCreateOrConnectWithoutClassificationHistoryInput = {
@@ -872,170 +1388,310 @@ export type FactoryAuditInstanceUpdateToOneWithWhereWithoutClassificationHistory
 
 export type FactoryAuditInstanceUpdateWithoutClassificationHistoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendor?: Prisma.SupplierUpdateOneRequiredWithoutAuditInstancesNestedInput
   template?: Prisma.FactoryAuditTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
-  rounds?: Prisma.AuditRoundUpdateManyWithoutAuditInstanceNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditInstancesCreatedNestedInput
+  parent?: Prisma.FactoryAuditInstanceUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.FactoryAuditInstanceUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type FactoryAuditInstanceUncheckedUpdateWithoutClassificationHistoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rounds?: Prisma.AuditRoundUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  children?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type FactoryAuditInstanceCreateManyCreatedByInput = {
   id?: string
+  workspaceId: string
+  parentId?: string | null
+  type?: $Enums.FactoryAuditInstanceType
   vendorId: string
   templateId: string
-  evaluationState?: $Enums.EvaluationState
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type FactoryAuditInstanceUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendor?: Prisma.SupplierUpdateOneRequiredWithoutAuditInstancesNestedInput
   template?: Prisma.FactoryAuditTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
-  rounds?: Prisma.AuditRoundUpdateManyWithoutAuditInstanceNestedInput
+  parent?: Prisma.FactoryAuditInstanceUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.FactoryAuditInstanceUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUpdateManyWithoutAuditInstanceNestedInput
   classificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type FactoryAuditInstanceUncheckedUpdateWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rounds?: Prisma.AuditRoundUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  children?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutAuditInstanceNestedInput
   classificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type FactoryAuditInstanceUncheckedUpdateManyWithoutCreatedByInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type FactoryAuditInstanceCreateManyVendorInput = {
   id?: string
+  workspaceId: string
+  parentId?: string | null
+  type?: $Enums.FactoryAuditInstanceType
   templateId: string
-  evaluationState?: $Enums.EvaluationState
+  createdByUserId: string
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
-  createdByUserId: string
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type FactoryAuditInstanceUpdateWithoutVendorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   template?: Prisma.FactoryAuditTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
-  rounds?: Prisma.AuditRoundUpdateManyWithoutAuditInstanceNestedInput
-  classificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutAuditInstanceNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditInstancesCreatedNestedInput
+  parent?: Prisma.FactoryAuditInstanceUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.FactoryAuditInstanceUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUpdateManyWithoutAuditInstanceNestedInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type FactoryAuditInstanceUncheckedUpdateWithoutVendorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rounds?: Prisma.AuditRoundUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  children?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutAuditInstanceNestedInput
   classificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type FactoryAuditInstanceUncheckedUpdateManyWithoutVendorInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   templateId?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type FactoryAuditInstanceCreateManyTemplateInput = {
   id?: string
+  workspaceId: string
+  parentId?: string | null
+  type?: $Enums.FactoryAuditInstanceType
   vendorId: string
-  evaluationState?: $Enums.EvaluationState
+  createdByUserId: string
   targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: boolean
-  createdByUserId: string
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type FactoryAuditInstanceUpdateWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendor?: Prisma.SupplierUpdateOneRequiredWithoutAuditInstancesNestedInput
-  rounds?: Prisma.AuditRoundUpdateManyWithoutAuditInstanceNestedInput
-  classificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutAuditInstanceNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditInstancesCreatedNestedInput
+  parent?: Prisma.FactoryAuditInstanceUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.FactoryAuditInstanceUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUpdateManyWithoutAuditInstanceNestedInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type FactoryAuditInstanceUncheckedUpdateWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  rounds?: Prisma.AuditRoundUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  children?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutAuditInstanceNestedInput
   classificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutAuditInstanceNestedInput
 }
 
 export type FactoryAuditInstanceUncheckedUpdateManyWithoutTemplateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
   vendorId?: Prisma.StringFieldUpdateOperationsInput | string
-  evaluationState?: Prisma.EnumEvaluationStateFieldUpdateOperationsInput | $Enums.EvaluationState
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
   targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
   reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type FactoryAuditInstanceCreateManyParentInput = {
+  id?: string
+  workspaceId: string
+  type?: $Enums.FactoryAuditInstanceType
+  vendorId: string
+  templateId: string
+  createdByUserId: string
+  targetPartCategories?: Prisma.FactoryAuditInstanceCreatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: boolean
+  closedAt?: Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceCreatescopedCheckpointIdsInput | string[]
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type FactoryAuditInstanceUpdateWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
+  targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendor?: Prisma.SupplierUpdateOneRequiredWithoutAuditInstancesNestedInput
+  template?: Prisma.FactoryAuditTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutFactoryAuditInstancesCreatedNestedInput
+  children?: Prisma.FactoryAuditInstanceUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUpdateManyWithoutAuditInstanceNestedInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUpdateManyWithoutAuditInstanceNestedInput
+}
+
+export type FactoryAuditInstanceUncheckedUpdateWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
+  vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
   createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  children?: Prisma.FactoryAuditInstanceUncheckedUpdateManyWithoutParentNestedInput
+  assignments?: Prisma.AuditAssignmentUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  results?: Prisma.AuditCheckpointResultUncheckedUpdateManyWithoutAuditInstanceNestedInput
+  classificationHistory?: Prisma.VendorClassificationHistoryUncheckedUpdateManyWithoutAuditInstanceNestedInput
+}
+
+export type FactoryAuditInstanceUncheckedUpdateManyWithoutParentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumFactoryAuditInstanceTypeFieldUpdateOperationsInput | $Enums.FactoryAuditInstanceType
+  vendorId?: Prisma.StringFieldUpdateOperationsInput | string
+  templateId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdByUserId?: Prisma.StringFieldUpdateOperationsInput | string
+  targetPartCategories?: Prisma.FactoryAuditInstanceUpdatetargetPartCategoriesInput | $Enums.PartCategory[]
+  reopenUsed?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  scopedCheckpointIds?: Prisma.FactoryAuditInstanceUpdatescopedCheckpointIdsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1046,12 +1702,16 @@ export type FactoryAuditInstanceUncheckedUpdateManyWithoutTemplateInput = {
  */
 
 export type FactoryAuditInstanceCountOutputType = {
-  rounds: number
+  children: number
+  assignments: number
+  results: number
   classificationHistory: number
 }
 
 export type FactoryAuditInstanceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  rounds?: boolean | FactoryAuditInstanceCountOutputTypeCountRoundsArgs
+  children?: boolean | FactoryAuditInstanceCountOutputTypeCountChildrenArgs
+  assignments?: boolean | FactoryAuditInstanceCountOutputTypeCountAssignmentsArgs
+  results?: boolean | FactoryAuditInstanceCountOutputTypeCountResultsArgs
   classificationHistory?: boolean | FactoryAuditInstanceCountOutputTypeCountClassificationHistoryArgs
 }
 
@@ -1068,8 +1728,22 @@ export type FactoryAuditInstanceCountOutputTypeDefaultArgs<ExtArgs extends runti
 /**
  * FactoryAuditInstanceCountOutputType without action
  */
-export type FactoryAuditInstanceCountOutputTypeCountRoundsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.AuditRoundWhereInput
+export type FactoryAuditInstanceCountOutputTypeCountChildrenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FactoryAuditInstanceWhereInput
+}
+
+/**
+ * FactoryAuditInstanceCountOutputType without action
+ */
+export type FactoryAuditInstanceCountOutputTypeCountAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditAssignmentWhereInput
+}
+
+/**
+ * FactoryAuditInstanceCountOutputType without action
+ */
+export type FactoryAuditInstanceCountOutputTypeCountResultsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuditCheckpointResultWhereInput
 }
 
 /**
@@ -1082,82 +1756,108 @@ export type FactoryAuditInstanceCountOutputTypeCountClassificationHistoryArgs<Ex
 
 export type FactoryAuditInstanceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  workspaceId?: boolean
+  parentId?: boolean
+  type?: boolean
   vendorId?: boolean
   templateId?: boolean
-  evaluationState?: boolean
+  createdByUserId?: boolean
   targetPartCategories?: boolean
   reopenUsed?: boolean
-  createdByUserId?: boolean
+  closedAt?: boolean
+  scopedCheckpointIds?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vendor?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
   template?: boolean | Prisma.FactoryAuditTemplateDefaultArgs<ExtArgs>
-  rounds?: boolean | Prisma.FactoryAuditInstance$roundsArgs<ExtArgs>
-  classificationHistory?: boolean | Prisma.FactoryAuditInstance$classificationHistoryArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.FactoryAuditInstance$parentArgs<ExtArgs>
+  children?: boolean | Prisma.FactoryAuditInstance$childrenArgs<ExtArgs>
+  assignments?: boolean | Prisma.FactoryAuditInstance$assignmentsArgs<ExtArgs>
+  results?: boolean | Prisma.FactoryAuditInstance$resultsArgs<ExtArgs>
+  classificationHistory?: boolean | Prisma.FactoryAuditInstance$classificationHistoryArgs<ExtArgs>
   _count?: boolean | Prisma.FactoryAuditInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["factoryAuditInstance"]>
 
 export type FactoryAuditInstanceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  workspaceId?: boolean
+  parentId?: boolean
+  type?: boolean
   vendorId?: boolean
   templateId?: boolean
-  evaluationState?: boolean
+  createdByUserId?: boolean
   targetPartCategories?: boolean
   reopenUsed?: boolean
-  createdByUserId?: boolean
+  closedAt?: boolean
+  scopedCheckpointIds?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vendor?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
   template?: boolean | Prisma.FactoryAuditTemplateDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.FactoryAuditInstance$parentArgs<ExtArgs>
 }, ExtArgs["result"]["factoryAuditInstance"]>
 
 export type FactoryAuditInstanceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  workspaceId?: boolean
+  parentId?: boolean
+  type?: boolean
   vendorId?: boolean
   templateId?: boolean
-  evaluationState?: boolean
+  createdByUserId?: boolean
   targetPartCategories?: boolean
   reopenUsed?: boolean
-  createdByUserId?: boolean
+  closedAt?: boolean
+  scopedCheckpointIds?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   vendor?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
   template?: boolean | Prisma.FactoryAuditTemplateDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.FactoryAuditInstance$parentArgs<ExtArgs>
 }, ExtArgs["result"]["factoryAuditInstance"]>
 
 export type FactoryAuditInstanceSelectScalar = {
   id?: boolean
+  workspaceId?: boolean
+  parentId?: boolean
+  type?: boolean
   vendorId?: boolean
   templateId?: boolean
-  evaluationState?: boolean
+  createdByUserId?: boolean
   targetPartCategories?: boolean
   reopenUsed?: boolean
-  createdByUserId?: boolean
+  closedAt?: boolean
+  scopedCheckpointIds?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FactoryAuditInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "vendorId" | "templateId" | "evaluationState" | "targetPartCategories" | "reopenUsed" | "createdByUserId" | "createdAt" | "updatedAt", ExtArgs["result"]["factoryAuditInstance"]>
+export type FactoryAuditInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "workspaceId" | "parentId" | "type" | "vendorId" | "templateId" | "createdByUserId" | "targetPartCategories" | "reopenUsed" | "closedAt" | "scopedCheckpointIds" | "createdAt" | "updatedAt", ExtArgs["result"]["factoryAuditInstance"]>
 export type FactoryAuditInstanceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vendor?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
   template?: boolean | Prisma.FactoryAuditTemplateDefaultArgs<ExtArgs>
-  rounds?: boolean | Prisma.FactoryAuditInstance$roundsArgs<ExtArgs>
-  classificationHistory?: boolean | Prisma.FactoryAuditInstance$classificationHistoryArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.FactoryAuditInstance$parentArgs<ExtArgs>
+  children?: boolean | Prisma.FactoryAuditInstance$childrenArgs<ExtArgs>
+  assignments?: boolean | Prisma.FactoryAuditInstance$assignmentsArgs<ExtArgs>
+  results?: boolean | Prisma.FactoryAuditInstance$resultsArgs<ExtArgs>
+  classificationHistory?: boolean | Prisma.FactoryAuditInstance$classificationHistoryArgs<ExtArgs>
   _count?: boolean | Prisma.FactoryAuditInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type FactoryAuditInstanceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vendor?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
   template?: boolean | Prisma.FactoryAuditTemplateDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.FactoryAuditInstance$parentArgs<ExtArgs>
 }
 export type FactoryAuditInstanceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   vendor?: boolean | Prisma.SupplierDefaultArgs<ExtArgs>
   template?: boolean | Prisma.FactoryAuditTemplateDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  parent?: boolean | Prisma.FactoryAuditInstance$parentArgs<ExtArgs>
 }
 
 export type $FactoryAuditInstancePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1165,18 +1865,25 @@ export type $FactoryAuditInstancePayload<ExtArgs extends runtime.Types.Extension
   objects: {
     vendor: Prisma.$SupplierPayload<ExtArgs>
     template: Prisma.$FactoryAuditTemplatePayload<ExtArgs>
-    rounds: Prisma.$AuditRoundPayload<ExtArgs>[]
-    classificationHistory: Prisma.$VendorClassificationHistoryPayload<ExtArgs>[]
     createdBy: Prisma.$UserPayload<ExtArgs>
+    parent: Prisma.$FactoryAuditInstancePayload<ExtArgs> | null
+    children: Prisma.$FactoryAuditInstancePayload<ExtArgs>[]
+    assignments: Prisma.$AuditAssignmentPayload<ExtArgs>[]
+    results: Prisma.$AuditCheckpointResultPayload<ExtArgs>[]
+    classificationHistory: Prisma.$VendorClassificationHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    workspaceId: string
+    parentId: string | null
+    type: $Enums.FactoryAuditInstanceType
     vendorId: string
     templateId: string
-    evaluationState: $Enums.EvaluationState
+    createdByUserId: string
     targetPartCategories: $Enums.PartCategory[]
     reopenUsed: boolean
-    createdByUserId: string
+    closedAt: Date | null
+    scopedCheckpointIds: string[]
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["factoryAuditInstance"]>
@@ -1575,9 +2282,12 @@ export interface Prisma__FactoryAuditInstanceClient<T, Null = never, ExtArgs ext
   readonly [Symbol.toStringTag]: "PrismaPromise"
   vendor<T extends Prisma.SupplierDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SupplierDefaultArgs<ExtArgs>>): Prisma.Prisma__SupplierClient<runtime.Types.Result.GetResult<Prisma.$SupplierPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   template<T extends Prisma.FactoryAuditTemplateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditTemplateDefaultArgs<ExtArgs>>): Prisma.Prisma__FactoryAuditTemplateClient<runtime.Types.Result.GetResult<Prisma.$FactoryAuditTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  rounds<T extends Prisma.FactoryAuditInstance$roundsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditInstance$roundsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditRoundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  classificationHistory<T extends Prisma.FactoryAuditInstance$classificationHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditInstance$classificationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorClassificationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   createdBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  parent<T extends Prisma.FactoryAuditInstance$parentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditInstance$parentArgs<ExtArgs>>): Prisma.Prisma__FactoryAuditInstanceClient<runtime.Types.Result.GetResult<Prisma.$FactoryAuditInstancePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  children<T extends Prisma.FactoryAuditInstance$childrenArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditInstance$childrenArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FactoryAuditInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignments<T extends Prisma.FactoryAuditInstance$assignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditInstance$assignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  results<T extends Prisma.FactoryAuditInstance$resultsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditInstance$resultsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditCheckpointResultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  classificationHistory<T extends Prisma.FactoryAuditInstance$classificationHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.FactoryAuditInstance$classificationHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorClassificationHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1608,12 +2318,16 @@ export interface Prisma__FactoryAuditInstanceClient<T, Null = never, ExtArgs ext
  */
 export interface FactoryAuditInstanceFieldRefs {
   readonly id: Prisma.FieldRef<"FactoryAuditInstance", 'String'>
+  readonly workspaceId: Prisma.FieldRef<"FactoryAuditInstance", 'String'>
+  readonly parentId: Prisma.FieldRef<"FactoryAuditInstance", 'String'>
+  readonly type: Prisma.FieldRef<"FactoryAuditInstance", 'FactoryAuditInstanceType'>
   readonly vendorId: Prisma.FieldRef<"FactoryAuditInstance", 'String'>
   readonly templateId: Prisma.FieldRef<"FactoryAuditInstance", 'String'>
-  readonly evaluationState: Prisma.FieldRef<"FactoryAuditInstance", 'EvaluationState'>
+  readonly createdByUserId: Prisma.FieldRef<"FactoryAuditInstance", 'String'>
   readonly targetPartCategories: Prisma.FieldRef<"FactoryAuditInstance", 'PartCategory[]'>
   readonly reopenUsed: Prisma.FieldRef<"FactoryAuditInstance", 'Boolean'>
-  readonly createdByUserId: Prisma.FieldRef<"FactoryAuditInstance", 'String'>
+  readonly closedAt: Prisma.FieldRef<"FactoryAuditInstance", 'DateTime'>
+  readonly scopedCheckpointIds: Prisma.FieldRef<"FactoryAuditInstance", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"FactoryAuditInstance", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"FactoryAuditInstance", 'DateTime'>
 }
@@ -2017,27 +2731,94 @@ export type FactoryAuditInstanceDeleteManyArgs<ExtArgs extends runtime.Types.Ext
 }
 
 /**
- * FactoryAuditInstance.rounds
+ * FactoryAuditInstance.parent
  */
-export type FactoryAuditInstance$roundsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type FactoryAuditInstance$parentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the AuditRound
+   * Select specific fields to fetch from the FactoryAuditInstance
    */
-  select?: Prisma.AuditRoundSelect<ExtArgs> | null
+  select?: Prisma.FactoryAuditInstanceSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the AuditRound
+   * Omit specific fields from the FactoryAuditInstance
    */
-  omit?: Prisma.AuditRoundOmit<ExtArgs> | null
+  omit?: Prisma.FactoryAuditInstanceOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AuditRoundInclude<ExtArgs> | null
-  where?: Prisma.AuditRoundWhereInput
-  orderBy?: Prisma.AuditRoundOrderByWithRelationInput | Prisma.AuditRoundOrderByWithRelationInput[]
-  cursor?: Prisma.AuditRoundWhereUniqueInput
+  include?: Prisma.FactoryAuditInstanceInclude<ExtArgs> | null
+  where?: Prisma.FactoryAuditInstanceWhereInput
+}
+
+/**
+ * FactoryAuditInstance.children
+ */
+export type FactoryAuditInstance$childrenArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FactoryAuditInstance
+   */
+  select?: Prisma.FactoryAuditInstanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FactoryAuditInstance
+   */
+  omit?: Prisma.FactoryAuditInstanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FactoryAuditInstanceInclude<ExtArgs> | null
+  where?: Prisma.FactoryAuditInstanceWhereInput
+  orderBy?: Prisma.FactoryAuditInstanceOrderByWithRelationInput | Prisma.FactoryAuditInstanceOrderByWithRelationInput[]
+  cursor?: Prisma.FactoryAuditInstanceWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.AuditRoundScalarFieldEnum | Prisma.AuditRoundScalarFieldEnum[]
+  distinct?: Prisma.FactoryAuditInstanceScalarFieldEnum | Prisma.FactoryAuditInstanceScalarFieldEnum[]
+}
+
+/**
+ * FactoryAuditInstance.assignments
+ */
+export type FactoryAuditInstance$assignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuditAssignment
+   */
+  select?: Prisma.AuditAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuditAssignment
+   */
+  omit?: Prisma.AuditAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditAssignmentInclude<ExtArgs> | null
+  where?: Prisma.AuditAssignmentWhereInput
+  orderBy?: Prisma.AuditAssignmentOrderByWithRelationInput | Prisma.AuditAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.AuditAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuditAssignmentScalarFieldEnum | Prisma.AuditAssignmentScalarFieldEnum[]
+}
+
+/**
+ * FactoryAuditInstance.results
+ */
+export type FactoryAuditInstance$resultsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuditCheckpointResult
+   */
+  select?: Prisma.AuditCheckpointResultSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuditCheckpointResult
+   */
+  omit?: Prisma.AuditCheckpointResultOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditCheckpointResultInclude<ExtArgs> | null
+  where?: Prisma.AuditCheckpointResultWhereInput
+  orderBy?: Prisma.AuditCheckpointResultOrderByWithRelationInput | Prisma.AuditCheckpointResultOrderByWithRelationInput[]
+  cursor?: Prisma.AuditCheckpointResultWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuditCheckpointResultScalarFieldEnum | Prisma.AuditCheckpointResultScalarFieldEnum[]
 }
 
 /**
