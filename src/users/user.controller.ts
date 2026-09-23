@@ -221,6 +221,7 @@ export async function getUserById(req: Request, res: Response) {
       userType: true,
       joinedOn: true,
       businessPartnerId: true,
+      grade: true,
       businessPartner: {
         select: { id: true, bpName: true, officeType: true },
       },
