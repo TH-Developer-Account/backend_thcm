@@ -303,9 +303,16 @@ export const approveStageController = async (
   try {
     const { stageId } = req.params;
     const userId = req.user?.id;
+    const { reason } = req.body;
 
     if (!stageId) throw new ApiError(400, "stageId is required");
     if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!reason || String(reason).trim().length < 3) {
+      throw new ApiError(
+        400,
+        "A reason of at least 3 characters is required for clarification",
+      );
+    }
 
     // Validate the stage is current before handing off to the service
     const stage = await prisma.stageInstance.findUnique({
@@ -330,7 +337,7 @@ export const approveStageController = async (
       );
     }
 
-    await approveStage({ stageId: stageId as string, userId });
+    await approveStage({ stageId: stageId as string, userId, reason });
 
     res.status(200).json({
       success: true,

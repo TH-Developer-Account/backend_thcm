@@ -242,7 +242,7 @@ export function getResubmitStatus(subjectType: WorkflowSubjectType): string {
   return resubmitStatusBySubjectType[subjectType];
 }
 
-type PendingOn =
+export type PendingOn =
   | { role: "NONE"; outcome: "APPROVED" | "REJECTED" }
   | { role: "PROPOSER" }
   | { role: "VENDOR" }

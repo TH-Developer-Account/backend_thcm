@@ -1,8 +1,10 @@
+import type { PendingOn } from "@workflow/workflowSubject.helper";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // PDF FIELD FORMATTERS
 //
 // Shared display rules so every docDefinition builder renders empty/boolean
-// fields the same way. Pure functions — no pdfmake or domain knowledge.
+// fields the same way. Pure functions — no pdfmake rendering knowledge.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function displayValue(
@@ -40,4 +42,41 @@ export function displayDateTime(value: Date | null | undefined): string {
     second: "2-digit",
     hour12: true,
   })}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// displayPendingOn
+//
+// Turns the structured PendingOn result (@workflow/workflowSubject.helper —
+// the same computePendingOn/resolveVendorOnboardingPendingOn/
+// resolveMedicalClaimPendingOn output the listing/detail endpoints already
+// use) into the printed status line. The "who is this pending on" logic
+// itself is never reimplemented here — this only decides how to word it.
+//
+// Lives alongside the other display formatters (not inside a single
+// docDefinition file) because PendingOn is shared across subject types
+// (Vendor Onboarding, Medical Claim, ...) — any future internal-copy PDF
+// for those can reuse this one formatter instead of growing its own.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function displayPendingOn(pendingOn: PendingOn): string {
+  switch (pendingOn.role) {
+    case "NONE":
+      return pendingOn.outcome === "APPROVED" ? "Approved" : "Rejected";
+    case "PROPOSER":
+      return "Pending — Awaiting Employee Review";
+    case "VENDOR":
+      return "Pending with Vendor";
+    case "GUEST":
+      return "Pending with Ex-Employee";
+    case "APPROVER":
+      return pendingOn.approvers.length > 0
+        ? `Pending with ${pendingOn.approvers.map((a) => a.name).join(", ")}`
+        : "Pending Approval";
+    default:
+      // Defensive fallback only — every PendingOn role above is handled;
+      // this guards against a future role being added to the union without
+      // this switch being updated.
+      return "—";
+  }
 }

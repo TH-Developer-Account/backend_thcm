@@ -10,6 +10,7 @@ import {
   displayBoolean,
   displayDate,
   displayDateTime,
+  displayPendingOn,
 } from "@pdf/pdfFieldFormatter";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -22,11 +23,13 @@ import {
 //
 // Two builders live here, sharing the section helpers below:
 //   - buildVendorOnboardingDocDefinition        → internal/employee copy,
-//     everything including Procurement Details (employee-owned fields).
+//     everything including Procurement Details (employee-owned fields),
+//     Workflow, and Audit Trail — plus a dynamic "pending on" status line.
 //   - buildVendorOnboardingVendorCopyDocDefinition → vendor-facing copy,
 //     only the fields the vendor themselves submitted (Vendor + Bank +
 //     Documents) — served on the public, unauthenticated view link, so it
-//     must never carry internal procurement data.
+//     must never carry internal procurement data, approver identities, or
+//     internal workflow/audit history.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const SECTION_HEADER_STYLE = "sectionHeader";
@@ -195,6 +198,135 @@ function buildDocumentsSection(data: VendorOnboardingPdfData): Content[] {
   ];
 }
 
+// ── internal-copy-only section builders ─────────────────────────────────
+// Neither of these is called from buildVendorOnboardingVendorCopyDocDefinition
+// — approver identities and the internal approval/activity history are not
+// for the public, unauthenticated vendor-facing link.
+
+// One stage heading + one approver table per stage, current iteration only
+// (data.workflow is assembled from isCurrentIteration: true stages — see
+// vendorOnboardingAssembler.ts). A stage with zero approvers still renders
+// its heading with a "No approvers assigned" placeholder row, rather than
+// silently disappearing from the section.
+function buildWorkflowSection(data: VendorOnboardingPdfData): Content[] {
+  if (!data.workflow || data.workflow.stages.length === 0) {
+    return [
+      { text: "Workflow", style: SECTION_HEADER_STYLE },
+      {
+        text: "No approval workflow has been initiated for this request yet.",
+        italics: true,
+        margin: [0, 0, 0, 16],
+      },
+    ];
+  }
+
+  const stageBlocks: Content[] = data.workflow.stages.flatMap(
+    (stage): Content[] => {
+      const approvalRows: Content[][] =
+        stage.approvals.length > 0
+          ? stage.approvals.map((approval) => [
+              { text: approval.approverName },
+              { text: displayValue(approval.status) },
+              { text: displayDateTime(approval.actedAt) },
+              { text: displayValue(approval.reason) },
+            ])
+          : [
+              [
+                { text: "No approvers assigned", italics: true },
+                { text: "—" },
+                { text: "—" },
+                { text: "—" },
+              ],
+            ];
+
+      return [
+        {
+          text:
+            `Stage ${stage.stageOrder}` +
+            (stage.stageName ? `: ${stage.stageName}` : "") +
+            ` — ${displayValue(stage.strategy)} strategy — ${displayValue(stage.status)}`,
+          bold: true,
+          margin: [0, 8, 0, 4],
+        },
+        {
+          table: {
+            widths: ["30%", "18%", "27%", "25%"],
+            body: [
+              [
+                { text: "Approver", style: LABEL_STYLE },
+                { text: "Status", style: LABEL_STYLE },
+                { text: "Acted On", style: LABEL_STYLE },
+                { text: "Reason", style: LABEL_STYLE },
+              ],
+              ...approvalRows,
+            ],
+          },
+          layout: "lightHorizontalLines",
+          margin: [0, 0, 0, 8],
+        },
+      ];
+    },
+  );
+
+  return [{ text: "Workflow", style: SECTION_HEADER_STYLE }, ...stageBlocks];
+}
+
+// Friendly labels for the ActivityAction values that can appear against a
+// VENDOR_ONBOARDING subject (see schema.prisma's ActivityAction enum and
+// every tx.activityLog.create({ subjectType: "VENDOR_ONBOARDING", ... }) call
+// across vendorOnboarding.controller.ts and workflow.controller.ts/service.ts:
+// initiation, vendor submission, send-for-approval and closure are vendor-
+// onboarding-specific; APPROVED/REJECTED/CLARIFY are the shared workflow
+// actions every subject type logs the same way). Anything not in this map
+// (e.g. a future action added elsewhere) falls back to the raw enum value
+// rather than silently dropping the row.
+const ACTIVITY_ACTION_LABELS: Record<string, string> = {
+  VENDOR_ONBOARDING_INITIATED: "Vendor Onboarding Initiated",
+  VENDOR_FORM_SUBMITTED: "Vendor Form Submitted",
+  VENDOR_ONBOARDING_SENT_FOR_APPROVAL: "Sent for Approval",
+  VENDOR_ONBOARDING_CLOSED: "Vendor Onboarding Closed",
+  APPROVED: "Approved",
+  REJECTED: "Rejected",
+  CLARIFY: "Clarification Requested",
+};
+
+function displayActivityAction(action: string): string {
+  return ACTIVITY_ACTION_LABELS[action] ?? action;
+}
+
+function buildAuditTrailSection(data: VendorOnboardingPdfData): Content[] {
+  const auditTable: Content =
+    data.auditTrail.length > 0
+      ? {
+          table: {
+            widths: ["20%", "27%", "23%", "30%"],
+            body: [
+              [
+                { text: "Date & Time", style: LABEL_STYLE },
+                { text: "Action", style: LABEL_STYLE },
+                { text: "Performed By", style: LABEL_STYLE },
+                { text: "Reason", style: LABEL_STYLE },
+              ],
+              ...data.auditTrail.map((entry) => [
+                { text: displayDateTime(entry.createdAt) },
+                { text: displayActivityAction(entry.action) },
+                { text: entry.performedBy },
+                { text: displayValue(entry.reason) },
+              ]),
+            ],
+          },
+          layout: "lightHorizontalLines",
+          margin: [0, 0, 0, 16],
+        }
+      : {
+          text: "No activity recorded yet.",
+          italics: true,
+          margin: [0, 0, 0, 16],
+        };
+
+  return [{ text: "Audit Trail", style: SECTION_HEADER_STYLE }, auditTable];
+}
+
 // Explicit `: Content` (and, for the footer, its full function-signature)
 // return types below are load-bearing, not decorative — without them, TS
 // widens the `margin` tuple literal to `number[]`, which pdfmake's Margins
@@ -219,13 +351,17 @@ function buildLetterheadHeader(subtitle: string): Content {
   };
 }
 
+// `statusLabel` is printed as-is — callers decide what it says. The
+// internal copy passes the dynamic "pending on" label (see
+// buildVendorOnboardingDocDefinition below); the vendor copy keeps passing
+// the raw status enum, unchanged.
 function buildStatusFooter(
-  status: string,
+  statusLabel: string,
 ): (currentPage: number, pageCount: number) => Content {
   return (currentPage: number, pageCount: number): Content => ({
     margin: [40, 0, 40, 20],
     columns: [
-      { text: `Status: ${status}`, style: "footerText" },
+      { text: `Status: ${statusLabel}`, style: "footerText" },
       {
         text: `Page ${currentPage} of ${pageCount}`,
         alignment: "right" as const,
@@ -244,13 +380,19 @@ export function buildVendorOnboardingDocDefinition(
     pageSize: "A4",
     pageMargins: [40, 100, 40, 60],
     header: buildLetterheadHeader("Vendor Onboarding Record"),
-    footer: buildStatusFooter(data.status),
+    // Dynamic status — reuses the same computePendingOn/
+    // resolveVendorOnboardingPendingOn result the listing/detail endpoints
+    // already compute (assembled once in vendorOnboardingAssembler.ts),
+    // rather than the raw status enum.
+    footer: buildStatusFooter(displayPendingOn(data.pendingOn)),
 
     content: [
       ...buildVendorDetailsSection(data),
       ...buildBankDetailsSection(data),
       ...buildProcurementDetailsSection(data),
       ...buildDocumentsSection(data),
+      ...buildWorkflowSection(data),
+      ...buildAuditTrailSection(data),
       {
         text: `Generated on ${displayDate(data.generatedAt)}`,
         style: "footerText",
@@ -264,8 +406,10 @@ export function buildVendorOnboardingDocDefinition(
 }
 
 // ── vendor-facing copy — vendor-submitted fields only ─────────────────────
-// No Procurement Details section: those are employee-owned fields the
-// vendor never provided and should never see on the public view link.
+// No Procurement Details, Workflow, or Audit Trail sections: those are
+// either employee-owned fields the vendor never provided, or internal
+// approver identities/history — neither belongs on the public view link.
+// Status footer stays the raw enum, not the approver-naming dynamic label.
 
 export function buildVendorOnboardingVendorCopyDocDefinition(
   data: VendorOnboardingPdfData,

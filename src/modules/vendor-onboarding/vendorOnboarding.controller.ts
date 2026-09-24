@@ -595,14 +595,14 @@ export const sendForApproval = async (
         where: { id: id as string },
         data: { status: "IN_PROGRESS" },
       });
-      await tx.activityLog.create({
-        data: {
-          subjectType: "VENDOR_ONBOARDING",
-          subjectId: id as string,
-          actorId: userId,
-          action: "VENDOR_ONBOARDING_SENT_FOR_APPROVAL",
-        },
-      });
+      // await tx.activityLog.create({
+      //   data: {
+      //     subjectType: "VENDOR_ONBOARDING",
+      //     subjectId: id as string,
+      //     actorId: userId,
+      //     action: "VENDOR_ONBOARDING_SENT_FOR_APPROVAL",
+      //   },
+      // });
     });
 
     res.status(200).json({ success: true, message: "Sent for approval" });

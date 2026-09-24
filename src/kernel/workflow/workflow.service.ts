@@ -155,7 +155,7 @@ const emailStageApprovers = async ({
       .map((approver) =>
         addMailJob({
           to: approver.email as string,
-          subject: `Approval required — ${subjectMeta.displayLabel}`,
+          subject: `Approval required - ${subjectMeta.displayLabel}`,
           templateName: "approval-pending",
           templateData: {
             appName,
@@ -311,9 +311,11 @@ export const createEventProposalWithWorkflow = async (input: any) => {
 export const approveStage = async ({
   stageId,
   userId,
+  reason,
 }: {
   stageId: string;
   userId: string;
+  reason: string;
 }) => {
   try {
     const result: ApproveStageResult = await prisma.$transaction(async (tx) => {
@@ -418,7 +420,9 @@ export const approveStage = async ({
           action: "APPROVED",
           workflowId: stage!.workflowId,
           stageId: stageId as string,
-          metadata: { reason: "This is approved" },
+          metadata: {
+            reason: reason.trim(),
+          },
         },
       });
 

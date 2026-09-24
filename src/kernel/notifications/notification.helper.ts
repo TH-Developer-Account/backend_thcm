@@ -51,7 +51,7 @@ const notificationMetaResolvers: Record<
     return {
       ownerId: onboarding.initiatedById,
       displayLabel: onboarding.vendorName
-        ? `Vendor onboarding — ${onboarding.vendorName}`
+        ? `Vendor onboarding - ${onboarding.vendorName}`
         : "Vendor onboarding",
       link: `/vendor-onboarding/${subjectId}`,
     };
@@ -73,7 +73,7 @@ const notificationMetaResolvers: Record<
       displayLabel: claim.referenceNumber
         ? `Medical Claim ${claim.referenceNumber}`
         : claim.employeeName
-          ? `Medical claim — ${claim.employeeName}`
+          ? `Medical claim - ${claim.employeeName}`
           : "Medical claim",
       link: `/medical-claims/${subjectId}`,
     };
