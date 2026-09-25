@@ -56,6 +56,44 @@ const VENDOR_DOCUMENT_EXTENSIONS_BY_MIME_TYPE: Record<string, string> = {
   "application/pdf": "pdf",
 };
 
+const EMPLOYEE_UPDATABLE_ONBOARDING_FIELDS = [
+  // vendor-filled fields (employee corrections)
+  "vendorName",
+  "state",
+  "city",
+  "pinCode",
+  "address",
+  "mobile",
+  "email",
+  "msmeVendor",
+  "bankName",
+  "bankBranch",
+  "ifscCode",
+  "bankAddress",
+  "accountNumber",
+  "gstin",
+  "pan",
+  "entityRegNo",
+
+  // employee-owned fields
+  "vendorCode",
+  "vendorType",
+  "companyCode",
+  "purchaseOrg",
+  "paymentTerm",
+  "tds",
+  "vendorCategory",
+  "materialType",
+  "materialSubType",
+  "selfAssessmentObtained",
+  "ndaObtained",
+  "gpaObtained",
+  "isRelatedParty",
+  "vendorAuditReportPrepared",
+  "natureOfService",
+  "onboardingReason",
+] as const;
+
 // Throws a field-specific error so the vendor knows exactly which
 // document failed, rather than a generic "invalid file" message.
 function validateVendorDocumentFile(
@@ -103,6 +141,20 @@ async function persistVendorDocuments(
       update: { s3Key, uploadedAt: new Date() },
     });
   }
+}
+
+// Picks only the whitelisted keys off an arbitrary body — same reasoning as
+// VENDOR_LISTING_SORT_FIELD_MAP elsewhere in this file: an explicit
+// whitelist, not raw pass-through, so a field renamed/removed from the
+// schema fails loudly at the call site instead of writing undefined.
+function pickEmployeeUpdatableFields(
+  body: Record<string, unknown>,
+): Record<string, unknown> {
+  const picked: Record<string, unknown> = {};
+  for (const field of EMPLOYEE_UPDATABLE_ONBOARDING_FIELDS) {
+    if (field in body) picked[field] = body[field];
+  }
+  return picked;
 }
 
 // POST /vendor-onboarding
@@ -398,6 +450,19 @@ export const resendVendorLink = async (
 // details, in one call, after vendor submission (IN_REVIEW state).
 // Deliberately does NOT touch status — separate endpoint below moves it forward,
 // mirroring EPC's separate "resubmit" vs "advance" actions.
+// Single source of truth for which fields an employee is allowed to write
+// via this endpoint — used to both read them off req.body and build the
+// Prisma update payload, so a field added/removed here can't drift between
+// the two (previously the same ~25 names were hand-duplicated in both
+// places). msmeCertAttached intentionally excluded — it was accepted but
+// never persisted, and has no corresponding schema field to write to.
+
+// PATCH /vendor-onboarding/:id
+// Employee fills in their own fields AND can correct the vendor's submitted
+// details — including replacing any of the vendor's document images — in
+// one call, after vendor submission (IN_REVIEW state). Deliberately does
+// NOT touch status beyond forcing IN_REVIEW — a separate endpoint moves it
+// forward, mirroring EPC's separate "resubmit" vs "advance" actions.
 export const updateEmployeeFields = async (
   req: Request,
   res: Response,
@@ -407,45 +472,6 @@ export const updateEmployeeFields = async (
     const userId = req.user?.id;
     const { id } = req.params;
     if (!userId) throw new ApiError(401, "Unauthorized");
-
-    const {
-      // ── vendor-filled fields (employee corrections) ──
-      vendorName,
-      state,
-      city,
-      pinCode,
-      address,
-      mobile,
-      email,
-      msmeVendor,
-      msmeCertAttached,
-      bankName,
-      bankBranch,
-      ifscCode,
-      bankAddress,
-      accountNumber,
-      gstin,
-      pan,
-      entityRegNo,
-
-      // ── employee-owned fields ──
-      vendorCode,
-      vendorType,
-      companyCode,
-      purchaseOrg,
-      paymentTerm,
-      tds,
-      vendorCategory,
-      materialType,
-      materialSubType,
-      selfAssessmentObtained,
-      ndaObtained,
-      gpaObtained,
-      isRelatedParty,
-      vendorAuditReportPrepared,
-      natureOfService,
-      onboardingReason,
-    } = req.body;
 
     // if (materialType && materialSubType) {
     //   const validSubTypes = MATERIAL_SUBTYPES_BY_TYPE[materialType] ?? [];
@@ -487,45 +513,26 @@ export const updateEmployeeFields = async (
       throw new ApiError(400, "This request is not awaiting employee review");
     }
 
-    const updated = await prisma.vendorOnboarding.update({
-      where: { id: id as string },
-      data: {
-        status: "IN_REVIEW",
-        vendorName,
-        state,
-        city,
-        pinCode,
-        address,
-        mobile,
-        email,
-        msmeVendor,
-        bankName,
-        bankBranch,
-        ifscCode,
-        bankAddress,
-        accountNumber,
-        gstin,
-        pan,
-        entityRegNo,
+    const files = req.files as
+      | Record<string, Express.Multer.File[]>
+      | undefined;
 
-        // employee-owned fields
-        vendorCode,
-        vendorType,
-        companyCode,
-        purchaseOrg,
-        paymentTerm,
-        tds,
-        vendorCategory,
-        materialType,
-        materialSubType,
-        selfAssessmentObtained,
-        ndaObtained,
-        gpaObtained,
-        isRelatedParty,
-        vendorAuditReportPrepared,
-        natureOfService,
-        onboardingReason,
-      },
+    // Field updates and any replaced document images succeed or fail
+    // together — a partial write here (fields saved, upload failed, or vice
+    // versa) would leave the record in a state neither the employee nor the
+    // vendor asked for.
+    const updated = await prisma.$transaction(async (tx) => {
+      const result = await tx.vendorOnboarding.update({
+        where: { id: id as string },
+        data: {
+          status: "IN_REVIEW",
+          ...pickEmployeeUpdatableFields(req.body),
+        },
+      });
+
+      await persistVendorDocuments(tx, id as string, files);
+
+      return result;
     });
 
     res.status(200).json({
