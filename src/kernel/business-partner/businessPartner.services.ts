@@ -256,7 +256,7 @@ export type UpdateBusinessPartnerAddressInput =
 // Included on every contact read so the caller gets user details for free
 // instead of making a second round trip.
 const contactUserSelect = {
-  select: { id: true, first_name: true, last_name: true, email: true },
+  select: { id: true, name: true, email: true, phoneNumber: true },
 } as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
