@@ -913,7 +913,7 @@ export const submitVendorForm = async (
         data: {
           subjectType: "VENDOR_ONBOARDING",
           subjectId: onboarding.id,
-          actorId: onboarding.initiatedById,
+          actorId: "",
           action: "VENDOR_FORM_SUBMITTED",
         },
       });
@@ -946,7 +946,7 @@ export const submitVendorForm = async (
     await addMailJob({
       to: initiator?.email as string,
       cc: onboarding.email ? [onboarding.email] : undefined,
-      subject: "Vendor Onboarding — Submission Received",
+      subject: "Vendor Onboarding - Submission Received",
       templateName: "vendor-onboarding-submitted",
       templateData: {
         vendorName: onboarding.vendorName,
