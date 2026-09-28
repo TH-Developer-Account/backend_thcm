@@ -100,15 +100,31 @@
                 </table>
                 {{/if}}
 
-                <table role="presentation" cellpadding="0" cellspacing="0" style="margin:16px auto 8px auto;">
+                <table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:16px auto 8px auto;">
                   <tr>
-                    <td align="center" style="border-radius:6px; background-color:#1a56db;">
+                    <td align="center">
+                      <!--[if mso]>
+                      <v:roundrect
+                        xmlns:v="urn:schemas-microsoft-com:vml"
+                        xmlns:w="urn:schemas-microsoft-com:office:word"
+                        href="{{dashboardUrl}}"
+                        style="height:44px; width:180px; v-text-anchor:middle;"
+                        arcsize="14%"
+                        stroke="f"
+                        fillcolor="#1a56db"
+                      >
+                        <w:anchorlock />
+                        <center style="color:#ffffff; font-family:Arial, Helvetica, sans-serif; font-size:14px; font-weight:bold;">View &amp; Respond</center>
+                      </v:roundrect>
+                      <![endif]-->
+                      <!--[if !mso]><!-- -->
                       <a
                         href="{{dashboardUrl}}"
                         target="_blank"
                         rel="noopener noreferrer"
-                        style="display:inline-block; padding:12px 28px; color:#ffffff; font-size:14px; font-weight:600; text-decoration:none; font-family:Arial, Helvetica, sans-serif;"
+                        style="display:inline-block; width:180px; background-color:#1a56db; border-radius:6px; color:#ffffff; font-family:Arial, Helvetica, sans-serif; font-size:14px; font-weight:600; line-height:44px; text-align:center; text-decoration:none;"
                       >View &amp; Respond</a>
+                      <!--<![endif]-->
                     </td>
                   </tr>
                 </table>
