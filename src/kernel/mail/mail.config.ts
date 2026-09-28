@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
+// import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Single shared transporter instance for the lifetime of the process.
@@ -19,18 +19,30 @@ import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 // WHY MAIL_FROM lives here: the sender must belong to the identity verified
 // for whichever provider is active, so it is defined next to the transporter.
 // Consumers import it instead of reading provider-specific env vars.
-export const MAIL_FROM = process.env.MAIL_FROM;
+// export const MAIL_FROM = process.env.MAIL_FROM;
 
-const sesClient = new SESv2Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
-  },
-});
+export const MAIL_FROM = "marketing.tatahitachi@gmail.com";
+
+// const sesClient = new SESv2Client({
+//   region: process.env.AWS_REGION,
+//   credentials: {
+//     accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
+//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
+//   },
+// });
+
+// const transporter = nodemailer.createTransport({
+//   SES: { sesClient, SendEmailCommand },
+// });
+
+// Gmail (app password)
 
 const transporter = nodemailer.createTransport({
-  SES: { sesClient, SendEmailCommand },
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_MAIL_ID,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
 });
 
 export default transporter;
@@ -40,16 +52,6 @@ export default transporter;
 // If reviving one, also restore its env vars and point MAIL_FROM at an
 // address that provider allows.
 // ─────────────────────────────────────────────────────────────────────────────
-
-// Gmail (app password)
-//
-// const transporter = nodemailer.createTransport({
-//   service: "gmail",
-//   auth: {
-//     user: process.env.GMAIL_MAIL_ID,
-//     pass: process.env.GMAIL_APP_PASSWORD,
-//   },
-// });
 
 // Office 365 (Basic Auth over STARTTLS)
 //
