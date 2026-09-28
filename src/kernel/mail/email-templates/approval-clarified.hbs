@@ -1,132 +1,134 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="color-scheme" content="light" />
+    <meta name="supported-color-schemes" content="light" />
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
     <title>Clarification Required: {{epcName}}</title>
+    <!--[if mso]>
+    <noscript>
+      <xml>
+        <o:OfficeDocumentSettings>
+          <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+      </xml>
+    </noscript>
     <style>
-      body {
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f7;
-        font-family: Arial, sans-serif;
-        color: #333;
-      }
-      .wrapper {
-        width: 100%;
-        max-width: 600px;
-        margin: 32px auto;
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        overflow: hidden;
-      }
-      .header {
-        background-color: #1a56db;
-        padding: 24px 32px;
-      }
-      .header h1 {
-        margin: 0;
-        color: #fff;
-        font-size: 20px;
-        font-weight: 600;
-      }
-      .content {
-        padding: 32px;
-      }
-      .footer {
-        background-color: #f4f4f7;
-        padding: 16px 32px;
-        text-align: center;
-        font-size: 12px;
-        color: #888;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 24px 0;
-        font-size: 14px;
-      }
-      td {
-        padding: 10px 14px;
-        border: 1px solid #e5e7eb;
-      }
-      .clarify-box {
-        background-color: #fffbeb;
-        border-left: 4px solid #c27803;
-        padding: 16px 20px;
-        border-radius: 4px;
-        margin: 16px 0;
-        font-size: 14px;
+      table, td, div, p, a { font-family: Arial, Helvetica, sans-serif !important; }
+    </style>
+    <![endif]-->
+    <style>
+      body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+      table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+      body { margin: 0; padding: 0; width: 100% !important; height: 100% !important; background-color: #f4f4f7; }
+      a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; }
+      @media screen and (max-width: 600px) {
+        .email-container { width: 100% !important; max-width: 100% !important; }
+        .email-padding { padding-left: 20px !important; padding-right: 20px !important; }
       }
     </style>
   </head>
-  <body>
-    <div class="wrapper">
-
-      <div class="header">
-        <h1>{{appName}}</h1>
-      </div>
-
-      <div class="content">
-        <p style="font-size: 16px; margin-top: 0;">
-          Hello
-          <strong>{{approverName}}</strong>,
-        </p>
-        <p style="font-size: 14px; line-height: 1.6;">
-          An approver has requested
-          <strong style="color: #c27803;">clarification</strong>
-          on the following proposal. Please review the note below and resubmit
-          the required information.
-        </p>
-
-        <table>
-          <tr style="background-color: #f9fafb;">
-            <td style="font-weight: 600; width: 40%;">Event Proposal</td>
-            <td>{{epcName}}</td>
-          </tr>
-          <tr>
-            <td style="font-weight: 600;">Workflow</td>
-            <td>{{workflowName}}</td>
-          </tr>
-          <tr style="background-color: #f9fafb;">
-            <td style="font-weight: 600;">Stage</td>
-            <td>{{stageName}}</td>
-          </tr>
-          <tr>
-            <td style="font-weight: 600;">Status</td>
-            <td>
-              <span style="color: #c27803; font-weight: 600;">⟳ Clarification
-                Requested</span>
-            </td>
-          </tr>
-        </table>
-
-        {{#if clarifyNote}}
-          <div class="clarify-box">
-            <p
-              style="margin: 0 0 6px 0; font-weight: 600; color: #c27803;"
-            >Clarification Note</p>
-            <p style="margin: 0; line-height: 1.6;">{{clarifyNote}}</p>
-          </div>
-        {{/if}}
-
-        <p style="text-align: center; margin: 32px 0;">
-          <a
-            href="{{dashboardUrl}}"
-            style="background-color: #1a56db; color: #fff; padding: 12px 24px;
-                    border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600;"
-          >
-            View &amp; Respond
-          </a>
-        </p>
-      </div>
-
-      <div class="footer">
-        &copy;
-        {{currentYear}}
-        {{appName}}. All rights reserved.<br />
-        This is an automated message — please do not reply.
-      </div>
-
+  <body style="margin:0; padding:0; background-color:#f4f4f7;">
+    <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#f4f4f7;">
+      Clarification requested on {{epcName}}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
     </div>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f7;">
+      <tr>
+        <td align="center" style="padding:32px 12px;">
+          <!--[if mso]>
+          <table role="presentation" width="600" cellpadding="0" cellspacing="0" align="center"><tr><td>
+          <![endif]-->
+          <table
+            role="presentation"
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            class="email-container"
+            style="width:100%; max-width:600px; background-color:#ffffff; border-radius:8px; overflow:hidden;"
+          >
+            <tr>
+              <td class="email-padding" style="background-color:#1a56db; padding:24px 32px;">
+                <h1 style="margin:0; color:#ffffff; font-size:20px; font-weight:600; font-family:Arial, Helvetica, sans-serif;">
+                  {{appName}}
+                </h1>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="email-padding" style="padding:32px; font-family:Arial, Helvetica, sans-serif; color:#333333;">
+                <p style="margin:0 0 16px 0; font-size:16px; line-height:1.6;">
+                  Hello <strong>{{approverName}}</strong>,
+                </p>
+                <p style="margin:0 0 16px 0; font-size:14px; line-height:1.6;">
+                  An approver has requested <strong style="color:#c27803;">clarification</strong> on the
+                  following proposal. Please review the note below and resubmit the required information.
+                </p>
+
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin:8px 0 16px 0; font-size:14px; font-family:Arial, Helvetica, sans-serif;">
+                  <tr style="background-color:#f9fafb;">
+                    <td style="padding:10px 14px; border:1px solid #e5e7eb; font-weight:600; width:40%; color:#333333;">Event Proposal</td>
+                    <td style="padding:10px 14px; border:1px solid #e5e7eb; color:#333333;">{{epcName}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 14px; border:1px solid #e5e7eb; font-weight:600; color:#333333;">Workflow</td>
+                    <td style="padding:10px 14px; border:1px solid #e5e7eb; color:#333333;">{{workflowName}}</td>
+                  </tr>
+                  <tr style="background-color:#f9fafb;">
+                    <td style="padding:10px 14px; border:1px solid #e5e7eb; font-weight:600; color:#333333;">Stage</td>
+                    <td style="padding:10px 14px; border:1px solid #e5e7eb; color:#333333;">{{stageName}}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:10px 14px; border:1px solid #e5e7eb; font-weight:600; color:#333333;">Status</td>
+                    <td style="padding:10px 14px; border:1px solid #e5e7eb;">
+                      <span style="color:#c27803; font-weight:600;">&#9888; Clarification Requested</span>
+                    </td>
+                  </tr>
+                </table>
+
+                {{#if clarifyNote}}
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%; margin:0 0 16px 0; background-color:#fffbeb; border-left:4px solid #c27803; border-radius:4px;">
+                  <tr>
+                    <td style="padding:16px 20px; font-family:Arial, Helvetica, sans-serif;">
+                      <p style="margin:0 0 6px 0; font-weight:600; color:#c27803; font-size:14px;">Clarification Note</p>
+                      <p style="margin:0; line-height:1.6; font-size:14px; color:#333333;">{{clarifyNote}}</p>
+                    </td>
+                  </tr>
+                </table>
+                {{/if}}
+
+                <table role="presentation" cellpadding="0" cellspacing="0" style="margin:16px auto 8px auto;">
+                  <tr>
+                    <td align="center" style="border-radius:6px; background-color:#1a56db;">
+                      <a
+                        href="{{dashboardUrl}}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style="display:inline-block; padding:12px 28px; color:#ffffff; font-size:14px; font-weight:600; text-decoration:none; font-family:Arial, Helvetica, sans-serif;"
+                      >View &amp; Respond</a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="email-padding" style="background-color:#f4f4f7; padding:16px 32px; text-align:center; font-family:Arial, Helvetica, sans-serif;">
+                <p style="margin:0; font-size:12px; line-height:1.6; color:#888888;">
+                  &copy; {{currentYear}} {{appName}}. All rights reserved.<br />
+                  This is an automated message &mdash; please do not reply.
+                </p>
+              </td>
+            </tr>
+          </table>
+          <!--[if mso]>
+          </td></tr></table>
+          <![endif]-->
+        </td>
+      </tr>
+    </table>
   </body>
 </html>
