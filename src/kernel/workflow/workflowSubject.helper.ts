@@ -26,7 +26,6 @@ import { notifyGuestOfClarification } from "@medi-claim/mediclaim.helper";
 import {
   Prisma,
   WorkflowSubjectType,
-  ActivityAction,
   WorkflowStatus,
   ApprovalStatus,
   StageStatus,
@@ -219,12 +218,11 @@ export async function runPostClarifyHook(
 // resubmitting through activateFirstStageController would get EPC's
 // action name/status literal, which is wrong the moment a second subject
 // type uses the endpoint (as MEDICAL_CLAIM now does).
-const resubmitActionBySubjectType: Record<WorkflowSubjectType, ActivityAction> =
-  {
-    EVENT_PROPOSAL: "EPC_RESUBMITTED",
-    VENDOR_ONBOARDING: "VENDOR_FORM_SUBMITTED",
-    MEDICAL_CLAIM: "MEDICAL_CLAIM_RESUBMITTED",
-  };
+const resubmitActionBySubjectType: Record<WorkflowSubjectType, string> = {
+  EVENT_PROPOSAL: "EPC_RESUBMITTED",
+  VENDOR_ONBOARDING: "VENDOR_FORM_SUBMITTED",
+  MEDICAL_CLAIM: "MEDICAL_CLAIM_RESUBMITTED",
+};
 
 const resubmitStatusBySubjectType: Record<WorkflowSubjectType, string> = {
   EVENT_PROPOSAL: "Resubmitted",
@@ -232,9 +230,7 @@ const resubmitStatusBySubjectType: Record<WorkflowSubjectType, string> = {
   MEDICAL_CLAIM: "IN_PROGRESS",
 };
 
-export function getResubmitAction(
-  subjectType: WorkflowSubjectType,
-): ActivityAction {
+export function getResubmitAction(subjectType: WorkflowSubjectType): string {
   return resubmitActionBySubjectType[subjectType];
 }
 

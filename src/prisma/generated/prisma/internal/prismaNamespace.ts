@@ -5248,20 +5248,6 @@ export type ListEnumApprovalStatusFieldRefInput<$PrismaModel> = FieldRefInputTyp
 
 
 /**
- * Reference to a field of type 'ActivityAction'
- */
-export type EnumActivityActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActivityAction'>
-    
-
-
-/**
- * Reference to a field of type 'ActivityAction[]'
- */
-export type ListEnumActivityActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ActivityAction[]'>
-    
-
-
-/**
  * Reference to a field of type 'ProductType'
  */
 export type EnumProductTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductType'>

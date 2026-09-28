@@ -6,6 +6,10 @@ import ApiError from "@shared/utils/apiError";
 import { notify } from "@notifications/notification.services";
 import { getSubjectNotificationMeta } from "@notifications/notification.helper";
 import { addMailJob } from "@mail/mail.service";
+import {
+  withInitiatorCc,
+  resolveInitiatorEmail,
+} from "@mail/workFlowEmail.services";
 
 import {
   getSubjectOwnerId,
@@ -117,19 +121,30 @@ const notifyMentionedUsers = async ({
 
   if (!mentionedEmails.length) return;
 
-  await addMailJob({
-    to,
-    cc: Array.isArray(cc) && cc.length ? cc : undefined,
-    subject: `Please check someone has mentioned you in a comment..!!`,
-    templateName: "comment-mentioned",
-    templateData: {
-      appName: "Marketing Activity Planner",
-      epcName: "test-epc",
-      comment: message,
-      approverName: commenterName,
-      dashboardUrl: `www.google.com`,
-    },
-  });
+  // Real record label/link instead of the old hardcoded placeholders, and
+  // the record's creator CC'd in — same "every workflow email cc's the
+  // initiator" rule applied everywhere else.
+  const subjectMeta = await getSubjectNotificationMeta(subjectType, subjectId);
+  const initiatorEmail = await resolveInitiatorEmail(subjectMeta.ownerId);
+
+  await addMailJob(
+    withInitiatorCc(
+      {
+        to,
+        cc: Array.isArray(cc) && cc.length ? cc : undefined,
+        subject: `Please check someone has mentioned you in a comment..!!`,
+        templateName: "comment-mentioned",
+        templateData: {
+          appName: subjectType,
+          epcName: subjectMeta.displayLabel,
+          comment: message,
+          approverName: commenterName,
+          dashboardUrl: `${process.env.FRONTEND_URL}${subjectMeta.link}`,
+        },
+      },
+      initiatorEmail,
+    ),
+  );
 
   const mentionedUserIds = await resolveUserIdsByEmail(
     mentionedEmails,

@@ -1,6 +1,6 @@
 import { Prisma } from "../../prisma/generated/prisma/client";
 import { prisma } from "@shared/config/prisma";
-import { addMailJob } from "@mail/mail.service";
+import { sendWorkflowMail } from "@mail/workFlowEmail.services";
 import ApiError from "@shared/utils/apiError";
 import { uploadToS3, deleteReportImage } from "@shared/utils/aws-s3.services";
 import { XlsxRow } from "@import-export/utils/xlsxWriter";
@@ -260,6 +260,7 @@ export async function notifyGuestOfClarification(
       referenceNumber: true,
       email: true,
       employeeName: true,
+      initiatedById: true,
     },
   });
   if (!claim?.guestId) return;
@@ -274,19 +275,22 @@ export async function notifyGuestOfClarification(
     select: { metadata: true, createdAt: true },
   });
 
-  await addMailJob({
-    to: claim.email as string,
-    subject: "Medical Claim — Clarification Requested",
-    templateName: "medical-claim-clarification",
-    templateData: {
-      employeeName: claim.employeeName,
-      claimReference: claim.referenceNumber,
-      clarificationReason:
-        (latestClarification?.metadata as { reason?: string } | null)?.reason ??
-        null,
-      formUrl: `${process.env.FRONTEND_URL}/guest/login`,
+  await sendWorkflowMail(
+    {
+      to: claim.email as string,
+      subject: "Medical Claim — Clarification Requested",
+      templateName: "medical-claim-clarification",
+      templateData: {
+        employeeName: claim.employeeName,
+        claimReference: claim.referenceNumber,
+        clarificationReason:
+          (latestClarification?.metadata as { reason?: string } | null)
+            ?.reason ?? null,
+        formUrl: `${process.env.FRONTEND_URL}/guest/login`,
+      },
     },
-  });
+    claim.initiatedById,
+  );
 }
 
 // Bills can carry any common receipt/photo format — broader than vendor

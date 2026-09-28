@@ -3,9 +3,16 @@ import { selectTemplate } from "./template.service";
 import { buildWorkflowStages } from "./workflow.helper";
 import { notify } from "@notifications/notification.services";
 import { addMailJob } from "@mail/mail.service";
+import {
+  resolveInitiatorEmail,
+  withInitiatorCc,
+} from "@mail/workFlowEmail.services";
 import ApiError from "@shared/utils/apiError";
 
-import { updateSubjectStatus } from "./workflowSubject.helper";
+import {
+  updateSubjectStatus,
+  getSubjectOwnerId,
+} from "./workflowSubject.helper";
 import {
   getSubjectNotificationMeta,
   SubjectNotificationMeta,
@@ -17,7 +24,6 @@ import {
   StrategyType,
   WorkflowStatus,
   WorkflowSubjectType,
-  ActivityAction,
 } from "../../prisma/generated/prisma/client";
 import { templateMatchResolvers } from "./workflow.helper";
 
@@ -121,22 +127,31 @@ const notifyAboutWorkflowEvent = ({
 // testable. Uses the generic approval-pending.hbs template (subject-type
 // agnostic, via subjectMeta.displayLabel) rather than the EPC-only
 // approval-approved.hbs, since this fires for EPC/Vendor/Medical Claim alike.
+//
+// Every workflow mail CCs the record's initiator (per product decision) —
+// resolved ONCE here via getSubjectOwnerId + resolveInitiatorEmail, then
+// merged into each per-approver mail via withInitiatorCc, rather than
+// re-resolved per approver.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const emailStageApprovers = async ({
   appName,
   stageId,
   approverIds,
+  subjectType,
+  subjectId,
   subjectMeta,
 }: {
   appName: string;
   stageId: string;
   approverIds: string[];
+  subjectType: WorkflowSubjectType;
+  subjectId: string;
   subjectMeta: SubjectNotificationMeta;
 }) => {
   if (!approverIds.length) return;
 
-  const [approvers, stage] = await Promise.all([
+  const [approvers, stage, initiatorEmail] = await Promise.all([
     prisma.user.findMany({
       where: { id: { in: approverIds } },
       select: { email: true, first_name: true, last_name: true },
@@ -145,6 +160,9 @@ const emailStageApprovers = async ({
       where: { id: stageId },
       select: { stageName: true },
     }),
+    // subjectMeta.ownerId already carries the initiator id — reuse it
+    // instead of a second getSubjectOwnerId lookup.
+    resolveInitiatorEmail(subjectMeta.ownerId),
   ]);
 
   const dashboardUrl = `${process.env.FRONTEND_URL ?? ""}${subjectMeta.link}`;
@@ -153,18 +171,23 @@ const emailStageApprovers = async ({
     approvers
       .filter((approver) => approver.email)
       .map((approver) =>
-        addMailJob({
-          to: approver.email as string,
-          subject: `Approval required - ${subjectMeta.displayLabel}`,
-          templateName: "approval-pending",
-          templateData: {
-            appName,
-            approverName: `${approver.first_name} ${approver.last_name}`,
-            subjectLabel: subjectMeta.displayLabel,
-            stageName: stage?.stageName ?? "",
-            dashboardUrl,
-          },
-        }),
+        addMailJob(
+          withInitiatorCc(
+            {
+              to: approver.email as string,
+              subject: `Approval required - ${subjectMeta.displayLabel}`,
+              templateName: "approval-pending",
+              templateData: {
+                appName,
+                approverName: `${approver.first_name} ${approver.last_name}`,
+                subjectLabel: subjectMeta.displayLabel,
+                stageName: stage?.stageName ?? "",
+                dashboardUrl,
+              },
+            },
+            initiatorEmail,
+          ),
+        ),
       ),
   );
 };
@@ -217,6 +240,8 @@ export const notifyStageApprovers = async ({
       appName: app?.name ?? "THCM",
       stageId,
       approverIds,
+      subjectType,
+      subjectId,
       subjectMeta,
     }),
   ]);
@@ -556,7 +581,7 @@ export async function activateFirstStageForResubmit(
   tx: Prisma.TransactionClient,
   workflowId: string,
   actor: ActivityActor,
-  resubmittedAction: ActivityAction,
+  resubmittedAction: string,
   resubmittedStatus: string,
 ) {
   const workflow = await tx.workflowInstance.findUnique({

@@ -17,6 +17,10 @@ import { getOrGeneratePdfUrl } from "@pdf/pdf.services";
 import { buildXlsxBuffer } from "@import-export/utils/xlsxWriter";
 
 import { addMailJob } from "@mail/mail.service";
+import {
+  withInitiatorCc,
+  sendWorkflowMail,
+} from "@mail/workFlowEmail.services";
 
 import {
   issueAccessToken,
@@ -207,15 +211,18 @@ export const initiateVendorOnboarding = async (
       return { created, tokenRecord };
     });
 
-    await addMailJob({
-      to: email,
-      subject: "Vendor Onboarding - Action Required",
-      templateName: "vendor-onboarding",
-      templateData: {
-        vendorReferenceName,
-        formUrl: `${process.env.FRONTEND_URL}/vendor-form/${onboarding.tokenRecord.token}`,
+    await sendWorkflowMail(
+      {
+        to: email,
+        subject: "Vendor Onboarding - Action Required",
+        templateName: "vendor-onboarding",
+        templateData: {
+          vendorReferenceName,
+          formUrl: `${process.env.FRONTEND_URL}/vendor-form/${onboarding.tokenRecord.token}`,
+        },
       },
-    });
+      userId,
+    );
 
     res.status(201).json({
       success: true,
@@ -430,15 +437,18 @@ export const resendVendorLink = async (
       onboarding.id,
     );
 
-    await addMailJob({
-      to: onboarding.email as string,
-      subject: "Vendor Onboarding — Action Required (Resent)",
-      templateName: "vendor-onboarding-resubmit",
-      templateData: {
-        vendorName: onboarding.vendorName,
-        formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
+    await sendWorkflowMail(
+      {
+        to: onboarding.email as string,
+        subject: "Vendor Onboarding - Action Required (Resent)",
+        templateName: "vendor-onboarding-resubmit",
+        templateData: {
+          vendorName: onboarding.vendorName,
+          formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
+        },
       },
-    });
+      onboarding.initiatedById,
+    );
 
     res.status(200).json({ success: true, message: "Link resent" });
   } catch (error) {
@@ -679,7 +689,7 @@ export const closeVendorOnboarding = async (
     await prisma.$transaction(async (tx) => {
       await tx.vendorOnboarding.update({
         where: { id: id as string },
-        data: { status: "CLOSED" },
+        data: { status: "COMPLETED" },
       });
       await tx.activityLog.create({
         data: {
@@ -705,7 +715,7 @@ export const closeVendorOnboarding = async (
       await addMailJob({
         to: initiatorEmail,
         cc: ccEmails.length ? ccEmails : undefined,
-        subject: `Vendor Onboarding Closed — ${onboarding.vendorName ?? ""}`,
+        subject: `Vendor Onboarding - Completed - ${onboarding.vendorName ?? ""}`,
         templateName: "vendor-onboarding-closed",
         templateData: {
           vendorName: onboarding.vendorName,
@@ -716,16 +726,24 @@ export const closeVendorOnboarding = async (
     }
 
     if (onboarding.email) {
-      await addMailJob({
-        to: onboarding.email,
-        subject: "Your Vendor Onboarding Is Complete — Tata Hitachi",
-        templateName: "vendor-onboarding-closed",
-        templateData: {
-          vendorName: onboarding.vendorName,
-          vendorCode: onboarding.vendorCode,
-          referenceNumber: onboarding.referenceNumber,
-        },
-      });
+      // initiatorEmail was already resolved above for the internal notice —
+      // reused here via the pure merge so this external mail doesn't need
+      // its own DB round trip.
+      await addMailJob(
+        withInitiatorCc(
+          {
+            to: onboarding.email,
+            subject: "Your Vendor Onboarding Is Complete — Tata Hitachi",
+            templateName: "vendor-onboarding-closed",
+            templateData: {
+              vendorName: onboarding.vendorName,
+              vendorCode: onboarding.vendorCode,
+              referenceNumber: onboarding.referenceNumber,
+            },
+          },
+          initiatorEmail,
+        ),
+      );
     }
 
     res
@@ -935,25 +953,20 @@ export const submitVendorForm = async (
       "VIEW_PDF",
     );
 
-    // req.vendorAccessToken.onboarding is the bare row the token middleware
-    // loads (no relations) — the draft-save path shares that same middleware
-    // and has no need for the initiator's email, so it's fetched here rather
-    // than added to the middleware's query for every vendor-token route.
-    const initiator = await prisma.user.findUnique({
-      where: { id: onboarding.initiatedById },
-      select: { email: true },
-    });
-
-    await addMailJob({
-      to: onboarding.email as string,
-      cc: initiator?.email ? [initiator.email] : undefined,
-      subject: `Vendor Onboarding - Submission Received ${onboarding.vendorName}`,
-      templateName: "vendor-onboarding-submitted",
-      templateData: {
-        vendorName: onboarding.vendorName,
-        pdfViewUrl: `${process.env.BACKEND_URL}/api/v1/vendor-onboarding/public/pdf/${viewToken.token}`,
+    // Initiator CC is resolved by sendWorkflowMail itself now (single seam
+    // for every workflow mail) — no need for a one-off lookup here.
+    await sendWorkflowMail(
+      {
+        to: onboarding.email as string,
+        subject: `Vendor Onboarding - Submission Received ${onboarding.vendorName}`,
+        templateName: "vendor-onboarding-submitted",
+        templateData: {
+          vendorName: onboarding.vendorName,
+          pdfViewUrl: `${process.env.BACKEND_URL}/api/v1/vendor-onboarding/public/pdf/${viewToken.token}`,
+        },
       },
-    });
+      onboarding.initiatedById,
+    );
 
     res
       .status(200)
@@ -1021,16 +1034,19 @@ export const sendBackToVendor = async (
       return token;
     });
 
-    await addMailJob({
-      to: onboarding.email as string,
-      subject: "Vendor Onboarding - Correction Required",
-      templateName: "vendor-onboarding-resubmit",
-      templateData: {
-        vendorName: onboarding.vendorName,
-        formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
-        currentYear: new Date().getFullYear(),
+    await sendWorkflowMail(
+      {
+        to: onboarding.email as string,
+        subject: "Vendor Onboarding - Correction Required",
+        templateName: "vendor-onboarding-resubmit",
+        templateData: {
+          vendorName: onboarding.vendorName,
+          formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
+          currentYear: new Date().getFullYear(),
+        },
       },
-    });
+      onboarding.initiatedById,
+    );
 
     res
       .status(200)
