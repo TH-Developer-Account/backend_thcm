@@ -63,46 +63,6 @@ enum AccessTokenSubjectType {
   MEDICAL_CLAIM
 }
 
-enum ActivityAction {
-   // Proposer domain
-  EPC_CREATED
-  EPC_UPDATED
-  EPF_CREATED
-  EPF_UPDATED
-  CRF_CREATED
-  CRF_UPDATED
-  EPC_RESUBMITTED         // after a CLARIFY round
-
-  // Post-event domain
-  EPC_CONDUCTED           // proposer marks event as happened
-  EPC_CANCELLED           // proposer cancels event after approval
-  REPORT_SUBMITTED        // proposer submits PDF report
-  REPORT_RESUBMITTED      // proposer resubmits after rejection
-  REPORT_VALIDATED        // validator approves report
-  REPORT_REJECTED         // validator rejects report
-  REPORT_CLARIFICATION_REQUESTED // validator requests clarification on report
-  EPC_CLOSED              // proposer closes after validation or deviation approval
-
-  // Vendor Onboarding
-  VENDOR_ONBOARDING_INITIATED
-  VENDOR_FORM_SUBMITTED
-  VENDOR_ONBOARDING_SENT_FOR_APPROVAL
-  VENDOR_ONBOARDING_CLOSED
-
-  //Medical Claim
-  MEDICAL_CLAIM_INITIATED
-  MEDICAL_CLAIM_SUBMITTED
-  MEDICAL_CLAIM_RESUBMITTED
-  MEDICAL_CLAIM_SENT_FOR_APPROVAL
-  MEDICAL_CLAIM_CLOSED
-
-  // Approval/workflow domain
-  APPROVED
-  REJECTED
-  CLARIFY
-  DEVIATION_RAISED   
-
-}
 
 enum ProductType {
   EPF
@@ -634,9 +594,9 @@ model WorkFlowTemplateUser {
 
 model ActivityLog {
   id           String         @id @default(uuid())
-  actorId      String?                          // ← now optional
-  actorGuestId String?                          // ← new
-  action       ActivityAction
+  actorId      String?                         
+  actorGuestId String?                          
+  action       String?
   workflowId   String?
   stageId      String?
   metadata     Json?

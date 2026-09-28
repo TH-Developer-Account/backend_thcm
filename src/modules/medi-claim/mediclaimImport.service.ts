@@ -1,7 +1,7 @@
 import { prisma } from "@shared/config/prisma";
 import { parseFile, RawRow } from "@import-export/utils/fileParser";
 import { downloadFromS3 } from "@shared/utils/aws-s3.services";
-import { addMailJob } from "@mail/mail.service";
+import { sendWorkflowMail } from "@mail/workFlowEmail.services";
 import { issueAccessToken } from "@shared/services/accessToken.services";
 import { generateMedicalClaimReferenceNumber } from "./mediclaim.helper";
 import { APP_KEY } from "./mediclaim.routes";
@@ -143,15 +143,18 @@ async function initiateClaimFromRow(
     return { created, tokenRecord };
   });
 
-  await addMailJob({
-    to: row.email,
-    subject: "Medical Claim — Action Required",
-    templateName: "medi-claim-initiation",
-    templateData: {
-      employeeName: row.employeeName,
-      formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${result.tokenRecord.token}`,
+  await sendWorkflowMail(
+    {
+      to: row.email,
+      subject: "Medical Claim — Action Required",
+      templateName: "medi-claim-initiation",
+      templateData: {
+        employeeName: row.employeeName,
+        formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${result.tokenRecord.token}`,
+      },
     },
-  });
+    initiatedById,
+  );
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────

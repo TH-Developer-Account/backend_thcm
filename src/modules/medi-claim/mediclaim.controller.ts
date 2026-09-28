@@ -6,6 +6,7 @@ import ApiError from "@shared/utils/apiError";
 import { resolveWorkspaceId } from "@import-export/export.controller";
 import { notify } from "@notifications/notification.services";
 import { addMailJob } from "@mail/mail.service";
+import { sendWorkflowMail } from "@mail/workFlowEmail.services";
 import { getSignedImageUrl } from "@shared/utils/aws-s3.services";
 import { buildXlsxBuffer } from "@import-export/utils/xlsxWriter";
 import { createPendingLog } from "@import-export/importExportLog.services";
@@ -98,15 +99,18 @@ export const initiateMedicalClaim = async (
       return { created, tokenRecord };
     });
 
-    await addMailJob({
-      to: email,
-      subject: "Medical Claim — Action Required",
-      templateName: "medi-claim-initiation",
-      templateData: {
-        employeeName,
-        formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${result.tokenRecord.token}`,
+    await sendWorkflowMail(
+      {
+        to: email,
+        subject: "Medical Claim — Action Required",
+        templateName: "medi-claim-initiation",
+        templateData: {
+          employeeName,
+          formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${result.tokenRecord.token}`,
+        },
       },
-    });
+      userId,
+    );
 
     res.status(201).json({
       success: true,
@@ -142,15 +146,18 @@ export const resendMedicalClaimLink = async (
 
     const tokenRecord = await issueAccessToken(APP_KEY, claim.id);
 
-    await addMailJob({
-      to: claim.email as string,
-      subject: "Medical Claim — Action Required (Reminder)",
-      templateName: "medi-claim-initiation",
-      templateData: {
-        employeeName: claim.employeeName,
-        formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${tokenRecord.token}`,
+    await sendWorkflowMail(
+      {
+        to: claim.email as string,
+        subject: "Medical Claim — Action Required (Reminder)",
+        templateName: "medi-claim-initiation",
+        templateData: {
+          employeeName: claim.employeeName,
+          formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${tokenRecord.token}`,
+        },
       },
-    });
+      claim.initiatedById,
+    );
 
     res
       .status(200)
