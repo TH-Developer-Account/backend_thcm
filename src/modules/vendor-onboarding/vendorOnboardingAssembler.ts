@@ -52,6 +52,7 @@ export interface VendorOnboardingPdfData {
     pan: string | null;
     entityRegNo: string | null;
     vendorSubmittedAt: Date | null;
+    ndaObtained: boolean | null;
   };
   bank: {
     bankName: string | null;
@@ -177,6 +178,7 @@ export async function assembleVendorOnboardingPdfData(
       mobile: onboarding.mobile,
       email: onboarding.email,
       msmeVendor: onboarding.msmeVendor,
+      ndaObtained: onboarding.ndaObtained,
       gstin: onboarding.gstin,
       pan: onboarding.pan,
       entityRegNo: onboarding.entityRegNo,
