@@ -63,7 +63,7 @@ const STYLES: StyleDictionary = {
   sectionHeader: {
     fontSize: 12,
     bold: true,
-    margin: [0, 12, 0, 6],
+    margin: [0, 4, 0, 4],
     color: "#1a1a1a",
   },
   fieldLabel: { bold: true, color: "#444444" },
@@ -96,6 +96,10 @@ function buildVendorDetailsSection(data: VendorOnboardingPdfData): Content[] {
     fieldRow("PAN", displayValue(data.vendor.pan)),
     fieldRow("Entity Registration No.", displayValue(data.vendor.entityRegNo)),
     fieldRow("MSME Vendor", displayBoolean(data.vendor.msmeVendor)),
+    fieldRow(
+      "Non-Disclosure Undertaking Obtained",
+      displayBoolean(data.vendor.ndaObtained),
+    ),
     fieldRow("Vendor Submitted On", displayDate(data.vendor.vendorSubmittedAt)),
   ];
 
@@ -336,7 +340,7 @@ function buildAuditTrailSection(data: VendorOnboardingPdfData): Content[] {
 
 function buildLetterheadHeader(subtitle: string): Content {
   return {
-    margin: [40, 20, 40, 0],
+    margin: [20, 10, 20, 0],
     columns: [
       {
         text: "Tata Hitachi Construction Machinery",
@@ -359,7 +363,7 @@ function buildStatusFooter(
   statusLabel: string,
 ): (currentPage: number, pageCount: number) => Content {
   return (currentPage: number, pageCount: number): Content => ({
-    margin: [40, 0, 40, 20],
+    margin: [20, 0, 20, 10],
     columns: [
       { text: `Status: ${statusLabel}`, style: "footerText" },
       {

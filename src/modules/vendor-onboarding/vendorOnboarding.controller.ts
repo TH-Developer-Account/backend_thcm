@@ -209,7 +209,7 @@ export const initiateVendorOnboarding = async (
 
     await addMailJob({
       to: email,
-      subject: "Vendor Onboarding — Action Required",
+      subject: "Vendor Onboarding - Action Required",
       templateName: "vendor-onboarding",
       templateData: {
         vendorReferenceName,
@@ -945,9 +945,9 @@ export const submitVendorForm = async (
     });
 
     await addMailJob({
-      to: initiator?.email as string,
-      cc: onboarding.email ? [onboarding.email] : undefined,
-      subject: "Vendor Onboarding - Submission Received",
+      to: onboarding.email as string,
+      cc: initiator?.email ? [initiator.email] : undefined,
+      subject: `Vendor Onboarding - Submission Received ${onboarding.vendorName}`,
       templateName: "vendor-onboarding-submitted",
       templateData: {
         vendorName: onboarding.vendorName,
@@ -1023,7 +1023,7 @@ export const sendBackToVendor = async (
 
     await addMailJob({
       to: onboarding.email as string,
-      subject: "Vendor Onboarding — Correction Required",
+      subject: "Vendor Onboarding - Correction Required",
       templateName: "vendor-onboarding-resubmit",
       templateData: {
         vendorName: onboarding.vendorName,
