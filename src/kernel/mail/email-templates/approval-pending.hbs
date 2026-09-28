@@ -1,12 +1,19 @@
-<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:v="urn:schemas-microsoft-com:vml"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="color-scheme" content="light" />
     <meta name="supported-color-schemes" content="light" />
-    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    <meta
+      name="format-detection"
+      content="telephone=no, date=no, address=no, email=no"
+    />
     <title>{{subject}}</title>
     <!--[if mso]>
     <noscript>
@@ -21,23 +28,61 @@
     </style>
     <![endif]-->
     <style>
-      body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-      table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
-      body { margin: 0; padding: 0; width: 100% !important; height: 100% !important; background-color: #f4f4f7; }
-      a[x-apple-data-detectors] { color: inherit !important; text-decoration: none !important; }
+      body,
+      table,
+      td,
+      a {
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      }
+      table,
+      td {
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100% !important;
+        height: 100% !important;
+        background-color: #f4f4f7;
+      }
+      a[x-apple-data-detectors] {
+        color: inherit !important;
+        text-decoration: none !important;
+      }
       @media screen and (max-width: 600px) {
-        .email-container { width: 100% !important; max-width: 100% !important; }
-        .email-padding { padding-left: 20px !important; padding-right: 20px !important; }
-        .stack-td { display: block !important; width: 100% !important; }
+        .email-container {
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        .email-padding {
+          padding-left: 20px !important;
+          padding-right: 20px !important;
+        }
+        .stack-td {
+          display: block !important;
+          width: 100% !important;
+        }
       }
     </style>
   </head>
   <body style="margin:0; padding:0; background-color:#f4f4f7;">
-    <div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#f4f4f7;">
-      {{subjectLabel}} is waiting on your approval&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+    <div
+      style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#f4f4f7;"
+    >
+      {{subjectLabel}}
+      is waiting on your
+      approval&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
     </div>
 
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f7;">
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      style="background-color:#f4f4f7;"
+    >
       <tr>
         <td align="center" style="padding:32px 12px;">
           <!--[if mso]>
@@ -52,40 +97,73 @@
             style="width:100%; max-width:600px; background-color:#ffffff; border-radius:8px; overflow:hidden;"
           >
             <tr>
-              <td class="email-padding" style="background-color:#1a56db; padding:24px 32px;">
-                <h1 style="margin:0; color:#ffffff; font-size:20px; font-weight:600; font-family:Arial, Helvetica, sans-serif;">
+              <td
+                class="email-padding"
+                style="background-color:#1a56db; padding:24px 32px;"
+              >
+                <h1
+                  style="margin:0; color:#ffffff; font-size:20px; font-weight:600; font-family:Arial, Helvetica, sans-serif;"
+                >
                   {{appName}}
                 </h1>
               </td>
             </tr>
 
             <tr>
-              <td class="email-padding" style="padding:32px; font-family:Arial, Helvetica, sans-serif; color:#333333;">
+              <td
+                class="email-padding"
+                style="padding:32px; font-family:Arial, Helvetica, sans-serif; color:#333333;"
+              >
                 <p style="margin:0 0 16px 0; font-size:16px; line-height:1.6;">
-                  Hello <strong>{{approverName}}</strong>,
+                  Hello
+                  <strong>{{approverName}}</strong>,
                 </p>
                 <p style="margin:0 0 16px 0; font-size:14px; line-height:1.6;">
-                  <strong>{{subjectLabel}}</strong> is now waiting on your approval.
+                  <strong>{{subjectLabel}}</strong>
+                  is now waiting on your approval.
                 </p>
 
-                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; margin:8px 0 24px 0; font-size:14px; font-family:Arial, Helvetica, sans-serif;">
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="width:100%; border-collapse:collapse; margin:8px 0 24px 0; font-size:14px; font-family:Arial, Helvetica, sans-serif;"
+                >
                   <tr style="background-color:#f9fafb;">
-                    <td style="padding:10px 14px; border:1px solid #e5e7eb; font-weight:600; width:40%; color:#333333;">Item</td>
-                    <td style="padding:10px 14px; border:1px solid #e5e7eb; color:#333333;">{{subjectLabel}}</td>
+                    <td
+                      style="padding:10px 14px; border:1px solid #e5e7eb; font-weight:600; width:40%; color:#333333;"
+                    >Item</td>
+                    <td
+                      style="padding:10px 14px; border:1px solid #e5e7eb; color:#333333;"
+                    >{{subjectLabel}}</td>
                   </tr>
                   <tr>
-                    <td style="padding:10px 14px; border:1px solid #e5e7eb; font-weight:600; color:#333333;">Stage</td>
-                    <td style="padding:10px 14px; border:1px solid #e5e7eb; color:#333333;">{{stageName}}</td>
+                    <td
+                      style="padding:10px 14px; border:1px solid #e5e7eb; font-weight:600; color:#333333;"
+                    >Stage</td>
+                    <td
+                      style="padding:10px 14px; border:1px solid #e5e7eb; color:#333333;"
+                    >{{stageName}}</td>
                   </tr>
                   <tr style="background-color:#f9fafb;">
-                    <td style="padding:10px 14px; border:1px solid #e5e7eb; font-weight:600; color:#333333;">Status</td>
+                    <td
+                      style="padding:10px 14px; border:1px solid #e5e7eb; font-weight:600; color:#333333;"
+                    >Status</td>
                     <td style="padding:10px 14px; border:1px solid #e5e7eb;">
-                      <span style="color:#b45309; font-weight:600;">Pending your approval</span>
+                      <span style="color:#b45309; font-weight:600;">Pending your
+                        approval</span>
                     </td>
                   </tr>
                 </table>
 
-                <table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:0 auto 8px auto;">
+                <table
+                  role="presentation"
+                  cellpadding="0"
+                  cellspacing="0"
+                  align="center"
+                  style="margin:0 auto 8px auto;"
+                >
                   <tr>
                     <td align="center">
                       <!--[if mso]>
@@ -117,9 +195,13 @@
             </tr>
 
             <tr>
-              <td class="email-padding" style="background-color:#f4f4f7; padding:16px 32px; text-align:center; font-family:Arial, Helvetica, sans-serif;">
-                <p style="margin:0; font-size:12px; line-height:1.6; color:#888888;">
-                  &copy; {{currentYear}} {{appName}}. All rights reserved.<br />
+              <td
+                class="email-padding"
+                style="background-color:#f4f4f7; padding:16px 32px; text-align:center; font-family:Arial, Helvetica, sans-serif;"
+              >
+                <p
+                  style="margin:0; font-size:12px; line-height:1.6; color:#888888;"
+                >
                   This is an automated message &mdash; please do not reply.
                 </p>
               </td>
