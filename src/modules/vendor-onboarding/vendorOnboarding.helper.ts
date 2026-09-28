@@ -60,6 +60,7 @@ interface WorkflowObject {
 
 const ONBOARDING_SEARCH_FIELDS = [
   "vendorName",
+  "vendorReferenceName",
   "vendorCode",
   "vendorType",
   "companyCode",
