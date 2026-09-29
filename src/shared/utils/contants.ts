@@ -222,6 +222,7 @@ export const activeWorkflowInclude = {
               last_name: true,
               email: true,
               phone_number: true,
+              designation: true,
             },
           },
         },

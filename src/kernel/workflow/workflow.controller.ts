@@ -1096,7 +1096,12 @@ export const getWorkflowController = async (
             approvals: {
               include: {
                 approver: {
-                  select: { id: true, first_name: true, last_name: true },
+                  select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    designation: true,
+                  },
                 },
                 comments: { orderBy: { createdAt: "asc" } },
               },
