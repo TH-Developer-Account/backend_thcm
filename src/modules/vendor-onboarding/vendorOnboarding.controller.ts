@@ -958,7 +958,7 @@ export const submitVendorForm = async (
 		await sendWorkflowMail(
 			{
 				to: onboarding.email as string,
-				subject: `Vendor Onboarding - Submission Received ${onboarding.vendorName}`,
+				subject: `Vendor Onboarding - Submission Received ${onboarding.vendorName || onboarding.vendorReferenceName}`,
 				templateName: "vendor-onboarding-submitted",
 				templateData: {
 					vendorName: onboarding.vendorName,
