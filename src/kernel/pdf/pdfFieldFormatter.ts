@@ -81,10 +81,11 @@ export function displayPendingOn(pendingOn: PendingOn): string {
 	}
 }
 
-// Timezone used when printing timestamps. Change if your server/users differ.
+/// Timezone used when printing timestamps. Change if your server/users differ.
 const PDF_TIME_ZONE = "Asia/Kolkata";
+// true → dd/mm/yyyy hh:mm:ss   |   false → dd/mm/yyyy hh:mm
+const SHOW_SECONDS = true;
 
-// dd/mm/yyyy hh:mm:ss (24-hour). Returns "—" for empty or invalid input.
 export function formatDateTimeSlash(
 	value: Date | string | null | undefined,
 ): string {
@@ -99,10 +100,86 @@ export function formatDateTimeSlash(
 		year: "numeric",
 		hour: "2-digit",
 		minute: "2-digit",
-		second: "2-digit",
-		hourCycle: "h23",
+		...(SHOW_SECONDS ? { second: "2-digit" as const } : {}),
+		hourCycle: "h12", // was "h23"
 	}).formatToParts(d);
 
 	const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
-	return `${get("day")}/${get("month")}/${get("year")} ${get("hour")}:${get("minute")}:${get("second")}`;
+	const time = SHOW_SECONDS
+		? `${get("hour")}:${get("minute")}:${get("second")}`
+		: `${get("hour")}:${get("minute")}`;
+	return `${get("day")}/${get("month")}/${get("year")} ${time} ${get("dayPeriod").toUpperCase()}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Workflow stage completion (for masking leftover PENDING rows as "—")
+//
+// A parallel ("SOME"/"ANY") stage can be APPROVED as soon as minApprovals is
+// met, while some approvers are still sitting at PENDING because nobody
+// cancelled their pending request. Those leftovers should print as "—", not
+// "Pending" — but only once the stage itself is genuinely done: current
+// iteration, stage status APPROVED, and the approved count has actually met
+// minApprovals. A stage still IN_PROGRESS, or an older iteration, is left
+// alone so its pending rows print normally.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface WorkflowStageCompletionInput {
+	isCurrentIteration?: boolean | null;
+	status?: string | null;
+	minApprovals?: string | number | null;
+	approvals: Array<{ status?: string | null }>;
+}
+
+export function isWorkflowStageCompleted(
+	stage: WorkflowStageCompletionInput,
+): boolean {
+	const required = Number(stage.minApprovals);
+	if (!Number.isFinite(required) || required <= 0) return false;
+
+	const stageStatus = String(stage.status ?? "").toUpperCase();
+	if (stageStatus !== "APPROVED") return false;
+	if (stage.isCurrentIteration !== true) return false;
+
+	const approvedCount = stage.approvals.filter(
+		(approval) => String(approval.status ?? "").toUpperCase() === "APPROVED",
+	).length;
+
+	return approvedCount >= required;
+}
+
+// Leftover PENDING rows on a completed stage print as "—"; every other
+// status (APPROVED, REJECTED, CLARIFIED, or PENDING on a stage that isn't
+// done yet) prints as-is.
+export function displayWorkflowApprovalStatus(
+	status: string | null | undefined,
+	stageCompleted: boolean,
+): string {
+	const normalized = String(status ?? "").toUpperCase();
+	if (stageCompleted && normalized === "PENDING") return "—";
+	return displayValue(status);
+}
+
+const STATUS_LABELS: Record<string, string> = {
+	AWAITING_VENDOR: "Awaiting Vendor",
+	VENDOR_SUBMITTED: "Vendor Submitted",
+	IN_REVIEW: "In Review",
+	IN_PROGRESS: "In Progress",
+	COMPLETED: "Completed",
+	CLOSED: "Closed",
+};
+
+// Only touches UPPER_SNAKE_CASE values. The internal copy already passes a
+// human-readable "pending on" label (e.g. a person's name), which must
+// pass through untouched.
+export function formatStatusLabel(status: string): string {
+	if (!/^[A-Z0-9_]+$/.test(status)) return status;
+
+	return (
+		STATUS_LABELS[status] ??
+		status
+			.toLowerCase()
+			.split("_")
+			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+			.join(" ")
+	);
 }

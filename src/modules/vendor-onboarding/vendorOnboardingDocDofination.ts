@@ -9,19 +9,19 @@ import { VendorOnboardingPdfData } from "./vendorOnboardingAssembler";
 import {
 	displayValue,
 	displayBoolean,
-	displayDate,
 	formatDateTimeSlash,
-	displayDateTime,
 	displayPendingOn,
+	isWorkflowStageCompleted,
+	displayWorkflowApprovalStatus,
+	formatStatusLabel,
 } from "@pdf/pdfFieldFormatter";
-
+import { LOGO_DATA_URI } from "./vendorOnboardingLogo";
 // ─────────────────────────────────────────────────────────────────────────────
 // VENDOR ONBOARDING — DOC DEFINITION BUILDERS
 //
 
 // Base64 data URI of the company logo, e.g. "data:image/png;base64,iVBOR...".
 // Leave empty to fall back to the company name text in the header.
-const LOGO_DATA_URI = "";
 
 const DOCUMENT_TITLE = "Vendor Onboarding Form";
 
@@ -32,10 +32,12 @@ const GREY_TEXT = "#555555"; // footer only
 // All values are in pdfmake points (pt).
 
 // Table cell padding (applies to every table in the document).
-const CELL_PADDING_LEFT = 8;
-const CELL_PADDING_RIGHT = 8;
-const CELL_PADDING_TOP = 6;
-const CELL_PADDING_BOTTOM = 6;
+// Bottom is smaller than top because line height already adds space
+// under the text.
+const CELL_PADDING_LEFT = 5;
+const CELL_PADDING_RIGHT = 5;
+const CELL_PADDING_TOP = 5;
+const CELL_PADDING_BOTTOM = 2;
 
 // Table border thickness.
 const TABLE_LINE_WIDTH = 0.5;
@@ -46,13 +48,13 @@ const SECTION_GAP = 10;
 // Page margins: left, top, right, bottom. The top margin must leave room
 // for the header; the bottom margin must leave room for the footer.
 const PAGE_MARGIN_LEFT = 30;
-const PAGE_MARGIN_TOP = 38;
+const PAGE_MARGIN_TOP = 44;
 const PAGE_MARGIN_RIGHT = 30;
 const PAGE_MARGIN_BOTTOM = 40;
 
 // Header block position (left/right should normally match the page margins).
 const HEADER_MARGIN_LEFT = 30;
-const HEADER_MARGIN_TOP = 12;
+const HEADER_MARGIN_TOP = 10;
 const HEADER_MARGIN_RIGHT = 30;
 
 // Footer block position (left/right should normally match the page margins).
@@ -62,11 +64,14 @@ const FOOTER_MARGIN_BOTTOM = 14;
 
 // Space above the company name and the title inside the header.
 const HEADER_COMPANY_MARGIN_TOP = 5;
-const HEADER_TITLE_MARGIN_TOP = 3;
+const HEADER_TITLE_MARGIN_TOP = 8;
 
 // Both side columns share one fixed width so the title column stays
 // centred on the page whether or not a logo is present.
 const HEADER_SIDE_WIDTH = 150;
+
+// Line height multiplier for all text. Lower = tighter rows.
+const TEXT_LINE_HEIGHT = 1.15;
 
 const FIELD_COLS = 4;
 const FIELD_WIDTHS = ["17%", "33%", "17%", "33%"];
@@ -92,9 +97,10 @@ const STYLES: StyleDictionary = {
 		margin: [0, HEADER_COMPANY_MARGIN_TOP, 0, 0],
 	},
 	letterheadTitle: {
-		fontSize: 16,
+		fontSize: 10,
 		bold: true,
 		color: BLACK,
+		decoration: "underline",
 		margin: [0, HEADER_TITLE_MARGIN_TOP, 0, 0],
 	},
 	footerText: { fontSize: 8, color: GREY_TEXT },
@@ -102,8 +108,8 @@ const STYLES: StyleDictionary = {
 
 const DEFAULT_STYLE: Style = {
 	font: "Helvetica",
-	fontSize: 9.5,
-	lineHeight: 1.3,
+	fontSize: 9,
+	lineHeight: TEXT_LINE_HEIGHT,
 	color: BLACK,
 };
 
@@ -256,8 +262,8 @@ function buildProcurementDetailsSection(
 	];
 }
 
-// "Uploaded On" uses displayDateTime (date + seconds) — the exact
-// submission time is the point of stamping it here.
+// "Uploaded On" is stamped as dd/mm/yyyy hh:mm:ss — the exact submission
+// time is the point of stamping it here.
 function buildDocumentsSection(data: VendorOnboardingPdfData): Content[] {
 	const body: TableCell[][] = [sectionBar("Attached Documents", 2)];
 
@@ -266,7 +272,7 @@ function buildDocumentsSection(data: VendorOnboardingPdfData): Content[] {
 		data.documents.forEach((doc) =>
 			body.push([
 				{ text: doc.documentType },
-				{ text: displayDateTime(doc.uploadedAt) },
+				{ text: formatDateTimeSlash(doc.uploadedAt) },
 			]),
 		);
 	} else {
@@ -290,9 +296,9 @@ function buildDocumentsSection(data: VendorOnboardingPdfData): Content[] {
 	];
 }
 
-// S.No | Person Name | Type | Status | Timestamp
+// S.No | Person Name | Designation | Type | Status | Timestamp
 function buildWorkflowSection(data: VendorOnboardingPdfData): Content[] {
-	const COLS = 5;
+	const COLS = 6;
 	const body: TableCell[][] = [sectionBar("Workflow", COLS)];
 	const stages = data.workflow?.stages ?? [];
 
@@ -309,6 +315,7 @@ function buildWorkflowSection(data: VendorOnboardingPdfData): Content[] {
 		body.push([
 			headCell("S.No"),
 			headCell("Person Name"),
+			headCell("Designation"),
 			headCell("Type"),
 			headCell("Status"),
 			headCell("Timestamp"),
@@ -323,6 +330,7 @@ function buildWorkflowSection(data: VendorOnboardingPdfData): Content[] {
 				body.push([
 					{ text: String(serial) },
 					{ text: "No approvers assigned", italics: true },
+					{ text: "—" },
 					{ text: stageLabel },
 					{ text: "—" },
 					{ text: "—" },
@@ -330,14 +338,22 @@ function buildWorkflowSection(data: VendorOnboardingPdfData): Content[] {
 				return;
 			}
 
+			const stageCompleted = isWorkflowStageCompleted(stage);
+
 			stage.approvals.forEach((approval) => {
 				serial += 1;
 				body.push([
 					{ text: String(serial) },
 					{ text: displayValue(approval.approverName) },
+					{ text: displayValue(approval.approverDesignation) },
 					{ text: stageLabel },
-					{ text: displayValue(approval.status) },
-					{ text: displayDateTime(approval.actedAt) },
+					{
+						text: displayWorkflowApprovalStatus(
+							approval.status,
+							stageCompleted,
+						),
+					},
+					{ text: formatDateTimeSlash(approval.actedAt) },
 				]);
 			});
 		});
@@ -348,7 +364,7 @@ function buildWorkflowSection(data: VendorOnboardingPdfData): Content[] {
 			table: {
 				headerRows: stages.length > 0 ? 2 : 1,
 				dontBreakRows: true,
-				widths: ["6%", "26%", "26%", "16%", "26%"],
+				widths: ["8%", "18%", "18%", "20%", "13%", "23%"],
 				body,
 			},
 			layout: TABLE_LAYOUT,
@@ -392,7 +408,7 @@ function buildAuditTrailSection(data: VendorOnboardingPdfData): Content[] {
 				{ text: String(index + 1) },
 				{ text: displayValue(entry.performedBy) },
 				{ text: displayActivityAction(entry.action) },
-				{ text: displayDateTime(entry.createdAt) },
+				{ text: formatDateTimeSlash(entry.createdAt) },
 				{ text: displayValue(entry.reason) },
 			]),
 		);
@@ -434,7 +450,7 @@ function buildLetterheadHeader(title: string): Content {
 				stack: [
 					{
 						image: "logo",
-						fit: [100, 34],
+						fit: [60, 28], // was [90, 32]; renders about 61×28pt
 						alignment: "left" as const,
 					},
 				],
@@ -473,14 +489,17 @@ function buildLetterheadHeader(title: string): Content {
 // `statusLabel` is printed as-is — callers decide what it says. The
 // internal copy passes the dynamic "pending on" label; the vendor copy
 // keeps passing the raw status enum.
+
 function buildStatusFooter(
 	statusLabel: string,
 	generatedOn: string,
 ): (currentPage: number, pageCount: number) => Content {
+	const formattedStatus = formatStatusLabel(statusLabel);
+
 	return (currentPage: number, pageCount: number): Content => ({
 		margin: [FOOTER_MARGIN_LEFT, 0, FOOTER_MARGIN_RIGHT, FOOTER_MARGIN_BOTTOM],
 		columns: [
-			{ text: `Status: ${statusLabel}`, style: "footerText" },
+			{ text: `Status: ${formattedStatus}`, style: "footerText" },
 			{
 				text: `Generated on ${generatedOn}  |  Page ${currentPage} of ${pageCount}`,
 				alignment: "right" as const,
@@ -520,7 +539,7 @@ export function buildVendorOnboardingDocDefinition(
 		// endpoints already use (assembled in vendorOnboardingAssembler.ts).
 		footer: buildStatusFooter(
 			displayPendingOn(data.pendingOn),
-			displayDate(data.generatedAt),
+			formatDateTimeSlash(data.generatedAt),
 		),
 		content: [
 			...buildVendorDetailsSection(data),
@@ -543,7 +562,10 @@ export function buildVendorOnboardingVendorCopyDocDefinition(
 	return {
 		...baseDocDefinition(),
 		header: buildLetterheadHeader(DOCUMENT_TITLE),
-		footer: buildStatusFooter(data.status, displayDate(data.generatedAt)),
+		footer: buildStatusFooter(
+			data.status,
+			formatDateTimeSlash(data.generatedAt),
+		),
 		content: [
 			...buildVendorDetailsSection(data),
 			...buildBankDetailsSection(data),
