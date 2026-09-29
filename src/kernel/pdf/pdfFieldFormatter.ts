@@ -1,0 +1,185 @@
+import type { PendingOn } from "@workflow/workflowSubject.helper";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PDF FIELD FORMATTERS
+//
+// Shared display rules so every docDefinition builder renders empty/boolean
+// fields the same way. Pure functions — no pdfmake rendering knowledge.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function displayValue(
+	value: string | number | null | undefined,
+): string {
+	if (value === null || value === undefined || value === "") return "—";
+	return String(value);
+}
+
+export function displayBoolean(value: boolean | null | undefined): string {
+	if (value === null || value === undefined) return "—";
+	return value ? "Yes" : "No";
+}
+
+export function displayDate(value: Date | null | undefined): string {
+	if (!value) return "—";
+	return new Date(value).toLocaleDateString("en-IN", {
+		day: "2-digit",
+		month: "short",
+		year: "numeric",
+	});
+}
+
+// Same date rendering as displayDate, with time down to the second appended.
+// Kept as a separate function rather than a parameter on displayDate so
+// existing callers (e.g. Medical Claim's docDefinition) keep their current
+// date-only output — this is opt-in for fields that need proof of exact
+// submission time, such as a document's upload timestamp.
+export function displayDateTime(value: Date | null | undefined): string {
+	if (!value) return "—";
+	const date = new Date(value);
+	return `${displayDate(date)}, ${date.toLocaleTimeString("en-IN", {
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit",
+		hour12: true,
+	})}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// displayPendingOn
+//
+// Turns the structured PendingOn result (@workflow/workflowSubject.helper —
+// the same computePendingOn/resolveVendorOnboardingPendingOn/
+// resolveMedicalClaimPendingOn output the listing/detail endpoints already
+// use) into the printed status line. The "who is this pending on" logic
+// itself is never reimplemented here — this only decides how to word it.
+//
+// Lives alongside the other display formatters (not inside a single
+// docDefinition file) because PendingOn is shared across subject types
+// (Vendor Onboarding, Medical Claim, ...) — any future internal-copy PDF
+// for those can reuse this one formatter instead of growing its own.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function displayPendingOn(pendingOn: PendingOn): string {
+	switch (pendingOn.role) {
+		case "NONE":
+			return pendingOn.outcome === "APPROVED" ? "Approved" : "Rejected";
+		case "PROPOSER":
+			return "Pending — Awaiting Employee Review";
+		case "VENDOR":
+			return "Pending with Vendor";
+		case "GUEST":
+			return "Pending with Ex-Employee";
+		case "APPROVER":
+			return pendingOn.approvers.length > 0
+				? `Pending with ${pendingOn.approvers.map((a) => a.name).join(", ")}`
+				: "Pending Approval";
+		default:
+			// Defensive fallback only — every PendingOn role above is handled;
+			// this guards against a future role being added to the union without
+			// this switch being updated.
+			return "—";
+	}
+}
+
+/// Timezone used when printing timestamps. Change if your server/users differ.
+const PDF_TIME_ZONE = "Asia/Kolkata";
+// true → dd/mm/yyyy hh:mm:ss   |   false → dd/mm/yyyy hh:mm
+const SHOW_SECONDS = true;
+
+export function formatDateTimeSlash(
+	value: Date | string | null | undefined,
+): string {
+	if (!value) return "—";
+	const d = value instanceof Date ? value : new Date(value);
+	if (Number.isNaN(d.getTime())) return "—";
+
+	const parts = new Intl.DateTimeFormat("en-GB", {
+		timeZone: PDF_TIME_ZONE,
+		day: "2-digit",
+		month: "2-digit",
+		year: "numeric",
+		hour: "2-digit",
+		minute: "2-digit",
+		...(SHOW_SECONDS ? { second: "2-digit" as const } : {}),
+		hourCycle: "h12", // was "h23"
+	}).formatToParts(d);
+
+	const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+	const time = SHOW_SECONDS
+		? `${get("hour")}:${get("minute")}:${get("second")}`
+		: `${get("hour")}:${get("minute")}`;
+	return `${get("day")}/${get("month")}/${get("year")} ${time} ${get("dayPeriod").toUpperCase()}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Workflow stage completion (for masking leftover PENDING rows as "—")
+//
+// A parallel ("SOME"/"ANY") stage can be APPROVED as soon as minApprovals is
+// met, while some approvers are still sitting at PENDING because nobody
+// cancelled their pending request. Those leftovers should print as "—", not
+// "Pending" — but only once the stage itself is genuinely done: current
+// iteration, stage status APPROVED, and the approved count has actually met
+// minApprovals. A stage still IN_PROGRESS, or an older iteration, is left
+// alone so its pending rows print normally.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface WorkflowStageCompletionInput {
+	isCurrentIteration?: boolean | null;
+	status?: string | null;
+	minApprovals?: string | number | null;
+	approvals: Array<{ status?: string | null }>;
+}
+
+export function isWorkflowStageCompleted(
+	stage: WorkflowStageCompletionInput,
+): boolean {
+	const required = Number(stage.minApprovals);
+	if (!Number.isFinite(required) || required <= 0) return false;
+
+	const stageStatus = String(stage.status ?? "").toUpperCase();
+	if (stageStatus !== "APPROVED") return false;
+	if (stage.isCurrentIteration !== true) return false;
+
+	const approvedCount = stage.approvals.filter(
+		(approval) => String(approval.status ?? "").toUpperCase() === "APPROVED",
+	).length;
+
+	return approvedCount >= required;
+}
+
+// Leftover PENDING rows on a completed stage print as "—"; every other
+// status (APPROVED, REJECTED, CLARIFIED, or PENDING on a stage that isn't
+// done yet) prints as-is.
+export function displayWorkflowApprovalStatus(
+	status: string | null | undefined,
+	stageCompleted: boolean,
+): string {
+	const normalized = String(status ?? "").toUpperCase();
+	if (stageCompleted && normalized === "PENDING") return "—";
+	return displayValue(status);
+}
+
+const STATUS_LABELS: Record<string, string> = {
+	AWAITING_VENDOR: "Awaiting Vendor",
+	VENDOR_SUBMITTED: "Vendor Submitted",
+	IN_REVIEW: "In Review",
+	IN_PROGRESS: "In Progress",
+	COMPLETED: "Completed",
+	CLOSED: "Closed",
+};
+
+// Only touches UPPER_SNAKE_CASE values. The internal copy already passes a
+// human-readable "pending on" label (e.g. a person's name), which must
+// pass through untouched.
+export function formatStatusLabel(status: string): string {
+	if (!/^[A-Z0-9_]+$/.test(status)) return status;
+
+	return (
+		STATUS_LABELS[status] ??
+		status
+			.toLowerCase()
+			.split("_")
+			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+			.join(" ")
+	);
+}
