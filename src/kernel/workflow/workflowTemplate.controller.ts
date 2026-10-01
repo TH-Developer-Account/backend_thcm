@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { prisma } from "@shared/config/prisma";
 import * as service from "./template.service";
 import ApiError from "@shared/utils/apiError";
-import { canManageApp } from "@kernel/rbac/userPermission";
+import { isAppAdministrator } from "@kernel/rbac/profile/accessPolicy";
 import { AuthenticatedUser } from "../../types/express";
 import { findSubjectById } from "./workflowSubject.helper";
 import { buildWorkflowStages } from "./workflow.helper";
@@ -10,31 +10,18 @@ import { WorkflowSubjectType } from "../../prisma/generated/prisma/client";
 
 export type AuthedRequest = Request & { user?: AuthenticatedUser };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// resolveOwnerType
-//
-// The FE sends `scope: "APP" | "USER"` on create — but this is a UI
-// convenience (an admin gets the choice; a regular user only ever sees
-// "USER"), not a grant of authority. The backend independently verifies:
-// "USER" is always allowed — self-service template creation is
-// unconditional. "APP" is only honored if canManageApp() confirms the
-// caller actually administers this specific app (or is a super admin,
-// which canManageApp already short-circuits true for). Requesting "APP"
-// without eligibility is a hard 403, not a silent downgrade to USER — the
-// FE should never have shown that option to this caller, so surfacing the
-// mismatch as an error is more honest than quietly hiding it.
-//
-// ownerType is NEVER trusted from the client directly — only the intent
-// (`scope`) is, and that intent is independently checked here.
-// ─────────────────────────────────────────────────────────────────────────────
-
+// The FE only offers "APP" to admins, but the requested scope is intent, not
+// authority: "APP" is honored only if the caller administers this app, and a
+// mismatch is a 403 rather than a silent downgrade so FE bugs surface.
 const resolveOwnerType = async (
   req: Request,
   appId: string,
   requestedScope: "APP" | "USER",
 ): Promise<"ADMIN" | "USER"> => {
-  const user = req.user as AuthenticatedUser | undefined;
   if (requestedScope === "USER") return "USER";
+
+  const user = req.user as AuthenticatedUser | undefined;
+  if (!user) throw new ApiError(401, "Unauthorized");
 
   const app = await prisma.app.findUnique({
     where: { id: appId },
@@ -42,15 +29,7 @@ const resolveOwnerType = async (
   });
   if (!app) throw new ApiError(404, "App not found");
 
-  const isEligible = canManageApp(
-    {
-      isSuperAdmin: user?.isSuperAdmin ?? false,
-      permissions: user?.permissions ?? [],
-    },
-    app.key,
-  );
-
-  if (!isEligible) {
+  if (!isAppAdministrator(user, app.key)) {
     throw new ApiError(
       403,
       "You do not have permission to create an app-wide workflow template",

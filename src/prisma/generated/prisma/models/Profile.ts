@@ -29,6 +29,7 @@ export type ProfileMinAggregateOutputType = {
   name: string | null
   description: string | null
   workspaceId: string | null
+  appId: string | null
   isSystemProfile: boolean | null
   created_at: Date | null
   updated_at: Date | null
@@ -39,6 +40,7 @@ export type ProfileMaxAggregateOutputType = {
   name: string | null
   description: string | null
   workspaceId: string | null
+  appId: string | null
   isSystemProfile: boolean | null
   created_at: Date | null
   updated_at: Date | null
@@ -49,6 +51,7 @@ export type ProfileCountAggregateOutputType = {
   name: number
   description: number
   workspaceId: number
+  appId: number
   isSystemProfile: number
   created_at: number
   updated_at: number
@@ -61,6 +64,7 @@ export type ProfileMinAggregateInputType = {
   name?: true
   description?: true
   workspaceId?: true
+  appId?: true
   isSystemProfile?: true
   created_at?: true
   updated_at?: true
@@ -71,6 +75,7 @@ export type ProfileMaxAggregateInputType = {
   name?: true
   description?: true
   workspaceId?: true
+  appId?: true
   isSystemProfile?: true
   created_at?: true
   updated_at?: true
@@ -81,6 +86,7 @@ export type ProfileCountAggregateInputType = {
   name?: true
   description?: true
   workspaceId?: true
+  appId?: true
   isSystemProfile?: true
   created_at?: true
   updated_at?: true
@@ -164,6 +170,7 @@ export type ProfileGroupByOutputType = {
   name: string
   description: string | null
   workspaceId: string
+  appId: string
   isSystemProfile: boolean
   created_at: Date
   updated_at: Date
@@ -195,10 +202,12 @@ export type ProfileWhereInput = {
   name?: Prisma.StringFilter<"Profile"> | string
   description?: Prisma.StringNullableFilter<"Profile"> | string | null
   workspaceId?: Prisma.StringFilter<"Profile"> | string
+  appId?: Prisma.StringFilter<"Profile"> | string
   isSystemProfile?: Prisma.BoolFilter<"Profile"> | boolean
   created_at?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Profile"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
+  app?: Prisma.XOR<Prisma.AppScalarRelationFilter, Prisma.AppWhereInput>
   permissions?: Prisma.ProfilePermissionListRelationFilter
   userProfiles?: Prisma.UserProfileListRelationFilter
 }
@@ -208,36 +217,42 @@ export type ProfileOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
   isSystemProfile?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
+  app?: Prisma.AppOrderByWithRelationInput
   permissions?: Prisma.ProfilePermissionOrderByRelationAggregateInput
   userProfiles?: Prisma.UserProfileOrderByRelationAggregateInput
 }
 
 export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  workspaceId_name?: Prisma.ProfileWorkspaceIdNameCompoundUniqueInput
+  workspaceId_appId_name?: Prisma.ProfileWorkspaceIdAppIdNameCompoundUniqueInput
+  id_appId?: Prisma.ProfileIdAppIdCompoundUniqueInput
   AND?: Prisma.ProfileWhereInput | Prisma.ProfileWhereInput[]
   OR?: Prisma.ProfileWhereInput[]
   NOT?: Prisma.ProfileWhereInput | Prisma.ProfileWhereInput[]
   name?: Prisma.StringFilter<"Profile"> | string
   description?: Prisma.StringNullableFilter<"Profile"> | string | null
   workspaceId?: Prisma.StringFilter<"Profile"> | string
+  appId?: Prisma.StringFilter<"Profile"> | string
   isSystemProfile?: Prisma.BoolFilter<"Profile"> | boolean
   created_at?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Profile"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
+  app?: Prisma.XOR<Prisma.AppScalarRelationFilter, Prisma.AppWhereInput>
   permissions?: Prisma.ProfilePermissionListRelationFilter
   userProfiles?: Prisma.UserProfileListRelationFilter
-}, "id" | "workspaceId_name">
+}, "id" | "workspaceId_appId_name" | "id_appId">
 
 export type ProfileOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
   isSystemProfile?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -254,6 +269,7 @@ export type ProfileScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Profile"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Profile"> | string | null
   workspaceId?: Prisma.StringWithAggregatesFilter<"Profile"> | string
+  appId?: Prisma.StringWithAggregatesFilter<"Profile"> | string
   isSystemProfile?: Prisma.BoolWithAggregatesFilter<"Profile"> | boolean
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Profile"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Profile"> | Date | string
@@ -267,6 +283,7 @@ export type ProfileCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutProfilesInput
+  app: Prisma.AppCreateNestedOneWithoutProfilesInput
   permissions?: Prisma.ProfilePermissionCreateNestedManyWithoutProfileInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutProfileInput
 }
@@ -276,6 +293,7 @@ export type ProfileUncheckedCreateInput = {
   name: string
   description?: string | null
   workspaceId: string
+  appId: string
   isSystemProfile?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -291,6 +309,7 @@ export type ProfileUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProfilesNestedInput
+  app?: Prisma.AppUpdateOneRequiredWithoutProfilesNestedInput
   permissions?: Prisma.ProfilePermissionUpdateManyWithoutProfileNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutProfileNestedInput
 }
@@ -300,6 +319,7 @@ export type ProfileUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
   isSystemProfile?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -312,6 +332,7 @@ export type ProfileCreateManyInput = {
   name: string
   description?: string | null
   workspaceId: string
+  appId: string
   isSystemProfile?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -331,6 +352,7 @@ export type ProfileUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
   isSystemProfile?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -346,9 +368,15 @@ export type ProfileOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type ProfileWorkspaceIdNameCompoundUniqueInput = {
+export type ProfileWorkspaceIdAppIdNameCompoundUniqueInput = {
   workspaceId: string
+  appId: string
   name: string
+}
+
+export type ProfileIdAppIdCompoundUniqueInput = {
+  id: string
+  appId: string
 }
 
 export type ProfileCountOrderByAggregateInput = {
@@ -356,6 +384,7 @@ export type ProfileCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
   isSystemProfile?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -366,6 +395,7 @@ export type ProfileMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
   isSystemProfile?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -376,6 +406,7 @@ export type ProfileMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
   isSystemProfile?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -428,6 +459,48 @@ export type ProfileUncheckedUpdateManyWithoutWorkspaceNestedInput = {
   deleteMany?: Prisma.ProfileScalarWhereInput | Prisma.ProfileScalarWhereInput[]
 }
 
+export type ProfileCreateNestedManyWithoutAppInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutAppInput, Prisma.ProfileUncheckedCreateWithoutAppInput> | Prisma.ProfileCreateWithoutAppInput[] | Prisma.ProfileUncheckedCreateWithoutAppInput[]
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutAppInput | Prisma.ProfileCreateOrConnectWithoutAppInput[]
+  createMany?: Prisma.ProfileCreateManyAppInputEnvelope
+  connect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+}
+
+export type ProfileUncheckedCreateNestedManyWithoutAppInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutAppInput, Prisma.ProfileUncheckedCreateWithoutAppInput> | Prisma.ProfileCreateWithoutAppInput[] | Prisma.ProfileUncheckedCreateWithoutAppInput[]
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutAppInput | Prisma.ProfileCreateOrConnectWithoutAppInput[]
+  createMany?: Prisma.ProfileCreateManyAppInputEnvelope
+  connect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+}
+
+export type ProfileUpdateManyWithoutAppNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutAppInput, Prisma.ProfileUncheckedCreateWithoutAppInput> | Prisma.ProfileCreateWithoutAppInput[] | Prisma.ProfileUncheckedCreateWithoutAppInput[]
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutAppInput | Prisma.ProfileCreateOrConnectWithoutAppInput[]
+  upsert?: Prisma.ProfileUpsertWithWhereUniqueWithoutAppInput | Prisma.ProfileUpsertWithWhereUniqueWithoutAppInput[]
+  createMany?: Prisma.ProfileCreateManyAppInputEnvelope
+  set?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  disconnect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  delete?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  connect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  update?: Prisma.ProfileUpdateWithWhereUniqueWithoutAppInput | Prisma.ProfileUpdateWithWhereUniqueWithoutAppInput[]
+  updateMany?: Prisma.ProfileUpdateManyWithWhereWithoutAppInput | Prisma.ProfileUpdateManyWithWhereWithoutAppInput[]
+  deleteMany?: Prisma.ProfileScalarWhereInput | Prisma.ProfileScalarWhereInput[]
+}
+
+export type ProfileUncheckedUpdateManyWithoutAppNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutAppInput, Prisma.ProfileUncheckedCreateWithoutAppInput> | Prisma.ProfileCreateWithoutAppInput[] | Prisma.ProfileUncheckedCreateWithoutAppInput[]
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutAppInput | Prisma.ProfileCreateOrConnectWithoutAppInput[]
+  upsert?: Prisma.ProfileUpsertWithWhereUniqueWithoutAppInput | Prisma.ProfileUpsertWithWhereUniqueWithoutAppInput[]
+  createMany?: Prisma.ProfileCreateManyAppInputEnvelope
+  set?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  disconnect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  delete?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  connect?: Prisma.ProfileWhereUniqueInput | Prisma.ProfileWhereUniqueInput[]
+  update?: Prisma.ProfileUpdateWithWhereUniqueWithoutAppInput | Prisma.ProfileUpdateWithWhereUniqueWithoutAppInput[]
+  updateMany?: Prisma.ProfileUpdateManyWithWhereWithoutAppInput | Prisma.ProfileUpdateManyWithWhereWithoutAppInput[]
+  deleteMany?: Prisma.ProfileScalarWhereInput | Prisma.ProfileScalarWhereInput[]
+}
+
 export type ProfileCreateNestedOneWithoutPermissionsInput = {
   create?: Prisma.XOR<Prisma.ProfileCreateWithoutPermissionsInput, Prisma.ProfileUncheckedCreateWithoutPermissionsInput>
   connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutPermissionsInput
@@ -463,6 +536,7 @@ export type ProfileCreateWithoutWorkspaceInput = {
   isSystemProfile?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  app: Prisma.AppCreateNestedOneWithoutProfilesInput
   permissions?: Prisma.ProfilePermissionCreateNestedManyWithoutProfileInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutProfileInput
 }
@@ -471,6 +545,7 @@ export type ProfileUncheckedCreateWithoutWorkspaceInput = {
   id?: string
   name: string
   description?: string | null
+  appId: string
   isSystemProfile?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -512,9 +587,60 @@ export type ProfileScalarWhereInput = {
   name?: Prisma.StringFilter<"Profile"> | string
   description?: Prisma.StringNullableFilter<"Profile"> | string | null
   workspaceId?: Prisma.StringFilter<"Profile"> | string
+  appId?: Prisma.StringFilter<"Profile"> | string
   isSystemProfile?: Prisma.BoolFilter<"Profile"> | boolean
   created_at?: Prisma.DateTimeFilter<"Profile"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Profile"> | Date | string
+}
+
+export type ProfileCreateWithoutAppInput = {
+  id?: string
+  name: string
+  description?: string | null
+  isSystemProfile?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutProfilesInput
+  permissions?: Prisma.ProfilePermissionCreateNestedManyWithoutProfileInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileUncheckedCreateWithoutAppInput = {
+  id?: string
+  name: string
+  description?: string | null
+  workspaceId: string
+  isSystemProfile?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  permissions?: Prisma.ProfilePermissionUncheckedCreateNestedManyWithoutProfileInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileCreateOrConnectWithoutAppInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutAppInput, Prisma.ProfileUncheckedCreateWithoutAppInput>
+}
+
+export type ProfileCreateManyAppInputEnvelope = {
+  data: Prisma.ProfileCreateManyAppInput | Prisma.ProfileCreateManyAppInput[]
+  skipDuplicates?: boolean
+}
+
+export type ProfileUpsertWithWhereUniqueWithoutAppInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutAppInput, Prisma.ProfileUncheckedUpdateWithoutAppInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutAppInput, Prisma.ProfileUncheckedCreateWithoutAppInput>
+}
+
+export type ProfileUpdateWithWhereUniqueWithoutAppInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutAppInput, Prisma.ProfileUncheckedUpdateWithoutAppInput>
+}
+
+export type ProfileUpdateManyWithWhereWithoutAppInput = {
+  where: Prisma.ProfileScalarWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateManyMutationInput, Prisma.ProfileUncheckedUpdateManyWithoutAppInput>
 }
 
 export type ProfileCreateWithoutPermissionsInput = {
@@ -525,6 +651,7 @@ export type ProfileCreateWithoutPermissionsInput = {
   created_at?: Date | string
   updated_at?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutProfilesInput
+  app: Prisma.AppCreateNestedOneWithoutProfilesInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutProfileInput
 }
 
@@ -533,6 +660,7 @@ export type ProfileUncheckedCreateWithoutPermissionsInput = {
   name: string
   description?: string | null
   workspaceId: string
+  appId: string
   isSystemProfile?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -563,6 +691,7 @@ export type ProfileUpdateWithoutPermissionsInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProfilesNestedInput
+  app?: Prisma.AppUpdateOneRequiredWithoutProfilesNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutProfileNestedInput
 }
 
@@ -571,6 +700,7 @@ export type ProfileUncheckedUpdateWithoutPermissionsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
   isSystemProfile?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -585,6 +715,7 @@ export type ProfileCreateWithoutUserProfilesInput = {
   created_at?: Date | string
   updated_at?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutProfilesInput
+  app: Prisma.AppCreateNestedOneWithoutProfilesInput
   permissions?: Prisma.ProfilePermissionCreateNestedManyWithoutProfileInput
 }
 
@@ -593,6 +724,7 @@ export type ProfileUncheckedCreateWithoutUserProfilesInput = {
   name: string
   description?: string | null
   workspaceId: string
+  appId: string
   isSystemProfile?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -623,6 +755,7 @@ export type ProfileUpdateWithoutUserProfilesInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProfilesNestedInput
+  app?: Prisma.AppUpdateOneRequiredWithoutProfilesNestedInput
   permissions?: Prisma.ProfilePermissionUpdateManyWithoutProfileNestedInput
 }
 
@@ -631,6 +764,7 @@ export type ProfileUncheckedUpdateWithoutUserProfilesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
   isSystemProfile?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -641,6 +775,7 @@ export type ProfileCreateManyWorkspaceInput = {
   id?: string
   name: string
   description?: string | null
+  appId: string
   isSystemProfile?: boolean
   created_at?: Date | string
   updated_at?: Date | string
@@ -653,6 +788,7 @@ export type ProfileUpdateWithoutWorkspaceInput = {
   isSystemProfile?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  app?: Prisma.AppUpdateOneRequiredWithoutProfilesNestedInput
   permissions?: Prisma.ProfilePermissionUpdateManyWithoutProfileNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutProfileNestedInput
 }
@@ -661,6 +797,7 @@ export type ProfileUncheckedUpdateWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
   isSystemProfile?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -672,6 +809,51 @@ export type ProfileUncheckedUpdateManyWithoutWorkspaceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  isSystemProfile?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ProfileCreateManyAppInput = {
+  id?: string
+  name: string
+  description?: string | null
+  workspaceId: string
+  isSystemProfile?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type ProfileUpdateWithoutAppInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isSystemProfile?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutProfilesNestedInput
+  permissions?: Prisma.ProfilePermissionUpdateManyWithoutProfileNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutAppInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  isSystemProfile?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  permissions?: Prisma.ProfilePermissionUncheckedUpdateManyWithoutProfileNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileUncheckedUpdateManyWithoutAppInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
   isSystemProfile?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -722,10 +904,12 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name?: boolean
   description?: boolean
   workspaceId?: boolean
+  appId?: boolean
   isSystemProfile?: boolean
   created_at?: boolean
   updated_at?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
   permissions?: boolean | Prisma.Profile$permissionsArgs<ExtArgs>
   userProfiles?: boolean | Prisma.Profile$userProfilesArgs<ExtArgs>
   _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
@@ -736,10 +920,12 @@ export type ProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   name?: boolean
   description?: boolean
   workspaceId?: boolean
+  appId?: boolean
   isSystemProfile?: boolean
   created_at?: boolean
   updated_at?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profile"]>
 
 export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -747,10 +933,12 @@ export type ProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   name?: boolean
   description?: boolean
   workspaceId?: boolean
+  appId?: boolean
   isSystemProfile?: boolean
   created_at?: boolean
   updated_at?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["profile"]>
 
 export type ProfileSelectScalar = {
@@ -758,29 +946,34 @@ export type ProfileSelectScalar = {
   name?: boolean
   description?: boolean
   workspaceId?: boolean
+  appId?: boolean
   isSystemProfile?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "workspaceId" | "isSystemProfile" | "created_at" | "updated_at", ExtArgs["result"]["profile"]>
+export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "workspaceId" | "appId" | "isSystemProfile" | "created_at" | "updated_at", ExtArgs["result"]["profile"]>
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
   permissions?: boolean | Prisma.Profile$permissionsArgs<ExtArgs>
   userProfiles?: boolean | Prisma.Profile$userProfilesArgs<ExtArgs>
   _count?: boolean | Prisma.ProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
 }
 export type ProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
+  app?: boolean | Prisma.AppDefaultArgs<ExtArgs>
 }
 
 export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Profile"
   objects: {
     workspace: Prisma.$WorkspacePayload<ExtArgs>
+    app: Prisma.$AppPayload<ExtArgs>
     permissions: Prisma.$ProfilePermissionPayload<ExtArgs>[]
     userProfiles: Prisma.$UserProfilePayload<ExtArgs>[]
   }
@@ -789,6 +982,7 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     name: string
     description: string | null
     workspaceId: string
+    appId: string
     isSystemProfile: boolean
     created_at: Date
     updated_at: Date
@@ -1187,6 +1381,7 @@ readonly fields: ProfileFieldRefs;
 export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  app<T extends Prisma.AppDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AppDefaultArgs<ExtArgs>>): Prisma.Prisma__AppClient<runtime.Types.Result.GetResult<Prisma.$AppPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   permissions<T extends Prisma.Profile$permissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$permissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProfilePermissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userProfiles<T extends Prisma.Profile$userProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$userProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1222,6 +1417,7 @@ export interface ProfileFieldRefs {
   readonly name: Prisma.FieldRef<"Profile", 'String'>
   readonly description: Prisma.FieldRef<"Profile", 'String'>
   readonly workspaceId: Prisma.FieldRef<"Profile", 'String'>
+  readonly appId: Prisma.FieldRef<"Profile", 'String'>
   readonly isSystemProfile: Prisma.FieldRef<"Profile", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"Profile", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Profile", 'DateTime'>

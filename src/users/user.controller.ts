@@ -1,199 +1,282 @@
-import { Request, Response, NextFunction } from "express";
-import axios from "axios";
+import type { Request, Response } from "express";
 
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
-import { formatProfile, profileInclude } from "@shared/utils/contants";
-
-import { buildUserPermissions } from "@kernel/rbac/userPermission";
+import { getRouteParameter } from "@shared/utils/routerParameter";
+import { fetchOData, unwrapODataResults } from "@shared/utils/odata";
 import {
-  parsePaginationParams,
   buildEqualityFilters,
   businessPartnerSelect,
+  parsePaginationParams,
 } from "@shared/utils/helpers";
+import { getAuthenticatedUser } from "@kernel/auth/auth.middleware";
+import { getManageableAppIds } from "@rbac/profile/accessPolicy";
 
-// Extend Request interface
-declare module "express-serve-static-core" {
-  interface Request {
-    user?: {
-      id: string;
-    };
-  }
-}
+import type { Prisma } from "../prisma/generated/prisma/client";
 
-// Placeholder password for admin-created users — stored as PLAIN TEXT with
-// is_default_login: true, matching the bulk-import scripts. Your login flow
-// (auth.controller.ts) already branches on is_default_login to do a plain
-// comparison instead of bcrypt, so this is consistent, not a shortcut.
+// Admin-created accounts get the same plain-text placeholder as the bulk
+// imports: login compares it directly while is_default_login is true and
+// forces a reset before a real (hashed) password is ever stored.
 const DEFAULT_PASSWORD = "Welcome@2026";
 
-// Query params that filter getUsers by a plain equality match on a scalar
-// User column. Add a new filter here (frontend + this array) — no other
-// code changes needed since buildEqualityFilters picks it up automatically.
-const USER_LIST_EQUALITY_FILTERS = ["businessPartnerId"];
+// Allowlist rather than "everything except password": a new column on User
+// must be opted in here before a request body can write to it.
+const EDITABLE_USER_FIELDS = [
+  "first_name",
+  "last_name",
+  "email",
+  "phone_number",
+  "employeeCode",
+  "bydId",
+  "s4Id",
+  "tallyId",
+  "c4cId",
+  "region",
+  "address",
+  "zone",
+  "branch",
+  "department",
+  "role",
+  "designation",
+  "vertical",
+  "managerCode1",
+  "managerCode2",
+  "isDefaultContact",
+  "userType",
+  "joinedOn",
+  "grade",
+  "businessPartnerId",
+] as const;
 
-export const getUsers = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const {
-      profile,
-      search = "",
-      pageIndex,
-      pageSize,
-    } = req.query as {
-      profile?: string;
-      search?: string;
-      pageIndex?: string;
-      pageSize?: string;
-    };
+const USER_FIELDS_SELECT = {
+  id: true,
+  first_name: true,
+  last_name: true,
+  email: true,
+  phone_number: true,
+  is_active: true,
+  is_default_login: true,
+  employeeCode: true,
+  bydId: true,
+  s4Id: true,
+  tallyId: true,
+  c4cId: true,
+  region: true,
+  address: true,
+  zone: true,
+  branch: true,
+  department: true,
+  role: true,
+  designation: true,
+  vertical: true,
+  managerCode1: true,
+  managerCode2: true,
+  isDefaultContact: true,
+  userType: true,
+  joinedOn: true,
+  grade: true,
+  businessPartnerId: true,
+  created_at: true,
+  updated_at: true,
+} satisfies Prisma.UserSelect;
 
-    const { reqPageIndex, reqPageSize } = parsePaginationParams(
-      pageIndex,
-      pageSize,
-    );
+const BYD_EMPLOYEES_URL =
+  "https://my347749.sapbydesign.com/sap/byd/odata/cc_home_analytics.svc/RPZD655449B1A636628E3B774QueryResults?$select=Ts1ANs627E6567A30CCE2,CCOMPANY_UUID,TCOMPANY_UUID,CY4M9FABQY_37FB16C540,Ts1ANsB16243B33AE70B6,CEMPLOYEE_UUID,TEMPLOYEE_UUID,CWA_START_DATE,Cs1ANsDEEFA17BFFCF618,Ts1ANsA4889B6AD57D2F6,Ts1ANs188C5F1E104E8F1,CEE_PRIV_MAIL,CEE_PRIV_MOBILE,Ts1ANs564DE5EF7E2FC4D,Ts1ANsE819527096E9697,CWA_END_DATE,Ts1ANs6AE1BC19D4E7A30,Ts1ANsE1AB739751277B4&$top=10&$format=json";
 
-    const where = {
-      AND: [
-        profile && profile !== "all"
-          ? {
-              userProfiles: {
-                some: {
-                  profile: { name: profile },
-                },
-              },
-            }
-          : {},
-        ...buildEqualityFilters(req.query, USER_LIST_EQUALITY_FILTERS),
-        search
-          ? {
-              OR: [
-                {
-                  first_name: {
-                    contains: search,
-                    mode: "insensitive" as const,
-                  },
-                },
-                {
-                  last_name: {
-                    contains: search,
-                    mode: "insensitive" as const,
-                  },
-                },
-                {
-                  email: {
-                    contains: search,
-                    mode: "insensitive" as const,
-                  },
-                },
-              ],
-            }
-          : {},
-      ],
-    };
+const C4C_EMPLOYEES_URL =
+  "https://my349841.crm.ondemand.com/sap/c4c/odata/ana_businessanalytics_analytics.svc/RPZ4EA7D91CAB6B391554B8F0QueryResults?$select=TSTAFFED_OC_UUID,CWRKADRS_EMAIL,CEE_UUID,CEE_GIVEN_NAME,TJOB_UUID,CEE_FAMILY_NAME,CRESP_MANAGER_UUID,TRESP_MANAGER_UUID,CWRKADRS_FRM_MOBILE,CEMPL_TYPE_START_DATE,CEMPL_TYPE_END_DATE&$top=10&$format=json";
 
-    const [rows, totalCount] = await Promise.all([
-      prisma.user.findMany({
-        where,
-        skip: reqPageIndex * reqPageSize,
-        take: reqPageSize,
-        include: {
-          businessPartner: { select: businessPartnerSelect },
+// App admins see every user, but only the profiles of apps they administer:
+// another app's assignments are not theirs to read.
+function buildUserSelect(
+  workspaceId: string,
+  manageableAppIds: string[] | null,
+) {
+  return {
+    ...USER_FIELDS_SELECT,
+    businessPartner: { select: businessPartnerSelect },
+    userProfiles: {
+      where: {
+        workspaceId,
+        ...(manageableAppIds && { appId: { in: manageableAppIds } }),
+      },
+      select: {
+        assignedAt: true,
+        profile: {
+          select: {
+            id: true,
+            name: true,
+            app: { select: { key: true, name: true } },
+          },
         },
-      }),
-      prisma.user.count({ where }),
-    ]);
+      },
+    },
+  } satisfies Prisma.UserSelect;
+}
 
-    res.status(200).json({
-      rows,
-      totalCount,
-      pageIndex: reqPageIndex,
-      pageSize: reqPageSize,
-    });
-  } catch (error: any) {
-    console.error("getUsers failed:", error);
-    res.status(500).json({
-      message: "Failed to fetch users",
-      error: error.message,
-    });
+type UserWithAppAccess = Prisma.UserGetPayload<{
+  select: ReturnType<typeof buildUserSelect>;
+}>;
+
+function formatUser({ userProfiles, ...user }: UserWithAppAccess) {
+  return {
+    ...user,
+    appAccess: userProfiles.map(({ profile, assignedAt }) => ({
+      appKey: profile.app.key,
+      appName: profile.app.name,
+      profileId: profile.id,
+      profileName: profile.name,
+      assignedAt,
+    })),
+  };
+}
+
+function pickEditableUserFields(body: Record<string, unknown>) {
+  const fields: Record<string, unknown> = {};
+  for (const field of EDITABLE_USER_FIELDS) {
+    if (body[field] !== undefined) fields[field] = body[field];
   }
+
+  // Unique columns: an empty string would collide across users, null does not.
+  if (fields.email === "") fields.email = null;
+  if (fields.phone_number === "") fields.phone_number = null;
+  if (fields.joinedOn !== undefined) {
+    fields.joinedOn = fields.joinedOn
+      ? new Date(fields.joinedOn as string)
+      : null;
+  }
+  return fields;
+}
+
+async function assertBusinessPartnerExists(businessPartnerId: unknown) {
+  if (typeof businessPartnerId !== "string" || !businessPartnerId) return;
+  const businessPartner = await prisma.businessPartner.findUnique({
+    where: { id: businessPartnerId },
+    select: { id: true },
+  });
+  if (!businessPartner) throw new ApiError(404, "Business partner not found");
+}
+
+async function assertWorkspaceMember(workspaceId: string, userId: string) {
+  const membership = await prisma.workspaceUser.findUnique({
+    where: { userId_workspaceId: { userId, workspaceId } },
+    select: { userId: true },
+  });
+  if (!membership) throw new ApiError(404, "User not found in this workspace");
+}
+
+function respondWithODataResults(url: string, environmentPrefix: string) {
+  return async (_request: Request, response: Response): Promise<void> => {
+    response.json(unwrapODataResults(await fetchOData(url, environmentPrefix)));
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// src/users/user.controller.ts — replace USER_LIST_EQUALITY_FILTERS and the
+// whole getUsers function with the code below. Imports are unchanged.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const USER_LIST_EQUALITY_FILTERS = ["businessPartnerId", "userType"];
+
+// User stores only is_active; the status names match the frontend tabs.
+const USER_STATUS_FILTERS: Record<string, Prisma.UserWhereInput> = {
+  Active: { is_active: true },
+  Inactive: { is_active: false },
 };
 
-export const getCurrentUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const userId = req.user?.id;
+function buildUserSearchFilter(
+  searchTerm: string | undefined,
+): Prisma.UserWhereInput {
+  if (!searchTerm) return {};
+  const contains = { contains: searchTerm, mode: "insensitive" as const };
+  return {
+    OR: [
+      { first_name: contains },
+      { last_name: contains },
+      { email: contains },
+      { phone_number: contains },
+      { employeeCode: contains },
+    ],
+  };
+}
 
-    if (!userId) {
-      throw new ApiError(401, "Unauthorized");
-    }
+export async function getUsers(request: Request, response: Response) {
+  const actor = getAuthenticatedUser(request);
+  const manageableAppIds = getManageableAppIds(actor);
+  const { search, pageIndex, pageSize, profileId, status } =
+    request.query as Record<string, string | undefined>;
+  const { reqPageIndex, reqPageSize } = parsePaginationParams(
+    pageIndex,
+    pageSize,
+  );
 
-    // Fetch user from database
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        first_name: true,
-        last_name: true,
-        email: true,
-        phone_number: true,
-        is_active: true,
-        created_at: true,
-        updated_at: true,
-      },
-    });
-
-    if (!user) {
-      throw new ApiError(404, "User not found");
-    }
-
-    if (!user.is_active) {
-      throw new ApiError(403, "Account is inactive");
-    }
-
-    // Load workspace membership (single workspace system)
-    const workspace = await prisma.workspaceUser.findFirst({
-      where: { userId: user.id },
-      select: {
-        workspaceId: true,
-        isSuperAdmin: true,
-      },
-    });
-
-    if (!workspace) {
-      throw new ApiError(403, "User not assigned to workspace");
-    }
-
-    // 🔥 Load module-level permissions
-    const permissions = await buildUserPermissions(
-      user.id,
-      workspace.workspaceId,
+  const statusFilter = status ? USER_STATUS_FILTERS[status] : {};
+  if (!statusFilter) {
+    throw new ApiError(
+      400,
+      `Unknown status "${status}". Use Active or Inactive.`,
     );
-
-    res.status(200).json({
-      user,
-      workspaceId: workspace.workspaceId,
-      permissions,
-    });
-  } catch (error) {
-    next(error);
   }
-};
 
-// ─────────────────────────────────────────────────────────────────────────────
-// GET /:id
-// ─────────────────────────────────────────────────────────────────────────────
+  // Everything except the status filter: the tab counts are computed from
+  // this, so switching tabs never changes the numbers on the other tabs.
+  const whereWithoutStatus: Prisma.UserWhereInput = {
+    workspaceUsers: { some: { workspaceId: actor.workspaceId } },
+    AND: [
+      ...(buildEqualityFilters(
+        request.query,
+        USER_LIST_EQUALITY_FILTERS,
+      ) as Prisma.UserWhereInput[]),
+      profileId
+        ? {
+            userProfiles: {
+              some: {
+                profileId,
+                workspaceId: actor.workspaceId,
+                ...(manageableAppIds && { appId: { in: manageableAppIds } }),
+              },
+            },
+          }
+        : {},
+      buildUserSearchFilter(search?.trim()),
+    ],
+  };
+  const where: Prisma.UserWhereInput = {
+    AND: [whereWithoutStatus, statusFilter],
+  };
 
-export async function getUserById(req: Request, res: Response) {
-  const { id } = req.params;
+  const [users, totalCount, allCount, activeCount] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      select: buildUserSelect(actor.workspaceId, manageableAppIds),
+      orderBy: [{ first_name: "asc" }, { last_name: "asc" }],
+      skip: reqPageIndex * reqPageSize,
+      take: reqPageSize,
+    }),
+    prisma.user.count({ where }),
+    prisma.user.count({ where: whereWithoutStatus }),
+    prisma.user.count({
+      where: { AND: [whereWithoutStatus, { is_active: true }] },
+    }),
+  ]);
 
+  response.json({
+    rows: users.map(formatUser),
+    totalCount,
+    pageIndex: reqPageIndex,
+    pageSize: reqPageSize,
+    statusCounts: {
+      All: allCount,
+      Active: activeCount,
+      Inactive: allCount - activeCount,
+    },
+  });
+}
+
+export async function getCurrentUser(request: Request, response: Response) {
+  const actor = getAuthenticatedUser(request);
   const user = await prisma.user.findUnique({
-    where: { id: id as string },
+    where: { id: actor.id },
     select: {
       id: true,
       first_name: true,
@@ -201,397 +284,130 @@ export async function getUserById(req: Request, res: Response) {
       email: true,
       phone_number: true,
       is_active: true,
-      is_default_login: true,
-      employeeCode: true,
-      bydId: true,
-      s4Id: true,
-      tallyId: true,
-      c4cId: true,
-      region: true,
-      address: true,
-      zone: true,
-      branch: true,
-      department: true,
-      role: true,
-      designation: true,
-      vertical: true,
-      managerCode1: true,
-      managerCode2: true,
-      isDefaultContact: true,
-      userType: true,
-      joinedOn: true,
-      businessPartnerId: true,
-      grade: true,
-      businessPartner: {
-        select: { id: true, bpName: true, officeType: true },
-      },
-      workspaceUsers: {
-        select: { workspaceId: true, isSuperAdmin: true },
-      },
       created_at: true,
       updated_at: true,
     },
   });
-
   if (!user) throw new ApiError(404, "User not found");
 
-  res.status(200).json(user);
+  response.json({
+    user,
+    workspaceId: actor.workspaceId,
+    permissions: {
+      isSuperAdmin: actor.isSuperAdmin,
+      administeredApps: actor.administeredApps,
+      permissions: actor.permissions,
+    },
+  });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /
-//
-// Admin-created user. Requires workspaceId so the new user gets a
-// WorkspaceUser row immediately — requireAuth rejects any User with none,
-// so this isn't optional bookkeeping, it's what makes the account usable.
-// ─────────────────────────────────────────────────────────────────────────────
-
-export async function createUser(req: Request, res: Response) {
-  const {
-    first_name,
-    last_name,
-    email,
-    phone_number,
-    workspaceId,
-    employeeCode,
-    bydId,
-    s4Id,
-    tallyId,
-    c4cId,
-    region,
-    address,
-    zone,
-    branch,
-    department,
-    role,
-    designation,
-    vertical,
-    managerCode1,
-    managerCode2,
-    isDefaultContact,
-    userType,
-    joinedOn,
-    grade,
-    businessPartnerId,
-  } = req.body;
-
-  if (!first_name?.trim() || !last_name?.trim()) {
-    throw new ApiError(400, "first_name and last_name are required");
-  }
-  if (!workspaceId) {
-    throw new ApiError(400, "workspaceId is required");
-  }
-
-  if (!businessPartnerId) {
-    throw new ApiError(404, "Business Id is Required");
-  }
-
-  const workspace = await prisma.workspace.findUnique({
-    where: { id: workspaceId },
+export async function getUserById(request: Request, response: Response) {
+  const actor = getAuthenticatedUser(request);
+  const user = await prisma.user.findFirst({
+    where: {
+      id: getRouteParameter(request, "id"),
+      workspaceUsers: { some: { workspaceId: actor.workspaceId } },
+    },
+    select: buildUserSelect(actor.workspaceId, getManageableAppIds(actor)),
   });
-  if (!workspace) throw new ApiError(404, "Workspace not found");
+  if (!user) throw new ApiError(404, "User not found");
 
-  if (businessPartnerId) {
-    const businessPartner = await prisma.businessPartner.findUnique({
-      where: { id: businessPartnerId },
-    });
-    if (!businessPartner) throw new ApiError(404, "Business partner not found");
-  }
-
-  const user = await prisma.$transaction(async (tx) => {
-    const created = await tx.user.create({
-      data: {
-        first_name,
-        last_name,
-        email: email || null,
-        phone_number: phone_number || null,
-        password: DEFAULT_PASSWORD,
-        is_active: true,
-        is_default_login: true,
-        employeeCode,
-        bydId,
-        s4Id,
-        tallyId,
-        c4cId,
-        region,
-        address,
-        zone,
-        branch,
-        department,
-        role,
-        designation,
-        vertical,
-        managerCode1,
-        managerCode2,
-        isDefaultContact: isDefaultContact ?? false,
-        userType,
-        joinedOn: joinedOn ? new Date(joinedOn) : undefined,
-        businessPartnerId,
-        grade,
-      },
-    });
-
-    await tx.workspaceUser.create({
-      data: { userId: created.id, workspaceId, isSuperAdmin: false },
-    });
-
-    return created;
-  });
-
-  res.status(201).json({ message: "User created successfully", user });
+  response.json(formatUser(user));
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PATCH /:id
-//
-// Attribute-only update — does not touch password, is_active, or workspace
-// membership. Use dedicated endpoints for those (deactivateUser,
-// removeUserFromWorkspace, assignUserProfiles).
-// ─────────────────────────────────────────────────────────────────────────────
+// New users start with no app access; an admin grants it afterwards by
+// assigning a profile in an app they administer.
+export async function createUser(request: Request, response: Response) {
+  const actor = getAuthenticatedUser(request);
+  const { first_name, last_name, businessPartnerId } = request.body;
 
-export async function updateUser(req: Request, res: Response) {
-  const { id } = req.params;
-  const { password, is_active, is_default_login, ...updateableFields } =
-    req.body;
+  if (typeof first_name !== "string" || !first_name.trim()) {
+    throw new ApiError(400, "first_name is required");
+  }
+  if (typeof last_name !== "string" || !last_name.trim()) {
+    throw new ApiError(400, "last_name is required");
+  }
+  if (!businessPartnerId)
+    throw new ApiError(400, "businessPartnerId is required");
+  await assertBusinessPartnerExists(businessPartnerId);
 
-  const existing = await prisma.user.findUnique({
-    where: { id: id as string },
+  const user = await prisma.user.create({
+    data: {
+      ...pickEditableUserFields(request.body),
+      password: DEFAULT_PASSWORD,
+      is_active: true,
+      is_default_login: true,
+      workspaceUsers: { create: { workspaceId: actor.workspaceId } },
+    } as Prisma.UserUncheckedCreateInput,
+    select: USER_FIELDS_SELECT,
   });
-  if (!existing) throw new ApiError(404, "User not found");
 
-  if (updateableFields.businessPartnerId) {
-    const businessPartner = await prisma.businessPartner.findUnique({
-      where: { id: updateableFields.businessPartnerId },
-    });
-    if (!businessPartner) throw new ApiError(404, "Business partner not found");
-  }
+  response.status(201).json({ message: "User created successfully", user });
+}
 
-  if (updateableFields.joinedOn) {
-    updateableFields.joinedOn = new Date(updateableFields.joinedOn);
-  }
+export async function updateUser(request: Request, response: Response) {
+  const actor = getAuthenticatedUser(request);
+  const userId = getRouteParameter(request, "id");
+  await assertWorkspaceMember(actor.workspaceId, userId);
+
+  const fields = pickEditableUserFields(request.body);
+  await assertBusinessPartnerExists(fields.businessPartnerId);
 
   const user = await prisma.user.update({
-    where: { id: id as string },
-    data: updateableFields,
+    where: { id: userId },
+    data: {
+      ...fields,
+      updated_at: new Date(),
+    } as Prisma.UserUncheckedUpdateInput,
+    select: USER_FIELDS_SELECT,
   });
 
-  res.status(200).json({ message: "User updated successfully", user });
+  response.json({ message: "User updated successfully", user });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// DELETE /:id  (soft delete: is_active = false)
-// ─────────────────────────────────────────────────────────────────────────────
-
-export async function deactivateUser(req: Request, res: Response) {
-  const { id } = req.params;
-
-  const existing = await prisma.user.findUnique({
-    where: { id: id as string },
-  });
-  if (!existing) throw new ApiError(404, "User not found");
+export async function deactivateUser(request: Request, response: Response) {
+  const actor = getAuthenticatedUser(request);
+  const userId = getRouteParameter(request, "id");
+  await assertWorkspaceMember(actor.workspaceId, userId);
 
   const user = await prisma.user.update({
-    where: { id: id as string },
-    data: { is_active: false },
+    where: { id: userId },
+    data: { is_active: false, updated_at: new Date() },
+    select: USER_FIELDS_SELECT,
   });
 
-  res.status(200).json({ message: "User deactivated successfully", user });
+  response.json({ message: "User deactivated successfully", user });
 }
 
-export async function getByDEmployees(
-  req: Request,
-  res: Response,
-  next: NextFunction,
+// Removes the membership and everything scoped to it (profiles and admin
+// rights in this workspace); the User record itself is kept.
+export async function removeUserFromWorkspace(
+  request: Request,
+  response: Response,
 ) {
-  try {
-    const response = await axios.get(
-      "https://my347749.sapbydesign.com/sap/byd/odata/cc_home_analytics.svc/RPZD655449B1A636628E3B774QueryResults?$select=Ts1ANs627E6567A30CCE2,CCOMPANY_UUID,TCOMPANY_UUID,CY4M9FABQY_37FB16C540,Ts1ANsB16243B33AE70B6,CEMPLOYEE_UUID,TEMPLOYEE_UUID,CWA_START_DATE,Cs1ANsDEEFA17BFFCF618,Ts1ANsA4889B6AD57D2F6,Ts1ANs188C5F1E104E8F1,CEE_PRIV_MAIL,CEE_PRIV_MOBILE,Ts1ANs564DE5EF7E2FC4D,Ts1ANsE819527096E9697,CWA_END_DATE,Ts1ANs6AE1BC19D4E7A30,Ts1ANsE1AB739751277B4&$top=10&$format=json",
-      {
-        auth: {
-          username: "7000035",
-          password: "Welcome@1234",
-        },
-        headers: {
-          Accept: "application/json",
-        },
-      },
-    );
+  const actor = getAuthenticatedUser(request);
+  const userId = getRouteParameter(request, "userId");
 
-    const results = response.data.d?.results ?? response.data;
-
-    res.json(results);
-  } catch (error) {
-    next(error);
+  if (userId === actor.id) {
+    throw new ApiError(400, "You cannot remove yourself from the workspace");
   }
+  await assertWorkspaceMember(actor.workspaceId, userId);
+
+  const scope = { userId, workspaceId: actor.workspaceId };
+  await prisma.$transaction([
+    prisma.userProfile.deleteMany({ where: scope }),
+    prisma.appAdministrator.deleteMany({ where: scope }),
+    prisma.workspaceUser.delete({ where: { userId_workspaceId: scope } }),
+  ]);
+
+  response.json({ message: "User removed from workspace successfully" });
 }
 
-export async function getC4CEmployees(
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) {
-  try {
-    const response = await axios.get(
-      "https://my349841.crm.ondemand.com/sap/c4c/odata/ana_businessanalytics_analytics.svc/RPZ4EA7D91CAB6B391554B8F0QueryResults?$select=TSTAFFED_OC_UUID,CWRKADRS_EMAIL,CEE_UUID,CEE_GIVEN_NAME,TJOB_UUID,CEE_FAMILY_NAME,CRESP_MANAGER_UUID,TRESP_MANAGER_UUID,CWRKADRS_FRM_MOBILE,CEMPL_TYPE_START_DATE,CEMPL_TYPE_END_DATE&$top=10&$format=json",
-      {
-        auth: {
-          username: "7000030",
-          password: "Welcome@2026",
-        },
-        headers: {
-          Accept: "application/json",
-        },
-      },
-    );
-
-    const results = response.data.d?.results ?? response.data;
-
-    res.json(results);
-  } catch (error) {
-    next(error);
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// PUT /workspace-users/profiles
-//
-// Assigns a single profile to one or many users in one call.
-//
-// Payload:
-// {
-//   "userIds":   ["uuid-1", "uuid-2", "uuid-3"],
-//   "profileId": "uuid"    ← send null to clear the profile for all userIds
-// }
-// ─────────────────────────────────────────────────────────────────────────────
-
-export async function assignUserProfiles(req: Request, res: Response) {
-  const { userIds, profileId, workspaceId } = req.body as {
-    userIds: string[];
-    profileId: string | null;
-    workspaceId: string;
-  };
-
-  if (!Array.isArray(userIds) || userIds.length === 0) {
-    throw new ApiError(400, "userIds must be a non-empty array");
-  }
-  if (profileId === undefined) {
-    throw new ApiError(400, "profileId is required (send null to clear)");
-  }
-
-  try {
-    await prisma.$transaction(async (tx) => {
-      // Validate all userIds are workspace members in one query
-      const members = await tx.workspaceUser.findMany({
-        where: { workspaceId, userId: { in: userIds } },
-        select: { userId: true },
-      });
-
-      if (members.length !== userIds.length) {
-        const found = new Set(members.map((m) => m.userId));
-        const missing = userIds.filter((id) => !found.has(id));
-        throw new ApiError(
-          404,
-          `These users are not in the workspace: ${missing.join(", ")}`,
-        );
-      }
-
-      // Validate profileId belongs to this workspace
-      if (profileId !== null) {
-        const profile = await tx.profile.findFirst({
-          where: { id: profileId, workspaceId },
-          select: { id: true },
-        });
-        if (!profile)
-          throw new ApiError(404, "Profile not found in this workspace");
-      }
-
-      // Clear all current assignments for these users
-      await tx.userProfile.deleteMany({
-        where: { workspaceId, userId: { in: userIds } },
-      });
-
-      // Assign the new profile if not null
-      if (profileId !== null) {
-        await tx.userProfile.createMany({
-          data: userIds.map((userId) => ({ userId, workspaceId, profileId })),
-        });
-      }
-    });
-
-    let profileData = null;
-
-    if (profileId) {
-      const profile = await prisma.profile.findFirst({
-        where: { id: profileId, workspaceId },
-        include: profileInclude,
-      });
-
-      profileData = profile ? formatProfile(profile) : null;
-    }
-
-    const message = profileId
-      ? `Profile assigned to ${userIds.length} user(s) successfully`
-      : `Profile cleared for ${userIds.length} user(s) successfully`;
-
-    res.status(200).json({ message, profile: profileData });
-  } catch (error: any) {
-    if (error instanceof ApiError) throw error;
-    console.error("assignUserProfiles failed:", error);
-    res
-      .status(500)
-      .json({ message: "Failed to assign profiles", error: error.message });
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// DELETE /workspace-users/:userId
-//
-// Removes a user from the workspace entirely.
-// Deletes all their profile assignments first, then the membership row.
-//
-// Payload:
-// {
-//   "workspaceId": "uuid"
-// }
-//
-// This does NOT delete the User record itself — the user still exists in
-// the system, they just no longer have access to this workspace.
-// ─────────────────────────────────────────────────────────────────────────────
-
-export async function removeUserFromWorkspace(req: Request, res: Response) {
-  const { userId } = req.params;
-  const { workspaceId } = req.body;
-
-  if (!workspaceId) throw new ApiError(400, "workspaceId is required");
-
-  try {
-    await prisma.$transaction(async (tx) => {
-      const member = await tx.workspaceUser.findUnique({
-        where: {
-          userId_workspaceId: { userId: userId as string, workspaceId },
-        },
-        select: { userId: true },
-      });
-      if (!member)
-        throw new ApiError(404, "User is not part of this workspace");
-
-      await tx.userProfile.deleteMany({
-        where: { userId: userId as string, workspaceId },
-      });
-      await tx.workspaceUser.delete({
-        where: {
-          userId_workspaceId: { userId: userId as string, workspaceId },
-        },
-      });
-    });
-
-    res.json({ message: "User removed from workspace successfully" });
-  } catch (error: any) {
-    if (error instanceof ApiError) throw error;
-    console.error("removeUserFromWorkspace failed:", error);
-    res.status(500).json({
-      message: "Failed to remove user from workspace",
-      error: error.message,
-    });
-  }
-}
+export const getByDEmployees = respondWithODataResults(
+  BYD_EMPLOYEES_URL,
+  "SAP_BYD",
+);
+export const getC4CEmployees = respondWithODataResults(
+  C4C_EMPLOYEES_URL,
+  "SAP_C4C",
+);

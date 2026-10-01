@@ -1,57 +1,53 @@
-// middleware/auth.ts
+import type { NextFunction, Request, RequestHandler, Response } from "express";
 import jwt from "jsonwebtoken";
 
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 
+import { buildUserPermissions } from "@rbac/profile/userPermission";
 import {
-  buildUserPermissions,
-  hasPermission,
-} from "@kernel/rbac/userPermission";
+  canAccessAdministration,
+  hasModulePermission,
+  isAppAdministrator,
+  isSuperAdmin,
+} from "@rbac/profile/accessPolicy";
+import type {
+  AccessActor,
+  PermissionActionValue,
+} from "@rbac/profile/access.types";
+import type { AppKeyResolver } from "@rbac/app/appResolvers";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// requireAuth
-//
-// Runs on every protected route. It:
-//   1. Reads and verifies the JWT from the Authorization header
-//   2. Loads the user and their workspace membership
-//   3. Calls buildUserPermissions to fetch all their scoped permission rows
-//   4. Attaches everything to req.user for downstream middleware/controllers
-//
-// What changed from the old version:
-//   - req.user.apps (nested map) is replaced by req.user.permissions (flat array)
-//   - authorize() now uses hasPermission() to check the flat array
-// ─────────────────────────────────────────────────────────────────────────────
+function readAccessToken(request: Request): string | undefined {
+  const authorizationHeader = request.headers.authorization;
+  if (authorizationHeader?.startsWith("Bearer ")) {
+    return authorizationHeader.split(" ")[1];
+  }
+  // EventSource cannot send headers, so SSE clients pass the token in the query.
+  return request.query.token as string | undefined;
+}
 
-export const requireAuth = async (req, res, next) => {
+// Permissions are rebuilt on every request (not read from the JWT) so that a
+// revoked profile or admin right takes effect on the user's very next call.
+export const requireAuth = async (
+  request: Request,
+  response: Response,
+  next: NextFunction,
+) => {
   try {
-    // ── Step 1: Extract and verify JWT ──────────────────────────────────────
-    const authHeader = req.headers.authorization;
-    const token = authHeader?.startsWith("Bearer ")
-      ? authHeader.split(" ")[1]
-      : (req.query.token as string | undefined); // EventSource fallback
-
-    if (!token) {
-      throw new ApiError(401, "No token provided");
-    }
+    const token = readAccessToken(request);
+    if (!token) throw new ApiError(401, "No token provided");
 
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as {
       sub: string;
     };
 
-    // ── Step 2: Load user + their workspace memberships ─────────────────────
     const user = await prisma.user.findUnique({
       where: { id: decoded.sub },
       select: {
         id: true,
         email: true,
         is_active: true,
-        workspaceUsers: {
-          select: {
-            workspaceId: true,
-            isSuperAdmin: true,
-          },
-        },
+        workspaceUsers: { select: { workspaceId: true } },
       },
     });
 
@@ -59,102 +55,84 @@ export const requireAuth = async (req, res, next) => {
       throw new ApiError(401, "User not authorized");
     }
 
-    // For now we take the first workspace the user belongs to.
-    // In a multi-workspace UI, you'd read the workspaceId from a
-    // request header (e.g. X-Workspace-Id) instead.
-    const workspace = user.workspaceUsers[0];
-    if (!workspace) {
+    // Single-workspace system today; a multi-workspace UI would pass the
+    // workspace explicitly (e.g. an X-Workspace-Id header) instead.
+    const membership = user.workspaceUsers[0];
+    if (!membership) {
       throw new ApiError(403, "User does not belong to any workspace");
     }
 
-    // ── Step 3: Build scoped permissions ────────────────────────────────────
-    // This is one DB round trip — a single raw SQL query that joins
-    // UserProfile → Profile → ProfilePermission → App → Module.
-    const { isSuperAdmin, permissions } = await buildUserPermissions(
-      user.id,
-      workspace.workspaceId,
-    );
+    const access = await buildUserPermissions(user.id, membership.workspaceId);
 
-    // ── Step 4: Attach to req.user ───────────────────────────────────────────
-    req.user = {
+    request.user = {
       id: user.id,
       email: user.email,
-      workspaceId: workspace.workspaceId,
-      isSuperAdmin,
-      permissions,
+      workspaceId: membership.workspaceId,
+      ...access,
     };
 
     next();
   } catch (error) {
-    // Return 401 for any auth failure (expired token, user not found, etc.)
-    res.sendStatus(401);
+    response.sendStatus(401);
   }
 };
 
-export const requireSuperAdmin = (req, res, next) => {
-  try {
-    if (!req.user?.isSuperAdmin) {
-      return next(new ApiError(403, "Only a super admin can manage users"));
+export function getAuthenticatedUser(request: Request): Express.User {
+  if (!request.user) throw new ApiError(401, "Not authenticated");
+  return request.user;
+}
+
+function requireActor(
+  isAllowed: (actor: AccessActor) => boolean,
+  deniedMessage: string,
+): RequestHandler {
+  return (request, _response, next) => {
+    try {
+      if (!isAllowed(getAuthenticatedUser(request))) {
+        throw new ApiError(403, deniedMessage);
+      }
+      next();
+    } catch (error) {
+      next(error);
     }
-    next();
-  } catch (error) {
-    res.sendStatus(401);
-  }
-};
+  };
+}
 
-// ─────────────────────────────────────────────────────────────────────────────
-// authorize
-//
-// Route-level middleware. Place it after requireAuth on any route that
-// needs a permission check.
-//
-// Usage on a route:
-//   router.post(
-//     "/events",
-//     requireAuth,
-//     authorize("MAP", "EPC", "write"),
-//     createEventHandler
-//   );
-//
-// How it works:
-//   1. Superadmin → always passes
-//   2. Calls hasPermission() which walks req.user.permissions and checks
-//      whether ANY row grants the requested action at the right scope
-//
-// What changed from the old version:
-//   Old: checked req.user.apps[app][module].includes(action)
-//        → only worked for MODULE-scoped roles, WORKSPACE/APP scope was invisible
-//   New: checks the flat permissions array using scope-aware matching
-//        → a single WORKSPACE "read" row now covers every app and module
-// ─────────────────────────────────────────────────────────────────────────────
+export const requireSuperAdmin = requireActor(
+  isSuperAdmin,
+  "This action requires super admin access",
+);
+
+export const requireAdministrationAccess = requireActor(
+  canAccessAdministration,
+  "This action requires administrator access",
+);
 
 export function authorize(
-  app: string,
-  module: string,
-  action: "read" | "write",
-) {
-  return (req, res, next) => {
-    // Superadmin short-circuit — skip permission lookup entirely
-    if (req.user?.isSuperAdmin) return next();
+  appKey: string,
+  moduleKey: string,
+  action: PermissionActionValue,
+): RequestHandler {
+  return requireActor(
+    (actor) => hasModulePermission(actor, action, appKey, moduleKey),
+    "You do not have access to this module",
+  );
+}
 
-    // Use hasPermission to resolve the flat array against the requested context
-    const allowed = hasPermission(
-      { isSuperAdmin: false, permissions: req.user?.permissions ?? [] },
-      action,
-      app,
-      module,
-    );
+export function requireAppAdministration(
+  resolveAppKey: AppKeyResolver,
+): RequestHandler {
+  return async (request, _response, next) => {
+    try {
+      const actor = getAuthenticatedUser(request);
+      const appKey = await resolveAppKey(request, actor.workspaceId);
 
-    if (!allowed) {
-      return res.status(403).json({
-        message: "Forbidden",
-        // Helpful debug info in development — remove in production
-        ...(process.env.NODE_ENV === "development" && {
-          required: { app, module, action },
-        }),
-      });
+      if (!isAppAdministrator(actor, appKey)) {
+        throw new ApiError(403, `You do not administer the ${appKey} app`);
+      }
+      next();
+    } catch (error) {
+      next(error);
     }
-
-    next();
   };
 }

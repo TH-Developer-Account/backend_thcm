@@ -1,75 +1,7 @@
-import { Prisma } from "../../prisma/generated/prisma/client";
-
 export const SALT_ROUNDS = 10;
 export const COOLDOWN_SECONDS = 60; // 1 OTP per 60s
 export const MAX_ATTEMPTS = 5; // max 5 OTPs
 export const WINDOW_SECONDS = 15 * 60; // in 15 minutes
-
-export const profileInclude = {
-  permissions: {
-    include: {
-      module: {
-        select: {
-          key: true,
-          name: true,
-          app: { select: { key: true, name: true } },
-        },
-      },
-      app: { select: { key: true, name: true } }, // populated for APP-scope rows
-    },
-    orderBy: [{ action: "asc" as const }],
-  },
-  userProfiles: {
-    select: {
-      user: {
-        select: {
-          id: true,
-          first_name: true,
-          last_name: true,
-          email: true,
-        },
-      },
-    },
-  },
-  _count: { select: { userProfiles: true } },
-} satisfies Prisma.ProfileInclude;
-
-export function formatProfile(profile: any) {
-  return {
-    id: profile.id,
-    name: profile.name,
-    description: profile.description,
-    isSystemProfile: profile.isSystemProfile,
-    assignedUserCount: profile._count.userProfiles,
-    users: profile.userProfiles.map((up: any) => ({
-      id: up.user.id,
-      firstName: up.user.first_name,
-      lastName: up.user.last_name,
-      email: up.user.email,
-    })),
-    // Two shapes depending on scope — the FE distinguishes an "admin of
-    // this app" row (scope: "APP", no moduleKey) from a regular
-    // module-level grant (scope: "MODULE") by this field, not by guessing
-    // from which relation happens to be populated.
-    permissions: profile.permissions.map((p: any) =>
-      p.scope === "APP"
-        ? {
-            scope: "APP" as const,
-            action: p.action,
-            appKey: p.app.key,
-            appName: p.app.name,
-          }
-        : {
-            scope: "MODULE" as const,
-            action: p.action,
-            appKey: p.module.app.key,
-            appName: p.module.app.name,
-            moduleKey: p.module.key,
-            moduleName: p.module.name,
-          },
-    ),
-  };
-}
 
 export const budgetMap: Record<string, { min: number; max: number | null }> = {
   below_20k: { min: 0, max: 20000 },

@@ -1,40 +1,32 @@
-import { ResolvedPermission } from "../kernel/rbac/userPermission";
-import {
-  VendorAccessToken,
+import type { AccessActor } from "@rbac/profile/access.types";
+import type {
   VendorOnboarding,
   MedicalClaim,
 } from "../prisma/generated/prisma/client";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Extend Express's Request type so TypeScript knows about req.user
-//
-// Express 5's own types route Request.user through Express.User (this used
-// to be a Passport convention; Express 5 baked it into core). Augmenting
-// Express.Request.user directly (the old Express 4 pattern) no longer merges
-// — Request.user is typed as Express.User | undefined, so Express.User is
-// what needs augmenting.
-// ─────────────────────────────────────────────────────────────────────────────
+export type AuthenticatedUser = AccessActor & {
+  id: string;
+  email: string | null;
+  workspaceId: string;
+};
 
+// @types/express 5 does not declare Request.user (it came from Passport), so
+// it is declared here; Express.User keeps compatibility with that convention.
 declare global {
   namespace Express {
-    interface User {
-      id: string;
-      email: string;
-      workspaceId: string;
-      isSuperAdmin: boolean;
-      permissions: ResolvedPermission[];
-    }
+    interface User extends AuthenticatedUser {}
 
     interface Request {
+      user?: User;
+
       vendorAccessToken?:
         | { id: string; onboarding: VendorOnboarding }
         | undefined;
 
       medicalClaimAccessToken?: { id: string; claim: MedicalClaim } | undefined;
 
-      // A guest is not a User — no workspaceId, no permissions. Kept as
-      // a plain object rather than folded into Express.User, since the
-      // two identities are never valid at the same time on one request.
+      // A guest is never a User: the two identities are never valid on the
+      // same request, so a guest has no workspace and no permissions.
       guest?: {
         id: string;
         mobile: string | null;
@@ -43,11 +35,3 @@ declare global {
     }
   }
 }
-
-export type AuthenticatedUser = {
-  id: string;
-  email: string;
-  workspaceId: string;
-  isSuperAdmin: boolean;
-  permissions: ResolvedPermission[];
-};

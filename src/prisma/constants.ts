@@ -4,6 +4,21 @@ export const MEDICAL_CLAIM = "Medical claim";
 
 export const EVENT_PLANNING_CALENDAR = "Event Planning Calendar";
 
+// Every seeded app gets one profile per template, covering all of that app's
+// modules, so assignment can be exercised locally without hand-made profiles.
+export const SAMPLE_PROFILE_TEMPLATES = [
+  {
+    name: "Viewer",
+    description: "Read access to every module in this app.",
+    actions: ["read"],
+  },
+  {
+    name: "Editor",
+    description: "Read and write access to every module in this app.",
+    actions: ["read", "write"],
+  },
+] as const;
+
 export const branchData = [
   { branch_name: "Ahmedabad", branch_code: "AHM" },
   { branch_name: "Aurangabad", branch_code: "AUR" },

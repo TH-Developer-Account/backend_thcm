@@ -1,39 +1,54 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
+
 import asyncHandler from "@shared/middleware/async.middleware";
 import { firstAuthRequestPerDay } from "@shared/middleware/dailyActiveUsers.middleware";
-import { requireAuth, requireSuperAdmin } from "../kernel/auth/auth.middleware";
 import {
-  getUsers,
-  getCurrentUser,
-  getUserById,
+  requireAdministrationAccess,
+  requireAuth,
+  requireSuperAdmin,
+} from "@kernel/auth/auth.middleware";
+
+import {
   createUser,
-  updateUser,
   deactivateUser,
   getByDEmployees,
   getC4CEmployees,
-  assignUserProfiles,
+  getCurrentUser,
+  getUserById,
+  getUsers,
   removeUserFromWorkspace,
-} from "../users/user.controller";
+  updateUser,
+} from "./user.controller";
 
 const router = Router();
 
-router.use(requireAuth); // sets req.user
-router.use(firstAuthRequestPerDay); // tracks DAU
+router.use(requireAuth);
+router.use(firstAuthRequestPerDay);
 
-router.get("/", asyncHandler(getUsers));
 router.get("/me", asyncHandler(getCurrentUser));
-router.get("/byd-employees", asyncHandler(getByDEmployees));
-router.get("/c4c-employees", asyncHandler(getC4CEmployees));
-router.post("/assign-profile", asyncHandler(assignUserProfiles));
 
-router.get("/:id", asyncHandler(getUserById));
-router.post("/", requireSuperAdmin, asyncHandler(createUser));
-router.patch("/:id", requireSuperAdmin, asyncHandler(updateUser));
-router.delete("/:id", requireSuperAdmin, asyncHandler(deactivateUser));
+router.get(
+  "/byd-employees",
+  requireAdministrationAccess,
+  asyncHandler(getByDEmployees),
+);
+router.get(
+  "/c4c-employees",
+  requireAdministrationAccess,
+  asyncHandler(getC4CEmployees),
+);
+
+router.get("/", requireAdministrationAccess, asyncHandler(getUsers));
+router.post("/", requireAdministrationAccess, asyncHandler(createUser));
+
 router.delete(
   "/workspace-users/:userId",
   requireSuperAdmin,
   asyncHandler(removeUserFromWorkspace),
 );
+
+router.get("/:id", requireAdministrationAccess, asyncHandler(getUserById));
+router.patch("/:id", requireSuperAdmin, asyncHandler(updateUser));
+router.delete("/:id", requireSuperAdmin, asyncHandler(deactivateUser));
 
 export default router;

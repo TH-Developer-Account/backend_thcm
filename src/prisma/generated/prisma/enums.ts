@@ -25,14 +25,6 @@ export const TemplateOwnerType = {
 export type TemplateOwnerType = (typeof TemplateOwnerType)[keyof typeof TemplateOwnerType]
 
 
-export const ScopeType = {
-  MODULE: 'MODULE',
-  APP: 'APP'
-} as const
-
-export type ScopeType = (typeof ScopeType)[keyof typeof ScopeType]
-
-
 export const StrategyType = {
   ALL: 'ALL',
   ANY: 'ANY',
