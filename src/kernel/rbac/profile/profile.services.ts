@@ -4,6 +4,7 @@ import ApiError from "@shared/utils/apiError";
 import type { PermissionActionValue } from "./access.types";
 import { enabledInWorkspace, findEnabledApp } from "../app/app.service";
 import { formatProfile, profileInclude } from "../profile/profilePresenter";
+import { Prisma } from "../../../prisma/generated/prisma/client";
 
 type ModulePermissionInput = {
   moduleKey: string;
@@ -15,6 +16,13 @@ type ProfileChanges = {
   name?: unknown;
   description?: unknown;
   permissions?: unknown;
+};
+
+export type ProfileListQuery = {
+  appKey?: string;
+  searchTerm?: string;
+  skip: number;
+  take: number;
 };
 
 const PERMISSION_ACTIONS: readonly PermissionActionValue[] = ["read", "write"];
@@ -135,24 +143,58 @@ async function findWorkspaceProfile(workspaceId: string, profileId: string) {
   return profile;
 }
 
+function buildProfileSearchFilter(
+  searchTerm: string | undefined,
+): Prisma.ProfileWhereInput {
+  if (!searchTerm) return {};
+  const contains = { contains: searchTerm, mode: "insensitive" as const };
+  return {
+    OR: [
+      { name: contains },
+      { description: contains },
+      { app: { name: contains } },
+      {
+        userProfiles: {
+          some: {
+            user: {
+              OR: [
+                { first_name: contains },
+                { last_name: contains },
+                { email: contains },
+              ],
+            },
+          },
+        },
+      },
+    ],
+  };
+}
+
 export async function listProfiles(
   workspaceId: string,
   manageableAppIds: string[] | null,
-  appKey?: string,
+  { appKey, searchTerm, skip, take }: ProfileListQuery,
 ) {
-  const profiles = await prisma.profile.findMany({
-    where: {
-      workspaceId,
-      app: {
-        ...enabledInWorkspace(workspaceId),
-        ...(appKey && { key: appKey }),
-      },
-      ...(manageableAppIds && { appId: { in: manageableAppIds } }),
-    },
-    include: profileInclude,
-    orderBy: [{ app: { name: "asc" } }, { name: "asc" }],
-  });
-  return profiles.map(formatProfile);
+  const where: Prisma.ProfileWhereInput = {
+    workspaceId,
+    app: { ...enabledInWorkspace(workspaceId), ...(appKey && { key: appKey }) },
+    ...(manageableAppIds && { appId: { in: manageableAppIds } }),
+    ...buildProfileSearchFilter(searchTerm),
+  };
+
+  const [profiles, totalCount] = await Promise.all([
+    prisma.profile.findMany({
+      where,
+      include: profileInclude,
+      // id last keeps page boundaries stable when names tie.
+      orderBy: [{ app: { name: "asc" } }, { name: "asc" }, { id: "asc" }],
+      skip,
+      take,
+    }),
+    prisma.profile.count({ where }),
+  ]);
+
+  return { rows: profiles.map(formatProfile), totalCount };
 }
 
 export async function getProfile(workspaceId: string, profileId: string) {

@@ -1,11 +1,12 @@
 import type { Request, Response } from "express";
 
 import ApiError from "@shared/utils/apiError";
+import { parsePaginationParams } from "@shared/utils/helpers";
 import { getRouteParameter } from "@shared/utils/routerParameter";
 import { getAuthenticatedUser } from "@kernel/auth/auth.middleware";
 
 import { getManageableAppIds } from "./accessPolicy";
-import * as profileService from "../profile/profile.services";
+import * as profileService from "./profile.services";
 import { setProfileAssignees } from "./profileAssignment.service";
 
 function optionalQueryString(value: unknown): string | undefined {
@@ -14,12 +15,28 @@ function optionalQueryString(value: unknown): string | undefined {
 
 export async function listProfiles(request: Request, response: Response) {
   const actor = getAuthenticatedUser(request);
-  const profiles = await profileService.listProfiles(
+  const { reqPageIndex, reqPageSize } = parsePaginationParams(
+    optionalQueryString(request.query.pageIndex),
+    optionalQueryString(request.query.pageSize),
+  );
+
+  const { rows, totalCount } = await profileService.listProfiles(
     actor.workspaceId,
     getManageableAppIds(actor),
-    optionalQueryString(request.query.appKey),
+    {
+      appKey: optionalQueryString(request.query.appKey),
+      searchTerm: optionalQueryString(request.query.search),
+      skip: reqPageIndex * reqPageSize,
+      take: reqPageSize,
+    },
   );
-  response.json({ count: profiles.length, data: profiles });
+
+  response.json({
+    rows,
+    totalCount,
+    pageIndex: reqPageIndex,
+    pageSize: reqPageSize,
+  });
 }
 
 export async function getProfile(request: Request, response: Response) {
