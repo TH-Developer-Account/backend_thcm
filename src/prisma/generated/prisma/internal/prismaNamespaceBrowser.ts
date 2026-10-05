@@ -60,6 +60,7 @@ export const ModelName = {
   App: 'App',
   WorkspaceApp: 'WorkspaceApp',
   Module: 'Module',
+  AppAdministrator: 'AppAdministrator',
   Profile: 'Profile',
   ProfilePermission: 'ProfilePermission',
   UserProfile: 'UserProfile',
@@ -246,11 +247,23 @@ export const ModuleScalarFieldEnum = {
 export type ModuleScalarFieldEnum = (typeof ModuleScalarFieldEnum)[keyof typeof ModuleScalarFieldEnum]
 
 
+export const AppAdministratorScalarFieldEnum = {
+  workspaceId: 'workspaceId',
+  userId: 'userId',
+  appId: 'appId',
+  grantedById: 'grantedById',
+  grantedAt: 'grantedAt'
+} as const
+
+export type AppAdministratorScalarFieldEnum = (typeof AppAdministratorScalarFieldEnum)[keyof typeof AppAdministratorScalarFieldEnum]
+
+
 export const ProfileScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
   workspaceId: 'workspaceId',
+  appId: 'appId',
   isSystemProfile: 'isSystemProfile',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -262,22 +275,20 @@ export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeo
 export const ProfilePermissionScalarFieldEnum = {
   id: 'id',
   profileId: 'profileId',
-  action: 'action',
-  scope: 'scope',
   moduleId: 'moduleId',
-  appId: 'appId'
+  action: 'action'
 } as const
 
 export type ProfilePermissionScalarFieldEnum = (typeof ProfilePermissionScalarFieldEnum)[keyof typeof ProfilePermissionScalarFieldEnum]
 
 
 export const UserProfileScalarFieldEnum = {
-  id: 'id',
   userId: 'userId',
   workspaceId: 'workspaceId',
+  appId: 'appId',
   profileId: 'profileId',
-  assignedAt: 'assignedAt',
-  assignedBy: 'assignedBy'
+  assignedById: 'assignedById',
+  assignedAt: 'assignedAt'
 } as const
 
 export type UserProfileScalarFieldEnum = (typeof UserProfileScalarFieldEnum)[keyof typeof UserProfileScalarFieldEnum]

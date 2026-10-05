@@ -11,8 +11,51 @@ import {
   budgetCodeData,
   verticalsData,
   products,
+  SAMPLE_PROFILE_TEMPLATES,
 } from "./constants";
 import { ProductMasterCreateManyInput } from "./generated/prisma/models";
+
+type PermissionActionValue =
+  (typeof SAMPLE_PROFILE_TEMPLATES)[number]["actions"][number];
+
+function buildModulePermissionRows(
+  profileId: string,
+  moduleIds: string[],
+  actions: readonly PermissionActionValue[],
+) {
+  return moduleIds.flatMap((moduleId) =>
+    actions.map((action) => ({ profileId, moduleId, action })),
+  );
+}
+
+async function createSampleProfiles(workspaceId: string): Promise<void> {
+  const apps = await prisma.app.findMany({
+    select: { id: true, modules: { select: { id: true } } },
+  });
+
+  for (const app of apps) {
+    const moduleIds = app.modules.map((appModule) => appModule.id);
+
+    for (const template of SAMPLE_PROFILE_TEMPLATES) {
+      const profile = await prisma.profile.create({
+        data: {
+          workspaceId,
+          appId: app.id,
+          name: template.name,
+          description: template.description,
+        },
+      });
+
+      await prisma.profilePermission.createMany({
+        data: buildModulePermissionRows(
+          profile.id,
+          moduleIds,
+          template.actions,
+        ),
+      });
+    }
+  }
+}
 
 async function main() {
   console.log("🌱 Seeding database...");
@@ -34,6 +77,7 @@ async function main() {
   await prisma.workflowTemplate.deleteMany();
 
   await prisma.userProfile.deleteMany();
+  await prisma.appAdministrator.deleteMany();
   await prisma.profilePermission.deleteMany();
   await prisma.profile.deleteMany();
   await prisma.workspaceUser.deleteMany();
@@ -122,6 +166,9 @@ async function main() {
   });
 
   console.log("✅ Modules created for MAP and Vendor Onboarding");
+
+  await createSampleProfiles(workspace.id);
+  console.log("✅ Sample Viewer / Editor profiles created for every app");
 
   const departments = await Promise.all(
     [

@@ -85,6 +85,11 @@ export type WorkspaceApp = Prisma.WorkspaceAppModel
  */
 export type Module = Prisma.ModuleModel
 /**
+ * Model AppAdministrator
+ * 
+ */
+export type AppAdministrator = Prisma.AppAdministratorModel
+/**
  * Model Profile
  * 
  */

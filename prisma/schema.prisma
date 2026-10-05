@@ -21,11 +21,6 @@ enum TemplateOwnerType {
   USER
 }
 
-enum ScopeType {
-  MODULE
-  APP
-}
-
 enum StrategyType {
   ALL
   ANY
@@ -108,7 +103,7 @@ enum ImportExportStatus {
 enum WorkflowSubjectType {
   EVENT_PROPOSAL
   VENDOR_ONBOARDING
-  MEDICAL_CLAIM 
+  MEDICAL_CLAIM
 }
 
 enum NotificationType {
@@ -176,7 +171,10 @@ model User {
   refresh_tokens        RefreshToken[]
   password_reset_tokens PasswordResetToken[]
   workspaceUsers WorkspaceUser[]
-  userProfiles   UserProfile[]
+  userProfiles         UserProfile[]      @relation("UserProfileHolder")
+  assignedUserProfiles UserProfile[]      @relation("UserProfileAssigner")
+  administeredApps         AppAdministrator[] @relation("AdministeredApps")
+  grantedAppAdministrators AppAdministrator[] @relation("GrantedAppAdministrators")
   notifications     Notification[]
   pushSubscriptions PushSubscription[]
   created_event_proposals EventProposal[] @relation("EventCreatedBy")
@@ -242,10 +240,11 @@ model Workspace {
   id   String @id @default(uuid())
   name String
 
-  users        WorkspaceUser[]
-  apps         WorkspaceApp[]
-  profiles     Profile[]
-  userProfiles UserProfile[]
+  users             WorkspaceUser[]
+  apps              WorkspaceApp[]
+  profiles          Profile[]
+  userProfiles      UserProfile[]
+  appAdministrators AppAdministrator[]
   vendorOnboardings VendorOnboarding[]
   medicalClaims MedicalClaim[]
 
@@ -280,10 +279,11 @@ model App {
   key  String @unique
   name String
 
-  workspaceApps      WorkspaceApp[]
-  modules            Module[]
-  workFlowTemplate   WorkflowTemplate[]
-  profilePermissions ProfilePermission[]   
+  workspaceApps     WorkspaceApp[]
+  modules           Module[]
+  workFlowTemplate  WorkflowTemplate[]
+  profiles          Profile[]
+  appAdministrators AppAdministrator[]
 
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
@@ -317,58 +317,85 @@ model Module {
 }
 
 // ─────────────────────────────────────────────
-// PROFILE
+// ACCESS CONTROL
+//
+// Three separate concepts, each with its own storage:
+//   - Administrative scope → AppAdministrator (granted by Super Admin only)
+//   - What a user can do   → Profile + ProfilePermission (one app per profile)
+//   - Application access   → derived: a UserProfile slot for that app exists
+//
+// See claude/access-control-spec.md for the full rule set.
 // ─────────────────────────────────────────────
+
+// Admin rights are not a permission inside a profile: keeping them in their
+// own table means no profile edit or assignment can ever grant or revoke them.
+model AppAdministrator {
+  workspaceId String
+  userId      String
+  appId       String
+  grantedById String
+  grantedAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  user      User      @relation("AdministeredApps", fields: [userId], references: [id])
+  app       App       @relation(fields: [appId], references: [id])
+  grantedBy User      @relation("GrantedAppAdministrators", fields: [grantedById], references: [id])
+
+  @@id([workspaceId, userId, appId])
+  @@index([workspaceId, appId])
+}
 
 model Profile {
   id              String   @id @default(uuid())
   name            String
   description     String?
   workspaceId     String
+  appId           String
   isSystemProfile Boolean  @default(false)
   created_at      DateTime @default(now()) @db.Timestamp(6)
   updated_at      DateTime @default(now()) @db.Timestamp(6)
 
   workspace    Workspace           @relation(fields: [workspaceId], references: [id])
+  app          App                 @relation(fields: [appId], references: [id])
   permissions  ProfilePermission[]
   userProfiles UserProfile[]
 
-  @@unique([workspaceId, name])
-  @@index([workspaceId])
+  @@unique([workspaceId, appId, name])
+  // Target of UserProfile's composite relation, so Postgres rejects a profile
+  // stored in another app's slot.
+  @@unique([id, appId])
+  @@index([workspaceId, appId])
 }
 
 model ProfilePermission {
   id        String           @id @default(uuid())
   profileId String
+  moduleId  String
   action    PermissionAction
-  scope     ScopeType        @default(MODULE)   // ✅ NEW
-  moduleId  String?                              // ← was required, now optional
-  appId     String?                              // ✅ NEW
 
   profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
-  module  Module? @relation(fields: [moduleId], references: [id])   // ← was required
-  app     App?    @relation(fields: [appId], references: [id])       // ✅ NEW
+  module  Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
-  @@unique([profileId, action, moduleId])
-  @@unique([profileId, action, appId])   // ✅ NEW
-  @@index([profileId, moduleId])
-  @@index([profileId, appId])            // ✅ NEW
+  @@unique([profileId, moduleId, action])
 }
 
+// One row per (user, app): assigning a profile upserts this slot, so a
+// profile in one app can never overwrite or remove access to another app.
 model UserProfile {
-  id          String   @id @default(uuid())
-  userId      String
-  workspaceId String
-  profileId   String
-  assignedAt  DateTime @default(now())
-  assignedBy  String?
+  userId       String
+  workspaceId  String
+  appId        String
+  profileId    String
+  assignedById String?
+  assignedAt   DateTime @default(now())
 
-  user      User      @relation(fields: [userId], references: [id])
-  workspace Workspace @relation(fields: [workspaceId], references: [id])
-  profile   Profile   @relation(fields: [profileId], references: [id])
+  user       User      @relation("UserProfileHolder", fields: [userId], references: [id])
+  assignedBy User?     @relation("UserProfileAssigner", fields: [assignedById], references: [id])
+  workspace  Workspace @relation(fields: [workspaceId], references: [id])
+  profile    Profile   @relation(fields: [profileId, appId], references: [id, appId])
 
-  @@unique([userId, workspaceId, profileId])
-  @@index([userId, workspaceId, profileId])
+  @@id([userId, workspaceId, appId])
+  @@index([workspaceId, profileId])
 }
 
 // ─────────────────────────────────────────────
@@ -398,7 +425,7 @@ model EventProposal {
   deviationAmount Decimal? @db.Decimal(12, 2)
   deviationDocUrl String?
   deviationDocS3Key String?
-  locationMeta     Json?    
+  locationMeta     Json?
 
   department    Department   @relation(fields: [department_id], references: [id])
   vertical      Vertical     @relation(fields: [vertical_id], references: [id])
@@ -453,8 +480,8 @@ model WorkflowTemplate {
   created_by User             @relation("WorkFlowCreatedBy", fields: [created_by_id], references: [id])
   updated_by User             @relation("WorkFlowUpdatedBy", fields: [updated_by_id], references: [id])
 
-  @@index([ownerType])      
-  @@index([isReusable]) 
+  @@index([ownerType])
+  @@index([isReusable])
 }
 
 model TemplateStage {
@@ -496,9 +523,9 @@ model WorkflowInstance {
   workflowType    WorkflowType @default(STANDARD)
   status          WorkflowStatus @default(IN_PROGRESS)
   currentStage    Int
-  appId       String             
-  subjectType WorkflowSubjectType 
-  subjectId   String              
+  appId       String
+  subjectType WorkflowSubjectType
+  subjectId   String
 
   template  WorkflowTemplate @relation(fields: [templateId], references: [id])
   workspace Workspace        @relation(fields: [workspaceId], references: [id])
@@ -594,8 +621,8 @@ model WorkFlowTemplateUser {
 
 model ActivityLog {
   id           String         @id @default(uuid())
-  actorId      String?                         
-  actorGuestId String?                          
+  actorId      String?
+  actorGuestId String?
   action       String?
   workflowId   String?
   stageId      String?
@@ -603,12 +630,12 @@ model ActivityLog {
   createdAt    DateTime       @default(now())
   subjectType  WorkflowSubjectType
   subjectId    String
- 
+
   actor      User?             @relation(fields: [actorId], references: [id])
   actorGuest Guest?            @relation(fields: [actorGuestId], references: [id])
   workflow   WorkflowInstance? @relation(fields: [workflowId], references: [id])
   stage      StageInstance?    @relation(fields: [stageId], references: [id])
- 
+
   @@index([subjectId])
   @@index([actorId])
   @@index([actorGuestId])
@@ -775,7 +802,7 @@ model Operator {
   phone          String            @unique
   machineSerial  String
   operatorType   String
-  submittedBy    String           
+  submittedBy    String
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
 
@@ -999,7 +1026,7 @@ model PushSubscription {
 
 model VendorOnboarding {
   id            String   @id @default(uuid())
-  referenceNumber String @unique 
+  referenceNumber String @unique
   workspaceId   String
   initiatedById String
   status        String   @default("AWAITING_VENDOR")
@@ -1169,14 +1196,14 @@ model Guest {
   id        String   @id @default(uuid())
   mobile    String?  @unique
   email     String?  @unique
-  password  String? 
-  name String? 
+  password  String?
+  name String?
   createdAt DateTime @default(now())
 
   vendorOnboardings VendorOnboarding[]
   medicalClaims MedicalClaim[]
   activityLogs ActivityLog[]
- 
+
   @@index([mobile])
   @@index([email])
 }

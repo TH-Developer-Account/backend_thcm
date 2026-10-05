@@ -393,6 +393,7 @@ export const ModelName = {
   App: 'App',
   WorkspaceApp: 'WorkspaceApp',
   Module: 'Module',
+  AppAdministrator: 'AppAdministrator',
   Profile: 'Profile',
   ProfilePermission: 'ProfilePermission',
   UserProfile: 'UserProfile',
@@ -449,7 +450,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "medicalClaimGradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "medicalClaimGradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1116,6 +1117,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ModuleCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ModuleCountAggregateOutputType> | number
+        }
+      }
+    }
+    AppAdministrator: {
+      payload: Prisma.$AppAdministratorPayload<ExtArgs>
+      fields: Prisma.AppAdministratorFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AppAdministratorFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppAdministratorPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AppAdministratorFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppAdministratorPayload>
+        }
+        findFirst: {
+          args: Prisma.AppAdministratorFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppAdministratorPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AppAdministratorFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppAdministratorPayload>
+        }
+        findMany: {
+          args: Prisma.AppAdministratorFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppAdministratorPayload>[]
+        }
+        create: {
+          args: Prisma.AppAdministratorCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppAdministratorPayload>
+        }
+        createMany: {
+          args: Prisma.AppAdministratorCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AppAdministratorCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppAdministratorPayload>[]
+        }
+        delete: {
+          args: Prisma.AppAdministratorDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppAdministratorPayload>
+        }
+        update: {
+          args: Prisma.AppAdministratorUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppAdministratorPayload>
+        }
+        deleteMany: {
+          args: Prisma.AppAdministratorDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AppAdministratorUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AppAdministratorUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppAdministratorPayload>[]
+        }
+        upsert: {
+          args: Prisma.AppAdministratorUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppAdministratorPayload>
+        }
+        aggregate: {
+          args: Prisma.AppAdministratorAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAppAdministrator>
+        }
+        groupBy: {
+          args: Prisma.AppAdministratorGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppAdministratorGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AppAdministratorCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppAdministratorCountAggregateOutputType> | number
         }
       }
     }
@@ -4319,11 +4394,23 @@ export const ModuleScalarFieldEnum = {
 export type ModuleScalarFieldEnum = (typeof ModuleScalarFieldEnum)[keyof typeof ModuleScalarFieldEnum]
 
 
+export const AppAdministratorScalarFieldEnum = {
+  workspaceId: 'workspaceId',
+  userId: 'userId',
+  appId: 'appId',
+  grantedById: 'grantedById',
+  grantedAt: 'grantedAt'
+} as const
+
+export type AppAdministratorScalarFieldEnum = (typeof AppAdministratorScalarFieldEnum)[keyof typeof AppAdministratorScalarFieldEnum]
+
+
 export const ProfileScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
   workspaceId: 'workspaceId',
+  appId: 'appId',
   isSystemProfile: 'isSystemProfile',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -4335,22 +4422,20 @@ export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeo
 export const ProfilePermissionScalarFieldEnum = {
   id: 'id',
   profileId: 'profileId',
-  action: 'action',
-  scope: 'scope',
   moduleId: 'moduleId',
-  appId: 'appId'
+  action: 'action'
 } as const
 
 export type ProfilePermissionScalarFieldEnum = (typeof ProfilePermissionScalarFieldEnum)[keyof typeof ProfilePermissionScalarFieldEnum]
 
 
 export const UserProfileScalarFieldEnum = {
-  id: 'id',
   userId: 'userId',
   workspaceId: 'workspaceId',
+  appId: 'appId',
   profileId: 'profileId',
-  assignedAt: 'assignedAt',
-  assignedBy: 'assignedBy'
+  assignedById: 'assignedById',
+  assignedAt: 'assignedAt'
 } as const
 
 export type UserProfileScalarFieldEnum = (typeof UserProfileScalarFieldEnum)[keyof typeof UserProfileScalarFieldEnum]
@@ -5108,20 +5193,6 @@ export type ListEnumPermissionActionFieldRefInput<$PrismaModel> = FieldRefInputT
 
 
 /**
- * Reference to a field of type 'ScopeType'
- */
-export type EnumScopeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScopeType'>
-    
-
-
-/**
- * Reference to a field of type 'ScopeType[]'
- */
-export type ListEnumScopeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ScopeType[]'>
-    
-
-
-/**
  * Reference to a field of type 'Decimal'
  */
 export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
@@ -5519,6 +5590,7 @@ export type GlobalOmitConfig = {
   app?: Prisma.AppOmit
   workspaceApp?: Prisma.WorkspaceAppOmit
   module?: Prisma.ModuleOmit
+  appAdministrator?: Prisma.AppAdministratorOmit
   profile?: Prisma.ProfileOmit
   profilePermission?: Prisma.ProfilePermissionOmit
   userProfile?: Prisma.UserProfileOmit

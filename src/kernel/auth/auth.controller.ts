@@ -7,7 +7,7 @@ import ApiError from "@shared/utils/apiError";
 import { SALT_ROUNDS } from "@shared/utils/contants";
 
 import { checkOtpLimit, updateOtpLimit } from "./otpRateLimiter";
-import { buildUserPermissions } from "@kernel/rbac/userPermission";
+import { buildUserPermissions } from "@rbac/profile/userPermission";
 // import { sendPasswordResetEmail } from "../utils/sendEmail";
 import { signAccessToken, createRefreshToken } from "./auth.services";
 import { OtpService } from "./otp.services";

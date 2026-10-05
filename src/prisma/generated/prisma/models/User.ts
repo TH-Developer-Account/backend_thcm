@@ -387,6 +387,9 @@ export type UserWhereInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenListRelationFilter
   workspaceUsers?: Prisma.WorkspaceUserListRelationFilter
   userProfiles?: Prisma.UserProfileListRelationFilter
+  assignedUserProfiles?: Prisma.UserProfileListRelationFilter
+  administeredApps?: Prisma.AppAdministratorListRelationFilter
+  grantedAppAdministrators?: Prisma.AppAdministratorListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
   created_event_proposals?: Prisma.EventProposalListRelationFilter
@@ -441,6 +444,9 @@ export type UserOrderByWithRelationInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenOrderByRelationAggregateInput
   workspaceUsers?: Prisma.WorkspaceUserOrderByRelationAggregateInput
   userProfiles?: Prisma.UserProfileOrderByRelationAggregateInput
+  assignedUserProfiles?: Prisma.UserProfileOrderByRelationAggregateInput
+  administeredApps?: Prisma.AppAdministratorOrderByRelationAggregateInput
+  grantedAppAdministrators?: Prisma.AppAdministratorOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   pushSubscriptions?: Prisma.PushSubscriptionOrderByRelationAggregateInput
   created_event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
@@ -498,6 +504,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   password_reset_tokens?: Prisma.PasswordResetTokenListRelationFilter
   workspaceUsers?: Prisma.WorkspaceUserListRelationFilter
   userProfiles?: Prisma.UserProfileListRelationFilter
+  assignedUserProfiles?: Prisma.UserProfileListRelationFilter
+  administeredApps?: Prisma.AppAdministratorListRelationFilter
+  grantedAppAdministrators?: Prisma.AppAdministratorListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   pushSubscriptions?: Prisma.PushSubscriptionListRelationFilter
   created_event_proposals?: Prisma.EventProposalListRelationFilter
@@ -623,6 +632,9 @@ export type UserCreateInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -676,6 +688,9 @@ export type UserUncheckedCreateInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -729,6 +744,9 @@ export type UserUpdateInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -782,6 +800,9 @@ export type UserUncheckedUpdateInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -1079,9 +1100,43 @@ export type UserUpdateOneRequiredWithoutWorkspaceUsersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutWorkspaceUsersInput, Prisma.UserUpdateWithoutWorkspaceUsersInput>, Prisma.UserUncheckedUpdateWithoutWorkspaceUsersInput>
 }
 
+export type UserCreateNestedOneWithoutAdministeredAppsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAdministeredAppsInput, Prisma.UserUncheckedCreateWithoutAdministeredAppsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAdministeredAppsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutGrantedAppAdministratorsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGrantedAppAdministratorsInput, Prisma.UserUncheckedCreateWithoutGrantedAppAdministratorsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGrantedAppAdministratorsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAdministeredAppsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAdministeredAppsInput, Prisma.UserUncheckedCreateWithoutAdministeredAppsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAdministeredAppsInput
+  upsert?: Prisma.UserUpsertWithoutAdministeredAppsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAdministeredAppsInput, Prisma.UserUpdateWithoutAdministeredAppsInput>, Prisma.UserUncheckedUpdateWithoutAdministeredAppsInput>
+}
+
+export type UserUpdateOneRequiredWithoutGrantedAppAdministratorsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutGrantedAppAdministratorsInput, Prisma.UserUncheckedCreateWithoutGrantedAppAdministratorsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutGrantedAppAdministratorsInput
+  upsert?: Prisma.UserUpsertWithoutGrantedAppAdministratorsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutGrantedAppAdministratorsInput, Prisma.UserUpdateWithoutGrantedAppAdministratorsInput>, Prisma.UserUncheckedUpdateWithoutGrantedAppAdministratorsInput>
+}
+
 export type UserCreateNestedOneWithoutUserProfilesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutUserProfilesInput, Prisma.UserUncheckedCreateWithoutUserProfilesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutUserProfilesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutAssignedUserProfilesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedUserProfilesInput, Prisma.UserUncheckedCreateWithoutAssignedUserProfilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedUserProfilesInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
@@ -1091,6 +1146,16 @@ export type UserUpdateOneRequiredWithoutUserProfilesNestedInput = {
   upsert?: Prisma.UserUpsertWithoutUserProfilesInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUserProfilesInput, Prisma.UserUpdateWithoutUserProfilesInput>, Prisma.UserUncheckedUpdateWithoutUserProfilesInput>
+}
+
+export type UserUpdateOneWithoutAssignedUserProfilesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedUserProfilesInput, Prisma.UserUncheckedCreateWithoutAssignedUserProfilesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedUserProfilesInput
+  upsert?: Prisma.UserUpsertWithoutAssignedUserProfilesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssignedUserProfilesInput, Prisma.UserUpdateWithoutAssignedUserProfilesInput>, Prisma.UserUncheckedUpdateWithoutAssignedUserProfilesInput>
 }
 
 export type UserCreateNestedOneWithoutCreated_event_proposalsInput = {
@@ -1397,6 +1462,9 @@ export type UserCreateWithoutPassword_reset_tokensInput = {
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -1449,6 +1517,9 @@ export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -1517,6 +1588,9 @@ export type UserUpdateWithoutPassword_reset_tokensInput = {
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -1569,6 +1643,9 @@ export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -1621,6 +1698,9 @@ export type UserCreateWithoutRefresh_tokensInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -1673,6 +1753,9 @@ export type UserUncheckedCreateWithoutRefresh_tokensInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -1741,6 +1824,9 @@ export type UserUpdateWithoutRefresh_tokensInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -1793,6 +1879,9 @@ export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -1845,6 +1934,9 @@ export type UserCreateWithoutWorkspaceUsersInput = {
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -1897,6 +1989,9 @@ export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -1965,6 +2060,9 @@ export type UserUpdateWithoutWorkspaceUsersInput = {
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -2017,6 +2115,481 @@ export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAdministeredAppsInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  grade?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
+  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAdministeredAppsInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  grade?: string | null
+  businessPartnerId?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAdministeredAppsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAdministeredAppsInput, Prisma.UserUncheckedCreateWithoutAdministeredAppsInput>
+}
+
+export type UserCreateWithoutGrantedAppAdministratorsInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  grade?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
+  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutGrantedAppAdministratorsInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  grade?: string | null
+  businessPartnerId?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutGrantedAppAdministratorsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutGrantedAppAdministratorsInput, Prisma.UserUncheckedCreateWithoutGrantedAppAdministratorsInput>
+}
+
+export type UserUpsertWithoutAdministeredAppsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAdministeredAppsInput, Prisma.UserUncheckedUpdateWithoutAdministeredAppsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAdministeredAppsInput, Prisma.UserUncheckedCreateWithoutAdministeredAppsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAdministeredAppsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAdministeredAppsInput, Prisma.UserUncheckedUpdateWithoutAdministeredAppsInput>
+}
+
+export type UserUpdateWithoutAdministeredAppsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
+  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAdministeredAppsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithoutGrantedAppAdministratorsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutGrantedAppAdministratorsInput, Prisma.UserUncheckedUpdateWithoutGrantedAppAdministratorsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutGrantedAppAdministratorsInput, Prisma.UserUncheckedCreateWithoutGrantedAppAdministratorsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutGrantedAppAdministratorsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutGrantedAppAdministratorsInput, Prisma.UserUncheckedUpdateWithoutGrantedAppAdministratorsInput>
+}
+
+export type UserUpdateWithoutGrantedAppAdministratorsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
+  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutGrantedAppAdministratorsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -2069,6 +2642,9 @@ export type UserCreateWithoutUserProfilesInput = {
   refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -2121,6 +2697,9 @@ export type UserUncheckedCreateWithoutUserProfilesInput = {
   refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -2142,6 +2721,121 @@ export type UserUncheckedCreateWithoutUserProfilesInput = {
 export type UserCreateOrConnectWithoutUserProfilesInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutUserProfilesInput, Prisma.UserUncheckedCreateWithoutUserProfilesInput>
+}
+
+export type UserCreateWithoutAssignedUserProfilesInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  grade?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
+  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAssignedUserProfilesInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  region?: string | null
+  address?: string | null
+  zone?: string | null
+  branch?: string | null
+  department?: string | null
+  role?: string | null
+  designation?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  grade?: string | null
+  businessPartnerId?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAssignedUserProfilesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAssignedUserProfilesInput, Prisma.UserUncheckedCreateWithoutAssignedUserProfilesInput>
 }
 
 export type UserUpsertWithoutUserProfilesInput = {
@@ -2189,6 +2883,9 @@ export type UserUpdateWithoutUserProfilesInput = {
   refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -2241,6 +2938,130 @@ export type UserUncheckedUpdateWithoutUserProfilesInput = {
   refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserUpsertWithoutAssignedUserProfilesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAssignedUserProfilesInput, Prisma.UserUncheckedUpdateWithoutAssignedUserProfilesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAssignedUserProfilesInput, Prisma.UserUncheckedCreateWithoutAssignedUserProfilesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAssignedUserProfilesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAssignedUserProfilesInput, Prisma.UserUncheckedUpdateWithoutAssignedUserProfilesInput>
+}
+
+export type UserUpdateWithoutAssignedUserProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
+  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAssignedUserProfilesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  zone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -2294,6 +3115,9 @@ export type UserCreateWithoutCreated_event_proposalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
@@ -2346,6 +3170,9 @@ export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
@@ -2403,6 +3230,9 @@ export type UserCreateWithoutUpdated_event_proposalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -2455,6 +3285,9 @@ export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -2523,6 +3356,9 @@ export type UserUpdateWithoutCreated_event_proposalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
@@ -2575,6 +3411,9 @@ export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
@@ -2638,6 +3477,9 @@ export type UserUpdateWithoutUpdated_event_proposalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -2690,6 +3532,9 @@ export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -2742,6 +3587,9 @@ export type UserCreateWithoutCreated_workflowInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -2794,6 +3642,9 @@ export type UserUncheckedCreateWithoutCreated_workflowInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -2851,6 +3702,9 @@ export type UserCreateWithoutUpdated_workflowInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -2903,6 +3757,9 @@ export type UserUncheckedCreateWithoutUpdated_workflowInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -2971,6 +3828,9 @@ export type UserUpdateWithoutCreated_workflowInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -3023,6 +3883,9 @@ export type UserUncheckedUpdateWithoutCreated_workflowInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -3086,6 +3949,9 @@ export type UserUpdateWithoutUpdated_workflowInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -3138,6 +4004,9 @@ export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -3190,6 +4059,9 @@ export type UserCreateWithoutTemplateApprovalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -3242,6 +4114,9 @@ export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -3310,6 +4185,9 @@ export type UserUpdateWithoutTemplateApprovalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -3362,6 +4240,9 @@ export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -3414,6 +4295,9 @@ export type UserCreateWithoutApprovalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -3466,6 +4350,9 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -3534,6 +4421,9 @@ export type UserUpdateWithoutApprovalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -3586,6 +4476,9 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -3638,6 +4531,9 @@ export type UserCreateWithoutWorkFlowUsersInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -3690,6 +4586,9 @@ export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -3758,6 +4657,9 @@ export type UserUpdateWithoutWorkFlowUsersInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -3810,6 +4712,9 @@ export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -3862,6 +4767,9 @@ export type UserCreateWithoutActivityLogsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -3914,6 +4822,9 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -3982,6 +4893,9 @@ export type UserUpdateWithoutActivityLogsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -4034,6 +4948,9 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -4086,6 +5003,9 @@ export type UserCreateWithoutCommentsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -4138,6 +5058,9 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -4206,6 +5129,9 @@ export type UserUpdateWithoutCommentsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -4258,6 +5184,9 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -4310,6 +5239,9 @@ export type UserCreateWithoutReportValidationsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -4362,6 +5294,9 @@ export type UserUncheckedCreateWithoutReportValidationsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -4430,6 +5365,9 @@ export type UserUpdateWithoutReportValidationsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -4482,6 +5420,9 @@ export type UserUncheckedUpdateWithoutReportValidationsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -4534,6 +5475,9 @@ export type UserCreateWithoutImportExportLogsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -4586,6 +5530,9 @@ export type UserUncheckedCreateWithoutImportExportLogsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -4654,6 +5601,9 @@ export type UserUpdateWithoutImportExportLogsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -4706,6 +5656,9 @@ export type UserUncheckedUpdateWithoutImportExportLogsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -4758,6 +5711,9 @@ export type UserCreateWithoutNotificationsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
@@ -4810,6 +5766,9 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
@@ -4878,6 +5837,9 @@ export type UserUpdateWithoutNotificationsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
@@ -4930,6 +5892,9 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
@@ -4982,6 +5947,9 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
@@ -5034,6 +6002,9 @@ export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
   updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
@@ -5102,6 +6073,9 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
@@ -5154,6 +6128,9 @@ export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
   updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
@@ -5206,6 +6183,9 @@ export type UserCreateWithoutInitiated_vendor_onboardingsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -5258,6 +6238,9 @@ export type UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -5326,6 +6309,9 @@ export type UserUpdateWithoutInitiated_vendor_onboardingsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -5378,6 +6364,9 @@ export type UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -5430,6 +6419,9 @@ export type UserCreateWithoutInitiated_medical_claimsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -5482,6 +6474,9 @@ export type UserUncheckedCreateWithoutInitiated_medical_claimsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -5550,6 +6545,9 @@ export type UserUpdateWithoutInitiated_medical_claimsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -5602,6 +6600,9 @@ export type UserUncheckedUpdateWithoutInitiated_medical_claimsInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -5653,6 +6654,9 @@ export type UserCreateWithoutBusinessPartnerInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -5705,6 +6709,9 @@ export type UserUncheckedCreateWithoutBusinessPartnerInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -5820,6 +6827,9 @@ export type UserCreateWithoutBusinessPartnerContactInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
@@ -5872,6 +6882,9 @@ export type UserUncheckedCreateWithoutBusinessPartnerContactInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
   userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
   created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
@@ -5940,6 +6953,9 @@ export type UserUpdateWithoutBusinessPartnerContactInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -5992,6 +7008,9 @@ export type UserUncheckedUpdateWithoutBusinessPartnerContactInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -6075,6 +7094,9 @@ export type UserUpdateWithoutBusinessPartnerInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
@@ -6127,6 +7149,9 @@ export type UserUncheckedUpdateWithoutBusinessPartnerInput = {
   password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
   workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
   userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
   pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
@@ -6187,6 +7212,9 @@ export type UserCountOutputType = {
   password_reset_tokens: number
   workspaceUsers: number
   userProfiles: number
+  assignedUserProfiles: number
+  administeredApps: number
+  grantedAppAdministrators: number
   notifications: number
   pushSubscriptions: number
   created_event_proposals: number
@@ -6210,6 +7238,9 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   password_reset_tokens?: boolean | UserCountOutputTypeCountPassword_reset_tokensArgs
   workspaceUsers?: boolean | UserCountOutputTypeCountWorkspaceUsersArgs
   userProfiles?: boolean | UserCountOutputTypeCountUserProfilesArgs
+  assignedUserProfiles?: boolean | UserCountOutputTypeCountAssignedUserProfilesArgs
+  administeredApps?: boolean | UserCountOutputTypeCountAdministeredAppsArgs
+  grantedAppAdministrators?: boolean | UserCountOutputTypeCountGrantedAppAdministratorsArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   pushSubscriptions?: boolean | UserCountOutputTypeCountPushSubscriptionsArgs
   created_event_proposals?: boolean | UserCountOutputTypeCountCreated_event_proposalsArgs
@@ -6264,6 +7295,27 @@ export type UserCountOutputTypeCountWorkspaceUsersArgs<ExtArgs extends runtime.T
  */
 export type UserCountOutputTypeCountUserProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.UserProfileWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAssignedUserProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserProfileWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAdministeredAppsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AppAdministratorWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountGrantedAppAdministratorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AppAdministratorWhereInput
 }
 
 /**
@@ -6415,6 +7467,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   password_reset_tokens?: boolean | Prisma.User$password_reset_tokensArgs<ExtArgs>
   workspaceUsers?: boolean | Prisma.User$workspaceUsersArgs<ExtArgs>
   userProfiles?: boolean | Prisma.User$userProfilesArgs<ExtArgs>
+  assignedUserProfiles?: boolean | Prisma.User$assignedUserProfilesArgs<ExtArgs>
+  administeredApps?: boolean | Prisma.User$administeredAppsArgs<ExtArgs>
+  grantedAppAdministrators?: boolean | Prisma.User$grantedAppAdministratorsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   pushSubscriptions?: boolean | Prisma.User$pushSubscriptionsArgs<ExtArgs>
   created_event_proposals?: boolean | Prisma.User$created_event_proposalsArgs<ExtArgs>
@@ -6542,6 +7597,9 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   password_reset_tokens?: boolean | Prisma.User$password_reset_tokensArgs<ExtArgs>
   workspaceUsers?: boolean | Prisma.User$workspaceUsersArgs<ExtArgs>
   userProfiles?: boolean | Prisma.User$userProfilesArgs<ExtArgs>
+  assignedUserProfiles?: boolean | Prisma.User$assignedUserProfilesArgs<ExtArgs>
+  administeredApps?: boolean | Prisma.User$administeredAppsArgs<ExtArgs>
+  grantedAppAdministrators?: boolean | Prisma.User$grantedAppAdministratorsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   pushSubscriptions?: boolean | Prisma.User$pushSubscriptionsArgs<ExtArgs>
   created_event_proposals?: boolean | Prisma.User$created_event_proposalsArgs<ExtArgs>
@@ -6575,6 +7633,9 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     password_reset_tokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
     workspaceUsers: Prisma.$WorkspaceUserPayload<ExtArgs>[]
     userProfiles: Prisma.$UserProfilePayload<ExtArgs>[]
+    assignedUserProfiles: Prisma.$UserProfilePayload<ExtArgs>[]
+    administeredApps: Prisma.$AppAdministratorPayload<ExtArgs>[]
+    grantedAppAdministrators: Prisma.$AppAdministratorPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     pushSubscriptions: Prisma.$PushSubscriptionPayload<ExtArgs>[]
     created_event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
@@ -7022,6 +8083,9 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   password_reset_tokens<T extends Prisma.User$password_reset_tokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$password_reset_tokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workspaceUsers<T extends Prisma.User$workspaceUsersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$workspaceUsersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkspaceUserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userProfiles<T extends Prisma.User$userProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$userProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignedUserProfiles<T extends Prisma.User$assignedUserProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$assignedUserProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  administeredApps<T extends Prisma.User$administeredAppsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$administeredAppsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppAdministratorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  grantedAppAdministrators<T extends Prisma.User$grantedAppAdministratorsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$grantedAppAdministratorsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppAdministratorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   pushSubscriptions<T extends Prisma.User$pushSubscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pushSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PushSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   created_event_proposals<T extends Prisma.User$created_event_proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$created_event_proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -7610,6 +8674,78 @@ export type User$userProfilesArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.UserProfileScalarFieldEnum | Prisma.UserProfileScalarFieldEnum[]
+}
+
+/**
+ * User.assignedUserProfiles
+ */
+export type User$assignedUserProfilesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserProfile
+   */
+  select?: Prisma.UserProfileSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserProfile
+   */
+  omit?: Prisma.UserProfileOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserProfileInclude<ExtArgs> | null
+  where?: Prisma.UserProfileWhereInput
+  orderBy?: Prisma.UserProfileOrderByWithRelationInput | Prisma.UserProfileOrderByWithRelationInput[]
+  cursor?: Prisma.UserProfileWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserProfileScalarFieldEnum | Prisma.UserProfileScalarFieldEnum[]
+}
+
+/**
+ * User.administeredApps
+ */
+export type User$administeredAppsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AppAdministrator
+   */
+  select?: Prisma.AppAdministratorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AppAdministrator
+   */
+  omit?: Prisma.AppAdministratorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AppAdministratorInclude<ExtArgs> | null
+  where?: Prisma.AppAdministratorWhereInput
+  orderBy?: Prisma.AppAdministratorOrderByWithRelationInput | Prisma.AppAdministratorOrderByWithRelationInput[]
+  cursor?: Prisma.AppAdministratorWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AppAdministratorScalarFieldEnum | Prisma.AppAdministratorScalarFieldEnum[]
+}
+
+/**
+ * User.grantedAppAdministrators
+ */
+export type User$grantedAppAdministratorsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AppAdministrator
+   */
+  select?: Prisma.AppAdministratorSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AppAdministrator
+   */
+  omit?: Prisma.AppAdministratorOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AppAdministratorInclude<ExtArgs> | null
+  where?: Prisma.AppAdministratorWhereInput
+  orderBy?: Prisma.AppAdministratorOrderByWithRelationInput | Prisma.AppAdministratorOrderByWithRelationInput[]
+  cursor?: Prisma.AppAdministratorWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AppAdministratorScalarFieldEnum | Prisma.AppAdministratorScalarFieldEnum[]
 }
 
 /**

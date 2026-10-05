@@ -5,8 +5,9 @@ import cors from "cors";
 // Import routes
 import userRoutes from "@users/user.routes";
 import authRoutes from "@auth/auth.routes";
-import workspaceRoutes from "@rbac/workspace.routes";
-import profileRoutes from "@rbac/profile.routes";
+import workspaceRoutes from "@kernel/rbac/workSpace/workspace.routes";
+import profileRoutes from "@rbac/profile/profile.routes";
+import appRoutes from "@rbac/app/app.routes";
 import pdfRoutes from "@pdf/pdf.routes";
 import notificationRoutes from "@notifications/notification.routes";
 import pincodeRoutes from "@reference-data/pincode.routes";
@@ -72,6 +73,7 @@ app.use("/api/v1/medi-claim", mediClaimRoutes);
 app.use("/api/v1/pdf", pdfRoutes);
 app.use("/api/v1/guest", guestRoutes);
 app.use("/api/v1/business-partner", bpRoutes);
+app.use("/api/v1/apps", appRoutes);
 
 // Scheduler
 startJobs();
