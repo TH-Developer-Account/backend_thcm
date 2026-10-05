@@ -15,37 +15,37 @@
 
 */
 -- DropForeignKey
-ALTER TABLE "ProfilePermission" DROP CONSTRAINT "ProfilePermission_appId_fkey";
+ALTER TABLE "ProfilePermission" DROP CONSTRAINT IF EXISTS "ProfilePermission_appId_fkey";
 
 -- DropForeignKey
-ALTER TABLE "ProfilePermission" DROP CONSTRAINT "ProfilePermission_moduleId_fkey";
+ALTER TABLE "ProfilePermission" DROP CONSTRAINT IF EXISTS "ProfilePermission_moduleId_fkey";
 
 -- DropForeignKey
-ALTER TABLE "UserProfile" DROP CONSTRAINT "UserProfile_profileId_fkey";
+ALTER TABLE "UserProfile" DROP CONSTRAINT IF EXISTS "UserProfile_profileId_fkey";
 
 -- DropIndex
-DROP INDEX "Profile_workspaceId_idx";
+DROP INDEX IF EXISTS "Profile_workspaceId_idx";
 
 -- DropIndex
-DROP INDEX "Profile_workspaceId_name_key";
+DROP INDEX IF EXISTS "Profile_workspaceId_name_key";
 
 -- DropIndex
-DROP INDEX "ProfilePermission_profileId_action_appId_key";
+DROP INDEX IF EXISTS "ProfilePermission_profileId_action_appId_key";
 
 -- DropIndex
-DROP INDEX "ProfilePermission_profileId_action_moduleId_key";
+DROP INDEX IF EXISTS "ProfilePermission_profileId_action_moduleId_key";
 
 -- DropIndex
-DROP INDEX "ProfilePermission_profileId_appId_idx";
+DROP INDEX IF EXISTS "ProfilePermission_profileId_appId_idx";
 
 -- DropIndex
-DROP INDEX "ProfilePermission_profileId_moduleId_idx";
+DROP INDEX IF EXISTS "ProfilePermission_profileId_moduleId_idx";
 
 -- DropIndex
-DROP INDEX "UserProfile_userId_workspaceId_profileId_idx";
+DROP INDEX IF EXISTS "UserProfile_userId_workspaceId_profileId_idx";
 
 -- DropIndex
-DROP INDEX "UserProfile_userId_workspaceId_profileId_key";
+DROP INDEX IF EXISTS "UserProfile_userId_workspaceId_profileId_key";
 
 -- AlterTable
 ALTER TABLE "Profile" ADD COLUMN     "appId" TEXT NOT NULL;
@@ -56,7 +56,7 @@ DROP COLUMN "scope",
 ALTER COLUMN "moduleId" SET NOT NULL;
 
 -- AlterTable
-ALTER TABLE "UserProfile" DROP CONSTRAINT "UserProfile_pkey",
+ALTER TABLE "UserProfile" DROP CONSTRAINT IF EXISTS "UserProfile_pkey",
 DROP COLUMN "assignedBy",
 DROP COLUMN "id",
 ADD COLUMN     "appId" TEXT NOT NULL,
@@ -64,7 +64,7 @@ ADD COLUMN     "assignedById" TEXT,
 ADD CONSTRAINT "UserProfile_pkey" PRIMARY KEY ("userId", "workspaceId", "appId");
 
 -- DropEnum
-DROP TYPE "ScopeType";
+DROP TYPE IF EXISTS "ScopeType";
 
 -- CreateTable
 CREATE TABLE "AppAdministrator" (
