@@ -271,7 +271,7 @@ export async function computeMedicalClaimEligibility(
 ) {
   const { guestId, ticketNumber, excludeClaimId } = options;
 
-  const eligibility = await tx.medicalClaimGradeEligibility.findUnique({
+  const eligibility = await tx.gradeEligibility.findUnique({
     where: { grade },
   });
   if (!eligibility) return null;
