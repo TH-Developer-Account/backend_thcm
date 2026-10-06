@@ -10,61 +10,75 @@ export type UserPermissions = AccessActor;
 const appSummarySelect = { id: true, key: true, name: true } as const;
 
 function createNoAccess(): UserPermissions {
-  return { isSuperAdmin: false, administeredApps: [], permissions: [] };
+	return { isSuperAdmin: false, administeredApps: [], permissions: [] };
 }
 
 function toAppSummary(app: {
-  id: string;
-  key: string;
-  name: string;
+	id: string;
+	key: string;
+	name: string;
 }): AppSummary {
-  return { appId: app.id, appKey: app.key, appName: app.name };
+	return { appId: app.id, appKey: app.key, appName: app.name };
 }
 
 export async function buildUserPermissions(
-  userId: string,
-  workspaceId: string,
+	userId: string,
+	workspaceId: string,
 ): Promise<UserPermissions> {
-  const [membership, profileAssignments, appAdministrations] =
-    await Promise.all([
-      prisma.workspaceUser.findUnique({
-        where: { userId_workspaceId: { userId, workspaceId } },
-        select: { isSuperAdmin: true },
-      }),
-      prisma.userProfile.findMany({
-        where: {
-          userId,
-          workspaceId,
-          profile: { app: enabledInWorkspace(workspaceId) },
-        },
-        select: {
-          profile: {
-            select: {
-              app: { select: appSummarySelect },
-              permissions: {
-                select: { action: true, module: { select: { key: true } } },
-              },
-            },
-          },
-        },
-      }),
-      prisma.appAdministrator.findMany({
-        where: { userId, workspaceId, app: enabledInWorkspace(workspaceId) },
-        select: { app: { select: appSummarySelect } },
-      }),
-    ]);
+	const [membership, profileAssignments, appAdministrations] =
+		await Promise.all([
+			prisma.workspaceUser.findUnique({
+				where: { userId_workspaceId: { userId, workspaceId } },
+				select: { isSuperAdmin: true },
+			}),
+			prisma.userProfile.findMany({
+				where: {
+					userId,
+					workspaceId,
+					profile: { app: enabledInWorkspace(workspaceId) },
+				},
+				select: {
+					profile: {
+						select: {
+							app: { select: appSummarySelect },
+							permissions: {
+								select: { action: true, module: { select: { key: true } } },
+							},
+						},
+					},
+				},
+			}),
+			prisma.appAdministrator.findMany({
+				where: { userId, workspaceId, app: enabledInWorkspace(workspaceId) },
+				select: { app: { select: appSummarySelect } },
+			}),
+		]);
 
-  if (!membership) return createNoAccess();
+	if (!membership) return createNoAccess();
 
-  return {
-    isSuperAdmin: membership.isSuperAdmin,
-    administeredApps: appAdministrations.map(({ app }) => toAppSummary(app)),
-    permissions: profileAssignments.flatMap(({ profile }) =>
-      profile.permissions.map((permission) => ({
-        ...toAppSummary(profile.app),
-        action: permission.action,
-        moduleKey: permission.module.key,
-      })),
-    ),
-  };
+	// A super admin administers every enabled app but holds no AppAdministrator
+	// rows (grantAppAdministration rejects them), so expand it here for clients
+	// that build their app list from the session. Nothing is written to the DB,
+	// so a demotion takes effect on the very next request.
+	const administeredApps = membership.isSuperAdmin
+		? (
+				await prisma.app.findMany({
+					where: enabledInWorkspace(workspaceId),
+					select: appSummarySelect,
+					orderBy: { name: "asc" },
+				})
+			).map(toAppSummary)
+		: appAdministrations.map(({ app }) => toAppSummary(app));
+
+	return {
+		isSuperAdmin: membership.isSuperAdmin,
+		administeredApps,
+		permissions: profileAssignments.flatMap(({ profile }) =>
+			profile.permissions.map((permission) => ({
+				...toAppSummary(profile.app),
+				action: permission.action,
+				moduleKey: permission.module.key,
+			})),
+		),
+	};
 }
