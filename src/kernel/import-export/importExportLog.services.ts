@@ -32,6 +32,7 @@ export type ImportExportStatus =
   | "FAILED";
 
 export type CreatePendingLogInput = {
+  id?: string;
   type: ImportExportType;
   triggeredById: string;
   workspaceId: string;
@@ -54,6 +55,7 @@ export async function createPendingLog(
 ): Promise<string> {
   const log = await prisma.importExportLog.create({
     data: {
+      id: input.id,
       type: input.type,
       status: "PENDING",
       triggeredById: input.triggeredById,
@@ -64,6 +66,16 @@ export async function createPendingLog(
     select: { id: true },
   });
   return log.id;
+}
+
+export async function attachJobIdToLog(
+  logId: string,
+  jobId: string,
+): Promise<void> {
+  await prisma.importExportLog.update({
+    where: { id: logId },
+    data: { jobId },
+  });
 }
 
 export async function markLogProcessing(logId: string): Promise<void> {

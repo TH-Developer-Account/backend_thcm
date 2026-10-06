@@ -2,13 +2,14 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import {
-  startLeadImportWorker,
-  startLeadExportWorker,
-  startEpcExportWorker,
-  startNotificationDeliveryWorker,
-  startVendorOnboardingExportWorker,
-  startMedicalClaimExportWorker,
-  startMedicalClaimImportWorker,
+	startLeadImportWorker,
+	startLeadExportWorker,
+	startEpcExportWorker,
+	startNotificationDeliveryWorker,
+	startVendorOnboardingExportWorker,
+	startMedicalClaimExportWorker,
+	startMedicalClaimImportWorker,
+	startEventReportGenerationWorker,
 } from "./workers";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -28,13 +29,14 @@ import {
 console.info("[Worker] Starting workers...");
 
 const workers = [
-  startLeadImportWorker(),
-  startLeadExportWorker(),
-  startEpcExportWorker(),
-  startNotificationDeliveryWorker(),
-  startVendorOnboardingExportWorker(),
-  startMedicalClaimExportWorker(),
-  startMedicalClaimImportWorker(),
+	startLeadImportWorker(),
+	startLeadExportWorker(),
+	startEpcExportWorker(),
+	startNotificationDeliveryWorker(),
+	startVendorOnboardingExportWorker(),
+	startMedicalClaimExportWorker(),
+	startMedicalClaimImportWorker(),
+	startEventReportGenerationWorker(),
 ];
 
 console.info(`[Worker] ${workers.length} workers running`);
@@ -44,12 +46,12 @@ console.info(`[Worker] ${workers.length} workers running`);
 // then exit. This prevents killing a job mid-insert on a deploy.
 
 async function shutdown(signal: string) {
-  console.info(`[Worker] ${signal} received — shutting down gracefully`);
+	console.info(`[Worker] ${signal} received — shutting down gracefully`);
 
-  await Promise.all(workers.map((worker) => worker.close()));
+	await Promise.all(workers.map((worker) => worker.close()));
 
-  console.info("[Worker] All workers closed. Exiting.");
-  process.exit(0);
+	console.info("[Worker] All workers closed. Exiting.");
+	process.exit(0);
 }
 
 process.on("SIGTERM", () => shutdown("SIGTERM"));

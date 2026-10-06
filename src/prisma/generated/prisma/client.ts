@@ -294,3 +294,13 @@ export type BusinessPartnerAddress = Prisma.BusinessPartnerAddressModel
  * 
  */
 export type BusinessPartnerContact = Prisma.BusinessPartnerContactModel
+/**
+ * Model MachineStudy
+ * 
+ */
+export type MachineStudy = Prisma.MachineStudyModel
+/**
+ * Model MachineStudyCycle
+ * 
+ */
+export type MachineStudyCycle = Prisma.MachineStudyCycleModel

@@ -14,29 +14,29 @@ export type AuthedRequest = Request & { user?: AuthenticatedUser };
 // authority: "APP" is honored only if the caller administers this app, and a
 // mismatch is a 403 rather than a silent downgrade so FE bugs surface.
 const resolveOwnerType = async (
-  req: Request,
-  appId: string,
-  requestedScope: "APP" | "USER",
+	req: Request,
+	appId: string,
+	requestedScope: "APP" | "USER",
 ): Promise<"ADMIN" | "USER"> => {
-  if (requestedScope === "USER") return "USER";
+	if (requestedScope === "USER") return "USER";
 
-  const user = req.user as AuthenticatedUser | undefined;
-  if (!user) throw new ApiError(401, "Unauthorized");
+	const user = req.user as AuthenticatedUser | undefined;
+	if (!user) throw new ApiError(401, "Unauthorized");
 
-  const app = await prisma.app.findUnique({
-    where: { id: appId },
-    select: { key: true },
-  });
-  if (!app) throw new ApiError(404, "App not found");
+	const app = await prisma.app.findUnique({
+		where: { id: appId },
+		select: { key: true },
+	});
+	if (!app) throw new ApiError(404, "App not found");
 
-  if (!isAppAdministrator(user, app.key)) {
-    throw new ApiError(
-      403,
-      "You do not have permission to create an app-wide workflow template",
-    );
-  }
+	if (!isAppAdministrator(user, app.key)) {
+		throw new ApiError(
+			403,
+			"You do not have permission to create an app-wide workflow template",
+		);
+	}
 
-  return "ADMIN";
+	return "ADMIN";
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -50,7 +50,7 @@ const resolveOwnerType = async (
 //   "workspaceId": "workspace-uuid",
 //   "appId": "app-uuid",
 //   "scope": "APP",              ← ✅ NEW — "APP" or "USER". The FE only
-//                                   offers "APP" when canManageApp() (via
+//                                   offers "APP" when isAppAdministrator() (via
 //                                   the FE's own copy of req.user.permissions)
 //                                   says the caller administers this app.
 //                                   Omit/"USER" is always allowed.
@@ -72,35 +72,35 @@ const resolveOwnerType = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const createTemplateController = async (req: Request, res: Response) => {
-  try {
-    const user = req.user as AuthenticatedUser | undefined;
-    const userId = user?.id;
-    if (!userId) throw new ApiError(401, "Unauthorized");
-    if (!req.body?.appId) throw new ApiError(400, "appId is required");
+	try {
+		const user = req.user as AuthenticatedUser | undefined;
+		const userId = user?.id;
+		if (!userId) throw new ApiError(401, "Unauthorized");
+		if (!req.body?.appId) throw new ApiError(400, "appId is required");
 
-    const { scope = "USER" } = req.body as { scope?: "APP" | "USER" };
-    if (!["APP", "USER"].includes(scope)) {
-      throw new ApiError(
-        400,
-        `Invalid scope "${scope}" — must be "APP" or "USER"`,
-      );
-    }
+		const { scope = "USER" } = req.body as { scope?: "APP" | "USER" };
+		if (!["APP", "USER"].includes(scope)) {
+			throw new ApiError(
+				400,
+				`Invalid scope "${scope}" — must be "APP" or "USER"`,
+			);
+		}
 
-    const ownerType = await resolveOwnerType(req, req.body.appId, scope);
+		const ownerType = await resolveOwnerType(req, req.body.appId, scope);
 
-    const template = await service.createWorkflowTemplate(
-      req.body,
-      userId,
-      ownerType,
-    );
+		const template = await service.createWorkflowTemplate(
+			req.body,
+			userId,
+			ownerType,
+		);
 
-    res.status(201).json({ success: true, data: template });
-  } catch (err: any) {
-    res.status(err instanceof ApiError ? err.statusCode : 500).json({
-      success: false,
-      message: err.message,
-    });
-  }
+		res.status(201).json({ success: true, data: template });
+	} catch (err: any) {
+		res.status(err instanceof ApiError ? err.statusCode : 500).json({
+			success: false,
+			message: err.message,
+		});
+	}
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -115,68 +115,68 @@ export const createTemplateController = async (req: Request, res: Response) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getTemplates = async (req: Request, res: Response) => {
-  try {
-    const user = req.user as AuthenticatedUser | undefined;
-    const userId = user?.id;
-    if (!userId) throw new ApiError(401, "Unauthorized");
+	try {
+		const user = req.user as AuthenticatedUser | undefined;
+		const userId = user?.id;
+		if (!userId) throw new ApiError(401, "Unauthorized");
 
-    const {
-      workspaceId,
-      filters,
-      search,
-      isActive,
-      page = 1,
-      limit = 10,
-      sortBy = "created_at",
-      sortOrder = "desc",
-      scope = "ALL",
-    } = req.query;
+		const {
+			workspaceId,
+			filters,
+			search,
+			isActive,
+			page = 1,
+			limit = 10,
+			sortBy = "created_at",
+			sortOrder = "desc",
+			scope = "ALL",
+		} = req.query;
 
-    if (!["ALL", "CREATED_BY_ME", "ASSIGNED_TO_ME"].includes(scope as string)) {
-      throw new ApiError(
-        400,
-        `Invalid scope "${scope}" — must be "ALL", "CREATED_BY_ME", or "ASSIGNED_TO_ME"`,
-      );
-    }
+		if (!["ALL", "CREATED_BY_ME", "ASSIGNED_TO_ME"].includes(scope as string)) {
+			throw new ApiError(
+				400,
+				`Invalid scope "${scope}" — must be "ALL", "CREATED_BY_ME", or "ASSIGNED_TO_ME"`,
+			);
+		}
 
-    const result = await service.getTemplates(
-      {
-        workspaceId,
-        isActive,
-        page: Number(page),
-        limit: Number(limit),
-        sortBy,
-        sortOrder,
-        filters,
-        search,
-        scope,
-      },
-      { userId, isSuperAdmin: user?.isSuperAdmin ?? false },
-    );
+		const result = await service.getTemplates(
+			{
+				workspaceId,
+				isActive,
+				page: Number(page),
+				limit: Number(limit),
+				sortBy,
+				sortOrder,
+				filters,
+				search,
+				scope,
+			},
+			{ userId, isSuperAdmin: user?.isSuperAdmin ?? false },
+		);
 
-    res.status(200).json(result);
-  } catch (err: any) {
-    res
-      .status(err instanceof ApiError ? err.statusCode : 400)
-      .json({ success: false, error: err.message });
-  }
+		res.status(200).json(result);
+	} catch (err: any) {
+		res
+			.status(err instanceof ApiError ? err.statusCode : 400)
+			.json({ success: false, error: err.message });
+	}
 };
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /workflow-templates/:templateId
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getTemplateById = async (req: Request, res: Response) => {
-  try {
-    const { templateId } = req.params;
-    if (!templateId) throw new ApiError(400, "templateId is required");
+	try {
+		const { templateId } = req.params;
+		if (!templateId) throw new ApiError(400, "templateId is required");
 
-    const result = await service.getTemplateById(templateId as string);
-    res.status(200).json({ success: true, data: result });
-  } catch (err: any) {
-    res
-      .status(err instanceof ApiError ? err.statusCode : 404)
-      .json({ success: false, error: err.message });
-  }
+		const result = await service.getTemplateById(templateId as string);
+		res.status(200).json({ success: true, data: result });
+	} catch (err: any) {
+		res
+			.status(err instanceof ApiError ? err.statusCode : 404)
+			.json({ success: false, error: err.message });
+	}
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -206,46 +206,46 @@ export const getTemplateById = async (req: Request, res: Response) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const updateTemplate = async (req: Request, res: Response) => {
-  try {
-    const { templateId } = req.params;
-    const payload = req.body;
-    const user = req.user as AuthenticatedUser | undefined;
-    const userId = user?.id;
+	try {
+		const { templateId } = req.params;
+		const payload = req.body;
+		const user = req.user as AuthenticatedUser | undefined;
+		const userId = user?.id;
 
-    if (!templateId) throw new ApiError(400, "templateId is required");
-    if (!userId) throw new ApiError(401, "Unauthorized");
+		if (!templateId) throw new ApiError(400, "templateId is required");
+		if (!userId) throw new ApiError(401, "Unauthorized");
 
-    // Guard: warn if there are active IN_PROGRESS workflow instances using
-    // this template. The update is still allowed (instances are independent)
-    // but this helps surface potential confusion.
-    const activeCount = await prisma.workflowInstance.count({
-      where: {
-        templateId: templateId as string,
-        isActive: true,
-        status: "IN_PROGRESS",
-      },
-    });
+		// Guard: warn if there are active IN_PROGRESS workflow instances using
+		// this template. The update is still allowed (instances are independent)
+		// but this helps surface potential confusion.
+		const activeCount = await prisma.workflowInstance.count({
+			where: {
+				templateId: templateId as string,
+				isActive: true,
+				status: "IN_PROGRESS",
+			},
+		});
 
-    const result = await service.updateTemplate(templateId as string, payload, {
-      userId,
-      isSuperAdmin: user?.isSuperAdmin ?? false,
-    });
+		const result = await service.updateTemplate(templateId as string, payload, {
+			userId,
+			isSuperAdmin: user?.isSuperAdmin ?? false,
+		});
 
-    res.status(200).json({
-      success: true,
-      data: result,
-      ...(activeCount > 0 && {
-        warning:
-          `This template has ${activeCount} active IN_PROGRESS workflow(s). ` +
-          "They are unaffected by this change (they snapshot the template at creation time), " +
-          "but new workflows created from this template will use the updated configuration.",
-      }),
-    });
-  } catch (err: any) {
-    res
-      .status(err instanceof ApiError ? err.statusCode : 400)
-      .json({ success: false, error: err.message });
-  }
+		res.status(200).json({
+			success: true,
+			data: result,
+			...(activeCount > 0 && {
+				warning:
+					`This template has ${activeCount} active IN_PROGRESS workflow(s). ` +
+					"They are unaffected by this change (they snapshot the template at creation time), " +
+					"but new workflows created from this template will use the updated configuration.",
+			}),
+		});
+	} catch (err: any) {
+		res
+			.status(err instanceof ApiError ? err.statusCode : 400)
+			.json({ success: false, error: err.message });
+	}
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -261,43 +261,43 @@ export const updateTemplate = async (req: Request, res: Response) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const deleteTemplate = async (req: Request, res: Response) => {
-  try {
-    const { templateId } = req.params;
-    const user = req.user as AuthenticatedUser | undefined;
-    const userId = user?.id;
+	try {
+		const { templateId } = req.params;
+		const user = req.user as AuthenticatedUser | undefined;
+		const userId = user?.id;
 
-    if (!templateId) throw new ApiError(400, "templateId is required");
-    if (!userId) throw new ApiError(401, "Unauthorized");
+		if (!templateId) throw new ApiError(400, "templateId is required");
+		if (!userId) throw new ApiError(401, "Unauthorized");
 
-    // Block deletion if any active workflow still references this template.
-    // The clarifyStageController re-reads template.stages to seed new stages,
-    // so deleting the template would break any in-flight clarify flow.
-    const activeWorkflowCount = await prisma.workflowInstance.count({
-      where: {
-        templateId: templateId as string,
-        isActive: true,
-        status: "IN_PROGRESS",
-      },
-    });
+		// Block deletion if any active workflow still references this template.
+		// The clarifyStageController re-reads template.stages to seed new stages,
+		// so deleting the template would break any in-flight clarify flow.
+		const activeWorkflowCount = await prisma.workflowInstance.count({
+			where: {
+				templateId: templateId as string,
+				isActive: true,
+				status: "IN_PROGRESS",
+			},
+		});
 
-    if (activeWorkflowCount > 0) {
-      throw new ApiError(
-        409,
-        `Cannot delete template: ${activeWorkflowCount} active workflow(s) are currently using it. ` +
-          "Wait for them to complete or be superseded before deleting.",
-      );
-    }
+		if (activeWorkflowCount > 0) {
+			throw new ApiError(
+				409,
+				`Cannot delete template: ${activeWorkflowCount} active workflow(s) are currently using it. ` +
+					"Wait for them to complete or be superseded before deleting.",
+			);
+		}
 
-    const result = await service.deleteTemplate(templateId as string, {
-      userId,
-      isSuperAdmin: user?.isSuperAdmin ?? false,
-    });
-    res.status(200).json({ success: true, data: result });
-  } catch (err: any) {
-    res
-      .status(err instanceof ApiError ? err.statusCode : 400)
-      .json({ success: false, error: err.message });
-  }
+		const result = await service.deleteTemplate(templateId as string, {
+			userId,
+			isSuperAdmin: user?.isSuperAdmin ?? false,
+		});
+		res.status(200).json({ success: true, data: result });
+	} catch (err: any) {
+		res
+			.status(err instanceof ApiError ? err.statusCode : 400)
+			.json({ success: false, error: err.message });
+	}
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -316,89 +316,89 @@ export const deleteTemplate = async (req: Request, res: Response) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function assignUsersToWorkflow(req: Request, res: Response) {
-  const { templateId, userIds } = req.body as {
-    templateId: string;
-    userIds: string[];
-  };
+	const { templateId, userIds } = req.body as {
+		templateId: string;
+		userIds: string[];
+	};
 
-  if (!templateId) throw new ApiError(400, "templateId is required");
-  if (!Array.isArray(userIds)) {
-    throw new ApiError(400, "userIds must be an array (send [] to clear all)");
-  }
+	if (!templateId) throw new ApiError(400, "templateId is required");
+	if (!Array.isArray(userIds)) {
+		throw new ApiError(400, "userIds must be an array (send [] to clear all)");
+	}
 
-  try {
-    await prisma.$transaction(async (tx) => {
-      const template = await tx.workflowTemplate.findUnique({
-        where: { id: templateId },
-        select: { id: true, workspaceId: true, ownerType: true },
-      });
-      if (!template) throw new ApiError(404, "Template not found");
+	try {
+		await prisma.$transaction(async (tx) => {
+			const template = await tx.workflowTemplate.findUnique({
+				where: { id: templateId },
+				select: { id: true, workspaceId: true, ownerType: true },
+			});
+			if (!template) throw new ApiError(404, "Template not found");
 
-      if (template.ownerType === "USER") {
-        throw new ApiError(
-          400,
-          "User-owned templates are self-assigned and can't be reassigned",
-        );
-      }
+			if (template.ownerType === "USER") {
+				throw new ApiError(
+					400,
+					"User-owned templates are self-assigned and can't be reassigned",
+				);
+			}
 
-      if (userIds.length > 0) {
-        const members = await tx.workspaceUser.findMany({
-          where: {
-            workspaceId: template.workspaceId,
-            userId: { in: userIds },
-          },
-          select: { userId: true },
-        });
+			if (userIds.length > 0) {
+				const members = await tx.workspaceUser.findMany({
+					where: {
+						workspaceId: template.workspaceId,
+						userId: { in: userIds },
+					},
+					select: { userId: true },
+				});
 
-        if (members.length !== userIds.length) {
-          const found = new Set(members.map((m) => m.userId));
-          const missing = userIds.filter((id) => !found.has(id));
-          throw new ApiError(
-            404,
-            `These users are not workspace members: ${missing.join(", ")}`,
-          );
-        }
-      }
+				if (members.length !== userIds.length) {
+					const found = new Set(members.map((m) => m.userId));
+					const missing = userIds.filter((id) => !found.has(id));
+					throw new ApiError(
+						404,
+						`These users are not workspace members: ${missing.join(", ")}`,
+					);
+				}
+			}
 
-      // Replace all assignments atomically
-      await tx.workFlowTemplateUser.deleteMany({ where: { templateId } });
+			// Replace all assignments atomically
+			await tx.workFlowTemplateUser.deleteMany({ where: { templateId } });
 
-      if (userIds.length > 0) {
-        await tx.workFlowTemplateUser.createMany({
-          data: userIds.map((userId) => ({ templateId, userId })),
-        });
-      }
-    });
+			if (userIds.length > 0) {
+				await tx.workFlowTemplateUser.createMany({
+					data: userIds.map((userId) => ({ templateId, userId })),
+				});
+			}
+		});
 
-    const assignedUsers =
-      userIds.length > 0
-        ? await prisma.workFlowTemplateUser.findMany({
-            where: { templateId },
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  first_name: true,
-                  last_name: true,
-                  email: true,
-                },
-              },
-            },
-          })
-        : null;
+		const assignedUsers =
+			userIds.length > 0
+				? await prisma.workFlowTemplateUser.findMany({
+						where: { templateId },
+						include: {
+							user: {
+								select: {
+									id: true,
+									first_name: true,
+									last_name: true,
+									email: true,
+								},
+							},
+						},
+					})
+				: null;
 
-    const message =
-      userIds.length > 0
-        ? `${userIds.length} user(s) assigned to template successfully`
-        : "All users cleared from template successfully";
+		const message =
+			userIds.length > 0
+				? `${userIds.length} user(s) assigned to template successfully`
+				: "All users cleared from template successfully";
 
-    res.status(200).json({ success: true, message, users: assignedUsers });
-  } catch (error: any) {
-    res.status(error instanceof ApiError ? error.statusCode : 500).json({
-      success: false,
-      message: error.message,
-    });
-  }
+		res.status(200).json({ success: true, message, users: assignedUsers });
+	} catch (error: any) {
+		res.status(error instanceof ApiError ? error.statusCode : 500).json({
+			success: false,
+			message: error.message,
+		});
+	}
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -424,165 +424,165 @@ export async function assignUsersToWorkflow(req: Request, res: Response) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 type AttachStageInput = {
-  name: string;
-  stageOrder: number;
-  strategy: "ANY" | "ALL" | "SOME";
-  minApprovals?: number;
-  approvers: Array<{
-    user: { id: string };
-    isExternalApprover?: boolean;
-  }>;
+	name: string;
+	stageOrder: number;
+	strategy: "ANY" | "ALL" | "SOME";
+	minApprovals?: number;
+	approvers: Array<{
+		user: { id: string };
+		isExternalApprover?: boolean;
+	}>;
 };
 
 export const attachWorkflowController = async (req: Request, res: Response) => {
-  try {
-    const user = req.user as AuthenticatedUser | undefined;
-    const userId = user?.id;
-    if (!userId) throw new ApiError(401, "Unauthorized");
+	try {
+		const user = req.user as AuthenticatedUser | undefined;
+		const userId = user?.id;
+		if (!userId) throw new ApiError(401, "Unauthorized");
 
-    const {
-      recordRef,
-      recordType,
-      workflowId,
-      stages,
-    }: {
-      recordRef?: string;
-      recordType?: WorkflowSubjectType;
-      workflowId?: string;
-      stages?: AttachStageInput[];
-    } = req.body;
+		const {
+			recordRef,
+			recordType,
+			workflowId,
+			stages,
+		}: {
+			recordRef?: string;
+			recordType?: WorkflowSubjectType;
+			workflowId?: string;
+			stages?: AttachStageInput[];
+		} = req.body;
 
-    if (!recordRef) throw new ApiError(400, "recordRef is required");
-    if (!recordType) throw new ApiError(400, "recordType is required");
-    if (!workflowId && !stages?.length) {
-      throw new ApiError(400, "Either workflowId or stages must be provided");
-    }
+		if (!recordRef) throw new ApiError(400, "recordRef is required");
+		if (!recordType) throw new ApiError(400, "recordType is required");
+		if (!workflowId && !stages?.length) {
+			throw new ApiError(400, "Either workflowId or stages must be provided");
+		}
 
-    // ── Guard: subject must exist ──────────────────────────────────────────
-    // findSubjectById throws 404 for an unknown subjectType/subjectId, so
-    // this doubles as existence validation.
-    const subject = (await findSubjectById(recordType, recordRef)) as Record<
-      string,
-      unknown
-    >;
+		// ── Guard: subject must exist ──────────────────────────────────────────
+		// findSubjectById throws 404 for an unknown subjectType/subjectId, so
+		// this doubles as existence validation.
+		const subject = (await findSubjectById(recordType, recordRef)) as Record<
+			string,
+			unknown
+		>;
 
-    const workspaceId = subject.workspaceId as string | undefined;
-    const appId = subject.appId as string | undefined;
-    if (!workspaceId || !appId) {
-      throw new ApiError(
-        500,
-        `${recordType} is missing workspaceId/appId — cannot attach a workflow`,
-      );
-    }
+		const workspaceId = subject.workspaceId as string | undefined;
+		const appId = subject.appId as string | undefined;
+		if (!workspaceId || !appId) {
+			throw new ApiError(
+				500,
+				`${recordType} is missing workspaceId/appId — cannot attach a workflow`,
+			);
+		}
 
-    // ── Guard: subject must not already have an active workflow ───────────
-    const existingActive = await prisma.workflowInstance.findFirst({
-      where: { subjectType: recordType, subjectId: recordRef, isActive: true },
-      select: { id: true },
-    });
-    if (existingActive) {
-      throw new ApiError(
-        409,
-        "This record already has an active workflow attached",
-      );
-    }
+		// ── Guard: subject must not already have an active workflow ───────────
+		const existingActive = await prisma.workflowInstance.findFirst({
+			where: { subjectType: recordType, subjectId: recordRef, isActive: true },
+			select: { id: true },
+		});
+		if (existingActive) {
+			throw new ApiError(
+				409,
+				"This record already has an active workflow attached",
+			);
+		}
 
-    let templateId: string;
+		let templateId: string;
 
-    if (workflowId) {
-      // ── Case A: attach an existing reusable template ────────────────────
-      const template = await prisma.workflowTemplate.findUnique({
-        where: { id: workflowId },
-        select: { id: true, isActive: true, isReusable: true, appId: true },
-      });
-      if (!template) throw new ApiError(404, "Workflow template not found");
-      if (!template.isActive || !template.isReusable) {
-        throw new ApiError(400, "This template is not available for use");
-      }
-      if (template.appId !== appId) {
-        throw new ApiError(
-          400,
-          "This template belongs to a different app than this record",
-        );
-      }
+		if (workflowId) {
+			// ── Case A: attach an existing reusable template ────────────────────
+			const template = await prisma.workflowTemplate.findUnique({
+				where: { id: workflowId },
+				select: { id: true, isActive: true, isReusable: true, appId: true },
+			});
+			if (!template) throw new ApiError(404, "Workflow template not found");
+			if (!template.isActive || !template.isReusable) {
+				throw new ApiError(400, "This template is not available for use");
+			}
+			if (template.appId !== appId) {
+				throw new ApiError(
+					400,
+					"This template belongs to a different app than this record",
+				);
+			}
 
-      if (!user?.isSuperAdmin) {
-        const isAssigned = await prisma.workFlowTemplateUser.findUnique({
-          where: { templateId_userId: { templateId: workflowId, userId } },
-        });
-        if (!isAssigned) {
-          throw new ApiError(
-            403,
-            "You are not assigned to this workflow template",
-          );
-        }
-      }
+			if (!user?.isSuperAdmin) {
+				const isAssigned = await prisma.workFlowTemplateUser.findUnique({
+					where: { templateId_userId: { templateId: workflowId, userId } },
+				});
+				if (!isAssigned) {
+					throw new ApiError(
+						403,
+						"You are not assigned to this workflow template",
+					);
+				}
+			}
 
-      templateId = workflowId;
-    } else {
-      // ── Case B: ad-hoc, one-off — build a disposable template first ─────
-      const adHocTemplate = await service.createWorkflowTemplate(
-        {
-          name: `Ad-hoc workflow — ${recordType} ${recordRef}`,
-          description: "",
-          workspaceId,
-          appId,
-          metaData_1: "",
-          metaData_2: "",
-          metaData_3: "",
-          isReusable: false,
-          stages: stages!.map((s) => ({
-            name: s.name,
-            stageOrder: s.stageOrder,
-            strategy: s.strategy,
-            minApprovals: s.minApprovals,
-            approverIds: s.approvers.map((a) => ({
-              userId: a.user.id,
-              isExternalApprover: a.isExternalApprover ?? false,
-            })),
-          })),
-        },
-        userId,
-        "USER",
-      );
+			templateId = workflowId;
+		} else {
+			// ── Case B: ad-hoc, one-off — build a disposable template first ─────
+			const adHocTemplate = await service.createWorkflowTemplate(
+				{
+					name: `Ad-hoc workflow — ${recordType} ${recordRef}`,
+					description: "",
+					workspaceId,
+					appId,
+					metaData_1: "",
+					metaData_2: "",
+					metaData_3: "",
+					isReusable: false,
+					stages: stages!.map((s) => ({
+						name: s.name,
+						stageOrder: s.stageOrder,
+						strategy: s.strategy,
+						minApprovals: s.minApprovals,
+						approverIds: s.approvers.map((a) => ({
+							userId: a.user.id,
+							isExternalApprover: a.isExternalApprover ?? false,
+						})),
+					})),
+				},
+				userId,
+				"USER",
+			);
 
-      templateId = adHocTemplate.id;
-    }
+			templateId = adHocTemplate.id;
+		}
 
-    // ── Instantiate the WorkflowInstance from the resolved template ────────
-    const template = await prisma.workflowTemplate.findUnique({
-      where: { id: templateId },
-      include: {
-        stages: {
-          include: { approvers: true },
-          orderBy: { stageOrder: "asc" },
-        },
-      },
-    });
-    if (!template) {
-      throw new ApiError(404, "Template not found after resolution");
-    }
+		// ── Instantiate the WorkflowInstance from the resolved template ────────
+		const template = await prisma.workflowTemplate.findUnique({
+			where: { id: templateId },
+			include: {
+				stages: {
+					include: { approvers: true },
+					orderBy: { stageOrder: "asc" },
+				},
+			},
+		});
+		if (!template) {
+			throw new ApiError(404, "Template not found after resolution");
+		}
 
-    const workflow = await prisma.workflowInstance.create({
-      data: {
-        templateId,
-        workspaceId,
-        appId,
-        subjectType: recordType,
-        subjectId: recordRef,
-        currentStage: 1,
-        stages: { create: buildWorkflowStages(template.stages) },
-      },
-    });
+		const workflow = await prisma.workflowInstance.create({
+			data: {
+				templateId,
+				workspaceId,
+				appId,
+				subjectType: recordType,
+				subjectId: recordRef,
+				currentStage: 1,
+				stages: { create: buildWorkflowStages(template.stages) },
+			},
+		});
 
-    res.status(201).json({
-      success: true,
-      data: { workflowId: workflow.id, templateId },
-    });
-  } catch (err: any) {
-    res.status(err instanceof ApiError ? err.statusCode : 500).json({
-      success: false,
-      message: err.message,
-    });
-  }
+		res.status(201).json({
+			success: true,
+			data: { workflowId: workflow.id, templateId },
+		});
+	} catch (err: any) {
+		res.status(err instanceof ApiError ? err.statusCode : 500).json({
+			success: false,
+			message: err.message,
+		});
+	}
 };
