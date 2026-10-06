@@ -97,7 +97,7 @@ export const ModelName = {
   AccessToken: 'AccessToken',
   MedicalClaim: 'MedicalClaim',
   MedicalClaimBill: 'MedicalClaimBill',
-  MedicalClaimGradeEligibility: 'MedicalClaimGradeEligibility',
+  GradeEligibility: 'GradeEligibility',
   Guest: 'Guest',
   BusinessPartner: 'BusinessPartner',
   BusinessPartnerAddress: 'BusinessPartnerAddress',
@@ -860,13 +860,13 @@ export const MedicalClaimBillScalarFieldEnum = {
 export type MedicalClaimBillScalarFieldEnum = (typeof MedicalClaimBillScalarFieldEnum)[keyof typeof MedicalClaimBillScalarFieldEnum]
 
 
-export const MedicalClaimGradeEligibilityScalarFieldEnum = {
+export const GradeEligibilityScalarFieldEnum = {
   id: 'id',
   grade: 'grade',
   annualCap: 'annualCap'
 } as const
 
-export type MedicalClaimGradeEligibilityScalarFieldEnum = (typeof MedicalClaimGradeEligibilityScalarFieldEnum)[keyof typeof MedicalClaimGradeEligibilityScalarFieldEnum]
+export type GradeEligibilityScalarFieldEnum = (typeof GradeEligibilityScalarFieldEnum)[keyof typeof GradeEligibilityScalarFieldEnum]
 
 
 export const GuestScalarFieldEnum = {

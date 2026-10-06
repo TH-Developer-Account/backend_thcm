@@ -5,6 +5,7 @@ import ApiError from "@shared/utils/apiError";
 import { uploadToS3, deleteReportImage } from "@shared/utils/aws-s3.services";
 import { XlsxRow } from "@import-export/utils/xlsxWriter";
 import { APP_KEY } from "./mediclaim.routes";
+import legacyData from "./legacyBalances.json";
 
 type Tx = Prisma.TransactionClient;
 
@@ -213,38 +214,113 @@ export function generateMedicalClaimReferenceNumber(
   return `MED-${code}-${timestamp}`;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// legacyMediclaimBalance.helper.ts
+//
+// One-time migration bridge for FY26-27 mediclaim history that predates this
+// system — ~78 retirees whose manual claim records were never entered here.
+// Loaded once into memory at process start; never written to, never re-read
+// from disk. Consulted only as a fallback in computeMedicalClaimEligibility
+// (zero real claims yet) and at initiation (to prefill grade/eligibility).
+//
+// Keyed by the retiree code (e.g. "RE10214") — exact match against
+// MedicalClaim.ticketNumber, matching how staff enter it at initiation.
+//
+// TODO: remove this file and its one call site in mediclaim.helper.ts once
+// every retiree in this dataset has submitted at least one claim through
+// the system — at that point their real MedicalClaimBill history makes this
+// permanently irrelevant for them, and eventually for everyone in the set.
+// ─────────────────────────────────────────────────────────────────────────────
+
+type LegacyMediclaimRecord = {
+  name: string | null;
+  grade: string | null;
+  utilizedAmount: number;
+};
+
+const legacyBalanceMap = new Map<string, LegacyMediclaimRecord>(
+  Object.entries(legacyData as Record<string, LegacyMediclaimRecord>),
+);
+
+export function getLegacyMediclaimRecord(
+  ticketNumber: string | null | undefined,
+): LegacyMediclaimRecord | null {
+  if (!ticketNumber) return null;
+  return legacyBalanceMap.get(ticketNumber.trim()) ?? null;
+}
+
 // Server-side only — never trust a client-submitted eligible/settled amount.
-// Shared between submitMedicalClaimForm and resubmitGuestMedicalClaim so the
-// calculation can't drift between the two call sites.
+// Shared between initiateMedicalClaim (no guestId yet), submitMedicalClaimForm,
+// and resubmitGuestMedicalClaim — one calculation, three call sites, so it
+// can't drift between them.
+//
+// guestId is optional: at initiation, no Guest exists yet, so there's no DB
+// claim history to query — alreadySettled starts at 0 and falls straight
+// through to the legacy lookup below.
+//
+// ticketNumber is optional: omit it once the legacy migration dataset is
+// retired (see legacyMediclaimBalance.helper.ts).
 export async function computeMedicalClaimEligibility(
   tx: Tx,
-  guestId: string,
   grade: string,
-  excludeClaimId?: string,
+  options: {
+    guestId?: string;
+    ticketNumber?: string;
+    excludeClaimId?: string;
+  } = {},
 ) {
-  const eligibility = await tx.medicalClaimGradeEligibility.findUnique({
+  const { guestId, ticketNumber, excludeClaimId } = options;
+
+  const eligibility = await tx.gradeEligibility.findUnique({
     where: { grade },
   });
   if (!eligibility) return null;
 
-  const currentYearStart = new Date(new Date().getFullYear(), 0, 1);
-  const priorApprovedBills = await tx.medicalClaimBill.aggregate({
-    where: {
-      claim: {
-        guestId,
-        status: "APPROVED",
-        created_at: { gte: currentYearStart },
-        ...(excludeClaimId ? { id: { not: excludeClaimId } } : {}),
-      },
-    },
-    _sum: { approvedClaimAmount: true },
-  });
-  const alreadySettled = Number(
-    priorApprovedBills._sum.approvedClaimAmount ?? 0,
-  );
-  const eligibleAmount = Number(eligibility.annualCap) - alreadySettled;
+  let alreadySettled = 0;
 
+  if (guestId) {
+    const currentYearStart = new Date(new Date().getFullYear(), 0, 1);
+    const priorApprovedBills = await tx.medicalClaimBill.aggregate({
+      where: {
+        claim: {
+          guestId,
+          status: "APPROVED",
+          created_at: { gte: currentYearStart },
+          ...(excludeClaimId ? { id: { not: excludeClaimId } } : {}),
+        },
+      },
+      _sum: { approvedClaimAmount: true },
+    });
+    alreadySettled = Number(priorApprovedBills._sum.approvedClaimAmount ?? 0);
+  }
+
+  // No real claim history yet (new Guest, or no Guest at all pre-initiation) —
+  // fall back to the one-time FY26-27 migration snapshot for this retiree.
+  if (alreadySettled === 0 && ticketNumber) {
+    const legacyRecord = getLegacyMediclaimRecord(ticketNumber);
+    if (legacyRecord) alreadySettled = legacyRecord.utilizedAmount;
+  }
+
+  const eligibleAmount = Number(eligibility.annualCap) - alreadySettled;
   return { eligibleAmount, alreadySettled };
+}
+
+// Resolves grade for a retiree at claim-initiation time, before any form
+// submission exists. User.grade (live HR master) takes priority since it
+// reflects the current record; the legacy migration snapshot is only a
+// fallback for someone no longer present as a User.
+export async function resolveGradeForTicketNumber(
+  tx: Tx,
+  ticketNumber: string,
+): Promise<string | null> {
+  const user = await tx.user.findFirst({
+    where: { employeeCode: ticketNumber },
+    select: { grade: true },
+  });
+  if (user?.grade) return user.grade;
+
+  const legacyRecord = getLegacyMediclaimRecord(ticketNumber);
+  return legacyRecord?.grade ?? null;
 }
 
 // Called from workflowSubject.helper's postClarifyHooks when an approver

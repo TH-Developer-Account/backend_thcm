@@ -21,6 +21,15 @@ function toAppSummary(app: {
 	return { appId: app.id, appKey: app.key, appName: app.name };
 }
 
+async function listEnabledAppSummaries(workspaceId: string) {
+	const apps = await prisma.app.findMany({
+		where: enabledInWorkspace(workspaceId),
+		select: appSummarySelect,
+		orderBy: { name: "asc" },
+	});
+	return apps.map(toAppSummary);
+}
+
 export async function buildUserPermissions(
 	userId: string,
 	workspaceId: string,
@@ -56,23 +65,11 @@ export async function buildUserPermissions(
 
 	if (!membership) return createNoAccess();
 
-	// A super admin administers every enabled app but holds no AppAdministrator
-	// rows (grantAppAdministration rejects them), so expand it here for clients
-	// that build their app list from the session. Nothing is written to the DB,
-	// so a demotion takes effect on the very next request.
-	const administeredApps = membership.isSuperAdmin
-		? (
-				await prisma.app.findMany({
-					where: enabledInWorkspace(workspaceId),
-					select: appSummarySelect,
-					orderBy: { name: "asc" },
-				})
-			).map(toAppSummary)
-		: appAdministrations.map(({ app }) => toAppSummary(app));
-
 	return {
 		isSuperAdmin: membership.isSuperAdmin,
-		administeredApps,
+		administeredApps: membership.isSuperAdmin
+			? await listEnabledAppSummaries(workspaceId)
+			: appAdministrations.map(({ app }) => toAppSummary(app)),
 		permissions: profileAssignments.flatMap(({ profile }) =>
 			profile.permissions.map((permission) => ({
 				...toAppSummary(profile.app),

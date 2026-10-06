@@ -6,6 +6,7 @@
     "outDir": "./dist",
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "paths": {
       /* Umbrella aliases — barrel imports / cross-cutting references */
       "@kernel/*": ["./src/kernel/*"],

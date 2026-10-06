@@ -1245,7 +1245,7 @@ model MedicalClaimBill {
 }
 
 // Newly created for this app — no existing grade→amount lookup exists yet.
-model MedicalClaimGradeEligibility {
+model GradeEligibility {
   id         String  @id @default(uuid())
   grade      String  @unique
   annualCap  Decimal @db.Decimal(12, 2)

@@ -270,10 +270,10 @@ export type MedicalClaim = Prisma.MedicalClaimModel
  */
 export type MedicalClaimBill = Prisma.MedicalClaimBillModel
 /**
- * Model MedicalClaimGradeEligibility
+ * Model GradeEligibility
  * 
  */
-export type MedicalClaimGradeEligibility = Prisma.MedicalClaimGradeEligibilityModel
+export type GradeEligibility = Prisma.GradeEligibilityModel
 /**
  * Model Guest
  * 
