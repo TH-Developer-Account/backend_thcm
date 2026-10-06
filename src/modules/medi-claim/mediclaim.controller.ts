@@ -335,16 +335,8 @@ export const submitMedicalClaimForm = async (
         data: {
           subjectType: APP_KEY,
           subjectId: updated.id,
-          actorId: updated.initiatedById,
+          actorId: null,
           action: "MEDICAL_CLAIM_SUBMITTED",
-        },
-      });
-      await tx.activityLog.create({
-        data: {
-          subjectType: APP_KEY,
-          subjectId: updated.id,
-          actorId: updated.initiatedById,
-          action: "MEDICAL_CLAIM_SENT_FOR_APPROVAL",
         },
       });
 
