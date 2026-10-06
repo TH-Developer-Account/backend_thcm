@@ -21,6 +21,15 @@ function toAppSummary(app: {
   return { appId: app.id, appKey: app.key, appName: app.name };
 }
 
+async function listEnabledAppSummaries(workspaceId: string) {
+  const apps = await prisma.app.findMany({
+    where: enabledInWorkspace(workspaceId),
+    select: appSummarySelect,
+    orderBy: { name: "asc" },
+  });
+  return apps.map(toAppSummary);
+}
+
 export async function buildUserPermissions(
   userId: string,
   workspaceId: string,
@@ -58,7 +67,9 @@ export async function buildUserPermissions(
 
   return {
     isSuperAdmin: membership.isSuperAdmin,
-    administeredApps: appAdministrations.map(({ app }) => toAppSummary(app)),
+    administeredApps: membership.isSuperAdmin
+      ? await listEnabledAppSummaries(workspaceId)
+      : appAdministrations.map(({ app }) => toAppSummary(app)),
     permissions: profileAssignments.flatMap(({ profile }) =>
       profile.permissions.map((permission) => ({
         ...toAppSummary(profile.app),

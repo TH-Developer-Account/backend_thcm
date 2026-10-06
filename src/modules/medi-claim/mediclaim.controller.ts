@@ -42,6 +42,7 @@ import {
   upsertMedicalClaimBills,
   mapMedicalClaimToXlsxRow,
   MEDICAL_CLAIM_EXPORT_COLUMN_WIDTHS,
+  resolveGradeForTicketNumber,
 } from "./mediclaim.helper";
 
 const attachSignedUrlsToBills = async <T extends { s3Key: string | null }>(
@@ -84,6 +85,25 @@ export const initiateMedicalClaim = async (
           email,
         },
       });
+
+      if (ticketNumber) {
+        const grade = await resolveGradeForTicketNumber(tx, ticketNumber);
+        if (grade) {
+          const eligibility = await computeMedicalClaimEligibility(tx, grade, {
+            ticketNumber,
+          });
+          if (eligibility) {
+            await tx.medicalClaim.update({
+              where: { id: created.id },
+              data: {
+                grade,
+                eligibleAmount: eligibility.eligibleAmount,
+                alreadySettled: eligibility.alreadySettled,
+              },
+            });
+          }
+        }
+      }
 
       const tokenRecord = await issueAccessToken(APP_KEY, created.id, tx);
 
@@ -249,11 +269,10 @@ export const submitMedicalClaimForm = async (
         guestPlainPassword = plainPassword;
       }
 
-      const eligibility = await computeMedicalClaimEligibility(
-        tx,
-        guest.id,
-        grade,
-      );
+      const eligibility = await computeMedicalClaimEligibility(tx, grade, {
+        guestId: guest.id,
+        ticketNumber: claim.ticketNumber ?? undefined,
+      });
       if (!eligibility)
         throw new ApiError(
           400,
@@ -819,12 +838,11 @@ export const resubmitGuestMedicalClaim = async (
     }
 
     await prisma.$transaction(async (tx) => {
-      const eligibility = await computeMedicalClaimEligibility(
-        tx,
+      const eligibility = await computeMedicalClaimEligibility(tx, grade, {
         guestId,
-        grade,
-        claim.id,
-      );
+        ticketNumber: claim.ticketNumber ?? undefined,
+        excludeClaimId: claim.id,
+      });
       if (!eligibility)
         throw new ApiError(
           400,
