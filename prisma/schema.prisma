@@ -159,6 +159,54 @@ enum FuelType {
 }
 
 // ─────────────────────────────────────────────
+// CRF × SHOPIFY (SOUVENIRS) ENUMS
+//
+// Added for the CRF souvenir fulfilment feature — see
+// claude/decisions-and-learnings.md for the full design discussion.
+// ─────────────────────────────────────────────
+
+enum CrfStatus {
+  OPEN              // editable while EPC is draft/clarification
+  APPROVED          // EPC approved, stock confirmed, awaiting recipient/address + Place order
+  STOCK_SHORTFALL   // EPC approved, some souvenir lines short — proposer must swap or accept partial
+  ORDER_FAILED      // Create Order call failed (address/integration) — admin can retry
+  ORDERED           // Shopify order placed
+  CANCELLED         // EPC rejected, or order cancelled
+  CLOSED            // ORDERED + every manual (printed material/artwork) line delivered
+}
+
+enum CrfRecipientType {
+  SELF
+  EMPLOYEE
+  DEALER_CONTACT
+  OTHER
+}
+
+enum CrfAddressSource {
+  MANUAL
+  USER_PROFILE
+  BUSINESS_PARTNER_ADDRESS
+}
+
+enum CrfItemSource {
+  CATALOG   // internal ProductMaster — printed material / artwork
+  SHOPIFY   // live Shopify catalog — souvenirs
+}
+
+enum CrfItemStatus {
+  REQUESTED      // part of current order intent
+  OUT_OF_STOCK   // short at last check, proposer must decide
+  REMOVED        // proposer manually dropped it (swap)
+  ORDERED        // included in the placed Shopify order
+  DEBITED        // dropped via accept-partial; its value is in CrfOrder.debitNoteAmount
+}
+
+enum CrfOrderStatus {
+  ACTIVE
+  CANCELLED
+}
+
+// ─────────────────────────────────────────────
 // AUTH MODELS
 // ─────────────────────────────────────────────
 
@@ -222,6 +270,10 @@ model User {
   activityLogs   ActivityLog[]
   importExportLogs ImportExportLog[]
   businessPartnerContact BusinessPartnerContact[]
+
+  // ── CRF × Shopify (souvenirs) ────────────────────────────────────────
+  createdCrfs     CRF[] @relation("CrfCreatedBy")
+  crfsAsRecipient CRF[] @relation("CrfRecipientUser")
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -473,7 +525,7 @@ model EventProposal {
 
   leads     Lead[]
   importExportLogs ImportExportLog[]
-  machineStudies MachineStudy[] 
+  machineStudies MachineStudy[]
 
   search_vector Unsupported("tsvector")?
   created_at    DateTime                 @default(now())
@@ -751,6 +803,7 @@ model ProductMaster {
   updated_at  DateTime        @updatedAt
 
   lineItems LineItem[]
+  crfItems  CrfItem[]
 }
 
 model EPF {
@@ -775,16 +828,145 @@ model EPF {
   updated_at DateTime   @updatedAt
 }
 
+// ─────────────────────────────────────────────
+// CRF × SHOPIFY (SOUVENIRS)
+//
+// Souvenir lines on a CRF come from a live Shopify catalog instead of the
+// seeded CRF-SV-* ProductMaster rows. Printed Materials and Artworks are
+// unaffected — they stay on ProductMaster/CrfItem(source=CATALOG) exactly
+// as LineItem worked before.
+//
+// Key decisions (see claude/decisions-and-learnings.md for the discussion):
+//  - CRF rides the EPC's own workflow; it has no approval flow of its own.
+//  - No stock/catalog data (name, price, image, live stock) from Shopify is
+//    ever persisted — CrfItem(source=SHOPIFY) stores only sku + requestedQty.
+//    Confirmed order facts (what Shopify actually charged) ARE persisted on
+//    CrfOrder, since that's MAP's own transaction record, not live catalog data.
+//  - Recipient + shipping/billing address are collected AFTER EPC approval,
+//    right before the proposer places the order — not during drafting.
+//  - Stock check (post-approval) and order placement (on "Place order") are
+//    synchronous calls to thcmShop.service.ts — no background worker/queue.
+//  - On a stock shortfall the proposer either swaps souvenir lines and
+//    resubmits, or accepts a partial order with the shortfall recorded as
+//    CrfOrder.debitNoteAmount for Tata Hitachi to settle outside THCM.
+// ─────────────────────────────────────────────
+
 model CRF {
-  id    String @id @default(uuid())
-  epcId String @unique
+  id        String    @id @default(uuid())
+  epcId     String    @unique
+  crfNumber String?   @unique          // "CRF-2026-0042" — proposal_number with EPC→CRF swap, set at creation
+  status    CrfStatus @default(OPEN)
+
+  // Recipient — collected post-approval, alongside addresses (not during drafting)
+  recipientType          CrfRecipientType?
+  recipientName          String?
+  recipientPhone         String?
+  recipientEmail         String?
+  recipientOrganisation  String?
+  recipientUserId        String?
+  recipientUser           User?                   @relation("CrfRecipientUser", fields: [recipientUserId], references: [id])
+  recipientContactId      String?
+  recipientContact        BusinessPartnerContact? @relation(fields: [recipientContactId], references: [id])
+  deliveryInstructions    String?
+  requiredByDate          DateTime?
+
+  // Shipping address — collected post-approval alongside the recipient
+  // fields above, in the same dispatch-details step. Inlined directly onto
+  // CRF rather than a separate CrfAddress table: with billing address
+  // dropped, a CRF only ever has one address, so a join table with a
+  // `type` discriminator would exist to serve a distinction that no
+  // longer exists. Only sent to THCM as `shippingAddress` on Create Order
+  // — THCM's API has no billing-address concept at all.
+  addressSourceType CrfAddressSource @default(MANUAL)
+  addressSourceId   String?          // e.g. BusinessPartnerAddress.id it was prefilled from
+  addressCompany    String?
+  addressLine1      String?
+  addressLine2      String?
+  addressLandmark   String?
+  addressCity       String?
+  addressDistrict   String?
+  addressState      String?
+  addressPincode    String?          @db.VarChar(6)
+  addressCountry    String?          @default("India")
+  addressGstin      String?          @db.VarChar(15)
+  addressValidatedAt DateTime?
+
+  souvenirTotalAtApproval Decimal?  @db.Decimal(12, 2)  // frozen cap for shortfall swaps (assumption B)
+  approvedAt              DateTime?
+  itemsChangedAt          DateTime?
+  closedAt                DateTime?
+
+  created_by_id String
+  created_by    User    @relation("CrfCreatedBy", fields: [created_by_id], references: [id])
+  updated_by_id String?
 
   epc EventProposal @relation(fields: [epcId], references: [id], onDelete: Cascade)
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  lineItems LineItem[]
+  lineItems LineItem[]    // kept through the migration window — see migration notes, dropped in the contract step
+  items     CrfItem[]
+  order     CrfOrder?
+
+  @@index([status])
+}
+
+model CrfItem {
+  id    String @id @default(uuid())
+  crfId String
+  crf   CRF    @relation(fields: [crfId], references: [id], onDelete: Cascade)
+
+  category  ProductCategory   // PRINTED_MATERIAL | SOUVENIR | ARTWORK
+  source    CrfItemSource
+  sortOrder Int               @default(0)
+
+  // CATALOG lines (printed material / artwork) — same shape as today's LineItem
+  productId String?
+  product   ProductMaster? @relation(fields: [productId], references: [id])
+  quantity  Decimal?       @db.Decimal(10, 2)
+  rate      Decimal?       @db.Decimal(10, 2)
+  amount    Decimal?       @db.Decimal(12, 2)
+  width     String?
+  height    String?
+  unit      String?
+
+  // SHOPIFY lines (souvenirs) — intentionally minimal: no name/price/stock stored, ever
+  sku          String?
+  requestedQty Int?
+
+  qtyAtApproval Int?   // frozen at EPC final approval
+
+  status        CrfItemStatus @default(REQUESTED)
+  removedAt     DateTime?
+  removedById   String?
+  deliveredAt   DateTime?     // manual mark, PRINTED_MATERIAL / ARTWORK only
+  deliveredById String?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([crfId, status])
+}
+
+model CrfOrder {
+  id    String @id @default(uuid())
+  crfId String @unique
+  crf   CRF    @relation(fields: [crfId], references: [id], onDelete: Restrict)
+
+  shopifyOrderId  String   @unique
+  totalPrice      Decimal  @db.Decimal(12, 2)
+  lines           Json                              // Shopify-confirmed snapshot: [{ sku, title, quantity, unitPrice, lineTotal }]
+  debitNoteAmount Decimal? @db.Decimal(12, 2)        // set only on the accept-partial path
+
+  status        CrfOrderStatus @default(ACTIVE)
+  cancelledAt   DateTime?
+  cancelledById String?
+  cancelReason  String?
+
+  placedAt   DateTime @default(now())
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model LineItem {
@@ -931,7 +1113,7 @@ model EventReport {
   resubmittedAt       DateTime?
   validatedAt         DateTime?
   validatorId         String
-  pdfS3Key            String? 
+  pdfS3Key            String?
 
   epc       EventProposal      @relation(fields: [epcId], references: [id], onDelete: Cascade)
   validator User               @relation("ReportValidator", fields: [validatorId], references: [id])
@@ -1368,6 +1550,8 @@ model BusinessPartnerContact {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
+  crfsAsRecipient CRF[]
+
   @@index([businessPartnerId])
   @@index([userId])
 }
@@ -1430,6 +1614,3 @@ model MachineStudyCycle {
 
   @@index([studyId])
 }
-
-
-

@@ -8,10 +8,12 @@ import {
   withInitiatorCc,
 } from "@mail/workFlowEmail.services";
 import ApiError from "@shared/utils/apiError";
+import logger from "@shared/utils/logger";
 
 import {
   updateSubjectStatus,
   getSubjectOwnerId,
+  runPostFinalApprovalHook,
 } from "./workflowSubject.helper";
 import {
   getSubjectNotificationMeta,
@@ -494,6 +496,23 @@ export const approveStage = async ({
         body: `${subjectMeta.displayLabel} has been fully approved.`,
         extraMetadata: { workflowId: result.workflowId },
       });
+    }
+
+    // ✅ NEW — subject-specific "final approval" side effects (today, only
+    // CRF's post-approval Shopify stock check). Deliberately outside the
+    // transaction above (see workflowSubject.helper.ts's comment on
+    // postFinalApprovalHooks) and deliberately caught here rather than
+    // left to propagate: a Shopify outage must not turn a successful
+    // approval into a failed HTTP response — the approval already
+    // committed. Same defensive-logging posture as addMailJob.
+    if (result.kind === "final_approved") {
+      try {
+        await runPostFinalApprovalHook(result.subjectType, result.subjectId);
+      } catch (error: any) {
+        logger.error(
+          `[approveStage] postFinalApprovalHook failed for ${result.subjectType} ${result.subjectId}: ${error.message}`,
+        );
+      }
     }
   } catch (error) {
     throw error;

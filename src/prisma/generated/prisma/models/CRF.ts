@@ -20,13 +20,53 @@ export type CRFModel = runtime.Types.Result.DefaultSelection<Prisma.$CRFPayload>
 
 export type AggregateCRF = {
   _count: CRFCountAggregateOutputType | null
+  _avg: CRFAvgAggregateOutputType | null
+  _sum: CRFSumAggregateOutputType | null
   _min: CRFMinAggregateOutputType | null
   _max: CRFMaxAggregateOutputType | null
+}
+
+export type CRFAvgAggregateOutputType = {
+  souvenirTotalAtApproval: runtime.Decimal | null
+}
+
+export type CRFSumAggregateOutputType = {
+  souvenirTotalAtApproval: runtime.Decimal | null
 }
 
 export type CRFMinAggregateOutputType = {
   id: string | null
   epcId: string | null
+  crfNumber: string | null
+  status: $Enums.CrfStatus | null
+  recipientType: $Enums.CrfRecipientType | null
+  recipientName: string | null
+  recipientPhone: string | null
+  recipientEmail: string | null
+  recipientOrganisation: string | null
+  recipientUserId: string | null
+  recipientContactId: string | null
+  deliveryInstructions: string | null
+  requiredByDate: Date | null
+  addressSourceType: $Enums.CrfAddressSource | null
+  addressSourceId: string | null
+  addressCompany: string | null
+  addressLine1: string | null
+  addressLine2: string | null
+  addressLandmark: string | null
+  addressCity: string | null
+  addressDistrict: string | null
+  addressState: string | null
+  addressPincode: string | null
+  addressCountry: string | null
+  addressGstin: string | null
+  addressValidatedAt: Date | null
+  souvenirTotalAtApproval: runtime.Decimal | null
+  approvedAt: Date | null
+  itemsChangedAt: Date | null
+  closedAt: Date | null
+  created_by_id: string | null
+  updated_by_id: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -34,6 +74,36 @@ export type CRFMinAggregateOutputType = {
 export type CRFMaxAggregateOutputType = {
   id: string | null
   epcId: string | null
+  crfNumber: string | null
+  status: $Enums.CrfStatus | null
+  recipientType: $Enums.CrfRecipientType | null
+  recipientName: string | null
+  recipientPhone: string | null
+  recipientEmail: string | null
+  recipientOrganisation: string | null
+  recipientUserId: string | null
+  recipientContactId: string | null
+  deliveryInstructions: string | null
+  requiredByDate: Date | null
+  addressSourceType: $Enums.CrfAddressSource | null
+  addressSourceId: string | null
+  addressCompany: string | null
+  addressLine1: string | null
+  addressLine2: string | null
+  addressLandmark: string | null
+  addressCity: string | null
+  addressDistrict: string | null
+  addressState: string | null
+  addressPincode: string | null
+  addressCountry: string | null
+  addressGstin: string | null
+  addressValidatedAt: Date | null
+  souvenirTotalAtApproval: runtime.Decimal | null
+  approvedAt: Date | null
+  itemsChangedAt: Date | null
+  closedAt: Date | null
+  created_by_id: string | null
+  updated_by_id: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -41,15 +111,83 @@ export type CRFMaxAggregateOutputType = {
 export type CRFCountAggregateOutputType = {
   id: number
   epcId: number
+  crfNumber: number
+  status: number
+  recipientType: number
+  recipientName: number
+  recipientPhone: number
+  recipientEmail: number
+  recipientOrganisation: number
+  recipientUserId: number
+  recipientContactId: number
+  deliveryInstructions: number
+  requiredByDate: number
+  addressSourceType: number
+  addressSourceId: number
+  addressCompany: number
+  addressLine1: number
+  addressLine2: number
+  addressLandmark: number
+  addressCity: number
+  addressDistrict: number
+  addressState: number
+  addressPincode: number
+  addressCountry: number
+  addressGstin: number
+  addressValidatedAt: number
+  souvenirTotalAtApproval: number
+  approvedAt: number
+  itemsChangedAt: number
+  closedAt: number
+  created_by_id: number
+  updated_by_id: number
   created_at: number
   updated_at: number
   _all: number
 }
 
 
+export type CRFAvgAggregateInputType = {
+  souvenirTotalAtApproval?: true
+}
+
+export type CRFSumAggregateInputType = {
+  souvenirTotalAtApproval?: true
+}
+
 export type CRFMinAggregateInputType = {
   id?: true
   epcId?: true
+  crfNumber?: true
+  status?: true
+  recipientType?: true
+  recipientName?: true
+  recipientPhone?: true
+  recipientEmail?: true
+  recipientOrganisation?: true
+  recipientUserId?: true
+  recipientContactId?: true
+  deliveryInstructions?: true
+  requiredByDate?: true
+  addressSourceType?: true
+  addressSourceId?: true
+  addressCompany?: true
+  addressLine1?: true
+  addressLine2?: true
+  addressLandmark?: true
+  addressCity?: true
+  addressDistrict?: true
+  addressState?: true
+  addressPincode?: true
+  addressCountry?: true
+  addressGstin?: true
+  addressValidatedAt?: true
+  souvenirTotalAtApproval?: true
+  approvedAt?: true
+  itemsChangedAt?: true
+  closedAt?: true
+  created_by_id?: true
+  updated_by_id?: true
   created_at?: true
   updated_at?: true
 }
@@ -57,6 +195,36 @@ export type CRFMinAggregateInputType = {
 export type CRFMaxAggregateInputType = {
   id?: true
   epcId?: true
+  crfNumber?: true
+  status?: true
+  recipientType?: true
+  recipientName?: true
+  recipientPhone?: true
+  recipientEmail?: true
+  recipientOrganisation?: true
+  recipientUserId?: true
+  recipientContactId?: true
+  deliveryInstructions?: true
+  requiredByDate?: true
+  addressSourceType?: true
+  addressSourceId?: true
+  addressCompany?: true
+  addressLine1?: true
+  addressLine2?: true
+  addressLandmark?: true
+  addressCity?: true
+  addressDistrict?: true
+  addressState?: true
+  addressPincode?: true
+  addressCountry?: true
+  addressGstin?: true
+  addressValidatedAt?: true
+  souvenirTotalAtApproval?: true
+  approvedAt?: true
+  itemsChangedAt?: true
+  closedAt?: true
+  created_by_id?: true
+  updated_by_id?: true
   created_at?: true
   updated_at?: true
 }
@@ -64,6 +232,36 @@ export type CRFMaxAggregateInputType = {
 export type CRFCountAggregateInputType = {
   id?: true
   epcId?: true
+  crfNumber?: true
+  status?: true
+  recipientType?: true
+  recipientName?: true
+  recipientPhone?: true
+  recipientEmail?: true
+  recipientOrganisation?: true
+  recipientUserId?: true
+  recipientContactId?: true
+  deliveryInstructions?: true
+  requiredByDate?: true
+  addressSourceType?: true
+  addressSourceId?: true
+  addressCompany?: true
+  addressLine1?: true
+  addressLine2?: true
+  addressLandmark?: true
+  addressCity?: true
+  addressDistrict?: true
+  addressState?: true
+  addressPincode?: true
+  addressCountry?: true
+  addressGstin?: true
+  addressValidatedAt?: true
+  souvenirTotalAtApproval?: true
+  approvedAt?: true
+  itemsChangedAt?: true
+  closedAt?: true
+  created_by_id?: true
+  updated_by_id?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -107,6 +305,18 @@ export type CRFAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: CRFAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: CRFSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: CRFMinAggregateInputType
@@ -137,6 +347,8 @@ export type CRFGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
   take?: number
   skip?: number
   _count?: CRFCountAggregateInputType | true
+  _avg?: CRFAvgAggregateInputType
+  _sum?: CRFSumAggregateInputType
   _min?: CRFMinAggregateInputType
   _max?: CRFMaxAggregateInputType
 }
@@ -144,9 +356,41 @@ export type CRFGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type CRFGroupByOutputType = {
   id: string
   epcId: string
+  crfNumber: string | null
+  status: $Enums.CrfStatus
+  recipientType: $Enums.CrfRecipientType | null
+  recipientName: string | null
+  recipientPhone: string | null
+  recipientEmail: string | null
+  recipientOrganisation: string | null
+  recipientUserId: string | null
+  recipientContactId: string | null
+  deliveryInstructions: string | null
+  requiredByDate: Date | null
+  addressSourceType: $Enums.CrfAddressSource
+  addressSourceId: string | null
+  addressCompany: string | null
+  addressLine1: string | null
+  addressLine2: string | null
+  addressLandmark: string | null
+  addressCity: string | null
+  addressDistrict: string | null
+  addressState: string | null
+  addressPincode: string | null
+  addressCountry: string | null
+  addressGstin: string | null
+  addressValidatedAt: Date | null
+  souvenirTotalAtApproval: runtime.Decimal | null
+  approvedAt: Date | null
+  itemsChangedAt: Date | null
+  closedAt: Date | null
+  created_by_id: string
+  updated_by_id: string | null
   created_at: Date
   updated_at: Date
   _count: CRFCountAggregateOutputType | null
+  _avg: CRFAvgAggregateOutputType | null
+  _sum: CRFSumAggregateOutputType | null
   _min: CRFMinAggregateOutputType | null
   _max: CRFMaxAggregateOutputType | null
 }
@@ -172,41 +416,178 @@ export type CRFWhereInput = {
   NOT?: Prisma.CRFWhereInput | Prisma.CRFWhereInput[]
   id?: Prisma.StringFilter<"CRF"> | string
   epcId?: Prisma.StringFilter<"CRF"> | string
+  crfNumber?: Prisma.StringNullableFilter<"CRF"> | string | null
+  status?: Prisma.EnumCrfStatusFilter<"CRF"> | $Enums.CrfStatus
+  recipientType?: Prisma.EnumCrfRecipientTypeNullableFilter<"CRF"> | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientPhone?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientEmail?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientOrganisation?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientUserId?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientContactId?: Prisma.StringNullableFilter<"CRF"> | string | null
+  deliveryInstructions?: Prisma.StringNullableFilter<"CRF"> | string | null
+  requiredByDate?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFilter<"CRF"> | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressCompany?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressLine1?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressLine2?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressLandmark?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressCity?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressDistrict?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressState?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressPincode?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressCountry?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressGstin?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressValidatedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  souvenirTotalAtApproval?: Prisma.DecimalNullableFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  itemsChangedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  closedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  created_by_id?: Prisma.StringFilter<"CRF"> | string
+  updated_by_id?: Prisma.StringNullableFilter<"CRF"> | string | null
   created_at?: Prisma.DateTimeFilter<"CRF"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"CRF"> | Date | string
+  recipientUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  recipientContact?: Prisma.XOR<Prisma.BusinessPartnerContactNullableScalarRelationFilter, Prisma.BusinessPartnerContactWhereInput> | null
+  created_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   epc?: Prisma.XOR<Prisma.EventProposalScalarRelationFilter, Prisma.EventProposalWhereInput>
   lineItems?: Prisma.LineItemListRelationFilter
+  items?: Prisma.CrfItemListRelationFilter
+  order?: Prisma.XOR<Prisma.CrfOrderNullableScalarRelationFilter, Prisma.CrfOrderWhereInput> | null
 }
 
 export type CRFOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
+  crfNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  recipientType?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientName?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientOrganisation?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientContactId?: Prisma.SortOrderInput | Prisma.SortOrder
+  deliveryInstructions?: Prisma.SortOrderInput | Prisma.SortOrder
+  requiredByDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressSourceType?: Prisma.SortOrder
+  addressSourceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressCompany?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressLine1?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressLine2?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressLandmark?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressCity?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressDistrict?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressState?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressPincode?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressCountry?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressGstin?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressValidatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  souvenirTotalAtApproval?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  itemsChangedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  recipientUser?: Prisma.UserOrderByWithRelationInput
+  recipientContact?: Prisma.BusinessPartnerContactOrderByWithRelationInput
+  created_by?: Prisma.UserOrderByWithRelationInput
   epc?: Prisma.EventProposalOrderByWithRelationInput
   lineItems?: Prisma.LineItemOrderByRelationAggregateInput
+  items?: Prisma.CrfItemOrderByRelationAggregateInput
+  order?: Prisma.CrfOrderOrderByWithRelationInput
 }
 
 export type CRFWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   epcId?: string
+  crfNumber?: string
   AND?: Prisma.CRFWhereInput | Prisma.CRFWhereInput[]
   OR?: Prisma.CRFWhereInput[]
   NOT?: Prisma.CRFWhereInput | Prisma.CRFWhereInput[]
+  status?: Prisma.EnumCrfStatusFilter<"CRF"> | $Enums.CrfStatus
+  recipientType?: Prisma.EnumCrfRecipientTypeNullableFilter<"CRF"> | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientPhone?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientEmail?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientOrganisation?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientUserId?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientContactId?: Prisma.StringNullableFilter<"CRF"> | string | null
+  deliveryInstructions?: Prisma.StringNullableFilter<"CRF"> | string | null
+  requiredByDate?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFilter<"CRF"> | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressCompany?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressLine1?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressLine2?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressLandmark?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressCity?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressDistrict?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressState?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressPincode?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressCountry?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressGstin?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressValidatedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  souvenirTotalAtApproval?: Prisma.DecimalNullableFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  itemsChangedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  closedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  created_by_id?: Prisma.StringFilter<"CRF"> | string
+  updated_by_id?: Prisma.StringNullableFilter<"CRF"> | string | null
   created_at?: Prisma.DateTimeFilter<"CRF"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"CRF"> | Date | string
+  recipientUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  recipientContact?: Prisma.XOR<Prisma.BusinessPartnerContactNullableScalarRelationFilter, Prisma.BusinessPartnerContactWhereInput> | null
+  created_by?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   epc?: Prisma.XOR<Prisma.EventProposalScalarRelationFilter, Prisma.EventProposalWhereInput>
   lineItems?: Prisma.LineItemListRelationFilter
-}, "id" | "epcId">
+  items?: Prisma.CrfItemListRelationFilter
+  order?: Prisma.XOR<Prisma.CrfOrderNullableScalarRelationFilter, Prisma.CrfOrderWhereInput> | null
+}, "id" | "epcId" | "crfNumber">
 
 export type CRFOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
+  crfNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
+  recipientType?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientName?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientPhone?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientEmail?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientOrganisation?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  recipientContactId?: Prisma.SortOrderInput | Prisma.SortOrder
+  deliveryInstructions?: Prisma.SortOrderInput | Prisma.SortOrder
+  requiredByDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressSourceType?: Prisma.SortOrder
+  addressSourceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressCompany?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressLine1?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressLine2?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressLandmark?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressCity?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressDistrict?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressState?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressPincode?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressCountry?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressGstin?: Prisma.SortOrderInput | Prisma.SortOrder
+  addressValidatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  souvenirTotalAtApproval?: Prisma.SortOrderInput | Prisma.SortOrder
+  approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  itemsChangedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.CRFCountOrderByAggregateInput
+  _avg?: Prisma.CRFAvgOrderByAggregateInput
   _max?: Prisma.CRFMaxOrderByAggregateInput
   _min?: Prisma.CRFMinOrderByAggregateInput
+  _sum?: Prisma.CRFSumOrderByAggregateInput
 }
 
 export type CRFScalarWhereWithAggregatesInput = {
@@ -215,51 +596,266 @@ export type CRFScalarWhereWithAggregatesInput = {
   NOT?: Prisma.CRFScalarWhereWithAggregatesInput | Prisma.CRFScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"CRF"> | string
   epcId?: Prisma.StringWithAggregatesFilter<"CRF"> | string
+  crfNumber?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  status?: Prisma.EnumCrfStatusWithAggregatesFilter<"CRF"> | $Enums.CrfStatus
+  recipientType?: Prisma.EnumCrfRecipientTypeNullableWithAggregatesFilter<"CRF"> | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  recipientPhone?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  recipientEmail?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  recipientOrganisation?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  recipientUserId?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  recipientContactId?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  deliveryInstructions?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  requiredByDate?: Prisma.DateTimeNullableWithAggregatesFilter<"CRF"> | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceWithAggregatesFilter<"CRF"> | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  addressCompany?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  addressLine1?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  addressLine2?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  addressLandmark?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  addressCity?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  addressDistrict?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  addressState?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  addressPincode?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  addressCountry?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  addressGstin?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
+  addressValidatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CRF"> | Date | string | null
+  souvenirTotalAtApproval?: Prisma.DecimalNullableWithAggregatesFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CRF"> | Date | string | null
+  itemsChangedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CRF"> | Date | string | null
+  closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CRF"> | Date | string | null
+  created_by_id?: Prisma.StringWithAggregatesFilter<"CRF"> | string
+  updated_by_id?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"CRF"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"CRF"> | Date | string
 }
 
 export type CRFCreateInput = {
   id?: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  updated_by_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  recipientUser?: Prisma.UserCreateNestedOneWithoutCrfsAsRecipientInput
+  recipientContact?: Prisma.BusinessPartnerContactCreateNestedOneWithoutCrfsAsRecipientInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreatedCrfsInput
   epc: Prisma.EventProposalCreateNestedOneWithoutCrfInput
   lineItems?: Prisma.LineItemCreateNestedManyWithoutCrfInput
+  items?: Prisma.CrfItemCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderCreateNestedOneWithoutCrfInput
 }
 
 export type CRFUncheckedCreateInput = {
   id?: string
   epcId: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  recipientUserId?: string | null
+  recipientContactId?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  created_by_id: string
+  updated_by_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   lineItems?: Prisma.LineItemUncheckedCreateNestedManyWithoutCrfInput
+  items?: Prisma.CrfItemUncheckedCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderUncheckedCreateNestedOneWithoutCrfInput
 }
 
 export type CRFUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientUser?: Prisma.UserUpdateOneWithoutCrfsAsRecipientNestedInput
+  recipientContact?: Prisma.BusinessPartnerContactUpdateOneWithoutCrfsAsRecipientNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreatedCrfsNestedInput
   epc?: Prisma.EventProposalUpdateOneRequiredWithoutCrfNestedInput
   lineItems?: Prisma.LineItemUpdateManyWithoutCrfNestedInput
+  items?: Prisma.CrfItemUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUpdateOneWithoutCrfNestedInput
 }
 
 export type CRFUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epcId?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.LineItemUncheckedUpdateManyWithoutCrfNestedInput
+  items?: Prisma.CrfItemUncheckedUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUncheckedUpdateOneWithoutCrfNestedInput
 }
 
 export type CRFCreateManyInput = {
   id?: string
   epcId: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  recipientUserId?: string | null
+  recipientContactId?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  created_by_id: string
+  updated_by_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type CRFUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -267,8 +863,48 @@ export type CRFUpdateManyMutationInput = {
 export type CRFUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epcId?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CRFListRelationFilter = {
+  every?: Prisma.CRFWhereInput
+  some?: Prisma.CRFWhereInput
+  none?: Prisma.CRFWhereInput
+}
+
+export type CRFOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type CRFNullableScalarRelationFilter = {
@@ -279,13 +915,77 @@ export type CRFNullableScalarRelationFilter = {
 export type CRFCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
+  crfNumber?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  recipientType?: Prisma.SortOrder
+  recipientName?: Prisma.SortOrder
+  recipientPhone?: Prisma.SortOrder
+  recipientEmail?: Prisma.SortOrder
+  recipientOrganisation?: Prisma.SortOrder
+  recipientUserId?: Prisma.SortOrder
+  recipientContactId?: Prisma.SortOrder
+  deliveryInstructions?: Prisma.SortOrder
+  requiredByDate?: Prisma.SortOrder
+  addressSourceType?: Prisma.SortOrder
+  addressSourceId?: Prisma.SortOrder
+  addressCompany?: Prisma.SortOrder
+  addressLine1?: Prisma.SortOrder
+  addressLine2?: Prisma.SortOrder
+  addressLandmark?: Prisma.SortOrder
+  addressCity?: Prisma.SortOrder
+  addressDistrict?: Prisma.SortOrder
+  addressState?: Prisma.SortOrder
+  addressPincode?: Prisma.SortOrder
+  addressCountry?: Prisma.SortOrder
+  addressGstin?: Prisma.SortOrder
+  addressValidatedAt?: Prisma.SortOrder
+  souvenirTotalAtApproval?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  itemsChangedAt?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+}
+
+export type CRFAvgOrderByAggregateInput = {
+  souvenirTotalAtApproval?: Prisma.SortOrder
 }
 
 export type CRFMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
+  crfNumber?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  recipientType?: Prisma.SortOrder
+  recipientName?: Prisma.SortOrder
+  recipientPhone?: Prisma.SortOrder
+  recipientEmail?: Prisma.SortOrder
+  recipientOrganisation?: Prisma.SortOrder
+  recipientUserId?: Prisma.SortOrder
+  recipientContactId?: Prisma.SortOrder
+  deliveryInstructions?: Prisma.SortOrder
+  requiredByDate?: Prisma.SortOrder
+  addressSourceType?: Prisma.SortOrder
+  addressSourceId?: Prisma.SortOrder
+  addressCompany?: Prisma.SortOrder
+  addressLine1?: Prisma.SortOrder
+  addressLine2?: Prisma.SortOrder
+  addressLandmark?: Prisma.SortOrder
+  addressCity?: Prisma.SortOrder
+  addressDistrict?: Prisma.SortOrder
+  addressState?: Prisma.SortOrder
+  addressPincode?: Prisma.SortOrder
+  addressCountry?: Prisma.SortOrder
+  addressGstin?: Prisma.SortOrder
+  addressValidatedAt?: Prisma.SortOrder
+  souvenirTotalAtApproval?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  itemsChangedAt?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -293,8 +993,131 @@ export type CRFMaxOrderByAggregateInput = {
 export type CRFMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
+  crfNumber?: Prisma.SortOrder
+  status?: Prisma.SortOrder
+  recipientType?: Prisma.SortOrder
+  recipientName?: Prisma.SortOrder
+  recipientPhone?: Prisma.SortOrder
+  recipientEmail?: Prisma.SortOrder
+  recipientOrganisation?: Prisma.SortOrder
+  recipientUserId?: Prisma.SortOrder
+  recipientContactId?: Prisma.SortOrder
+  deliveryInstructions?: Prisma.SortOrder
+  requiredByDate?: Prisma.SortOrder
+  addressSourceType?: Prisma.SortOrder
+  addressSourceId?: Prisma.SortOrder
+  addressCompany?: Prisma.SortOrder
+  addressLine1?: Prisma.SortOrder
+  addressLine2?: Prisma.SortOrder
+  addressLandmark?: Prisma.SortOrder
+  addressCity?: Prisma.SortOrder
+  addressDistrict?: Prisma.SortOrder
+  addressState?: Prisma.SortOrder
+  addressPincode?: Prisma.SortOrder
+  addressCountry?: Prisma.SortOrder
+  addressGstin?: Prisma.SortOrder
+  addressValidatedAt?: Prisma.SortOrder
+  souvenirTotalAtApproval?: Prisma.SortOrder
+  approvedAt?: Prisma.SortOrder
+  itemsChangedAt?: Prisma.SortOrder
+  closedAt?: Prisma.SortOrder
+  created_by_id?: Prisma.SortOrder
+  updated_by_id?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+}
+
+export type CRFSumOrderByAggregateInput = {
+  souvenirTotalAtApproval?: Prisma.SortOrder
+}
+
+export type CRFScalarRelationFilter = {
+  is?: Prisma.CRFWhereInput
+  isNot?: Prisma.CRFWhereInput
+}
+
+export type CRFCreateNestedManyWithoutCreated_byInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutCreated_byInput, Prisma.CRFUncheckedCreateWithoutCreated_byInput> | Prisma.CRFCreateWithoutCreated_byInput[] | Prisma.CRFUncheckedCreateWithoutCreated_byInput[]
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutCreated_byInput | Prisma.CRFCreateOrConnectWithoutCreated_byInput[]
+  createMany?: Prisma.CRFCreateManyCreated_byInputEnvelope
+  connect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+}
+
+export type CRFCreateNestedManyWithoutRecipientUserInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutRecipientUserInput, Prisma.CRFUncheckedCreateWithoutRecipientUserInput> | Prisma.CRFCreateWithoutRecipientUserInput[] | Prisma.CRFUncheckedCreateWithoutRecipientUserInput[]
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutRecipientUserInput | Prisma.CRFCreateOrConnectWithoutRecipientUserInput[]
+  createMany?: Prisma.CRFCreateManyRecipientUserInputEnvelope
+  connect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+}
+
+export type CRFUncheckedCreateNestedManyWithoutCreated_byInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutCreated_byInput, Prisma.CRFUncheckedCreateWithoutCreated_byInput> | Prisma.CRFCreateWithoutCreated_byInput[] | Prisma.CRFUncheckedCreateWithoutCreated_byInput[]
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutCreated_byInput | Prisma.CRFCreateOrConnectWithoutCreated_byInput[]
+  createMany?: Prisma.CRFCreateManyCreated_byInputEnvelope
+  connect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+}
+
+export type CRFUncheckedCreateNestedManyWithoutRecipientUserInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutRecipientUserInput, Prisma.CRFUncheckedCreateWithoutRecipientUserInput> | Prisma.CRFCreateWithoutRecipientUserInput[] | Prisma.CRFUncheckedCreateWithoutRecipientUserInput[]
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutRecipientUserInput | Prisma.CRFCreateOrConnectWithoutRecipientUserInput[]
+  createMany?: Prisma.CRFCreateManyRecipientUserInputEnvelope
+  connect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+}
+
+export type CRFUpdateManyWithoutCreated_byNestedInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutCreated_byInput, Prisma.CRFUncheckedCreateWithoutCreated_byInput> | Prisma.CRFCreateWithoutCreated_byInput[] | Prisma.CRFUncheckedCreateWithoutCreated_byInput[]
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutCreated_byInput | Prisma.CRFCreateOrConnectWithoutCreated_byInput[]
+  upsert?: Prisma.CRFUpsertWithWhereUniqueWithoutCreated_byInput | Prisma.CRFUpsertWithWhereUniqueWithoutCreated_byInput[]
+  createMany?: Prisma.CRFCreateManyCreated_byInputEnvelope
+  set?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  disconnect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  delete?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  connect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  update?: Prisma.CRFUpdateWithWhereUniqueWithoutCreated_byInput | Prisma.CRFUpdateWithWhereUniqueWithoutCreated_byInput[]
+  updateMany?: Prisma.CRFUpdateManyWithWhereWithoutCreated_byInput | Prisma.CRFUpdateManyWithWhereWithoutCreated_byInput[]
+  deleteMany?: Prisma.CRFScalarWhereInput | Prisma.CRFScalarWhereInput[]
+}
+
+export type CRFUpdateManyWithoutRecipientUserNestedInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutRecipientUserInput, Prisma.CRFUncheckedCreateWithoutRecipientUserInput> | Prisma.CRFCreateWithoutRecipientUserInput[] | Prisma.CRFUncheckedCreateWithoutRecipientUserInput[]
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutRecipientUserInput | Prisma.CRFCreateOrConnectWithoutRecipientUserInput[]
+  upsert?: Prisma.CRFUpsertWithWhereUniqueWithoutRecipientUserInput | Prisma.CRFUpsertWithWhereUniqueWithoutRecipientUserInput[]
+  createMany?: Prisma.CRFCreateManyRecipientUserInputEnvelope
+  set?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  disconnect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  delete?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  connect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  update?: Prisma.CRFUpdateWithWhereUniqueWithoutRecipientUserInput | Prisma.CRFUpdateWithWhereUniqueWithoutRecipientUserInput[]
+  updateMany?: Prisma.CRFUpdateManyWithWhereWithoutRecipientUserInput | Prisma.CRFUpdateManyWithWhereWithoutRecipientUserInput[]
+  deleteMany?: Prisma.CRFScalarWhereInput | Prisma.CRFScalarWhereInput[]
+}
+
+export type CRFUncheckedUpdateManyWithoutCreated_byNestedInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutCreated_byInput, Prisma.CRFUncheckedCreateWithoutCreated_byInput> | Prisma.CRFCreateWithoutCreated_byInput[] | Prisma.CRFUncheckedCreateWithoutCreated_byInput[]
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutCreated_byInput | Prisma.CRFCreateOrConnectWithoutCreated_byInput[]
+  upsert?: Prisma.CRFUpsertWithWhereUniqueWithoutCreated_byInput | Prisma.CRFUpsertWithWhereUniqueWithoutCreated_byInput[]
+  createMany?: Prisma.CRFCreateManyCreated_byInputEnvelope
+  set?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  disconnect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  delete?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  connect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  update?: Prisma.CRFUpdateWithWhereUniqueWithoutCreated_byInput | Prisma.CRFUpdateWithWhereUniqueWithoutCreated_byInput[]
+  updateMany?: Prisma.CRFUpdateManyWithWhereWithoutCreated_byInput | Prisma.CRFUpdateManyWithWhereWithoutCreated_byInput[]
+  deleteMany?: Prisma.CRFScalarWhereInput | Prisma.CRFScalarWhereInput[]
+}
+
+export type CRFUncheckedUpdateManyWithoutRecipientUserNestedInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutRecipientUserInput, Prisma.CRFUncheckedCreateWithoutRecipientUserInput> | Prisma.CRFCreateWithoutRecipientUserInput[] | Prisma.CRFUncheckedCreateWithoutRecipientUserInput[]
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutRecipientUserInput | Prisma.CRFCreateOrConnectWithoutRecipientUserInput[]
+  upsert?: Prisma.CRFUpsertWithWhereUniqueWithoutRecipientUserInput | Prisma.CRFUpsertWithWhereUniqueWithoutRecipientUserInput[]
+  createMany?: Prisma.CRFCreateManyRecipientUserInputEnvelope
+  set?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  disconnect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  delete?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  connect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  update?: Prisma.CRFUpdateWithWhereUniqueWithoutRecipientUserInput | Prisma.CRFUpdateWithWhereUniqueWithoutRecipientUserInput[]
+  updateMany?: Prisma.CRFUpdateManyWithWhereWithoutRecipientUserInput | Prisma.CRFUpdateManyWithWhereWithoutRecipientUserInput[]
+  deleteMany?: Prisma.CRFScalarWhereInput | Prisma.CRFScalarWhereInput[]
 }
 
 export type CRFCreateNestedOneWithoutEpcInput = {
@@ -329,6 +1152,46 @@ export type CRFUncheckedUpdateOneWithoutEpcNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CRFUpdateToOneWithWhereWithoutEpcInput, Prisma.CRFUpdateWithoutEpcInput>, Prisma.CRFUncheckedUpdateWithoutEpcInput>
 }
 
+export type EnumCrfStatusFieldUpdateOperationsInput = {
+  set?: $Enums.CrfStatus
+}
+
+export type NullableEnumCrfRecipientTypeFieldUpdateOperationsInput = {
+  set?: $Enums.CrfRecipientType | null
+}
+
+export type EnumCrfAddressSourceFieldUpdateOperationsInput = {
+  set?: $Enums.CrfAddressSource
+}
+
+export type CRFCreateNestedOneWithoutItemsInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutItemsInput, Prisma.CRFUncheckedCreateWithoutItemsInput>
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutItemsInput
+  connect?: Prisma.CRFWhereUniqueInput
+}
+
+export type CRFUpdateOneRequiredWithoutItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutItemsInput, Prisma.CRFUncheckedCreateWithoutItemsInput>
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutItemsInput
+  upsert?: Prisma.CRFUpsertWithoutItemsInput
+  connect?: Prisma.CRFWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CRFUpdateToOneWithWhereWithoutItemsInput, Prisma.CRFUpdateWithoutItemsInput>, Prisma.CRFUncheckedUpdateWithoutItemsInput>
+}
+
+export type CRFCreateNestedOneWithoutOrderInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutOrderInput, Prisma.CRFUncheckedCreateWithoutOrderInput>
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutOrderInput
+  connect?: Prisma.CRFWhereUniqueInput
+}
+
+export type CRFUpdateOneRequiredWithoutOrderNestedInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutOrderInput, Prisma.CRFUncheckedCreateWithoutOrderInput>
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutOrderInput
+  upsert?: Prisma.CRFUpsertWithoutOrderInput
+  connect?: Prisma.CRFWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CRFUpdateToOneWithWhereWithoutOrderInput, Prisma.CRFUpdateWithoutOrderInput>, Prisma.CRFUncheckedUpdateWithoutOrderInput>
+}
+
 export type CRFCreateNestedOneWithoutLineItemsInput = {
   create?: Prisma.XOR<Prisma.CRFCreateWithoutLineItemsInput, Prisma.CRFUncheckedCreateWithoutLineItemsInput>
   connectOrCreate?: Prisma.CRFCreateOrConnectWithoutLineItemsInput
@@ -345,18 +1208,372 @@ export type CRFUpdateOneWithoutLineItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CRFUpdateToOneWithWhereWithoutLineItemsInput, Prisma.CRFUpdateWithoutLineItemsInput>, Prisma.CRFUncheckedUpdateWithoutLineItemsInput>
 }
 
-export type CRFCreateWithoutEpcInput = {
+export type CRFCreateNestedManyWithoutRecipientContactInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutRecipientContactInput, Prisma.CRFUncheckedCreateWithoutRecipientContactInput> | Prisma.CRFCreateWithoutRecipientContactInput[] | Prisma.CRFUncheckedCreateWithoutRecipientContactInput[]
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutRecipientContactInput | Prisma.CRFCreateOrConnectWithoutRecipientContactInput[]
+  createMany?: Prisma.CRFCreateManyRecipientContactInputEnvelope
+  connect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+}
+
+export type CRFUncheckedCreateNestedManyWithoutRecipientContactInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutRecipientContactInput, Prisma.CRFUncheckedCreateWithoutRecipientContactInput> | Prisma.CRFCreateWithoutRecipientContactInput[] | Prisma.CRFUncheckedCreateWithoutRecipientContactInput[]
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutRecipientContactInput | Prisma.CRFCreateOrConnectWithoutRecipientContactInput[]
+  createMany?: Prisma.CRFCreateManyRecipientContactInputEnvelope
+  connect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+}
+
+export type CRFUpdateManyWithoutRecipientContactNestedInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutRecipientContactInput, Prisma.CRFUncheckedCreateWithoutRecipientContactInput> | Prisma.CRFCreateWithoutRecipientContactInput[] | Prisma.CRFUncheckedCreateWithoutRecipientContactInput[]
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutRecipientContactInput | Prisma.CRFCreateOrConnectWithoutRecipientContactInput[]
+  upsert?: Prisma.CRFUpsertWithWhereUniqueWithoutRecipientContactInput | Prisma.CRFUpsertWithWhereUniqueWithoutRecipientContactInput[]
+  createMany?: Prisma.CRFCreateManyRecipientContactInputEnvelope
+  set?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  disconnect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  delete?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  connect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  update?: Prisma.CRFUpdateWithWhereUniqueWithoutRecipientContactInput | Prisma.CRFUpdateWithWhereUniqueWithoutRecipientContactInput[]
+  updateMany?: Prisma.CRFUpdateManyWithWhereWithoutRecipientContactInput | Prisma.CRFUpdateManyWithWhereWithoutRecipientContactInput[]
+  deleteMany?: Prisma.CRFScalarWhereInput | Prisma.CRFScalarWhereInput[]
+}
+
+export type CRFUncheckedUpdateManyWithoutRecipientContactNestedInput = {
+  create?: Prisma.XOR<Prisma.CRFCreateWithoutRecipientContactInput, Prisma.CRFUncheckedCreateWithoutRecipientContactInput> | Prisma.CRFCreateWithoutRecipientContactInput[] | Prisma.CRFUncheckedCreateWithoutRecipientContactInput[]
+  connectOrCreate?: Prisma.CRFCreateOrConnectWithoutRecipientContactInput | Prisma.CRFCreateOrConnectWithoutRecipientContactInput[]
+  upsert?: Prisma.CRFUpsertWithWhereUniqueWithoutRecipientContactInput | Prisma.CRFUpsertWithWhereUniqueWithoutRecipientContactInput[]
+  createMany?: Prisma.CRFCreateManyRecipientContactInputEnvelope
+  set?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  disconnect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  delete?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  connect?: Prisma.CRFWhereUniqueInput | Prisma.CRFWhereUniqueInput[]
+  update?: Prisma.CRFUpdateWithWhereUniqueWithoutRecipientContactInput | Prisma.CRFUpdateWithWhereUniqueWithoutRecipientContactInput[]
+  updateMany?: Prisma.CRFUpdateManyWithWhereWithoutRecipientContactInput | Prisma.CRFUpdateManyWithWhereWithoutRecipientContactInput[]
+  deleteMany?: Prisma.CRFScalarWhereInput | Prisma.CRFScalarWhereInput[]
+}
+
+export type CRFCreateWithoutCreated_byInput = {
   id?: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  updated_by_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  recipientUser?: Prisma.UserCreateNestedOneWithoutCrfsAsRecipientInput
+  recipientContact?: Prisma.BusinessPartnerContactCreateNestedOneWithoutCrfsAsRecipientInput
+  epc: Prisma.EventProposalCreateNestedOneWithoutCrfInput
   lineItems?: Prisma.LineItemCreateNestedManyWithoutCrfInput
+  items?: Prisma.CrfItemCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderCreateNestedOneWithoutCrfInput
+}
+
+export type CRFUncheckedCreateWithoutCreated_byInput = {
+  id?: string
+  epcId: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  recipientUserId?: string | null
+  recipientContactId?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  lineItems?: Prisma.LineItemUncheckedCreateNestedManyWithoutCrfInput
+  items?: Prisma.CrfItemUncheckedCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderUncheckedCreateNestedOneWithoutCrfInput
+}
+
+export type CRFCreateOrConnectWithoutCreated_byInput = {
+  where: Prisma.CRFWhereUniqueInput
+  create: Prisma.XOR<Prisma.CRFCreateWithoutCreated_byInput, Prisma.CRFUncheckedCreateWithoutCreated_byInput>
+}
+
+export type CRFCreateManyCreated_byInputEnvelope = {
+  data: Prisma.CRFCreateManyCreated_byInput | Prisma.CRFCreateManyCreated_byInput[]
+  skipDuplicates?: boolean
+}
+
+export type CRFCreateWithoutRecipientUserInput = {
+  id?: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  recipientContact?: Prisma.BusinessPartnerContactCreateNestedOneWithoutCrfsAsRecipientInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreatedCrfsInput
+  epc: Prisma.EventProposalCreateNestedOneWithoutCrfInput
+  lineItems?: Prisma.LineItemCreateNestedManyWithoutCrfInput
+  items?: Prisma.CrfItemCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderCreateNestedOneWithoutCrfInput
+}
+
+export type CRFUncheckedCreateWithoutRecipientUserInput = {
+  id?: string
+  epcId: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  recipientContactId?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  created_by_id: string
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  lineItems?: Prisma.LineItemUncheckedCreateNestedManyWithoutCrfInput
+  items?: Prisma.CrfItemUncheckedCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderUncheckedCreateNestedOneWithoutCrfInput
+}
+
+export type CRFCreateOrConnectWithoutRecipientUserInput = {
+  where: Prisma.CRFWhereUniqueInput
+  create: Prisma.XOR<Prisma.CRFCreateWithoutRecipientUserInput, Prisma.CRFUncheckedCreateWithoutRecipientUserInput>
+}
+
+export type CRFCreateManyRecipientUserInputEnvelope = {
+  data: Prisma.CRFCreateManyRecipientUserInput | Prisma.CRFCreateManyRecipientUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type CRFUpsertWithWhereUniqueWithoutCreated_byInput = {
+  where: Prisma.CRFWhereUniqueInput
+  update: Prisma.XOR<Prisma.CRFUpdateWithoutCreated_byInput, Prisma.CRFUncheckedUpdateWithoutCreated_byInput>
+  create: Prisma.XOR<Prisma.CRFCreateWithoutCreated_byInput, Prisma.CRFUncheckedCreateWithoutCreated_byInput>
+}
+
+export type CRFUpdateWithWhereUniqueWithoutCreated_byInput = {
+  where: Prisma.CRFWhereUniqueInput
+  data: Prisma.XOR<Prisma.CRFUpdateWithoutCreated_byInput, Prisma.CRFUncheckedUpdateWithoutCreated_byInput>
+}
+
+export type CRFUpdateManyWithWhereWithoutCreated_byInput = {
+  where: Prisma.CRFScalarWhereInput
+  data: Prisma.XOR<Prisma.CRFUpdateManyMutationInput, Prisma.CRFUncheckedUpdateManyWithoutCreated_byInput>
+}
+
+export type CRFScalarWhereInput = {
+  AND?: Prisma.CRFScalarWhereInput | Prisma.CRFScalarWhereInput[]
+  OR?: Prisma.CRFScalarWhereInput[]
+  NOT?: Prisma.CRFScalarWhereInput | Prisma.CRFScalarWhereInput[]
+  id?: Prisma.StringFilter<"CRF"> | string
+  epcId?: Prisma.StringFilter<"CRF"> | string
+  crfNumber?: Prisma.StringNullableFilter<"CRF"> | string | null
+  status?: Prisma.EnumCrfStatusFilter<"CRF"> | $Enums.CrfStatus
+  recipientType?: Prisma.EnumCrfRecipientTypeNullableFilter<"CRF"> | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientPhone?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientEmail?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientOrganisation?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientUserId?: Prisma.StringNullableFilter<"CRF"> | string | null
+  recipientContactId?: Prisma.StringNullableFilter<"CRF"> | string | null
+  deliveryInstructions?: Prisma.StringNullableFilter<"CRF"> | string | null
+  requiredByDate?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFilter<"CRF"> | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressCompany?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressLine1?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressLine2?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressLandmark?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressCity?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressDistrict?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressState?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressPincode?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressCountry?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressGstin?: Prisma.StringNullableFilter<"CRF"> | string | null
+  addressValidatedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  souvenirTotalAtApproval?: Prisma.DecimalNullableFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  itemsChangedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  closedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
+  created_by_id?: Prisma.StringFilter<"CRF"> | string
+  updated_by_id?: Prisma.StringNullableFilter<"CRF"> | string | null
+  created_at?: Prisma.DateTimeFilter<"CRF"> | Date | string
+  updated_at?: Prisma.DateTimeFilter<"CRF"> | Date | string
+}
+
+export type CRFUpsertWithWhereUniqueWithoutRecipientUserInput = {
+  where: Prisma.CRFWhereUniqueInput
+  update: Prisma.XOR<Prisma.CRFUpdateWithoutRecipientUserInput, Prisma.CRFUncheckedUpdateWithoutRecipientUserInput>
+  create: Prisma.XOR<Prisma.CRFCreateWithoutRecipientUserInput, Prisma.CRFUncheckedCreateWithoutRecipientUserInput>
+}
+
+export type CRFUpdateWithWhereUniqueWithoutRecipientUserInput = {
+  where: Prisma.CRFWhereUniqueInput
+  data: Prisma.XOR<Prisma.CRFUpdateWithoutRecipientUserInput, Prisma.CRFUncheckedUpdateWithoutRecipientUserInput>
+}
+
+export type CRFUpdateManyWithWhereWithoutRecipientUserInput = {
+  where: Prisma.CRFScalarWhereInput
+  data: Prisma.XOR<Prisma.CRFUpdateManyMutationInput, Prisma.CRFUncheckedUpdateManyWithoutRecipientUserInput>
+}
+
+export type CRFCreateWithoutEpcInput = {
+  id?: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  recipientUser?: Prisma.UserCreateNestedOneWithoutCrfsAsRecipientInput
+  recipientContact?: Prisma.BusinessPartnerContactCreateNestedOneWithoutCrfsAsRecipientInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreatedCrfsInput
+  lineItems?: Prisma.LineItemCreateNestedManyWithoutCrfInput
+  items?: Prisma.CrfItemCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderCreateNestedOneWithoutCrfInput
 }
 
 export type CRFUncheckedCreateWithoutEpcInput = {
   id?: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  recipientUserId?: string | null
+  recipientContactId?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  created_by_id: string
+  updated_by_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   lineItems?: Prisma.LineItemUncheckedCreateNestedManyWithoutCrfInput
+  items?: Prisma.CrfItemUncheckedCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderUncheckedCreateNestedOneWithoutCrfInput
 }
 
 export type CRFCreateOrConnectWithoutEpcInput = {
@@ -377,30 +1594,502 @@ export type CRFUpdateToOneWithWhereWithoutEpcInput = {
 
 export type CRFUpdateWithoutEpcInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientUser?: Prisma.UserUpdateOneWithoutCrfsAsRecipientNestedInput
+  recipientContact?: Prisma.BusinessPartnerContactUpdateOneWithoutCrfsAsRecipientNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreatedCrfsNestedInput
   lineItems?: Prisma.LineItemUpdateManyWithoutCrfNestedInput
+  items?: Prisma.CrfItemUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUpdateOneWithoutCrfNestedInput
 }
 
 export type CRFUncheckedUpdateWithoutEpcInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.LineItemUncheckedUpdateManyWithoutCrfNestedInput
+  items?: Prisma.CrfItemUncheckedUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUncheckedUpdateOneWithoutCrfNestedInput
+}
+
+export type CRFCreateWithoutItemsInput = {
+  id?: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  recipientUser?: Prisma.UserCreateNestedOneWithoutCrfsAsRecipientInput
+  recipientContact?: Prisma.BusinessPartnerContactCreateNestedOneWithoutCrfsAsRecipientInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreatedCrfsInput
+  epc: Prisma.EventProposalCreateNestedOneWithoutCrfInput
+  lineItems?: Prisma.LineItemCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderCreateNestedOneWithoutCrfInput
+}
+
+export type CRFUncheckedCreateWithoutItemsInput = {
+  id?: string
+  epcId: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  recipientUserId?: string | null
+  recipientContactId?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  created_by_id: string
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  lineItems?: Prisma.LineItemUncheckedCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderUncheckedCreateNestedOneWithoutCrfInput
+}
+
+export type CRFCreateOrConnectWithoutItemsInput = {
+  where: Prisma.CRFWhereUniqueInput
+  create: Prisma.XOR<Prisma.CRFCreateWithoutItemsInput, Prisma.CRFUncheckedCreateWithoutItemsInput>
+}
+
+export type CRFUpsertWithoutItemsInput = {
+  update: Prisma.XOR<Prisma.CRFUpdateWithoutItemsInput, Prisma.CRFUncheckedUpdateWithoutItemsInput>
+  create: Prisma.XOR<Prisma.CRFCreateWithoutItemsInput, Prisma.CRFUncheckedCreateWithoutItemsInput>
+  where?: Prisma.CRFWhereInput
+}
+
+export type CRFUpdateToOneWithWhereWithoutItemsInput = {
+  where?: Prisma.CRFWhereInput
+  data: Prisma.XOR<Prisma.CRFUpdateWithoutItemsInput, Prisma.CRFUncheckedUpdateWithoutItemsInput>
+}
+
+export type CRFUpdateWithoutItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientUser?: Prisma.UserUpdateOneWithoutCrfsAsRecipientNestedInput
+  recipientContact?: Prisma.BusinessPartnerContactUpdateOneWithoutCrfsAsRecipientNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreatedCrfsNestedInput
+  epc?: Prisma.EventProposalUpdateOneRequiredWithoutCrfNestedInput
+  lineItems?: Prisma.LineItemUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUpdateOneWithoutCrfNestedInput
+}
+
+export type CRFUncheckedUpdateWithoutItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  epcId?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lineItems?: Prisma.LineItemUncheckedUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUncheckedUpdateOneWithoutCrfNestedInput
+}
+
+export type CRFCreateWithoutOrderInput = {
+  id?: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  recipientUser?: Prisma.UserCreateNestedOneWithoutCrfsAsRecipientInput
+  recipientContact?: Prisma.BusinessPartnerContactCreateNestedOneWithoutCrfsAsRecipientInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreatedCrfsInput
+  epc: Prisma.EventProposalCreateNestedOneWithoutCrfInput
+  lineItems?: Prisma.LineItemCreateNestedManyWithoutCrfInput
+  items?: Prisma.CrfItemCreateNestedManyWithoutCrfInput
+}
+
+export type CRFUncheckedCreateWithoutOrderInput = {
+  id?: string
+  epcId: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  recipientUserId?: string | null
+  recipientContactId?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  created_by_id: string
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  lineItems?: Prisma.LineItemUncheckedCreateNestedManyWithoutCrfInput
+  items?: Prisma.CrfItemUncheckedCreateNestedManyWithoutCrfInput
+}
+
+export type CRFCreateOrConnectWithoutOrderInput = {
+  where: Prisma.CRFWhereUniqueInput
+  create: Prisma.XOR<Prisma.CRFCreateWithoutOrderInput, Prisma.CRFUncheckedCreateWithoutOrderInput>
+}
+
+export type CRFUpsertWithoutOrderInput = {
+  update: Prisma.XOR<Prisma.CRFUpdateWithoutOrderInput, Prisma.CRFUncheckedUpdateWithoutOrderInput>
+  create: Prisma.XOR<Prisma.CRFCreateWithoutOrderInput, Prisma.CRFUncheckedCreateWithoutOrderInput>
+  where?: Prisma.CRFWhereInput
+}
+
+export type CRFUpdateToOneWithWhereWithoutOrderInput = {
+  where?: Prisma.CRFWhereInput
+  data: Prisma.XOR<Prisma.CRFUpdateWithoutOrderInput, Prisma.CRFUncheckedUpdateWithoutOrderInput>
+}
+
+export type CRFUpdateWithoutOrderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientUser?: Prisma.UserUpdateOneWithoutCrfsAsRecipientNestedInput
+  recipientContact?: Prisma.BusinessPartnerContactUpdateOneWithoutCrfsAsRecipientNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreatedCrfsNestedInput
+  epc?: Prisma.EventProposalUpdateOneRequiredWithoutCrfNestedInput
+  lineItems?: Prisma.LineItemUpdateManyWithoutCrfNestedInput
+  items?: Prisma.CrfItemUpdateManyWithoutCrfNestedInput
+}
+
+export type CRFUncheckedUpdateWithoutOrderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  epcId?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lineItems?: Prisma.LineItemUncheckedUpdateManyWithoutCrfNestedInput
+  items?: Prisma.CrfItemUncheckedUpdateManyWithoutCrfNestedInput
 }
 
 export type CRFCreateWithoutLineItemsInput = {
   id?: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  updated_by_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  recipientUser?: Prisma.UserCreateNestedOneWithoutCrfsAsRecipientInput
+  recipientContact?: Prisma.BusinessPartnerContactCreateNestedOneWithoutCrfsAsRecipientInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreatedCrfsInput
   epc: Prisma.EventProposalCreateNestedOneWithoutCrfInput
+  items?: Prisma.CrfItemCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderCreateNestedOneWithoutCrfInput
 }
 
 export type CRFUncheckedCreateWithoutLineItemsInput = {
   id?: string
   epcId: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  recipientUserId?: string | null
+  recipientContactId?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  created_by_id: string
+  updated_by_id?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  items?: Prisma.CrfItemUncheckedCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderUncheckedCreateNestedOneWithoutCrfInput
 }
 
 export type CRFCreateOrConnectWithoutLineItemsInput = {
@@ -421,14 +2110,632 @@ export type CRFUpdateToOneWithWhereWithoutLineItemsInput = {
 
 export type CRFUpdateWithoutLineItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientUser?: Prisma.UserUpdateOneWithoutCrfsAsRecipientNestedInput
+  recipientContact?: Prisma.BusinessPartnerContactUpdateOneWithoutCrfsAsRecipientNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreatedCrfsNestedInput
   epc?: Prisma.EventProposalUpdateOneRequiredWithoutCrfNestedInput
+  items?: Prisma.CrfItemUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUpdateOneWithoutCrfNestedInput
 }
 
 export type CRFUncheckedUpdateWithoutLineItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epcId?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.CrfItemUncheckedUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUncheckedUpdateOneWithoutCrfNestedInput
+}
+
+export type CRFCreateWithoutRecipientContactInput = {
+  id?: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  recipientUser?: Prisma.UserCreateNestedOneWithoutCrfsAsRecipientInput
+  created_by: Prisma.UserCreateNestedOneWithoutCreatedCrfsInput
+  epc: Prisma.EventProposalCreateNestedOneWithoutCrfInput
+  lineItems?: Prisma.LineItemCreateNestedManyWithoutCrfInput
+  items?: Prisma.CrfItemCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderCreateNestedOneWithoutCrfInput
+}
+
+export type CRFUncheckedCreateWithoutRecipientContactInput = {
+  id?: string
+  epcId: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  recipientUserId?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  created_by_id: string
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  lineItems?: Prisma.LineItemUncheckedCreateNestedManyWithoutCrfInput
+  items?: Prisma.CrfItemUncheckedCreateNestedManyWithoutCrfInput
+  order?: Prisma.CrfOrderUncheckedCreateNestedOneWithoutCrfInput
+}
+
+export type CRFCreateOrConnectWithoutRecipientContactInput = {
+  where: Prisma.CRFWhereUniqueInput
+  create: Prisma.XOR<Prisma.CRFCreateWithoutRecipientContactInput, Prisma.CRFUncheckedCreateWithoutRecipientContactInput>
+}
+
+export type CRFCreateManyRecipientContactInputEnvelope = {
+  data: Prisma.CRFCreateManyRecipientContactInput | Prisma.CRFCreateManyRecipientContactInput[]
+  skipDuplicates?: boolean
+}
+
+export type CRFUpsertWithWhereUniqueWithoutRecipientContactInput = {
+  where: Prisma.CRFWhereUniqueInput
+  update: Prisma.XOR<Prisma.CRFUpdateWithoutRecipientContactInput, Prisma.CRFUncheckedUpdateWithoutRecipientContactInput>
+  create: Prisma.XOR<Prisma.CRFCreateWithoutRecipientContactInput, Prisma.CRFUncheckedCreateWithoutRecipientContactInput>
+}
+
+export type CRFUpdateWithWhereUniqueWithoutRecipientContactInput = {
+  where: Prisma.CRFWhereUniqueInput
+  data: Prisma.XOR<Prisma.CRFUpdateWithoutRecipientContactInput, Prisma.CRFUncheckedUpdateWithoutRecipientContactInput>
+}
+
+export type CRFUpdateManyWithWhereWithoutRecipientContactInput = {
+  where: Prisma.CRFScalarWhereInput
+  data: Prisma.XOR<Prisma.CRFUpdateManyMutationInput, Prisma.CRFUncheckedUpdateManyWithoutRecipientContactInput>
+}
+
+export type CRFCreateManyCreated_byInput = {
+  id?: string
+  epcId: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  recipientUserId?: string | null
+  recipientContactId?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type CRFCreateManyRecipientUserInput = {
+  id?: string
+  epcId: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  recipientContactId?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  created_by_id: string
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type CRFUpdateWithoutCreated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientUser?: Prisma.UserUpdateOneWithoutCrfsAsRecipientNestedInput
+  recipientContact?: Prisma.BusinessPartnerContactUpdateOneWithoutCrfsAsRecipientNestedInput
+  epc?: Prisma.EventProposalUpdateOneRequiredWithoutCrfNestedInput
+  lineItems?: Prisma.LineItemUpdateManyWithoutCrfNestedInput
+  items?: Prisma.CrfItemUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUpdateOneWithoutCrfNestedInput
+}
+
+export type CRFUncheckedUpdateWithoutCreated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  epcId?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lineItems?: Prisma.LineItemUncheckedUpdateManyWithoutCrfNestedInput
+  items?: Prisma.CrfItemUncheckedUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUncheckedUpdateOneWithoutCrfNestedInput
+}
+
+export type CRFUncheckedUpdateManyWithoutCreated_byInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  epcId?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CRFUpdateWithoutRecipientUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientContact?: Prisma.BusinessPartnerContactUpdateOneWithoutCrfsAsRecipientNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreatedCrfsNestedInput
+  epc?: Prisma.EventProposalUpdateOneRequiredWithoutCrfNestedInput
+  lineItems?: Prisma.LineItemUpdateManyWithoutCrfNestedInput
+  items?: Prisma.CrfItemUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUpdateOneWithoutCrfNestedInput
+}
+
+export type CRFUncheckedUpdateWithoutRecipientUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  epcId?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lineItems?: Prisma.LineItemUncheckedUpdateManyWithoutCrfNestedInput
+  items?: Prisma.CrfItemUncheckedUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUncheckedUpdateOneWithoutCrfNestedInput
+}
+
+export type CRFUncheckedUpdateManyWithoutRecipientUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  epcId?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientContactId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CRFCreateManyRecipientContactInput = {
+  id?: string
+  epcId: string
+  crfNumber?: string | null
+  status?: $Enums.CrfStatus
+  recipientType?: $Enums.CrfRecipientType | null
+  recipientName?: string | null
+  recipientPhone?: string | null
+  recipientEmail?: string | null
+  recipientOrganisation?: string | null
+  recipientUserId?: string | null
+  deliveryInstructions?: string | null
+  requiredByDate?: Date | string | null
+  addressSourceType?: $Enums.CrfAddressSource
+  addressSourceId?: string | null
+  addressCompany?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  addressLandmark?: string | null
+  addressCity?: string | null
+  addressDistrict?: string | null
+  addressState?: string | null
+  addressPincode?: string | null
+  addressCountry?: string | null
+  addressGstin?: string | null
+  addressValidatedAt?: Date | string | null
+  souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Date | string | null
+  itemsChangedAt?: Date | string | null
+  closedAt?: Date | string | null
+  created_by_id: string
+  updated_by_id?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type CRFUpdateWithoutRecipientContactInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  recipientUser?: Prisma.UserUpdateOneWithoutCrfsAsRecipientNestedInput
+  created_by?: Prisma.UserUpdateOneRequiredWithoutCreatedCrfsNestedInput
+  epc?: Prisma.EventProposalUpdateOneRequiredWithoutCrfNestedInput
+  lineItems?: Prisma.LineItemUpdateManyWithoutCrfNestedInput
+  items?: Prisma.CrfItemUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUpdateOneWithoutCrfNestedInput
+}
+
+export type CRFUncheckedUpdateWithoutRecipientContactInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  epcId?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lineItems?: Prisma.LineItemUncheckedUpdateManyWithoutCrfNestedInput
+  items?: Prisma.CrfItemUncheckedUpdateManyWithoutCrfNestedInput
+  order?: Prisma.CrfOrderUncheckedUpdateOneWithoutCrfNestedInput
+}
+
+export type CRFUncheckedUpdateManyWithoutRecipientContactInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  epcId?: Prisma.StringFieldUpdateOperationsInput | string
+  crfNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumCrfStatusFieldUpdateOperationsInput | $Enums.CrfStatus
+  recipientType?: Prisma.NullableEnumCrfRecipientTypeFieldUpdateOperationsInput | $Enums.CrfRecipientType | null
+  recipientName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientOrganisation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  recipientUserId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deliveryInstructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requiredByDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  addressSourceType?: Prisma.EnumCrfAddressSourceFieldUpdateOperationsInput | $Enums.CrfAddressSource
+  addressSourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCompany?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLine2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressLandmark?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressDistrict?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressState?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressPincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressCountry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  created_by_id?: Prisma.StringFieldUpdateOperationsInput | string
+  updated_by_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -440,10 +2747,12 @@ export type CRFUncheckedUpdateWithoutLineItemsInput = {
 
 export type CRFCountOutputType = {
   lineItems: number
+  items: number
 }
 
 export type CRFCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lineItems?: boolean | CRFCountOutputTypeCountLineItemsArgs
+  items?: boolean | CRFCountOutputTypeCountItemsArgs
 }
 
 /**
@@ -463,62 +2772,246 @@ export type CRFCountOutputTypeCountLineItemsArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.LineItemWhereInput
 }
 
+/**
+ * CRFCountOutputType without action
+ */
+export type CRFCountOutputTypeCountItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CrfItemWhereInput
+}
+
 
 export type CRFSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   epcId?: boolean
+  crfNumber?: boolean
+  status?: boolean
+  recipientType?: boolean
+  recipientName?: boolean
+  recipientPhone?: boolean
+  recipientEmail?: boolean
+  recipientOrganisation?: boolean
+  recipientUserId?: boolean
+  recipientContactId?: boolean
+  deliveryInstructions?: boolean
+  requiredByDate?: boolean
+  addressSourceType?: boolean
+  addressSourceId?: boolean
+  addressCompany?: boolean
+  addressLine1?: boolean
+  addressLine2?: boolean
+  addressLandmark?: boolean
+  addressCity?: boolean
+  addressDistrict?: boolean
+  addressState?: boolean
+  addressPincode?: boolean
+  addressCountry?: boolean
+  addressGstin?: boolean
+  addressValidatedAt?: boolean
+  souvenirTotalAtApproval?: boolean
+  approvedAt?: boolean
+  itemsChangedAt?: boolean
+  closedAt?: boolean
+  created_by_id?: boolean
+  updated_by_id?: boolean
   created_at?: boolean
   updated_at?: boolean
+  recipientUser?: boolean | Prisma.CRF$recipientUserArgs<ExtArgs>
+  recipientContact?: boolean | Prisma.CRF$recipientContactArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
   lineItems?: boolean | Prisma.CRF$lineItemsArgs<ExtArgs>
+  items?: boolean | Prisma.CRF$itemsArgs<ExtArgs>
+  order?: boolean | Prisma.CRF$orderArgs<ExtArgs>
   _count?: boolean | Prisma.CRFCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cRF"]>
 
 export type CRFSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   epcId?: boolean
+  crfNumber?: boolean
+  status?: boolean
+  recipientType?: boolean
+  recipientName?: boolean
+  recipientPhone?: boolean
+  recipientEmail?: boolean
+  recipientOrganisation?: boolean
+  recipientUserId?: boolean
+  recipientContactId?: boolean
+  deliveryInstructions?: boolean
+  requiredByDate?: boolean
+  addressSourceType?: boolean
+  addressSourceId?: boolean
+  addressCompany?: boolean
+  addressLine1?: boolean
+  addressLine2?: boolean
+  addressLandmark?: boolean
+  addressCity?: boolean
+  addressDistrict?: boolean
+  addressState?: boolean
+  addressPincode?: boolean
+  addressCountry?: boolean
+  addressGstin?: boolean
+  addressValidatedAt?: boolean
+  souvenirTotalAtApproval?: boolean
+  approvedAt?: boolean
+  itemsChangedAt?: boolean
+  closedAt?: boolean
+  created_by_id?: boolean
+  updated_by_id?: boolean
   created_at?: boolean
   updated_at?: boolean
+  recipientUser?: boolean | Prisma.CRF$recipientUserArgs<ExtArgs>
+  recipientContact?: boolean | Prisma.CRF$recipientContactArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cRF"]>
 
 export type CRFSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   epcId?: boolean
+  crfNumber?: boolean
+  status?: boolean
+  recipientType?: boolean
+  recipientName?: boolean
+  recipientPhone?: boolean
+  recipientEmail?: boolean
+  recipientOrganisation?: boolean
+  recipientUserId?: boolean
+  recipientContactId?: boolean
+  deliveryInstructions?: boolean
+  requiredByDate?: boolean
+  addressSourceType?: boolean
+  addressSourceId?: boolean
+  addressCompany?: boolean
+  addressLine1?: boolean
+  addressLine2?: boolean
+  addressLandmark?: boolean
+  addressCity?: boolean
+  addressDistrict?: boolean
+  addressState?: boolean
+  addressPincode?: boolean
+  addressCountry?: boolean
+  addressGstin?: boolean
+  addressValidatedAt?: boolean
+  souvenirTotalAtApproval?: boolean
+  approvedAt?: boolean
+  itemsChangedAt?: boolean
+  closedAt?: boolean
+  created_by_id?: boolean
+  updated_by_id?: boolean
   created_at?: boolean
   updated_at?: boolean
+  recipientUser?: boolean | Prisma.CRF$recipientUserArgs<ExtArgs>
+  recipientContact?: boolean | Prisma.CRF$recipientContactArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cRF"]>
 
 export type CRFSelectScalar = {
   id?: boolean
   epcId?: boolean
+  crfNumber?: boolean
+  status?: boolean
+  recipientType?: boolean
+  recipientName?: boolean
+  recipientPhone?: boolean
+  recipientEmail?: boolean
+  recipientOrganisation?: boolean
+  recipientUserId?: boolean
+  recipientContactId?: boolean
+  deliveryInstructions?: boolean
+  requiredByDate?: boolean
+  addressSourceType?: boolean
+  addressSourceId?: boolean
+  addressCompany?: boolean
+  addressLine1?: boolean
+  addressLine2?: boolean
+  addressLandmark?: boolean
+  addressCity?: boolean
+  addressDistrict?: boolean
+  addressState?: boolean
+  addressPincode?: boolean
+  addressCountry?: boolean
+  addressGstin?: boolean
+  addressValidatedAt?: boolean
+  souvenirTotalAtApproval?: boolean
+  approvedAt?: boolean
+  itemsChangedAt?: boolean
+  closedAt?: boolean
+  created_by_id?: boolean
+  updated_by_id?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type CRFOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "epcId" | "created_at" | "updated_at", ExtArgs["result"]["cRF"]>
+export type CRFOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "epcId" | "crfNumber" | "status" | "recipientType" | "recipientName" | "recipientPhone" | "recipientEmail" | "recipientOrganisation" | "recipientUserId" | "recipientContactId" | "deliveryInstructions" | "requiredByDate" | "addressSourceType" | "addressSourceId" | "addressCompany" | "addressLine1" | "addressLine2" | "addressLandmark" | "addressCity" | "addressDistrict" | "addressState" | "addressPincode" | "addressCountry" | "addressGstin" | "addressValidatedAt" | "souvenirTotalAtApproval" | "approvedAt" | "itemsChangedAt" | "closedAt" | "created_by_id" | "updated_by_id" | "created_at" | "updated_at", ExtArgs["result"]["cRF"]>
 export type CRFInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  recipientUser?: boolean | Prisma.CRF$recipientUserArgs<ExtArgs>
+  recipientContact?: boolean | Prisma.CRF$recipientContactArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
   lineItems?: boolean | Prisma.CRF$lineItemsArgs<ExtArgs>
+  items?: boolean | Prisma.CRF$itemsArgs<ExtArgs>
+  order?: boolean | Prisma.CRF$orderArgs<ExtArgs>
   _count?: boolean | Prisma.CRFCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CRFIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  recipientUser?: boolean | Prisma.CRF$recipientUserArgs<ExtArgs>
+  recipientContact?: boolean | Prisma.CRF$recipientContactArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
 }
 export type CRFIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  recipientUser?: boolean | Prisma.CRF$recipientUserArgs<ExtArgs>
+  recipientContact?: boolean | Prisma.CRF$recipientContactArgs<ExtArgs>
+  created_by?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
 }
 
 export type $CRFPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CRF"
   objects: {
+    recipientUser: Prisma.$UserPayload<ExtArgs> | null
+    recipientContact: Prisma.$BusinessPartnerContactPayload<ExtArgs> | null
+    created_by: Prisma.$UserPayload<ExtArgs>
     epc: Prisma.$EventProposalPayload<ExtArgs>
     lineItems: Prisma.$LineItemPayload<ExtArgs>[]
+    items: Prisma.$CrfItemPayload<ExtArgs>[]
+    order: Prisma.$CrfOrderPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     epcId: string
+    crfNumber: string | null
+    status: $Enums.CrfStatus
+    recipientType: $Enums.CrfRecipientType | null
+    recipientName: string | null
+    recipientPhone: string | null
+    recipientEmail: string | null
+    recipientOrganisation: string | null
+    recipientUserId: string | null
+    recipientContactId: string | null
+    deliveryInstructions: string | null
+    requiredByDate: Date | null
+    addressSourceType: $Enums.CrfAddressSource
+    addressSourceId: string | null
+    addressCompany: string | null
+    addressLine1: string | null
+    addressLine2: string | null
+    addressLandmark: string | null
+    addressCity: string | null
+    addressDistrict: string | null
+    addressState: string | null
+    addressPincode: string | null
+    addressCountry: string | null
+    addressGstin: string | null
+    addressValidatedAt: Date | null
+    souvenirTotalAtApproval: runtime.Decimal | null
+    approvedAt: Date | null
+    itemsChangedAt: Date | null
+    closedAt: Date | null
+    created_by_id: string
+    updated_by_id: string | null
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["cRF"]>
@@ -915,8 +3408,13 @@ readonly fields: CRFFieldRefs;
  */
 export interface Prisma__CRFClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  recipientUser<T extends Prisma.CRF$recipientUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CRF$recipientUserArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  recipientContact<T extends Prisma.CRF$recipientContactArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CRF$recipientContactArgs<ExtArgs>>): Prisma.Prisma__BusinessPartnerContactClient<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerContactPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  created_by<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   epc<T extends Prisma.EventProposalDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventProposalDefaultArgs<ExtArgs>>): Prisma.Prisma__EventProposalClient<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   lineItems<T extends Prisma.CRF$lineItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CRF$lineItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LineItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  items<T extends Prisma.CRF$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CRF$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CrfItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  order<T extends Prisma.CRF$orderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CRF$orderArgs<ExtArgs>>): Prisma.Prisma__CrfOrderClient<runtime.Types.Result.GetResult<Prisma.$CrfOrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -948,6 +3446,36 @@ export interface Prisma__CRFClient<T, Null = never, ExtArgs extends runtime.Type
 export interface CRFFieldRefs {
   readonly id: Prisma.FieldRef<"CRF", 'String'>
   readonly epcId: Prisma.FieldRef<"CRF", 'String'>
+  readonly crfNumber: Prisma.FieldRef<"CRF", 'String'>
+  readonly status: Prisma.FieldRef<"CRF", 'CrfStatus'>
+  readonly recipientType: Prisma.FieldRef<"CRF", 'CrfRecipientType'>
+  readonly recipientName: Prisma.FieldRef<"CRF", 'String'>
+  readonly recipientPhone: Prisma.FieldRef<"CRF", 'String'>
+  readonly recipientEmail: Prisma.FieldRef<"CRF", 'String'>
+  readonly recipientOrganisation: Prisma.FieldRef<"CRF", 'String'>
+  readonly recipientUserId: Prisma.FieldRef<"CRF", 'String'>
+  readonly recipientContactId: Prisma.FieldRef<"CRF", 'String'>
+  readonly deliveryInstructions: Prisma.FieldRef<"CRF", 'String'>
+  readonly requiredByDate: Prisma.FieldRef<"CRF", 'DateTime'>
+  readonly addressSourceType: Prisma.FieldRef<"CRF", 'CrfAddressSource'>
+  readonly addressSourceId: Prisma.FieldRef<"CRF", 'String'>
+  readonly addressCompany: Prisma.FieldRef<"CRF", 'String'>
+  readonly addressLine1: Prisma.FieldRef<"CRF", 'String'>
+  readonly addressLine2: Prisma.FieldRef<"CRF", 'String'>
+  readonly addressLandmark: Prisma.FieldRef<"CRF", 'String'>
+  readonly addressCity: Prisma.FieldRef<"CRF", 'String'>
+  readonly addressDistrict: Prisma.FieldRef<"CRF", 'String'>
+  readonly addressState: Prisma.FieldRef<"CRF", 'String'>
+  readonly addressPincode: Prisma.FieldRef<"CRF", 'String'>
+  readonly addressCountry: Prisma.FieldRef<"CRF", 'String'>
+  readonly addressGstin: Prisma.FieldRef<"CRF", 'String'>
+  readonly addressValidatedAt: Prisma.FieldRef<"CRF", 'DateTime'>
+  readonly souvenirTotalAtApproval: Prisma.FieldRef<"CRF", 'Decimal'>
+  readonly approvedAt: Prisma.FieldRef<"CRF", 'DateTime'>
+  readonly itemsChangedAt: Prisma.FieldRef<"CRF", 'DateTime'>
+  readonly closedAt: Prisma.FieldRef<"CRF", 'DateTime'>
+  readonly created_by_id: Prisma.FieldRef<"CRF", 'String'>
+  readonly updated_by_id: Prisma.FieldRef<"CRF", 'String'>
   readonly created_at: Prisma.FieldRef<"CRF", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"CRF", 'DateTime'>
 }
@@ -1351,6 +3879,44 @@ export type CRFDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
+ * CRF.recipientUser
+ */
+export type CRF$recipientUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * CRF.recipientContact
+ */
+export type CRF$recipientContactArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BusinessPartnerContact
+   */
+  select?: Prisma.BusinessPartnerContactSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BusinessPartnerContact
+   */
+  omit?: Prisma.BusinessPartnerContactOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BusinessPartnerContactInclude<ExtArgs> | null
+  where?: Prisma.BusinessPartnerContactWhereInput
+}
+
+/**
  * CRF.lineItems
  */
 export type CRF$lineItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1372,6 +3938,49 @@ export type CRF$lineItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.LineItemScalarFieldEnum | Prisma.LineItemScalarFieldEnum[]
+}
+
+/**
+ * CRF.items
+ */
+export type CRF$itemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CrfItem
+   */
+  select?: Prisma.CrfItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CrfItem
+   */
+  omit?: Prisma.CrfItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CrfItemInclude<ExtArgs> | null
+  where?: Prisma.CrfItemWhereInput
+  orderBy?: Prisma.CrfItemOrderByWithRelationInput | Prisma.CrfItemOrderByWithRelationInput[]
+  cursor?: Prisma.CrfItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CrfItemScalarFieldEnum | Prisma.CrfItemScalarFieldEnum[]
+}
+
+/**
+ * CRF.order
+ */
+export type CRF$orderArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CrfOrder
+   */
+  select?: Prisma.CrfOrderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CrfOrder
+   */
+  omit?: Prisma.CrfOrderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CrfOrderInclude<ExtArgs> | null
+  where?: Prisma.CrfOrderWhereInput
 }
 
 /**

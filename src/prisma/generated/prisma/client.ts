@@ -195,6 +195,16 @@ export type EPF = Prisma.EPFModel
  */
 export type CRF = Prisma.CRFModel
 /**
+ * Model CrfItem
+ * 
+ */
+export type CrfItem = Prisma.CrfItemModel
+/**
+ * Model CrfOrder
+ * 
+ */
+export type CrfOrder = Prisma.CrfOrderModel
+/**
  * Model LineItem
  * 
  */

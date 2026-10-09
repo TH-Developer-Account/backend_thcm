@@ -36,7 +36,11 @@
       "@dia/*": ["./src/modules/dia/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/modules/map/crf/shopify/thcmShop.ts"
+  ],
   "exclude": [
     "node_modules",
     "dist",

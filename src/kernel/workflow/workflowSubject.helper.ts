@@ -22,6 +22,7 @@ import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import { activeWorkflowInclude } from "@shared/utils/contants";
 import { notifyGuestOfClarification } from "@medi-claim/mediclaim.helper";
+import { runPostApprovalStockCheckForEpc } from "@modules/map/crf/services/crfOrder.services";
 
 import {
   Prisma,
@@ -211,6 +212,32 @@ export async function runPostClarifyHook(
 ): Promise<void> {
   const hook = postClarifyHooks[subjectType];
   if (hook) await hook(tx, subjectId);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// postFinalApprovalHooks  ✅ NEW
+//
+// Deliberately NOT shaped like postClarifyHooks above (no `tx` parameter).
+// CRF's hook calls the THCM Shopify API — a live external HTTP call must
+// never run inside a transaction that's still holding row locks on
+// WorkflowInstance/StageInstance, so this can only be called from
+// approveStage's post-commit section (the same seam its own
+// "Notify — strictly after the transaction has committed" block already
+// uses), never from inside the approving transaction itself.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const postFinalApprovalHooks: Partial<
+  Record<WorkflowSubjectType, (subjectId: string) => Promise<void>>
+> = {
+  EVENT_PROPOSAL: (subjectId) => runPostApprovalStockCheckForEpc(subjectId),
+};
+
+export async function runPostFinalApprovalHook(
+  subjectType: WorkflowSubjectType,
+  subjectId: string,
+): Promise<void> {
+  const hook = postFinalApprovalHooks[subjectType];
+  if (hook) await hook(subjectId);
 }
 
 // Subject-specific action name + status for the "resubmitted" transition —

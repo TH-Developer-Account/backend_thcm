@@ -218,6 +218,65 @@ export const FuelType = {
 export type FuelType = (typeof FuelType)[keyof typeof FuelType]
 
 
+export const CrfStatus = {
+  OPEN: 'OPEN',
+  APPROVED: 'APPROVED',
+  STOCK_SHORTFALL: 'STOCK_SHORTFALL',
+  ORDER_FAILED: 'ORDER_FAILED',
+  ORDERED: 'ORDERED',
+  CANCELLED: 'CANCELLED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type CrfStatus = (typeof CrfStatus)[keyof typeof CrfStatus]
+
+
+export const CrfRecipientType = {
+  SELF: 'SELF',
+  EMPLOYEE: 'EMPLOYEE',
+  DEALER_CONTACT: 'DEALER_CONTACT',
+  OTHER: 'OTHER'
+} as const
+
+export type CrfRecipientType = (typeof CrfRecipientType)[keyof typeof CrfRecipientType]
+
+
+export const CrfAddressSource = {
+  MANUAL: 'MANUAL',
+  USER_PROFILE: 'USER_PROFILE',
+  BUSINESS_PARTNER_ADDRESS: 'BUSINESS_PARTNER_ADDRESS'
+} as const
+
+export type CrfAddressSource = (typeof CrfAddressSource)[keyof typeof CrfAddressSource]
+
+
+export const CrfItemSource = {
+  CATALOG: 'CATALOG',
+  SHOPIFY: 'SHOPIFY'
+} as const
+
+export type CrfItemSource = (typeof CrfItemSource)[keyof typeof CrfItemSource]
+
+
+export const CrfItemStatus = {
+  REQUESTED: 'REQUESTED',
+  OUT_OF_STOCK: 'OUT_OF_STOCK',
+  REMOVED: 'REMOVED',
+  ORDERED: 'ORDERED',
+  DEBITED: 'DEBITED'
+} as const
+
+export type CrfItemStatus = (typeof CrfItemStatus)[keyof typeof CrfItemStatus]
+
+
+export const CrfOrderStatus = {
+  ACTIVE: 'ACTIVE',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type CrfOrderStatus = (typeof CrfOrderStatus)[keyof typeof CrfOrderStatus]
+
+
 export const BusinessPartnerOfficeType = {
   HEAD_OFFICE: 'HEAD_OFFICE',
   BRANCH_OFFICE: 'BRANCH_OFFICE'

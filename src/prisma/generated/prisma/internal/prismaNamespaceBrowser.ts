@@ -82,6 +82,8 @@ export const ModelName = {
   ProductMaster: 'ProductMaster',
   EPF: 'EPF',
   CRF: 'CRF',
+  CrfItem: 'CrfItem',
+  CrfOrder: 'CrfOrder',
   LineItem: 'LineItem',
   Comment: 'Comment',
   Operator: 'Operator',
@@ -554,11 +556,88 @@ export type EPFScalarFieldEnum = (typeof EPFScalarFieldEnum)[keyof typeof EPFSca
 export const CRFScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
+  crfNumber: 'crfNumber',
+  status: 'status',
+  recipientType: 'recipientType',
+  recipientName: 'recipientName',
+  recipientPhone: 'recipientPhone',
+  recipientEmail: 'recipientEmail',
+  recipientOrganisation: 'recipientOrganisation',
+  recipientUserId: 'recipientUserId',
+  recipientContactId: 'recipientContactId',
+  deliveryInstructions: 'deliveryInstructions',
+  requiredByDate: 'requiredByDate',
+  addressSourceType: 'addressSourceType',
+  addressSourceId: 'addressSourceId',
+  addressCompany: 'addressCompany',
+  addressLine1: 'addressLine1',
+  addressLine2: 'addressLine2',
+  addressLandmark: 'addressLandmark',
+  addressCity: 'addressCity',
+  addressDistrict: 'addressDistrict',
+  addressState: 'addressState',
+  addressPincode: 'addressPincode',
+  addressCountry: 'addressCountry',
+  addressGstin: 'addressGstin',
+  addressValidatedAt: 'addressValidatedAt',
+  souvenirTotalAtApproval: 'souvenirTotalAtApproval',
+  approvedAt: 'approvedAt',
+  itemsChangedAt: 'itemsChangedAt',
+  closedAt: 'closedAt',
+  created_by_id: 'created_by_id',
+  updated_by_id: 'updated_by_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
 
 export type CRFScalarFieldEnum = (typeof CRFScalarFieldEnum)[keyof typeof CRFScalarFieldEnum]
+
+
+export const CrfItemScalarFieldEnum = {
+  id: 'id',
+  crfId: 'crfId',
+  category: 'category',
+  source: 'source',
+  sortOrder: 'sortOrder',
+  productId: 'productId',
+  quantity: 'quantity',
+  rate: 'rate',
+  amount: 'amount',
+  width: 'width',
+  height: 'height',
+  unit: 'unit',
+  sku: 'sku',
+  requestedQty: 'requestedQty',
+  qtyAtApproval: 'qtyAtApproval',
+  status: 'status',
+  removedAt: 'removedAt',
+  removedById: 'removedById',
+  deliveredAt: 'deliveredAt',
+  deliveredById: 'deliveredById',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CrfItemScalarFieldEnum = (typeof CrfItemScalarFieldEnum)[keyof typeof CrfItemScalarFieldEnum]
+
+
+export const CrfOrderScalarFieldEnum = {
+  id: 'id',
+  crfId: 'crfId',
+  shopifyOrderId: 'shopifyOrderId',
+  totalPrice: 'totalPrice',
+  lines: 'lines',
+  debitNoteAmount: 'debitNoteAmount',
+  status: 'status',
+  cancelledAt: 'cancelledAt',
+  cancelledById: 'cancelledById',
+  cancelReason: 'cancelReason',
+  placedAt: 'placedAt',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CrfOrderScalarFieldEnum = (typeof CrfOrderScalarFieldEnum)[keyof typeof CrfOrderScalarFieldEnum]
 
 
 export const LineItemScalarFieldEnum = {
@@ -1013,6 +1092,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
