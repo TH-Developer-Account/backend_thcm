@@ -14,8 +14,12 @@
  *   - CATALOG (PRINTED_MATERIAL / ARTWORK / today's other non-souvenir
  *     categories) — same shape as the old LineItem: a ProductMaster row,
  *     quantity, rate, computed amount.
- *   - SHOPIFY (SOUVENIR) — sku + requestedQty only. No name, price, image
- *     or stock is ever stored here — that belongs to Shopify, not MAP.
+ *   - SHOPIFY (SOUVENIR) — sku + requestedQty, plus a client-supplied
+ *     `amount` snapshot kept for audit only (what the line was worth at
+ *     request time). No name, image, or live stock is ever stored here —
+ *     that belongs to Shopify, not MAP — and `amount` is never recomputed
+ *     from a live Shopify price or used in any budget/debit-note decision;
+ *     those still re-check Shopify directly (see crfOrder.service.ts).
  *
  * Which shape an input item is follows from which fields it has
  * (`productId` → catalog, `sku` → shopify) rather than a client-supplied
@@ -34,7 +38,7 @@ import {
   assertCrfAccess,
   computeCrfPermissions,
   EPC_EDITABLE_STATUSES,
-} from "@modules/map/crf/crfAccess.helper";
+} from "@map/crf/crfAccess.helper";
 
 type Actor = AccessActor & { id: string };
 
@@ -53,6 +57,15 @@ export type CatalogCrfItemInput = {
 export type ShopifyCrfItemInput = {
   sku: string;
   requestedQty: number;
+  /**
+   * Client-computed line value (price × requestedQty) at request time.
+   * Trusted as given — never re-derived from a fresh Shopify price lookup
+   * here — and kept only as an audit/historical record of what the line
+   * was worth when requested. Not used for souvenirTotalAtApproval, the
+   * stock-shortfall budget cap, or the debit-note calculation, all of
+   * which keep re-checking Shopify directly.
+   */
+  amount: number;
 };
 
 export type CrfItemInput = CatalogCrfItemInput | ShopifyCrfItemInput;
@@ -133,12 +146,16 @@ async function buildCrfItemRows(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// buildShopifyItemRows — the sku/requestedQty validation for souvenir lines,
-// pulled out on its own (not just inlined in buildCrfItemRows above) because
-// crfOrder.service.ts's shortfall-swap flow needs to replace *only* the
-// souvenir lines of a CRF, independently of catalog lines. Both call sites
-// go through this one validator rather than each re-implementing "sku
-// required, requestedQty a positive whole number".
+// buildShopifyItemRows — the sku/requestedQty/amount validation for souvenir
+// lines, pulled out on its own (not just inlined in buildCrfItemRows above)
+// because crfOrder.service.ts's shortfall-swap flow needs to replace *only*
+// the souvenir lines of a CRF, independently of catalog lines. Both call
+// sites go through this one validator rather than each re-implementing "sku
+// required, requestedQty a positive whole number, amount a sane number".
+//
+// `amount` is trusted as given (no Shopify price re-check) — it is only ever
+// a historical record of what the line was worth when requested, so the
+// check here is a sanity bound (finite, non-negative), not a price lookup.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function buildShopifyItemRows(
@@ -159,12 +176,21 @@ export function buildShopifyItemRows(
       );
     }
 
+    const amount = Number(item.amount);
+    if (!Number.isFinite(amount) || amount < 0) {
+      throw new ApiError(
+        400,
+        "amount must be a non-negative number for a souvenir line",
+      );
+    }
+
     return {
       crfId,
       category: "SOUVENIR" as const,
       source: "SHOPIFY" as const,
       sku,
       requestedQty,
+      amount,
     };
   });
 }
