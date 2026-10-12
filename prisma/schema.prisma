@@ -838,10 +838,25 @@ model EPF {
 //
 // Key decisions (see claude/decisions-and-learnings.md for the discussion):
 //  - CRF rides the EPC's own workflow; it has no approval flow of its own.
-//  - No stock/catalog data (name, price, image, live stock) from Shopify is
-//    ever persisted — CrfItem(source=SHOPIFY) stores only sku + requestedQty.
-//    Confirmed order facts (what Shopify actually charged) ARE persisted on
-//    CrfOrder, since that's MAP's own transaction record, not live catalog data.
+//  - CrfItem(source=SHOPIFY) stores sku + requestedQty, plus a client-
+//    supplied `amount` kept as an audit/historical snapshot of what the
+//    line was worth at request time. `amount` is never re-derived from a
+//    live Shopify price and is never used to decide the stock-shortfall
+//    budget cap or the debit note — those keep re-checking Shopify
+//    directly. Confirmed order facts (what Shopify actually charged) ARE
+//    persisted on CrfOrder, since that's MAP's own transaction record, not
+//    live catalog data.
+//  - REVISED DECISION: title/variantTitle/imageUrl/rate (unit price) ARE
+//    now persisted on CrfItem for SHOPIFY lines too (previously none of a
+//    souvenir's display fields were stored — only sku/requestedQty/amount
+//    — which meant reopening a saved CRF showed printed-material/artwork
+//    lines correctly but souvenir lines with only sku/qty/amount, no name
+//    or image). These four fields are the same kind of trusted
+//    client-supplied snapshot as `amount` above (validated for sanity,
+//    never re-derived from a live Shopify lookup) — see
+//    buildShopifyItemRows in crf.service.ts. compareAtPrice and gstRate
+//    remain intentionally NOT persisted — still display-only, backfilled
+//    live each time (see backfillSouvenirDisplayFields in core/mapper.ts).
 //  - Recipient + shipping/billing address are collected AFTER EPC approval,
 //    right before the proposer places the order — not during drafting.
 //  - Stock check (post-approval) and order placement (on "Place order") are
@@ -921,7 +936,12 @@ model CrfItem {
   source    CrfItemSource
   sortOrder Int               @default(0)
 
-  // CATALOG lines (printed material / artwork) — same shape as today's LineItem
+  // CATALOG lines (printed material / artwork) — same shape as today's LineItem.
+  // `amount`/`rate` are shared with SHOPIFY lines below: CATALOG rows get
+  // them computed server-side from ProductMaster.unitRate; SHOPIFY rows get
+  // them from the client's trusted request-time snapshot (see
+  // buildShopifyItemRows in crf.service.ts) — never a live Shopify price
+  // re-check either way.
   productId String?
   product   ProductMaster? @relation(fields: [productId], references: [id])
   quantity  Decimal?       @db.Decimal(10, 2)
@@ -931,9 +951,16 @@ model CrfItem {
   height    String?
   unit      String?
 
-  // SHOPIFY lines (souvenirs) — intentionally minimal: no name/price/stock stored, ever
+  // SHOPIFY lines (souvenirs) — identity + a trusted display-snapshot taken
+  // at request time (title/variantTitle/imageUrl, plus `rate` above as unit
+  // price). Deliberately still NOT stored: compareAtPrice, gstRate, live
+  // stock — those stay display-only, backfilled from a live catalog lookup
+  // each time (see backfillSouvenirDisplayFields, core/mapper.ts).
   sku          String?
   requestedQty Int?
+  title        String?  // product title at request time, e.g. "Tata Hitachi Cap"
+  variantTitle String?  // e.g. "M / Orange" — null for single-variant products
+  imageUrl     String?
 
   qtyAtApproval Int?   // frozen at EPC final approval
 
