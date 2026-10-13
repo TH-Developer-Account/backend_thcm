@@ -13,14 +13,31 @@ import ApiError from "@shared/utils/apiError";
 //   "lineItems": [
 //     {
 //       "productId": "uuid",
-//       "quantity": 2
+//       "amount": 15000
 //     },
 //     {
 //       "productId": "uuid",
-//       "quantity": 5
+//       "amount": 42000
 //     }
 //   ]
 // }
+
+// Overhead line-item amount: the proposer types a single ₹ figure per line
+// (what this overhead actually costs) — it is never quantity × a catalog
+// rate. ProductMaster.unitRate was only ever a placeholder for these rows,
+// so it is no longer read here at all. This mirrors the same trusted
+// client-snapshot pattern crf.service.ts's buildShopifyItemRows uses for
+// souvenir `amount` — validated for sanity, never recomputed server-side.
+const toValidatedAmount = (value: unknown): number => {
+  const amount = Number(value);
+  if (!Number.isFinite(amount) || amount < 0) {
+    throw new ApiError(
+      400,
+      "amount must be a non-negative number for an overhead line",
+    );
+  }
+  return amount;
+};
 
 export const createEPF = async (
   req: Request,
@@ -47,7 +64,7 @@ export const createEPF = async (
         },
       });
 
-      // 2️⃣ Fetch product rates
+      // 2️⃣ Validate products exist (identity only — no rate lookup)
       const products = await tx.productMaster.findMany({
         where: {
           id: {
@@ -58,22 +75,21 @@ export const createEPF = async (
 
       const productMap = new Map(products.map((p) => [p.id, p]));
 
-      // 3️⃣ Prepare line items
+      // 3️⃣ Prepare line items — amount comes straight from the proposer's
+      // input; there is no quantity or catalog rate behind an overhead line.
       const lineItemsData = lineItems.map((item: Record<string, string>) => {
         const product = productMap.get(item.productId);
 
         if (!product) throw new ApiError(400, "Invalid product");
 
-        const rate = Number(product.unitRate);
-        const quantity = Number(item.quantity);
-        const amount = quantity * rate;
+        const amount = toValidatedAmount(item.amount);
 
         return {
           epfId: epf.id,
           crfId: null, // ✅ important
           productId: product.id,
-          quantity,
-          rate,
+          quantity: 1,
+          rate: null,
           amount,
         };
       });
@@ -120,11 +136,11 @@ export const createEPF = async (
 //   "lineItems": [
 //     {
 //       "productId": "uuid1",
-//       "quantity": 3
+//       "amount": 18000
 //     },
 //     {
 //       "productId": "uuid2",
-//       "quantity": 10
+//       "amount": 51000
 //     }
 //   ]
 // }
@@ -157,7 +173,7 @@ export const updateEPF = async (
         where: { epfId: epfId as string },
       });
 
-      // 3️⃣ Fetch products
+      // 3️⃣ Validate products exist (identity only — no rate lookup)
       const products = await tx.productMaster.findMany({
         where: {
           id: {
@@ -168,22 +184,21 @@ export const updateEPF = async (
 
       const productMap = new Map(products.map((p) => [p.id, p]));
 
-      // 4️⃣ Recreate line items
+      // 4️⃣ Recreate line items — amount comes straight from the proposer's
+      // input; there is no quantity or catalog rate behind an overhead line.
       const newItems = lineItems.map((item: Record<string, string>) => {
         const product = productMap.get(item.productId);
 
         if (!product) throw new ApiError(400, "Invalid product");
 
-        const quantity = Number(item.quantity);
-        const rate = Number(product.unitRate);
-        const amount = quantity * rate;
+        const amount = toValidatedAmount(item.amount);
 
         return {
           epfId,
           crfId: null,
           productId: product.id,
-          quantity,
-          rate,
+          quantity: 1,
+          rate: null,
           amount,
         };
       });

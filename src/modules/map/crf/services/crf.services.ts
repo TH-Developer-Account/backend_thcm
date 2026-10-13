@@ -16,10 +16,15 @@
  *     quantity, rate, computed amount.
  *   - SHOPIFY (SOUVENIR) — sku + requestedQty, plus a client-supplied
  *     `amount` snapshot kept for audit only (what the line was worth at
- *     request time). No name, image, or live stock is ever stored here —
- *     that belongs to Shopify, not MAP — and `amount` is never recomputed
- *     from a live Shopify price or used in any budget/debit-note decision;
- *     those still re-check Shopify directly (see crfOrder.service.ts).
+ *     request time), and, as of this change, title/variantTitle/imageUrl/
+ *     rate — a trusted display snapshot so a reopened CRF shows the
+ *     souvenir's name/image/unit price without a live catalog round-trip.
+ *     compareAtPrice/gstRate remain NOT stored — still display-only,
+ *     backfilled live each time (see core/mapper.ts's
+ *     backfillSouvenirDisplayFields on the frontend). None of these fields
+ *     are ever recomputed from a live Shopify price or used in any
+ *     budget/debit-note decision; those still re-check Shopify directly
+ *     (see crfOrder.service.ts).
  *
  * Which shape an input item is follows from which fields it has
  * (`productId` → catalog, `sku` → shopify) rather than a client-supplied
@@ -66,6 +71,20 @@ export type ShopifyCrfItemInput = {
    * which keep re-checking Shopify directly.
    */
   amount: number;
+  /**
+   * Display-snapshot fields, trusted the same way as `amount` above
+   * (validated for sanity, never re-derived from a live Shopify lookup).
+   * Persisted so a reopened CRF can show the souvenir's name/image/unit
+   * price without a live catalog round-trip — unlike compareAtPrice/
+   * gstRate, which stay display-only and are backfilled live each time
+   * (see core/mapper.ts's backfillSouvenirDisplayFields on the frontend).
+   */
+  title?: string;
+  variantTitle?: string;
+  imageUrl?: string;
+  /** Unit price (variant.price) at request time — stored in CrfItem.rate,
+   *  the same column CATALOG lines use. */
+  rate: number;
 };
 
 export type CrfItemInput = CatalogCrfItemInput | ShopifyCrfItemInput;
@@ -146,16 +165,18 @@ async function buildCrfItemRows(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// buildShopifyItemRows — the sku/requestedQty/amount validation for souvenir
-// lines, pulled out on its own (not just inlined in buildCrfItemRows above)
-// because crfOrder.service.ts's shortfall-swap flow needs to replace *only*
-// the souvenir lines of a CRF, independently of catalog lines. Both call
-// sites go through this one validator rather than each re-implementing "sku
-// required, requestedQty a positive whole number, amount a sane number".
+// buildShopifyItemRows — the sku/requestedQty/amount(+display snapshot)
+// validation for souvenir lines, pulled out on its own (not just inlined in
+// buildCrfItemRows above) because crfOrder.service.ts's shortfall-swap flow
+// needs to replace *only* the souvenir lines of a CRF, independently of
+// catalog lines. Both call sites go through this one validator rather than
+// each re-implementing "sku required, requestedQty a positive whole number,
+// amount/rate a sane number".
 //
-// `amount` is trusted as given (no Shopify price re-check) — it is only ever
-// a historical record of what the line was worth when requested, so the
-// check here is a sanity bound (finite, non-negative), not a price lookup.
+// `amount`/`rate`/`title`/`variantTitle`/`imageUrl` are all trusted as given
+// (no Shopify price or catalog re-check) — they are only ever a historical
+// record of what the line looked like when requested, so the checks here
+// are sanity bounds, not a price/catalog lookup.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function buildShopifyItemRows(
@@ -184,6 +205,14 @@ export function buildShopifyItemRows(
       );
     }
 
+    const rate = Number(item.rate);
+    if (!Number.isFinite(rate) || rate < 0) {
+      throw new ApiError(
+        400,
+        "rate must be a non-negative number for a souvenir line",
+      );
+    }
+
     return {
       crfId,
       category: "SOUVENIR" as const,
@@ -191,6 +220,10 @@ export function buildShopifyItemRows(
       sku,
       requestedQty,
       amount,
+      rate,
+      title: item.title?.trim() || null,
+      variantTitle: item.variantTitle?.trim() || null,
+      imageUrl: item.imageUrl?.trim() || null,
     };
   });
 }

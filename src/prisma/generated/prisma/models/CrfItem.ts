@@ -59,6 +59,9 @@ export type CrfItemMinAggregateOutputType = {
   unit: string | null
   sku: string | null
   requestedQty: number | null
+  title: string | null
+  variantTitle: string | null
+  imageUrl: string | null
   qtyAtApproval: number | null
   status: $Enums.CrfItemStatus | null
   removedAt: Date | null
@@ -84,6 +87,9 @@ export type CrfItemMaxAggregateOutputType = {
   unit: string | null
   sku: string | null
   requestedQty: number | null
+  title: string | null
+  variantTitle: string | null
+  imageUrl: string | null
   qtyAtApproval: number | null
   status: $Enums.CrfItemStatus | null
   removedAt: Date | null
@@ -109,6 +115,9 @@ export type CrfItemCountAggregateOutputType = {
   unit: number
   sku: number
   requestedQty: number
+  title: number
+  variantTitle: number
+  imageUrl: number
   qtyAtApproval: number
   status: number
   removedAt: number
@@ -154,6 +163,9 @@ export type CrfItemMinAggregateInputType = {
   unit?: true
   sku?: true
   requestedQty?: true
+  title?: true
+  variantTitle?: true
+  imageUrl?: true
   qtyAtApproval?: true
   status?: true
   removedAt?: true
@@ -179,6 +191,9 @@ export type CrfItemMaxAggregateInputType = {
   unit?: true
   sku?: true
   requestedQty?: true
+  title?: true
+  variantTitle?: true
+  imageUrl?: true
   qtyAtApproval?: true
   status?: true
   removedAt?: true
@@ -204,6 +219,9 @@ export type CrfItemCountAggregateInputType = {
   unit?: true
   sku?: true
   requestedQty?: true
+  title?: true
+  variantTitle?: true
+  imageUrl?: true
   qtyAtApproval?: true
   status?: true
   removedAt?: true
@@ -316,6 +334,9 @@ export type CrfItemGroupByOutputType = {
   unit: string | null
   sku: string | null
   requestedQty: number | null
+  title: string | null
+  variantTitle: string | null
+  imageUrl: string | null
   qtyAtApproval: number | null
   status: $Enums.CrfItemStatus
   removedAt: Date | null
@@ -364,6 +385,9 @@ export type CrfItemWhereInput = {
   unit?: Prisma.StringNullableFilter<"CrfItem"> | string | null
   sku?: Prisma.StringNullableFilter<"CrfItem"> | string | null
   requestedQty?: Prisma.IntNullableFilter<"CrfItem"> | number | null
+  title?: Prisma.StringNullableFilter<"CrfItem"> | string | null
+  variantTitle?: Prisma.StringNullableFilter<"CrfItem"> | string | null
+  imageUrl?: Prisma.StringNullableFilter<"CrfItem"> | string | null
   qtyAtApproval?: Prisma.IntNullableFilter<"CrfItem"> | number | null
   status?: Prisma.EnumCrfItemStatusFilter<"CrfItem"> | $Enums.CrfItemStatus
   removedAt?: Prisma.DateTimeNullableFilter<"CrfItem"> | Date | string | null
@@ -391,6 +415,9 @@ export type CrfItemOrderByWithRelationInput = {
   unit?: Prisma.SortOrderInput | Prisma.SortOrder
   sku?: Prisma.SortOrderInput | Prisma.SortOrder
   requestedQty?: Prisma.SortOrderInput | Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
+  variantTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   qtyAtApproval?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   removedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -421,6 +448,9 @@ export type CrfItemWhereUniqueInput = Prisma.AtLeast<{
   unit?: Prisma.StringNullableFilter<"CrfItem"> | string | null
   sku?: Prisma.StringNullableFilter<"CrfItem"> | string | null
   requestedQty?: Prisma.IntNullableFilter<"CrfItem"> | number | null
+  title?: Prisma.StringNullableFilter<"CrfItem"> | string | null
+  variantTitle?: Prisma.StringNullableFilter<"CrfItem"> | string | null
+  imageUrl?: Prisma.StringNullableFilter<"CrfItem"> | string | null
   qtyAtApproval?: Prisma.IntNullableFilter<"CrfItem"> | number | null
   status?: Prisma.EnumCrfItemStatusFilter<"CrfItem"> | $Enums.CrfItemStatus
   removedAt?: Prisma.DateTimeNullableFilter<"CrfItem"> | Date | string | null
@@ -448,6 +478,9 @@ export type CrfItemOrderByWithAggregationInput = {
   unit?: Prisma.SortOrderInput | Prisma.SortOrder
   sku?: Prisma.SortOrderInput | Prisma.SortOrder
   requestedQty?: Prisma.SortOrderInput | Prisma.SortOrder
+  title?: Prisma.SortOrderInput | Prisma.SortOrder
+  variantTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   qtyAtApproval?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   removedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -481,6 +514,9 @@ export type CrfItemScalarWhereWithAggregatesInput = {
   unit?: Prisma.StringNullableWithAggregatesFilter<"CrfItem"> | string | null
   sku?: Prisma.StringNullableWithAggregatesFilter<"CrfItem"> | string | null
   requestedQty?: Prisma.IntNullableWithAggregatesFilter<"CrfItem"> | number | null
+  title?: Prisma.StringNullableWithAggregatesFilter<"CrfItem"> | string | null
+  variantTitle?: Prisma.StringNullableWithAggregatesFilter<"CrfItem"> | string | null
+  imageUrl?: Prisma.StringNullableWithAggregatesFilter<"CrfItem"> | string | null
   qtyAtApproval?: Prisma.IntNullableWithAggregatesFilter<"CrfItem"> | number | null
   status?: Prisma.EnumCrfItemStatusWithAggregatesFilter<"CrfItem"> | $Enums.CrfItemStatus
   removedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CrfItem"> | Date | string | null
@@ -504,6 +540,9 @@ export type CrfItemCreateInput = {
   unit?: string | null
   sku?: string | null
   requestedQty?: number | null
+  title?: string | null
+  variantTitle?: string | null
+  imageUrl?: string | null
   qtyAtApproval?: number | null
   status?: $Enums.CrfItemStatus
   removedAt?: Date | string | null
@@ -531,6 +570,9 @@ export type CrfItemUncheckedCreateInput = {
   unit?: string | null
   sku?: string | null
   requestedQty?: number | null
+  title?: string | null
+  variantTitle?: string | null
+  imageUrl?: string | null
   qtyAtApproval?: number | null
   status?: $Enums.CrfItemStatus
   removedAt?: Date | string | null
@@ -554,6 +596,9 @@ export type CrfItemUpdateInput = {
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variantTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qtyAtApproval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumCrfItemStatusFieldUpdateOperationsInput | $Enums.CrfItemStatus
   removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -581,6 +626,9 @@ export type CrfItemUncheckedUpdateInput = {
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variantTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qtyAtApproval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumCrfItemStatusFieldUpdateOperationsInput | $Enums.CrfItemStatus
   removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -606,6 +654,9 @@ export type CrfItemCreateManyInput = {
   unit?: string | null
   sku?: string | null
   requestedQty?: number | null
+  title?: string | null
+  variantTitle?: string | null
+  imageUrl?: string | null
   qtyAtApproval?: number | null
   status?: $Enums.CrfItemStatus
   removedAt?: Date | string | null
@@ -629,6 +680,9 @@ export type CrfItemUpdateManyMutationInput = {
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variantTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qtyAtApproval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumCrfItemStatusFieldUpdateOperationsInput | $Enums.CrfItemStatus
   removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -654,6 +708,9 @@ export type CrfItemUncheckedUpdateManyInput = {
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variantTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qtyAtApproval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumCrfItemStatusFieldUpdateOperationsInput | $Enums.CrfItemStatus
   removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -689,6 +746,9 @@ export type CrfItemCountOrderByAggregateInput = {
   unit?: Prisma.SortOrder
   sku?: Prisma.SortOrder
   requestedQty?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  variantTitle?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   qtyAtApproval?: Prisma.SortOrder
   status?: Prisma.SortOrder
   removedAt?: Prisma.SortOrder
@@ -723,6 +783,9 @@ export type CrfItemMaxOrderByAggregateInput = {
   unit?: Prisma.SortOrder
   sku?: Prisma.SortOrder
   requestedQty?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  variantTitle?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   qtyAtApproval?: Prisma.SortOrder
   status?: Prisma.SortOrder
   removedAt?: Prisma.SortOrder
@@ -748,6 +811,9 @@ export type CrfItemMinOrderByAggregateInput = {
   unit?: Prisma.SortOrder
   sku?: Prisma.SortOrder
   requestedQty?: Prisma.SortOrder
+  title?: Prisma.SortOrder
+  variantTitle?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   qtyAtApproval?: Prisma.SortOrder
   status?: Prisma.SortOrder
   removedAt?: Prisma.SortOrder
@@ -872,6 +938,9 @@ export type CrfItemCreateWithoutProductInput = {
   unit?: string | null
   sku?: string | null
   requestedQty?: number | null
+  title?: string | null
+  variantTitle?: string | null
+  imageUrl?: string | null
   qtyAtApproval?: number | null
   status?: $Enums.CrfItemStatus
   removedAt?: Date | string | null
@@ -897,6 +966,9 @@ export type CrfItemUncheckedCreateWithoutProductInput = {
   unit?: string | null
   sku?: string | null
   requestedQty?: number | null
+  title?: string | null
+  variantTitle?: string | null
+  imageUrl?: string | null
   qtyAtApproval?: number | null
   status?: $Enums.CrfItemStatus
   removedAt?: Date | string | null
@@ -951,6 +1023,9 @@ export type CrfItemScalarWhereInput = {
   unit?: Prisma.StringNullableFilter<"CrfItem"> | string | null
   sku?: Prisma.StringNullableFilter<"CrfItem"> | string | null
   requestedQty?: Prisma.IntNullableFilter<"CrfItem"> | number | null
+  title?: Prisma.StringNullableFilter<"CrfItem"> | string | null
+  variantTitle?: Prisma.StringNullableFilter<"CrfItem"> | string | null
+  imageUrl?: Prisma.StringNullableFilter<"CrfItem"> | string | null
   qtyAtApproval?: Prisma.IntNullableFilter<"CrfItem"> | number | null
   status?: Prisma.EnumCrfItemStatusFilter<"CrfItem"> | $Enums.CrfItemStatus
   removedAt?: Prisma.DateTimeNullableFilter<"CrfItem"> | Date | string | null
@@ -974,6 +1049,9 @@ export type CrfItemCreateWithoutCrfInput = {
   unit?: string | null
   sku?: string | null
   requestedQty?: number | null
+  title?: string | null
+  variantTitle?: string | null
+  imageUrl?: string | null
   qtyAtApproval?: number | null
   status?: $Enums.CrfItemStatus
   removedAt?: Date | string | null
@@ -999,6 +1077,9 @@ export type CrfItemUncheckedCreateWithoutCrfInput = {
   unit?: string | null
   sku?: string | null
   requestedQty?: number | null
+  title?: string | null
+  variantTitle?: string | null
+  imageUrl?: string | null
   qtyAtApproval?: number | null
   status?: $Enums.CrfItemStatus
   removedAt?: Date | string | null
@@ -1049,6 +1130,9 @@ export type CrfItemCreateManyProductInput = {
   unit?: string | null
   sku?: string | null
   requestedQty?: number | null
+  title?: string | null
+  variantTitle?: string | null
+  imageUrl?: string | null
   qtyAtApproval?: number | null
   status?: $Enums.CrfItemStatus
   removedAt?: Date | string | null
@@ -1072,6 +1156,9 @@ export type CrfItemUpdateWithoutProductInput = {
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variantTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qtyAtApproval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumCrfItemStatusFieldUpdateOperationsInput | $Enums.CrfItemStatus
   removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1097,6 +1184,9 @@ export type CrfItemUncheckedUpdateWithoutProductInput = {
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variantTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qtyAtApproval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumCrfItemStatusFieldUpdateOperationsInput | $Enums.CrfItemStatus
   removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1121,6 +1211,9 @@ export type CrfItemUncheckedUpdateManyWithoutProductInput = {
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variantTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qtyAtApproval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumCrfItemStatusFieldUpdateOperationsInput | $Enums.CrfItemStatus
   removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1145,6 +1238,9 @@ export type CrfItemCreateManyCrfInput = {
   unit?: string | null
   sku?: string | null
   requestedQty?: number | null
+  title?: string | null
+  variantTitle?: string | null
+  imageUrl?: string | null
   qtyAtApproval?: number | null
   status?: $Enums.CrfItemStatus
   removedAt?: Date | string | null
@@ -1168,6 +1264,9 @@ export type CrfItemUpdateWithoutCrfInput = {
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variantTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qtyAtApproval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumCrfItemStatusFieldUpdateOperationsInput | $Enums.CrfItemStatus
   removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1193,6 +1292,9 @@ export type CrfItemUncheckedUpdateWithoutCrfInput = {
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variantTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qtyAtApproval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumCrfItemStatusFieldUpdateOperationsInput | $Enums.CrfItemStatus
   removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1217,6 +1319,9 @@ export type CrfItemUncheckedUpdateManyWithoutCrfInput = {
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestedQty?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  variantTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   qtyAtApproval?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumCrfItemStatusFieldUpdateOperationsInput | $Enums.CrfItemStatus
   removedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1244,6 +1349,9 @@ export type CrfItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   unit?: boolean
   sku?: boolean
   requestedQty?: boolean
+  title?: boolean
+  variantTitle?: boolean
+  imageUrl?: boolean
   qtyAtApproval?: boolean
   status?: boolean
   removedAt?: boolean
@@ -1271,6 +1379,9 @@ export type CrfItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   unit?: boolean
   sku?: boolean
   requestedQty?: boolean
+  title?: boolean
+  variantTitle?: boolean
+  imageUrl?: boolean
   qtyAtApproval?: boolean
   status?: boolean
   removedAt?: boolean
@@ -1298,6 +1409,9 @@ export type CrfItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   unit?: boolean
   sku?: boolean
   requestedQty?: boolean
+  title?: boolean
+  variantTitle?: boolean
+  imageUrl?: boolean
   qtyAtApproval?: boolean
   status?: boolean
   removedAt?: boolean
@@ -1325,6 +1439,9 @@ export type CrfItemSelectScalar = {
   unit?: boolean
   sku?: boolean
   requestedQty?: boolean
+  title?: boolean
+  variantTitle?: boolean
+  imageUrl?: boolean
   qtyAtApproval?: boolean
   status?: boolean
   removedAt?: boolean
@@ -1335,7 +1452,7 @@ export type CrfItemSelectScalar = {
   updated_at?: boolean
 }
 
-export type CrfItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "crfId" | "category" | "source" | "sortOrder" | "productId" | "quantity" | "rate" | "amount" | "width" | "height" | "unit" | "sku" | "requestedQty" | "qtyAtApproval" | "status" | "removedAt" | "removedById" | "deliveredAt" | "deliveredById" | "created_at" | "updated_at", ExtArgs["result"]["crfItem"]>
+export type CrfItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "crfId" | "category" | "source" | "sortOrder" | "productId" | "quantity" | "rate" | "amount" | "width" | "height" | "unit" | "sku" | "requestedQty" | "title" | "variantTitle" | "imageUrl" | "qtyAtApproval" | "status" | "removedAt" | "removedById" | "deliveredAt" | "deliveredById" | "created_at" | "updated_at", ExtArgs["result"]["crfItem"]>
 export type CrfItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   crf?: boolean | Prisma.CRFDefaultArgs<ExtArgs>
   product?: boolean | Prisma.CrfItem$productArgs<ExtArgs>
@@ -1370,6 +1487,9 @@ export type $CrfItemPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     unit: string | null
     sku: string | null
     requestedQty: number | null
+    title: string | null
+    variantTitle: string | null
+    imageUrl: string | null
     qtyAtApproval: number | null
     status: $Enums.CrfItemStatus
     removedAt: Date | null
@@ -1817,6 +1937,9 @@ export interface CrfItemFieldRefs {
   readonly unit: Prisma.FieldRef<"CrfItem", 'String'>
   readonly sku: Prisma.FieldRef<"CrfItem", 'String'>
   readonly requestedQty: Prisma.FieldRef<"CrfItem", 'Int'>
+  readonly title: Prisma.FieldRef<"CrfItem", 'String'>
+  readonly variantTitle: Prisma.FieldRef<"CrfItem", 'String'>
+  readonly imageUrl: Prisma.FieldRef<"CrfItem", 'String'>
   readonly qtyAtApproval: Prisma.FieldRef<"CrfItem", 'Int'>
   readonly status: Prisma.FieldRef<"CrfItem", 'CrfItemStatus'>
   readonly removedAt: Prisma.FieldRef<"CrfItem", 'DateTime'>
