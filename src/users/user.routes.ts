@@ -42,7 +42,8 @@ router.get(
 	asyncHandler(getC4CEmployees),
 );
 
-router.get("/", requireAdministrationAccess, asyncHandler(getUsers));
+// router.get("/", requireAdministrationAccess, asyncHandler(getUsers));
+router.get("/", asyncHandler(getUsers));
 router.post("/", requireAdministrationAccess, asyncHandler(createUser));
 
 router.delete(
