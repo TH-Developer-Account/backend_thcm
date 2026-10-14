@@ -3,21 +3,22 @@ import { Router } from "express";
 import asyncHandler from "@shared/middleware/async.middleware";
 import { firstAuthRequestPerDay } from "@shared/middleware/dailyActiveUsers.middleware";
 import {
-  requireAdministrationAccess,
-  requireAuth,
-  requireSuperAdmin,
+	requireAdministrationAccess,
+	requireAuth,
+	requireSuperAdmin,
 } from "@kernel/auth/auth.middleware";
 
 import {
-  createUser,
-  deactivateUser,
-  getByDEmployees,
-  getC4CEmployees,
-  getCurrentUser,
-  getUserById,
-  getUsers,
-  removeUserFromWorkspace,
-  updateUser,
+	createUser,
+	deactivateUser,
+	getByDEmployees,
+	getC4CEmployees,
+	getCurrentUser,
+	getUserById,
+	getUsers,
+	removeUserFromWorkspace,
+	updateCurrentUser,
+	updateUser,
 } from "./user.controller";
 
 const router = Router();
@@ -26,25 +27,29 @@ router.use(requireAuth);
 router.use(firstAuthRequestPerDay);
 
 router.get("/me", asyncHandler(getCurrentUser));
+// Must stay above PATCH /:id, otherwise "me" is captured as an :id and the
+// super-admin-only update runs instead.
+router.patch("/me", asyncHandler(updateCurrentUser));
 
 router.get(
-  "/byd-employees",
-  requireAdministrationAccess,
-  asyncHandler(getByDEmployees),
+	"/byd-employees",
+	requireAdministrationAccess,
+	asyncHandler(getByDEmployees),
 );
 router.get(
-  "/c4c-employees",
-  requireAdministrationAccess,
-  asyncHandler(getC4CEmployees),
+	"/c4c-employees",
+	requireAdministrationAccess,
+	asyncHandler(getC4CEmployees),
 );
 
-router.get("/", requireAdministrationAccess, asyncHandler(getUsers));
+// router.get("/", requireAdministrationAccess, asyncHandler(getUsers));
+router.get("/", asyncHandler(getUsers));
 router.post("/", requireAdministrationAccess, asyncHandler(createUser));
 
 router.delete(
-  "/workspace-users/:userId",
-  requireSuperAdmin,
-  asyncHandler(removeUserFromWorkspace),
+	"/workspace-users/:userId",
+	requireSuperAdmin,
+	asyncHandler(removeUserFromWorkspace),
 );
 
 router.get("/:id", requireAdministrationAccess, asyncHandler(getUserById));

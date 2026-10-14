@@ -218,7 +218,7 @@ export const initiateVendorOnboarding = async (
 				templateName: "vendor-onboarding",
 				templateData: {
 					vendorReferenceName,
-					formUrl: `${process.env.FRONTEND_URL}/web/vendor-form/${onboarding.tokenRecord.token}`,
+					formUrl: `${process.env.FRONTEND_URL}/vendor-form/${onboarding.tokenRecord.token}`,
 				},
 			},
 			userId,
@@ -517,9 +517,10 @@ export const updateEmployeeFields = async (
 		}
 
 		if (
-			onboarding.status !== "VENDOR_SUBMITTED" &&
-			onboarding.status !== "IN_REVIEW" &&
-			!isExternal
+			!isExternal &&
+			!["VENDOR_SUBMITTED", "IN_REVIEW", "IN_PROGRESS"].includes(
+				onboarding.status,
+			)
 		) {
 			throw new ApiError(400, "This request is not awaiting employee review");
 		}
