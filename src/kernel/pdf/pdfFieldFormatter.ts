@@ -126,25 +126,38 @@ export function formatDateTimeSlash(
 export interface WorkflowStageCompletionInput {
 	isCurrentIteration?: boolean | null;
 	status?: string | null;
+	strategy?: string | null;
 	minApprovals?: string | number | null;
 	approvals: Array<{ status?: string | null }>;
+}
+
+// How many approvals a stage needs — same rule as approveStage in the
+// workflow helper: ANY = 1, ALL = everyone, SOME = minApprovals (min 1).
+// ANY stages store minApprovals as null, so it can't be read from there.
+function requiredApprovals(stage: WorkflowStageCompletionInput): number {
+	switch (String(stage.strategy ?? "").toUpperCase()) {
+		case "ANY":
+			return 1;
+		case "ALL":
+			return stage.approvals.length;
+		default:
+			return Number(stage.minApprovals) || 1;
+	}
 }
 
 export function isWorkflowStageCompleted(
 	stage: WorkflowStageCompletionInput,
 ): boolean {
-	const required = Number(stage.minApprovals);
-	if (!Number.isFinite(required) || required <= 0) return false;
-
-	const stageStatus = String(stage.status ?? "").toUpperCase();
-	if (stageStatus !== "APPROVED") return false;
-	if (stage.isCurrentIteration !== true) return false;
+	if (String(stage.status ?? "").toUpperCase() !== "APPROVED") return false;
+	// Older iterations are left alone. Callers that only load the current
+	// iteration may omit the flag.
+	if (stage.isCurrentIteration === false) return false;
 
 	const approvedCount = stage.approvals.filter(
 		(approval) => String(approval.status ?? "").toUpperCase() === "APPROVED",
 	).length;
 
-	return approvedCount >= required;
+	return approvedCount >= requiredApprovals(stage);
 }
 
 // Leftover PENDING rows on a completed stage print as "—"; every other

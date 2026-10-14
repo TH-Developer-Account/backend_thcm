@@ -28,6 +28,7 @@ export interface VendorOnboardingWorkflowStage {
 	stageOrder: number;
 	stageName: string | null;
 	strategy: string;
+	minApprovals: number | null;
 	status: string;
 	approvals: VendorOnboardingWorkflowApproval[];
 }
@@ -136,6 +137,7 @@ export async function assembleVendorOnboardingPdfData(
 						stageOrder: true,
 						stageName: true,
 						strategy: true,
+						minApprovals: true,
 						status: true,
 						approvals: {
 							select: {
@@ -222,6 +224,7 @@ export async function assembleVendorOnboardingPdfData(
 						stageOrder: stage.stageOrder,
 						stageName: stage.stageName,
 						strategy: stage.strategy,
+						minApprovals: stage.minApprovals,
 						status: stage.status,
 						approvals: stage.approvals.map((approval) => ({
 							approverName: `${approval.approver.first_name} ${approval.approver.last_name}`,
