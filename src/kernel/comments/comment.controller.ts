@@ -494,7 +494,7 @@ type CommentEntry = ApproverCommentEntry | CreatorCommentEntry;
 type ActivityLogEntry = {
   entryType: "ACTIVITY_LOG";
   id: string;
-  action: string;
+  action: string | null; // was: string
   metadata: unknown;
   actor: ActivityActorInfo;
   workflowId: string | null;

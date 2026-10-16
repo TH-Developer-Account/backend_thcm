@@ -212,54 +212,6 @@ enum CrfOrderStatus {
 }
 
 // ─────────────────────────────────────────────
-// CRF × SHOPIFY (SOUVENIRS) ENUMS
-//
-// Added for the CRF souvenir fulfilment feature — see
-// claude/decisions-and-learnings.md for the full design discussion.
-// ─────────────────────────────────────────────
-
-enum CrfStatus {
-  OPEN              // editable while EPC is draft/clarification
-  APPROVED          // EPC approved, stock confirmed, awaiting recipient/address + Place order
-  STOCK_SHORTFALL   // EPC approved, some souvenir lines short — proposer must swap or accept partial
-  ORDER_FAILED      // Create Order call failed (address/integration) — admin can retry
-  ORDERED           // Shopify order placed
-  CANCELLED         // EPC rejected, or order cancelled
-  CLOSED            // ORDERED + every manual (printed material/artwork) line delivered
-}
-
-enum CrfRecipientType {
-  SELF
-  EMPLOYEE
-  DEALER_CONTACT
-  OTHER
-}
-
-enum CrfAddressSource {
-  MANUAL
-  USER_PROFILE
-  BUSINESS_PARTNER_ADDRESS
-}
-
-enum CrfItemSource {
-  CATALOG   // internal ProductMaster — printed material / artwork
-  SHOPIFY   // live Shopify catalog — souvenirs
-}
-
-enum CrfItemStatus {
-  REQUESTED      // part of current order intent
-  OUT_OF_STOCK   // short at last check, proposer must decide
-  REMOVED        // proposer manually dropped it (swap)
-  ORDERED        // included in the placed Shopify order
-  DEBITED        // dropped via accept-partial; its value is in CrfOrder.debitNoteAmount
-}
-
-enum CrfOrderStatus {
-  ACTIVE
-  CANCELLED
-}
-
-// ─────────────────────────────────────────────
 // AUTH MODELS
 // ─────────────────────────────────────────────
 
@@ -753,7 +705,7 @@ model WorkFlowTemplateUser {
 //   ApprovalAudit to set stageId = NULL where stageId = workflowId.
 //   SQL:  UPDATE "ApprovalAudit" a
 //         SET    "stageId" = NULL
-//         WHERE  a."stageId" = a."workflowId";
+//         WHERE  a.stageId" = a."workflowId";
 // ─────────────────────────────────────────────
 
 model ActivityLog {
@@ -1080,6 +1032,13 @@ model LineItem {
   height   String?
   width    String?
   unit     String?
+
+  // One attachment (JPEG or PDF, ≤5MB, validated at the upload endpoint) per
+  // line item. Key stored, not URL — see "S3 keys are stored, not URLs" in
+  // decisions-and-learnings.md; a fresh pre-signed URL is generated on every
+  // read via getSignedImageUrl, same convention as MedicalClaimBill.s3Key.
+  attachmentS3Key    String?
+  attachmentFileName String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

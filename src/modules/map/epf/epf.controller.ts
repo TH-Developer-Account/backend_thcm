@@ -1,6 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
+import { uploadToS3 } from "@shared/utils/aws-s3.services";
+import {
+  LINE_ITEM_ATTACHMENT_MIME_TYPES,
+  buildLineItemAttachmentS3Key,
+  diffOrphanedAttachmentKeys,
+  withLineItemAttachmentUrls,
+  deleteOrphanedAttachments,
+} from "./helpers/lineItemAttachement.helper";
 
 // Payload to be sent
 
@@ -13,7 +21,9 @@ import ApiError from "@shared/utils/apiError";
 //   "lineItems": [
 //     {
 //       "productId": "uuid",
-//       "amount": 15000
+//       "amount": 15000,
+//       "attachmentS3Key": "epf/<epcId>/line-items/<uuid>.jpg",   // optional, from POST /epf/line-item/attachment
+//       "attachmentFileName": "quotation.jpg"                      // optional
 //     },
 //     {
 //       "productId": "uuid",
@@ -77,6 +87,8 @@ export const createEPF = async (
 
       // 3️⃣ Prepare line items — amount comes straight from the proposer's
       // input; there is no quantity or catalog rate behind an overhead line.
+      // attachmentS3Key/attachmentFileName are optional — set only when the
+      // proposer uploaded a file via POST /epf/line-item/attachment first.
       const lineItemsData = lineItems.map((item: Record<string, string>) => {
         const product = productMap.get(item.productId);
 
@@ -91,6 +103,8 @@ export const createEPF = async (
           quantity: 1,
           rate: null,
           amount,
+          attachmentS3Key: item.attachmentS3Key ?? null,
+          attachmentFileName: item.attachmentFileName ?? null,
         };
       });
 
@@ -136,7 +150,9 @@ export const createEPF = async (
 //   "lineItems": [
 //     {
 //       "productId": "uuid1",
-//       "amount": 18000
+//       "amount": 18000,
+//       "attachmentS3Key": "epf/<epcId>/line-items/<uuid>.pdf",
+//       "attachmentFileName": "quotation.pdf"
 //     },
 //     {
 //       "productId": "uuid2",
@@ -161,6 +177,11 @@ export const updateEPF = async (
       );
     }
 
+    // Collected inside the transaction, read after it commits — S3 deletes
+    // must never run against keys a rolled-back transaction didn't actually
+    // detach from a line item.
+    let orphanedAttachmentKeys: string[] = [];
+
     const result = await prisma.$transaction(async (tx) => {
       // 1️⃣ Update EPF fields
       const epf = await tx.ePF.update({
@@ -168,12 +189,20 @@ export const updateEPF = async (
         data: epfData,
       });
 
-      // 2️⃣ Delete existing line items
+      // 2️⃣ Existing line items are about to be replaced wholesale (delete +
+      // recreate below) — snapshot their attachment keys first so we can
+      // tell which ones this save is orphaning.
+      const existingLineItems = await tx.lineItem.findMany({
+        where: { epfId: epfId as string },
+        select: { attachmentS3Key: true },
+      });
+
+      // 3️⃣ Delete existing line items
       await tx.lineItem.deleteMany({
         where: { epfId: epfId as string },
       });
 
-      // 3️⃣ Validate products exist (identity only — no rate lookup)
+      // 4️⃣ Validate products exist (identity only — no rate lookup)
       const products = await tx.productMaster.findMany({
         where: {
           id: {
@@ -184,7 +213,7 @@ export const updateEPF = async (
 
       const productMap = new Map(products.map((p) => [p.id, p]));
 
-      // 4️⃣ Recreate line items — amount comes straight from the proposer's
+      // 5️⃣ Recreate line items — amount comes straight from the proposer's
       // input; there is no quantity or catalog rate behind an overhead line.
       const newItems = lineItems.map((item: Record<string, string>) => {
         const product = productMap.get(item.productId);
@@ -200,12 +229,19 @@ export const updateEPF = async (
           quantity: 1,
           rate: null,
           amount,
+          attachmentS3Key: item.attachmentS3Key ?? null,
+          attachmentFileName: item.attachmentFileName ?? null,
         };
       });
 
       await tx.lineItem.createMany({
         data: newItems,
       });
+
+      orphanedAttachmentKeys = diffOrphanedAttachmentKeys(
+        existingLineItems.map((item) => item.attachmentS3Key),
+        lineItems.map((item: Record<string, string>) => item.attachmentS3Key),
+      );
 
       await tx.activityLog.create({
         data: {
@@ -223,6 +259,12 @@ export const updateEPF = async (
 
       return epf;
     });
+
+    // Fire-and-forget-but-logged: the DB write already succeeded, so a
+    // failed S3 delete here must never surface as a failure to the caller.
+    if (orphanedAttachmentKeys.length > 0) {
+      void deleteOrphanedAttachments(orphanedAttachmentKeys);
+    }
 
     res.status(200).json(result);
   } catch (error) {
@@ -264,7 +306,55 @@ export const getEPFById = async (
       throw new ApiError(404, "EPF not found");
     }
 
-    res.status(200).json(epf);
+    // S3 keys are stored, not URLs — resolve a fresh pre-signed URL per
+    // line item on every read (see lineItemAttachment.helper.ts).
+    const lineItemsWithAttachmentUrls = await withLineItemAttachmentUrls(
+      epf.lineItems,
+    );
+
+    res.status(200).json({ ...epf, lineItems: lineItemsWithAttachmentUrls });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Single-file upload for one EPF line item's attachment. Upload-first: the
+// proposer picks a file before the line item (and often before the EPF
+// itself) exists, so this returns an S3 key the client then threads through
+// as lineItems[].attachmentS3Key on the subsequent createEPF/updateEPF call
+// — same shape the frontend's LineItemTable draft state already expects
+// (quotationFile/quotationFileUrl/quotationFileName).
+//
+// Mime type + size are enforced by multer (fileFilter + limits) in
+// epf.routes.ts before this handler ever runs.
+export const uploadLineItemAttachment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { epcId } = req.body;
+
+    if (!epcId) {
+      throw new ApiError(400, "epcId is required");
+    }
+
+    if (!req.file) {
+      throw new ApiError(400, "A file is required");
+    }
+
+    if (!LINE_ITEM_ATTACHMENT_MIME_TYPES[req.file.mimetype]) {
+      throw new ApiError(400, "Only JPEG images or PDF files are accepted");
+    }
+
+    const s3Key = buildLineItemAttachmentS3Key(epcId, req.file.mimetype);
+
+    await uploadToS3(s3Key, req.file.buffer, req.file.mimetype);
+
+    res.status(200).json({
+      s3Key,
+      fileName: req.file.originalname,
+    });
   } catch (error) {
     next(error);
   }
