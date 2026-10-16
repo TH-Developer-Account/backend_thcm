@@ -212,6 +212,54 @@ enum CrfOrderStatus {
 }
 
 // ─────────────────────────────────────────────
+// CRF × SHOPIFY (SOUVENIRS) ENUMS
+//
+// Added for the CRF souvenir fulfilment feature — see
+// claude/decisions-and-learnings.md for the full design discussion.
+// ─────────────────────────────────────────────
+
+enum CrfStatus {
+  OPEN              // editable while EPC is draft/clarification
+  APPROVED          // EPC approved, stock confirmed, awaiting recipient/address + Place order
+  STOCK_SHORTFALL   // EPC approved, some souvenir lines short — proposer must swap or accept partial
+  ORDER_FAILED      // Create Order call failed (address/integration) — admin can retry
+  ORDERED           // Shopify order placed
+  CANCELLED         // EPC rejected, or order cancelled
+  CLOSED            // ORDERED + every manual (printed material/artwork) line delivered
+}
+
+enum CrfRecipientType {
+  SELF
+  EMPLOYEE
+  DEALER_CONTACT
+  OTHER
+}
+
+enum CrfAddressSource {
+  MANUAL
+  USER_PROFILE
+  BUSINESS_PARTNER_ADDRESS
+}
+
+enum CrfItemSource {
+  CATALOG   // internal ProductMaster — printed material / artwork
+  SHOPIFY   // live Shopify catalog — souvenirs
+}
+
+enum CrfItemStatus {
+  REQUESTED      // part of current order intent
+  OUT_OF_STOCK   // short at last check, proposer must decide
+  REMOVED        // proposer manually dropped it (swap)
+  ORDERED        // included in the placed Shopify order
+  DEBITED        // dropped via accept-partial; its value is in CrfOrder.debitNoteAmount
+}
+
+enum CrfOrderStatus {
+  ACTIVE
+  CANCELLED
+}
+
+// ─────────────────────────────────────────────
 // AUTH MODELS
 // ─────────────────────────────────────────────
 
