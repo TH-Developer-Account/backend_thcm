@@ -210,6 +210,7 @@ enum CrfOrderStatus {
   ACTIVE
   CANCELLED
 }
+
 // ─────────────────────────────────────────────
 // AUTH MODELS
 // ─────────────────────────────────────────────
@@ -704,7 +705,7 @@ model WorkFlowTemplateUser {
 //   ApprovalAudit to set stageId = NULL where stageId = workflowId.
 //   SQL:  UPDATE "ApprovalAudit" a
 //         SET    "stageId" = NULL
-//         WHERE  a."stageId" = a."workflowId";
+//         WHERE  a.stageId" = a."workflowId";
 // ─────────────────────────────────────────────
 
 model ActivityLog {
@@ -1031,6 +1032,13 @@ model LineItem {
   height   String?
   width    String?
   unit     String?
+
+  // One attachment (JPEG or PDF, ≤5MB, validated at the upload endpoint) per
+  // line item. Key stored, not URL — see "S3 keys are stored, not URLs" in
+  // decisions-and-learnings.md; a fresh pre-signed URL is generated on every
+  // read via getSignedImageUrl, same convention as MedicalClaimBill.s3Key.
+  attachmentS3Key    String?
+  attachmentFileName String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

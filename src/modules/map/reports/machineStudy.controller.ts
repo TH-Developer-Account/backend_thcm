@@ -3,7 +3,7 @@ import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import { uploadToS3 } from "@shared/utils/aws-s3.services";
 import { importMachineStudyCyclesFromS3 } from "@import-export/machineStudyCycleImport.services";
-import { FuelType } from "../../prisma/generated/prisma/client";
+import { FuelType } from "../../../prisma/generated/prisma/client";
 
 const ALLOWED_SPREADSHEET_MIME_TYPES = new Set([
   "text/csv",

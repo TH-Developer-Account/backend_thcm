@@ -656,6 +656,8 @@ export const LineItemScalarFieldEnum = {
   height: 'height',
   width: 'width',
   unit: 'unit',
+  attachmentS3Key: 'attachmentS3Key',
+  attachmentFileName: 'attachmentFileName',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const

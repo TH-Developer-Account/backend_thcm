@@ -11,7 +11,7 @@ import {
   requestReportClarification,
   getReportFormConfig,
   getReportListing,
-} from "@map/report.controller";
+} from "@map/reports/report.controller";
 
 const router = Router();
 

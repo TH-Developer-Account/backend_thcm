@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-// import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
+import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Single shared transporter instance for the lifetime of the process.
@@ -23,27 +23,27 @@ import nodemailer from "nodemailer";
 
 export const MAIL_FROM = "marketing.tatahitachi@gmail.com";
 
-// const sesClient = new SESv2Client({
-//   region: process.env.AWS_REGION,
-//   credentials: {
-//     accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
-//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
-//   },
-// });
+const sesClient = new SESv2Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY as string,
+  },
+});
 
-// const transporter = nodemailer.createTransport({
-//   SES: { sesClient, SendEmailCommand },
-// });
+const transporter = nodemailer.createTransport({
+  SES: { sesClient, SendEmailCommand },
+});
 
 // Gmail (app password)
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_MAIL_ID,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.GMAIL_MAIL_ID,
+//     pass: process.env.GMAIL_APP_PASSWORD,
+//   },
+// });
 
 export default transporter;
 

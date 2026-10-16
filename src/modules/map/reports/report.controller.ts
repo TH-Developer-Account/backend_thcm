@@ -19,8 +19,8 @@ import { eventReportGenerationQueue } from "@modules/map/eventReportGeneration.q
 import {
   resolveEventReportTemplate,
   resolveEventReportFormConfig,
-} from "./reports/eventReportTemplate.registry";
-import { AuthenticatedUser } from "../../types/express";
+} from "./eventReportTemplate.registry";
+import { AuthenticatedUser } from "../../../types/express";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Multer config — images arrive as a single "images" array field (1-10
