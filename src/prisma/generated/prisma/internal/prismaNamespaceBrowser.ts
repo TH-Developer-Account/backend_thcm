@@ -581,6 +581,8 @@ export const CRFScalarFieldEnum = {
   addressGstin: 'addressGstin',
   addressValidatedAt: 'addressValidatedAt',
   souvenirTotalAtApproval: 'souvenirTotalAtApproval',
+  shortfallAmount: 'shortfallAmount',
+  pendingDebitAmount: 'pendingDebitAmount',
   approvedAt: 'approvedAt',
   itemsChangedAt: 'itemsChangedAt',
   closedAt: 'closedAt',

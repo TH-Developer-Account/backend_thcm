@@ -4,14 +4,15 @@ import asyncHandler from "@shared/middleware/async.middleware";
 import { firstAuthRequestPerDay } from "@shared/middleware/dailyActiveUsers.middleware";
 
 import { requireAuth } from "@auth/auth.middleware";
-import { getCRFById, updateCRF, createCRF } from "./crf.controller";
+import { getCRFById, updateCRF, createCRF } from "@map/crf/crf.controller";
 import {
   postCrfOrder,
   postCrfOrderCancel,
   postCrfOrderRetry,
+  postCrfStockCheckRetry,
   putCrfDispatchDetails,
   putCrfSouvenirs,
-} from "./crf-order.controller";
+} from "@map/crf/crf-order.controller";
 
 const router = Router();
 
@@ -33,5 +34,9 @@ router.put("/:crfId/souvenirs", asyncHandler(putCrfSouvenirs));
 router.post("/:crfId/order", asyncHandler(postCrfOrder));
 router.post("/:crfId/order/retry", asyncHandler(postCrfOrderRetry));
 router.post("/:crfId/order/cancel", asyncHandler(postCrfOrderCancel));
+// Retries the post-approval Shopify stock check itself (STOCK_CHECK_FAILED
+// — the store was unreachable when the EPC approval hook tried it), as
+// distinct from retrying order PLACEMENT (/:crfId/order/retry, ORDER_FAILED).
+router.post("/:crfId/stock-check/retry", asyncHandler(postCrfStockCheckRetry));
 
 export default router;

@@ -80,6 +80,12 @@ export type CrfPermissions = {
   canEditDispatchDetails: boolean; // recipient + addresses — APPROVED/STOCK_SHORTFALL/ORDER_FAILED, owner
   canPlaceOrder: boolean; // APPROVED/STOCK_SHORTFALL, owner
   canRetryOrder: boolean; // ORDER_FAILED — owner or admin
+  // STOCK_CHECK_FAILED — the post-approval Shopify stock check couldn't
+  // reach the store (THCM Shop down/unreachable), so the CRF never made it
+  // to APPROVED/STOCK_SHORTFALL. Mirrors canRetryOrder exactly: same
+  // audience (owner or admin), same shape, just a different failure point
+  // in the pipeline (checking stock vs. placing the order).
+  canRetryStockCheck: boolean; // STOCK_CHECK_FAILED — owner or admin
   canCancelOrder: boolean; // ORDERED — owner or admin
   // DEFERRED — manual PM/ARTWORK lines — owner or admin, once APPROVED or
   // later. The schema already carries CrfItem.deliveredAt/deliveredById and
@@ -117,6 +123,7 @@ export const computeCrfPermissions = (access: CrfAccess): CrfPermissions => {
       isOwner &&
       (crf.status === "APPROVED" || crf.status === "STOCK_SHORTFALL"),
     canRetryOrder: ownerOrAdmin && crf.status === "ORDER_FAILED",
+    canRetryStockCheck: ownerOrAdmin && crf.status === "STOCK_CHECK_FAILED",
     canCancelOrder: ownerOrAdmin && crf.status === "ORDERED",
     canMarkItemDelivered:
       ownerOrAdmin && !["OPEN", "CANCELLED"].includes(crf.status),

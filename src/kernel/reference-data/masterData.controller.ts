@@ -218,8 +218,8 @@ export const getBudgetOData = async (req: Request, res: Response) => {
       "http://th-s4-qas-ad.tatahitachi.co.in:8001/sap/opu/odata/sap/ZBUDGET_API_SRV/ZSTR_BUDGET_APISet?$filter=BudgetCode%20eq%20%27P1SMN1380105%27&sap-client=635",
       {
         auth: {
-          username: "d39351",
-          password: "Publi@4321",
+          username: process.env.SAP_USERNAME as string,
+          password: process.env.SAP_PASSWORD as string,
         },
         headers: {
           Accept: "application/json",

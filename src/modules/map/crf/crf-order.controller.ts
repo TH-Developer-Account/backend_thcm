@@ -10,6 +10,7 @@ import {
   cancelOrder,
   placeOrder,
   retryOrder,
+  retryStockCheck,
   swapSouvenirLines,
 } from "@map/crf/services/crfOrder.services";
 import type { ShopifyCrfItemInput } from "@map/crf/services/crf.services";
@@ -20,9 +21,9 @@ import type { ShopifyCrfItemInput } from "@map/crf/services/crf.services";
  * Thin request/response adapter over crfDispatchDetails.service.ts and
  * crfOrder.service.ts — the post-approval half of a CRF's lifecycle
  * (dispatch details, souvenir swap on shortfall, placing/retrying/
- * cancelling the Shopify order). Same shape convention as crf.controller.ts:
- * every response is { success: true, data }, and every ownership/status
- * rule lives in the service layer, not here.
+ * cancelling the Shopify order, retrying a failed stock check). Same shape
+ * convention as crf.controller.ts: every response is { success: true, data },
+ * and every ownership/status rule lives in the service layer, not here.
  *
  * There is deliberately no "get order" handler here — GET /crf/:crfId
  * (crf.controller.ts → crf.service.ts's getCrfDetail) already returns
@@ -137,6 +138,28 @@ export const postCrfOrderCancel = async (
     if (!crfId) throw new ApiError(400, "crfId is required");
 
     const result = await cancelOrder(actor, crfId as string, reason);
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// POST /crf/:crfId/stock-check/retry — STOCK_CHECK_FAILED only, owner or
+// admin. Re-runs the same post-approval stock check the EPC-approval hook
+// already tried (see crfOrder.service.ts's runPostApprovalStockCheck),
+// against Shopify/THCM Shop again, for the case where the store was down
+// or unreachable the first time.
+export const postCrfStockCheckRetry = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const actor = requireActor(req);
+    const { crfId } = req.params;
+    if (!crfId) throw new ApiError(400, "crfId is required");
+
+    const result = await retryStockCheck(actor, crfId as string);
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     next(error);

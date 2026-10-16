@@ -28,10 +28,14 @@ export type AggregateCRF = {
 
 export type CRFAvgAggregateOutputType = {
   souvenirTotalAtApproval: runtime.Decimal | null
+  shortfallAmount: runtime.Decimal | null
+  pendingDebitAmount: runtime.Decimal | null
 }
 
 export type CRFSumAggregateOutputType = {
   souvenirTotalAtApproval: runtime.Decimal | null
+  shortfallAmount: runtime.Decimal | null
+  pendingDebitAmount: runtime.Decimal | null
 }
 
 export type CRFMinAggregateOutputType = {
@@ -62,6 +66,8 @@ export type CRFMinAggregateOutputType = {
   addressGstin: string | null
   addressValidatedAt: Date | null
   souvenirTotalAtApproval: runtime.Decimal | null
+  shortfallAmount: runtime.Decimal | null
+  pendingDebitAmount: runtime.Decimal | null
   approvedAt: Date | null
   itemsChangedAt: Date | null
   closedAt: Date | null
@@ -99,6 +105,8 @@ export type CRFMaxAggregateOutputType = {
   addressGstin: string | null
   addressValidatedAt: Date | null
   souvenirTotalAtApproval: runtime.Decimal | null
+  shortfallAmount: runtime.Decimal | null
+  pendingDebitAmount: runtime.Decimal | null
   approvedAt: Date | null
   itemsChangedAt: Date | null
   closedAt: Date | null
@@ -136,6 +144,8 @@ export type CRFCountAggregateOutputType = {
   addressGstin: number
   addressValidatedAt: number
   souvenirTotalAtApproval: number
+  shortfallAmount: number
+  pendingDebitAmount: number
   approvedAt: number
   itemsChangedAt: number
   closedAt: number
@@ -149,10 +159,14 @@ export type CRFCountAggregateOutputType = {
 
 export type CRFAvgAggregateInputType = {
   souvenirTotalAtApproval?: true
+  shortfallAmount?: true
+  pendingDebitAmount?: true
 }
 
 export type CRFSumAggregateInputType = {
   souvenirTotalAtApproval?: true
+  shortfallAmount?: true
+  pendingDebitAmount?: true
 }
 
 export type CRFMinAggregateInputType = {
@@ -183,6 +197,8 @@ export type CRFMinAggregateInputType = {
   addressGstin?: true
   addressValidatedAt?: true
   souvenirTotalAtApproval?: true
+  shortfallAmount?: true
+  pendingDebitAmount?: true
   approvedAt?: true
   itemsChangedAt?: true
   closedAt?: true
@@ -220,6 +236,8 @@ export type CRFMaxAggregateInputType = {
   addressGstin?: true
   addressValidatedAt?: true
   souvenirTotalAtApproval?: true
+  shortfallAmount?: true
+  pendingDebitAmount?: true
   approvedAt?: true
   itemsChangedAt?: true
   closedAt?: true
@@ -257,6 +275,8 @@ export type CRFCountAggregateInputType = {
   addressGstin?: true
   addressValidatedAt?: true
   souvenirTotalAtApproval?: true
+  shortfallAmount?: true
+  pendingDebitAmount?: true
   approvedAt?: true
   itemsChangedAt?: true
   closedAt?: true
@@ -381,6 +401,8 @@ export type CRFGroupByOutputType = {
   addressGstin: string | null
   addressValidatedAt: Date | null
   souvenirTotalAtApproval: runtime.Decimal | null
+  shortfallAmount: runtime.Decimal | null
+  pendingDebitAmount: runtime.Decimal | null
   approvedAt: Date | null
   itemsChangedAt: Date | null
   closedAt: Date | null
@@ -441,6 +463,8 @@ export type CRFWhereInput = {
   addressGstin?: Prisma.StringNullableFilter<"CRF"> | string | null
   addressValidatedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
   souvenirTotalAtApproval?: Prisma.DecimalNullableFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.DecimalNullableFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.DecimalNullableFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
   itemsChangedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
   closedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
@@ -485,6 +509,8 @@ export type CRFOrderByWithRelationInput = {
   addressGstin?: Prisma.SortOrderInput | Prisma.SortOrder
   addressValidatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   souvenirTotalAtApproval?: Prisma.SortOrderInput | Prisma.SortOrder
+  shortfallAmount?: Prisma.SortOrderInput | Prisma.SortOrder
+  pendingDebitAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   itemsChangedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -532,6 +558,8 @@ export type CRFWhereUniqueInput = Prisma.AtLeast<{
   addressGstin?: Prisma.StringNullableFilter<"CRF"> | string | null
   addressValidatedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
   souvenirTotalAtApproval?: Prisma.DecimalNullableFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.DecimalNullableFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.DecimalNullableFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
   itemsChangedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
   closedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
@@ -576,6 +604,8 @@ export type CRFOrderByWithAggregationInput = {
   addressGstin?: Prisma.SortOrderInput | Prisma.SortOrder
   addressValidatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   souvenirTotalAtApproval?: Prisma.SortOrderInput | Prisma.SortOrder
+  shortfallAmount?: Prisma.SortOrderInput | Prisma.SortOrder
+  pendingDebitAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   approvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   itemsChangedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -621,6 +651,8 @@ export type CRFScalarWhereWithAggregatesInput = {
   addressGstin?: Prisma.StringNullableWithAggregatesFilter<"CRF"> | string | null
   addressValidatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CRF"> | Date | string | null
   souvenirTotalAtApproval?: Prisma.DecimalNullableWithAggregatesFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.DecimalNullableWithAggregatesFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.DecimalNullableWithAggregatesFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CRF"> | Date | string | null
   itemsChangedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CRF"> | Date | string | null
   closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CRF"> | Date | string | null
@@ -655,6 +687,8 @@ export type CRFCreateInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -698,6 +732,8 @@ export type CRFUncheckedCreateInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -735,6 +771,8 @@ export type CRFUpdateInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -778,6 +816,8 @@ export type CRFUncheckedUpdateInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -818,6 +858,8 @@ export type CRFCreateManyInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -852,6 +894,8 @@ export type CRFUpdateManyMutationInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -888,6 +932,8 @@ export type CRFUncheckedUpdateManyInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -940,6 +986,8 @@ export type CRFCountOrderByAggregateInput = {
   addressGstin?: Prisma.SortOrder
   addressValidatedAt?: Prisma.SortOrder
   souvenirTotalAtApproval?: Prisma.SortOrder
+  shortfallAmount?: Prisma.SortOrder
+  pendingDebitAmount?: Prisma.SortOrder
   approvedAt?: Prisma.SortOrder
   itemsChangedAt?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
@@ -951,6 +999,8 @@ export type CRFCountOrderByAggregateInput = {
 
 export type CRFAvgOrderByAggregateInput = {
   souvenirTotalAtApproval?: Prisma.SortOrder
+  shortfallAmount?: Prisma.SortOrder
+  pendingDebitAmount?: Prisma.SortOrder
 }
 
 export type CRFMaxOrderByAggregateInput = {
@@ -981,6 +1031,8 @@ export type CRFMaxOrderByAggregateInput = {
   addressGstin?: Prisma.SortOrder
   addressValidatedAt?: Prisma.SortOrder
   souvenirTotalAtApproval?: Prisma.SortOrder
+  shortfallAmount?: Prisma.SortOrder
+  pendingDebitAmount?: Prisma.SortOrder
   approvedAt?: Prisma.SortOrder
   itemsChangedAt?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
@@ -1018,6 +1070,8 @@ export type CRFMinOrderByAggregateInput = {
   addressGstin?: Prisma.SortOrder
   addressValidatedAt?: Prisma.SortOrder
   souvenirTotalAtApproval?: Prisma.SortOrder
+  shortfallAmount?: Prisma.SortOrder
+  pendingDebitAmount?: Prisma.SortOrder
   approvedAt?: Prisma.SortOrder
   itemsChangedAt?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
@@ -1029,6 +1083,8 @@ export type CRFMinOrderByAggregateInput = {
 
 export type CRFSumOrderByAggregateInput = {
   souvenirTotalAtApproval?: Prisma.SortOrder
+  shortfallAmount?: Prisma.SortOrder
+  pendingDebitAmount?: Prisma.SortOrder
 }
 
 export type CRFScalarRelationFilter = {
@@ -1275,6 +1331,8 @@ export type CRFCreateWithoutCreated_byInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -1317,6 +1375,8 @@ export type CRFUncheckedCreateWithoutCreated_byInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -1363,6 +1423,8 @@ export type CRFCreateWithoutRecipientUserInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -1404,6 +1466,8 @@ export type CRFUncheckedCreateWithoutRecipientUserInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -1473,6 +1537,8 @@ export type CRFScalarWhereInput = {
   addressGstin?: Prisma.StringNullableFilter<"CRF"> | string | null
   addressValidatedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
   souvenirTotalAtApproval?: Prisma.DecimalNullableFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.DecimalNullableFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.DecimalNullableFilter<"CRF"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
   itemsChangedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
   closedAt?: Prisma.DateTimeNullableFilter<"CRF"> | Date | string | null
@@ -1523,6 +1589,8 @@ export type CRFCreateWithoutEpcInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -1564,6 +1632,8 @@ export type CRFUncheckedCreateWithoutEpcInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -1617,6 +1687,8 @@ export type CRFUpdateWithoutEpcInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1658,6 +1730,8 @@ export type CRFUncheckedUpdateWithoutEpcInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1695,6 +1769,8 @@ export type CRFCreateWithoutItemsInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -1737,6 +1813,8 @@ export type CRFUncheckedCreateWithoutItemsInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -1789,6 +1867,8 @@ export type CRFUpdateWithoutItemsInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1831,6 +1911,8 @@ export type CRFUncheckedUpdateWithoutItemsInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1867,6 +1949,8 @@ export type CRFCreateWithoutOrderInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -1909,6 +1993,8 @@ export type CRFUncheckedCreateWithoutOrderInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -1961,6 +2047,8 @@ export type CRFUpdateWithoutOrderInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2003,6 +2091,8 @@ export type CRFUncheckedUpdateWithoutOrderInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2039,6 +2129,8 @@ export type CRFCreateWithoutLineItemsInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -2081,6 +2173,8 @@ export type CRFUncheckedCreateWithoutLineItemsInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -2133,6 +2227,8 @@ export type CRFUpdateWithoutLineItemsInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2175,6 +2271,8 @@ export type CRFUncheckedUpdateWithoutLineItemsInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2211,6 +2309,8 @@ export type CRFCreateWithoutRecipientContactInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -2252,6 +2352,8 @@ export type CRFUncheckedCreateWithoutRecipientContactInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -2318,6 +2420,8 @@ export type CRFCreateManyCreated_byInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -2353,6 +2457,8 @@ export type CRFCreateManyRecipientUserInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -2387,6 +2493,8 @@ export type CRFUpdateWithoutCreated_byInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2429,6 +2537,8 @@ export type CRFUncheckedUpdateWithoutCreated_byInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2468,6 +2578,8 @@ export type CRFUncheckedUpdateManyWithoutCreated_byInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2501,6 +2613,8 @@ export type CRFUpdateWithoutRecipientUserInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2542,6 +2656,8 @@ export type CRFUncheckedUpdateWithoutRecipientUserInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2581,6 +2697,8 @@ export type CRFUncheckedUpdateManyWithoutRecipientUserInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2617,6 +2735,8 @@ export type CRFCreateManyRecipientContactInput = {
   addressGstin?: string | null
   addressValidatedAt?: Date | string | null
   souvenirTotalAtApproval?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Date | string | null
   itemsChangedAt?: Date | string | null
   closedAt?: Date | string | null
@@ -2651,6 +2771,8 @@ export type CRFUpdateWithoutRecipientContactInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2692,6 +2814,8 @@ export type CRFUncheckedUpdateWithoutRecipientContactInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2731,6 +2855,8 @@ export type CRFUncheckedUpdateManyWithoutRecipientContactInput = {
   addressGstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   addressValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   souvenirTotalAtApproval?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  shortfallAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pendingDebitAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itemsChangedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2808,6 +2934,8 @@ export type CRFSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   addressGstin?: boolean
   addressValidatedAt?: boolean
   souvenirTotalAtApproval?: boolean
+  shortfallAmount?: boolean
+  pendingDebitAmount?: boolean
   approvedAt?: boolean
   itemsChangedAt?: boolean
   closedAt?: boolean
@@ -2853,6 +2981,8 @@ export type CRFSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   addressGstin?: boolean
   addressValidatedAt?: boolean
   souvenirTotalAtApproval?: boolean
+  shortfallAmount?: boolean
+  pendingDebitAmount?: boolean
   approvedAt?: boolean
   itemsChangedAt?: boolean
   closedAt?: boolean
@@ -2894,6 +3024,8 @@ export type CRFSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   addressGstin?: boolean
   addressValidatedAt?: boolean
   souvenirTotalAtApproval?: boolean
+  shortfallAmount?: boolean
+  pendingDebitAmount?: boolean
   approvedAt?: boolean
   itemsChangedAt?: boolean
   closedAt?: boolean
@@ -2935,6 +3067,8 @@ export type CRFSelectScalar = {
   addressGstin?: boolean
   addressValidatedAt?: boolean
   souvenirTotalAtApproval?: boolean
+  shortfallAmount?: boolean
+  pendingDebitAmount?: boolean
   approvedAt?: boolean
   itemsChangedAt?: boolean
   closedAt?: boolean
@@ -2944,7 +3078,7 @@ export type CRFSelectScalar = {
   updated_at?: boolean
 }
 
-export type CRFOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "epcId" | "crfNumber" | "status" | "recipientType" | "recipientName" | "recipientPhone" | "recipientEmail" | "recipientOrganisation" | "recipientUserId" | "recipientContactId" | "deliveryInstructions" | "requiredByDate" | "addressSourceType" | "addressSourceId" | "addressCompany" | "addressLine1" | "addressLine2" | "addressLandmark" | "addressCity" | "addressDistrict" | "addressState" | "addressPincode" | "addressCountry" | "addressGstin" | "addressValidatedAt" | "souvenirTotalAtApproval" | "approvedAt" | "itemsChangedAt" | "closedAt" | "created_by_id" | "updated_by_id" | "created_at" | "updated_at", ExtArgs["result"]["cRF"]>
+export type CRFOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "epcId" | "crfNumber" | "status" | "recipientType" | "recipientName" | "recipientPhone" | "recipientEmail" | "recipientOrganisation" | "recipientUserId" | "recipientContactId" | "deliveryInstructions" | "requiredByDate" | "addressSourceType" | "addressSourceId" | "addressCompany" | "addressLine1" | "addressLine2" | "addressLandmark" | "addressCity" | "addressDistrict" | "addressState" | "addressPincode" | "addressCountry" | "addressGstin" | "addressValidatedAt" | "souvenirTotalAtApproval" | "shortfallAmount" | "pendingDebitAmount" | "approvedAt" | "itemsChangedAt" | "closedAt" | "created_by_id" | "updated_by_id" | "created_at" | "updated_at", ExtArgs["result"]["cRF"]>
 export type CRFInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   recipientUser?: boolean | Prisma.CRF$recipientUserArgs<ExtArgs>
   recipientContact?: boolean | Prisma.CRF$recipientContactArgs<ExtArgs>
@@ -3007,6 +3141,8 @@ export type $CRFPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     addressGstin: string | null
     addressValidatedAt: Date | null
     souvenirTotalAtApproval: runtime.Decimal | null
+    shortfallAmount: runtime.Decimal | null
+    pendingDebitAmount: runtime.Decimal | null
     approvedAt: Date | null
     itemsChangedAt: Date | null
     closedAt: Date | null
@@ -3471,6 +3607,8 @@ export interface CRFFieldRefs {
   readonly addressGstin: Prisma.FieldRef<"CRF", 'String'>
   readonly addressValidatedAt: Prisma.FieldRef<"CRF", 'DateTime'>
   readonly souvenirTotalAtApproval: Prisma.FieldRef<"CRF", 'Decimal'>
+  readonly shortfallAmount: Prisma.FieldRef<"CRF", 'Decimal'>
+  readonly pendingDebitAmount: Prisma.FieldRef<"CRF", 'Decimal'>
   readonly approvedAt: Prisma.FieldRef<"CRF", 'DateTime'>
   readonly itemsChangedAt: Prisma.FieldRef<"CRF", 'DateTime'>
   readonly closedAt: Prisma.FieldRef<"CRF", 'DateTime'>

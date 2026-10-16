@@ -343,7 +343,7 @@ export const approveStage = async ({
   stageId: string;
   userId: string;
   reason: string;
-}) => {
+}): Promise<Record<string, unknown>> => {
   try {
     const result: ApproveStageResult = await prisma.$transaction(async (tx) => {
       await tx.approval.update({
@@ -457,7 +457,7 @@ export const approveStage = async ({
     });
 
     // ── Notify — strictly after the transaction has committed ─────────────
-    if (result.kind === "no_change") return;
+    if (result.kind === "no_change") return {};
 
     const app = await prisma.app.findUnique({
       where: { id: result.appId },
@@ -498,22 +498,36 @@ export const approveStage = async ({
       });
     }
 
-    // ✅ NEW — subject-specific "final approval" side effects (today, only
-    // CRF's post-approval Shopify stock check). Deliberately outside the
-    // transaction above (see workflowSubject.helper.ts's comment on
-    // postFinalApprovalHooks) and deliberately caught here rather than
-    // left to propagate: a Shopify outage must not turn a successful
-    // approval into a failed HTTP response — the approval already
-    // committed. Same defensive-logging posture as addMailJob.
+    // ── Subject-specific post-final-approval hook (e.g. EPC's CRF stock
+    // check) — also strictly post-commit, and deliberately isolated in its
+    // own try/catch: the approval itself has already succeeded and been
+    // persisted, so a downstream failure here (e.g. Shopify unreachable)
+    // must never surface as a failed approval request. Same defensive
+    // posture as safeNotifyCrfEvent in crfOrder.service.ts.
+    //
+    // hookResult is returned to the controller (and from there, to the
+    // frontend) so a failure the hook already handled gracefully — e.g.
+    // { stockCheckFailed: true } — can still reach the person who just
+    // clicked Approve as a toast, right now, rather than only being
+    // discoverable later by reopening the record. A hook throwing outright
+    // (vs. returning a handled-failure flag) is a second, unexpected
+    // failure mode, so that case is still just logged and swallowed here,
+    // same as before — the approval response stays successful either way.
+    let hookResult: Record<string, unknown> = {};
     if (result.kind === "final_approved") {
       try {
-        await runPostFinalApprovalHook(result.subjectType, result.subjectId);
+        hookResult = await runPostFinalApprovalHook(
+          result.subjectType,
+          result.subjectId,
+        );
       } catch (error: any) {
         logger.error(
-          `[approveStage] postFinalApprovalHook failed for ${result.subjectType} ${result.subjectId}: ${error.message}`,
+          `[workflow.service] Post-final-approval hook failed for ${result.subjectType} ${result.subjectId}: ${error.message}`,
         );
       }
     }
+
+    return hookResult;
   } catch (error) {
     throw error;
   }

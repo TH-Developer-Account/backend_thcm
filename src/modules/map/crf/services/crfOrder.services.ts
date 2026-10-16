@@ -9,10 +9,30 @@
  * in crf.service.ts are the drafting-time equivalent; this file is
  * everything from EPC approval onward).
  *
+ * Also owns the EPC-final-approval marketing forward: once an EPC is fully
+ * approved, its CRF's Printed Material/Artwork lines are emailed to the
+ * marketing team (souvenirs stay out of this — those are Shopify-fulfilled
+ * and covered by the stock-check/order flow below).
+ *
  * No Shopify catalog data is ever persisted. Prices fetched here (for the
  * approval-time cap and for debit-note amounts) are used once, in memory,
  * to compute a total, and only that computed total is written to the
  * database — never the per-item price itself.
+ *
+ * Shortfall budget accounting (CRF.shortfallAmount / CRF.pendingDebitAmount):
+ *   CRF.souvenirTotalAtApproval is a historical snapshot only — the total
+ *   value of ALL approved souvenir lines (in-stock + short) at the moment
+ *   the EPC was approved. It is never re-used as the swap budget, because
+ *   the in-stock lines it includes are re-priced live on every render
+ *   (see SouvenirCatalog/backfillSouvenirDisplayFields on the frontend),
+ *   which let that cap drift away from the real shortfall value.
+ *   CRF.shortfallAmount is instead frozen to just the OUT_OF_STOCK lines'
+ *   value whenever the CRF enters or re-enters STOCK_SHORTFALL (first
+ *   post-approval check, or a swap that's still short afterward) — this is
+ *   the real swap budget, checked in swapSouvenirLines below. When a swap
+ *   fully resolves the shortfall for less than that budget, the unused
+ *   balance accumulates in CRF.pendingDebitAmount, which executeOrderPlacement
+ *   folds into the placed order's debitNoteAmount and then clears.
  */
 
 import type { CRF, Prisma } from "../../../../prisma/generated/prisma/client";
@@ -21,24 +41,51 @@ import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import logger from "@shared/utils/logger";
 import type { AccessActor } from "@rbac/profile/access.types";
-import {
-  getCrfAccess,
-  assertCrfAccess,
-} from "@modules/map/crf/crfAccess.helper";
+import { getCrfAccess, assertCrfAccess } from "@map/crf/crfAccess.helper";
 import {
   buildShopifyItemRows,
   type ShopifyCrfItemInput,
-} from "@modules/map/crf/services/crf.services";
+} from "@map/crf/services/crf.services";
 import {
   thcmShopClient,
   ThcmShopApiError,
   type ThcmCreateOrderRequest,
-} from "@modules/map/crf/shopify";
+} from "@map/crf/shopify";
 import { notify } from "@notifications/notification.services";
 import { getSubjectNotificationMeta } from "@notifications/notification.helper";
 import { addMailJob } from "@mail/mail.service";
 
 type Actor = AccessActor & { id: string };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// getForcedOutOfStockSkus — TEST-ONLY override, never active in production.
+//
+// THCM's real stock is almost always available, which makes the shortfall
+// path (swap lines / accept debit note) impossible to exercise end-to-end
+// without actually depleting real inventory in the live store. This lets a
+// developer force specific SKUs to read as out-of-stock, without touching
+// real Shopify data.
+//
+// Read fresh on every call rather than cached at module load, so a
+// developer can change THCM_FORCE_OUT_OF_STOCK_SKUS and re-test without
+// restarting the process. Hard-gated on NODE_ENV — returns an empty set
+// unconditionally in production, so this can never affect a real order
+// even if the env var is accidentally left set.
+// ─────────────────────────────────────────────────────────────────────────────
+
+function getForcedOutOfStockSkus(): Set<string> {
+  if (process.env.NODE_ENV === "production") return new Set();
+
+  const raw = process.env.THCM_FORCE_OUT_OF_STOCK_SKUS;
+  if (!raw) return new Set();
+
+  return new Set(
+    raw
+      .split(",")
+      .map((sku) => sku.trim())
+      .filter((sku) => sku.length > 0),
+  );
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // evaluateSouvenirStock — the one place that asks THCM "is everything we
@@ -50,6 +97,20 @@ type Actor = AccessActor & { id: string };
 // Requested quantities are summed per SKU before comparing to availableQty
 // — availableQty is a per-SKU total, not per-line, so two CrfItem rows that
 // happen to name the same SKU must be checked together, not separately.
+//
+// Also returns shortfallValue — the Σ(price × requestedQty) over just the
+// short SKUs — so every caller that needs to freeze CRF.shortfallAmount
+// (runPostApprovalStockCheck, swapSouvenirLines) computes it the same way,
+// rather than each re-deriving it from priceBySku/requestedBySku itself.
+//
+// Throws (does not catch) if thcmShopClient.getStock itself fails — e.g.
+// THCM Shop is down/unreachable. That's deliberate: this function's job is
+// only to answer "what's in stock", not to decide what a failure to answer
+// means for the CRF. runPostApprovalStockCheck (the only caller that can
+// reach this from an unattended context — the post-approval hook) is what
+// catches it and marks the CRF STOCK_CHECK_FAILED; swapSouvenirLines and
+// executeOrderPlacement are both user-initiated requests, so letting the
+// error bubble there and surface as a normal failed request is correct too.
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function evaluateSouvenirStock(
@@ -59,6 +120,7 @@ async function evaluateSouvenirStock(
   allInStock: boolean;
   priceBySku: Map<string, number>;
   requestedBySku: Map<string, number>;
+  shortfallValue: number;
 }> {
   // Only lines still "live" — a DEBITED or already-ORDERED line is a
   // resolved historical fact, not something a later stock refresh should
@@ -76,6 +138,7 @@ async function evaluateSouvenirStock(
       allInStock: true,
       priceBySku: new Map(),
       requestedBySku: new Map(),
+      shortfallValue: 0,
     };
   }
 
@@ -98,10 +161,20 @@ async function evaluateSouvenirStock(
     );
   }
 
+  // TEST-ONLY — see getForcedOutOfStockSkus above. Resolved once per call
+  // and unioned into the real shortage set below rather than skipping the
+  // real THCM call: the real price/availability data is still fetched and
+  // used, only the in-stock/short verdict for these specific SKUs is
+  // overridden, so everything downstream (debit-note pricing, etc.) keeps
+  // behaving exactly as it would for a genuine shortage.
+  const forcedOutOfStockSkus = getForcedOutOfStockSkus();
+
   const shortSkus = new Set<string>();
   for (const [sku, requestedQty] of requestedBySku) {
     const availableQty = availableBySku.get(sku) ?? 0; // unknown SKU → treated as 0 available
-    if (requestedQty > availableQty) shortSkus.add(sku);
+    if (requestedQty > availableQty || forcedOutOfStockSkus.has(sku)) {
+      shortSkus.add(sku);
+    }
   }
 
   await Promise.all(
@@ -117,25 +190,46 @@ async function evaluateSouvenirStock(
     ),
   );
 
-  return { allInStock: shortSkus.size === 0, priceBySku, requestedBySku };
+  let shortfallValue = 0;
+  for (const sku of shortSkus) {
+    shortfallValue +=
+      (requestedBySku.get(sku) ?? 0) * (priceBySku.get(sku) ?? 0);
+  }
+
+  return {
+    allInStock: shortSkus.size === 0,
+    priceBySku,
+    requestedBySku,
+    shortfallValue,
+  };
 }
 
 // Applies an evaluateSouvenirStock result to the CRF's own status — but
-// only while the CRF is still in one of the two statuses a stock refresh
-// is allowed to move between. A refresh triggered after the order is
-// already placed (or cancelled, or closed) must not clobber that.
+// only while the CRF is still in one of the statuses a stock refresh is
+// allowed to move between. A refresh triggered after the order is already
+// placed (or cancelled, or closed) must not clobber that. extraData is
+// merged into the same update so callers that also need to freeze
+// shortfallAmount/pendingDebitAmount (swapSouvenirLines) don't have to
+// duplicate this status-transition guard with a second write.
 async function applyStockResultToCrf(
   tx: Prisma.TransactionClient,
   crfId: string,
   allInStock: boolean,
+  extraData: Prisma.CRFUpdateInput = {},
 ): Promise<void> {
   const crf = await tx.cRF.findUnique({ where: { id: crfId } });
   if (!crf) throw new ApiError(404, "CRF not found");
-  if (crf.status !== "APPROVED" && crf.status !== "STOCK_SHORTFALL") return;
+  if (
+    crf.status !== "APPROVED" &&
+    crf.status !== "STOCK_SHORTFALL" &&
+    crf.status !== "STOCK_CHECK_FAILED"
+  ) {
+    return;
+  }
 
   await tx.cRF.update({
     where: { id: crfId },
-    data: { status: allInStock ? "APPROVED" : "STOCK_SHORTFALL" },
+    data: { status: allInStock ? "APPROVED" : "STOCK_SHORTFALL", ...extraData },
   });
 }
 
@@ -155,7 +249,7 @@ async function applyStockResultToCrf(
 // site wraps the call in try/catch (via safeNotifyCrfEvent) so a
 // notification failure can never turn an operation that already succeeded
 // into a failed request — the same defensive-logging posture
-// mail.service.ts and workflow.service.ts's postFinalApprovalHook use.
+// workflow.service.ts's post-final-approval hook wrapper uses.
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function getOwnerWorkspaceId(ownerId: string): Promise<string | null> {
@@ -168,7 +262,7 @@ async function getOwnerWorkspaceId(ownerId: string): Promise<string | null> {
 
 // MAP's app administrators for this workspace, minus the owner themself
 // (the owner is always notified separately — this is only for the
-// "someone else needs to act" fan-out on shortfall/failed).
+// "someone else needs to act" fan-out on shortfall/failed/ready-to-order).
 async function getMapAdminIds(
   workspaceId: string,
   excludeUserId: string,
@@ -259,37 +353,146 @@ async function safeNotifyCrfEvent(
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// markStockCheckFailed — the Shopify-down branch of the post-approval
+// stock check. Called OUTSIDE the failed $transaction (which has already
+// rolled back and carries none of its intended writes), as its own
+// best-effort update: mark the CRF STOCK_CHECK_FAILED, log it, and notify
+// owner + admins with a retry prompt. Mirrors the ORDER_FAILED branch in
+// executeOrderPlacement below — same audience, same shape, just a
+// different failure point in the pipeline (checking stock vs. placing the
+// order).
+//
+// Deliberately NOT wrapped in its own try/catch the way safeNotifyCrfEvent
+// wraps notifications: if the CRF status update itself fails (DB down),
+// there's nothing else this function can do — it bubbles, and the caller
+// (runPostApprovalStockCheck) already treats "the whole check failed" as
+// its outcome either way.
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function markStockCheckFailed(crfId: string): Promise<void> {
+  const crf = await prisma.cRF.update({
+    where: { id: crfId },
+    data: { status: "STOCK_CHECK_FAILED" },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      subjectType: "EVENT_PROPOSAL",
+      subjectId: crf.epcId,
+      actorId: null,
+      action: "CRF_STOCK_CHECK_FAILED",
+      workflowId: null,
+      stageId: null,
+      metadata: {
+        reason: "Post-approval stock check could not reach the souvenir store.",
+      },
+    },
+  });
+
+  const workspaceId = await getOwnerWorkspaceId(crf.created_by_id);
+  if (!workspaceId) {
+    logger.error(
+      `[crfOrder.service] CRF owner ${crf.created_by_id} has no workspace membership — skipping stock-check-failed notification`,
+    );
+    return;
+  }
+  const adminIds = await getMapAdminIds(workspaceId, crf.created_by_id);
+
+  await safeNotifyCrfEvent({
+    recipientIds: [crf.created_by_id, ...adminIds],
+    workspaceId,
+    epcId: crf.epcId,
+    title: "Souvenir stock check failed",
+    body: "We couldn't reach the souvenir store to confirm stock after approval. Retry the check from the CRF once the store is back up.",
+    templateName: "crf-stock-check-failed",
+    templateData: { crfId: crf.id },
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // runPostApprovalStockCheck — called by the EPC workflow's final-approval
-// hook (workflowSubject.helper.ts / workflow.service.ts). System-triggered,
-// not a user action, so there's no actor/permission check here — the caller
-// already represents the approval event itself (actorId is left null on
-// the ActivityLog rows this writes, same as any other system-triggered
-// event).
+// hook (workflowSubject.helper.ts's postFinalApprovalHooks, invoked from
+// workflow.service.ts's approveStage, via runEventProposalFinalApprovalHooks
+// below), AND by retryStockCheck below (a user-initiated retry once the
+// CRF is STOCK_CHECK_FAILED). System-triggered in the first case, so
+// there's no actor/permission check in here — the caller already
+// represents either the approval event itself or a permission check it
+// already ran (actorId is left null on the ActivityLog rows this writes,
+// same as any other system-triggered event).
+//
+// Returns { failed: boolean } rather than throwing on a Shopify outage:
+// the approval-hook caller needs to keep going (approval already
+// succeeded, see workflow.service.ts) and surface the failure as data for
+// a toast, not as a thrown error; retryStockCheck (a real user request)
+// is the one place that turns `failed: true` back into a thrown ApiError.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Thin epcId → crfId lookup for the workflow hook below, which only has
 // the EventProposal's id (the workflow's `subjectId`) to work with. Not
 // every EPC has a CRF (Souvenirs/CRF is opt-in per EPC), so a miss here is
-// a no-op, not an error.
+// a no-op, not a failure.
 export async function runPostApprovalStockCheckForEpc(
   epcId: string,
-): Promise<void> {
+): Promise<{ failed: boolean }> {
   const crf = await prisma.cRF.findUnique({ where: { epcId } });
-  if (!crf) return;
-  await runPostApprovalStockCheck(crf.id);
+  if (!crf) return { failed: false };
+  return runPostApprovalStockCheck(crf.id);
 }
 
-export async function runPostApprovalStockCheck(crfId: string): Promise<void> {
-  const result = await prisma.$transaction(async (tx) => {
-    const souvenirCount = await tx.crfItem.count({
-      where: { crfId, category: "SOUVENIR" },
-    });
+export async function runPostApprovalStockCheck(
+  crfId: string,
+): Promise<{ failed: boolean }> {
+  let result: { crf: CRF; allInStock: boolean } | null;
 
-    // Nothing to ever order from Shopify — the CRF's work ends at approval.
-    if (souvenirCount === 0) {
+  try {
+    result = await prisma.$transaction(async (tx) => {
+      const souvenirCount = await tx.crfItem.count({
+        where: { crfId, category: "SOUVENIR" },
+      });
+
+      // Nothing to ever order from Shopify — the CRF's work ends at approval.
+      if (souvenirCount === 0) {
+        const crf = await tx.cRF.update({
+          where: { id: crfId },
+          data: { status: "CLOSED", approvedAt: new Date() },
+        });
+
+        await tx.activityLog.create({
+          data: {
+            subjectType: "EVENT_PROPOSAL",
+            subjectId: crf.epcId,
+            actorId: null,
+            action: "CRF_CLOSED",
+            workflowId: null,
+            stageId: null,
+            metadata: {
+              reason: "CRF had no souvenir lines — closed on approval.",
+            },
+          },
+        });
+
+        return null; // nothing to notify — no shortage, no owner action needed
+      }
+
+      const { allInStock, priceBySku, requestedBySku, shortfallValue } =
+        await evaluateSouvenirStock(tx, crfId);
+
+      let souvenirTotal = 0;
+      for (const [sku, qty] of requestedBySku) {
+        souvenirTotal += qty * (priceBySku.get(sku) ?? 0);
+      }
+
       const crf = await tx.cRF.update({
         where: { id: crfId },
-        data: { status: "CLOSED", approvedAt: new Date() },
+        data: {
+          status: allInStock ? "APPROVED" : "STOCK_SHORTFALL",
+          approvedAt: new Date(),
+          souvenirTotalAtApproval: souvenirTotal,
+          // The real swap budget going forward — just the short lines'
+          // value, frozen the moment the shortfall is first detected. Null
+          // when everything's in stock (there's nothing to swap against).
+          shortfallAmount: allInStock ? null : shortfallValue,
+        },
       });
 
       await tx.activityLog.create({
@@ -297,66 +500,64 @@ export async function runPostApprovalStockCheck(crfId: string): Promise<void> {
           subjectType: "EVENT_PROPOSAL",
           subjectId: crf.epcId,
           actorId: null,
-          action: "CRF_CLOSED",
+          action: allInStock ? "CRF_READY_FOR_ORDER" : "CRF_STOCK_SHORTFALL",
           workflowId: null,
           stageId: null,
           metadata: {
-            reason: "CRF had no souvenir lines — closed on approval.",
+            reason: allInStock
+              ? "Post-approval stock check found everything in stock."
+              : "Post-approval stock check found a shortage.",
           },
         },
       });
 
-      return null; // nothing to notify — no shortage, no owner action needed
-    }
-
-    const { allInStock, priceBySku, requestedBySku } =
-      await evaluateSouvenirStock(tx, crfId);
-
-    let souvenirTotal = 0;
-    for (const [sku, qty] of requestedBySku) {
-      souvenirTotal += qty * (priceBySku.get(sku) ?? 0);
-    }
-
-    const crf = await tx.cRF.update({
-      where: { id: crfId },
-      data: {
-        status: allInStock ? "APPROVED" : "STOCK_SHORTFALL",
-        approvedAt: new Date(),
-        souvenirTotalAtApproval: souvenirTotal,
-      },
+      return { crf, allInStock };
     });
+  } catch (error: any) {
+    // The transaction above has already rolled back — none of its writes
+    // happened. Shopify being unreachable (THCM shop down/timeout) is the
+    // expected cause here; mark the CRF as such so the owner/admin can see
+    // why it's stuck and retry, instead of it silently staying wherever
+    // it was before this hook ran.
+    logger.error(
+      `[crfOrder.service] Stock check failed for CRF ${crfId}: ${error.message}`,
+    );
+    await markStockCheckFailed(crfId);
+    return { failed: true };
+  }
 
-    if (!allInStock) {
-      await tx.activityLog.create({
-        data: {
-          subjectType: "EVENT_PROPOSAL",
-          subjectId: crf.epcId,
-          actorId: null,
-          action: "CRF_STOCK_SHORTFALL",
-          workflowId: null,
-          stageId: null,
-          metadata: { reason: "Post-approval stock check found a shortage." },
-        },
-      });
-    }
+  if (!result) return { failed: false };
 
-    return { crf, allInStock };
-  });
-
-  if (!result || result.allInStock) return;
-
-  const { crf } = result;
+  // ── Notify — strictly after the transaction has committed ─────────────
+  // Both outcomes (ready-to-order and shortfall) notify the same audience
+  // (owner + MAP admins), so the workspace/admin lookup is resolved once
+  // here rather than duplicated per branch.
+  const { crf, allInStock } = result;
   const workspaceId = await getOwnerWorkspaceId(crf.created_by_id);
   if (!workspaceId) {
     logger.error(
-      `[crfOrder.service] CRF owner ${crf.created_by_id} has no workspace membership — skipping shortfall notification`,
+      `[crfOrder.service] CRF owner ${crf.created_by_id} has no workspace membership — skipping post-approval notification`,
     );
-    return;
+    return { failed: false };
+  }
+  const adminIds = await getMapAdminIds(workspaceId, crf.created_by_id);
+  const recipientIds = [crf.created_by_id, ...adminIds];
+
+  if (allInStock) {
+    await safeNotifyCrfEvent({
+      recipientIds,
+      workspaceId,
+      epcId: crf.epcId,
+      title: "Ready to place your souvenir order",
+      body: "Your CRF has been approved and all souvenir items are in stock. Place your order to proceed.",
+      templateName: "crf-order-placed-prompt",
+      templateData: { crfId: crf.id },
+    });
+    return { failed: false };
   }
 
-  const adminIds = await getMapAdminIds(workspaceId, crf.created_by_id);
   await safeNotifyCrfEvent({
-    recipientIds: [crf.created_by_id, ...adminIds],
+    recipientIds,
     workspaceId,
     epcId: crf.epcId,
     title: "Souvenir stock shortfall",
@@ -364,14 +565,163 @@ export async function runPostApprovalStockCheck(crfId: string): Promise<void> {
     templateName: "crf-stock-shortfall",
     templateData: { crfId: crf.id },
   });
+  return { failed: false };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// retryStockCheck — owner OR admin, STOCK_CHECK_FAILED only. A user-
+// initiated re-run of the exact same check the approval hook already
+// tried (runPostApprovalStockCheck), so "what counts as checked" has one
+// implementation whether it's triggered by the system or by a person.
+// Unlike the hook's own call, a failure here throws: this is a live
+// request with someone waiting on the response, so "it failed again" is
+// reported the normal way (502), not swallowed into a status flag.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function retryStockCheck(actor: Actor, crfId: string) {
+  const access = await getCrfAccess(actor, crfId);
+  assertCrfAccess(access);
+
+  if (!access.isOwner && !access.isAdmin) {
+    throw new ApiError(
+      403,
+      "Only the CRF's creator or an administrator can retry the stock check",
+    );
+  }
+  if (access.crf.status !== "STOCK_CHECK_FAILED") {
+    throw new ApiError(
+      409,
+      `The stock check can only be retried while the CRF is STOCK_CHECK_FAILED (current status: ${access.crf.status})`,
+    );
+  }
+
+  const result = await runPostApprovalStockCheck(crfId);
+  if (result.failed) {
+    throw new ApiError(
+      502,
+      "The stock check failed again — the souvenir store may still be unreachable",
+    );
+  }
+
+  return { id: crfId };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// notifyMarketingOfCrfArtwork — forwards the CRF's Printed Material and
+// Artwork line items to the marketing team's mailbox once the EPC is fully
+// approved, so marketing can act on artwork/print requirements without
+// needing MAP access. Souvenirs are deliberately excluded — those are
+// Shopify-fulfilled and already covered by the stock-check/order flow
+// above; this is strictly the catalog (non-Shopify) side of the CRF.
+//
+// The marketing mailbox is a fixed address (MARKETING_NOTIFY_EMAIL env
+// var), not a MAP user, so this bypasses notify()/notifyCrfEvent (both
+// assume an in-app recipient with a workspace membership) and calls
+// addMailJob directly — the one place in this file that does so.
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function notifyMarketingOfCrfArtwork(epcId: string): Promise<void> {
+  const marketingEmail = process.env.MARKETING_NOTIFY_EMAIL;
+  if (!marketingEmail) {
+    logger.error(
+      "[crfOrder.service] MARKETING_NOTIFY_EMAIL is not configured — skipping marketing forward",
+    );
+    return;
+  }
+
+  const crf = await prisma.cRF.findUnique({ where: { epcId } });
+  if (!crf) return; // EPC has no CRF — nothing to forward
+
+  const items = await prisma.crfItem.findMany({
+    where: { crfId: crf.id, category: { in: ["PRINTED_MATERIAL", "ARTWORK"] } },
+    include: { product: true },
+    orderBy: { sortOrder: "asc" },
+  });
+  if (items.length === 0) return; // nothing for marketing to act on
+
+  const subjectMeta = await getSubjectNotificationMeta("EVENT_PROPOSAL", epcId);
+  const link = subjectMeta?.link ?? `/map/epc/${epcId}`;
+  const subjectLabel = subjectMeta?.displayLabel ?? "CRF";
+
+  await addMailJob({
+    to: marketingEmail,
+    subject: `Printed material & artwork — ${subjectLabel}`,
+    templateName: "crf-artwork-marketing-forward",
+    templateData: {
+      epcId,
+      subjectLabel,
+      dashboardUrl: `${process.env.FRONTEND_URL ?? ""}${link}`,
+      items: items.map((item) => ({
+        category: item.category,
+        name: item.product?.name ?? item.product?.partNumber ?? "—",
+        quantity: item.quantity?.toString() ?? "—",
+        width: item.width ?? null,
+        height: item.height ?? null,
+        unit: item.unit ?? null,
+      })),
+    },
+  });
+}
+
+async function safeNotifyMarketingOfCrfArtwork(epcId: string): Promise<void> {
+  try {
+    await notifyMarketingOfCrfArtwork(epcId);
+  } catch (error: any) {
+    logger.error(
+      `[crfOrder.service] Marketing artwork forward failed for EPC ${epcId}: ${error.message}`,
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// runEventProposalFinalApprovalHooks — the single entry point registered
+// for EVENT_PROPOSAL in workflowSubject.helper.ts's postFinalApprovalHooks.
+// Composes the two independent EPC-final-approval actions that live in
+// this file: the souvenir stock check (above) and the marketing artwork
+// forward (above). Run concurrently, and each already isolates its own
+// failures internally (safeNotifyCrfEvent/markStockCheckFailed inside the
+// stock check's own path; safeNotifyMarketingOfCrfArtwork here), so one
+// failing can never block or hide a failure in the other.
+//
+// Returns { stockCheckFailed } — the one outcome of these two hooks that's
+// user-actionable and worth surfacing as a toast on the approve response
+// (workflow.service.ts's approveStage passes this straight through). The
+// marketing forward's own success/failure is deliberately not surfaced the
+// same way: it's an internal mailbox forward with no end-user action to
+// take, so it stays a logged, silent best-effort exactly as before.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export async function runEventProposalFinalApprovalHooks(
+  epcId: string,
+): Promise<{ stockCheckFailed: boolean }> {
+  const [stockCheckResult] = await Promise.all([
+    runPostApprovalStockCheckForEpc(epcId),
+    safeNotifyMarketingOfCrfArtwork(epcId),
+  ]);
+
+  return { stockCheckFailed: stockCheckResult.failed };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // swapSouvenirLines — owner-only, STOCK_SHORTFALL-only. Full replace of the
-// souvenir lines (catalog lines untouched), re-checked against the
-// approval-time value cap: the swapped-in set can't cost more than what was
-// originally approved, since that's the whole point of freezing
-// souvenirTotalAtApproval at approval time.
+// souvenir lines (catalog lines untouched), re-checked against the frozen
+// CRF.shortfallAmount — NOT souvenirTotalAtApproval. Charging against the
+// shortfall value itself (rather than the whole approved total) and only
+// for the portion that exceeds what was already kept is what keeps the
+// budget from drifting as kept (in-stock) lines get re-priced live:
+//
+//   newSpend = Σ max(0, newQty(sku) − priorKeptQty(sku)) × currentPrice(sku)
+//
+// priorKeptQty is snapshotted BEFORE the old lines are wiped, from whatever
+// was REQUESTED (i.e. in-stock, kept) going into this swap — so re-adding
+// the same kept quantity back costs nothing extra, and only genuinely new
+// or increased quantity counts against the shortfall budget.
+//
+// Two outcomes once the swap resolves:
+//   - Still short: shortfallAmount is re-frozen to the new shortfall value.
+//   - Fully resolved: any unused balance (budget − newSpend) is added to
+//     CRF.pendingDebitAmount, to be folded into the eventual order's debit
+//     note by executeOrderPlacement rather than lost.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function swapSouvenirLines(
@@ -393,28 +743,57 @@ export async function swapSouvenirLines(
   }
 
   return prisma.$transaction(async (tx) => {
+    // Snapshot what was already kept (in-stock, REQUESTED) before the old
+    // lines are wiped — this is the baseline that re-adding the same
+    // quantity back costs nothing against.
+    const priorKeptItems = await tx.crfItem.findMany({
+      where: { crfId, category: "SOUVENIR", status: "REQUESTED" },
+    });
+    const priorKeptQtyBySku = new Map<string, number>();
+    for (const item of priorKeptItems) {
+      const sku = item.sku as string;
+      priorKeptQtyBySku.set(
+        sku,
+        (priorKeptQtyBySku.get(sku) ?? 0) + (item.requestedQty ?? 0),
+      );
+    }
+
     await tx.crfItem.deleteMany({ where: { crfId, category: "SOUVENIR" } });
 
     const rows = buildShopifyItemRows(crfId, items);
     await tx.crfItem.createMany({ data: rows });
 
-    const { allInStock, priceBySku, requestedBySku } =
+    const { allInStock, priceBySku, requestedBySku, shortfallValue } =
       await evaluateSouvenirStock(tx, crfId);
 
-    let newTotal = 0;
+    let newSpend = 0;
     for (const [sku, qty] of requestedBySku) {
-      newTotal += qty * (priceBySku.get(sku) ?? 0);
+      const extraQty = Math.max(0, qty - (priorKeptQtyBySku.get(sku) ?? 0));
+      newSpend += extraQty * (priceBySku.get(sku) ?? 0);
     }
 
-    const cap = Number(access.crf.souvenirTotalAtApproval ?? 0);
-    if (cap > 0 && newTotal > cap) {
+    const budget = Number(access.crf.shortfallAmount ?? 0);
+    if (budget > 0 && newSpend > budget) {
       throw new ApiError(
         400,
-        `Swapped souvenir total (${newTotal.toFixed(2)}) exceeds the approved cap (${cap.toFixed(2)})`,
+        `Swapped souvenir spend (₹${newSpend.toFixed(2)}) exceeds the shortfall budget (₹${budget.toFixed(2)})`,
       );
     }
 
-    await applyStockResultToCrf(tx, crfId, allInStock);
+    if (allInStock) {
+      const leftover = budget - newSpend;
+      const pendingDebitAmount =
+        Number(access.crf.pendingDebitAmount ?? 0) +
+        (leftover > 0 ? leftover : 0);
+      await applyStockResultToCrf(tx, crfId, allInStock, {
+        shortfallAmount: null,
+        pendingDebitAmount,
+      });
+    } else {
+      await applyStockResultToCrf(tx, crfId, allInStock, {
+        shortfallAmount: shortfallValue,
+      });
+    }
 
     await tx.activityLog.create({
       data: {
@@ -438,6 +817,12 @@ export async function swapSouvenirLines(
 // ORDER_FAILED) after each does its own permission/status check. Kept as
 // one function because the Shopify call and its response handling must
 // behave identically regardless of which caller reached it.
+//
+// Any CRF.pendingDebitAmount left over from an earlier under-spent swap
+// (see swapSouvenirLines) is folded into this order's debitNoteAmount
+// here — whether or not this particular placement is itself accepting a
+// partial shortfall — and cleared from the CRF, since it only ever exists
+// to be billed at the next successful order placement.
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function executeOrderPlacement(
@@ -513,6 +898,14 @@ async function executeOrderPlacement(
         (item.requestedQty ?? 0) * (priceBySku.get(item.sku as string) ?? 0),
       0,
     );
+  }
+
+  // Fold in any balance carried forward from an earlier under-spent swap
+  // (see swapSouvenirLines) — independent of whether THIS placement is
+  // itself accepting a partial shortfall.
+  const pendingDebitAmount = Number(crf.pendingDebitAmount ?? 0);
+  if (pendingDebitAmount > 0) {
+    debitNoteAmount = (debitNoteAmount ?? 0) + pendingDebitAmount;
   }
 
   const payload: ThcmCreateOrderRequest = {
@@ -636,7 +1029,10 @@ async function executeOrderPlacement(
       });
     }
 
-    await tx.cRF.update({ where: { id: crf.id }, data: { status: "ORDERED" } });
+    await tx.cRF.update({
+      where: { id: crf.id },
+      data: { status: "ORDERED", pendingDebitAmount: null },
+    });
 
     await tx.activityLog.create({
       data: {
@@ -658,15 +1054,22 @@ async function executeOrderPlacement(
 
   const workspaceId = await getOwnerWorkspaceId(crf.created_by_id);
   if (workspaceId) {
+    // shortItems.length > 0 means this debit note (at least partly) covers
+    // items dropped from THIS order; otherwise, if there's still a nonzero
+    // amount, it's entirely a carried-forward balance from an earlier swap.
+    const debitNoteBody =
+      debitNoteAmount !== undefined
+        ? shortItems.length > 0
+          ? `Your souvenir order has been placed. A debit note of ₹${debitNoteAmount.toFixed(2)} applies for the out-of-stock items.`
+          : `Your souvenir order has been placed. A debit note of ₹${debitNoteAmount.toFixed(2)} applies, carried forward from an earlier swap.`
+        : "Your souvenir order has been placed successfully.";
+
     await safeNotifyCrfEvent({
       recipientIds: [crf.created_by_id],
       workspaceId,
       epcId: crf.epcId,
       title: "Souvenir order placed",
-      body:
-        debitNoteAmount !== undefined
-          ? `Your souvenir order has been placed. A debit note of ₹${debitNoteAmount.toFixed(2)} applies for the out-of-stock items.`
-          : "Your souvenir order has been placed successfully.",
+      body: debitNoteBody,
       templateName: "crf-order-placed",
       templateData: {
         crfId: crf.id,

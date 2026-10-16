@@ -166,13 +166,18 @@ enum FuelType {
 // ─────────────────────────────────────────────
 
 enum CrfStatus {
-  OPEN              // editable while EPC is draft/clarification
-  APPROVED          // EPC approved, stock confirmed, awaiting recipient/address + Place order
-  STOCK_SHORTFALL   // EPC approved, some souvenir lines short — proposer must swap or accept partial
-  ORDER_FAILED      // Create Order call failed (address/integration) — admin can retry
-  ORDERED           // Shopify order placed
-  CANCELLED         // EPC rejected, or order cancelled
-  CLOSED            // ORDERED + every manual (printed material/artwork) line delivered
+  OPEN                // editable while EPC is draft/clarification
+  APPROVED            // EPC approved, stock confirmed, awaiting recipient/address + Place order
+  STOCK_SHORTFALL     // EPC approved, some souvenir lines short — proposer must swap or accept partial
+  STOCK_CHECK_FAILED  // EPC approved, but the post-approval Shopify stock check couldn't reach the
+                      // store (THCM Shop down/unreachable) — never got to APPROVED/STOCK_SHORTFALL.
+                      // Owner or admin can retry the check once the store is back (see
+                      // crfOrder.service.ts's retryStockCheck). Distinct from ORDER_FAILED below:
+                      // this is a failure to CHECK stock, not a failure to PLACE an already-confirmed order.
+  ORDER_FAILED        // Create Order call failed (address/integration) — admin can retry
+  ORDERED             // Shopify order placed
+  CANCELLED           // EPC rejected, or order cancelled
+  CLOSED              // ORDERED + every manual (printed material/artwork) line delivered
 }
 
 enum CrfRecipientType {
@@ -861,9 +866,26 @@ model EPF {
 //    right before the proposer places the order — not during drafting.
 //  - Stock check (post-approval) and order placement (on "Place order") are
 //    synchronous calls to thcmShop.service.ts — no background worker/queue.
+//    A stock check that can't reach THCM Shop (the store is down/
+//    unreachable) marks the CRF STOCK_CHECK_FAILED rather than leaving it
+//    silently un-advanced — see CrfStatus and crfOrder.service.ts's
+//    runPostApprovalStockCheck/retryStockCheck.
 //  - On a stock shortfall the proposer either swaps souvenir lines and
 //    resubmits, or accepts a partial order with the shortfall recorded as
 //    CrfOrder.debitNoteAmount for Tata Hitachi to settle outside THCM.
+//  - shortfallAmount / pendingDebitAmount (added for the swap-budget fix):
+//    souvenirTotalAtApproval is the frozen total of ALL approved souvenir
+//    value (in-stock + short combined) and is kept only as the original
+//    approval-time snapshot; it is no longer used as the swap budget cap,
+//    because live re-pricing of the KEPT (in-stock) lines let that cap
+//    drift away from the true shortfall value. shortfallAmount is instead
+//    frozen to just the short lines' value whenever the CRF enters/re-
+//    enters STOCK_SHORTFALL (post-approval check or after a swap that's
+//    still short), and is the real swap budget. pendingDebitAmount
+//    accumulates the unused balance whenever a swap resolves the shortfall
+//    for less than that budget — carried forward and folded into
+//    CrfOrder.debitNoteAmount at order placement. See swapSouvenirLines /
+//    runPostApprovalStockCheck / executeOrderPlacement in crfOrder.service.ts.
 // ─────────────────────────────────────────────
 
 model CRF {
@@ -906,7 +928,9 @@ model CRF {
   addressGstin      String?          @db.VarChar(15)
   addressValidatedAt DateTime?
 
-  souvenirTotalAtApproval Decimal?  @db.Decimal(12, 2)  // frozen cap for shortfall swaps (assumption B)
+  souvenirTotalAtApproval Decimal?  @db.Decimal(12, 2)  // frozen approval-time snapshot of ALL souvenir value (in-stock + short); historical only, no longer used as the swap cap — see shortfallAmount
+  shortfallAmount         Decimal?  @db.Decimal(12, 2)  // frozen value of the CURRENT OUT_OF_STOCK lines; the real swap budget; null when not in shortfall
+  pendingDebitAmount      Decimal?  @db.Decimal(12, 2)  // leftover from an under-spent swap, carried forward and billed at order placement
   approvedAt              DateTime?
   itemsChangedAt          DateTime?
   closedAt                DateTime?
@@ -984,7 +1008,7 @@ model CrfOrder {
   shopifyOrderId  String   @unique
   totalPrice      Decimal  @db.Decimal(12, 2)
   lines           Json                              // Shopify-confirmed snapshot: [{ sku, title, quantity, unitPrice, lineTotal }]
-  debitNoteAmount Decimal? @db.Decimal(12, 2)        // set only on the accept-partial path
+  debitNoteAmount Decimal? @db.Decimal(12, 2)        // set on the accept-partial path, and/or folded in from CRF.pendingDebitAmount at placement
 
   status        CrfOrderStatus @default(ACTIVE)
   cancelledAt   DateTime?
