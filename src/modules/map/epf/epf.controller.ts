@@ -352,8 +352,7 @@ export const uploadLineItemAttachment = async (
     await uploadToS3(s3Key, req.file.buffer, req.file.mimetype);
 
     res.status(200).json({
-      s3Key,
-      fileName: req.file.originalname,
+      data: { s3Key, fileName: req.file.originalname },
     });
   } catch (error) {
     next(error);

@@ -64,7 +64,6 @@ function attachSourceType<T extends RawEventProposalRow>(
   dualVariant: boolean;
 } {
   const { report_template_key, ...rest } = row;
-  console.log({ report_template_key });
   const template = report_template_key
     ? EVENT_REPORT_TEMPLATES[report_template_key]
     : undefined;
