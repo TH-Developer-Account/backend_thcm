@@ -333,7 +333,12 @@ export async function resolveEventReportData(
     where: { id: epcId },
     include: {
       event_name: { select: { title: true } },
-      epf: { select: { eventBudget: true } },
+      // Branch and EPF.dealerName back the report's "Branch" / "Dealer Name"
+      // input fields (see EPC_INPUT_FIELDS in eventReportTemplate.defination.ts) —
+      // these replaced the old district/state/dealership fields, which pointed
+      // at EventProposal columns that never existed.
+      branch: { select: { branch_name: true } },
+      epf: { select: { eventBudget: true, dealerName: true } },
     },
   });
 

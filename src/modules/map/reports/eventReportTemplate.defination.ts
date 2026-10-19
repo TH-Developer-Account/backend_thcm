@@ -13,17 +13,19 @@ const EPC_INPUT_FIELDS = {
     reportLabel: label,
     source: { kind: "EPC_FIELD", path: "location" } as const,
   }),
-  district: {
-    reportLabel: "District",
-    source: { kind: "EPC_FIELD", path: "district" } as const,
+  // Branch is the EPC's own org-unit assignment (Branch.branch_name) —
+  // replaces the old district/state pair, which pointed at EventProposal
+  // columns that never existed and always resolved to null.
+  branch: {
+    reportLabel: "Branch",
+    source: { kind: "EPC_FIELD", path: "branch.branch_name" } as const,
   },
-  state: {
-    reportLabel: "State",
-    source: { kind: "EPC_FIELD", path: "state" } as const,
-  },
-  dealership: {
-    reportLabel: "Dealership",
-    source: { kind: "EPC_FIELD", path: "dealership" } as const,
+  // Dealer name lives on the EPF (EPF.dealerName), not the EPC — reached via
+  // the same EPC_FIELD path mechanism since epf is attached to the fetched
+  // epc record. Replaces the old "dealership" field for the same reason.
+  dealerName: {
+    reportLabel: "Dealer Name",
+    source: { kind: "EPC_FIELD", path: "epf.dealerName" } as const,
   },
 };
 
@@ -244,9 +246,8 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.eventDateFrom(),
         EPC_INPUT_FIELDS.location(),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
-        EPC_INPUT_FIELDS.dealership,
+        EPC_INPUT_FIELDS.branch,
+        EPC_INPUT_FIELDS.dealerName,
       ],
       outcomeFields: [
         ...STANDARD_PARTICIPANT_OUTCOMES,
@@ -263,9 +264,8 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.eventDateFrom(),
         EPC_INPUT_FIELDS.location(),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
-        EPC_INPUT_FIELDS.dealership,
+        EPC_INPUT_FIELDS.branch,
+        EPC_INPUT_FIELDS.dealerName,
       ],
       outcomeFields: [
         ...STANDARD_PARTICIPANT_OUTCOMES,
@@ -282,9 +282,8 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.eventDateFrom(),
         EPC_INPUT_FIELDS.location(),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
-        EPC_INPUT_FIELDS.dealership,
+        EPC_INPUT_FIELDS.branch,
+        EPC_INPUT_FIELDS.dealerName,
       ],
       outcomeFields: [
         ...STANDARD_PARTICIPANT_OUTCOMES,
@@ -300,9 +299,8 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
       inputFields: [
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.location(),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
-        EPC_INPUT_FIELDS.dealership,
+        EPC_INPUT_FIELDS.branch,
+        EPC_INPUT_FIELDS.dealerName,
       ],
       outcomeFields: [
         {
@@ -378,9 +376,8 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
       inputFields: [
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.location(),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
-        EPC_INPUT_FIELDS.dealership,
+        EPC_INPUT_FIELDS.branch,
+        EPC_INPUT_FIELDS.dealerName,
       ],
       outcomeFields: [
         {
@@ -641,8 +638,7 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
       inputFields: [
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.location(),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
+        EPC_INPUT_FIELDS.branch,
       ],
       outcomeFields: [
         {
@@ -681,8 +677,7 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.eventDateFrom(),
         EPC_INPUT_FIELDS.location(),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
+        EPC_INPUT_FIELDS.branch,
       ],
       outcomeFields: [
         {
@@ -778,8 +773,7 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
       inputFields: [
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.location(),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
+        EPC_INPUT_FIELDS.branch,
       ],
       outcomeFields: [
         {
@@ -826,8 +820,7 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
       inputFields: [
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.location(),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
+        EPC_INPUT_FIELDS.branch,
       ],
       outcomeFields: [
         {
@@ -860,8 +853,7 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
       inputFields: [
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.location(),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
+        EPC_INPUT_FIELDS.branch,
       ],
       outcomeFields: [
         {
@@ -894,8 +886,7 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
       inputFields: [
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.location(),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
+        EPC_INPUT_FIELDS.branch,
       ],
       outcomeFields: [
         {
@@ -924,8 +915,7 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
       inputFields: [
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.location("Location(s)"),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
+        EPC_INPUT_FIELDS.branch,
       ],
       outcomeFields: [
         {
@@ -977,9 +967,8 @@ export const EVENT_REPORT_TEMPLATES: Record<string, EventReportTemplateConfig> =
         EPC_INPUT_FIELDS.event,
         EPC_INPUT_FIELDS.eventDateFrom(),
         EPC_INPUT_FIELDS.location("Location(s)"),
-        EPC_INPUT_FIELDS.district,
-        EPC_INPUT_FIELDS.state,
-        EPC_INPUT_FIELDS.dealership,
+        EPC_INPUT_FIELDS.branch,
+        EPC_INPUT_FIELDS.dealerName,
       ],
       outcomeFields: [
         {
