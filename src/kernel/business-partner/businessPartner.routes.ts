@@ -2,27 +2,27 @@ import { Router } from "express";
 
 import asyncHandler from "@shared/middleware/async.middleware";
 import {
-  requireAdministrationAccess,
-  requireAuth,
-  requireSuperAdmin,
+	requireAdministrationAccess,
+	requireAuth,
+	requireSuperAdmin,
 } from "@auth/auth.middleware";
 
 import {
-  createBusinessPartner,
-  getBusinessPartnerById,
-  listBusinessPartners,
-  updateBusinessPartner,
-  deactivateBusinessPartner,
-  createBusinessPartnerContact,
-  listBusinessPartnerContacts,
-  getBusinessPartnerContactById,
-  updateBusinessPartnerContact,
-  deleteBusinessPartnerContact,
-  createBusinessPartnerAddress,
-  listBusinessPartnerAddresses,
-  getBusinessPartnerAddressById,
-  updateBusinessPartnerAddress,
-  deleteBusinessPartnerAddress,
+	createBusinessPartner,
+	getBusinessPartnerById,
+	listBusinessPartners,
+	updateBusinessPartner,
+	deactivateBusinessPartner,
+	createBusinessPartnerContact,
+	listBusinessPartnerContacts,
+	getBusinessPartnerContactById,
+	updateBusinessPartnerContact,
+	deleteBusinessPartnerContact,
+	createBusinessPartnerAddress,
+	listBusinessPartnerAddresses,
+	getBusinessPartnerAddressById,
+	updateBusinessPartnerAddress,
+	deleteBusinessPartnerAddress,
 } from "./businessPartner.controller";
 
 const router = Router();
@@ -34,62 +34,62 @@ const canWrite = [requireSuperAdmin];
 
 router.use(requireAuth);
 
-router.get("/", canRead, asyncHandler(listBusinessPartners));
-router.get("/:id", canRead, asyncHandler(getBusinessPartnerById));
+router.get("/", asyncHandler(listBusinessPartners));
+router.get("/:id", asyncHandler(getBusinessPartnerById));
 router.post("/", canWrite, asyncHandler(createBusinessPartner));
 router.patch("/:id", canWrite, asyncHandler(updateBusinessPartner));
 router.delete("/:id", canWrite, asyncHandler(deactivateBusinessPartner));
 
 router.get(
-  "/:businessPartnerId/contacts",
-  canRead,
-  asyncHandler(listBusinessPartnerContacts),
+	"/:businessPartnerId/contacts",
+	canRead,
+	asyncHandler(listBusinessPartnerContacts),
 );
 router.get(
-  "/:businessPartnerId/contacts/:id",
-  canRead,
-  asyncHandler(getBusinessPartnerContactById),
+	"/:businessPartnerId/contacts/:id",
+	canRead,
+	asyncHandler(getBusinessPartnerContactById),
 );
 router.post(
-  "/:businessPartnerId/contacts",
-  canWrite,
-  asyncHandler(createBusinessPartnerContact),
+	"/:businessPartnerId/contacts",
+	canWrite,
+	asyncHandler(createBusinessPartnerContact),
 );
 router.patch(
-  "/:businessPartnerId/contacts/:id",
-  canWrite,
-  asyncHandler(updateBusinessPartnerContact),
+	"/:businessPartnerId/contacts/:id",
+	canWrite,
+	asyncHandler(updateBusinessPartnerContact),
 );
 router.delete(
-  "/:businessPartnerId/contacts/:id",
-  canWrite,
-  asyncHandler(deleteBusinessPartnerContact),
+	"/:businessPartnerId/contacts/:id",
+	canWrite,
+	asyncHandler(deleteBusinessPartnerContact),
 );
 
 router.get(
-  "/:businessPartnerId/addresses",
-  canRead,
-  asyncHandler(listBusinessPartnerAddresses),
+	"/:businessPartnerId/addresses",
+	canRead,
+	asyncHandler(listBusinessPartnerAddresses),
 );
 router.get(
-  "/:businessPartnerId/addresses/:id",
-  canRead,
-  asyncHandler(getBusinessPartnerAddressById),
+	"/:businessPartnerId/addresses/:id",
+	canRead,
+	asyncHandler(getBusinessPartnerAddressById),
 );
 router.post(
-  "/:businessPartnerId/addresses",
-  canWrite,
-  asyncHandler(createBusinessPartnerAddress),
+	"/:businessPartnerId/addresses",
+	canWrite,
+	asyncHandler(createBusinessPartnerAddress),
 );
 router.patch(
-  "/:businessPartnerId/addresses/:id",
-  canWrite,
-  asyncHandler(updateBusinessPartnerAddress),
+	"/:businessPartnerId/addresses/:id",
+	canWrite,
+	asyncHandler(updateBusinessPartnerAddress),
 );
 router.delete(
-  "/:businessPartnerId/addresses/:id",
-  canWrite,
-  asyncHandler(deleteBusinessPartnerAddress),
+	"/:businessPartnerId/addresses/:id",
+	canWrite,
+	asyncHandler(deleteBusinessPartnerAddress),
 );
 
 export default router;
