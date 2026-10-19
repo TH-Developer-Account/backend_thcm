@@ -3,6 +3,7 @@ generator client {
   output   = "../src/prisma/generated/prisma"
 }
 
+
 datasource db {
   provider = "postgresql"
 }
@@ -1032,6 +1033,14 @@ model LineItem {
   height   String?
   width    String?
   unit     String?
+
+  // Proposer-typed note on this specific line (EPF overhead lines today).
+  // Distinct from ProductMaster.description (the catalog item's generic
+  // blurb) — this is what the proposer actually wrote for this line, and
+  // takes priority over the catalog default when both exist (see
+  // getDescription in epf.mapper.ts on the frontend). No length cap for
+  // now — same as the other free-text fields on this model.
+  description String?
 
   // One attachment (JPEG or PDF, ≤5MB, validated at the upload endpoint) per
   // line item. Key stored, not URL — see "S3 keys are stored, not URLs" in

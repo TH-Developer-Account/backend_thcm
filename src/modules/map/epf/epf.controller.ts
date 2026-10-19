@@ -22,6 +22,7 @@ import {
 //     {
 //       "productId": "uuid",
 //       "amount": 15000,
+//       "description": "Vendor quote #4521, includes installation",     // optional, proposer-typed note on this line
 //       "attachmentS3Key": "epf/<epcId>/line-items/<uuid>.jpg",   // optional, from POST /epf/line-item/attachment
 //       "attachmentFileName": "quotation.jpg"                      // optional
 //     },
@@ -87,6 +88,9 @@ export const createEPF = async (
 
       // 3️⃣ Prepare line items — amount comes straight from the proposer's
       // input; there is no quantity or catalog rate behind an overhead line.
+      // description is an optional free-text note the proposer typed on this
+      // specific line, distinct from ProductMaster.description (the catalog
+      // item's generic blurb) — see getDescription in epf.mapper.ts.
       // attachmentS3Key/attachmentFileName are optional — set only when the
       // proposer uploaded a file via POST /epf/line-item/attachment first.
       const lineItemsData = lineItems.map((item: Record<string, string>) => {
@@ -103,6 +107,7 @@ export const createEPF = async (
           quantity: 1,
           rate: null,
           amount,
+          description: item.description ?? null,
           attachmentS3Key: item.attachmentS3Key ?? null,
           attachmentFileName: item.attachmentFileName ?? null,
         };
@@ -151,6 +156,7 @@ export const createEPF = async (
 //     {
 //       "productId": "uuid1",
 //       "amount": 18000,
+//       "description": "Vendor quote #4521, includes installation",
 //       "attachmentS3Key": "epf/<epcId>/line-items/<uuid>.pdf",
 //       "attachmentFileName": "quotation.pdf"
 //     },
@@ -229,6 +235,7 @@ export const updateEPF = async (
           quantity: 1,
           rate: null,
           amount,
+          description: item.description ?? null,
           attachmentS3Key: item.attachmentS3Key ?? null,
           attachmentFileName: item.attachmentFileName ?? null,
         };
@@ -352,7 +359,10 @@ export const uploadLineItemAttachment = async (
     await uploadToS3(s3Key, req.file.buffer, req.file.mimetype);
 
     res.status(200).json({
-      data: { s3Key, fileName: req.file.originalname },
+      data: {
+        s3Key,
+        fileName: req.file.originalname,
+      },
     });
   } catch (error) {
     next(error);

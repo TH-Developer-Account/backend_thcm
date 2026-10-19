@@ -49,6 +49,7 @@ export type LineItemMinAggregateOutputType = {
   height: string | null
   width: string | null
   unit: string | null
+  description: string | null
   attachmentS3Key: string | null
   attachmentFileName: string | null
   created_at: Date | null
@@ -66,6 +67,7 @@ export type LineItemMaxAggregateOutputType = {
   height: string | null
   width: string | null
   unit: string | null
+  description: string | null
   attachmentS3Key: string | null
   attachmentFileName: string | null
   created_at: Date | null
@@ -83,6 +85,7 @@ export type LineItemCountAggregateOutputType = {
   height: number
   width: number
   unit: number
+  description: number
   attachmentS3Key: number
   attachmentFileName: number
   created_at: number
@@ -114,6 +117,7 @@ export type LineItemMinAggregateInputType = {
   height?: true
   width?: true
   unit?: true
+  description?: true
   attachmentS3Key?: true
   attachmentFileName?: true
   created_at?: true
@@ -131,6 +135,7 @@ export type LineItemMaxAggregateInputType = {
   height?: true
   width?: true
   unit?: true
+  description?: true
   attachmentS3Key?: true
   attachmentFileName?: true
   created_at?: true
@@ -148,6 +153,7 @@ export type LineItemCountAggregateInputType = {
   height?: true
   width?: true
   unit?: true
+  description?: true
   attachmentS3Key?: true
   attachmentFileName?: true
   created_at?: true
@@ -252,6 +258,7 @@ export type LineItemGroupByOutputType = {
   height: string | null
   width: string | null
   unit: string | null
+  description: string | null
   attachmentS3Key: string | null
   attachmentFileName: string | null
   created_at: Date
@@ -292,6 +299,7 @@ export type LineItemWhereInput = {
   height?: Prisma.StringNullableFilter<"LineItem"> | string | null
   width?: Prisma.StringNullableFilter<"LineItem"> | string | null
   unit?: Prisma.StringNullableFilter<"LineItem"> | string | null
+  description?: Prisma.StringNullableFilter<"LineItem"> | string | null
   attachmentS3Key?: Prisma.StringNullableFilter<"LineItem"> | string | null
   attachmentFileName?: Prisma.StringNullableFilter<"LineItem"> | string | null
   created_at?: Prisma.DateTimeFilter<"LineItem"> | Date | string
@@ -312,6 +320,7 @@ export type LineItemOrderByWithRelationInput = {
   height?: Prisma.SortOrderInput | Prisma.SortOrder
   width?: Prisma.SortOrderInput | Prisma.SortOrder
   unit?: Prisma.SortOrderInput | Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   attachmentS3Key?: Prisma.SortOrderInput | Prisma.SortOrder
   attachmentFileName?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -335,6 +344,7 @@ export type LineItemWhereUniqueInput = Prisma.AtLeast<{
   height?: Prisma.StringNullableFilter<"LineItem"> | string | null
   width?: Prisma.StringNullableFilter<"LineItem"> | string | null
   unit?: Prisma.StringNullableFilter<"LineItem"> | string | null
+  description?: Prisma.StringNullableFilter<"LineItem"> | string | null
   attachmentS3Key?: Prisma.StringNullableFilter<"LineItem"> | string | null
   attachmentFileName?: Prisma.StringNullableFilter<"LineItem"> | string | null
   created_at?: Prisma.DateTimeFilter<"LineItem"> | Date | string
@@ -355,6 +365,7 @@ export type LineItemOrderByWithAggregationInput = {
   height?: Prisma.SortOrderInput | Prisma.SortOrder
   width?: Prisma.SortOrderInput | Prisma.SortOrder
   unit?: Prisma.SortOrderInput | Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   attachmentS3Key?: Prisma.SortOrderInput | Prisma.SortOrder
   attachmentFileName?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -380,6 +391,7 @@ export type LineItemScalarWhereWithAggregatesInput = {
   height?: Prisma.StringNullableWithAggregatesFilter<"LineItem"> | string | null
   width?: Prisma.StringNullableWithAggregatesFilter<"LineItem"> | string | null
   unit?: Prisma.StringNullableWithAggregatesFilter<"LineItem"> | string | null
+  description?: Prisma.StringNullableWithAggregatesFilter<"LineItem"> | string | null
   attachmentS3Key?: Prisma.StringNullableWithAggregatesFilter<"LineItem"> | string | null
   attachmentFileName?: Prisma.StringNullableWithAggregatesFilter<"LineItem"> | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"LineItem"> | Date | string
@@ -394,6 +406,7 @@ export type LineItemCreateInput = {
   height?: string | null
   width?: string | null
   unit?: string | null
+  description?: string | null
   attachmentS3Key?: string | null
   attachmentFileName?: string | null
   created_at?: Date | string
@@ -414,6 +427,7 @@ export type LineItemUncheckedCreateInput = {
   height?: string | null
   width?: string | null
   unit?: string | null
+  description?: string | null
   attachmentS3Key?: string | null
   attachmentFileName?: string | null
   created_at?: Date | string
@@ -428,6 +442,7 @@ export type LineItemUpdateInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -448,6 +463,7 @@ export type LineItemUncheckedUpdateInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -465,6 +481,7 @@ export type LineItemCreateManyInput = {
   height?: string | null
   width?: string | null
   unit?: string | null
+  description?: string | null
   attachmentS3Key?: string | null
   attachmentFileName?: string | null
   created_at?: Date | string
@@ -479,6 +496,7 @@ export type LineItemUpdateManyMutationInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -496,6 +514,7 @@ export type LineItemUncheckedUpdateManyInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -523,6 +542,7 @@ export type LineItemCountOrderByAggregateInput = {
   height?: Prisma.SortOrder
   width?: Prisma.SortOrder
   unit?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   attachmentS3Key?: Prisma.SortOrder
   attachmentFileName?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -546,6 +566,7 @@ export type LineItemMaxOrderByAggregateInput = {
   height?: Prisma.SortOrder
   width?: Prisma.SortOrder
   unit?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   attachmentS3Key?: Prisma.SortOrder
   attachmentFileName?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -563,6 +584,7 @@ export type LineItemMinOrderByAggregateInput = {
   height?: Prisma.SortOrder
   width?: Prisma.SortOrder
   unit?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   attachmentS3Key?: Prisma.SortOrder
   attachmentFileName?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
@@ -709,6 +731,7 @@ export type LineItemCreateWithoutProductInput = {
   height?: string | null
   width?: string | null
   unit?: string | null
+  description?: string | null
   attachmentS3Key?: string | null
   attachmentFileName?: string | null
   created_at?: Date | string
@@ -727,6 +750,7 @@ export type LineItemUncheckedCreateWithoutProductInput = {
   height?: string | null
   width?: string | null
   unit?: string | null
+  description?: string | null
   attachmentS3Key?: string | null
   attachmentFileName?: string | null
   created_at?: Date | string
@@ -773,6 +797,7 @@ export type LineItemScalarWhereInput = {
   height?: Prisma.StringNullableFilter<"LineItem"> | string | null
   width?: Prisma.StringNullableFilter<"LineItem"> | string | null
   unit?: Prisma.StringNullableFilter<"LineItem"> | string | null
+  description?: Prisma.StringNullableFilter<"LineItem"> | string | null
   attachmentS3Key?: Prisma.StringNullableFilter<"LineItem"> | string | null
   attachmentFileName?: Prisma.StringNullableFilter<"LineItem"> | string | null
   created_at?: Prisma.DateTimeFilter<"LineItem"> | Date | string
@@ -787,6 +812,7 @@ export type LineItemCreateWithoutEpfInput = {
   height?: string | null
   width?: string | null
   unit?: string | null
+  description?: string | null
   attachmentS3Key?: string | null
   attachmentFileName?: string | null
   created_at?: Date | string
@@ -805,6 +831,7 @@ export type LineItemUncheckedCreateWithoutEpfInput = {
   height?: string | null
   width?: string | null
   unit?: string | null
+  description?: string | null
   attachmentS3Key?: string | null
   attachmentFileName?: string | null
   created_at?: Date | string
@@ -845,6 +872,7 @@ export type LineItemCreateWithoutCrfInput = {
   height?: string | null
   width?: string | null
   unit?: string | null
+  description?: string | null
   attachmentS3Key?: string | null
   attachmentFileName?: string | null
   created_at?: Date | string
@@ -863,6 +891,7 @@ export type LineItemUncheckedCreateWithoutCrfInput = {
   height?: string | null
   width?: string | null
   unit?: string | null
+  description?: string | null
   attachmentS3Key?: string | null
   attachmentFileName?: string | null
   created_at?: Date | string
@@ -905,6 +934,7 @@ export type LineItemCreateManyProductInput = {
   height?: string | null
   width?: string | null
   unit?: string | null
+  description?: string | null
   attachmentS3Key?: string | null
   attachmentFileName?: string | null
   created_at?: Date | string
@@ -919,6 +949,7 @@ export type LineItemUpdateWithoutProductInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -937,6 +968,7 @@ export type LineItemUncheckedUpdateWithoutProductInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -953,6 +985,7 @@ export type LineItemUncheckedUpdateManyWithoutProductInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -969,6 +1002,7 @@ export type LineItemCreateManyEpfInput = {
   height?: string | null
   width?: string | null
   unit?: string | null
+  description?: string | null
   attachmentS3Key?: string | null
   attachmentFileName?: string | null
   created_at?: Date | string
@@ -983,6 +1017,7 @@ export type LineItemUpdateWithoutEpfInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1001,6 +1036,7 @@ export type LineItemUncheckedUpdateWithoutEpfInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1017,6 +1053,7 @@ export type LineItemUncheckedUpdateManyWithoutEpfInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1033,6 +1070,7 @@ export type LineItemCreateManyCrfInput = {
   height?: string | null
   width?: string | null
   unit?: string | null
+  description?: string | null
   attachmentS3Key?: string | null
   attachmentFileName?: string | null
   created_at?: Date | string
@@ -1047,6 +1085,7 @@ export type LineItemUpdateWithoutCrfInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1065,6 +1104,7 @@ export type LineItemUncheckedUpdateWithoutCrfInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1081,6 +1121,7 @@ export type LineItemUncheckedUpdateManyWithoutCrfInput = {
   height?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   width?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentS3Key?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   attachmentFileName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1100,6 +1141,7 @@ export type LineItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   height?: boolean
   width?: boolean
   unit?: boolean
+  description?: boolean
   attachmentS3Key?: boolean
   attachmentFileName?: boolean
   created_at?: boolean
@@ -1120,6 +1162,7 @@ export type LineItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   height?: boolean
   width?: boolean
   unit?: boolean
+  description?: boolean
   attachmentS3Key?: boolean
   attachmentFileName?: boolean
   created_at?: boolean
@@ -1140,6 +1183,7 @@ export type LineItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   height?: boolean
   width?: boolean
   unit?: boolean
+  description?: boolean
   attachmentS3Key?: boolean
   attachmentFileName?: boolean
   created_at?: boolean
@@ -1160,13 +1204,14 @@ export type LineItemSelectScalar = {
   height?: boolean
   width?: boolean
   unit?: boolean
+  description?: boolean
   attachmentS3Key?: boolean
   attachmentFileName?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type LineItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "epfId" | "crfId" | "productId" | "quantity" | "rate" | "amount" | "height" | "width" | "unit" | "attachmentS3Key" | "attachmentFileName" | "created_at" | "updated_at", ExtArgs["result"]["lineItem"]>
+export type LineItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "epfId" | "crfId" | "productId" | "quantity" | "rate" | "amount" | "height" | "width" | "unit" | "description" | "attachmentS3Key" | "attachmentFileName" | "created_at" | "updated_at", ExtArgs["result"]["lineItem"]>
 export type LineItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   epf?: boolean | Prisma.LineItem$epfArgs<ExtArgs>
   crf?: boolean | Prisma.LineItem$crfArgs<ExtArgs>
@@ -1201,6 +1246,7 @@ export type $LineItemPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     height: string | null
     width: string | null
     unit: string | null
+    description: string | null
     attachmentS3Key: string | null
     attachmentFileName: string | null
     created_at: Date
@@ -1641,6 +1687,7 @@ export interface LineItemFieldRefs {
   readonly height: Prisma.FieldRef<"LineItem", 'String'>
   readonly width: Prisma.FieldRef<"LineItem", 'String'>
   readonly unit: Prisma.FieldRef<"LineItem", 'String'>
+  readonly description: Prisma.FieldRef<"LineItem", 'String'>
   readonly attachmentS3Key: Prisma.FieldRef<"LineItem", 'String'>
   readonly attachmentFileName: Prisma.FieldRef<"LineItem", 'String'>
   readonly created_at: Prisma.FieldRef<"LineItem", 'DateTime'>
