@@ -93,6 +93,8 @@ const CURRENT_USER_SELECT = {
 	is_active: true,
 	created_at: true,
 	updated_at: true,
+	zone: true,
+	branch: true,
 } satisfies Prisma.UserSelect;
 
 // Fields a user may change on their own record. Separate from

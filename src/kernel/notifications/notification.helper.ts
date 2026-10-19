@@ -37,7 +37,7 @@ const notificationMetaResolvers: Record<
       displayLabel: epc.proposal_number
         ? `EPC ${epc.proposal_number}`
         : "Event proposal",
-      link: `/map/epc/${subjectId}`,
+      link: `/marketing/activity-planner/${subjectId}`,
     };
   },
 

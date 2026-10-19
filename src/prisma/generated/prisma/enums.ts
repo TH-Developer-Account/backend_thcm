@@ -99,6 +99,8 @@ export type ProductCategory = (typeof ProductCategory)[keyof typeof ProductCateg
 
 
 export const ReportStatus = {
+  GENERATING: 'GENERATING',
+  GENERATION_FAILED: 'GENERATION_FAILED',
   SUBMITTED: 'SUBMITTED',
   VALIDATED: 'VALIDATED',
   REJECTED: 'REJECTED',
@@ -176,6 +178,104 @@ export const ClaimHead = {
 } as const
 
 export type ClaimHead = (typeof ClaimHead)[keyof typeof ClaimHead]
+
+
+export const ParticipantType = {
+  CUSTOMER: 'CUSTOMER',
+  CUSTOMER_KEY_ACCOUNT: 'CUSTOMER_KEY_ACCOUNT',
+  CUSTOMER_STAFF: 'CUSTOMER_STAFF',
+  VENDOR_PARTNER: 'VENDOR_PARTNER',
+  HITACHI_REPRESENTATIVE: 'HITACHI_REPRESENTATIVE',
+  TATA_HITACHI_EXECUTIVE: 'TATA_HITACHI_EXECUTIVE',
+  DEALERSHIP_EXECUTIVE: 'DEALERSHIP_EXECUTIVE',
+  FINANCIER_EXECUTIVE: 'FINANCIER_EXECUTIVE',
+  MACHINE_OPERATOR: 'MACHINE_OPERATOR',
+  MACHINE_MECHANIC: 'MACHINE_MECHANIC',
+  OTHER: 'OTHER'
+} as const
+
+export type ParticipantType = (typeof ParticipantType)[keyof typeof ParticipantType]
+
+
+export const ParticipantStatus = {
+  COLD_ENQUIRY: 'COLD_ENQUIRY',
+  WARM_ENQUIRY: 'WARM_ENQUIRY',
+  HOT_ENQUIRY: 'HOT_ENQUIRY',
+  EVENT_ATTENDEE: 'EVENT_ATTENDEE',
+  FELICITATION: 'FELICITATION',
+  KEY_HANDOVER: 'KEY_HANDOVER',
+  BOOKING: 'BOOKING'
+} as const
+
+export type ParticipantStatus = (typeof ParticipantStatus)[keyof typeof ParticipantStatus]
+
+
+export const FuelType = {
+  DIESEL: 'DIESEL',
+  ELECTRIC: 'ELECTRIC'
+} as const
+
+export type FuelType = (typeof FuelType)[keyof typeof FuelType]
+
+
+export const CrfStatus = {
+  OPEN: 'OPEN',
+  APPROVED: 'APPROVED',
+  STOCK_SHORTFALL: 'STOCK_SHORTFALL',
+  STOCK_CHECK_FAILED: 'STOCK_CHECK_FAILED',
+  ORDER_FAILED: 'ORDER_FAILED',
+  ORDERED: 'ORDERED',
+  CANCELLED: 'CANCELLED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type CrfStatus = (typeof CrfStatus)[keyof typeof CrfStatus]
+
+
+export const CrfRecipientType = {
+  SELF: 'SELF',
+  EMPLOYEE: 'EMPLOYEE',
+  DEALER_CONTACT: 'DEALER_CONTACT',
+  OTHER: 'OTHER'
+} as const
+
+export type CrfRecipientType = (typeof CrfRecipientType)[keyof typeof CrfRecipientType]
+
+
+export const CrfAddressSource = {
+  MANUAL: 'MANUAL',
+  USER_PROFILE: 'USER_PROFILE',
+  BUSINESS_PARTNER_ADDRESS: 'BUSINESS_PARTNER_ADDRESS'
+} as const
+
+export type CrfAddressSource = (typeof CrfAddressSource)[keyof typeof CrfAddressSource]
+
+
+export const CrfItemSource = {
+  CATALOG: 'CATALOG',
+  SHOPIFY: 'SHOPIFY'
+} as const
+
+export type CrfItemSource = (typeof CrfItemSource)[keyof typeof CrfItemSource]
+
+
+export const CrfItemStatus = {
+  REQUESTED: 'REQUESTED',
+  OUT_OF_STOCK: 'OUT_OF_STOCK',
+  REMOVED: 'REMOVED',
+  ORDERED: 'ORDERED',
+  DEBITED: 'DEBITED'
+} as const
+
+export type CrfItemStatus = (typeof CrfItemStatus)[keyof typeof CrfItemStatus]
+
+
+export const CrfOrderStatus = {
+  ACTIVE: 'ACTIVE',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type CrfOrderStatus = (typeof CrfOrderStatus)[keyof typeof CrfOrderStatus]
 
 
 export const BusinessPartnerOfficeType = {

@@ -23,13 +23,15 @@ import commentRoutes from "@comments/comments.routes";
 import vendorOnboardRoutes from "@vendor-onboarding/vendorOnboarding.routes";
 import mediClaimRoutes from "@medi-claim/mediclaim.routes";
 import leadRoutes from "@leads/leads.routes";
-import reportRoutes from "@map/report.routes";
+import reportRoutes from "@modules/map/reports/report.routes";
 import epcRoutes from "@map/epc.routes";
-import efpRoutes from "@map/epf.routes";
-import crfRoutes from "@map/crf.routes";
+import efpRoutes from "@modules/map/epf/epf.routes";
+import crfRoutes from "@modules/map/crf/crf.routes";
 import guestRoutes from "@guest/guest.routes";
 import bpRoutes from "@business-partner/businessPartner.routes";
 import healthRouter from "@kernel/health/health.routes";
+import machineStudyRoutes from "@map/reports/machineStudy.routes";
+import crfShopRoutes from "@modules/map/crf/crf-shop.routes";
 import errorHandler from "@shared/middleware/error.middleware";
 import ApiError from "@shared/utils/apiError";
 import { startJobs } from "@shared/jobs/scheduler";
@@ -74,6 +76,8 @@ app.use("/api/v1/pdf", pdfRoutes);
 app.use("/api/v1/guest", guestRoutes);
 app.use("/api/v1/business-partner", bpRoutes);
 app.use("/api/v1/apps", appRoutes);
+app.use("/api/v1/machine-studies", machineStudyRoutes);
+app.use("/api/v1/crf-shop", crfShopRoutes);
 
 // Scheduler
 startJobs();

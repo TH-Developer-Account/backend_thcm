@@ -3,6 +3,7 @@ generator client {
   output   = "../src/prisma/generated/prisma"
 }
 
+
 datasource db {
   provider = "postgresql"
 }
@@ -72,6 +73,8 @@ enum ProductCategory {
 }
 
 enum ReportStatus {
+  GENERATING
+  GENERATION_FAILED
   SUBMITTED
   VALIDATED
   REJECTED
@@ -127,6 +130,35 @@ enum ClaimHead {
   EXCESS_HOSPITALISATION
 }
 
+enum ParticipantType {
+  CUSTOMER
+  CUSTOMER_KEY_ACCOUNT
+  CUSTOMER_STAFF
+  VENDOR_PARTNER
+  HITACHI_REPRESENTATIVE
+  TATA_HITACHI_EXECUTIVE
+  DEALERSHIP_EXECUTIVE
+  FINANCIER_EXECUTIVE
+  MACHINE_OPERATOR
+  MACHINE_MECHANIC
+  OTHER
+}
+
+enum ParticipantStatus {
+  COLD_ENQUIRY
+  WARM_ENQUIRY
+  HOT_ENQUIRY
+  EVENT_ATTENDEE
+  FELICITATION
+  KEY_HANDOVER
+  BOOKING
+}
+
+enum FuelType {
+  DIESEL
+  ELECTRIC
+}
+
 // ─────────────────────────────────────────────
 // CRF × SHOPIFY (SOUVENIRS) ENUMS
 //
@@ -135,13 +167,18 @@ enum ClaimHead {
 // ─────────────────────────────────────────────
 
 enum CrfStatus {
-  OPEN              // editable while EPC is draft/clarification
-  APPROVED          // EPC approved, stock confirmed, awaiting recipient/address + Place order
-  STOCK_SHORTFALL   // EPC approved, some souvenir lines short — proposer must swap or accept partial
-  ORDER_FAILED      // Create Order call failed (address/integration) — admin can retry
-  ORDERED           // Shopify order placed
-  CANCELLED         // EPC rejected, or order cancelled
-  CLOSED            // ORDERED + every manual (printed material/artwork) line delivered
+  OPEN                // editable while EPC is draft/clarification
+  APPROVED            // EPC approved, stock confirmed, awaiting recipient/address + Place order
+  STOCK_SHORTFALL     // EPC approved, some souvenir lines short — proposer must swap or accept partial
+  STOCK_CHECK_FAILED  // EPC approved, but the post-approval Shopify stock check couldn't reach the
+                      // store (THCM Shop down/unreachable) — never got to APPROVED/STOCK_SHORTFALL.
+                      // Owner or admin can retry the check once the store is back (see
+                      // crfOrder.service.ts's retryStockCheck). Distinct from ORDER_FAILED below:
+                      // this is a failure to CHECK stock, not a failure to PLACE an already-confirmed order.
+  ORDER_FAILED        // Create Order call failed (address/integration) — admin can retry
+  ORDERED             // Shopify order placed
+  CANCELLED           // EPC rejected, or order cancelled
+  CLOSED              // ORDERED + every manual (printed material/artwork) line delivered
 }
 
 enum CrfRecipientType {
@@ -494,6 +531,7 @@ model EventProposal {
 
   leads     Lead[]
   importExportLogs ImportExportLog[]
+  machineStudies MachineStudy[]
 
   search_vector Unsupported("tsvector")?
   created_at    DateTime                 @default(now())
@@ -668,7 +706,7 @@ model WorkFlowTemplateUser {
 //   ApprovalAudit to set stageId = NULL where stageId = workflowId.
 //   SQL:  UPDATE "ApprovalAudit" a
 //         SET    "stageId" = NULL
-//         WHERE  a."stageId" = a."workflowId";
+//         WHERE  a.stageId" = a."workflowId";
 // ─────────────────────────────────────────────
 
 model ActivityLog {
@@ -754,6 +792,7 @@ model BudgetMaster {
 model EventName {
   id     String          @id @default(uuid())
   title  String
+  reportTemplateKey String? @unique
   events EventProposal[]
 }
 
@@ -805,17 +844,49 @@ model EPF {
 //
 // Key decisions (see claude/decisions-and-learnings.md for the discussion):
 //  - CRF rides the EPC's own workflow; it has no approval flow of its own.
-//  - No stock/catalog data (name, price, image, live stock) from Shopify is
-//    ever persisted — CrfItem(source=SHOPIFY) stores only sku + requestedQty.
-//    Confirmed order facts (what Shopify actually charged) ARE persisted on
-//    CrfOrder, since that's MAP's own transaction record, not live catalog data.
+//  - CrfItem(source=SHOPIFY) stores sku + requestedQty, plus a client-
+//    supplied `amount` kept as an audit/historical snapshot of what the
+//    line was worth at request time. `amount` is never re-derived from a
+//    live Shopify price and is never used to decide the stock-shortfall
+//    budget cap or the debit note — those keep re-checking Shopify
+//    directly. Confirmed order facts (what Shopify actually charged) ARE
+//    persisted on CrfOrder, since that's MAP's own transaction record, not
+//    live catalog data.
+//  - REVISED DECISION: title/variantTitle/imageUrl/rate (unit price) ARE
+//    now persisted on CrfItem for SHOPIFY lines too (previously none of a
+//    souvenir's display fields were stored — only sku/requestedQty/amount
+//    — which meant reopening a saved CRF showed printed-material/artwork
+//    lines correctly but souvenir lines with only sku/qty/amount, no name
+//    or image). These four fields are the same kind of trusted
+//    client-supplied snapshot as `amount` above (validated for sanity,
+//    never re-derived from a live Shopify lookup) — see
+//    buildShopifyItemRows in crf.service.ts. compareAtPrice and gstRate
+//    remain intentionally NOT persisted — still display-only, backfilled
+//    live each time (see backfillSouvenirDisplayFields in core/mapper.ts).
 //  - Recipient + shipping/billing address are collected AFTER EPC approval,
 //    right before the proposer places the order — not during drafting.
 //  - Stock check (post-approval) and order placement (on "Place order") are
 //    synchronous calls to thcmShop.service.ts — no background worker/queue.
+//    A stock check that can't reach THCM Shop (the store is down/
+//    unreachable) marks the CRF STOCK_CHECK_FAILED rather than leaving it
+//    silently un-advanced — see CrfStatus and crfOrder.service.ts's
+//    runPostApprovalStockCheck/retryStockCheck.
 //  - On a stock shortfall the proposer either swaps souvenir lines and
 //    resubmits, or accepts a partial order with the shortfall recorded as
 //    CrfOrder.debitNoteAmount for Tata Hitachi to settle outside THCM.
+//  - shortfallAmount / pendingDebitAmount (added for the swap-budget fix):
+//    souvenirTotalAtApproval is the frozen total of ALL approved souvenir
+//    value (in-stock + short combined) and is kept only as the original
+//    approval-time snapshot; it is no longer used as the swap budget cap,
+//    because live re-pricing of the KEPT (in-stock) lines let that cap
+//    drift away from the true shortfall value. shortfallAmount is instead
+//    frozen to just the short lines' value whenever the CRF enters/re-
+//    enters STOCK_SHORTFALL (post-approval check or after a swap that's
+//    still short), and is the real swap budget. pendingDebitAmount
+//    accumulates the unused balance whenever a swap resolves the shortfall
+//    for less than that budget — carried forward and folded into
+//    CrfOrder.debitNoteAmount at order placement. See swapSouvenirLines /
+//    runPostApprovalStockCheck / executeOrderPlacement in crfOrder.service.ts.
 // ─────────────────────────────────────────────
 
 model CRF {
@@ -858,7 +929,9 @@ model CRF {
   addressGstin      String?          @db.VarChar(15)
   addressValidatedAt DateTime?
 
-  souvenirTotalAtApproval Decimal?  @db.Decimal(12, 2)  // frozen cap for shortfall swaps (assumption B)
+  souvenirTotalAtApproval Decimal?  @db.Decimal(12, 2)  // frozen approval-time snapshot of ALL souvenir value (in-stock + short); historical only, no longer used as the swap cap — see shortfallAmount
+  shortfallAmount         Decimal?  @db.Decimal(12, 2)  // frozen value of the CURRENT OUT_OF_STOCK lines; the real swap budget; null when not in shortfall
+  pendingDebitAmount      Decimal?  @db.Decimal(12, 2)  // leftover from an under-spent swap, carried forward and billed at order placement
   approvedAt              DateTime?
   itemsChangedAt          DateTime?
   closedAt                DateTime?
@@ -888,7 +961,12 @@ model CrfItem {
   source    CrfItemSource
   sortOrder Int               @default(0)
 
-  // CATALOG lines (printed material / artwork) — same shape as today's LineItem
+  // CATALOG lines (printed material / artwork) — same shape as today's LineItem.
+  // `amount`/`rate` are shared with SHOPIFY lines below: CATALOG rows get
+  // them computed server-side from ProductMaster.unitRate; SHOPIFY rows get
+  // them from the client's trusted request-time snapshot (see
+  // buildShopifyItemRows in crf.service.ts) — never a live Shopify price
+  // re-check either way.
   productId String?
   product   ProductMaster? @relation(fields: [productId], references: [id])
   quantity  Decimal?       @db.Decimal(10, 2)
@@ -898,9 +976,16 @@ model CrfItem {
   height    String?
   unit      String?
 
-  // SHOPIFY lines (souvenirs) — intentionally minimal: no name/price/stock stored, ever
+  // SHOPIFY lines (souvenirs) — identity + a trusted display-snapshot taken
+  // at request time (title/variantTitle/imageUrl, plus `rate` above as unit
+  // price). Deliberately still NOT stored: compareAtPrice, gstRate, live
+  // stock — those stay display-only, backfilled from a live catalog lookup
+  // each time (see backfillSouvenirDisplayFields, core/mapper.ts).
   sku          String?
   requestedQty Int?
+  title        String?  // product title at request time, e.g. "Tata Hitachi Cap"
+  variantTitle String?  // e.g. "M / Orange" — null for single-variant products
+  imageUrl     String?
 
   qtyAtApproval Int?   // frozen at EPC final approval
 
@@ -924,7 +1009,7 @@ model CrfOrder {
   shopifyOrderId  String   @unique
   totalPrice      Decimal  @db.Decimal(12, 2)
   lines           Json                              // Shopify-confirmed snapshot: [{ sku, title, quantity, unitPrice, lineTotal }]
-  debitNoteAmount Decimal? @db.Decimal(12, 2)        // set only on the accept-partial path
+  debitNoteAmount Decimal? @db.Decimal(12, 2)        // set on the accept-partial path, and/or folded in from CRF.pendingDebitAmount at placement
 
   status        CrfOrderStatus @default(ACTIVE)
   cancelledAt   DateTime?
@@ -948,6 +1033,21 @@ model LineItem {
   height   String?
   width    String?
   unit     String?
+
+  // Proposer-typed note on this specific line (EPF overhead lines today).
+  // Distinct from ProductMaster.description (the catalog item's generic
+  // blurb) — this is what the proposer actually wrote for this line, and
+  // takes priority over the catalog default when both exist (see
+  // getDescription in epf.mapper.ts on the frontend). No length cap for
+  // now — same as the other free-text fields on this model.
+  description String?
+
+  // One attachment (JPEG or PDF, ≤5MB, validated at the upload endpoint) per
+  // line item. Key stored, not URL — see "S3 keys are stored, not URLs" in
+  // decisions-and-learnings.md; a fresh pre-signed URL is generated on every
+  // read via getSignedImageUrl, same convention as MedicalClaimBill.s3Key.
+  attachmentS3Key    String?
+  attachmentFileName String?
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -993,17 +1093,38 @@ model Operator {
 }
 
 model Lead {
-  id             String      @id @default(uuid())
+  id             String   @id @default(uuid())
   epcId          String
-  name           String      @db.VarChar(100)
-  email          String?     @db.VarChar(100)
-  phone          String?     @db.VarChar(15)
+
+  name           String   @db.VarChar(100)
+  companyName    String?  @db.VarChar(150)
+  phone          String?  @db.VarChar(15)
+  email          String?  @db.VarChar(100)
+
+  dealership     String?  @db.VarChar(150)
+
+  participantType   ParticipantType?
+  participantStatus ParticipantStatus?
+
+  machineModel   String?  @db.VarChar(150)
+  machineSerial  String?  @db.VarChar(100)
+
+  valueOfServiceOffers Decimal? @db.Decimal(12, 2)
+  valueOfPartsOffers   Decimal? @db.Decimal(12, 2)
+  valueOfPartsBilled   Decimal? @db.Decimal(12, 2)
+
   notes          String?
+  eventDate      DateTime?
+  location       String?
+  district       String?
+  state          String?
+
   epc            EventProposal @relation(fields: [epcId], references: [id])
-  created_at     DateTime    @default(now())
-  updated_at     DateTime    @updatedAt
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 
   @@index([epcId])
+  @@index([participantStatus])
 }
 
 model Pincode {
@@ -1043,20 +1164,23 @@ model Pincode {
 // ─────────────────────────────────────────────
 
 model EventReport {
-  id                   String        @id @default(uuid())
-  epcId                String        @unique
-  outcomeStatus        OutcomeStatus
-  totalLeadsGenerated  Int
-  approvedEventCost    Decimal       @db.Decimal(12, 2)
-  expectedConversion   String?
-  remarks              String?
-  status               ReportStatus  @default(SUBMITTED)
-  rejectionReason      String?
-  clarificationReason  String?
-  submittedAt          DateTime      @default(now())
-  resubmittedAt        DateTime?
-  validatedAt          DateTime?
-  validatorId          String
+  id                  String       @id @default(uuid())
+  epcId               String       @unique
+  status              ReportStatus @default(GENERATING)
+
+  eventHighlights     String?
+
+  computedOutcomes    Json?
+
+  rejectionReason     String?
+  clarificationReason String?
+  generationError     String?
+
+  submittedAt         DateTime  @default(now())
+  resubmittedAt       DateTime?
+  validatedAt         DateTime?
+  validatorId         String
+  pdfS3Key            String?
 
   epc       EventProposal      @relation(fields: [epcId], references: [id], onDelete: Cascade)
   validator User               @relation("ReportValidator", fields: [validatorId], references: [id])
@@ -1080,11 +1204,13 @@ model EventReport {
 // ─────────────────────────────────────────────
 
 model EventReportImage {
-  id       String @id @default(uuid())
+  id       String  @id @default(uuid())
   reportId String
-  position Int    // 1 | 2 | 3 | 4
+  position Int
+  caption  String?
   s3Key    String
   fileUrl  String
+  mimeType String?
 
   report EventReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
@@ -1498,5 +1624,60 @@ model BusinessPartnerContact {
 }
 
 
+model MachineStudy {
+  id                  String    @id @default(uuid())
+  epcId               String
+  isCompetitorMachine Boolean   @default(false)
 
+  machineModel        String
+  customerName        String
+  startDate           DateTime
+  endDate             DateTime
+  application         String
+  fuelType            FuelType
+  startHmr            Decimal   @db.Decimal(10, 2)
+  endHmr              Decimal   @db.Decimal(10, 2)
+  bucketVolumeCuM     Decimal   @db.Decimal(6, 2)
+  acStatus            String
+  operationMode       String
 
+  // Fuel-efficiency inputs — exactly one side populated, based on fuelType.
+  dieselTopUpLtr      Decimal?  @db.Decimal(8, 2)   // required when fuelType = DIESEL
+  startKwhReading     Decimal?  @db.Decimal(10, 2)  // required when fuelType = ELECTRIC
+  endKwhReading       Decimal?  @db.Decimal(10, 2)  // required when fuelType = ELECTRIC
+
+  operatorName          String?
+  operatorExperience    String?
+  priorMachinesOperated String?
+
+  epc    EventProposal        @relation(fields: [epcId], references: [id])
+  cycles MachineStudyCycle[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Enforces cardinality: at most one row per (EPC, variant) — one study for
+  // single-machine templates, exactly two (false + true) for benchmarking.
+  @@unique([epcId, isCompetitorMachine])
+  @@index([epcId])
+}
+
+model MachineStudyCycle {
+  id                String   @id @default(uuid())
+  studyId           String
+  sequenceNo        Int
+  truckNumber       String?           // null for "Material Preparation" rows
+  startSeconds      Int               // elapsed seconds from study start
+  finishSeconds     Int
+  timeTakenSeconds  Int               // provided directly in the source sheet, not derived
+  bucketPasses      Int?
+  swingAngleDegrees String?
+  unladenWeightKg   Decimal? @db.Decimal(8, 2)
+  ladenWeightKg     Decimal? @db.Decimal(8, 2)
+  payloadKg         Decimal? @db.Decimal(8, 2)     // provided directly, not derived
+  remarks           String?
+
+  study MachineStudy @relation(fields: [studyId], references: [id], onDelete: Cascade)
+
+  @@index([studyId])
+}

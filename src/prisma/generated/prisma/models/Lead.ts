@@ -20,17 +20,44 @@ export type LeadModel = runtime.Types.Result.DefaultSelection<Prisma.$LeadPayloa
 
 export type AggregateLead = {
   _count: LeadCountAggregateOutputType | null
+  _avg: LeadAvgAggregateOutputType | null
+  _sum: LeadSumAggregateOutputType | null
   _min: LeadMinAggregateOutputType | null
   _max: LeadMaxAggregateOutputType | null
+}
+
+export type LeadAvgAggregateOutputType = {
+  valueOfServiceOffers: runtime.Decimal | null
+  valueOfPartsOffers: runtime.Decimal | null
+  valueOfPartsBilled: runtime.Decimal | null
+}
+
+export type LeadSumAggregateOutputType = {
+  valueOfServiceOffers: runtime.Decimal | null
+  valueOfPartsOffers: runtime.Decimal | null
+  valueOfPartsBilled: runtime.Decimal | null
 }
 
 export type LeadMinAggregateOutputType = {
   id: string | null
   epcId: string | null
   name: string | null
-  email: string | null
+  companyName: string | null
   phone: string | null
+  email: string | null
+  dealership: string | null
+  participantType: $Enums.ParticipantType | null
+  participantStatus: $Enums.ParticipantStatus | null
+  machineModel: string | null
+  machineSerial: string | null
+  valueOfServiceOffers: runtime.Decimal | null
+  valueOfPartsOffers: runtime.Decimal | null
+  valueOfPartsBilled: runtime.Decimal | null
   notes: string | null
+  eventDate: Date | null
+  location: string | null
+  district: string | null
+  state: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -39,9 +66,22 @@ export type LeadMaxAggregateOutputType = {
   id: string | null
   epcId: string | null
   name: string | null
-  email: string | null
+  companyName: string | null
   phone: string | null
+  email: string | null
+  dealership: string | null
+  participantType: $Enums.ParticipantType | null
+  participantStatus: $Enums.ParticipantStatus | null
+  machineModel: string | null
+  machineSerial: string | null
+  valueOfServiceOffers: runtime.Decimal | null
+  valueOfPartsOffers: runtime.Decimal | null
+  valueOfPartsBilled: runtime.Decimal | null
   notes: string | null
+  eventDate: Date | null
+  location: string | null
+  district: string | null
+  state: string | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -50,22 +90,60 @@ export type LeadCountAggregateOutputType = {
   id: number
   epcId: number
   name: number
-  email: number
+  companyName: number
   phone: number
+  email: number
+  dealership: number
+  participantType: number
+  participantStatus: number
+  machineModel: number
+  machineSerial: number
+  valueOfServiceOffers: number
+  valueOfPartsOffers: number
+  valueOfPartsBilled: number
   notes: number
+  eventDate: number
+  location: number
+  district: number
+  state: number
   created_at: number
   updated_at: number
   _all: number
 }
 
 
+export type LeadAvgAggregateInputType = {
+  valueOfServiceOffers?: true
+  valueOfPartsOffers?: true
+  valueOfPartsBilled?: true
+}
+
+export type LeadSumAggregateInputType = {
+  valueOfServiceOffers?: true
+  valueOfPartsOffers?: true
+  valueOfPartsBilled?: true
+}
+
 export type LeadMinAggregateInputType = {
   id?: true
   epcId?: true
   name?: true
-  email?: true
+  companyName?: true
   phone?: true
+  email?: true
+  dealership?: true
+  participantType?: true
+  participantStatus?: true
+  machineModel?: true
+  machineSerial?: true
+  valueOfServiceOffers?: true
+  valueOfPartsOffers?: true
+  valueOfPartsBilled?: true
   notes?: true
+  eventDate?: true
+  location?: true
+  district?: true
+  state?: true
   created_at?: true
   updated_at?: true
 }
@@ -74,9 +152,22 @@ export type LeadMaxAggregateInputType = {
   id?: true
   epcId?: true
   name?: true
-  email?: true
+  companyName?: true
   phone?: true
+  email?: true
+  dealership?: true
+  participantType?: true
+  participantStatus?: true
+  machineModel?: true
+  machineSerial?: true
+  valueOfServiceOffers?: true
+  valueOfPartsOffers?: true
+  valueOfPartsBilled?: true
   notes?: true
+  eventDate?: true
+  location?: true
+  district?: true
+  state?: true
   created_at?: true
   updated_at?: true
 }
@@ -85,9 +176,22 @@ export type LeadCountAggregateInputType = {
   id?: true
   epcId?: true
   name?: true
-  email?: true
+  companyName?: true
   phone?: true
+  email?: true
+  dealership?: true
+  participantType?: true
+  participantStatus?: true
+  machineModel?: true
+  machineSerial?: true
+  valueOfServiceOffers?: true
+  valueOfPartsOffers?: true
+  valueOfPartsBilled?: true
   notes?: true
+  eventDate?: true
+  location?: true
+  district?: true
+  state?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -131,6 +235,18 @@ export type LeadAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: LeadAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: LeadSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: LeadMinAggregateInputType
@@ -161,6 +277,8 @@ export type LeadGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: LeadCountAggregateInputType | true
+  _avg?: LeadAvgAggregateInputType
+  _sum?: LeadSumAggregateInputType
   _min?: LeadMinAggregateInputType
   _max?: LeadMaxAggregateInputType
 }
@@ -169,12 +287,27 @@ export type LeadGroupByOutputType = {
   id: string
   epcId: string
   name: string
-  email: string | null
+  companyName: string | null
   phone: string | null
+  email: string | null
+  dealership: string | null
+  participantType: $Enums.ParticipantType | null
+  participantStatus: $Enums.ParticipantStatus | null
+  machineModel: string | null
+  machineSerial: string | null
+  valueOfServiceOffers: runtime.Decimal | null
+  valueOfPartsOffers: runtime.Decimal | null
+  valueOfPartsBilled: runtime.Decimal | null
   notes: string | null
+  eventDate: Date | null
+  location: string | null
+  district: string | null
+  state: string | null
   created_at: Date
   updated_at: Date
   _count: LeadCountAggregateOutputType | null
+  _avg: LeadAvgAggregateOutputType | null
+  _sum: LeadSumAggregateOutputType | null
   _min: LeadMinAggregateOutputType | null
   _max: LeadMaxAggregateOutputType | null
 }
@@ -201,9 +334,22 @@ export type LeadWhereInput = {
   id?: Prisma.StringFilter<"Lead"> | string
   epcId?: Prisma.StringFilter<"Lead"> | string
   name?: Prisma.StringFilter<"Lead"> | string
-  email?: Prisma.StringNullableFilter<"Lead"> | string | null
+  companyName?: Prisma.StringNullableFilter<"Lead"> | string | null
   phone?: Prisma.StringNullableFilter<"Lead"> | string | null
+  email?: Prisma.StringNullableFilter<"Lead"> | string | null
+  dealership?: Prisma.StringNullableFilter<"Lead"> | string | null
+  participantType?: Prisma.EnumParticipantTypeNullableFilter<"Lead"> | $Enums.ParticipantType | null
+  participantStatus?: Prisma.EnumParticipantStatusNullableFilter<"Lead"> | $Enums.ParticipantStatus | null
+  machineModel?: Prisma.StringNullableFilter<"Lead"> | string | null
+  machineSerial?: Prisma.StringNullableFilter<"Lead"> | string | null
+  valueOfServiceOffers?: Prisma.DecimalNullableFilter<"Lead"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: Prisma.DecimalNullableFilter<"Lead"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: Prisma.DecimalNullableFilter<"Lead"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.StringNullableFilter<"Lead"> | string | null
+  eventDate?: Prisma.DateTimeNullableFilter<"Lead"> | Date | string | null
+  location?: Prisma.StringNullableFilter<"Lead"> | string | null
+  district?: Prisma.StringNullableFilter<"Lead"> | string | null
+  state?: Prisma.StringNullableFilter<"Lead"> | string | null
   created_at?: Prisma.DateTimeFilter<"Lead"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Lead"> | Date | string
   epc?: Prisma.XOR<Prisma.EventProposalScalarRelationFilter, Prisma.EventProposalWhereInput>
@@ -213,9 +359,22 @@ export type LeadOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  email?: Prisma.SortOrderInput | Prisma.SortOrder
+  companyName?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
+  dealership?: Prisma.SortOrderInput | Prisma.SortOrder
+  participantType?: Prisma.SortOrderInput | Prisma.SortOrder
+  participantStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  machineModel?: Prisma.SortOrderInput | Prisma.SortOrder
+  machineSerial?: Prisma.SortOrderInput | Prisma.SortOrder
+  valueOfServiceOffers?: Prisma.SortOrderInput | Prisma.SortOrder
+  valueOfPartsOffers?: Prisma.SortOrderInput | Prisma.SortOrder
+  valueOfPartsBilled?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  district?: Prisma.SortOrderInput | Prisma.SortOrder
+  state?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   epc?: Prisma.EventProposalOrderByWithRelationInput
@@ -228,9 +387,22 @@ export type LeadWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.LeadWhereInput | Prisma.LeadWhereInput[]
   epcId?: Prisma.StringFilter<"Lead"> | string
   name?: Prisma.StringFilter<"Lead"> | string
-  email?: Prisma.StringNullableFilter<"Lead"> | string | null
+  companyName?: Prisma.StringNullableFilter<"Lead"> | string | null
   phone?: Prisma.StringNullableFilter<"Lead"> | string | null
+  email?: Prisma.StringNullableFilter<"Lead"> | string | null
+  dealership?: Prisma.StringNullableFilter<"Lead"> | string | null
+  participantType?: Prisma.EnumParticipantTypeNullableFilter<"Lead"> | $Enums.ParticipantType | null
+  participantStatus?: Prisma.EnumParticipantStatusNullableFilter<"Lead"> | $Enums.ParticipantStatus | null
+  machineModel?: Prisma.StringNullableFilter<"Lead"> | string | null
+  machineSerial?: Prisma.StringNullableFilter<"Lead"> | string | null
+  valueOfServiceOffers?: Prisma.DecimalNullableFilter<"Lead"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: Prisma.DecimalNullableFilter<"Lead"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: Prisma.DecimalNullableFilter<"Lead"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.StringNullableFilter<"Lead"> | string | null
+  eventDate?: Prisma.DateTimeNullableFilter<"Lead"> | Date | string | null
+  location?: Prisma.StringNullableFilter<"Lead"> | string | null
+  district?: Prisma.StringNullableFilter<"Lead"> | string | null
+  state?: Prisma.StringNullableFilter<"Lead"> | string | null
   created_at?: Prisma.DateTimeFilter<"Lead"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Lead"> | Date | string
   epc?: Prisma.XOR<Prisma.EventProposalScalarRelationFilter, Prisma.EventProposalWhereInput>
@@ -240,14 +412,29 @@ export type LeadOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  email?: Prisma.SortOrderInput | Prisma.SortOrder
+  companyName?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
+  dealership?: Prisma.SortOrderInput | Prisma.SortOrder
+  participantType?: Prisma.SortOrderInput | Prisma.SortOrder
+  participantStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  machineModel?: Prisma.SortOrderInput | Prisma.SortOrder
+  machineSerial?: Prisma.SortOrderInput | Prisma.SortOrder
+  valueOfServiceOffers?: Prisma.SortOrderInput | Prisma.SortOrder
+  valueOfPartsOffers?: Prisma.SortOrderInput | Prisma.SortOrder
+  valueOfPartsBilled?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  eventDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  location?: Prisma.SortOrderInput | Prisma.SortOrder
+  district?: Prisma.SortOrderInput | Prisma.SortOrder
+  state?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.LeadCountOrderByAggregateInput
+  _avg?: Prisma.LeadAvgOrderByAggregateInput
   _max?: Prisma.LeadMaxOrderByAggregateInput
   _min?: Prisma.LeadMinOrderByAggregateInput
+  _sum?: Prisma.LeadSumOrderByAggregateInput
 }
 
 export type LeadScalarWhereWithAggregatesInput = {
@@ -257,9 +444,22 @@ export type LeadScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Lead"> | string
   epcId?: Prisma.StringWithAggregatesFilter<"Lead"> | string
   name?: Prisma.StringWithAggregatesFilter<"Lead"> | string
-  email?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
+  companyName?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
+  email?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
+  dealership?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
+  participantType?: Prisma.EnumParticipantTypeNullableWithAggregatesFilter<"Lead"> | $Enums.ParticipantType | null
+  participantStatus?: Prisma.EnumParticipantStatusNullableWithAggregatesFilter<"Lead"> | $Enums.ParticipantStatus | null
+  machineModel?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
+  machineSerial?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
+  valueOfServiceOffers?: Prisma.DecimalNullableWithAggregatesFilter<"Lead"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: Prisma.DecimalNullableWithAggregatesFilter<"Lead"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: Prisma.DecimalNullableWithAggregatesFilter<"Lead"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
+  eventDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Lead"> | Date | string | null
+  location?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
+  district?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
+  state?: Prisma.StringNullableWithAggregatesFilter<"Lead"> | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Lead"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Lead"> | Date | string
 }
@@ -267,9 +467,22 @@ export type LeadScalarWhereWithAggregatesInput = {
 export type LeadCreateInput = {
   id?: string
   name: string
-  email?: string | null
+  companyName?: string | null
   phone?: string | null
+  email?: string | null
+  dealership?: string | null
+  participantType?: $Enums.ParticipantType | null
+  participantStatus?: $Enums.ParticipantStatus | null
+  machineModel?: string | null
+  machineSerial?: string | null
+  valueOfServiceOffers?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
+  eventDate?: Date | string | null
+  location?: string | null
+  district?: string | null
+  state?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   epc: Prisma.EventProposalCreateNestedOneWithoutLeadsInput
@@ -279,9 +492,22 @@ export type LeadUncheckedCreateInput = {
   id?: string
   epcId: string
   name: string
-  email?: string | null
+  companyName?: string | null
   phone?: string | null
+  email?: string | null
+  dealership?: string | null
+  participantType?: $Enums.ParticipantType | null
+  participantStatus?: $Enums.ParticipantStatus | null
+  machineModel?: string | null
+  machineSerial?: string | null
+  valueOfServiceOffers?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
+  eventDate?: Date | string | null
+  location?: string | null
+  district?: string | null
+  state?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -289,9 +515,22 @@ export type LeadUncheckedCreateInput = {
 export type LeadUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealership?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  participantType?: Prisma.NullableEnumParticipantTypeFieldUpdateOperationsInput | $Enums.ParticipantType | null
+  participantStatus?: Prisma.NullableEnumParticipantStatusFieldUpdateOperationsInput | $Enums.ParticipantStatus | null
+  machineModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  machineSerial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valueOfServiceOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   epc?: Prisma.EventProposalUpdateOneRequiredWithoutLeadsNestedInput
@@ -301,9 +540,22 @@ export type LeadUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epcId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealership?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  participantType?: Prisma.NullableEnumParticipantTypeFieldUpdateOperationsInput | $Enums.ParticipantType | null
+  participantStatus?: Prisma.NullableEnumParticipantStatusFieldUpdateOperationsInput | $Enums.ParticipantStatus | null
+  machineModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  machineSerial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valueOfServiceOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -312,9 +564,22 @@ export type LeadCreateManyInput = {
   id?: string
   epcId: string
   name: string
-  email?: string | null
+  companyName?: string | null
   phone?: string | null
+  email?: string | null
+  dealership?: string | null
+  participantType?: $Enums.ParticipantType | null
+  participantStatus?: $Enums.ParticipantStatus | null
+  machineModel?: string | null
+  machineSerial?: string | null
+  valueOfServiceOffers?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
+  eventDate?: Date | string | null
+  location?: string | null
+  district?: string | null
+  state?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -322,9 +587,22 @@ export type LeadCreateManyInput = {
 export type LeadUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealership?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  participantType?: Prisma.NullableEnumParticipantTypeFieldUpdateOperationsInput | $Enums.ParticipantType | null
+  participantStatus?: Prisma.NullableEnumParticipantStatusFieldUpdateOperationsInput | $Enums.ParticipantStatus | null
+  machineModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  machineSerial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valueOfServiceOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -333,9 +611,22 @@ export type LeadUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   epcId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealership?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  participantType?: Prisma.NullableEnumParticipantTypeFieldUpdateOperationsInput | $Enums.ParticipantType | null
+  participantStatus?: Prisma.NullableEnumParticipantStatusFieldUpdateOperationsInput | $Enums.ParticipantStatus | null
+  machineModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  machineSerial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valueOfServiceOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -354,20 +645,52 @@ export type LeadCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  email?: Prisma.SortOrder
+  companyName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  email?: Prisma.SortOrder
+  dealership?: Prisma.SortOrder
+  participantType?: Prisma.SortOrder
+  participantStatus?: Prisma.SortOrder
+  machineModel?: Prisma.SortOrder
+  machineSerial?: Prisma.SortOrder
+  valueOfServiceOffers?: Prisma.SortOrder
+  valueOfPartsOffers?: Prisma.SortOrder
+  valueOfPartsBilled?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  eventDate?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  district?: Prisma.SortOrder
+  state?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+}
+
+export type LeadAvgOrderByAggregateInput = {
+  valueOfServiceOffers?: Prisma.SortOrder
+  valueOfPartsOffers?: Prisma.SortOrder
+  valueOfPartsBilled?: Prisma.SortOrder
 }
 
 export type LeadMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  email?: Prisma.SortOrder
+  companyName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  email?: Prisma.SortOrder
+  dealership?: Prisma.SortOrder
+  participantType?: Prisma.SortOrder
+  participantStatus?: Prisma.SortOrder
+  machineModel?: Prisma.SortOrder
+  machineSerial?: Prisma.SortOrder
+  valueOfServiceOffers?: Prisma.SortOrder
+  valueOfPartsOffers?: Prisma.SortOrder
+  valueOfPartsBilled?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  eventDate?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  district?: Prisma.SortOrder
+  state?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -376,11 +699,30 @@ export type LeadMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   epcId?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  email?: Prisma.SortOrder
+  companyName?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  email?: Prisma.SortOrder
+  dealership?: Prisma.SortOrder
+  participantType?: Prisma.SortOrder
+  participantStatus?: Prisma.SortOrder
+  machineModel?: Prisma.SortOrder
+  machineSerial?: Prisma.SortOrder
+  valueOfServiceOffers?: Prisma.SortOrder
+  valueOfPartsOffers?: Prisma.SortOrder
+  valueOfPartsBilled?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  eventDate?: Prisma.SortOrder
+  location?: Prisma.SortOrder
+  district?: Prisma.SortOrder
+  state?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+}
+
+export type LeadSumOrderByAggregateInput = {
+  valueOfServiceOffers?: Prisma.SortOrder
+  valueOfPartsOffers?: Prisma.SortOrder
+  valueOfPartsBilled?: Prisma.SortOrder
 }
 
 export type LeadCreateNestedManyWithoutEpcInput = {
@@ -425,12 +767,33 @@ export type LeadUncheckedUpdateManyWithoutEpcNestedInput = {
   deleteMany?: Prisma.LeadScalarWhereInput | Prisma.LeadScalarWhereInput[]
 }
 
+export type NullableEnumParticipantTypeFieldUpdateOperationsInput = {
+  set?: $Enums.ParticipantType | null
+}
+
+export type NullableEnumParticipantStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ParticipantStatus | null
+}
+
 export type LeadCreateWithoutEpcInput = {
   id?: string
   name: string
-  email?: string | null
+  companyName?: string | null
   phone?: string | null
+  email?: string | null
+  dealership?: string | null
+  participantType?: $Enums.ParticipantType | null
+  participantStatus?: $Enums.ParticipantStatus | null
+  machineModel?: string | null
+  machineSerial?: string | null
+  valueOfServiceOffers?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
+  eventDate?: Date | string | null
+  location?: string | null
+  district?: string | null
+  state?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -438,9 +801,22 @@ export type LeadCreateWithoutEpcInput = {
 export type LeadUncheckedCreateWithoutEpcInput = {
   id?: string
   name: string
-  email?: string | null
+  companyName?: string | null
   phone?: string | null
+  email?: string | null
+  dealership?: string | null
+  participantType?: $Enums.ParticipantType | null
+  participantStatus?: $Enums.ParticipantStatus | null
+  machineModel?: string | null
+  machineSerial?: string | null
+  valueOfServiceOffers?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
+  eventDate?: Date | string | null
+  location?: string | null
+  district?: string | null
+  state?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -478,9 +854,22 @@ export type LeadScalarWhereInput = {
   id?: Prisma.StringFilter<"Lead"> | string
   epcId?: Prisma.StringFilter<"Lead"> | string
   name?: Prisma.StringFilter<"Lead"> | string
-  email?: Prisma.StringNullableFilter<"Lead"> | string | null
+  companyName?: Prisma.StringNullableFilter<"Lead"> | string | null
   phone?: Prisma.StringNullableFilter<"Lead"> | string | null
+  email?: Prisma.StringNullableFilter<"Lead"> | string | null
+  dealership?: Prisma.StringNullableFilter<"Lead"> | string | null
+  participantType?: Prisma.EnumParticipantTypeNullableFilter<"Lead"> | $Enums.ParticipantType | null
+  participantStatus?: Prisma.EnumParticipantStatusNullableFilter<"Lead"> | $Enums.ParticipantStatus | null
+  machineModel?: Prisma.StringNullableFilter<"Lead"> | string | null
+  machineSerial?: Prisma.StringNullableFilter<"Lead"> | string | null
+  valueOfServiceOffers?: Prisma.DecimalNullableFilter<"Lead"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: Prisma.DecimalNullableFilter<"Lead"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: Prisma.DecimalNullableFilter<"Lead"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.StringNullableFilter<"Lead"> | string | null
+  eventDate?: Prisma.DateTimeNullableFilter<"Lead"> | Date | string | null
+  location?: Prisma.StringNullableFilter<"Lead"> | string | null
+  district?: Prisma.StringNullableFilter<"Lead"> | string | null
+  state?: Prisma.StringNullableFilter<"Lead"> | string | null
   created_at?: Prisma.DateTimeFilter<"Lead"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Lead"> | Date | string
 }
@@ -488,9 +877,22 @@ export type LeadScalarWhereInput = {
 export type LeadCreateManyEpcInput = {
   id?: string
   name: string
-  email?: string | null
+  companyName?: string | null
   phone?: string | null
+  email?: string | null
+  dealership?: string | null
+  participantType?: $Enums.ParticipantType | null
+  participantStatus?: $Enums.ParticipantStatus | null
+  machineModel?: string | null
+  machineSerial?: string | null
+  valueOfServiceOffers?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: string | null
+  eventDate?: Date | string | null
+  location?: string | null
+  district?: string | null
+  state?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -498,9 +900,22 @@ export type LeadCreateManyEpcInput = {
 export type LeadUpdateWithoutEpcInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealership?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  participantType?: Prisma.NullableEnumParticipantTypeFieldUpdateOperationsInput | $Enums.ParticipantType | null
+  participantStatus?: Prisma.NullableEnumParticipantStatusFieldUpdateOperationsInput | $Enums.ParticipantStatus | null
+  machineModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  machineSerial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valueOfServiceOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -508,9 +923,22 @@ export type LeadUpdateWithoutEpcInput = {
 export type LeadUncheckedUpdateWithoutEpcInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealership?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  participantType?: Prisma.NullableEnumParticipantTypeFieldUpdateOperationsInput | $Enums.ParticipantType | null
+  participantStatus?: Prisma.NullableEnumParticipantStatusFieldUpdateOperationsInput | $Enums.ParticipantStatus | null
+  machineModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  machineSerial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valueOfServiceOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -518,9 +946,22 @@ export type LeadUncheckedUpdateWithoutEpcInput = {
 export type LeadUncheckedUpdateManyWithoutEpcInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dealership?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  participantType?: Prisma.NullableEnumParticipantTypeFieldUpdateOperationsInput | $Enums.ParticipantType | null
+  participantStatus?: Prisma.NullableEnumParticipantStatusFieldUpdateOperationsInput | $Enums.ParticipantStatus | null
+  machineModel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  machineSerial?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valueOfServiceOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsOffers?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valueOfPartsBilled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  eventDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  district?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  state?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -531,9 +972,22 @@ export type LeadSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   id?: boolean
   epcId?: boolean
   name?: boolean
-  email?: boolean
+  companyName?: boolean
   phone?: boolean
+  email?: boolean
+  dealership?: boolean
+  participantType?: boolean
+  participantStatus?: boolean
+  machineModel?: boolean
+  machineSerial?: boolean
+  valueOfServiceOffers?: boolean
+  valueOfPartsOffers?: boolean
+  valueOfPartsBilled?: boolean
   notes?: boolean
+  eventDate?: boolean
+  location?: boolean
+  district?: boolean
+  state?: boolean
   created_at?: boolean
   updated_at?: boolean
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
@@ -543,9 +997,22 @@ export type LeadSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   epcId?: boolean
   name?: boolean
-  email?: boolean
+  companyName?: boolean
   phone?: boolean
+  email?: boolean
+  dealership?: boolean
+  participantType?: boolean
+  participantStatus?: boolean
+  machineModel?: boolean
+  machineSerial?: boolean
+  valueOfServiceOffers?: boolean
+  valueOfPartsOffers?: boolean
+  valueOfPartsBilled?: boolean
   notes?: boolean
+  eventDate?: boolean
+  location?: boolean
+  district?: boolean
+  state?: boolean
   created_at?: boolean
   updated_at?: boolean
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
@@ -555,9 +1022,22 @@ export type LeadSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   epcId?: boolean
   name?: boolean
-  email?: boolean
+  companyName?: boolean
   phone?: boolean
+  email?: boolean
+  dealership?: boolean
+  participantType?: boolean
+  participantStatus?: boolean
+  machineModel?: boolean
+  machineSerial?: boolean
+  valueOfServiceOffers?: boolean
+  valueOfPartsOffers?: boolean
+  valueOfPartsBilled?: boolean
   notes?: boolean
+  eventDate?: boolean
+  location?: boolean
+  district?: boolean
+  state?: boolean
   created_at?: boolean
   updated_at?: boolean
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
@@ -567,14 +1047,27 @@ export type LeadSelectScalar = {
   id?: boolean
   epcId?: boolean
   name?: boolean
-  email?: boolean
+  companyName?: boolean
   phone?: boolean
+  email?: boolean
+  dealership?: boolean
+  participantType?: boolean
+  participantStatus?: boolean
+  machineModel?: boolean
+  machineSerial?: boolean
+  valueOfServiceOffers?: boolean
+  valueOfPartsOffers?: boolean
+  valueOfPartsBilled?: boolean
   notes?: boolean
+  eventDate?: boolean
+  location?: boolean
+  district?: boolean
+  state?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type LeadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "epcId" | "name" | "email" | "phone" | "notes" | "created_at" | "updated_at", ExtArgs["result"]["lead"]>
+export type LeadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "epcId" | "name" | "companyName" | "phone" | "email" | "dealership" | "participantType" | "participantStatus" | "machineModel" | "machineSerial" | "valueOfServiceOffers" | "valueOfPartsOffers" | "valueOfPartsBilled" | "notes" | "eventDate" | "location" | "district" | "state" | "created_at" | "updated_at", ExtArgs["result"]["lead"]>
 export type LeadInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   epc?: boolean | Prisma.EventProposalDefaultArgs<ExtArgs>
 }
@@ -594,9 +1087,22 @@ export type $LeadPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     id: string
     epcId: string
     name: string
-    email: string | null
+    companyName: string | null
     phone: string | null
+    email: string | null
+    dealership: string | null
+    participantType: $Enums.ParticipantType | null
+    participantStatus: $Enums.ParticipantStatus | null
+    machineModel: string | null
+    machineSerial: string | null
+    valueOfServiceOffers: runtime.Decimal | null
+    valueOfPartsOffers: runtime.Decimal | null
+    valueOfPartsBilled: runtime.Decimal | null
     notes: string | null
+    eventDate: Date | null
+    location: string | null
+    district: string | null
+    state: string | null
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["lead"]>
@@ -1026,9 +1532,22 @@ export interface LeadFieldRefs {
   readonly id: Prisma.FieldRef<"Lead", 'String'>
   readonly epcId: Prisma.FieldRef<"Lead", 'String'>
   readonly name: Prisma.FieldRef<"Lead", 'String'>
-  readonly email: Prisma.FieldRef<"Lead", 'String'>
+  readonly companyName: Prisma.FieldRef<"Lead", 'String'>
   readonly phone: Prisma.FieldRef<"Lead", 'String'>
+  readonly email: Prisma.FieldRef<"Lead", 'String'>
+  readonly dealership: Prisma.FieldRef<"Lead", 'String'>
+  readonly participantType: Prisma.FieldRef<"Lead", 'ParticipantType'>
+  readonly participantStatus: Prisma.FieldRef<"Lead", 'ParticipantStatus'>
+  readonly machineModel: Prisma.FieldRef<"Lead", 'String'>
+  readonly machineSerial: Prisma.FieldRef<"Lead", 'String'>
+  readonly valueOfServiceOffers: Prisma.FieldRef<"Lead", 'Decimal'>
+  readonly valueOfPartsOffers: Prisma.FieldRef<"Lead", 'Decimal'>
+  readonly valueOfPartsBilled: Prisma.FieldRef<"Lead", 'Decimal'>
   readonly notes: Prisma.FieldRef<"Lead", 'String'>
+  readonly eventDate: Prisma.FieldRef<"Lead", 'DateTime'>
+  readonly location: Prisma.FieldRef<"Lead", 'String'>
+  readonly district: Prisma.FieldRef<"Lead", 'String'>
+  readonly state: Prisma.FieldRef<"Lead", 'String'>
   readonly created_at: Prisma.FieldRef<"Lead", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Lead", 'DateTime'>
 }

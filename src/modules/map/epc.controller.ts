@@ -10,18 +10,18 @@ import { addMailJob } from "@kernel/mail/mail.service";
 
 import { searchEventProposals } from "./helpers/searchEventProposal.helper";
 import {
-  getActiveWorkflowForSubject,
-  getPendingOnForMany,
-  computePendingOn,
+	getActiveWorkflowForSubject,
+	getPendingOnForMany,
+	computePendingOn,
 } from "@workflow/workflowSubject.helper";
 
 const OUTCOME_STATUSES = new Set(["CONDUCTED", "CANCELLED"]);
 
 function toStringArray(value: unknown): string[] | undefined {
-  if (value === undefined || value === null) return undefined;
-  const arr = Array.isArray(value) ? value : [value];
-  const result = arr.filter((v): v is string => typeof v === "string");
-  return result.length > 0 ? result : undefined;
+	if (value === undefined || value === null) return undefined;
+	const arr = Array.isArray(value) ? value : [value];
+	const result = arr.filter((v): v is string => typeof v === "string");
+	return result.length > 0 ? result : undefined;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -30,108 +30,108 @@ function toStringArray(value: unknown): string[] | undefined {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const createEventProposal = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
+	req: Request,
+	res: Response,
+	next: NextFunction,
 ) => {
-  try {
-    const {
-      proposal_number,
-      event_name,
-      event_from_date,
-      event_to_date,
-      event_description,
-      location,
-      locationMeta,
-      event_objective,
-      department,
-      vertical,
-      region,
-      branch,
-      budget_master_id,
-    } = req.body;
+	try {
+		const {
+			proposal_number,
+			event_name,
+			event_from_date,
+			event_to_date,
+			event_description,
+			location,
+			locationMeta,
+			event_objective,
+			department,
+			vertical,
+			region,
+			branch,
+			budget_master_id,
+		} = req.body;
 
-    const userId = req?.user?.id;
-    if (!userId) throw new ApiError(401, "Unauthorized");
+		const userId = req?.user?.id;
+		if (!userId) throw new ApiError(401, "Unauthorized");
 
-    if (
-      !proposal_number ||
-      !event_name ||
-      !event_from_date ||
-      !event_to_date ||
-      !department ||
-      !region ||
-      !branch ||
-      !budget_master_id
-    ) {
-      throw new ApiError(400, "Missing required fields");
-    }
+		if (
+			!proposal_number ||
+			!event_name ||
+			!event_from_date ||
+			!event_to_date ||
+			!department ||
+			!region ||
+			!branch ||
+			!budget_master_id
+		) {
+			throw new ApiError(400, "Missing required fields");
+		}
 
-    if (new Date(event_from_date) > new Date(event_to_date)) {
-      throw new ApiError(400, "event_from_date cannot be after event_to_date");
-    }
+		if (new Date(event_from_date) > new Date(event_to_date)) {
+			throw new ApiError(400, "event_from_date cannot be after event_to_date");
+		}
 
-    const proposal = await prisma.eventProposal.create({
-      data: {
-        proposal_number,
-        event_name_id: event_name,
-        event_from_date: new Date(event_from_date),
-        event_to_date: new Date(event_to_date),
-        event_description,
-        location,
-        locationMeta,
-        event_objective,
-        department_id: department,
-        vertical_id: vertical,
-        region_id: region,
-        branch_id: branch,
-        event_scale: 0,
-        budget_master_id,
-        created_by_id: userId,
-        updated_by_id: userId,
-      },
-    });
+		const proposal = await prisma.eventProposal.create({
+			data: {
+				proposal_number,
+				event_name_id: event_name,
+				event_from_date: new Date(event_from_date),
+				event_to_date: new Date(event_to_date),
+				event_description,
+				location,
+				locationMeta,
+				event_objective,
+				department_id: department,
+				vertical_id: vertical,
+				region_id: region,
+				branch_id: branch,
+				event_scale: 0,
+				budget_master_id,
+				created_by_id: userId,
+				updated_by_id: userId,
+			},
+		});
 
-    await addMailJob({
-      to: "hepi465@gmail.com",
-      cc: ["syedfazal113@gmail.com"], // optional
-      subject: `Approved`,
-      templateName: "approval-approved",
-      templateData: {
-        appName: "Marketing Activity Planner",
-        approverName: `Syed Fazal`,
-        epcName: "test-epc",
-        stageName: "Recommender",
-        workflowName: "test workflow",
-        dashboardUrl: `www.google.com`,
-      },
-    });
+		await addMailJob({
+			to: "hepi465@gmail.com",
+			cc: ["syedfazal113@gmail.com"], // optional
+			subject: `Approved`,
+			templateName: "approval-approved",
+			templateData: {
+				appName: "Marketing Activity Planner",
+				approverName: `Syed Fazal`,
+				epcName: "test-epc",
+				stageName: "Recommender",
+				workflowName: "test workflow",
+				dashboardUrl: `www.google.com`,
+			},
+		});
 
-    await prisma.activityLog.create({
-      data: {
-        subjectType: "EVENT_PROPOSAL",
-        subjectId: proposal.id,
-        actorId: userId,
-        action: "EPC_CREATED",
-        workflowId: null,
-        stageId: null,
-        metadata: {
-          reason: "EPC is Created.",
-        },
-      },
-    });
+		await prisma.activityLog.create({
+			data: {
+				subjectType: "EVENT_PROPOSAL",
+				subjectId: proposal.id,
+				actorId: userId,
+				action: "EPC_CREATED",
+				workflowId: null,
+				stageId: null,
+				metadata: {
+					reason: "EPC is Created.",
+				},
+			},
+		});
 
-    res.status(201).json({
-      success: true,
-      message: "EPC created successfully",
-      data: proposal,
-    });
-  } catch (error: any) {
-    if (error.code === "P2002") {
-      return next(new ApiError(409, "Proposal number already exists"));
-    }
-    next(error);
-  }
+		res.status(201).json({
+			success: true,
+			message: "EPC created successfully",
+			data: proposal,
+		});
+	} catch (error: any) {
+		if (error.code === "P2002") {
+			return next(new ApiError(409, "Proposal number already exists"));
+		}
+		next(error);
+	}
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -151,76 +151,76 @@ export const createEventProposal = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getAllEventProposals = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
+	req: Request,
+	res: Response,
+	next: NextFunction,
 ) => {
-  try {
-    const {
-      page = "1",
-      pageSize = "10",
-      search,
-      sortBy = "created_at",
-      sortOrder = "desc",
-      status,
-      departmentId,
-      approvedByMe,
-      pendingOnMe,
-      zone,
-      eventType,
-      eventDateFrom,
-      eventDateTo,
-      createdDate,
-    } = req.query;
+	try {
+		const {
+			page = "1",
+			pageSize = "10",
+			search,
+			sortBy = "created_at",
+			sortOrder = "desc",
+			status,
+			departmentId,
+			approvedByMe,
+			pendingOnMe,
+			zone,
+			eventType,
+			eventDateFrom,
+			eventDateTo,
+			createdDate,
+		} = req.query;
 
-    const userId = req?.user?.id;
-    if (!userId) throw new ApiError(401, "Unauthorized");
+		const userId = req?.user?.id;
+		if (!userId) throw new ApiError(401, "Unauthorized");
 
-    const pageNumber = Number(page);
-    const take = Number(pageSize);
+		const pageNumber = Number(page);
+		const take = Number(pageSize);
 
-    const { data, total } = await searchEventProposals({
-      userId,
-      approvedByMe: approvedByMe === "true",
-      pendingOnMe: pendingOnMe === "true",
-      pendingReportValidation:
-        getValidatorForApp("MAP") === userId ? true : false,
-      reportValidatedByMe: getValidatorForApp("MAP") === userId ? true : false,
-      search: search as string,
-      status: toStringArray(status),
-      departmentId: departmentId ? String(departmentId) : undefined,
-      startDate: eventDateFrom ? new Date(eventDateFrom as string) : undefined,
-      endDate: eventDateTo ? new Date(eventDateTo as string) : undefined,
-      page: pageNumber,
-      pageSize: take,
-      sortBy: sortBy as any,
-      sortOrder: sortOrder === "asc" ? "asc" : "desc",
-      zone: toStringArray(zone),
-      eventType: toStringArray(eventType),
-      createdDate: createdDate ? new Date(createdDate as string) : undefined,
-    });
+		const { data, total } = await searchEventProposals({
+			userId,
+			approvedByMe: approvedByMe === "true",
+			pendingOnMe: pendingOnMe === "true",
+			pendingReportValidation:
+				getValidatorForApp("MAP") === userId ? true : false,
+			reportValidatedByMe: getValidatorForApp("MAP") === userId ? true : false,
+			search: search as string,
+			status: toStringArray(status),
+			departmentId: departmentId ? String(departmentId) : undefined,
+			startDate: eventDateFrom ? new Date(eventDateFrom as string) : undefined,
+			endDate: eventDateTo ? new Date(eventDateTo as string) : undefined,
+			page: pageNumber,
+			pageSize: take,
+			sortBy: sortBy as any,
+			sortOrder: sortOrder === "asc" ? "asc" : "desc",
+			zone: toStringArray(zone),
+			eventType: toStringArray(eventType),
+			createdDate: createdDate ? new Date(createdDate as string) : undefined,
+		});
 
-    const pendingOnBySubjectId = await getPendingOnForMany(
-      "EVENT_PROPOSAL",
-      data.map((row) => row.id),
-    );
+		const pendingOnBySubjectId = await getPendingOnForMany(
+			"EVENT_PROPOSAL",
+			data.map((row) => row.id),
+		);
 
-    res.status(200).json({
-      success: true,
-      data: data.map((row) => ({
-        ...row,
-        pendingOn: pendingOnBySubjectId[row.id],
-      })),
-      pagination: {
-        total,
-        page: pageNumber,
-        pageSize: take,
-        totalPages: Math.ceil(total / take),
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
+		res.status(200).json({
+			success: true,
+			data: data.map((row) => ({
+				...row,
+				pendingOn: pendingOnBySubjectId[row.id],
+			})),
+			pagination: {
+				total,
+				page: pageNumber,
+				pageSize: take,
+				totalPages: Math.ceil(total / take),
+			},
+		});
+	} catch (error) {
+		next(error);
+	}
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -234,36 +234,36 @@ export const getAllEventProposals = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getEventProposalById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
+	req: Request,
+	res: Response,
+	next: NextFunction,
 ) => {
-  try {
-    const id = String(req.params.id);
-    if (!id) throw new ApiError(400, "Invalid EPC ID");
+	try {
+		const id = String(req.params.id);
+		if (!id) throw new ApiError(400, "Invalid EPC ID");
 
-    const epc = await prisma.eventProposal.findUnique({
-      where: { id },
-      include: epcFullInfoSelect,
-    });
+		const epc = await prisma.eventProposal.findUnique({
+			where: { id },
+			include: epcFullInfoSelect,
+		});
 
-    if (!epc) throw new ApiError(404, "EPC not found");
+		if (!epc) throw new ApiError(404, "EPC not found");
 
-    const activeWorkflow = await getActiveWorkflowForSubject(
-      "EVENT_PROPOSAL",
-      id,
-    );
+		const activeWorkflow = await getActiveWorkflowForSubject(
+			"EVENT_PROPOSAL",
+			id,
+		);
 
-    const response = {
-      ...epc,
-      activeWorkflow: activeWorkflow ?? null,
-      pendingOn: computePendingOn(activeWorkflow),
-    };
+		const response = {
+			...epc,
+			activeWorkflow: activeWorkflow ?? null,
+			pendingOn: computePendingOn(activeWorkflow),
+		};
 
-    res.status(200).json({ success: true, data: response });
-  } catch (error) {
-    next(error);
-  }
+		res.status(200).json({ success: true, data: response });
+	} catch (error) {
+		next(error);
+	}
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -277,48 +277,57 @@ export const getEventProposalById = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const updateEventProposal = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
+	req: Request,
+	res: Response,
+	next: NextFunction,
 ) => {
-  try {
-    const id = String(req.params.id);
-    const { ...data } = req.body;
-    const userId = req?.user?.id;
+	try {
+		const id = String(req.params.id);
+		// const { ...data } = req.body;
+		const data = {
+			...req.body,
+			...(req.body.event_from_date && {
+				event_from_date: new Date(req.body.event_from_date),
+			}),
+			...(req.body.event_to_date && {
+				event_to_date: new Date(req.body.event_to_date),
+			}),
+		};
+		const userId = req?.user?.id;
 
-    if (!userId) throw new ApiError(401, "Unauthorized");
+		if (!userId) throw new ApiError(401, "Unauthorized");
 
-    if (!id) throw new ApiError(400, "Invalid ID");
+		if (!id) throw new ApiError(400, "Invalid ID");
 
-    const updated = await prisma.eventProposal.update({
-      where: { id },
-      data: {
-        ...data,
-        updated_by_id: userId, // ✅ also fixed field name (was `updated_by`)
-      },
-    });
+		const updated = await prisma.eventProposal.update({
+			where: { id },
+			data: {
+				...data,
+				updated_by_id: userId, // ✅ also fixed field name (was `updated_by`)
+			},
+		});
 
-    await prisma.activityLog.create({
-      data: {
-        subjectType: "EVENT_PROPOSAL",
-        subjectId: id,
-        actorId: userId,
-        action: "EPC_UPDATED",
-        workflowId: null,
-        stageId: null,
-        metadata: {
-          reason: "EPC is Updated.",
-        },
-      },
-    });
+		await prisma.activityLog.create({
+			data: {
+				subjectType: "EVENT_PROPOSAL",
+				subjectId: id,
+				actorId: userId,
+				action: "EPC_UPDATED",
+				workflowId: null,
+				stageId: null,
+				metadata: {
+					reason: "EPC is Updated.",
+				},
+			},
+		});
 
-    res.status(200).json({ success: true, data: updated });
-  } catch (error: any) {
-    if (error.code === "P2025") {
-      return next(new ApiError(404, "Event Proposal not found"));
-    }
-    next(error);
-  }
+		res.status(200).json({ success: true, data: updated });
+	} catch (error: any) {
+		if (error.code === "P2025") {
+			return next(new ApiError(404, "Event Proposal not found"));
+		}
+		next(error);
+	}
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -330,155 +339,155 @@ export const updateEventProposal = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const deleteEventProposal = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
+	req: Request,
+	res: Response,
+	next: NextFunction,
 ) => {
-  try {
-    const id = String(req.params.id);
-    const userId = req?.user?.id;
+	try {
+		const id = String(req.params.id);
+		const userId = req?.user?.id;
 
-    if (!userId) throw new ApiError(401, "Unauthorized");
+		if (!userId) throw new ApiError(401, "Unauthorized");
 
-    if (!id) throw new ApiError(400, "Invalid ID");
+		if (!id) throw new ApiError(400, "Invalid ID");
 
-    // Guard: do not allow deletion while an active workflow is IN_PROGRESS
-    const activeWorkflow = await prisma.workflowInstance.findFirst({
-      where: { subjectType: "EVENT_PROPOSAL", subjectId: id, isActive: true },
-      select: { id: true, status: true },
-    });
+		// Guard: do not allow deletion while an active workflow is IN_PROGRESS
+		const activeWorkflow = await prisma.workflowInstance.findFirst({
+			where: { subjectType: "EVENT_PROPOSAL", subjectId: id, isActive: true },
+			select: { id: true, status: true },
+		});
 
-    if (activeWorkflow && activeWorkflow.status === "IN_PROGRESS") {
-      throw new ApiError(
-        409,
-        "Cannot delete an EPC while its workflow is IN_PROGRESS. " +
-          "Please complete or supersede the workflow first.",
-      );
-    }
+		if (activeWorkflow && activeWorkflow.status === "IN_PROGRESS") {
+			throw new ApiError(
+				409,
+				"Cannot delete an EPC while its workflow is IN_PROGRESS. " +
+					"Please complete or supersede the workflow first.",
+			);
+		}
 
-    const updated = await prisma.eventProposal.update({
-      where: { id },
-      data: {
-        status: "DELETED",
-        updated_by_id: userId,
-      },
-    });
+		const updated = await prisma.eventProposal.update({
+			where: { id },
+			data: {
+				status: "DELETED",
+				updated_by_id: userId,
+			},
+		});
 
-    res.status(200).json({
-      success: true,
-      message: "Event Proposal deleted successfully",
-      data: updated,
-    });
-  } catch (error) {
-    next(error);
-  }
+		res.status(200).json({
+			success: true,
+			message: "Event Proposal deleted successfully",
+			data: updated,
+		});
+	} catch (error) {
+		next(error);
+	}
 };
 
 export const updateEventProposalOutcome = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
+	req: Request,
+	res: Response,
+	next: NextFunction,
 ) => {
-  try {
-    const id = String(req.params.id);
-    const userId = req?.user?.id;
+	try {
+		const id = String(req.params.id);
+		const userId = req?.user?.id;
 
-    if (!userId) throw new ApiError(401, "Unauthorized");
-    if (!id) throw new ApiError(400, "Invalid EPC ID");
+		if (!userId) throw new ApiError(401, "Unauthorized");
+		if (!id) throw new ApiError(400, "Invalid EPC ID");
 
-    const { status, reason } = req.body as {
-      status: string;
-      reason?: string;
-    };
+		const { status, reason } = req.body as {
+			status: string;
+			reason?: string;
+		};
 
-    // ── Guard 1: valid target status ─────────────────────────────────────────
-    if (!status || !OUTCOME_STATUSES.has(status)) {
-      throw new ApiError(400, "status must be either CONDUCTED or CANCELLED");
-    }
+		// ── Guard 1: valid target status ─────────────────────────────────────────
+		if (!status || !OUTCOME_STATUSES.has(status)) {
+			throw new ApiError(400, "status must be either CONDUCTED or CANCELLED");
+		}
 
-    // ── Load EPC — only the fields needed for guards ──────────────────────────
-    const epc = await prisma.eventProposal.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        status: true,
-        created_by_id: true,
-      },
-    });
+		// ── Load EPC — only the fields needed for guards ──────────────────────────
+		const epc = await prisma.eventProposal.findUnique({
+			where: { id },
+			select: {
+				id: true,
+				status: true,
+				created_by_id: true,
+			},
+		});
 
-    if (!epc) throw new ApiError(404, "Event Proposal not found");
+		if (!epc) throw new ApiError(404, "Event Proposal not found");
 
-    // ── Guard 2: only the original proposer can call this ─────────────────────
-    if (epc.created_by_id !== userId) {
-      throw new ApiError(
-        403,
-        "Only the original proposer can update the event outcome",
-      );
-    }
+		// ── Guard 2: only the original proposer can call this ─────────────────────
+		if (epc.created_by_id !== userId) {
+			throw new ApiError(
+				403,
+				"Only the original proposer can update the event outcome",
+			);
+		}
 
-    // ── Guard 3: EPC must be in APPROVED state ────────────────────────────────
-    if (epc.status !== "APPROVED") {
-      throw new ApiError(
-        400,
-        `Event outcome can only be set on an APPROVED proposal. Current status: ${epc.status}`,
-      );
-    }
+		// ── Guard 3: EPC must be in APPROVED state ────────────────────────────────
+		if (epc.status !== "APPROVED") {
+			throw new ApiError(
+				400,
+				`Event outcome can only be set on an APPROVED proposal. Current status: ${epc.status}`,
+			);
+		}
 
-    // ── Guard 4: no active IN_PROGRESS workflow ───────────────────────────────
-    // Workflow must be fully resolved before the proposer can record an outcome.
-    const activeWorkflow = await prisma.workflowInstance.findFirst({
-      where: {
-        subjectType: "EVENT_PROPOSAL",
-        subjectId: id,
-        isActive: true,
-        status: "IN_PROGRESS",
-      },
-      select: { id: true },
-    });
+		// ── Guard 4: no active IN_PROGRESS workflow ───────────────────────────────
+		// Workflow must be fully resolved before the proposer can record an outcome.
+		const activeWorkflow = await prisma.workflowInstance.findFirst({
+			where: {
+				subjectType: "EVENT_PROPOSAL",
+				subjectId: id,
+				isActive: true,
+				status: "IN_PROGRESS",
+			},
+			select: { id: true },
+		});
 
-    if (activeWorkflow) {
-      throw new ApiError(
-        409,
-        "Cannot update outcome while a workflow is still IN_PROGRESS. " +
-          "The workflow must be fully resolved first.",
-      );
-    }
+		if (activeWorkflow) {
+			throw new ApiError(
+				409,
+				"Cannot update outcome while a workflow is still IN_PROGRESS. " +
+					"The workflow must be fully resolved first.",
+			);
+		}
 
-    // ── Determine the ActivityAction for the log ──────────────────────────────
-    const activityAction =
-      status === "CONDUCTED" ? "EPC_CONDUCTED" : "EPC_CANCELLED";
+		// ── Determine the ActivityAction for the log ──────────────────────────────
+		const activityAction =
+			status === "CONDUCTED" ? "EPC_CONDUCTED" : "EPC_CANCELLED";
 
-    // ── Atomic update + activity log ──────────────────────────────────────────
-    const updated = await prisma.$transaction(async (tx) => {
-      const proposal = await tx.eventProposal.update({
-        where: { id },
-        data: {
-          status,
-          updated_by_id: userId,
-        },
-      });
+		// ── Atomic update + activity log ──────────────────────────────────────────
+		const updated = await prisma.$transaction(async (tx) => {
+			const proposal = await tx.eventProposal.update({
+				where: { id },
+				data: {
+					status,
+					updated_by_id: userId,
+				},
+			});
 
-      await tx.activityLog.create({
-        data: {
-          subjectType: "EVENT_PROPOSAL",
-          subjectId: id,
-          actorId: userId,
-          action: activityAction,
-          metadata: reason ? { reason } : {},
-        },
-      });
+			await tx.activityLog.create({
+				data: {
+					subjectType: "EVENT_PROPOSAL",
+					subjectId: id,
+					actorId: userId,
+					action: activityAction,
+					metadata: reason ? { reason } : {},
+				},
+			});
 
-      return proposal;
-    });
+			return proposal;
+		});
 
-    res.status(200).json({
-      success: true,
-      message: `Event Proposal marked as ${status} successfully`,
-      data: updated,
-    });
-  } catch (error) {
-    next(error);
-  }
+		res.status(200).json({
+			success: true,
+			message: `Event Proposal marked as ${status} successfully`,
+			data: updated,
+		});
+	} catch (error) {
+		next(error);
+	}
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -500,170 +509,170 @@ export const updateEventProposalOutcome = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const closeEpc = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
+	req: Request,
+	res: Response,
+	next: NextFunction,
 ) => {
-  try {
-    const userId = req.user?.id;
-    if (!userId) throw new ApiError(401, "Unauthorized");
+	try {
+		const userId = req.user?.id;
+		if (!userId) throw new ApiError(401, "Unauthorized");
 
-    const id = String(req.params.id);
+		const id = String(req.params.id);
 
-    const epc = await prisma.eventProposal.findUnique({
-      where: { id },
-      select: { id: true, status: true, created_by_id: true },
-    });
+		const epc = await prisma.eventProposal.findUnique({
+			where: { id },
+			select: { id: true, status: true, created_by_id: true },
+		});
 
-    if (!epc) throw new ApiError(404, "EPC not found");
+		if (!epc) throw new ApiError(404, "EPC not found");
 
-    if (epc.created_by_id !== userId) {
-      throw new ApiError(403, "Only the EPC creator can close it");
-    }
+		if (epc.created_by_id !== userId) {
+			throw new ApiError(403, "Only the EPC creator can close it");
+		}
 
-    const allowedStatuses = ["VALIDATED", "APPROVED"];
-    if (!allowedStatuses.includes(epc.status)) {
-      throw new ApiError(
-        400,
-        `EPC cannot be closed from status "${epc.status}". ` +
-          "It must be VALIDATED or with an APPROVED deviation workflow.",
-      );
-    }
+		const allowedStatuses = ["VALIDATED", "APPROVED"];
+		if (!allowedStatuses.includes(epc.status)) {
+			throw new ApiError(
+				400,
+				`EPC cannot be closed from status "${epc.status}". ` +
+					"It must be VALIDATED or with an APPROVED deviation workflow.",
+			);
+		}
 
-    // ── Extra guard for deviation path ────────────────────────────────────
-    // If the EPC is in DEVIATION_IN_PROGRESS, the deviation workflow must
-    // be fully APPROVED before the proposer is allowed to close.
-    if (epc.status === "APPROVED") {
-      const deviationWorkflow = await prisma.workflowInstance.findFirst({
-        where: {
-          subjectType: "EVENT_PROPOSAL",
-          subjectId: id,
-          workflowType: "DEVIATION",
-          isActive: true,
-        },
-        select: { status: true },
-      });
+		// ── Extra guard for deviation path ────────────────────────────────────
+		// If the EPC is in DEVIATION_IN_PROGRESS, the deviation workflow must
+		// be fully APPROVED before the proposer is allowed to close.
+		if (epc.status === "APPROVED") {
+			const deviationWorkflow = await prisma.workflowInstance.findFirst({
+				where: {
+					subjectType: "EVENT_PROPOSAL",
+					subjectId: id,
+					workflowType: "DEVIATION",
+					isActive: true,
+				},
+				select: { status: true },
+			});
 
-      if (!deviationWorkflow) {
-        throw new ApiError(
-          400,
-          "No active deviation workflow found for this EPC",
-        );
-      }
+			if (!deviationWorkflow) {
+				throw new ApiError(
+					400,
+					"No active deviation workflow found for this EPC",
+				);
+			}
 
-      if (deviationWorkflow.status !== "APPROVED") {
-        throw new ApiError(
-          400,
-          "The deviation workflow has not been fully approved yet",
-        );
-      }
-    }
+			if (deviationWorkflow.status !== "APPROVED") {
+				throw new ApiError(
+					400,
+					"The deviation workflow has not been fully approved yet",
+				);
+			}
+		}
 
-    await prisma.$transaction([
-      prisma.eventProposal.update({
-        where: { id },
-        data: { status: "CLOSED", updated_by_id: userId },
-      }),
-      prisma.activityLog.create({
-        data: {
-          subjectType: "EVENT_PROPOSAL",
-          subjectId: id,
-          actorId: userId,
-          action: "EPC_CLOSED",
-        },
-      }),
-    ]);
+		await prisma.$transaction([
+			prisma.eventProposal.update({
+				where: { id },
+				data: { status: "CLOSED", updated_by_id: userId },
+			}),
+			prisma.activityLog.create({
+				data: {
+					subjectType: "EVENT_PROPOSAL",
+					subjectId: id,
+					actorId: userId,
+					action: "EPC_CLOSED",
+				},
+			}),
+		]);
 
-    res.status(200).json({
-      success: true,
-      message: "EPC closed successfully",
-    });
-  } catch (error) {
-    next(error);
-  }
+		res.status(200).json({
+			success: true,
+			message: "EPC closed successfully",
+		});
+	} catch (error) {
+		next(error);
+	}
 };
 
 export const initiateDeviation = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
+	req: Request,
+	res: Response,
+	next: NextFunction,
 ) => {
-  try {
-    const userId = req.user?.id;
-    if (!userId) throw new ApiError(401, "Unauthorized");
+	try {
+		const userId = req.user?.id;
+		if (!userId) throw new ApiError(401, "Unauthorized");
 
-    const id = String(req.params.id);
-    const { reason, deviatedAmount } = req.body;
+		const id = String(req.params.id);
+		const { reason, deviatedAmount } = req.body;
 
-    if (!reason || String(reason).trim().length < 3) {
-      throw new ApiError(400, "A reason of at least 3 characters is required");
-    }
+		if (!reason || String(reason).trim().length < 3) {
+			throw new ApiError(400, "A reason of at least 3 characters is required");
+		}
 
-    if (!deviatedAmount || isNaN(Number(deviatedAmount))) {
-      throw new ApiError(
-        400,
-        "deviatedAmount is required and must be a number",
-      );
-    }
+		if (!deviatedAmount || isNaN(Number(deviatedAmount))) {
+			throw new ApiError(
+				400,
+				"deviatedAmount is required and must be a number",
+			);
+		}
 
-    if (!req.file) {
-      throw new ApiError(400, "A supporting PDF document is required");
-    }
-    if (req.file.mimetype !== "application/pdf") {
-      throw new ApiError(400, "Only PDF files are accepted");
-    }
+		if (!req.file) {
+			throw new ApiError(400, "A supporting PDF document is required");
+		}
+		if (req.file.mimetype !== "application/pdf") {
+			throw new ApiError(400, "Only PDF files are accepted");
+		}
 
-    const epc = await prisma.eventProposal.findUnique({
-      where: { id },
-      select: { id: true, status: true, created_by_id: true },
-    });
+		const epc = await prisma.eventProposal.findUnique({
+			where: { id },
+			select: { id: true, status: true, created_by_id: true },
+		});
 
-    if (!epc) throw new ApiError(404, "EPC not found");
+		if (!epc) throw new ApiError(404, "EPC not found");
 
-    if (epc.created_by_id !== userId) {
-      throw new ApiError(403, "Only the EPC creator can initiate a deviation");
-    }
+		if (epc.created_by_id !== userId) {
+			throw new ApiError(403, "Only the EPC creator can initiate a deviation");
+		}
 
-    if (epc.status !== "VALIDATED") {
-      throw new ApiError(
-        400,
-        `Deviation can only be initiated from VALIDATED status. Current status: ${epc.status}`,
-      );
-    }
+		if (epc.status !== "VALIDATED") {
+			throw new ApiError(
+				400,
+				`Deviation can only be initiated from VALIDATED status. Current status: ${epc.status}`,
+			);
+		}
 
-    const { s3Key, fileUrl } = await uploadDeviationDoc(id, req.file.buffer);
+		const { s3Key, fileUrl } = await uploadDeviationDoc(id, req.file.buffer);
 
-    await prisma.$transaction([
-      prisma.eventProposal.update({
-        where: { id },
-        data: {
-          status: "DEVIATION_IN_PROGRESS",
-          updated_by_id: userId,
-          deviationReason: String(reason).trim(),
-          deviationAmount: Number(deviatedAmount),
-          deviationDocS3Key: s3Key,
-          deviationDocUrl: fileUrl,
-        },
-      }),
-      prisma.activityLog.create({
-        data: {
-          subjectType: "EVENT_PROPOSAL",
-          subjectId: id,
-          actorId: userId,
-          action: "DEVIATION_RAISED",
-          metadata: {
-            reason: String(reason).trim(),
-            deviatedAmount: Number(deviatedAmount),
-          },
-        },
-      }),
-    ]);
+		await prisma.$transaction([
+			prisma.eventProposal.update({
+				where: { id },
+				data: {
+					status: "DEVIATION_IN_PROGRESS",
+					updated_by_id: userId,
+					deviationReason: String(reason).trim(),
+					deviationAmount: Number(deviatedAmount),
+					deviationDocS3Key: s3Key,
+					deviationDocUrl: fileUrl,
+				},
+			}),
+			prisma.activityLog.create({
+				data: {
+					subjectType: "EVENT_PROPOSAL",
+					subjectId: id,
+					actorId: userId,
+					action: "DEVIATION_RAISED",
+					metadata: {
+						reason: String(reason).trim(),
+						deviatedAmount: Number(deviatedAmount),
+					},
+				},
+			}),
+		]);
 
-    res.status(200).json({
-      success: true,
-      message: "Deviation initiated. EPC is now in DEVIATION_IN_PROGRESS.",
-    });
-  } catch (error) {
-    next(error);
-  }
+		res.status(200).json({
+			success: true,
+			message: "Deviation initiated. EPC is now in DEVIATION_IN_PROGRESS.",
+		});
+	} catch (error) {
+		next(error);
+	}
 };

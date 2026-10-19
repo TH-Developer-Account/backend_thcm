@@ -168,10 +168,22 @@ export const manageMasterData = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error("manageMasterData error:", error);
-    res.status(500).json({
-      message: "Failed to manage master data",
-      error: error.message,
-    });
+
+    if (error instanceof ApiError) {
+      // NOTE: use whatever your ApiError calls its status property.
+      res.status(error.statusCode).json({ message: error.message });
+      return;
+    }
+
+    // Prisma unique-constraint violation (duplicate code / name)
+    if (error?.code === "P2002") {
+      res
+        .status(409)
+        .json({ message: "A record with this name or code already exists" });
+      return;
+    }
+
+    res.status(500).json({ message: "Failed to manage master data" });
   }
 };
 
@@ -214,12 +226,25 @@ export const getProductsByType = async (
 
 export const getBudgetOData = async (req: Request, res: Response) => {
   try {
+    const { budgetId } = req.query;
+
+    const [budget] = await prisma.budgetMaster.findMany({
+      where: { id: budgetId as string },
+      select: {
+        id: true,
+        code: true,
+        fiscal_year: true,
+        id_desc: true,
+        value: true,
+      },
+    });
+
     const response = await axios.get(
-      "http://th-s4-qas-ad.tatahitachi.co.in:8001/sap/opu/odata/sap/ZBUDGET_API_SRV/ZSTR_BUDGET_APISet?$filter=BudgetCode%20eq%20%27P1SMN1380105%27&sap-client=635",
+      `http://th-s4-qas-ad.tatahitachi.co.in:8001/sap/opu/odata/sap/ZBUDGET_API_SRV/ZSTR_BUDGET_APISet?$filter=BudgetCode%20eq%20%27${budget.code}%27&sap-client=635`,
       {
         auth: {
-          username: "d39351",
-          password: "Publi@4321",
+          username: process.env.SAP_USERNAME as string,
+          password: process.env.SAP_PASSWORD as string,
         },
         headers: {
           Accept: "application/json",

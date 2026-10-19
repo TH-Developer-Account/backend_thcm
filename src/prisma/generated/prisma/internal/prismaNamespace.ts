@@ -415,6 +415,8 @@ export const ModelName = {
   ProductMaster: 'ProductMaster',
   EPF: 'EPF',
   CRF: 'CRF',
+  CrfItem: 'CrfItem',
+  CrfOrder: 'CrfOrder',
   LineItem: 'LineItem',
   Comment: 'Comment',
   Operator: 'Operator',
@@ -434,7 +436,9 @@ export const ModelName = {
   Guest: 'Guest',
   BusinessPartner: 'BusinessPartner',
   BusinessPartnerAddress: 'BusinessPartnerAddress',
-  BusinessPartnerContact: 'BusinessPartnerContact'
+  BusinessPartnerContact: 'BusinessPartnerContact',
+  MachineStudy: 'MachineStudy',
+  MachineStudyCycle: 'MachineStudyCycle'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -450,7 +454,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "gradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "region" | "branch" | "budgetMaster" | "eventName" | "productMaster" | "ePF" | "cRF" | "crfItem" | "crfOrder" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "gradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact" | "machineStudy" | "machineStudyCycle"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2748,6 +2752,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CrfItem: {
+      payload: Prisma.$CrfItemPayload<ExtArgs>
+      fields: Prisma.CrfItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CrfItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CrfItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfItemPayload>
+        }
+        findFirst: {
+          args: Prisma.CrfItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CrfItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfItemPayload>
+        }
+        findMany: {
+          args: Prisma.CrfItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfItemPayload>[]
+        }
+        create: {
+          args: Prisma.CrfItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfItemPayload>
+        }
+        createMany: {
+          args: Prisma.CrfItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CrfItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfItemPayload>[]
+        }
+        delete: {
+          args: Prisma.CrfItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfItemPayload>
+        }
+        update: {
+          args: Prisma.CrfItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.CrfItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CrfItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CrfItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.CrfItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfItemPayload>
+        }
+        aggregate: {
+          args: Prisma.CrfItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCrfItem>
+        }
+        groupBy: {
+          args: Prisma.CrfItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CrfItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CrfItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CrfItemCountAggregateOutputType> | number
+        }
+      }
+    }
+    CrfOrder: {
+      payload: Prisma.$CrfOrderPayload<ExtArgs>
+      fields: Prisma.CrfOrderFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CrfOrderFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfOrderPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CrfOrderFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfOrderPayload>
+        }
+        findFirst: {
+          args: Prisma.CrfOrderFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfOrderPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CrfOrderFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfOrderPayload>
+        }
+        findMany: {
+          args: Prisma.CrfOrderFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfOrderPayload>[]
+        }
+        create: {
+          args: Prisma.CrfOrderCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfOrderPayload>
+        }
+        createMany: {
+          args: Prisma.CrfOrderCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CrfOrderCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfOrderPayload>[]
+        }
+        delete: {
+          args: Prisma.CrfOrderDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfOrderPayload>
+        }
+        update: {
+          args: Prisma.CrfOrderUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfOrderPayload>
+        }
+        deleteMany: {
+          args: Prisma.CrfOrderDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CrfOrderUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CrfOrderUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfOrderPayload>[]
+        }
+        upsert: {
+          args: Prisma.CrfOrderUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CrfOrderPayload>
+        }
+        aggregate: {
+          args: Prisma.CrfOrderAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCrfOrder>
+        }
+        groupBy: {
+          args: Prisma.CrfOrderGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CrfOrderGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CrfOrderCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CrfOrderCountAggregateOutputType> | number
+        }
+      }
+    }
     LineItem: {
       payload: Prisma.$LineItemPayload<ExtArgs>
       fields: Prisma.LineItemFieldRefs
@@ -4228,6 +4380,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MachineStudy: {
+      payload: Prisma.$MachineStudyPayload<ExtArgs>
+      fields: Prisma.MachineStudyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MachineStudyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MachineStudyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>
+        }
+        findFirst: {
+          args: Prisma.MachineStudyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MachineStudyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>
+        }
+        findMany: {
+          args: Prisma.MachineStudyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>[]
+        }
+        create: {
+          args: Prisma.MachineStudyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>
+        }
+        createMany: {
+          args: Prisma.MachineStudyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MachineStudyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>[]
+        }
+        delete: {
+          args: Prisma.MachineStudyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>
+        }
+        update: {
+          args: Prisma.MachineStudyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>
+        }
+        deleteMany: {
+          args: Prisma.MachineStudyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MachineStudyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MachineStudyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>[]
+        }
+        upsert: {
+          args: Prisma.MachineStudyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyPayload>
+        }
+        aggregate: {
+          args: Prisma.MachineStudyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMachineStudy>
+        }
+        groupBy: {
+          args: Prisma.MachineStudyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MachineStudyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MachineStudyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MachineStudyCountAggregateOutputType> | number
+        }
+      }
+    }
+    MachineStudyCycle: {
+      payload: Prisma.$MachineStudyCyclePayload<ExtArgs>
+      fields: Prisma.MachineStudyCycleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MachineStudyCycleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MachineStudyCycleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>
+        }
+        findFirst: {
+          args: Prisma.MachineStudyCycleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MachineStudyCycleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>
+        }
+        findMany: {
+          args: Prisma.MachineStudyCycleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>[]
+        }
+        create: {
+          args: Prisma.MachineStudyCycleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>
+        }
+        createMany: {
+          args: Prisma.MachineStudyCycleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MachineStudyCycleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>[]
+        }
+        delete: {
+          args: Prisma.MachineStudyCycleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>
+        }
+        update: {
+          args: Prisma.MachineStudyCycleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>
+        }
+        deleteMany: {
+          args: Prisma.MachineStudyCycleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MachineStudyCycleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MachineStudyCycleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>[]
+        }
+        upsert: {
+          args: Prisma.MachineStudyCycleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MachineStudyCyclePayload>
+        }
+        aggregate: {
+          args: Prisma.MachineStudyCycleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMachineStudyCycle>
+        }
+        groupBy: {
+          args: Prisma.MachineStudyCycleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MachineStudyCycleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MachineStudyCycleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MachineStudyCycleCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4653,7 +4953,8 @@ export type BudgetMasterScalarFieldEnum = (typeof BudgetMasterScalarFieldEnum)[k
 
 export const EventNameScalarFieldEnum = {
   id: 'id',
-  title: 'title'
+  title: 'title',
+  reportTemplateKey: 'reportTemplateKey'
 } as const
 
 export type EventNameScalarFieldEnum = (typeof EventNameScalarFieldEnum)[keyof typeof EventNameScalarFieldEnum]
@@ -4698,11 +4999,93 @@ export type EPFScalarFieldEnum = (typeof EPFScalarFieldEnum)[keyof typeof EPFSca
 export const CRFScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
+  crfNumber: 'crfNumber',
+  status: 'status',
+  recipientType: 'recipientType',
+  recipientName: 'recipientName',
+  recipientPhone: 'recipientPhone',
+  recipientEmail: 'recipientEmail',
+  recipientOrganisation: 'recipientOrganisation',
+  recipientUserId: 'recipientUserId',
+  recipientContactId: 'recipientContactId',
+  deliveryInstructions: 'deliveryInstructions',
+  requiredByDate: 'requiredByDate',
+  addressSourceType: 'addressSourceType',
+  addressSourceId: 'addressSourceId',
+  addressCompany: 'addressCompany',
+  addressLine1: 'addressLine1',
+  addressLine2: 'addressLine2',
+  addressLandmark: 'addressLandmark',
+  addressCity: 'addressCity',
+  addressDistrict: 'addressDistrict',
+  addressState: 'addressState',
+  addressPincode: 'addressPincode',
+  addressCountry: 'addressCountry',
+  addressGstin: 'addressGstin',
+  addressValidatedAt: 'addressValidatedAt',
+  souvenirTotalAtApproval: 'souvenirTotalAtApproval',
+  shortfallAmount: 'shortfallAmount',
+  pendingDebitAmount: 'pendingDebitAmount',
+  approvedAt: 'approvedAt',
+  itemsChangedAt: 'itemsChangedAt',
+  closedAt: 'closedAt',
+  created_by_id: 'created_by_id',
+  updated_by_id: 'updated_by_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
 
 export type CRFScalarFieldEnum = (typeof CRFScalarFieldEnum)[keyof typeof CRFScalarFieldEnum]
+
+
+export const CrfItemScalarFieldEnum = {
+  id: 'id',
+  crfId: 'crfId',
+  category: 'category',
+  source: 'source',
+  sortOrder: 'sortOrder',
+  productId: 'productId',
+  quantity: 'quantity',
+  rate: 'rate',
+  amount: 'amount',
+  width: 'width',
+  height: 'height',
+  unit: 'unit',
+  sku: 'sku',
+  requestedQty: 'requestedQty',
+  title: 'title',
+  variantTitle: 'variantTitle',
+  imageUrl: 'imageUrl',
+  qtyAtApproval: 'qtyAtApproval',
+  status: 'status',
+  removedAt: 'removedAt',
+  removedById: 'removedById',
+  deliveredAt: 'deliveredAt',
+  deliveredById: 'deliveredById',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CrfItemScalarFieldEnum = (typeof CrfItemScalarFieldEnum)[keyof typeof CrfItemScalarFieldEnum]
+
+
+export const CrfOrderScalarFieldEnum = {
+  id: 'id',
+  crfId: 'crfId',
+  shopifyOrderId: 'shopifyOrderId',
+  totalPrice: 'totalPrice',
+  lines: 'lines',
+  debitNoteAmount: 'debitNoteAmount',
+  status: 'status',
+  cancelledAt: 'cancelledAt',
+  cancelledById: 'cancelledById',
+  cancelReason: 'cancelReason',
+  placedAt: 'placedAt',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CrfOrderScalarFieldEnum = (typeof CrfOrderScalarFieldEnum)[keyof typeof CrfOrderScalarFieldEnum]
 
 
 export const LineItemScalarFieldEnum = {
@@ -4716,6 +5099,9 @@ export const LineItemScalarFieldEnum = {
   height: 'height',
   width: 'width',
   unit: 'unit',
+  description: 'description',
+  attachmentS3Key: 'attachmentS3Key',
+  attachmentFileName: 'attachmentFileName',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -4755,9 +5141,22 @@ export const LeadScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
   name: 'name',
-  email: 'email',
+  companyName: 'companyName',
   phone: 'phone',
+  email: 'email',
+  dealership: 'dealership',
+  participantType: 'participantType',
+  participantStatus: 'participantStatus',
+  machineModel: 'machineModel',
+  machineSerial: 'machineSerial',
+  valueOfServiceOffers: 'valueOfServiceOffers',
+  valueOfPartsOffers: 'valueOfPartsOffers',
+  valueOfPartsBilled: 'valueOfPartsBilled',
   notes: 'notes',
+  eventDate: 'eventDate',
+  location: 'location',
+  district: 'district',
+  state: 'state',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -4786,18 +5185,17 @@ export type PincodeScalarFieldEnum = (typeof PincodeScalarFieldEnum)[keyof typeo
 export const EventReportScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
-  outcomeStatus: 'outcomeStatus',
-  totalLeadsGenerated: 'totalLeadsGenerated',
-  approvedEventCost: 'approvedEventCost',
-  expectedConversion: 'expectedConversion',
-  remarks: 'remarks',
   status: 'status',
+  eventHighlights: 'eventHighlights',
+  computedOutcomes: 'computedOutcomes',
   rejectionReason: 'rejectionReason',
   clarificationReason: 'clarificationReason',
+  generationError: 'generationError',
   submittedAt: 'submittedAt',
   resubmittedAt: 'resubmittedAt',
   validatedAt: 'validatedAt',
   validatorId: 'validatorId',
+  pdfS3Key: 'pdfS3Key',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -4809,8 +5207,10 @@ export const EventReportImageScalarFieldEnum = {
   id: 'id',
   reportId: 'reportId',
   position: 'position',
+  caption: 'caption',
   s3Key: 's3Key',
-  fileUrl: 'fileUrl'
+  fileUrl: 'fileUrl',
+  mimeType: 'mimeType'
 } as const
 
 export type EventReportImageScalarFieldEnum = (typeof EventReportImageScalarFieldEnum)[keyof typeof EventReportImageScalarFieldEnum]
@@ -5082,6 +5482,53 @@ export const BusinessPartnerContactScalarFieldEnum = {
 export type BusinessPartnerContactScalarFieldEnum = (typeof BusinessPartnerContactScalarFieldEnum)[keyof typeof BusinessPartnerContactScalarFieldEnum]
 
 
+export const MachineStudyScalarFieldEnum = {
+  id: 'id',
+  epcId: 'epcId',
+  isCompetitorMachine: 'isCompetitorMachine',
+  machineModel: 'machineModel',
+  customerName: 'customerName',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  application: 'application',
+  fuelType: 'fuelType',
+  startHmr: 'startHmr',
+  endHmr: 'endHmr',
+  bucketVolumeCuM: 'bucketVolumeCuM',
+  acStatus: 'acStatus',
+  operationMode: 'operationMode',
+  dieselTopUpLtr: 'dieselTopUpLtr',
+  startKwhReading: 'startKwhReading',
+  endKwhReading: 'endKwhReading',
+  operatorName: 'operatorName',
+  operatorExperience: 'operatorExperience',
+  priorMachinesOperated: 'priorMachinesOperated',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type MachineStudyScalarFieldEnum = (typeof MachineStudyScalarFieldEnum)[keyof typeof MachineStudyScalarFieldEnum]
+
+
+export const MachineStudyCycleScalarFieldEnum = {
+  id: 'id',
+  studyId: 'studyId',
+  sequenceNo: 'sequenceNo',
+  truckNumber: 'truckNumber',
+  startSeconds: 'startSeconds',
+  finishSeconds: 'finishSeconds',
+  timeTakenSeconds: 'timeTakenSeconds',
+  bucketPasses: 'bucketPasses',
+  swingAngleDegrees: 'swingAngleDegrees',
+  unladenWeightKg: 'unladenWeightKg',
+  ladenWeightKg: 'ladenWeightKg',
+  payloadKg: 'payloadKg',
+  remarks: 'remarks'
+} as const
+
+export type MachineStudyCycleScalarFieldEnum = (typeof MachineStudyCycleScalarFieldEnum)[keyof typeof MachineStudyCycleScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -5096,6 +5543,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -5347,6 +5801,118 @@ export type ListEnumProductCategoryFieldRefInput<$PrismaModel> = FieldRefInputTy
 
 
 /**
+ * Reference to a field of type 'CrfStatus'
+ */
+export type EnumCrfStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CrfStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CrfStatus[]'
+ */
+export type ListEnumCrfStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CrfStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CrfRecipientType'
+ */
+export type EnumCrfRecipientTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CrfRecipientType'>
+    
+
+
+/**
+ * Reference to a field of type 'CrfRecipientType[]'
+ */
+export type ListEnumCrfRecipientTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CrfRecipientType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CrfAddressSource'
+ */
+export type EnumCrfAddressSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CrfAddressSource'>
+    
+
+
+/**
+ * Reference to a field of type 'CrfAddressSource[]'
+ */
+export type ListEnumCrfAddressSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CrfAddressSource[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CrfItemSource'
+ */
+export type EnumCrfItemSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CrfItemSource'>
+    
+
+
+/**
+ * Reference to a field of type 'CrfItemSource[]'
+ */
+export type ListEnumCrfItemSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CrfItemSource[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CrfItemStatus'
+ */
+export type EnumCrfItemStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CrfItemStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CrfItemStatus[]'
+ */
+export type ListEnumCrfItemStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CrfItemStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'CrfOrderStatus'
+ */
+export type EnumCrfOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CrfOrderStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'CrfOrderStatus[]'
+ */
+export type ListEnumCrfOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CrfOrderStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ParticipantType'
+ */
+export type EnumParticipantTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ParticipantType'>
+    
+
+
+/**
+ * Reference to a field of type 'ParticipantType[]'
+ */
+export type ListEnumParticipantTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ParticipantType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ParticipantStatus'
+ */
+export type EnumParticipantStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ParticipantStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ParticipantStatus[]'
+ */
+export type ListEnumParticipantStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ParticipantStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -5357,20 +5923,6 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-/**
- * Reference to a field of type 'OutcomeStatus'
- */
-export type EnumOutcomeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutcomeStatus'>
-    
-
-
-/**
- * Reference to a field of type 'OutcomeStatus[]'
- */
-export type ListEnumOutcomeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OutcomeStatus[]'>
     
 
 
@@ -5469,6 +6021,20 @@ export type EnumBusinessPartnerOfficeTypeFieldRefInput<$PrismaModel> = FieldRefI
  * Reference to a field of type 'BusinessPartnerOfficeType[]'
  */
 export type ListEnumBusinessPartnerOfficeTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BusinessPartnerOfficeType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FuelType'
+ */
+export type EnumFuelTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FuelType'>
+    
+
+
+/**
+ * Reference to a field of type 'FuelType[]'
+ */
+export type ListEnumFuelTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FuelType[]'>
     
 
 /**
@@ -5612,6 +6178,8 @@ export type GlobalOmitConfig = {
   productMaster?: Prisma.ProductMasterOmit
   ePF?: Prisma.EPFOmit
   cRF?: Prisma.CRFOmit
+  crfItem?: Prisma.CrfItemOmit
+  crfOrder?: Prisma.CrfOrderOmit
   lineItem?: Prisma.LineItemOmit
   comment?: Prisma.CommentOmit
   operator?: Prisma.OperatorOmit
@@ -5632,6 +6200,8 @@ export type GlobalOmitConfig = {
   businessPartner?: Prisma.BusinessPartnerOmit
   businessPartnerAddress?: Prisma.BusinessPartnerAddressOmit
   businessPartnerContact?: Prisma.BusinessPartnerContactOmit
+  machineStudy?: Prisma.MachineStudyOmit
+  machineStudyCycle?: Prisma.MachineStudyCycleOmit
 }
 
 /* Types for Logging */

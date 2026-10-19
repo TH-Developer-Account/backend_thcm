@@ -22,6 +22,7 @@ import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import { activeWorkflowInclude } from "@shared/utils/contants";
 import { notifyGuestOfClarification } from "@medi-claim/mediclaim.helper";
+import { runEventProposalFinalApprovalHooks } from "@map/crf/services/crfOrder.services";
 
 import {
   Prisma,
@@ -211,6 +212,59 @@ export async function runPostClarifyHook(
 ): Promise<void> {
   const hook = postClarifyHooks[subjectType];
   if (hook) await hook(tx, subjectId);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// postFinalApprovalHooks  ✅ NEW
+//
+// Mirrors postClarifyHooks above — same strategy-map reasoning (new subject
+// type = one new entry, no existing branch touched) — but deliberately NOT
+// shaped like it: these hooks take no `tx`, because they must run strictly
+// AFTER the approval transaction has committed, never inside it.
+//
+// runEventProposalFinalApprovalHooks talks to Shopify, sends mail, and
+// opens its own transactions; running any of that while still holding
+// approveStage's transaction locks would violate the transaction-
+// discipline principle this codebase follows everywhere else (see
+// crfOrder.service.ts's own notification comments). So the caller
+// (workflow.service.ts's approveStage) invokes this only in its
+// post-commit notify section, exactly where it already fires the "fully
+// approved" notification.
+//
+// EVENT_PROPOSAL → runEventProposalFinalApprovalHooks, which composes the
+// CRF post-approval souvenir stock check (order-readiness) AND the
+// marketing artwork/printed-material forward — both defined in
+// crfOrder.service.ts, both EPC-final-approval-triggered, so they're kept
+// as one entry here rather than this registry growing a second slot per
+// subject type.
+//
+// Return type is Promise<Record<string, unknown>> rather than Promise<void>
+// — not every hook has something worth surfacing back to the approve
+// response (most subject types have no hook at all), but EVENT_PROPOSAL's
+// does: { stockCheckFailed } needs to reach approveStage's response so the
+// frontend can toast "Shopify unreachable — retry" right on the approve
+// action, instead of the failure only being discoverable by reopening the
+// CRF later. Hooks with nothing to report just resolve to {} — same
+// convention as runPostClarifyHook returning void, just non-void here
+// because this one has a caller that needs the data.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const postFinalApprovalHooks: Partial<
+  Record<
+    WorkflowSubjectType,
+    (subjectId: string) => Promise<Record<string, unknown>>
+  >
+> = {
+  EVENT_PROPOSAL: (subjectId) => runEventProposalFinalApprovalHooks(subjectId),
+};
+
+export async function runPostFinalApprovalHook(
+  subjectType: WorkflowSubjectType,
+  subjectId: string,
+): Promise<Record<string, unknown>> {
+  const hook = postFinalApprovalHooks[subjectType];
+  if (!hook) return {};
+  return hook(subjectId);
 }
 
 // Subject-specific action name + status for the "resubmitted" transition —

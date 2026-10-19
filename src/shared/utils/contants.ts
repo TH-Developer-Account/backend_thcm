@@ -89,14 +89,48 @@ export const epcFullInfoSelect = {
       },
     },
   },
+  // NOTE: CRF.lineItems (the legacy LineItem relation) is NOT selected here.
+  // Every CRF write goes through CrfItem (CRF.items — see
+  // modules/map/crf.service.ts's buildCrfItemRows / replaceCrfItems), so
+  // lineItems is always empty for any CRF created through the current flow.
+  // Selecting it here previously made GET /epc/:id come back with
+  // `crf: { id, lineItems: [] }` — the CRF existed and its CrfItem rows were
+  // real, but this endpoint never asked for them, so the frontend's
+  // `epcData.crf.items` was always undefined and CrfSection.tsx showed
+  // "No CRF has been created for this EPC yet." even right after a save.
+  // `items` below mirrors the shape getCrfDetail (crf.service.ts) returns
+  // for GET /crf/:id, so both endpoints agree on what a CRF item looks like.
+  //
+  // title/variantTitle/imageUrl: souvenir (SHOPIFY) display-snapshot fields
+  // persisted on CrfItem — see crf.service.ts's buildShopifyItemRows and
+  // schema.prisma's CrfItem doc comment. Added alongside `rate` (already
+  // selected below) so GET /epc/:id returns the same souvenir display data
+  // getCrfDetail does.
   crf: {
     select: {
       id: true,
-      lineItems: {
+      epcId: true,
+      status: true,
+      items: {
+        orderBy: { sortOrder: "asc" as const },
         select: {
           id: true,
+          category: true,
+          source: true,
+          sortOrder: true,
           quantity: true,
+          rate: true,
           amount: true,
+          width: true,
+          height: true,
+          unit: true,
+          sku: true,
+          requestedQty: true,
+          title: true,
+          variantTitle: true,
+          imageUrl: true,
+          qtyAtApproval: true,
+          status: true,
           product: {
             select: {
               id: true,
@@ -115,17 +149,22 @@ export const epcFullInfoSelect = {
       id: true,
       epcId: true,
       status: true,
-      remarks: true,
-      outcomeStatus: true,
-      totalLeadsGenerated: true,
-      approvedEventCost: true,
-      expectedConversion: true,
+      eventHighlights: true,
+      computedOutcomes: true,
+      rejectionReason: true,
+      clarificationReason: true,
+      generationError: true,
+      submittedAt: true,
+      resubmittedAt: true,
+      validatedAt: true,
+      pdfS3Key: true,
       validatorId: true,
       images: {
         select: {
           id: true,
           reportId: true,
           position: true,
+          caption: true,
           s3Key: true,
           fileUrl: true,
         },

@@ -232,6 +232,7 @@ export type BusinessPartnerContactWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"BusinessPartnerContact"> | Date | string
   businessPartner?: Prisma.XOR<Prisma.BusinessPartnerScalarRelationFilter, Prisma.BusinessPartnerWhereInput>
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  crfsAsRecipient?: Prisma.CRFListRelationFilter
 }
 
 export type BusinessPartnerContactOrderByWithRelationInput = {
@@ -248,6 +249,7 @@ export type BusinessPartnerContactOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   businessPartner?: Prisma.BusinessPartnerOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
+  crfsAsRecipient?: Prisma.CRFOrderByRelationAggregateInput
 }
 
 export type BusinessPartnerContactWhereUniqueInput = Prisma.AtLeast<{
@@ -267,6 +269,7 @@ export type BusinessPartnerContactWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"BusinessPartnerContact"> | Date | string
   businessPartner?: Prisma.XOR<Prisma.BusinessPartnerScalarRelationFilter, Prisma.BusinessPartnerWhereInput>
   user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  crfsAsRecipient?: Prisma.CRFListRelationFilter
 }, "id">
 
 export type BusinessPartnerContactOrderByWithAggregationInput = {
@@ -315,6 +318,7 @@ export type BusinessPartnerContactCreateInput = {
   updatedAt?: Date | string
   businessPartner: Prisma.BusinessPartnerCreateNestedOneWithoutContactsInput
   user?: Prisma.UserCreateNestedOneWithoutBusinessPartnerContactInput
+  crfsAsRecipient?: Prisma.CRFCreateNestedManyWithoutRecipientContactInput
 }
 
 export type BusinessPartnerContactUncheckedCreateInput = {
@@ -329,6 +333,7 @@ export type BusinessPartnerContactUncheckedCreateInput = {
   isMainContact?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  crfsAsRecipient?: Prisma.CRFUncheckedCreateNestedManyWithoutRecipientContactInput
 }
 
 export type BusinessPartnerContactUpdateInput = {
@@ -343,6 +348,7 @@ export type BusinessPartnerContactUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneRequiredWithoutContactsNestedInput
   user?: Prisma.UserUpdateOneWithoutBusinessPartnerContactNestedInput
+  crfsAsRecipient?: Prisma.CRFUpdateManyWithoutRecipientContactNestedInput
 }
 
 export type BusinessPartnerContactUncheckedUpdateInput = {
@@ -357,6 +363,7 @@ export type BusinessPartnerContactUncheckedUpdateInput = {
   isMainContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  crfsAsRecipient?: Prisma.CRFUncheckedUpdateManyWithoutRecipientContactNestedInput
 }
 
 export type BusinessPartnerContactCreateManyInput = {
@@ -407,6 +414,11 @@ export type BusinessPartnerContactListRelationFilter = {
 
 export type BusinessPartnerContactOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type BusinessPartnerContactNullableScalarRelationFilter = {
+  is?: Prisma.BusinessPartnerContactWhereInput | null
+  isNot?: Prisma.BusinessPartnerContactWhereInput | null
 }
 
 export type BusinessPartnerContactCountOrderByAggregateInput = {
@@ -493,6 +505,22 @@ export type BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.BusinessPartnerContactScalarWhereInput | Prisma.BusinessPartnerContactScalarWhereInput[]
 }
 
+export type BusinessPartnerContactCreateNestedOneWithoutCrfsAsRecipientInput = {
+  create?: Prisma.XOR<Prisma.BusinessPartnerContactCreateWithoutCrfsAsRecipientInput, Prisma.BusinessPartnerContactUncheckedCreateWithoutCrfsAsRecipientInput>
+  connectOrCreate?: Prisma.BusinessPartnerContactCreateOrConnectWithoutCrfsAsRecipientInput
+  connect?: Prisma.BusinessPartnerContactWhereUniqueInput
+}
+
+export type BusinessPartnerContactUpdateOneWithoutCrfsAsRecipientNestedInput = {
+  create?: Prisma.XOR<Prisma.BusinessPartnerContactCreateWithoutCrfsAsRecipientInput, Prisma.BusinessPartnerContactUncheckedCreateWithoutCrfsAsRecipientInput>
+  connectOrCreate?: Prisma.BusinessPartnerContactCreateOrConnectWithoutCrfsAsRecipientInput
+  upsert?: Prisma.BusinessPartnerContactUpsertWithoutCrfsAsRecipientInput
+  disconnect?: Prisma.BusinessPartnerContactWhereInput | boolean
+  delete?: Prisma.BusinessPartnerContactWhereInput | boolean
+  connect?: Prisma.BusinessPartnerContactWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BusinessPartnerContactUpdateToOneWithWhereWithoutCrfsAsRecipientInput, Prisma.BusinessPartnerContactUpdateWithoutCrfsAsRecipientInput>, Prisma.BusinessPartnerContactUncheckedUpdateWithoutCrfsAsRecipientInput>
+}
+
 export type BusinessPartnerContactCreateNestedManyWithoutBusinessPartnerInput = {
   create?: Prisma.XOR<Prisma.BusinessPartnerContactCreateWithoutBusinessPartnerInput, Prisma.BusinessPartnerContactUncheckedCreateWithoutBusinessPartnerInput> | Prisma.BusinessPartnerContactCreateWithoutBusinessPartnerInput[] | Prisma.BusinessPartnerContactUncheckedCreateWithoutBusinessPartnerInput[]
   connectOrCreate?: Prisma.BusinessPartnerContactCreateOrConnectWithoutBusinessPartnerInput | Prisma.BusinessPartnerContactCreateOrConnectWithoutBusinessPartnerInput[]
@@ -546,6 +574,7 @@ export type BusinessPartnerContactCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   businessPartner: Prisma.BusinessPartnerCreateNestedOneWithoutContactsInput
+  crfsAsRecipient?: Prisma.CRFCreateNestedManyWithoutRecipientContactInput
 }
 
 export type BusinessPartnerContactUncheckedCreateWithoutUserInput = {
@@ -559,6 +588,7 @@ export type BusinessPartnerContactUncheckedCreateWithoutUserInput = {
   isMainContact?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  crfsAsRecipient?: Prisma.CRFUncheckedCreateNestedManyWithoutRecipientContactInput
 }
 
 export type BusinessPartnerContactCreateOrConnectWithoutUserInput = {
@@ -604,6 +634,78 @@ export type BusinessPartnerContactScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"BusinessPartnerContact"> | Date | string
 }
 
+export type BusinessPartnerContactCreateWithoutCrfsAsRecipientInput = {
+  id?: string
+  name: string
+  phoneNumber?: string | null
+  email?: string | null
+  panNumber?: string | null
+  isOwner?: boolean
+  isMainContact?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  businessPartner: Prisma.BusinessPartnerCreateNestedOneWithoutContactsInput
+  user?: Prisma.UserCreateNestedOneWithoutBusinessPartnerContactInput
+}
+
+export type BusinessPartnerContactUncheckedCreateWithoutCrfsAsRecipientInput = {
+  id?: string
+  businessPartnerId: string
+  userId?: string | null
+  name: string
+  phoneNumber?: string | null
+  email?: string | null
+  panNumber?: string | null
+  isOwner?: boolean
+  isMainContact?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type BusinessPartnerContactCreateOrConnectWithoutCrfsAsRecipientInput = {
+  where: Prisma.BusinessPartnerContactWhereUniqueInput
+  create: Prisma.XOR<Prisma.BusinessPartnerContactCreateWithoutCrfsAsRecipientInput, Prisma.BusinessPartnerContactUncheckedCreateWithoutCrfsAsRecipientInput>
+}
+
+export type BusinessPartnerContactUpsertWithoutCrfsAsRecipientInput = {
+  update: Prisma.XOR<Prisma.BusinessPartnerContactUpdateWithoutCrfsAsRecipientInput, Prisma.BusinessPartnerContactUncheckedUpdateWithoutCrfsAsRecipientInput>
+  create: Prisma.XOR<Prisma.BusinessPartnerContactCreateWithoutCrfsAsRecipientInput, Prisma.BusinessPartnerContactUncheckedCreateWithoutCrfsAsRecipientInput>
+  where?: Prisma.BusinessPartnerContactWhereInput
+}
+
+export type BusinessPartnerContactUpdateToOneWithWhereWithoutCrfsAsRecipientInput = {
+  where?: Prisma.BusinessPartnerContactWhereInput
+  data: Prisma.XOR<Prisma.BusinessPartnerContactUpdateWithoutCrfsAsRecipientInput, Prisma.BusinessPartnerContactUncheckedUpdateWithoutCrfsAsRecipientInput>
+}
+
+export type BusinessPartnerContactUpdateWithoutCrfsAsRecipientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isMainContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneRequiredWithoutContactsNestedInput
+  user?: Prisma.UserUpdateOneWithoutBusinessPartnerContactNestedInput
+}
+
+export type BusinessPartnerContactUncheckedUpdateWithoutCrfsAsRecipientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  businessPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  panNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOwner?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isMainContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type BusinessPartnerContactCreateWithoutBusinessPartnerInput = {
   id?: string
   name: string
@@ -615,6 +717,7 @@ export type BusinessPartnerContactCreateWithoutBusinessPartnerInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutBusinessPartnerContactInput
+  crfsAsRecipient?: Prisma.CRFCreateNestedManyWithoutRecipientContactInput
 }
 
 export type BusinessPartnerContactUncheckedCreateWithoutBusinessPartnerInput = {
@@ -628,6 +731,7 @@ export type BusinessPartnerContactUncheckedCreateWithoutBusinessPartnerInput = {
   isMainContact?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  crfsAsRecipient?: Prisma.CRFUncheckedCreateNestedManyWithoutRecipientContactInput
 }
 
 export type BusinessPartnerContactCreateOrConnectWithoutBusinessPartnerInput = {
@@ -680,6 +784,7 @@ export type BusinessPartnerContactUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneRequiredWithoutContactsNestedInput
+  crfsAsRecipient?: Prisma.CRFUpdateManyWithoutRecipientContactNestedInput
 }
 
 export type BusinessPartnerContactUncheckedUpdateWithoutUserInput = {
@@ -693,6 +798,7 @@ export type BusinessPartnerContactUncheckedUpdateWithoutUserInput = {
   isMainContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  crfsAsRecipient?: Prisma.CRFUncheckedUpdateManyWithoutRecipientContactNestedInput
 }
 
 export type BusinessPartnerContactUncheckedUpdateManyWithoutUserInput = {
@@ -732,6 +838,7 @@ export type BusinessPartnerContactUpdateWithoutBusinessPartnerInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneWithoutBusinessPartnerContactNestedInput
+  crfsAsRecipient?: Prisma.CRFUpdateManyWithoutRecipientContactNestedInput
 }
 
 export type BusinessPartnerContactUncheckedUpdateWithoutBusinessPartnerInput = {
@@ -745,6 +852,7 @@ export type BusinessPartnerContactUncheckedUpdateWithoutBusinessPartnerInput = {
   isMainContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  crfsAsRecipient?: Prisma.CRFUncheckedUpdateManyWithoutRecipientContactNestedInput
 }
 
 export type BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerInput = {
@@ -761,6 +869,35 @@ export type BusinessPartnerContactUncheckedUpdateManyWithoutBusinessPartnerInput
 }
 
 
+/**
+ * Count Type BusinessPartnerContactCountOutputType
+ */
+
+export type BusinessPartnerContactCountOutputType = {
+  crfsAsRecipient: number
+}
+
+export type BusinessPartnerContactCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  crfsAsRecipient?: boolean | BusinessPartnerContactCountOutputTypeCountCrfsAsRecipientArgs
+}
+
+/**
+ * BusinessPartnerContactCountOutputType without action
+ */
+export type BusinessPartnerContactCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BusinessPartnerContactCountOutputType
+   */
+  select?: Prisma.BusinessPartnerContactCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * BusinessPartnerContactCountOutputType without action
+ */
+export type BusinessPartnerContactCountOutputTypeCountCrfsAsRecipientArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CRFWhereInput
+}
+
 
 export type BusinessPartnerContactSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -776,6 +913,8 @@ export type BusinessPartnerContactSelect<ExtArgs extends runtime.Types.Extension
   updatedAt?: boolean
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   user?: boolean | Prisma.BusinessPartnerContact$userArgs<ExtArgs>
+  crfsAsRecipient?: boolean | Prisma.BusinessPartnerContact$crfsAsRecipientArgs<ExtArgs>
+  _count?: boolean | Prisma.BusinessPartnerContactCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["businessPartnerContact"]>
 
 export type BusinessPartnerContactSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -828,6 +967,8 @@ export type BusinessPartnerContactOmit<ExtArgs extends runtime.Types.Extensions.
 export type BusinessPartnerContactInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   user?: boolean | Prisma.BusinessPartnerContact$userArgs<ExtArgs>
+  crfsAsRecipient?: boolean | Prisma.BusinessPartnerContact$crfsAsRecipientArgs<ExtArgs>
+  _count?: boolean | Prisma.BusinessPartnerContactCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BusinessPartnerContactIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
@@ -843,6 +984,7 @@ export type $BusinessPartnerContactPayload<ExtArgs extends runtime.Types.Extensi
   objects: {
     businessPartner: Prisma.$BusinessPartnerPayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs> | null
+    crfsAsRecipient: Prisma.$CRFPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1252,6 +1394,7 @@ export interface Prisma__BusinessPartnerContactClient<T, Null = never, ExtArgs e
   readonly [Symbol.toStringTag]: "PrismaPromise"
   businessPartner<T extends Prisma.BusinessPartnerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartnerDefaultArgs<ExtArgs>>): Prisma.Prisma__BusinessPartnerClient<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.BusinessPartnerContact$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartnerContact$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  crfsAsRecipient<T extends Prisma.BusinessPartnerContact$crfsAsRecipientArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartnerContact$crfsAsRecipientArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CRFPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1709,6 +1852,30 @@ export type BusinessPartnerContact$userArgs<ExtArgs extends runtime.Types.Extens
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * BusinessPartnerContact.crfsAsRecipient
+ */
+export type BusinessPartnerContact$crfsAsRecipientArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CRF
+   */
+  select?: Prisma.CRFSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CRF
+   */
+  omit?: Prisma.CRFOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CRFInclude<ExtArgs> | null
+  where?: Prisma.CRFWhereInput
+  orderBy?: Prisma.CRFOrderByWithRelationInput | Prisma.CRFOrderByWithRelationInput[]
+  cursor?: Prisma.CRFWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CRFScalarFieldEnum | Prisma.CRFScalarFieldEnum[]
 }
 
 /**

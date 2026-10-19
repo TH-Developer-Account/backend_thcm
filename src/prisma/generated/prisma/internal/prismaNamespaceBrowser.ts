@@ -82,6 +82,8 @@ export const ModelName = {
   ProductMaster: 'ProductMaster',
   EPF: 'EPF',
   CRF: 'CRF',
+  CrfItem: 'CrfItem',
+  CrfOrder: 'CrfOrder',
   LineItem: 'LineItem',
   Comment: 'Comment',
   Operator: 'Operator',
@@ -101,7 +103,9 @@ export const ModelName = {
   Guest: 'Guest',
   BusinessPartner: 'BusinessPartner',
   BusinessPartnerAddress: 'BusinessPartnerAddress',
-  BusinessPartnerContact: 'BusinessPartnerContact'
+  BusinessPartnerContact: 'BusinessPartnerContact',
+  MachineStudy: 'MachineStudy',
+  MachineStudyCycle: 'MachineStudyCycle'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -506,7 +510,8 @@ export type BudgetMasterScalarFieldEnum = (typeof BudgetMasterScalarFieldEnum)[k
 
 export const EventNameScalarFieldEnum = {
   id: 'id',
-  title: 'title'
+  title: 'title',
+  reportTemplateKey: 'reportTemplateKey'
 } as const
 
 export type EventNameScalarFieldEnum = (typeof EventNameScalarFieldEnum)[keyof typeof EventNameScalarFieldEnum]
@@ -551,11 +556,93 @@ export type EPFScalarFieldEnum = (typeof EPFScalarFieldEnum)[keyof typeof EPFSca
 export const CRFScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
+  crfNumber: 'crfNumber',
+  status: 'status',
+  recipientType: 'recipientType',
+  recipientName: 'recipientName',
+  recipientPhone: 'recipientPhone',
+  recipientEmail: 'recipientEmail',
+  recipientOrganisation: 'recipientOrganisation',
+  recipientUserId: 'recipientUserId',
+  recipientContactId: 'recipientContactId',
+  deliveryInstructions: 'deliveryInstructions',
+  requiredByDate: 'requiredByDate',
+  addressSourceType: 'addressSourceType',
+  addressSourceId: 'addressSourceId',
+  addressCompany: 'addressCompany',
+  addressLine1: 'addressLine1',
+  addressLine2: 'addressLine2',
+  addressLandmark: 'addressLandmark',
+  addressCity: 'addressCity',
+  addressDistrict: 'addressDistrict',
+  addressState: 'addressState',
+  addressPincode: 'addressPincode',
+  addressCountry: 'addressCountry',
+  addressGstin: 'addressGstin',
+  addressValidatedAt: 'addressValidatedAt',
+  souvenirTotalAtApproval: 'souvenirTotalAtApproval',
+  shortfallAmount: 'shortfallAmount',
+  pendingDebitAmount: 'pendingDebitAmount',
+  approvedAt: 'approvedAt',
+  itemsChangedAt: 'itemsChangedAt',
+  closedAt: 'closedAt',
+  created_by_id: 'created_by_id',
+  updated_by_id: 'updated_by_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
 
 export type CRFScalarFieldEnum = (typeof CRFScalarFieldEnum)[keyof typeof CRFScalarFieldEnum]
+
+
+export const CrfItemScalarFieldEnum = {
+  id: 'id',
+  crfId: 'crfId',
+  category: 'category',
+  source: 'source',
+  sortOrder: 'sortOrder',
+  productId: 'productId',
+  quantity: 'quantity',
+  rate: 'rate',
+  amount: 'amount',
+  width: 'width',
+  height: 'height',
+  unit: 'unit',
+  sku: 'sku',
+  requestedQty: 'requestedQty',
+  title: 'title',
+  variantTitle: 'variantTitle',
+  imageUrl: 'imageUrl',
+  qtyAtApproval: 'qtyAtApproval',
+  status: 'status',
+  removedAt: 'removedAt',
+  removedById: 'removedById',
+  deliveredAt: 'deliveredAt',
+  deliveredById: 'deliveredById',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CrfItemScalarFieldEnum = (typeof CrfItemScalarFieldEnum)[keyof typeof CrfItemScalarFieldEnum]
+
+
+export const CrfOrderScalarFieldEnum = {
+  id: 'id',
+  crfId: 'crfId',
+  shopifyOrderId: 'shopifyOrderId',
+  totalPrice: 'totalPrice',
+  lines: 'lines',
+  debitNoteAmount: 'debitNoteAmount',
+  status: 'status',
+  cancelledAt: 'cancelledAt',
+  cancelledById: 'cancelledById',
+  cancelReason: 'cancelReason',
+  placedAt: 'placedAt',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CrfOrderScalarFieldEnum = (typeof CrfOrderScalarFieldEnum)[keyof typeof CrfOrderScalarFieldEnum]
 
 
 export const LineItemScalarFieldEnum = {
@@ -569,6 +656,9 @@ export const LineItemScalarFieldEnum = {
   height: 'height',
   width: 'width',
   unit: 'unit',
+  description: 'description',
+  attachmentS3Key: 'attachmentS3Key',
+  attachmentFileName: 'attachmentFileName',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -608,9 +698,22 @@ export const LeadScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
   name: 'name',
-  email: 'email',
+  companyName: 'companyName',
   phone: 'phone',
+  email: 'email',
+  dealership: 'dealership',
+  participantType: 'participantType',
+  participantStatus: 'participantStatus',
+  machineModel: 'machineModel',
+  machineSerial: 'machineSerial',
+  valueOfServiceOffers: 'valueOfServiceOffers',
+  valueOfPartsOffers: 'valueOfPartsOffers',
+  valueOfPartsBilled: 'valueOfPartsBilled',
   notes: 'notes',
+  eventDate: 'eventDate',
+  location: 'location',
+  district: 'district',
+  state: 'state',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -639,18 +742,17 @@ export type PincodeScalarFieldEnum = (typeof PincodeScalarFieldEnum)[keyof typeo
 export const EventReportScalarFieldEnum = {
   id: 'id',
   epcId: 'epcId',
-  outcomeStatus: 'outcomeStatus',
-  totalLeadsGenerated: 'totalLeadsGenerated',
-  approvedEventCost: 'approvedEventCost',
-  expectedConversion: 'expectedConversion',
-  remarks: 'remarks',
   status: 'status',
+  eventHighlights: 'eventHighlights',
+  computedOutcomes: 'computedOutcomes',
   rejectionReason: 'rejectionReason',
   clarificationReason: 'clarificationReason',
+  generationError: 'generationError',
   submittedAt: 'submittedAt',
   resubmittedAt: 'resubmittedAt',
   validatedAt: 'validatedAt',
   validatorId: 'validatorId',
+  pdfS3Key: 'pdfS3Key',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -662,8 +764,10 @@ export const EventReportImageScalarFieldEnum = {
   id: 'id',
   reportId: 'reportId',
   position: 'position',
+  caption: 'caption',
   s3Key: 's3Key',
-  fileUrl: 'fileUrl'
+  fileUrl: 'fileUrl',
+  mimeType: 'mimeType'
 } as const
 
 export type EventReportImageScalarFieldEnum = (typeof EventReportImageScalarFieldEnum)[keyof typeof EventReportImageScalarFieldEnum]
@@ -935,6 +1039,53 @@ export const BusinessPartnerContactScalarFieldEnum = {
 export type BusinessPartnerContactScalarFieldEnum = (typeof BusinessPartnerContactScalarFieldEnum)[keyof typeof BusinessPartnerContactScalarFieldEnum]
 
 
+export const MachineStudyScalarFieldEnum = {
+  id: 'id',
+  epcId: 'epcId',
+  isCompetitorMachine: 'isCompetitorMachine',
+  machineModel: 'machineModel',
+  customerName: 'customerName',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  application: 'application',
+  fuelType: 'fuelType',
+  startHmr: 'startHmr',
+  endHmr: 'endHmr',
+  bucketVolumeCuM: 'bucketVolumeCuM',
+  acStatus: 'acStatus',
+  operationMode: 'operationMode',
+  dieselTopUpLtr: 'dieselTopUpLtr',
+  startKwhReading: 'startKwhReading',
+  endKwhReading: 'endKwhReading',
+  operatorName: 'operatorName',
+  operatorExperience: 'operatorExperience',
+  priorMachinesOperated: 'priorMachinesOperated',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type MachineStudyScalarFieldEnum = (typeof MachineStudyScalarFieldEnum)[keyof typeof MachineStudyScalarFieldEnum]
+
+
+export const MachineStudyCycleScalarFieldEnum = {
+  id: 'id',
+  studyId: 'studyId',
+  sequenceNo: 'sequenceNo',
+  truckNumber: 'truckNumber',
+  startSeconds: 'startSeconds',
+  finishSeconds: 'finishSeconds',
+  timeTakenSeconds: 'timeTakenSeconds',
+  bucketPasses: 'bucketPasses',
+  swingAngleDegrees: 'swingAngleDegrees',
+  unladenWeightKg: 'unladenWeightKg',
+  ladenWeightKg: 'ladenWeightKg',
+  payloadKg: 'payloadKg',
+  remarks: 'remarks'
+} as const
+
+export type MachineStudyCycleScalarFieldEnum = (typeof MachineStudyCycleScalarFieldEnum)[keyof typeof MachineStudyCycleScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -949,6 +1100,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
