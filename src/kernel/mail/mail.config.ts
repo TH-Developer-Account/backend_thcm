@@ -19,9 +19,9 @@ import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
 // WHY MAIL_FROM lives here: the sender must belong to the identity verified
 // for whichever provider is active, so it is defined next to the transporter.
 // Consumers import it instead of reading provider-specific env vars.
-// export const MAIL_FROM = process.env.MAIL_FROM;
+export const MAIL_FROM = process.env.MAIL_FROM;
 
-export const MAIL_FROM = "marketing.tatahitachi@gmail.com";
+// export const MAIL_FROM = "marketing.tatahitachi@gmail.com";
 
 const sesClient = new SESv2Client({
   region: process.env.AWS_REGION,
