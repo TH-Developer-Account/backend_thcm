@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="color-scheme" content="light" />
+<meta name="supported-color-schemes" content="light" />
+<meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+<title>{{#if subject}}{{subject}}{{else}}Approved: {{epcName}}{{/if}}</title>
+<!--[if mso]>
+<noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+<style>table, td, div, p, a { font-family: Arial, Helvetica, sans-serif !important; }</style>
+<![endif]-->
+<style>
+  body, table, td, a { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+  table, td { mso-table-lspace:0pt; mso-table-rspace:0pt; }
+  body { margin:0; padding:0; width:100% !important; background-color:#f3f4f6; }
+  a[x-apple-data-detectors] { color:inherit !important; text-decoration:none !important; }
+  /* Layout is fluid by default (100% width, 16px padding, full-width button). Media queries only refine it. */
+  @media only screen and (max-width:600px) {
+    .kv-label, .kv-value { display:block !important; width:100% !important; box-sizing:border-box !important; }
+    .kv-label { padding-bottom:2px !important; border-bottom:0 !important; }
+    .kv-value { border-top:0 !important; padding-top:0 !important; }
+  }
+  @media only screen and (min-width:601px) {
+    .outer { padding:16px 8px !important; }
+    .pad { padding-left:24px !important; padding-right:24px !important; }
+    .btn { display:inline-block !important; width:auto !important; padding-left:24px !important; padding-right:24px !important; }
+  }
+</style>
+</head>
+<body style="margin:0; padding:0; background-color:#f3f4f6;">
+<div style="display:none; max-height:0; overflow:hidden; mso-hide:all; font-size:1px; line-height:1px; color:#f3f4f6;">
+  {{#if subjectLabel}}{{subjectLabel}}{{else}}{{epcName}}{{/if}} has been approved and is moving to the next stage&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f3f4f6;">
+<tr><td align="center" class="outer" style="padding:0;">
+<!--[if mso]><table role="presentation" width="600" cellpadding="0" cellspacing="0" align="center"><tr><td><![endif]-->
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" class="container" style="width:100%; max-width:600px; background-color:#ffffff; border:1px solid #e5e7eb; border-radius:4px;">
+  <!-- Logo & branding -->
+  <tr>
+    <td class="pad" style="padding:6px 16px; border-bottom:1px solid #e5e7eb; font-family:Arial,Helvetica,sans-serif;">
+      {{#if logoUrl}}
+      <img src="{{logoUrl}}" width="120" alt="Tata Hitachi Construction Machinery" style="display:block; border:0; width:120px; max-width:100%; height:auto; font-size:16px; font-weight:bold; color:#000000;" />
+      {{else}}
+      <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+        <td style="padding-right:10px;">
+          <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+            <td width="32" height="32" align="center" style="width:32px; height:32px; background-color:#f36f21; border-radius:4px; color:#ffffff; font-size:13px; font-weight:bold; font-family:Arial,Helvetica,sans-serif;">TH</td>
+          </tr></table>
+        </td>
+        <td style="color:#000000; font-size:16px; line-height:20px; font-weight:bold; font-family:Arial,Helvetica,sans-serif;">Tata Hitachi Construction Machinery</td>
+      </tr></table>
+      {{/if}}
+    </td>
+  </tr>
+  <!-- Content -->
+  <tr>
+    <td class="pad" style="padding:16px; font-family:Arial,Helvetica,sans-serif; color:#000000;">
+      <p style="margin:0 0 8px 0; font-size:14px; line-height:21px; color:#000000;">Dear Sir/Madam,</p>
+      <p style="margin:0 0 16px 0; font-size:14px; line-height:21px; color:#000000;">The following approval stage has been <strong>approved</strong> and the workflow is progressing to the next stage.</p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%; border-collapse:collapse; border:1px solid #e5e7eb; font-size:13px; line-height:19px; font-family:Arial,Helvetica,sans-serif;">
+        <tr>
+          <td class="kv-label" width="34%" valign="top" style="width:34%; padding:10px 12px; background-color:#f9fafb; color:#000000; font-weight:bold; vertical-align:top;">Item</td>
+          <td class="kv-value" width="66%" valign="top" style="width:66%; padding:10px 12px; color:#000000; vertical-align:top; word-break:break-word;">{{#if subjectLabel}}{{subjectLabel}}{{else}}{{epcName}}{{/if}}</td>
+        </tr>
+        {{#if referenceNo}}
+        <tr>
+          <td class="kv-label" width="34%" valign="top" style="width:34%; padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;">Reference No.</td>
+          <td class="kv-value" width="66%" valign="top" style="width:66%; padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top; word-break:break-word;">{{referenceNo}}</td>
+        </tr>
+        {{/if}}
+        {{#if workflowName}}
+        <tr>
+          <td class="kv-label" width="34%" valign="top" style="width:34%; padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;">Workflow</td>
+          <td class="kv-value" width="66%" valign="top" style="width:66%; padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top; word-break:break-word;">{{workflowName}}</td>
+        </tr>
+        {{/if}}
+        <tr>
+          <td class="kv-label" width="34%" valign="top" style="width:34%; padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;">Stage</td>
+          <td class="kv-value" width="66%" valign="top" style="width:66%; padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top; word-break:break-word;">{{stageName}}</td>
+        </tr>
+        <tr>
+          <td class="kv-label" width="34%" valign="top" style="width:34%; padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;">Approver</td>
+          <td class="kv-value" width="66%" valign="top" style="width:66%; padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top; word-break:break-word;">{{approverName}}</td>
+        </tr>
+        {{#if approverDesignation}}
+        <tr>
+          <td class="kv-label" width="34%" valign="top" style="width:34%; padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;">Designation</td>
+          <td class="kv-value" width="66%" valign="top" style="width:66%; padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top; word-break:break-word;">{{approverDesignation}}</td>
+        </tr>
+        {{/if}}
+        <tr>
+          <td class="kv-label" width="34%" valign="top" style="width:34%; padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;">Status</td>
+          <td class="kv-value" width="66%" valign="top" style="width:66%; padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top; word-break:break-word;"><table role="presentation" cellpadding="0" cellspacing="0"><tr><td style="padding:2px 8px; background-color:#f0fdf4; border:1px solid #86efac; border-radius:3px; color:#166534; font-size:12px; line-height:18px; font-weight:bold; white-space:nowrap;">&#10003; Approved</td></tr></table></td>
+        </tr>
+      </table>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%; margin-top:20px;"><tr><td align="left">
+        <!--[if mso]>
+        <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+          <td align="center" bgcolor="#f36f21" style="background-color:#f36f21; padding:12px 24px; mso-padding-alt:12px 24px;">
+            <a href="{{dashboardUrl}}" target="_blank" style="color:#ffffff; font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:bold; text-decoration:none; display:inline-block;">View Proposal</a>
+          </td>
+        </tr></table>
+        <![endif]-->
+        <!--[if !mso]><!-- -->
+        <a class="btn" href="{{dashboardUrl}}" target="_blank" rel="noopener noreferrer" style="display:block; width:100%; box-sizing:border-box; background-color:#f36f21; border-radius:4px; color:#ffffff; font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:bold; line-height:44px; padding:0 16px; text-align:center; text-decoration:none;">View Proposal</a>
+        <!--<![endif]-->
+      </td></tr></table>
+      <p style="margin:12px 0 0 0; font-size:11px; line-height:17px; color:#4b5563;">If the button does not work, copy and paste this link into your browser:<br />
+        <a href="{{dashboardUrl}}" style="color:#f36f21; word-break:break-all;">{{dashboardUrl}}</a></p>
+
+    </td>
+  </tr>
+  <!-- Footer -->
+  <tr>
+    <td class="pad" style="padding:12px 16px; border-top:1px solid #e5e7eb; background-color:#fafafa; font-family:Arial,Helvetica,sans-serif;">
+      <p style="margin:0; font-size:11px; line-height:17px; color:#000000;">This is an automated message. Please do not reply.</p>
+    </td>
+  </tr>
+</table>
+<!--[if mso]></td></tr></table><![endif]-->
+</td></tr>
+</table>
+</body>
+</html>
