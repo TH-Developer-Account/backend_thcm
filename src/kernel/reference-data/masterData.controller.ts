@@ -1,5 +1,6 @@
 // backend - controller
 import axios from "axios";
+import logger from "@shared/utils/logger";
 
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
@@ -254,6 +255,9 @@ export const getBudgetOData = async (req: Request, res: Response) => {
 
     res.json(response.data);
   } catch (err: any) {
-    throw new ApiError(500, "Unable to fetch the budget info from s4");
+    throw new ApiError(
+      500,
+      `Unable to fetch the budget info from s4: ${JSON.stringify(err, null, 2)}`,
+    );
   }
 };
