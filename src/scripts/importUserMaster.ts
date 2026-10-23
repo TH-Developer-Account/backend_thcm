@@ -23,6 +23,10 @@ import * as fs from "fs";
 import Papa from "papaparse";
 
 import { prisma } from "../shared/config/prisma";
+import {
+  resolveOrCreateByName,
+  resolveOrCreateZoneByName,
+} from "./helpers/masterResolvers";
 
 const C4C_FILE = "./src/scripts/data/C4C_THCM_Employee.csv";
 const DEALER_FILE = "./src/scripts/data/Dealer_user_Details_BYD.csv";
@@ -41,7 +45,11 @@ interface PersonRecord {
   lastName: string;
   email: string | undefined;
   phoneNumber: string | undefined;
-  region: string | undefined;
+  // "location" is EOR's convention (plant/city) — this source's own
+  // region-shaped column is currently always null in practice, per
+  // confirmation; mapped to location here for consistency rather than
+  // conflated with "zone" below (the sales-territory concept).
+  location: string | undefined;
   zone: string | undefined;
   address: string | undefined;
   department: string | undefined;
@@ -128,7 +136,7 @@ function parseC4CRows(rows: string[][]): PersonRecord[] {
     lastName: toNullableString(r[3]) ?? "",
     email: toNullableString(r[4])?.toLowerCase(),
     phoneNumber: sanitizePhoneNumber(r[20]) ?? sanitizePhoneNumber(r[21]),
-    region: toNullableString(r[11]),
+    location: toNullableString(r[11]),
     zone: undefined, // no zone column in C4C source
     address: toNullableString(r[10]), // City only — partial address, see mapping doc
     department: toNullableString(r[14]) ?? toNullableString(r[13]),
@@ -150,7 +158,7 @@ function parseDealerRows(rows: string[][]): PersonRecord[] {
     lastName: toNullableString(r[13]) ?? "",
     email: toNullableString(r[23]),
     phoneNumber: sanitizePhoneNumber(r[24]) ?? sanitizePhoneNumber(r[25]),
-    region: toNullableString(r[17]),
+    location: toNullableString(r[17]),
     zone: toNullableString(r[11]),
     address: undefined, // no address column in dealer source
     department: toNullableString(r[6]),
@@ -275,6 +283,23 @@ async function upsertPerson(
 
   const existingUser = await findExistingUser(record);
 
+  // location/designation/zone are now FK lookups (locationId/designationId)
+  // or a many-to-many (zones) rather than plain strings — resolved here via
+  // the shared find-or-create helpers (same policy backfillHrMasters.ts and
+  // updateUserHrData.ts use). A blank source value leaves that field alone
+  // rather than nulling/clearing it. Zone uses its own dedicated resolver
+  // (resolveOrCreateZoneByName) since the Zone model's shape (region_code/
+  // region_name) doesn't fit resolveOrCreateByName's generic {id, name}.
+  const locationId = record.location
+    ? await resolveOrCreateByName("userRegion", record.location)
+    : undefined;
+  const designationId = record.designation
+    ? await resolveOrCreateByName("designation", record.designation)
+    : undefined;
+  const zoneId = record.zone
+    ? await resolveOrCreateZoneByName(record.zone)
+    : undefined;
+
   const userData = {
     first_name: record.firstName,
     last_name: record.lastName,
@@ -283,11 +308,10 @@ async function upsertPerson(
     employeeCode: record.employeeCode,
     bydId: record.bydId,
     c4cId: record.c4cId,
-    region: record.region,
-    zone: record.zone,
+    ...(locationId && { locationId }),
+    ...(designationId && { designationId }),
     address: record.address,
     department: record.department,
-    designation: record.designation,
     managerCode1: record.managerCode1,
     managerCode2: record.managerCode2,
     businessPartnerId,
@@ -300,7 +324,14 @@ async function upsertPerson(
   if (existingUser) {
     await prisma.user.update({
       where: { id: existingUser.id },
-      data: userData,
+      data: {
+        ...userData,
+        // This source gives at most one zone per person — `set` replaces
+        // whatever zones this user had with just that one, rather than
+        // accumulating across re-runs. A user needing more than one zone
+        // is an admin-assigned addition made afterward in the Masters UI.
+        ...(zoneId && { zones: { set: [{ id: zoneId }] } }),
+      },
     });
     userId = existingUser.id;
   } else {
@@ -310,6 +341,7 @@ async function upsertPerson(
         password: DEFAULT_PASSWORD, // plain text, not hashed — see flag at top of file
         is_active: false, // manual review/activation, per explicit instruction
         is_default_login: true, // forces password reset on first real login
+        ...(zoneId && { zones: { connect: [{ id: zoneId }] } }),
       },
     });
     userId = created.id;

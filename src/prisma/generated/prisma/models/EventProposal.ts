@@ -370,7 +370,7 @@ export type EventProposalWhereInput = {
   updated_at?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
   vertical?: Prisma.XOR<Prisma.VerticalScalarRelationFilter, Prisma.VerticalWhereInput>
-  region?: Prisma.XOR<Prisma.RegionScalarRelationFilter, Prisma.RegionWhereInput>
+  region?: Prisma.XOR<Prisma.ZoneScalarRelationFilter, Prisma.ZoneWhereInput>
   branch?: Prisma.XOR<Prisma.BranchScalarRelationFilter, Prisma.BranchWhereInput>
   budget_master?: Prisma.XOR<Prisma.BudgetMasterScalarRelationFilter, Prisma.BudgetMasterWhereInput>
   event_name?: Prisma.XOR<Prisma.EventNameScalarRelationFilter, Prisma.EventNameWhereInput>
@@ -411,7 +411,7 @@ export type EventProposalOrderByWithRelationInput = {
   updated_at?: Prisma.SortOrder
   department?: Prisma.DepartmentOrderByWithRelationInput
   vertical?: Prisma.VerticalOrderByWithRelationInput
-  region?: Prisma.RegionOrderByWithRelationInput
+  region?: Prisma.ZoneOrderByWithRelationInput
   branch?: Prisma.BranchOrderByWithRelationInput
   budget_master?: Prisma.BudgetMasterOrderByWithRelationInput
   event_name?: Prisma.EventNameOrderByWithRelationInput
@@ -455,7 +455,7 @@ export type EventProposalWhereUniqueInput = Prisma.AtLeast<{
   updated_at?: Prisma.DateTimeFilter<"EventProposal"> | Date | string
   department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
   vertical?: Prisma.XOR<Prisma.VerticalScalarRelationFilter, Prisma.VerticalWhereInput>
-  region?: Prisma.XOR<Prisma.RegionScalarRelationFilter, Prisma.RegionWhereInput>
+  region?: Prisma.XOR<Prisma.ZoneScalarRelationFilter, Prisma.ZoneWhereInput>
   branch?: Prisma.XOR<Prisma.BranchScalarRelationFilter, Prisma.BranchWhereInput>
   budget_master?: Prisma.XOR<Prisma.BudgetMasterScalarRelationFilter, Prisma.BudgetMasterWhereInput>
   event_name?: Prisma.XOR<Prisma.EventNameScalarRelationFilter, Prisma.EventNameWhereInput>
@@ -550,7 +550,7 @@ export type EventProposalCreateInput = {
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
@@ -616,7 +616,7 @@ export type EventProposalUpdateInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
@@ -1294,7 +1294,7 @@ export type EventProposalCreateWithoutCreated_byInput = {
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
@@ -1368,7 +1368,7 @@ export type EventProposalCreateWithoutUpdated_byInput = {
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
@@ -1503,7 +1503,7 @@ export type EventProposalCreateWithoutDepartmentInput = {
   created_at?: Date | string
   updated_at?: Date | string
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
@@ -1593,7 +1593,7 @@ export type EventProposalCreateWithoutVerticalInput = {
   created_at?: Date | string
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
@@ -1774,7 +1774,7 @@ export type EventProposalCreateWithoutBranchInput = {
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
@@ -1864,7 +1864,7 @@ export type EventProposalCreateWithoutBudget_masterInput = {
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
@@ -1954,7 +1954,7 @@ export type EventProposalCreateWithoutEvent_nameInput = {
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   created_by: Prisma.UserCreateNestedOneWithoutCreated_event_proposalsInput
@@ -2044,7 +2044,7 @@ export type EventProposalCreateWithoutEpfInput = {
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
@@ -2124,7 +2124,7 @@ export type EventProposalUpdateWithoutEpfInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
@@ -2188,7 +2188,7 @@ export type EventProposalCreateWithoutCrfInput = {
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
@@ -2268,7 +2268,7 @@ export type EventProposalUpdateWithoutCrfInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
@@ -2332,7 +2332,7 @@ export type EventProposalCreateWithoutLeadsInput = {
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
@@ -2412,7 +2412,7 @@ export type EventProposalUpdateWithoutLeadsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
@@ -2476,7 +2476,7 @@ export type EventProposalCreateWithoutReportInput = {
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
@@ -2556,7 +2556,7 @@ export type EventProposalUpdateWithoutReportInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
@@ -2620,7 +2620,7 @@ export type EventProposalCreateWithoutImportExportLogsInput = {
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
@@ -2700,7 +2700,7 @@ export type EventProposalUpdateWithoutImportExportLogsInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
@@ -2764,7 +2764,7 @@ export type EventProposalCreateWithoutMachineStudiesInput = {
   updated_at?: Date | string
   department: Prisma.DepartmentCreateNestedOneWithoutEvent_proposalsInput
   vertical: Prisma.VerticalCreateNestedOneWithoutEvent_proposalsInput
-  region: Prisma.RegionCreateNestedOneWithoutEvent_proposalsInput
+  region: Prisma.ZoneCreateNestedOneWithoutEvent_proposalsInput
   branch: Prisma.BranchCreateNestedOneWithoutEvent_proposalsInput
   budget_master: Prisma.BudgetMasterCreateNestedOneWithoutEvent_proposalsInput
   event_name: Prisma.EventNameCreateNestedOneWithoutEventsInput
@@ -2844,7 +2844,7 @@ export type EventProposalUpdateWithoutMachineStudiesInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
@@ -2960,7 +2960,7 @@ export type EventProposalUpdateWithoutCreated_byInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
@@ -3050,7 +3050,7 @@ export type EventProposalUpdateWithoutUpdated_byInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
@@ -3165,7 +3165,7 @@ export type EventProposalUpdateWithoutDepartmentInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
@@ -3281,7 +3281,7 @@ export type EventProposalUpdateWithoutVerticalInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
@@ -3514,7 +3514,7 @@ export type EventProposalUpdateWithoutBranchInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
@@ -3630,7 +3630,7 @@ export type EventProposalUpdateWithoutBudget_masterInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   event_name?: Prisma.EventNameUpdateOneRequiredWithoutEventsNestedInput
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
@@ -3746,7 +3746,7 @@ export type EventProposalUpdateWithoutEvent_nameInput = {
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   department?: Prisma.DepartmentUpdateOneRequiredWithoutEvent_proposalsNestedInput
   vertical?: Prisma.VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput
-  region?: Prisma.RegionUpdateOneRequiredWithoutEvent_proposalsNestedInput
+  region?: Prisma.ZoneUpdateOneRequiredWithoutEvent_proposalsNestedInput
   branch?: Prisma.BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput
   budget_master?: Prisma.BudgetMasterUpdateOneRequiredWithoutEvent_proposalsNestedInput
   created_by?: Prisma.UserUpdateOneRequiredWithoutCreated_event_proposalsNestedInput
@@ -3893,7 +3893,7 @@ export type EventProposalSelect<ExtArgs extends runtime.Types.Extensions.Interna
   updated_at?: boolean
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   vertical?: boolean | Prisma.VerticalDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  region?: boolean | Prisma.ZoneDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   budget_master?: boolean | Prisma.BudgetMasterDefaultArgs<ExtArgs>
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
@@ -3935,7 +3935,7 @@ export type EventProposalSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   updated_at?: boolean
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   vertical?: boolean | Prisma.VerticalDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  region?: boolean | Prisma.ZoneDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   budget_master?: boolean | Prisma.BudgetMasterDefaultArgs<ExtArgs>
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
@@ -3970,7 +3970,7 @@ export type EventProposalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   updated_at?: boolean
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   vertical?: boolean | Prisma.VerticalDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  region?: boolean | Prisma.ZoneDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   budget_master?: boolean | Prisma.BudgetMasterDefaultArgs<ExtArgs>
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
@@ -4009,7 +4009,7 @@ export type EventProposalOmit<ExtArgs extends runtime.Types.Extensions.InternalA
 export type EventProposalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   vertical?: boolean | Prisma.VerticalDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  region?: boolean | Prisma.ZoneDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   budget_master?: boolean | Prisma.BudgetMasterDefaultArgs<ExtArgs>
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
@@ -4026,7 +4026,7 @@ export type EventProposalInclude<ExtArgs extends runtime.Types.Extensions.Intern
 export type EventProposalIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   vertical?: boolean | Prisma.VerticalDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  region?: boolean | Prisma.ZoneDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   budget_master?: boolean | Prisma.BudgetMasterDefaultArgs<ExtArgs>
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
@@ -4036,7 +4036,7 @@ export type EventProposalIncludeCreateManyAndReturn<ExtArgs extends runtime.Type
 export type EventProposalIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
   vertical?: boolean | Prisma.VerticalDefaultArgs<ExtArgs>
-  region?: boolean | Prisma.RegionDefaultArgs<ExtArgs>
+  region?: boolean | Prisma.ZoneDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.BranchDefaultArgs<ExtArgs>
   budget_master?: boolean | Prisma.BudgetMasterDefaultArgs<ExtArgs>
   event_name?: boolean | Prisma.EventNameDefaultArgs<ExtArgs>
@@ -4049,7 +4049,7 @@ export type $EventProposalPayload<ExtArgs extends runtime.Types.Extensions.Inter
   objects: {
     department: Prisma.$DepartmentPayload<ExtArgs>
     vertical: Prisma.$VerticalPayload<ExtArgs>
-    region: Prisma.$RegionPayload<ExtArgs>
+    region: Prisma.$ZonePayload<ExtArgs>
     branch: Prisma.$BranchPayload<ExtArgs>
     budget_master: Prisma.$BudgetMasterPayload<ExtArgs>
     event_name: Prisma.$EventNamePayload<ExtArgs>
@@ -4483,7 +4483,7 @@ export interface Prisma__EventProposalClient<T, Null = never, ExtArgs extends ru
   readonly [Symbol.toStringTag]: "PrismaPromise"
   department<T extends Prisma.DepartmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DepartmentDefaultArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   vertical<T extends Prisma.VerticalDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerticalDefaultArgs<ExtArgs>>): Prisma.Prisma__VerticalClient<runtime.Types.Result.GetResult<Prisma.$VerticalPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  region<T extends Prisma.RegionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.RegionDefaultArgs<ExtArgs>>): Prisma.Prisma__RegionClient<runtime.Types.Result.GetResult<Prisma.$RegionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  region<T extends Prisma.ZoneDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ZoneDefaultArgs<ExtArgs>>): Prisma.Prisma__ZoneClient<runtime.Types.Result.GetResult<Prisma.$ZonePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   branch<T extends Prisma.BranchDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BranchDefaultArgs<ExtArgs>>): Prisma.Prisma__BranchClient<runtime.Types.Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   budget_master<T extends Prisma.BudgetMasterDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BudgetMasterDefaultArgs<ExtArgs>>): Prisma.Prisma__BudgetMasterClient<runtime.Types.Result.GetResult<Prisma.$BudgetMasterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   event_name<T extends Prisma.EventNameDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventNameDefaultArgs<ExtArgs>>): Prisma.Prisma__EventNameClient<runtime.Types.Result.GetResult<Prisma.$EventNamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>

@@ -1,6 +1,5 @@
 // backend - controller
 import axios from "axios";
-import logger from "@shared/utils/logger";
 
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
@@ -24,12 +23,21 @@ const formatOptions = <T>(
   }));
 };
 
+// Note: "region" is intentionally absent here — Region was merged into Zone
+// (same table; EventProposal's business region and User's zone are the same
+// concept). The Masters admin UI only manages it under "zone" now; the
+// `regions` key in getMasterData's response below stays only as a
+// backward-compat bridge for other-module read consumers.
 const MODEL_MAP: Record<string, any> = {
   department: prisma.department,
-  region: prisma.region,
   branch: prisma.branch,
   eventName: prisma.eventName,
   budgetMaster: prisma.budgetMaster,
+  division: prisma.division,
+  designation: prisma.designation,
+  costCenter: prisma.costCenter,
+  userRegion: prisma.userRegion,
+  zone: prisma.zone,
 };
 
 export const getMasterData = async (req: Request, res: Response) => {
@@ -37,10 +45,14 @@ export const getMasterData = async (req: Request, res: Response) => {
     const [
       departments,
       verticals,
-      regions,
+      zones,
       branches,
       budgetMasters,
       eventNames,
+      divisions,
+      designations,
+      costCenters,
+      locations,
     ] = await Promise.all([
       prisma.department.findMany({
         // where: { status: "active" },
@@ -65,8 +77,11 @@ export const getMasterData = async (req: Request, res: Response) => {
         orderBy: { name: "asc" },
       }),
 
-      prisma.region.findMany({
-        // where: { status: "active" },
+      // One query backs both the `regions` and `zones` response keys below —
+      // Region and Zone are the same table now (see schema.prisma's Zone
+      // model comment), so there's no separate "region" query anymore.
+      prisma.zone.findMany({
+        where: { isActive: true },
         select: {
           id: true,
           region_name: true,
@@ -103,17 +118,46 @@ export const getMasterData = async (req: Request, res: Response) => {
           title: true,
         },
       }),
+
+      prisma.division.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      }),
+
+      prisma.designation.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      }),
+
+      prisma.costCenter.findMany({
+        where: { isActive: true },
+        select: { id: true, code: true, name: true },
+        orderBy: { code: "asc" },
+      }),
+
+      prisma.userRegion.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      }),
     ]);
+
+    const zoneOptions = formatOptions(zones, {
+      label: (z) => z.region_name,
+      extra: (z) => ({ code: z.region_code }),
+    });
 
     res.json({
       departments: formatOptions(departments, {
         label: (d) => d.department_name,
         extra: (d) => ({ code: d.department_code }),
       }),
-      regions: formatOptions(regions, {
-        label: (r) => r.region_name,
-        extra: (r) => ({ code: r.region_code }),
-      }),
+      // Bridge: other-module consumers (e.g. EPCTopbar) still read
+      // `data.regions` — kept pointed at the same Zone data as `zones` below
+      // rather than duplicating the query.
+      regions: zoneOptions,
       branches: formatOptions(branches, {
         label: (b) => b.branch_name,
         extra: (b) => ({ code: b.branch_code }),
@@ -133,6 +177,20 @@ export const getMasterData = async (req: Request, res: Response) => {
         code: `${b.code}`,
         department: b.departmentId,
       })),
+      divisions: formatOptions(divisions, {
+        label: (d) => d.name,
+      }),
+      designations: formatOptions(designations, {
+        label: (d) => d.name,
+      }),
+      costCenters: formatOptions(costCenters, {
+        label: (c) => c.name,
+        extra: (c) => ({ code: c.code }),
+      }),
+      locations: formatOptions(locations, {
+        label: (l) => l.name,
+      }),
+      zones: zoneOptions,
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch master data" });
@@ -169,22 +227,10 @@ export const manageMasterData = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error("manageMasterData error:", error);
-
-    if (error instanceof ApiError) {
-      // NOTE: use whatever your ApiError calls its status property.
-      res.status(error.statusCode).json({ message: error.message });
-      return;
-    }
-
-    // Prisma unique-constraint violation (duplicate code / name)
-    if (error?.code === "P2002") {
-      res
-        .status(409)
-        .json({ message: "A record with this name or code already exists" });
-      return;
-    }
-
-    res.status(500).json({ message: "Failed to manage master data" });
+    res.status(500).json({
+      message: "Failed to manage master data",
+      error: error.message,
+    });
   }
 };
 
@@ -227,25 +273,12 @@ export const getProductsByType = async (
 
 export const getBudgetOData = async (req: Request, res: Response) => {
   try {
-    const { budgetId } = req.query;
-
-    const [budget] = await prisma.budgetMaster.findMany({
-      where: { id: budgetId as string },
-      select: {
-        id: true,
-        code: true,
-        fiscal_year: true,
-        id_desc: true,
-        value: true,
-      },
-    });
-
     const response = await axios.get(
-      `http://th-s4-qas-ad.tatahitachi.co.in:8001/sap/opu/odata/sap/ZBUDGET_API_SRV/ZSTR_BUDGET_APISet?$filter=BudgetCode%20eq%20%27${budget.code}%27&sap-client=635`,
+      "http://th-s4-qas-ad.tatahitachi.co.in:8001/sap/opu/odata/sap/ZBUDGET_API_SRV/ZSTR_BUDGET_APISet?$filter=BudgetCode%20eq%20%27P1SMN1380105%27&sap-client=635",
       {
         auth: {
-          username: process.env.SAP_USERNAME as string,
-          password: process.env.SAP_PASSWORD as string,
+          username: "d39351",
+          password: "Publi@4321",
         },
         headers: {
           Accept: "application/json",
@@ -255,9 +288,6 @@ export const getBudgetOData = async (req: Request, res: Response) => {
 
     res.json(response.data);
   } catch (err: any) {
-    throw new ApiError(
-      500,
-      `Unable to fetch the budget info from s4: ${JSON.stringify(err, null, 2)}`,
-    );
+    throw new ApiError(500, "Unable to fetch the budget info from s4");
   }
 };

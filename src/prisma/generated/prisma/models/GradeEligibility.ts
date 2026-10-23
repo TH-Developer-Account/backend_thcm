@@ -170,7 +170,7 @@ export type GradeEligibilityGroupByArgs<ExtArgs extends runtime.Types.Extensions
 export type GradeEligibilityGroupByOutputType = {
   id: string
   grade: string
-  annualCap: runtime.Decimal
+  annualCap: runtime.Decimal | null
   _count: GradeEligibilityCountAggregateOutputType | null
   _avg: GradeEligibilityAvgAggregateOutputType | null
   _sum: GradeEligibilitySumAggregateOutputType | null
@@ -199,13 +199,13 @@ export type GradeEligibilityWhereInput = {
   NOT?: Prisma.GradeEligibilityWhereInput | Prisma.GradeEligibilityWhereInput[]
   id?: Prisma.StringFilter<"GradeEligibility"> | string
   grade?: Prisma.StringFilter<"GradeEligibility"> | string
-  annualCap?: Prisma.DecimalFilter<"GradeEligibility"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  annualCap?: Prisma.DecimalNullableFilter<"GradeEligibility"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type GradeEligibilityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   grade?: Prisma.SortOrder
-  annualCap?: Prisma.SortOrder
+  annualCap?: Prisma.SortOrderInput | Prisma.SortOrder
 }
 
 export type GradeEligibilityWhereUniqueInput = Prisma.AtLeast<{
@@ -214,13 +214,13 @@ export type GradeEligibilityWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.GradeEligibilityWhereInput | Prisma.GradeEligibilityWhereInput[]
   OR?: Prisma.GradeEligibilityWhereInput[]
   NOT?: Prisma.GradeEligibilityWhereInput | Prisma.GradeEligibilityWhereInput[]
-  annualCap?: Prisma.DecimalFilter<"GradeEligibility"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  annualCap?: Prisma.DecimalNullableFilter<"GradeEligibility"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }, "id" | "grade">
 
 export type GradeEligibilityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   grade?: Prisma.SortOrder
-  annualCap?: Prisma.SortOrder
+  annualCap?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.GradeEligibilityCountOrderByAggregateInput
   _avg?: Prisma.GradeEligibilityAvgOrderByAggregateInput
   _max?: Prisma.GradeEligibilityMaxOrderByAggregateInput
@@ -234,49 +234,49 @@ export type GradeEligibilityScalarWhereWithAggregatesInput = {
   NOT?: Prisma.GradeEligibilityScalarWhereWithAggregatesInput | Prisma.GradeEligibilityScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"GradeEligibility"> | string
   grade?: Prisma.StringWithAggregatesFilter<"GradeEligibility"> | string
-  annualCap?: Prisma.DecimalWithAggregatesFilter<"GradeEligibility"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  annualCap?: Prisma.DecimalNullableWithAggregatesFilter<"GradeEligibility"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type GradeEligibilityCreateInput = {
   id?: string
   grade: string
-  annualCap: runtime.Decimal | runtime.DecimalJsLike | number | string
+  annualCap?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type GradeEligibilityUncheckedCreateInput = {
   id?: string
   grade: string
-  annualCap: runtime.Decimal | runtime.DecimalJsLike | number | string
+  annualCap?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type GradeEligibilityUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   grade?: Prisma.StringFieldUpdateOperationsInput | string
-  annualCap?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  annualCap?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type GradeEligibilityUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   grade?: Prisma.StringFieldUpdateOperationsInput | string
-  annualCap?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  annualCap?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type GradeEligibilityCreateManyInput = {
   id?: string
   grade: string
-  annualCap: runtime.Decimal | runtime.DecimalJsLike | number | string
+  annualCap?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type GradeEligibilityUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   grade?: Prisma.StringFieldUpdateOperationsInput | string
-  annualCap?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  annualCap?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type GradeEligibilityUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   grade?: Prisma.StringFieldUpdateOperationsInput | string
-  annualCap?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  annualCap?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
 }
 
 export type GradeEligibilityCountOrderByAggregateInput = {
@@ -339,7 +339,7 @@ export type $GradeEligibilityPayload<ExtArgs extends runtime.Types.Extensions.In
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     grade: string
-    annualCap: runtime.Decimal
+    annualCap: runtime.Decimal | null
   }, ExtArgs["result"]["gradeEligibility"]>
   composites: {}
 }

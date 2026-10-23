@@ -160,10 +160,10 @@ export type Department = Prisma.DepartmentModel
  */
 export type Vertical = Prisma.VerticalModel
 /**
- * Model Region
+ * Model Zone
  * 
  */
-export type Region = Prisma.RegionModel
+export type Zone = Prisma.ZoneModel
 /**
  * Model Branch
  * 
@@ -179,6 +179,26 @@ export type BudgetMaster = Prisma.BudgetMasterModel
  * 
  */
 export type EventName = Prisma.EventNameModel
+/**
+ * Model Division
+ * 
+ */
+export type Division = Prisma.DivisionModel
+/**
+ * Model Designation
+ * 
+ */
+export type Designation = Prisma.DesignationModel
+/**
+ * Model CostCenter
+ * 
+ */
+export type CostCenter = Prisma.CostCenterModel
+/**
+ * Model UserRegion
+ * 
+ */
+export type UserRegion = Prisma.UserRegionModel
 /**
  * Model ProductMaster
  * 
