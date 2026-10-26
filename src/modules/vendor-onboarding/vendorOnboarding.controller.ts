@@ -59,12 +59,6 @@ const VENDOR_DOCUMENT_EXTENSIONS_BY_MIME_TYPE: Record<string, string> = {
 	"application/pdf": "pdf",
 };
 
-// GST / Incorporation applicability: true = applicable, false = N/A (certificate
-// not required), null = never chosen (treated as applicable), undefined = not sent.
-// FormData sends "true"/"false", JSON sends real booleans — String() handles both.
-const parseApplicability = (value: unknown): boolean | undefined =>
-	value === undefined ? undefined : String(value) !== "false";
-
 // Drops the certificates the vendor marked N/A from the required list.
 const withoutNotApplicable = (
 	types: readonly string[],
@@ -949,6 +943,10 @@ export const submitVendorForm = async (
 
 		const isMsmeVendor = parseBooleanFormField(msmeVendor);
 		const isNdaObtained = parseBooleanFormField(ndaObtained);
+		const isGstApplicable = parseBooleanFormField(gstApplicability);
+		const isIncorpApplicable = parseBooleanFormField(
+			incorporationApplicability,
+		);
 
 		const files = req.files as
 			| Record<string, Express.Multer.File[]>
@@ -965,8 +963,8 @@ export const submitVendorForm = async (
 		const existingTypes = new Set(existingDocuments.map((d) => d.documentType));
 
 		// Not sent → keep what an earlier draft saved.
-		const gstApplicable = parseApplicability(gstApplicability);
-		const incorporationApplicable = parseApplicability(
+		const gstApplicable = parseBooleanFormField(gstApplicability);
+		const incorporationApplicable = parseBooleanFormField(
 			incorporationApplicability,
 		);
 
@@ -1021,15 +1019,13 @@ export const submitVendorForm = async (
 					bankAddress,
 					accountNumber,
 					gstin,
-					gstApplicability: gstApplicable,
-					incorporationApplicability: incorporationApplicable,
 					pan,
 					entityRegNo,
 					dpdpConsentedAt: new Date(),
 					dpdpConsentIp: req.ip,
 					vendorSubmittedAt: new Date(),
-					gstApplicability: gstApplicable,
-					incorporationApplicability: incorporationApplicable,
+					gstApplicability: isGstApplicable,
+					incorporationApplicability: isIncorpApplicable,
 				},
 			});
 
@@ -1264,8 +1260,8 @@ export const saveVendorFormDraft = async (
 					bankAddress,
 					accountNumber,
 					gstin,
-					gstApplicability: parseApplicability(gstApplicability),
-					incorporationApplicability: parseApplicability(
+					gstApplicability: parseBooleanFormField(gstApplicability),
+					incorporationApplicability: parseBooleanFormField(
 						incorporationApplicability,
 					),
 					pan,

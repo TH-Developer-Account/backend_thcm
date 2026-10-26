@@ -1,8 +1,4 @@
--- Convert text ("Applicable" | "N/A" | NULL) to boolean (true | false | NULL), keeping data.
+-- Plain nullable booleans: true = applicable, false = N/A, NULL = not chosen.
 ALTER TABLE "VendorOnboarding"
-  ALTER COLUMN "gstApplicability" TYPE BOOLEAN
-    USING (CASE WHEN "gstApplicability" = 'N/A' THEN FALSE
-                WHEN "gstApplicability" = 'Applicable' THEN TRUE ELSE NULL END),
-  ALTER COLUMN "incorporationApplicability" TYPE BOOLEAN
-    USING (CASE WHEN "incorporationApplicability" = 'N/A' THEN FALSE
-                WHEN "incorporationApplicability" = 'Applicable' THEN TRUE ELSE NULL END);
+  ADD COLUMN IF NOT EXISTS "gstApplicability" BOOLEAN,
+  ADD COLUMN IF NOT EXISTS "incorporationApplicability" BOOLEAN;
