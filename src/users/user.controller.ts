@@ -101,6 +101,7 @@ const USER_FIELDS_SELECT = {
 	businessPartnerId: true,
 	created_at: true,
 	updated_at: true,
+	is_active: true,
 } satisfies Prisma.UserSelect;
 
 // What GET /users/me returns and PATCH /users/me echoes back. Kept narrow on

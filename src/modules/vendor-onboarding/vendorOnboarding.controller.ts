@@ -56,7 +56,6 @@ const VENDOR_DOCUMENT_EXTENSIONS_BY_MIME_TYPE: Record<string, string> = {
 	"image/png": "png",
 	"image/jpeg": "jpeg",
 	"image/jpg": "jpg",
-	"image/webp": "webp",
 	"application/pdf": "pdf",
 };
 
@@ -145,21 +144,67 @@ function getExtensionForMimeType(mimetype: string): string {
 	return VENDOR_DOCUMENT_EXTENSIONS_BY_MIME_TYPE[mimetype];
 }
 
-async function persistVendorDocuments(
-	tx: Prisma.TransactionClient,
+type UploadedVendorDocument = { documentType: string; s3Key: string };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// uploadVendorDocumentFiles
+//
+// Validates and uploads every provided file to S3, OUTSIDE of any DB
+// transaction. This used to happen inside persistVendorDocuments, called
+// from within prisma.$transaction at all three call sites below — but an
+// S3 round-trip per file is slow enough (especially with several documents)
+// that the combined latency routinely exceeded Prisma's 5s interactive-
+// transaction timeout:
+//
+//   "Transaction API error: ... timeout for this transaction was 5000ms,
+//   however 6496ms passed since the start of the transaction."
+//
+// A DB transaction should only ever hold fast, local work. Network calls —
+// S3, in this case — must happen before it starts; persistVendorDocumentRecords
+// below then only writes rows for files that are already safely uploaded.
+//
+// Validated up front, before any upload starts, so a late validation
+// failure (e.g. document 5 of 6 is oversized) can't leave documents 1-4
+// already sitting in S3 with no DB record ever created for them. Uploads
+// then run in parallel — they're independent of each other, and this is
+// what actually keeps total latency down.
+// ─────────────────────────────────────────────────────────────────────────────
+async function uploadVendorDocumentFiles(
 	onboardingId: string,
 	files: Record<string, Express.Multer.File[]> | undefined,
-) {
-	for (const documentType of ALL_VENDOR_DOCUMENT_TYPES) {
+): Promise<UploadedVendorDocument[]> {
+	const filesToUpload = ALL_VENDOR_DOCUMENT_TYPES.flatMap((documentType) => {
 		const file = files?.[documentType]?.[0];
-		if (!file) continue; // untouched — keep whatever's already there, if anything
+		return file ? [{ documentType, file }] : []; // untouched — keep whatever's already there, if anything
+	});
 
-		validateVendorDocumentFile(file, documentType);
+	filesToUpload.forEach(({ documentType, file }) =>
+		validateVendorDocumentFile(file, documentType),
+	);
 
-		const extension = getExtensionForMimeType(file.mimetype);
-		const s3Key = `vendor-onboarding-docs/${onboardingId}/${documentType}.${extension}`;
-		await uploadToS3(s3Key, file.buffer, file.mimetype);
+	return Promise.all(
+		filesToUpload.map(async ({ documentType, file }) => {
+			const extension = getExtensionForMimeType(file.mimetype);
+			const s3Key = `vendor-onboarding-docs/${onboardingId}/${documentType}.${extension}`;
+			await uploadToS3(s3Key, file.buffer, file.mimetype);
+			return { documentType, s3Key };
+		}),
+	);
+}
 
+// ─────────────────────────────────────────────────────────────────────────────
+// persistVendorDocumentRecords
+//
+// DB-only half of the old persistVendorDocuments: writes one row per
+// already-uploaded document. Safe to run inside a transaction — no network
+// I/O left here, just upserts.
+// ─────────────────────────────────────────────────────────────────────────────
+async function persistVendorDocumentRecords(
+	tx: Prisma.TransactionClient,
+	onboardingId: string,
+	uploadedDocuments: UploadedVendorDocument[],
+) {
+	for (const { documentType, s3Key } of uploadedDocuments) {
 		await tx.vendorOnboardingDocument.upsert({
 			where: {
 				onboardingId_documentType: { onboardingId, documentType },
@@ -552,10 +597,19 @@ export const updateEmployeeFields = async (
 			| Record<string, Express.Multer.File[]>
 			| undefined;
 
+		// Uploaded to S3 *before* the transaction starts — see
+		// uploadVendorDocumentFiles's doc comment for why this can't live
+		// inside prisma.$transaction below.
+		const uploadedDocuments = await uploadVendorDocumentFiles(
+			id as string,
+			files,
+		);
+
 		// Field updates and any replaced document images succeed or fail
 		// together — a partial write here (fields saved, upload failed, or vice
 		// versa) would leave the record in a state neither the employee nor the
-		// vendor asked for.
+		// vendor asked for. The upload itself already happened above; this
+		// transaction only writes the resulting DB rows, so it stays fast.
 		const updated = await prisma.$transaction(async (tx) => {
 			const result = await tx.vendorOnboarding.update({
 				where: { id: id as string },
@@ -565,7 +619,7 @@ export const updateEmployeeFields = async (
 				},
 			});
 
-			await persistVendorDocuments(tx, id as string, files);
+			await persistVendorDocumentRecords(tx, id as string, uploadedDocuments);
 
 			return result;
 		});
@@ -935,6 +989,14 @@ export const submitVendorForm = async (
 			);
 		}
 
+		// Uploaded to S3 *before* the transaction starts — see
+		// uploadVendorDocumentFiles's doc comment for why this can't live
+		// inside prisma.$transaction below.
+		const uploadedDocuments = await uploadVendorDocumentFiles(
+			onboarding.id,
+			files,
+		);
+
 		await prisma.$transaction(async (tx) => {
 			const referenceNumber =
 				generateVendorOnboardingReferenceNumber(vendorName);
@@ -959,17 +1021,17 @@ export const submitVendorForm = async (
 					bankAddress,
 					accountNumber,
 					gstin,
-					gstApplicability: gstApplicable,
-					incorporationApplicability: incorporationApplicable,
 					pan,
 					entityRegNo,
 					dpdpConsentedAt: new Date(),
 					dpdpConsentIp: req.ip,
 					vendorSubmittedAt: new Date(),
+					gstApplicability: gstApplicable,
+					incorporationApplicability: incorporationApplicable,
 				},
 			});
 
-			await persistVendorDocuments(tx, onboarding.id, files);
+			await persistVendorDocumentRecords(tx, onboarding.id, uploadedDocuments);
 			await markAccessTokenUsed(tokenId, tx);
 
 			await tx.activityLog.create({
@@ -1168,6 +1230,13 @@ export const saveVendorFormDraft = async (
 			| Record<string, Express.Multer.File[]>
 			| undefined;
 
+		// Uploaded to S3 *before* the transaction starts — same reasoning as
+		// submitVendorForm/updateEmployeeFields above.
+		const uploadedDocuments = await uploadVendorDocumentFiles(
+			onboarding.id,
+			files,
+		);
+
 		// No dpdpConsent requirement and no missing-document check — a draft
 		// is allowed to be partial. Status and access token are untouched so
 		// the vendor can return and finish later with the same link. No
@@ -1202,7 +1271,7 @@ export const saveVendorFormDraft = async (
 				},
 			});
 
-			await persistVendorDocuments(tx, onboarding.id, files);
+			await persistVendorDocumentRecords(tx, onboarding.id, uploadedDocuments);
 		});
 
 		res.status(200).json({ success: true, message: "Draft saved" });
