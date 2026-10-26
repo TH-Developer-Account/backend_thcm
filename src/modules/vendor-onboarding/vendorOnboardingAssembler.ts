@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import {
@@ -80,7 +81,10 @@ export interface VendorOnboardingPdfData {
     isRelatedParty: boolean | null;
     vendorAuditReportPrepared: boolean | null;
   };
-  documents: Array<{ documentType: string; uploadedAt: Date }>;
+  // s3Key added so the PDF pipeline can download and merge each attachment
+  // in (see pdfAttachmentMerger.ts) — previously this only carried enough
+  // to print the "Attached Documents" table, not to fetch the files.
+  documents: Array<{ documentType: string; uploadedAt: Date; s3Key: string }>;
   // Workflow — current iteration only (mirrors getVendorOnboardingById's
   // activeWorkflow). null when no workflow has been assigned yet (still in
   // employee review, pre send-for-approval).
@@ -103,7 +107,7 @@ export async function assembleVendorOnboardingPdfData(
     where: { id: onboardingId },
     include: {
       documents: {
-        select: { documentType: true, uploadedAt: true },
+        select: { documentType: true, uploadedAt: true, s3Key: true },
       },
     },
   });
@@ -253,4 +257,27 @@ export async function assembleVendorOnboardingPdfData(
     status: onboarding.status,
     generatedAt: new Date(),
   };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// computeVendorOnboardingDocumentsCacheVersion
+//
+// Short fingerprint of the vendor's uploaded documents, used by the PDF
+// registry (pdfDocumentRegistry.ts) as a cache-key suffix. Adding,
+// replacing, or removing a document changes this fingerprint, which forces
+// getOrGeneratePdfUrl (pdf.services.ts) to regenerate the merged PDF instead
+// of serving a stale one that's missing the change.
+// ─────────────────────────────────────────────────────────────────────────────
+export function computeVendorOnboardingDocumentsCacheVersion(
+  data: VendorOnboardingPdfData,
+): string {
+  const fingerprint = data.documents
+    .map(
+      (doc) =>
+        `${doc.documentType}:${doc.s3Key}:${doc.uploadedAt.toISOString()}`,
+    )
+    .sort()
+    .join("|");
+
+  return createHash("sha1").update(fingerprint).digest("hex").slice(0, 10);
 }

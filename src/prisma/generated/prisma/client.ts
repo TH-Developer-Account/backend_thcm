@@ -195,11 +195,6 @@ export type Designation = Prisma.DesignationModel
  */
 export type CostCenter = Prisma.CostCenterModel
 /**
- * Model UserRegion
- * 
- */
-export type UserRegion = Prisma.UserRegionModel
-/**
  * Model ProductMaster
  * 
  */

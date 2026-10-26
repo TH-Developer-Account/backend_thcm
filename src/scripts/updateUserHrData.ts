@@ -31,14 +31,16 @@
  * when missing (EOR carries no cap amount — see the schema comment on
  * GradeEligibility for why null, not 0).
  *
- * Location/Designation/Division/Cost Center are now FK columns on User
- * (locationId/designationId/divisionId/costCenterId), resolved from EOR's
- * Location/Designation/Division/Cost Center columns via the shared
- * resolveOrCreateByName/resolveOrCreateCostCenter helpers (./lib/
- * masterResolvers) — find-or-create by normalized name, same policy
- * backfillHrMasters.ts uses to seed these masters in bulk. Always
- * overwritten on every run, same policy as email/grade above. Zone is NOT
- * touched by this script — no zone column in EOR; it's admin-assigned only.
+ * Designation/Division/Cost Center are FK columns on User (designationId/
+ * divisionId/costCenterId), resolved from EOR's Designation/Division/Cost
+ * Center columns via the shared resolveOrCreateByName/
+ * resolveOrCreateCostCenter helpers (./lib/masterResolvers) — find-or-create
+ * by normalized name, same policy backfillHrMasters.ts uses to seed these
+ * masters in bulk. Location is plain free text on User directly (no master
+ * table, no FK) — EOR's Location column is written straight through, same
+ * as any other scalar field. All four are always overwritten on every run,
+ * same policy as email/grade above. Zone is NOT touched by this script — no
+ * zone column in EOR; it's admin-assigned only.
  *
  * Mobile-file rows with no matching User (employeeCode not found under
  * userType "THCM", whether or not EOR also mentions it) are skipped and
@@ -149,31 +151,29 @@ async function ensureGradeEligibilityRows(
 }
 
 /**
- * Resolves this EOR record's Location/Designation/Division/Cost Center
- * into the matching master row id, creating the master row if this is the
- * first time that value has been seen (same find-or-create policy
- * backfillHrMasters.ts uses). Only present keys are the ones EOR actually
- * has a value for — a blank EOR cell leaves that FK untouched rather than
- * nulling out whatever the user already had.
+ * Resolves this EOR record's Designation/Division/Cost Center into the
+ * matching master row id, creating the master row if this is the first
+ * time that value has been seen (same find-or-create policy
+ * backfillHrMasters.ts uses). Location is written straight through as
+ * plain text — it has no master table. Only present keys are the ones EOR
+ * actually has a value for — a blank EOR cell leaves that field untouched
+ * rather than nulling out whatever the user already had.
  */
 async function resolveOrgFks(record: EorRecord): Promise<{
-  locationId?: string;
+  location?: string;
   designationId?: string;
   divisionId?: string;
   costCenterId?: string;
 }> {
   const updates: {
-    locationId?: string;
+    location?: string;
     designationId?: string;
     divisionId?: string;
     costCenterId?: string;
   } = {};
 
   if (record.location) {
-    updates.locationId = await resolveOrCreateByName(
-      "userRegion",
-      record.location,
-    );
+    updates.location = record.location;
   }
   if (record.designation) {
     updates.designationId = await resolveOrCreateByName(
@@ -290,7 +290,7 @@ async function runEorPass(
         const updateData: {
           email?: string;
           grade?: string;
-          locationId?: string;
+          location?: string;
           designationId?: string;
           divisionId?: string;
           costCenterId?: string;

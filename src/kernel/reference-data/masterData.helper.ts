@@ -79,14 +79,6 @@ export const handleCreate = async (model: any, type: string, data: any) => {
         },
       });
 
-    case "userRegion":
-      return model.create({
-        data: {
-          name: data.name,
-          isActive: data.isActive ?? true,
-        },
-      });
-
     // Zone (formerly the separate Region master — same table now; see
     // schema.prisma) uses region_code/region_name, not name — region_code
     // is unique and required, so it must be supplied on create.
@@ -181,17 +173,6 @@ export const handleUpdate = async (model: any, type: string, data: any) => {
         where: { id: data.id },
         data: {
           ...(data.code && { code: data.code }),
-          ...(data.name && { name: data.name }),
-          ...(typeof data.isActive === "boolean" && {
-            isActive: data.isActive,
-          }),
-        },
-      });
-
-    case "userRegion":
-      return model.update({
-        where: { id: data.id },
-        data: {
           ...(data.name && { name: data.name }),
           ...(typeof data.isActive === "boolean" && {
             isActive: data.isActive,

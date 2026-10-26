@@ -1,31 +1,36 @@
 /**
  * One-off data-migration script: populates the Division/Designation/
- * CostCenter/UserRegion lookup tables (see the "HR MASTERS" block in
- * schema.prisma) from EOR_31.08.xls.
+ * CostCenter lookup tables (see the "HR MASTERS" block in schema.prisma)
+ * from EOR_31.08.xls.
  *
  * Run manually: npx ts-node src/scripts/backfillHrMasters.ts
  *
- * This is purely additive to these four master tables — it never reads
- * from or writes to User rows. All four are seeded from EOR alone: this
- * app's User.region/designation/division/costCenter are a dev environment
- * and were reset to FK columns with no data-preservation requirement (see
+ * This is purely additive to these three master tables — it never reads
+ * from or writes to User rows. All three are seeded from EOR alone: this
+ * app's User.designation/division/costCenter are a dev environment and
+ * were reset to FK columns with no data-preservation requirement (see
  * decisions-and-learnings.md), so there's no "also merge in whatever was
  * already on User rows" step here, unlike an earlier version of this
  * script.
  *
- * Insert-if-missing only, for all four masters — an existing row (whether
+ * User.location is NOT backfilled here (and has no master table at all) —
+ * it's plain free text on User directly; EOR's Location column is written
+ * straight onto User.location by updateUserHrData.ts/importUserMaster.ts,
+ * no find-or-create step needed.
+ *
+ * Insert-if-missing only, for all three masters — an existing row (whether
  * seeded here before, or hand-edited later through the Masters admin UI) is
  * never overwritten. Safe to re-run.
  *
- * Dedup policy for Division/Designation/UserRegion (free text, genuinely
- * messy across sources — inconsistent case, punctuation, spacing): two raw
- * values are treated as the same entry when they collapse to the same
- * normalized key (trim + collapse whitespace + uppercase, see
- * ./lib/parseHelpers normalizeKey). The first-seen cleaned (case-preserving)
- * value for a given key is what gets stored as the display name. This can
- * over-merge two genuinely different titles that only differ by how someone
- * typed them — that's the accepted tradeoff over minting a pile of
- * near-duplicate rows; review the inserted list afterward.
+ * Dedup policy for Division/Designation (free text, genuinely messy across
+ * sources — inconsistent case, punctuation, spacing): two raw values are
+ * treated as the same entry when they collapse to the same normalized key
+ * (trim + collapse whitespace + uppercase, see ./lib/parseHelpers
+ * normalizeKey). The first-seen cleaned (case-preserving) value for a given
+ * key is what gets stored as the display name. This can over-merge two
+ * genuinely different titles that only differ by how someone typed them —
+ * that's the accepted tradeoff over minting a pile of near-duplicate rows;
+ * review the inserted list afterward.
  *
  * Cost Center has an actual code (not free text) — it's keyed by that code
  * directly, no normalization needed; EOR's Cost Center Name for that code
@@ -40,7 +45,7 @@ import { normalizeKey, cleanDisplayValue } from "./helpers/parseHelpers";
 
 const EOR_FILE = "./src/scripts/data/EOR_31.08.xls";
 
-type NameOnlyMaster = "division" | "designation" | "userRegion";
+type NameOnlyMaster = "division" | "designation";
 
 // ─────────────────────────────────────────────
 // Phase 1 — collect candidate values
@@ -121,9 +126,6 @@ async function main(): Promise<void> {
   const designationCandidates = dedupeByNormalizedKey(
     eorRecords.map((r) => r.designation).filter((v): v is string => Boolean(v)),
   );
-  const userRegionCandidates = dedupeByNormalizedKey(
-    eorRecords.map((r) => r.location).filter((v): v is string => Boolean(v)),
-  );
   const costCenterRecords = eorRecords
     .filter((r) => r.costCenterCode && r.costCenterName)
     .map((r) => ({
@@ -132,7 +134,7 @@ async function main(): Promise<void> {
     }));
 
   console.log(
-    `Candidates after dedup: ${divisionCandidates.size} divisions, ${designationCandidates.size} designations, ${userRegionCandidates.size} locations, ${new Set(costCenterRecords.map((r) => r.code)).size} cost centers.`,
+    `Candidates after dedup: ${divisionCandidates.size} divisions, ${designationCandidates.size} designations, ${new Set(costCenterRecords.map((r) => r.code)).size} cost centers.`,
   );
 
   const insertedDivisions = await backfillNameOnlyMaster(
@@ -143,10 +145,6 @@ async function main(): Promise<void> {
     "designation",
     designationCandidates,
   );
-  const insertedUserRegions = await backfillNameOnlyMaster(
-    "userRegion",
-    userRegionCandidates,
-  );
   const insertedCostCenters = await backfillCostCenters(costCenterRecords);
 
   console.log(
@@ -156,10 +154,6 @@ async function main(): Promise<void> {
   console.log(
     `Inserted ${insertedDesignations.length} new Designation row(s):`,
     insertedDesignations,
-  );
-  console.log(
-    `Inserted ${insertedUserRegions.length} new UserRegion ("Locations") row(s):`,
-    insertedUserRegions,
   );
   console.log(
     `Inserted ${insertedCostCenters.length} new CostCenter row(s):`,

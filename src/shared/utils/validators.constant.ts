@@ -53,7 +53,6 @@ export const ALLOWED_VENDOR_MIME_TYPES = new Set([
   "image/jpeg",
   "image/jpg",
   "image/png",
-  "image/webp",
   "application/pdf",
 ]);
 

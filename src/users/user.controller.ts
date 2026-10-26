@@ -22,11 +22,11 @@ const DEFAULT_PASSWORD = "Welcome@2026";
 // Allowlist rather than "everything except password": a new column on User
 // must be opted in here before a request body can write to it.
 //
-// location/designation/division/costCenter are FK scalar columns
-// (locationId/designationId/divisionId/costCenterId) — a plain scalar
-// assignment is enough for Prisma, same as any other editable field here.
-// "location" is what the old "region" column actually held — EOR's
-// "Location" (plant/city) — renamed to match; see schema.prisma.
+// designation/division/costCenter are FK scalar columns (designationId/
+// divisionId/costCenterId) — a plain scalar assignment is enough for
+// Prisma, same as any other editable field here. location is plain free
+// text on User directly (not a master-backed FK) — EOR's "Location"
+// (plant/city); see schema.prisma.
 // zones is a many-to-many relation (zoneIds in the request body) and can't
 // go through this generic allowlist — see pickEditableUserFields below.
 const EDITABLE_USER_FIELDS = [
@@ -39,7 +39,7 @@ const EDITABLE_USER_FIELDS = [
   "s4Id",
   "tallyId",
   "c4cId",
-  "locationId",
+  "location",
   "address",
   "branch",
   "department",
@@ -57,11 +57,13 @@ const EDITABLE_USER_FIELDS = [
   "businessPartnerId",
 ] as const;
 
-// location/designation/division/costCenter/zones are selected as their
-// relation (not the bare FK scalar) so formatUser below can flatten each to
-// its display value for every existing read-only consumer (approver
-// pickers, admin lists, etc.), while still returning the *Id alongside it
-// for the User admin edit form, which needs an id to preselect.
+// designation/division/costCenter/zones are selected as their relation
+// (not the bare FK scalar) so formatUser below can flatten each to its
+// display value for every existing read-only consumer (approver pickers,
+// admin lists, etc.), while still returning the *Id alongside it for the
+// User admin edit form, which needs an id to preselect. location is a
+// plain scalar column (not a relation) — selected as-is, no flattening
+// needed.
 const USER_FIELDS_SELECT = {
   id: true,
   first_name: true,
@@ -75,8 +77,7 @@ const USER_FIELDS_SELECT = {
   s4Id: true,
   tallyId: true,
   c4cId: true,
-  locationId: true,
-  location: { select: { id: true, name: true } },
+  location: true,
   address: true,
   branch: true,
   department: true,
@@ -189,16 +190,17 @@ type UserWithAppAccess = Prisma.UserGetPayload<{
   select: ReturnType<typeof buildUserSelect>;
 }>;
 
-// Flattens location/designation/division/costCenter/zones from their
-// relation shape into the flat fields every existing read-only consumer
-// already expects (location/designation/division/costCenter as a plain
-// string, zones as a string array) — plus the *Id/zoneIds alongside them,
-// which only the User admin edit form actually uses, to preselect the
-// right option. This is what keeps the FK migration from rippling into
-// every place that just displays a user's designation/location as text.
+// Flattens designation/division/costCenter/zones from their relation shape
+// into the flat fields every existing read-only consumer already expects
+// (designation/division/costCenter as a plain string, zones as a string
+// array) — plus the *Id/zoneIds alongside them, which only the User admin
+// edit form actually uses, to preselect the right option. location is
+// already a plain scalar column, so it passes straight through via
+// `...user` with no flattening needed. This is what keeps the FK migration
+// from rippling into every place that just displays a user's designation
+// as text.
 function formatUser({
   userProfiles,
-  location,
   designation,
   division,
   costCenter,
@@ -207,7 +209,6 @@ function formatUser({
 }: UserWithAppAccess) {
   return {
     ...user,
-    location: location?.name ?? null,
     designation: designation?.name ?? null,
     division: division?.name ?? null,
     costCenter: costCenter?.code ?? null,

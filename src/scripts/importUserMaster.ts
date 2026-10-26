@@ -48,7 +48,8 @@ interface PersonRecord {
   // "location" is EOR's convention (plant/city) — this source's own
   // region-shaped column is currently always null in practice, per
   // confirmation; mapped to location here for consistency rather than
-  // conflated with "zone" below (the sales-territory concept).
+  // conflated with "zone" below (the sales-territory concept). Written
+  // straight onto User.location as plain text — not a master-backed FK.
   location: string | undefined;
   zone: string | undefined;
   address: string | undefined;
@@ -283,16 +284,14 @@ async function upsertPerson(
 
   const existingUser = await findExistingUser(record);
 
-  // location/designation/zone are now FK lookups (locationId/designationId)
-  // or a many-to-many (zones) rather than plain strings — resolved here via
-  // the shared find-or-create helpers (same policy backfillHrMasters.ts and
-  // updateUserHrData.ts use). A blank source value leaves that field alone
+  // designation/zone are FK lookups (designationId) or a many-to-many
+  // (zones), resolved here via the shared find-or-create helpers (same
+  // policy backfillHrMasters.ts and updateUserHrData.ts use). location is
+  // plain free text on User directly — written straight through below,
+  // no resolver needed. A blank source value leaves that field alone
   // rather than nulling/clearing it. Zone uses its own dedicated resolver
   // (resolveOrCreateZoneByName) since the Zone model's shape (region_code/
   // region_name) doesn't fit resolveOrCreateByName's generic {id, name}.
-  const locationId = record.location
-    ? await resolveOrCreateByName("userRegion", record.location)
-    : undefined;
   const designationId = record.designation
     ? await resolveOrCreateByName("designation", record.designation)
     : undefined;
@@ -308,7 +307,7 @@ async function upsertPerson(
     employeeCode: record.employeeCode,
     bydId: record.bydId,
     c4cId: record.c4cId,
-    ...(locationId && { locationId }),
+    ...(record.location && { location: record.location }),
     ...(designationId && { designationId }),
     address: record.address,
     department: record.department,

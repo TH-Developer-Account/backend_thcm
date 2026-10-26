@@ -415,7 +415,6 @@ export const ModelName = {
   Division: 'Division',
   Designation: 'Designation',
   CostCenter: 'CostCenter',
-  UserRegion: 'UserRegion',
   ProductMaster: 'ProductMaster',
   EPF: 'EPF',
   CRF: 'CRF',
@@ -458,7 +457,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "zone" | "branch" | "budgetMaster" | "eventName" | "division" | "designation" | "costCenter" | "userRegion" | "productMaster" | "ePF" | "cRF" | "crfItem" | "crfOrder" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "gradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact" | "machineStudy" | "machineStudyCycle"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "zone" | "branch" | "budgetMaster" | "eventName" | "division" | "designation" | "costCenter" | "productMaster" | "ePF" | "cRF" | "crfItem" | "crfOrder" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "gradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact" | "machineStudy" | "machineStudyCycle"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2756,80 +2755,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
-    UserRegion: {
-      payload: Prisma.$UserRegionPayload<ExtArgs>
-      fields: Prisma.UserRegionFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.UserRegionFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserRegionPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.UserRegionFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserRegionPayload>
-        }
-        findFirst: {
-          args: Prisma.UserRegionFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserRegionPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.UserRegionFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserRegionPayload>
-        }
-        findMany: {
-          args: Prisma.UserRegionFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserRegionPayload>[]
-        }
-        create: {
-          args: Prisma.UserRegionCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserRegionPayload>
-        }
-        createMany: {
-          args: Prisma.UserRegionCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.UserRegionCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserRegionPayload>[]
-        }
-        delete: {
-          args: Prisma.UserRegionDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserRegionPayload>
-        }
-        update: {
-          args: Prisma.UserRegionUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserRegionPayload>
-        }
-        deleteMany: {
-          args: Prisma.UserRegionDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.UserRegionUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.UserRegionUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserRegionPayload>[]
-        }
-        upsert: {
-          args: Prisma.UserRegionUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserRegionPayload>
-        }
-        aggregate: {
-          args: Prisma.UserRegionAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateUserRegion>
-        }
-        groupBy: {
-          args: Prisma.UserRegionGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.UserRegionGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.UserRegionCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.UserRegionCountAggregateOutputType> | number
-        }
-      }
-    }
     ProductMaster: {
       payload: Prisma.$ProductMasterPayload<ExtArgs>
       fields: Prisma.ProductMasterFieldRefs
@@ -4888,7 +4813,7 @@ export const UserScalarFieldEnum = {
   vertical: 'vertical',
   managerCode1: 'managerCode1',
   managerCode2: 'managerCode2',
-  locationId: 'locationId',
+  location: 'location',
   designationId: 'designationId',
   divisionId: 'divisionId',
   costCenterId: 'costCenterId',
@@ -5293,17 +5218,6 @@ export const CostCenterScalarFieldEnum = {
 } as const
 
 export type CostCenterScalarFieldEnum = (typeof CostCenterScalarFieldEnum)[keyof typeof CostCenterScalarFieldEnum]
-
-
-export const UserRegionScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  isActive: 'isActive',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type UserRegionScalarFieldEnum = (typeof UserRegionScalarFieldEnum)[keyof typeof UserRegionScalarFieldEnum]
 
 
 export const ProductMasterScalarFieldEnum = {
@@ -6524,7 +6438,6 @@ export type GlobalOmitConfig = {
   division?: Prisma.DivisionOmit
   designation?: Prisma.DesignationOmit
   costCenter?: Prisma.CostCenterOmit
-  userRegion?: Prisma.UserRegionOmit
   productMaster?: Prisma.ProductMasterOmit
   ePF?: Prisma.EPFOmit
   cRF?: Prisma.CRFOmit

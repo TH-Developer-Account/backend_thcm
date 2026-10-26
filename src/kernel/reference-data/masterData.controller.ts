@@ -28,6 +28,10 @@ const formatOptions = <T>(
 // concept). The Masters admin UI only manages it under "zone" now; the
 // `regions` key in getMasterData's response below stays only as a
 // backward-compat bridge for other-module read consumers.
+//
+// "userRegion"/Locations is also absent — User.location went back to being
+// plain free text (not a master-backed FK), so there's no Locations master
+// screen or model to manage here anymore. See decisions-and-learnings.md.
 const MODEL_MAP: Record<string, any> = {
   department: prisma.department,
   branch: prisma.branch,
@@ -36,7 +40,6 @@ const MODEL_MAP: Record<string, any> = {
   division: prisma.division,
   designation: prisma.designation,
   costCenter: prisma.costCenter,
-  userRegion: prisma.userRegion,
   zone: prisma.zone,
 };
 
@@ -52,7 +55,6 @@ export const getMasterData = async (req: Request, res: Response) => {
       divisions,
       designations,
       costCenters,
-      locations,
     ] = await Promise.all([
       prisma.department.findMany({
         // where: { status: "active" },
@@ -136,12 +138,6 @@ export const getMasterData = async (req: Request, res: Response) => {
         select: { id: true, code: true, name: true },
         orderBy: { code: "asc" },
       }),
-
-      prisma.userRegion.findMany({
-        where: { isActive: true },
-        select: { id: true, name: true },
-        orderBy: { name: "asc" },
-      }),
     ]);
 
     const zoneOptions = formatOptions(zones, {
@@ -186,9 +182,6 @@ export const getMasterData = async (req: Request, res: Response) => {
       costCenters: formatOptions(costCenters, {
         label: (c) => c.name,
         extra: (c) => ({ code: c.code }),
-      }),
-      locations: formatOptions(locations, {
-        label: (l) => l.name,
       }),
       zones: zoneOptions,
     });

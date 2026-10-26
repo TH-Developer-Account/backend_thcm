@@ -82,7 +82,6 @@ export const ModelName = {
   Division: 'Division',
   Designation: 'Designation',
   CostCenter: 'CostCenter',
-  UserRegion: 'UserRegion',
   ProductMaster: 'ProductMaster',
   EPF: 'EPF',
   CRF: 'CRF',
@@ -149,7 +148,7 @@ export const UserScalarFieldEnum = {
   vertical: 'vertical',
   managerCode1: 'managerCode1',
   managerCode2: 'managerCode2',
-  locationId: 'locationId',
+  location: 'location',
   designationId: 'designationId',
   divisionId: 'divisionId',
   costCenterId: 'costCenterId',
@@ -554,17 +553,6 @@ export const CostCenterScalarFieldEnum = {
 } as const
 
 export type CostCenterScalarFieldEnum = (typeof CostCenterScalarFieldEnum)[keyof typeof CostCenterScalarFieldEnum]
-
-
-export const UserRegionScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  isActive: 'isActive',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type UserRegionScalarFieldEnum = (typeof UserRegionScalarFieldEnum)[keyof typeof UserRegionScalarFieldEnum]
 
 
 export const ProductMasterScalarFieldEnum = {

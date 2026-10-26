@@ -240,12 +240,13 @@ model User {
   managerCode1     String?
   managerCode2     String?
 
-  // ── HR org fields as FK relations ────────────────────────────────────
+  // ── HR org fields ──────────────────────────────────────────────────────
   // location: what the old `region` column actually held — EOR's
-  // "Location" column (plant/city) — backed by the UserRegion master
-  // (labeled "Locations" in the Masters admin UI).
-  locationId    String?
-  location      UserRegion?   @relation(fields: [locationId], references: [id])
+  // "Location" column (plant/city). Plain free text, deliberately NOT a
+  // master-backed FK (unlike designation/division/costCenter below) —
+  // real-world location values vary too much to constrain to a fixed
+  // list; see decisions-and-learnings.md.
+  location      String?
   designationId String?
   designation   Designation?  @relation(fields: [designationId], references: [id])
   divisionId    String?
@@ -826,6 +827,12 @@ model EventName {
 // User.division/designation/costCenter are FK relations into these three
 // (see User model above) — populated by scripts/backfillHrMasters.ts from
 // EOR data, so Masters admin UI has a governed list to show/manage.
+//
+// User.location is intentionally NOT one of these — it's plain free text
+// on User directly (see the User model comment) rather than a master-
+// backed FK, since real-world location values vary too much to constrain
+// to a fixed list. There used to be a UserRegion master backing it; it was
+// removed once that call was made — see decisions-and-learnings.md.
 // ─────────────────────────────────────────────
 
 model Division {
@@ -850,20 +857,6 @@ model CostCenter {
   id         String   @id @default(uuid())
   code       String   @unique // EOR's numeric Cost Center, e.g. "3952"
   name       String // EOR's Cost Center Name, e.g. "Assem Heavy Exca"
-  isActive   Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  users      User[]
-}
-
-// UserRegion: EOR's "Location" column (plant/city), mapped to User.location.
-// Deliberately separate from Zone (EventProposal's business region/sales-
-// territory concept, now unified above) — this is a plant/city location,
-// not a sales territory. Labeled "Locations" in the Masters admin UI to
-// avoid confusion with the "Zones" entry.
-model UserRegion {
-  id         String   @id @default(uuid())
-  name       String   @unique
   isActive   Boolean  @default(true)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

@@ -5,12 +5,14 @@
  * Users). Three real consumers is what crosses this codebase's own
  * "two or more variants earn one" bar for extracting a shared helper.
  *
- * Division/Designation/UserRegion are all {id, name}-shaped lookups,
- * matched by normalizeKey (trim + collapse whitespace + uppercase) so
- * "Sales Manager" and "sales  manager" resolve to the same row — same
- * policy as backfillHrMasters.ts's own dedupeByNormalizedKey. CostCenter and
- * Zone are different: each is keyed by a real, unique code rather than a
- * normalized name alone, so they get their own resolvers below.
+ * Division/Designation are both {id, name}-shaped lookups, matched by
+ * normalizeKey (trim + collapse whitespace + uppercase) so "Sales Manager"
+ * and "sales  manager" resolve to the same row — same policy as
+ * backfillHrMasters.ts's own dedupeByNormalizedKey. CostCenter and Zone are
+ * different: each is keyed by a real, unique code rather than a normalized
+ * name alone, so they get their own resolvers below. User.location has no
+ * resolver at all — it's plain free text now, not a master-backed FK (see
+ * decisions-and-learnings.md).
  *
  * In-memory per-model cache: without it, resolving these FKs inside a
  * per-row import/sync loop (thousands of EOR/CSV rows) would re-fetch the
@@ -22,7 +24,7 @@
 import { prisma } from "../../shared/config/prisma";
 import { normalizeKey, cleanDisplayValue } from "./parseHelpers";
 
-export type NameOnlyMasterModel = "division" | "designation" | "userRegion";
+export type NameOnlyMasterModel = "division" | "designation";
 
 type NameOnlyModelClient = {
   findMany: (args: {
