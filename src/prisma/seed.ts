@@ -100,7 +100,9 @@ async function main() {
 
   await prisma.eventProposal.deleteMany();
   await prisma.branch.deleteMany();
-  await prisma.region.deleteMany();
+  // Region was renamed to Zone (same table — EventProposal's business
+  // region and User's zone are the same concept, unified into one master).
+  await prisma.zone.deleteMany();
   await prisma.vertical.deleteMany();
   await prisma.department.deleteMany();
   await prisma.budgetMaster.deleteMany();
@@ -203,7 +205,9 @@ async function main() {
     });
   }
 
-  await prisma.region.createMany({ data: regionData, skipDuplicates: true });
+  // regionData still uses region_code/region_name — unchanged, Zone kept
+  // those column names when it absorbed the old Region model.
+  await prisma.zone.createMany({ data: regionData, skipDuplicates: true });
 
   await prisma.branch.createMany({ data: branchData, skipDuplicates: true });
 

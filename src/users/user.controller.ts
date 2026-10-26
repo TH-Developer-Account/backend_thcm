@@ -21,6 +21,14 @@ const DEFAULT_PASSWORD = "Welcome@2026";
 
 // Allowlist rather than "everything except password": a new column on User
 // must be opted in here before a request body can write to it.
+//
+// branch/designation/division/costCenter are FK scalar columns (branchId/
+// designationId/divisionId/costCenterId) — a plain scalar assignment is
+// enough for Prisma, same as any other editable field here. location is
+// plain free text on User directly (not a master-backed FK) — EOR's
+// "Location" (plant/city); see schema.prisma.
+// zones is a many-to-many relation (zoneIds in the request body) and can't
+// go through this generic allowlist — see pickEditableUserFields below.
 const EDITABLE_USER_FIELDS = [
 	"first_name",
 	"last_name",
@@ -31,13 +39,14 @@ const EDITABLE_USER_FIELDS = [
 	"s4Id",
 	"tallyId",
 	"c4cId",
-	"region",
+	"location",
 	"address",
-	"zone",
-	"branch",
+	"branchId",
 	"department",
 	"role",
-	"designation",
+	"designationId",
+	"divisionId",
+	"costCenterId",
 	"vertical",
 	"managerCode1",
 	"managerCode2",
@@ -46,8 +55,16 @@ const EDITABLE_USER_FIELDS = [
 	"joinedOn",
 	"grade",
 	"businessPartnerId",
+	"is_active",
 ] as const;
 
+// branch/designation/division/costCenter/zones are selected as their
+// relation (not the bare FK scalar) so formatUser below can flatten each to
+// its display value for every existing read-only consumer (approver pickers,
+// admin lists, etc.), while still returning the *Id alongside it for the
+// User admin edit form, which needs an id to preselect. location is a
+// plain scalar column (not a relation) — selected as-is, no flattening
+// needed.
 const USER_FIELDS_SELECT = {
 	id: true,
 	first_name: true,
@@ -61,13 +78,19 @@ const USER_FIELDS_SELECT = {
 	s4Id: true,
 	tallyId: true,
 	c4cId: true,
-	region: true,
+	location: true,
 	address: true,
-	zone: true,
-	branch: true,
+	branchId: true,
+	branch: { select: { id: true, branch_name: true } },
 	department: true,
 	role: true,
-	designation: true,
+	designationId: true,
+	designation: { select: { id: true, name: true } },
+	divisionId: true,
+	division: { select: { id: true, name: true } },
+	costCenterId: true,
+	costCenter: { select: { id: true, code: true, name: true } },
+	zones: { select: { id: true, region_name: true } },
 	vertical: true,
 	managerCode1: true,
 	managerCode2: true,
@@ -82,29 +105,56 @@ const USER_FIELDS_SELECT = {
 
 // What GET /users/me returns and PATCH /users/me echoes back. Kept narrow on
 // purpose: the signed-in user only needs their own profile basics.
+// designation/branch/zones are relations now (see USER_FIELDS_SELECT
+// above) — selected the same way and flattened by formatCurrentUser below,
+// so the response shape (designation/branch as a plain string) stays
+// unchanged for whatever reads GET/PATCH /users/me.
 const CURRENT_USER_SELECT = {
 	id: true,
 	first_name: true,
 	last_name: true,
 	email: true,
 	phone_number: true,
-	designation: true,
+	designationId: true,
+	designation: { select: { id: true, name: true } },
 	department: true,
 	is_active: true,
 	created_at: true,
 	updated_at: true,
-	zone: true,
-	branch: true,
+	zones: { select: { id: true, region_name: true } },
+	branch: { select: { id: true, branch_name: true } },
 } satisfies Prisma.UserSelect;
+
+type CurrentUserRecord = Prisma.UserGetPayload<{
+	select: typeof CURRENT_USER_SELECT;
+}>;
+
+function formatCurrentUser({
+	designation,
+	zones,
+	branch,
+	...user
+}: CurrentUserRecord) {
+	return {
+		...user,
+		designation: designation?.name ?? null,
+		zones: zones.map((zone) => zone.region_name),
+		branch: branch?.branch_name ?? null,
+	};
+}
 
 // Fields a user may change on their own record. Separate from
 // EDITABLE_USER_FIELDS (admin edits): email, address, role, codes, etc. stay
 // admin-only, so a self-update body can never write to them.
+//
+// designationId replaces designation now that it's a master-driven FK
+// rather than free text — the caller sends the Designation row's id, same
+// as the admin edit form's picker does.
 const SELF_EDITABLE_USER_FIELDS = [
 	"first_name",
 	"last_name",
 	"phone_number",
-	"designation",
+	"designationId",
 	"department",
 ] as const;
 
@@ -148,9 +198,32 @@ type UserWithAppAccess = Prisma.UserGetPayload<{
 	select: ReturnType<typeof buildUserSelect>;
 }>;
 
-function formatUser({ userProfiles, ...user }: UserWithAppAccess) {
+// Flattens branch/designation/division/costCenter/zones from their relation
+// shape into the flat fields every existing read-only consumer already
+// expects (branch/designation/division/costCenter as a plain string, zones
+// as a string array) — plus the *Id/zoneIds alongside them, which only the
+// User admin edit form actually uses, to preselect the right option.
+// location is already a plain scalar column, so it passes straight through
+// via `...user` with no flattening needed. This is what keeps the FK
+// migration from rippling into every place that just displays a user's
+// designation/branch as text.
+function formatUser({
+	userProfiles,
+	designation,
+	division,
+	costCenter,
+	zones,
+	branch,
+	...user
+}: UserWithAppAccess) {
 	return {
 		...user,
+		designation: designation?.name ?? null,
+		division: division?.name ?? null,
+		costCenter: costCenter?.code ?? null,
+		zones: zones.map((zone) => zone.region_name),
+		zoneIds: zones.map((zone) => zone.id),
+		branch: branch?.branch_name ?? null,
 		appAccess: userProfiles.map(({ profile, assignedAt }) => ({
 			appKey: profile.app.key,
 			appName: profile.app.name,
@@ -175,6 +248,15 @@ function pickEditableUserFields(body: Record<string, unknown>) {
 			? new Date(fields.joinedOn as string)
 			: null;
 	}
+
+	// zoneIds is a many-to-many relation, not a plain column — Prisma needs
+	// `zones: { set: [...] }`, not a scalar assignment like the fields above.
+	// `set` replaces the full list, matching how every other organization
+	// field here is a full overwrite on save, not a merge.
+	if (Array.isArray(body.zoneIds)) {
+		fields.zones = { set: (body.zoneIds as string[]).map((id) => ({ id })) };
+	}
+
 	return fields;
 }
 
@@ -312,7 +394,7 @@ export async function getCurrentUser(request: Request, response: Response) {
 	if (!user) throw new ApiError(404, "User not found");
 
 	response.json({
-		user,
+		user: formatCurrentUser(user),
 		workspaceId: actor.workspaceId,
 		permissions: {
 			isSuperAdmin: actor.isSuperAdmin,
@@ -354,6 +436,13 @@ export async function updateCurrentUser(request: Request, response: Response) {
 		}
 	}
 
+	// designationId is a nullable FK scalar, not free text: an empty string
+	// isn't a valid id, so clearing the field means null, same posture as
+	// phone_number above.
+	if (data.designationId === "") {
+		data.designationId = null;
+	}
+
 	if (Object.keys(data).length === 0) {
 		throw new ApiError(400, "No editable fields provided");
 	}
@@ -368,7 +457,10 @@ export async function updateCurrentUser(request: Request, response: Response) {
 			select: CURRENT_USER_SELECT,
 		});
 
-		response.json({ message: "Profile updated successfully", user });
+		response.json({
+			message: "Profile updated successfully",
+			user: formatCurrentUser(user),
+		});
 	} catch (error) {
 		// Prisma unique-constraint violation (phone number used by another user).
 		if ((error as { code?: string } | null)?.code === "P2002") {

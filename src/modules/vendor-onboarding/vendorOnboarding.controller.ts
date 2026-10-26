@@ -60,6 +60,27 @@ const VENDOR_DOCUMENT_EXTENSIONS_BY_MIME_TYPE: Record<string, string> = {
 	"application/pdf": "pdf",
 };
 
+// GST / Incorporation applicability: true = applicable, false = N/A (certificate
+// not required), null = never chosen (treated as applicable), undefined = not sent.
+// FormData sends "true"/"false", JSON sends real booleans — String() handles both.
+const parseApplicability = (value: unknown): boolean | undefined =>
+	value === undefined ? undefined : String(value) !== "false";
+
+// Drops the certificates the vendor marked N/A from the required list.
+const withoutNotApplicable = (
+	types: readonly string[],
+	gstApplicability?: boolean | null,
+	incorporationApplicability?: boolean | null,
+) =>
+	types.filter(
+		(type) =>
+			!(type === "GST_CERTIFICATE" && gstApplicability === false) &&
+			!(
+				type === "INCORPORATION_CERTIFICATE" &&
+				incorporationApplicability === false
+			),
+	);
+
 const EMPLOYEE_UPDATABLE_ONBOARDING_FIELDS = [
 	// vendor-filled fields (employee corrections)
 	"vendorName",
@@ -78,6 +99,8 @@ const EMPLOYEE_UPDATABLE_ONBOARDING_FIELDS = [
 	"gstin",
 	"pan",
 	"entityRegNo",
+	"gstApplicability",
+	"incorporationApplicability",
 
 	// employee-owned fields
 	"vendorCode",
@@ -586,10 +609,14 @@ export const sendForApproval = async (
 			onboarding.documents.map((d) => d.documentType),
 		);
 
-		const requiredDocumentTypes = getRequiredVendorDocumentTypes({
-			msmeVendor: onboarding.msmeVendor ?? false,
-			ndaObtained: onboarding.ndaObtained ?? false,
-		});
+		const requiredDocumentTypes = withoutNotApplicable(
+			getRequiredVendorDocumentTypes({
+				msmeVendor: onboarding.msmeVendor ?? false,
+				ndaObtained: onboarding.ndaObtained ?? false,
+			}),
+			onboarding.gstApplicability,
+			onboarding.incorporationApplicability,
+		);
 		const missing = requiredDocumentTypes.filter((t) => !uploadedTypes.has(t));
 		if (missing.length > 0) {
 			throw new ApiError(
@@ -809,6 +836,8 @@ export const getVendorFormByToken = async (
 				bankAddress: onboarding.bankAddress,
 				accountNumber: onboarding.accountNumber,
 				gstin: onboarding.gstin,
+				gstApplicability: onboarding.gstApplicability,
+				incorporationApplicability: onboarding.incorporationApplicability,
 				pan: onboarding.pan,
 				entityRegNo: onboarding.entityRegNo,
 				ndaObtained: onboarding.ndaObtained,
@@ -853,6 +882,8 @@ export const submitVendorForm = async (
 			bankAddress,
 			accountNumber,
 			gstin,
+			gstApplicability,
+			incorporationApplicability,
 			pan,
 			entityRegNo,
 			dpdpConsent,
@@ -879,10 +910,20 @@ export const submitVendorForm = async (
 		});
 		const existingTypes = new Set(existingDocuments.map((d) => d.documentType));
 
-		const requiredDocumentTypes = getRequiredVendorDocumentTypes({
-			msmeVendor: isMsmeVendor,
-			ndaObtained: isNdaObtained,
-		});
+		// Not sent → keep what an earlier draft saved.
+		const gstApplicable = parseApplicability(gstApplicability);
+		const incorporationApplicable = parseApplicability(
+			incorporationApplicability,
+		);
+
+		const requiredDocumentTypes = withoutNotApplicable(
+			getRequiredVendorDocumentTypes({
+				msmeVendor: isMsmeVendor,
+				ndaObtained: isNdaObtained,
+			}),
+			gstApplicable ?? onboarding.gstApplicability,
+			incorporationApplicable ?? onboarding.incorporationApplicability,
+		);
 
 		const missing = requiredDocumentTypes.filter(
 			(t) => !existingTypes.has(t) && !files?.[t]?.[0],
@@ -918,6 +959,8 @@ export const submitVendorForm = async (
 					bankAddress,
 					accountNumber,
 					gstin,
+					gstApplicability: gstApplicable,
+					incorporationApplicability: incorporationApplicable,
 					pan,
 					entityRegNo,
 					dpdpConsentedAt: new Date(),
@@ -1115,6 +1158,8 @@ export const saveVendorFormDraft = async (
 			bankAddress,
 			accountNumber,
 			gstin,
+			gstApplicability,
+			incorporationApplicability,
 			pan,
 			entityRegNo,
 		} = req.body;
@@ -1148,6 +1193,10 @@ export const saveVendorFormDraft = async (
 					bankAddress,
 					accountNumber,
 					gstin,
+					gstApplicability: parseApplicability(gstApplicability),
+					incorporationApplicability: parseApplicability(
+						incorporationApplicability,
+					),
 					pan,
 					entityRegNo,
 				},
