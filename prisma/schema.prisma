@@ -1380,6 +1380,8 @@ model VendorOnboarding {
   onboardingReason          String?
   guestId                   String?
 
+   gstApplicability           Boolean? // true = applicable, false = N/A, null = not chosen (treated as applicable)
+   incorporationApplicability Boolean? // same meaning as above
 
   workspace   Workspace                  @relation(fields: [workspaceId], references: [id])
   initiatedBy User                       @relation("VendorOnboardingInitiatedBy", fields: [initiatedById], references: [id])
