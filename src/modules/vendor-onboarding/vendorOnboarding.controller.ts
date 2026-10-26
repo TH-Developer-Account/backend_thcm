@@ -1021,6 +1021,8 @@ export const submitVendorForm = async (
 					bankAddress,
 					accountNumber,
 					gstin,
+					gstApplicability: gstApplicable,
+					incorporationApplicability: incorporationApplicable,
 					pan,
 					entityRegNo,
 					dpdpConsentedAt: new Date(),
