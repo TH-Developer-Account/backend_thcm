@@ -43,6 +43,7 @@
     "node-cron": "^4.2.1",
     "nodemailer": "^9.0.1",
     "papaparse": "^5.5.3",
+    "pdf-lib": "^1.17.1",
     "pdfmake": "^0.3.11",
     "pg": "^8.17.2",
     "rate-limiter-flexible": "^9.0.1",

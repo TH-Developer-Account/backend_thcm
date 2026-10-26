@@ -1,9 +1,10 @@
+import { createHash } from "crypto";
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import {
-	computePendingOn,
-	resolveVendorOnboardingPendingOn,
-	PendingOn,
+  computePendingOn,
+  resolveVendorOnboardingPendingOn,
+  PendingOn,
 } from "@workflow/workflowSubject.helper";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -16,237 +17,267 @@ import {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface VendorOnboardingWorkflowApproval {
-	approverName: string;
-	approverDesignation: string | null;
-	status: string;
-	actedAt: Date | null;
-	reason: string | null;
-	isExternalApprover: boolean;
+  approverName: string;
+  approverDesignation: string | null;
+  status: string;
+  actedAt: Date | null;
+  reason: string | null;
+  isExternalApprover: boolean;
 }
 
 export interface VendorOnboardingWorkflowStage {
-	stageOrder: number;
-	stageName: string | null;
-	strategy: string;
-	minApprovals: number | null;
-	status: string;
-	approvals: VendorOnboardingWorkflowApproval[];
+  stageOrder: number;
+  stageName: string | null;
+  strategy: string;
+  status: string;
+  approvals: VendorOnboardingWorkflowApproval[];
 }
 
 export interface VendorOnboardingAuditTrailEntry {
-	action: string;
-	createdAt: Date;
-	performedBy: string;
-	reason: string | null;
+  action: string;
+  createdAt: Date;
+  performedBy: string;
+  reason: string | null;
 }
 
 export interface VendorOnboardingPdfData {
-	vendor: {
-		vendorName: string | null;
-		state: string | null;
-		city: string | null;
-		pinCode: string | null;
-		address: string | null;
-		mobile: string | null;
-		email: string | null;
-		msmeVendor: boolean | null;
-		gstin: string | null;
-		pan: string | null;
-		entityRegNo: string | null;
-		vendorSubmittedAt: Date | null;
-		ndaObtained: boolean | null;
-	};
-	bank: {
-		bankName: string | null;
-		bankBranch: string | null;
-		ifscCode: string | null;
-		bankAddress: string | null;
-		accountNumber: string | null;
-	};
-	procurement: {
-		vendorCode: string | null;
-		vendorType: string | null;
-		companyCode: string | null;
-		purchaseOrg: string | null;
-		paymentTerm: string | null;
-		tds: string | null;
-		vendorCategory: string | null;
-		materialType: string | null;
-		materialSubType: string | null;
-		natureOfService: string | null;
-		onboardingReason: string | null;
-		selfAssessmentObtained: boolean | null;
-		ndaObtained: boolean | null;
-		gpaObtained: boolean | null;
-		isRelatedParty: boolean | null;
-		vendorAuditReportPrepared: boolean | null;
-	};
-	documents: Array<{ documentType: string; uploadedAt: Date }>;
-	// Workflow — current iteration only (mirrors getVendorOnboardingById's
-	// activeWorkflow). null when no workflow has been assigned yet (still in
-	// employee review, pre send-for-approval).
-	workflow: { stages: VendorOnboardingWorkflowStage[] } | null;
-	// Full chronological ActivityLog for this subject — initiation, vendor
-	// submission, send-for-approval, clarify/approve/reject, closure.
-	auditTrail: VendorOnboardingAuditTrailEntry[];
-	// Same structured result the listing/detail endpoints already compute —
-	// reused here rather than re-derived, so the PDF's dynamic status can
-	// never drift from what the UI shows for the same record.
-	pendingOn: PendingOn;
-	status: string;
-	generatedAt: Date;
+  vendor: {
+    vendorName: string | null;
+    state: string | null;
+    city: string | null;
+    pinCode: string | null;
+    address: string | null;
+    mobile: string | null;
+    email: string | null;
+    msmeVendor: boolean | null;
+    gstin: string | null;
+    pan: string | null;
+    entityRegNo: string | null;
+    vendorSubmittedAt: Date | null;
+    ndaObtained: boolean | null;
+  };
+  bank: {
+    bankName: string | null;
+    bankBranch: string | null;
+    ifscCode: string | null;
+    bankAddress: string | null;
+    accountNumber: string | null;
+  };
+  procurement: {
+    vendorCode: string | null;
+    vendorType: string | null;
+    companyCode: string | null;
+    purchaseOrg: string | null;
+    paymentTerm: string | null;
+    tds: string | null;
+    vendorCategory: string | null;
+    materialType: string | null;
+    materialSubType: string | null;
+    natureOfService: string | null;
+    onboardingReason: string | null;
+    selfAssessmentObtained: boolean | null;
+    ndaObtained: boolean | null;
+    gpaObtained: boolean | null;
+    isRelatedParty: boolean | null;
+    vendorAuditReportPrepared: boolean | null;
+  };
+  // s3Key added so the PDF pipeline can download and merge each attachment
+  // in (see pdfAttachmentMerger.ts) — previously this only carried enough
+  // to print the "Attached Documents" table, not to fetch the files.
+  documents: Array<{ documentType: string; uploadedAt: Date; s3Key: string }>;
+  // Workflow — current iteration only (mirrors getVendorOnboardingById's
+  // activeWorkflow). null when no workflow has been assigned yet (still in
+  // employee review, pre send-for-approval).
+  workflow: { stages: VendorOnboardingWorkflowStage[] } | null;
+  // Full chronological ActivityLog for this subject — initiation, vendor
+  // submission, send-for-approval, clarify/approve/reject, closure.
+  auditTrail: VendorOnboardingAuditTrailEntry[];
+  // Same structured result the listing/detail endpoints already compute —
+  // reused here rather than re-derived, so the PDF's dynamic status can
+  // never drift from what the UI shows for the same record.
+  pendingOn: PendingOn;
+  status: string;
+  generatedAt: Date;
 }
 
 export async function assembleVendorOnboardingPdfData(
-	onboardingId: string,
+  onboardingId: string,
 ): Promise<VendorOnboardingPdfData> {
-	const onboarding = await prisma.vendorOnboarding.findUnique({
-		where: { id: onboardingId },
-		include: {
-			documents: {
-				select: { documentType: true, uploadedAt: true },
-			},
-		},
-	});
+  const onboarding = await prisma.vendorOnboarding.findUnique({
+    where: { id: onboardingId },
+    include: {
+      documents: {
+        select: { documentType: true, uploadedAt: true, s3Key: true },
+      },
+    },
+  });
 
-	if (!onboarding) {
-		throw new ApiError(404, "Vendor onboarding record not found");
-	}
+  if (!onboarding) {
+    throw new ApiError(404, "Vendor onboarding record not found");
+  }
 
-	// Current-iteration workflow, richer than activeWorkflowInclude
-	// (@shared/utils/contants): the Workflow section on the PDF also needs
-	// actedAt/reason per approval, which activeWorkflowInclude doesn't select
-	// (it's tuned for pendingOn computation only). The shape below is still a
-	// structural superset of what computePendingOn requires, so it's reused
-	// for both the dynamic-status calculation and the printed table below —
-	// one query, not two.
-	const [activeWorkflow, activityLogs] = await Promise.all([
-		prisma.workflowInstance.findFirst({
-			where: {
-				subjectType: "VENDOR_ONBOARDING",
-				subjectId: onboardingId,
-				isActive: true,
-			},
-			orderBy: { created_at: "desc" },
-			select: {
-				status: true,
-				stages: {
-					where: { isCurrentIteration: true },
-					orderBy: { stageOrder: "asc" },
-					select: {
-						stageOrder: true,
-						stageName: true,
-						strategy: true,
-						minApprovals: true,
-						status: true,
-						approvals: {
-							select: {
-								status: true,
-								actedAt: true,
-								reason: true,
-								isExternalApprover: true,
-								approver: {
-									select: {
-										id: true,
-										first_name: true,
-										last_name: true,
-										designation: true,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		}),
-		prisma.activityLog.findMany({
-			where: { subjectType: "VENDOR_ONBOARDING", subjectId: onboardingId },
-			orderBy: { createdAt: "asc" },
-			select: {
-				action: true,
-				createdAt: true,
-				metadata: true,
-				actor: { select: { first_name: true, last_name: true } },
-			},
-		}),
-	]);
+  // Current-iteration workflow, richer than activeWorkflowInclude
+  // (@shared/utils/contants): the Workflow section on the PDF also needs
+  // actedAt/reason per approval, which activeWorkflowInclude doesn't select
+  // (it's tuned for pendingOn computation only). The shape below is still a
+  // structural superset of what computePendingOn requires, so it's reused
+  // for both the dynamic-status calculation and the printed table below —
+  // one query, not two.
+  const [activeWorkflow, activityLogs] = await Promise.all([
+    prisma.workflowInstance.findFirst({
+      where: {
+        subjectType: "VENDOR_ONBOARDING",
+        subjectId: onboardingId,
+        isActive: true,
+      },
+      orderBy: { created_at: "desc" },
+      select: {
+        status: true,
+        stages: {
+          where: { isCurrentIteration: true },
+          orderBy: { stageOrder: "asc" },
+          select: {
+            stageOrder: true,
+            stageName: true,
+            strategy: true,
+            status: true,
+            approvals: {
+              select: {
+                status: true,
+                actedAt: true,
+                reason: true,
+                isExternalApprover: true,
+                approver: {
+                  select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    // designation is now an FK relation (not a plain
+                    // string column) — select just the display name we
+                    // actually need, same posture as the other
+                    // designation/location/division selects elsewhere.
+                    designation: { select: { name: true } },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    }),
+    prisma.activityLog.findMany({
+      where: { subjectType: "VENDOR_ONBOARDING", subjectId: onboardingId },
+      orderBy: { createdAt: "asc" },
+      select: {
+        action: true,
+        createdAt: true,
+        metadata: true,
+        actor: { select: { first_name: true, last_name: true } },
+      },
+    }),
+  ]);
 
-	const pendingOn = resolveVendorOnboardingPendingOn(
-		onboarding.status,
-		computePendingOn(activeWorkflow),
-	);
+  const pendingOn = resolveVendorOnboardingPendingOn(
+    onboarding.status,
+    computePendingOn(activeWorkflow),
+  );
 
-	return {
-		vendor: {
-			vendorName: onboarding.vendorName,
-			state: onboarding.state,
-			city: onboarding.city,
-			pinCode: onboarding.pinCode,
-			address: onboarding.address,
-			mobile: onboarding.mobile,
-			email: onboarding.email,
-			msmeVendor: onboarding.msmeVendor,
-			ndaObtained: onboarding.ndaObtained,
-			gstin: onboarding.gstin,
-			pan: onboarding.pan,
-			entityRegNo: onboarding.entityRegNo,
-			vendorSubmittedAt: onboarding.vendorSubmittedAt,
-		},
-		bank: {
-			bankName: onboarding.bankName,
-			bankBranch: onboarding.bankBranch,
-			ifscCode: onboarding.ifscCode,
-			bankAddress: onboarding.bankAddress,
-			accountNumber: onboarding.accountNumber,
-		},
-		procurement: {
-			vendorCode: onboarding.vendorCode,
-			vendorType: onboarding.vendorType,
-			companyCode: onboarding.companyCode,
-			purchaseOrg: onboarding.purchaseOrg,
-			paymentTerm: onboarding.paymentTerm,
-			tds: onboarding.tds,
-			vendorCategory: onboarding.vendorCategory,
-			materialType: onboarding.materialType,
-			materialSubType: onboarding.materialSubType,
-			natureOfService: onboarding.natureOfService,
-			onboardingReason: onboarding.onboardingReason,
-			selfAssessmentObtained: onboarding.selfAssessmentObtained,
-			ndaObtained: onboarding.ndaObtained,
-			gpaObtained: onboarding.gpaObtained,
-			isRelatedParty: onboarding.isRelatedParty,
-			vendorAuditReportPrepared: onboarding.vendorAuditReportPrepared,
-		},
-		documents: onboarding.documents,
-		workflow: activeWorkflow
-			? {
-					stages: activeWorkflow.stages.map((stage) => ({
-						stageOrder: stage.stageOrder,
-						stageName: stage.stageName,
-						strategy: stage.strategy,
-						minApprovals: stage.minApprovals,
-						status: stage.status,
-						approvals: stage.approvals.map((approval) => ({
-							approverName: `${approval.approver.first_name} ${approval.approver.last_name}`,
-							approverDesignation: approval.approver.designation ?? null, // new
-							status: approval.status,
-							actedAt: approval.actedAt,
-							reason: approval.reason,
-							isExternalApprover: approval.isExternalApprover,
-						})),
-					})),
-				}
-			: null,
-		auditTrail: activityLogs.map((log) => ({
-			action: log.action?.trim() || "—",
-			createdAt: log.createdAt,
-			performedBy: log.actor
-				? `${log.actor.first_name} ${log.actor.last_name}`
-				: "System",
-			reason: (log.metadata as { reason?: string } | null)?.reason ?? null,
-		})),
-		pendingOn,
-		status: onboarding.status,
-		generatedAt: new Date(),
-	};
+  return {
+    vendor: {
+      vendorName: onboarding.vendorName,
+      state: onboarding.state,
+      city: onboarding.city,
+      pinCode: onboarding.pinCode,
+      address: onboarding.address,
+      mobile: onboarding.mobile,
+      email: onboarding.email,
+      msmeVendor: onboarding.msmeVendor,
+      ndaObtained: onboarding.ndaObtained,
+      gstin: onboarding.gstin,
+      pan: onboarding.pan,
+      entityRegNo: onboarding.entityRegNo,
+      vendorSubmittedAt: onboarding.vendorSubmittedAt,
+    },
+    bank: {
+      bankName: onboarding.bankName,
+      bankBranch: onboarding.bankBranch,
+      ifscCode: onboarding.ifscCode,
+      bankAddress: onboarding.bankAddress,
+      accountNumber: onboarding.accountNumber,
+    },
+    procurement: {
+      vendorCode: onboarding.vendorCode,
+      vendorType: onboarding.vendorType,
+      companyCode: onboarding.companyCode,
+      purchaseOrg: onboarding.purchaseOrg,
+      paymentTerm: onboarding.paymentTerm,
+      tds: onboarding.tds,
+      vendorCategory: onboarding.vendorCategory,
+      materialType: onboarding.materialType,
+      materialSubType: onboarding.materialSubType,
+      natureOfService: onboarding.natureOfService,
+      onboardingReason: onboarding.onboardingReason,
+      selfAssessmentObtained: onboarding.selfAssessmentObtained,
+      ndaObtained: onboarding.ndaObtained,
+      gpaObtained: onboarding.gpaObtained,
+      isRelatedParty: onboarding.isRelatedParty,
+      vendorAuditReportPrepared: onboarding.vendorAuditReportPrepared,
+    },
+    documents: onboarding.documents,
+    workflow: activeWorkflow
+      ? {
+          stages: activeWorkflow.stages.map((stage) => ({
+            stageOrder: stage.stageOrder,
+            stageName: stage.stageName,
+            strategy: stage.strategy,
+            status: stage.status,
+            approvals: stage.approvals.map((approval) => ({
+              approverName: `${approval.approver.first_name} ${approval.approver.last_name}`,
+              // designation is a relation now — flatten to its name,
+              // same "flatten on read" pattern as formatUser/
+              // formatCurrentUser in users/user.controller.ts.
+              approverDesignation: approval.approver.designation?.name ?? null,
+              status: approval.status,
+              actedAt: approval.actedAt,
+              reason: approval.reason,
+              isExternalApprover: approval.isExternalApprover,
+            })),
+          })),
+        }
+      : null,
+    auditTrail: activityLogs.map((log) => ({
+      action: log.action?.trim() || "—",
+      createdAt: log.createdAt,
+      performedBy: log.actor
+        ? `${log.actor.first_name} ${log.actor.last_name}`
+        : "System",
+      reason: (log.metadata as { reason?: string } | null)?.reason ?? null,
+    })),
+    pendingOn,
+    status: onboarding.status,
+    generatedAt: new Date(),
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// computeVendorOnboardingDocumentsCacheVersion
+//
+// Short fingerprint of the vendor's uploaded documents, used by the PDF
+// registry (pdfDocumentRegistry.ts) as a cache-key suffix. Adding,
+// replacing, or removing a document changes this fingerprint, which forces
+// getOrGeneratePdfUrl (pdf.services.ts) to regenerate the merged PDF instead
+// of serving a stale one that's missing the change.
+// ─────────────────────────────────────────────────────────────────────────────
+export function computeVendorOnboardingDocumentsCacheVersion(
+  data: VendorOnboardingPdfData,
+): string {
+  const fingerprint = data.documents
+    .map(
+      (doc) =>
+        `${doc.documentType}:${doc.s3Key}:${doc.uploadedAt.toISOString()}`,
+    )
+    .sort()
+    .join("|");
+
+  return createHash("sha1").update(fingerprint).digest("hex").slice(0, 10);
 }

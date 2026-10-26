@@ -75,10 +75,13 @@ export const ModelName = {
   ActivityLog: 'ActivityLog',
   Department: 'Department',
   Vertical: 'Vertical',
-  Region: 'Region',
+  Zone: 'Zone',
   Branch: 'Branch',
   BudgetMaster: 'BudgetMaster',
   EventName: 'EventName',
+  Division: 'Division',
+  Designation: 'Designation',
+  CostCenter: 'CostCenter',
   ProductMaster: 'ProductMaster',
   EPF: 'EPF',
   CRF: 'CRF',
@@ -138,16 +141,17 @@ export const UserScalarFieldEnum = {
   s4Id: 's4Id',
   tallyId: 'tallyId',
   c4cId: 'c4cId',
-  region: 'region',
   address: 'address',
-  zone: 'zone',
-  branch: 'branch',
+  branchId: 'branchId',
   department: 'department',
   role: 'role',
-  designation: 'designation',
   vertical: 'vertical',
   managerCode1: 'managerCode1',
   managerCode2: 'managerCode2',
+  location: 'location',
+  designationId: 'designationId',
+  divisionId: 'divisionId',
+  costCenterId: 'costCenterId',
   isDefaultContact: 'isDefaultContact',
   userType: 'userType',
   joinedOn: 'joinedOn',
@@ -471,7 +475,7 @@ export const VerticalScalarFieldEnum = {
 export type VerticalScalarFieldEnum = (typeof VerticalScalarFieldEnum)[keyof typeof VerticalScalarFieldEnum]
 
 
-export const RegionScalarFieldEnum = {
+export const ZoneScalarFieldEnum = {
   id: 'id',
   region_code: 'region_code',
   region_name: 'region_name',
@@ -480,7 +484,7 @@ export const RegionScalarFieldEnum = {
   updated_at: 'updated_at'
 } as const
 
-export type RegionScalarFieldEnum = (typeof RegionScalarFieldEnum)[keyof typeof RegionScalarFieldEnum]
+export type ZoneScalarFieldEnum = (typeof ZoneScalarFieldEnum)[keyof typeof ZoneScalarFieldEnum]
 
 
 export const BranchScalarFieldEnum = {
@@ -515,6 +519,40 @@ export const EventNameScalarFieldEnum = {
 } as const
 
 export type EventNameScalarFieldEnum = (typeof EventNameScalarFieldEnum)[keyof typeof EventNameScalarFieldEnum]
+
+
+export const DivisionScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  isActive: 'isActive',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type DivisionScalarFieldEnum = (typeof DivisionScalarFieldEnum)[keyof typeof DivisionScalarFieldEnum]
+
+
+export const DesignationScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  isActive: 'isActive',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type DesignationScalarFieldEnum = (typeof DesignationScalarFieldEnum)[keyof typeof DesignationScalarFieldEnum]
+
+
+export const CostCenterScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  name: 'name',
+  isActive: 'isActive',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CostCenterScalarFieldEnum = (typeof CostCenterScalarFieldEnum)[keyof typeof CostCenterScalarFieldEnum]
 
 
 export const ProductMasterScalarFieldEnum = {

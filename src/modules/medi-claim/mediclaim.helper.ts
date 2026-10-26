@@ -274,7 +274,13 @@ export async function computeMedicalClaimEligibility(
   const eligibility = await tx.gradeEligibility.findUnique({
     where: { grade },
   });
-  if (!eligibility) return null;
+  // No row at all (grade truly unknown) OR a row whose annualCap hasn't been
+  // set yet (see updateUserHrData.ts, which inserts grades discovered from
+  // HR data with annualCap: null pending manual entry) — both mean "can't
+  // compute a cap", and must return null, not fall through to
+  // Number(null) === 0, which would silently produce eligibleAmount = 0 (or
+  // negative) instead of "not eligible yet".
+  if (!eligibility || eligibility.annualCap === null) return null;
 
   let alreadySettled = 0;
 

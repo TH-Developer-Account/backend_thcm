@@ -232,16 +232,33 @@ model User {
   s4Id             String?
   tallyId          String?
   c4cId            String?
-  region           String?
   address          String?
-  zone             String?
-  branch           String?
+  branchId         String?
+  branch           Branch?       @relation(fields: [branchId], references: [id])
   department       String?
   role             String?
-  designation      String?
   vertical         String?
   managerCode1     String?
   managerCode2     String?
+
+  // ── HR org fields ──────────────────────────────────────────────────────
+  // location: what the old `region` column actually held — EOR's
+  // "Location" column (plant/city). Plain free text, deliberately NOT a
+  // master-backed FK (unlike designation/division/costCenter below) —
+  // real-world location values vary too much to constrain to a fixed
+  // list; see decisions-and-learnings.md.
+  location      String?
+  designationId String?
+  designation   Designation?  @relation(fields: [designationId], references: [id])
+  divisionId    String?
+  division      Division?     @relation(fields: [divisionId], references: [id])
+  costCenterId  String?
+  costCenter    CostCenter?   @relation(fields: [costCenterId], references: [id])
+  // zones: many-to-many — one user (e.g. a regional manager) can cover
+  // more than one zone. Zone is also EventProposal's former "Region"
+  // master, unified into one table since the two concepts are the same
+  // thing (see the Zone model below).
+  zones         Zone[]
   isDefaultContact Boolean             @default(false)
   userType         String? // reuses the existing THCM/DEALER/CUSTOMER enum — nullable since not every User is one of these
   joinedOn         DateTime?
@@ -518,7 +535,7 @@ model EventProposal {
 
   department    Department   @relation(fields: [department_id], references: [id])
   vertical      Vertical     @relation(fields: [vertical_id], references: [id])
-  region        Region       @relation(fields: [region_id], references: [id])
+  region        Zone         @relation(fields: [region_id], references: [id])
   branch        Branch       @relation(fields: [branch_id], references: [id])
   budget_master BudgetMaster @relation(fields: [budget_master_id], references: [id])
   event_name    EventName    @relation(fields: [event_name_id], references: [id])
@@ -758,12 +775,21 @@ model Vertical {
   updatedAt       DateTime        @updatedAt
 }
 
-model Region {
+// Zone: unifies what used to be two separate concepts — EventProposal's
+// business "Region" (North/South/etc.) and the standalone Zone master
+// originally added for User — since they're the same thing. Column names
+// (region_code/region_name) are kept as-is rather than renamed to code/name,
+// so every existing EventProposal consumer that selects region_name/
+// region_code keeps working unchanged; only the Prisma model identifier
+// changes here. User.zones (many-to-many — a user can cover more than one
+// zone) also points at this same table.
+model Zone {
   id              String          @id @default(uuid())
   region_code     String          @unique
   region_name     String
   isActive        Boolean         @default(true)
   event_proposals EventProposal[]
+  users           User[]
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
 }
@@ -774,6 +800,11 @@ model Branch {
   branch_name     String
   isActive        Boolean         @default(true)
   event_proposals EventProposal[]
+  // User.branchId — reverted back to this FK (was briefly plain text
+  // during the same org-fields sweep that touched location/designation/
+  // division/costCenter; unlike location, Branch already had a governed
+  // master + admin screen, so it went back to being FK-backed).
+  users           User[]
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
 }
@@ -794,6 +825,48 @@ model EventName {
   title  String
   reportTemplateKey String? @unique
   events EventProposal[]
+}
+
+// ─────────────────────────────────────────────
+// HR MASTERS (Division / Designation / Cost Center)
+//
+// User.division/designation/costCenter are FK relations into these three
+// (see User model above) — populated by scripts/backfillHrMasters.ts from
+// EOR data, so Masters admin UI has a governed list to show/manage.
+//
+// User.location is intentionally NOT one of these — it's plain free text
+// on User directly (see the User model comment) rather than a master-
+// backed FK, since real-world location values vary too much to constrain
+// to a fixed list. There used to be a UserRegion master backing it; it was
+// removed once that call was made — see decisions-and-learnings.md.
+// ─────────────────────────────────────────────
+
+model Division {
+  id         String   @id @default(uuid())
+  name       String   @unique
+  isActive   Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  users      User[]
+}
+
+model Designation {
+  id         String   @id @default(uuid())
+  name       String   @unique
+  isActive   Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  users      User[]
+}
+
+model CostCenter {
+  id         String   @id @default(uuid())
+  code       String   @unique // EOR's numeric Cost Center, e.g. "3952"
+  name       String // EOR's Cost Center Name, e.g. "Assem Heavy Exca"
+  isActive   Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  users      User[]
 }
 
 model ProductMaster {
@@ -1494,10 +1567,16 @@ model MedicalClaimBill {
 }
 
 // Newly created for this app — no existing grade→amount lookup exists yet.
+//
+// annualCap is nullable: updateUserHrData.ts (HR master sync from EOR) inserts
+// a row here for any grade it discovers that isn't already present, but the
+// EOR export carries no cap amount — null means "grade known, cap not yet
+// set", to be filled in manually. A claim submission against a grade with
+// annualCap = null should be treated as "not eligible yet", not as 0.
 model GradeEligibility {
-  id         String  @id @default(uuid())
-  grade      String  @unique
-  annualCap  Decimal @db.Decimal(12, 2)
+  id         String   @id @default(uuid())
+  grade      String   @unique
+  annualCap  Decimal? @db.Decimal(12, 2)
 }
 
 model Guest {
