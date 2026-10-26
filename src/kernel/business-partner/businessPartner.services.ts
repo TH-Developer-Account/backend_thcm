@@ -256,7 +256,13 @@ export type UpdateBusinessPartnerAddressInput =
 // Included on every contact read so the caller gets user details for free
 // instead of making a second round trip.
 const contactUserSelect = {
-  select: { id: true, name: true, email: true, phoneNumber: true },
+  select: {
+    id: true,
+    first_name: true,
+    last_name: true,
+    email: true,
+    phone_number: true,
+  },
 } as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -315,6 +321,8 @@ export async function createBusinessPartnerContact(
   const resolvedFields = input.userId
     ? resolveContactFieldsFromUser(await fetchUserOrThrow(input.userId))
     : {};
+
+  console.log({ resolvedFields });
 
   return prisma.businessPartnerContact.create({
     data: { ...input, ...resolvedFields, businessPartnerId },

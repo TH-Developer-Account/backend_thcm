@@ -39,7 +39,7 @@ export type UserMinAggregateOutputType = {
   tallyId: string | null
   c4cId: string | null
   address: string | null
-  branch: string | null
+  branchId: string | null
   department: string | null
   role: string | null
   vertical: string | null
@@ -73,7 +73,7 @@ export type UserMaxAggregateOutputType = {
   tallyId: string | null
   c4cId: string | null
   address: string | null
-  branch: string | null
+  branchId: string | null
   department: string | null
   role: string | null
   vertical: string | null
@@ -107,7 +107,7 @@ export type UserCountAggregateOutputType = {
   tallyId: number
   c4cId: number
   address: number
-  branch: number
+  branchId: number
   department: number
   role: number
   vertical: number
@@ -143,7 +143,7 @@ export type UserMinAggregateInputType = {
   tallyId?: true
   c4cId?: true
   address?: true
-  branch?: true
+  branchId?: true
   department?: true
   role?: true
   vertical?: true
@@ -177,7 +177,7 @@ export type UserMaxAggregateInputType = {
   tallyId?: true
   c4cId?: true
   address?: true
-  branch?: true
+  branchId?: true
   department?: true
   role?: true
   vertical?: true
@@ -211,7 +211,7 @@ export type UserCountAggregateInputType = {
   tallyId?: true
   c4cId?: true
   address?: true
-  branch?: true
+  branchId?: true
   department?: true
   role?: true
   vertical?: true
@@ -318,7 +318,7 @@ export type UserGroupByOutputType = {
   tallyId: string | null
   c4cId: string | null
   address: string | null
-  branch: string | null
+  branchId: string | null
   department: string | null
   role: string | null
   vertical: string | null
@@ -373,7 +373,7 @@ export type UserWhereInput = {
   tallyId?: Prisma.StringNullableFilter<"User"> | string | null
   c4cId?: Prisma.StringNullableFilter<"User"> | string | null
   address?: Prisma.StringNullableFilter<"User"> | string | null
-  branch?: Prisma.StringNullableFilter<"User"> | string | null
+  branchId?: Prisma.StringNullableFilter<"User"> | string | null
   department?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.StringNullableFilter<"User"> | string | null
   vertical?: Prisma.StringNullableFilter<"User"> | string | null
@@ -390,6 +390,7 @@ export type UserWhereInput = {
   businessPartnerId?: Prisma.StringNullableFilter<"User"> | string | null
   created_at?: Prisma.DateTimeFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
+  branch?: Prisma.XOR<Prisma.BranchNullableScalarRelationFilter, Prisma.BranchWhereInput> | null
   designation?: Prisma.XOR<Prisma.DesignationNullableScalarRelationFilter, Prisma.DesignationWhereInput> | null
   division?: Prisma.XOR<Prisma.DivisionNullableScalarRelationFilter, Prisma.DivisionWhereInput> | null
   costCenter?: Prisma.XOR<Prisma.CostCenterNullableScalarRelationFilter, Prisma.CostCenterWhereInput> | null
@@ -437,7 +438,7 @@ export type UserOrderByWithRelationInput = {
   tallyId?: Prisma.SortOrderInput | Prisma.SortOrder
   c4cId?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
-  branch?: Prisma.SortOrderInput | Prisma.SortOrder
+  branchId?: Prisma.SortOrderInput | Prisma.SortOrder
   department?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrderInput | Prisma.SortOrder
   vertical?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -454,6 +455,7 @@ export type UserOrderByWithRelationInput = {
   businessPartnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  branch?: Prisma.BranchOrderByWithRelationInput
   designation?: Prisma.DesignationOrderByWithRelationInput
   division?: Prisma.DivisionOrderByWithRelationInput
   costCenter?: Prisma.CostCenterOrderByWithRelationInput
@@ -504,7 +506,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   tallyId?: Prisma.StringNullableFilter<"User"> | string | null
   c4cId?: Prisma.StringNullableFilter<"User"> | string | null
   address?: Prisma.StringNullableFilter<"User"> | string | null
-  branch?: Prisma.StringNullableFilter<"User"> | string | null
+  branchId?: Prisma.StringNullableFilter<"User"> | string | null
   department?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.StringNullableFilter<"User"> | string | null
   vertical?: Prisma.StringNullableFilter<"User"> | string | null
@@ -521,6 +523,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   businessPartnerId?: Prisma.StringNullableFilter<"User"> | string | null
   created_at?: Prisma.DateTimeFilter<"User"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
+  branch?: Prisma.XOR<Prisma.BranchNullableScalarRelationFilter, Prisma.BranchWhereInput> | null
   designation?: Prisma.XOR<Prisma.DesignationNullableScalarRelationFilter, Prisma.DesignationWhereInput> | null
   division?: Prisma.XOR<Prisma.DivisionNullableScalarRelationFilter, Prisma.DivisionWhereInput> | null
   costCenter?: Prisma.XOR<Prisma.CostCenterNullableScalarRelationFilter, Prisma.CostCenterWhereInput> | null
@@ -568,7 +571,7 @@ export type UserOrderByWithAggregationInput = {
   tallyId?: Prisma.SortOrderInput | Prisma.SortOrder
   c4cId?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
-  branch?: Prisma.SortOrderInput | Prisma.SortOrder
+  branchId?: Prisma.SortOrderInput | Prisma.SortOrder
   department?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrderInput | Prisma.SortOrder
   vertical?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -608,7 +611,7 @@ export type UserScalarWhereWithAggregatesInput = {
   tallyId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   c4cId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  branch?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  branchId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   department?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   vertical?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
@@ -642,7 +645,6 @@ export type UserCreateInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -655,6 +657,7 @@ export type UserCreateInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -702,7 +705,7 @@ export type UserUncheckedCreateInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -762,7 +765,6 @@ export type UserUpdateInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -775,6 +777,7 @@ export type UserUpdateInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -822,7 +825,7 @@ export type UserUncheckedUpdateInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -882,7 +885,7 @@ export type UserCreateManyInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -916,7 +919,6 @@ export type UserUpdateManyMutationInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -946,7 +948,7 @@ export type UserUncheckedUpdateManyInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -980,7 +982,7 @@ export type UserCountOrderByAggregateInput = {
   tallyId?: Prisma.SortOrder
   c4cId?: Prisma.SortOrder
   address?: Prisma.SortOrder
-  branch?: Prisma.SortOrder
+  branchId?: Prisma.SortOrder
   department?: Prisma.SortOrder
   role?: Prisma.SortOrder
   vertical?: Prisma.SortOrder
@@ -1014,7 +1016,7 @@ export type UserMaxOrderByAggregateInput = {
   tallyId?: Prisma.SortOrder
   c4cId?: Prisma.SortOrder
   address?: Prisma.SortOrder
-  branch?: Prisma.SortOrder
+  branchId?: Prisma.SortOrder
   department?: Prisma.SortOrder
   role?: Prisma.SortOrder
   vertical?: Prisma.SortOrder
@@ -1048,7 +1050,7 @@ export type UserMinOrderByAggregateInput = {
   tallyId?: Prisma.SortOrder
   c4cId?: Prisma.SortOrder
   address?: Prisma.SortOrder
-  branch?: Prisma.SortOrder
+  branchId?: Prisma.SortOrder
   department?: Prisma.SortOrder
   role?: Prisma.SortOrder
   vertical?: Prisma.SortOrder
@@ -1356,6 +1358,48 @@ export type UserUncheckedUpdateManyWithoutZonesNestedInput = {
   connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
   update?: Prisma.UserUpdateWithWhereUniqueWithoutZonesInput | Prisma.UserUpdateWithWhereUniqueWithoutZonesInput[]
   updateMany?: Prisma.UserUpdateManyWithWhereWithoutZonesInput | Prisma.UserUpdateManyWithWhereWithoutZonesInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserCreateNestedManyWithoutBranchInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBranchInput, Prisma.UserUncheckedCreateWithoutBranchInput> | Prisma.UserCreateWithoutBranchInput[] | Prisma.UserUncheckedCreateWithoutBranchInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBranchInput | Prisma.UserCreateOrConnectWithoutBranchInput[]
+  createMany?: Prisma.UserCreateManyBranchInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUncheckedCreateNestedManyWithoutBranchInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBranchInput, Prisma.UserUncheckedCreateWithoutBranchInput> | Prisma.UserCreateWithoutBranchInput[] | Prisma.UserUncheckedCreateWithoutBranchInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBranchInput | Prisma.UserCreateOrConnectWithoutBranchInput[]
+  createMany?: Prisma.UserCreateManyBranchInputEnvelope
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+}
+
+export type UserUpdateManyWithoutBranchNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBranchInput, Prisma.UserUncheckedCreateWithoutBranchInput> | Prisma.UserCreateWithoutBranchInput[] | Prisma.UserUncheckedCreateWithoutBranchInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBranchInput | Prisma.UserCreateOrConnectWithoutBranchInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutBranchInput | Prisma.UserUpsertWithWhereUniqueWithoutBranchInput[]
+  createMany?: Prisma.UserCreateManyBranchInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutBranchInput | Prisma.UserUpdateWithWhereUniqueWithoutBranchInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutBranchInput | Prisma.UserUpdateManyWithWhereWithoutBranchInput[]
+  deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
+}
+
+export type UserUncheckedUpdateManyWithoutBranchNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBranchInput, Prisma.UserUncheckedCreateWithoutBranchInput> | Prisma.UserCreateWithoutBranchInput[] | Prisma.UserUncheckedCreateWithoutBranchInput[]
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBranchInput | Prisma.UserCreateOrConnectWithoutBranchInput[]
+  upsert?: Prisma.UserUpsertWithWhereUniqueWithoutBranchInput | Prisma.UserUpsertWithWhereUniqueWithoutBranchInput[]
+  createMany?: Prisma.UserCreateManyBranchInputEnvelope
+  set?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  disconnect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  delete?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
+  update?: Prisma.UserUpdateWithWhereUniqueWithoutBranchInput | Prisma.UserUpdateWithWhereUniqueWithoutBranchInput[]
+  updateMany?: Prisma.UserUpdateManyWithWhereWithoutBranchInput | Prisma.UserUpdateManyWithWhereWithoutBranchInput[]
   deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
 }
 
@@ -1686,7 +1730,6 @@ export type UserCreateWithoutPassword_reset_tokensInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -1699,6 +1742,7 @@ export type UserCreateWithoutPassword_reset_tokensInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -1745,7 +1789,7 @@ export type UserUncheckedCreateWithoutPassword_reset_tokensInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -1820,7 +1864,6 @@ export type UserUpdateWithoutPassword_reset_tokensInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1833,6 +1876,7 @@ export type UserUpdateWithoutPassword_reset_tokensInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -1879,7 +1923,7 @@ export type UserUncheckedUpdateWithoutPassword_reset_tokensInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1938,7 +1982,6 @@ export type UserCreateWithoutRefresh_tokensInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -1951,6 +1994,7 @@ export type UserCreateWithoutRefresh_tokensInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -1997,7 +2041,7 @@ export type UserUncheckedCreateWithoutRefresh_tokensInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -2072,7 +2116,6 @@ export type UserUpdateWithoutRefresh_tokensInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2085,6 +2128,7 @@ export type UserUpdateWithoutRefresh_tokensInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -2131,7 +2175,7 @@ export type UserUncheckedUpdateWithoutRefresh_tokensInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2190,7 +2234,6 @@ export type UserCreateWithoutWorkspaceUsersInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -2203,6 +2246,7 @@ export type UserCreateWithoutWorkspaceUsersInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -2249,7 +2293,7 @@ export type UserUncheckedCreateWithoutWorkspaceUsersInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -2324,7 +2368,6 @@ export type UserUpdateWithoutWorkspaceUsersInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2337,6 +2380,7 @@ export type UserUpdateWithoutWorkspaceUsersInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -2383,7 +2427,7 @@ export type UserUncheckedUpdateWithoutWorkspaceUsersInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2442,7 +2486,6 @@ export type UserCreateWithoutAdministeredAppsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -2455,6 +2498,7 @@ export type UserCreateWithoutAdministeredAppsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -2501,7 +2545,7 @@ export type UserUncheckedCreateWithoutAdministeredAppsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -2565,7 +2609,6 @@ export type UserCreateWithoutGrantedAppAdministratorsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -2578,6 +2621,7 @@ export type UserCreateWithoutGrantedAppAdministratorsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -2624,7 +2668,7 @@ export type UserUncheckedCreateWithoutGrantedAppAdministratorsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -2699,7 +2743,6 @@ export type UserUpdateWithoutAdministeredAppsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2712,6 +2755,7 @@ export type UserUpdateWithoutAdministeredAppsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -2758,7 +2802,7 @@ export type UserUncheckedUpdateWithoutAdministeredAppsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2828,7 +2872,6 @@ export type UserUpdateWithoutGrantedAppAdministratorsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2841,6 +2884,7 @@ export type UserUpdateWithoutGrantedAppAdministratorsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -2887,7 +2931,7 @@ export type UserUncheckedUpdateWithoutGrantedAppAdministratorsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -2946,7 +2990,6 @@ export type UserCreateWithoutUserProfilesInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -2959,6 +3002,7 @@ export type UserCreateWithoutUserProfilesInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -3005,7 +3049,7 @@ export type UserUncheckedCreateWithoutUserProfilesInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -3069,7 +3113,6 @@ export type UserCreateWithoutAssignedUserProfilesInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -3082,6 +3125,7 @@ export type UserCreateWithoutAssignedUserProfilesInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -3128,7 +3172,7 @@ export type UserUncheckedCreateWithoutAssignedUserProfilesInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -3203,7 +3247,6 @@ export type UserUpdateWithoutUserProfilesInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3216,6 +3259,7 @@ export type UserUpdateWithoutUserProfilesInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -3262,7 +3306,7 @@ export type UserUncheckedUpdateWithoutUserProfilesInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3332,7 +3376,6 @@ export type UserUpdateWithoutAssignedUserProfilesInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3345,6 +3388,7 @@ export type UserUpdateWithoutAssignedUserProfilesInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -3391,7 +3435,7 @@ export type UserUncheckedUpdateWithoutAssignedUserProfilesInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3450,7 +3494,6 @@ export type UserCreateWithoutCreated_event_proposalsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -3463,6 +3506,7 @@ export type UserCreateWithoutCreated_event_proposalsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -3509,7 +3553,7 @@ export type UserUncheckedCreateWithoutCreated_event_proposalsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -3573,7 +3617,6 @@ export type UserCreateWithoutUpdated_event_proposalsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -3586,6 +3629,7 @@ export type UserCreateWithoutUpdated_event_proposalsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -3632,7 +3676,7 @@ export type UserUncheckedCreateWithoutUpdated_event_proposalsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -3707,7 +3751,6 @@ export type UserUpdateWithoutCreated_event_proposalsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3720,6 +3763,7 @@ export type UserUpdateWithoutCreated_event_proposalsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -3766,7 +3810,7 @@ export type UserUncheckedUpdateWithoutCreated_event_proposalsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3836,7 +3880,6 @@ export type UserUpdateWithoutUpdated_event_proposalsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3849,6 +3892,7 @@ export type UserUpdateWithoutUpdated_event_proposalsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -3895,7 +3939,7 @@ export type UserUncheckedUpdateWithoutUpdated_event_proposalsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -3954,7 +3998,6 @@ export type UserCreateWithoutCreated_workflowInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -3967,6 +4010,7 @@ export type UserCreateWithoutCreated_workflowInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -4013,7 +4057,7 @@ export type UserUncheckedCreateWithoutCreated_workflowInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -4077,7 +4121,6 @@ export type UserCreateWithoutUpdated_workflowInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -4090,6 +4133,7 @@ export type UserCreateWithoutUpdated_workflowInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -4136,7 +4180,7 @@ export type UserUncheckedCreateWithoutUpdated_workflowInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -4211,7 +4255,6 @@ export type UserUpdateWithoutCreated_workflowInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4224,6 +4267,7 @@ export type UserUpdateWithoutCreated_workflowInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -4270,7 +4314,7 @@ export type UserUncheckedUpdateWithoutCreated_workflowInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4340,7 +4384,6 @@ export type UserUpdateWithoutUpdated_workflowInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4353,6 +4396,7 @@ export type UserUpdateWithoutUpdated_workflowInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -4399,7 +4443,7 @@ export type UserUncheckedUpdateWithoutUpdated_workflowInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4458,7 +4502,6 @@ export type UserCreateWithoutTemplateApprovalsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -4471,6 +4514,7 @@ export type UserCreateWithoutTemplateApprovalsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -4517,7 +4561,7 @@ export type UserUncheckedCreateWithoutTemplateApprovalsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -4592,7 +4636,6 @@ export type UserUpdateWithoutTemplateApprovalsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4605,6 +4648,7 @@ export type UserUpdateWithoutTemplateApprovalsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -4651,7 +4695,7 @@ export type UserUncheckedUpdateWithoutTemplateApprovalsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4710,7 +4754,6 @@ export type UserCreateWithoutApprovalsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -4723,6 +4766,7 @@ export type UserCreateWithoutApprovalsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -4769,7 +4813,7 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -4844,7 +4888,6 @@ export type UserUpdateWithoutApprovalsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4857,6 +4900,7 @@ export type UserUpdateWithoutApprovalsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -4903,7 +4947,7 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -4962,7 +5006,6 @@ export type UserCreateWithoutWorkFlowUsersInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -4975,6 +5018,7 @@ export type UserCreateWithoutWorkFlowUsersInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -5021,7 +5065,7 @@ export type UserUncheckedCreateWithoutWorkFlowUsersInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -5096,7 +5140,6 @@ export type UserUpdateWithoutWorkFlowUsersInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5109,6 +5152,7 @@ export type UserUpdateWithoutWorkFlowUsersInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -5155,7 +5199,7 @@ export type UserUncheckedUpdateWithoutWorkFlowUsersInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5214,7 +5258,6 @@ export type UserCreateWithoutActivityLogsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -5227,6 +5270,7 @@ export type UserCreateWithoutActivityLogsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -5273,7 +5317,7 @@ export type UserUncheckedCreateWithoutActivityLogsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -5348,7 +5392,6 @@ export type UserUpdateWithoutActivityLogsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5361,6 +5404,7 @@ export type UserUpdateWithoutActivityLogsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -5407,7 +5451,7 @@ export type UserUncheckedUpdateWithoutActivityLogsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -5466,7 +5510,6 @@ export type UserCreateWithoutZonesInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -5479,6 +5522,7 @@ export type UserCreateWithoutZonesInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -5525,7 +5569,7 @@ export type UserUncheckedCreateWithoutZonesInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -5608,7 +5652,7 @@ export type UserScalarWhereInput = {
   tallyId?: Prisma.StringNullableFilter<"User"> | string | null
   c4cId?: Prisma.StringNullableFilter<"User"> | string | null
   address?: Prisma.StringNullableFilter<"User"> | string | null
-  branch?: Prisma.StringNullableFilter<"User"> | string | null
+  branchId?: Prisma.StringNullableFilter<"User"> | string | null
   department?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.StringNullableFilter<"User"> | string | null
   vertical?: Prisma.StringNullableFilter<"User"> | string | null
@@ -5627,6 +5671,150 @@ export type UserScalarWhereInput = {
   updated_at?: Prisma.DateTimeFilter<"User"> | Date | string
 }
 
+export type UserCreateWithoutBranchInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  address?: string | null
+  department?: string | null
+  role?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  location?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  grade?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
+  division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
+  costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
+  zones?: Prisma.ZoneCreateNestedManyWithoutUsersInput
+  businessPartner?: Prisma.BusinessPartnerCreateNestedOneWithoutUsersInput
+  refresh_tokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorCreateNestedManyWithoutGrantedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactCreateNestedManyWithoutUserInput
+  createdCrfs?: Prisma.CRFCreateNestedManyWithoutCreated_byInput
+  crfsAsRecipient?: Prisma.CRFCreateNestedManyWithoutRecipientUserInput
+}
+
+export type UserUncheckedCreateWithoutBranchInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  address?: string | null
+  department?: string | null
+  role?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  location?: string | null
+  designationId?: string | null
+  divisionId?: string | null
+  costCenterId?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  grade?: string | null
+  businessPartnerId?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  zones?: Prisma.ZoneUncheckedCreateNestedManyWithoutUsersInput
+  refresh_tokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedCreateNestedManyWithoutUserInput
+  userProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutUserInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedCreateNestedManyWithoutAssignedByInput
+  administeredApps?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutUserInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedCreateNestedManyWithoutGrantedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutRecipientInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  created_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutUpdated_byInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutCreated_byInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedCreateNestedManyWithoutUpdated_byInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedCreateNestedManyWithoutInitiatedByInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedCreateNestedManyWithoutInitiatedByInput
+  approvals?: Prisma.ApprovalUncheckedCreateNestedManyWithoutApproverInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedCreateNestedManyWithoutUserInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedCreateNestedManyWithoutUserInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  reportValidations?: Prisma.EventReportUncheckedCreateNestedManyWithoutValidatorInput
+  activityLogs?: Prisma.ActivityLogUncheckedCreateNestedManyWithoutActorInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedCreateNestedManyWithoutTriggeredByInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedCreateNestedManyWithoutUserInput
+  createdCrfs?: Prisma.CRFUncheckedCreateNestedManyWithoutCreated_byInput
+  crfsAsRecipient?: Prisma.CRFUncheckedCreateNestedManyWithoutRecipientUserInput
+}
+
+export type UserCreateOrConnectWithoutBranchInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBranchInput, Prisma.UserUncheckedCreateWithoutBranchInput>
+}
+
+export type UserCreateManyBranchInputEnvelope = {
+  data: Prisma.UserCreateManyBranchInput | Prisma.UserCreateManyBranchInput[]
+  skipDuplicates?: boolean
+}
+
+export type UserUpsertWithWhereUniqueWithoutBranchInput = {
+  where: Prisma.UserWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBranchInput, Prisma.UserUncheckedUpdateWithoutBranchInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBranchInput, Prisma.UserUncheckedCreateWithoutBranchInput>
+}
+
+export type UserUpdateWithWhereUniqueWithoutBranchInput = {
+  where: Prisma.UserWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBranchInput, Prisma.UserUncheckedUpdateWithoutBranchInput>
+}
+
+export type UserUpdateManyWithWhereWithoutBranchInput = {
+  where: Prisma.UserScalarWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutBranchInput>
+}
+
 export type UserCreateWithoutDivisionInput = {
   id?: string
   first_name: string
@@ -5642,7 +5830,6 @@ export type UserCreateWithoutDivisionInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -5655,6 +5842,7 @@ export type UserCreateWithoutDivisionInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
   zones?: Prisma.ZoneCreateNestedManyWithoutUsersInput
@@ -5701,7 +5889,7 @@ export type UserUncheckedCreateWithoutDivisionInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -5786,7 +5974,6 @@ export type UserCreateWithoutDesignationInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -5799,6 +5986,7 @@ export type UserCreateWithoutDesignationInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
   zones?: Prisma.ZoneCreateNestedManyWithoutUsersInput
@@ -5845,7 +6033,7 @@ export type UserUncheckedCreateWithoutDesignationInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -5930,7 +6118,6 @@ export type UserCreateWithoutCostCenterInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -5943,6 +6130,7 @@ export type UserCreateWithoutCostCenterInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   zones?: Prisma.ZoneCreateNestedManyWithoutUsersInput
@@ -5989,7 +6177,7 @@ export type UserUncheckedCreateWithoutCostCenterInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -6074,7 +6262,6 @@ export type UserCreateWithoutCrfsAsRecipientInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -6087,6 +6274,7 @@ export type UserCreateWithoutCrfsAsRecipientInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -6133,7 +6321,7 @@ export type UserUncheckedCreateWithoutCrfsAsRecipientInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -6197,7 +6385,6 @@ export type UserCreateWithoutCreatedCrfsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -6210,6 +6397,7 @@ export type UserCreateWithoutCreatedCrfsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -6256,7 +6444,7 @@ export type UserUncheckedCreateWithoutCreatedCrfsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -6331,7 +6519,6 @@ export type UserUpdateWithoutCrfsAsRecipientInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6344,6 +6531,7 @@ export type UserUpdateWithoutCrfsAsRecipientInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -6390,7 +6578,7 @@ export type UserUncheckedUpdateWithoutCrfsAsRecipientInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6460,7 +6648,6 @@ export type UserUpdateWithoutCreatedCrfsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6473,6 +6660,7 @@ export type UserUpdateWithoutCreatedCrfsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -6519,7 +6707,7 @@ export type UserUncheckedUpdateWithoutCreatedCrfsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6578,7 +6766,6 @@ export type UserCreateWithoutCommentsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -6591,6 +6778,7 @@ export type UserCreateWithoutCommentsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -6637,7 +6825,7 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -6712,7 +6900,6 @@ export type UserUpdateWithoutCommentsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6725,6 +6912,7 @@ export type UserUpdateWithoutCommentsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -6771,7 +6959,7 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6830,7 +7018,6 @@ export type UserCreateWithoutReportValidationsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -6843,6 +7030,7 @@ export type UserCreateWithoutReportValidationsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -6889,7 +7077,7 @@ export type UserUncheckedCreateWithoutReportValidationsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -6964,7 +7152,6 @@ export type UserUpdateWithoutReportValidationsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -6977,6 +7164,7 @@ export type UserUpdateWithoutReportValidationsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -7023,7 +7211,7 @@ export type UserUncheckedUpdateWithoutReportValidationsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7082,7 +7270,6 @@ export type UserCreateWithoutImportExportLogsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -7095,6 +7282,7 @@ export type UserCreateWithoutImportExportLogsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -7141,7 +7329,7 @@ export type UserUncheckedCreateWithoutImportExportLogsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -7216,7 +7404,6 @@ export type UserUpdateWithoutImportExportLogsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7229,6 +7416,7 @@ export type UserUpdateWithoutImportExportLogsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -7275,7 +7463,7 @@ export type UserUncheckedUpdateWithoutImportExportLogsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7334,7 +7522,6 @@ export type UserCreateWithoutNotificationsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -7347,6 +7534,7 @@ export type UserCreateWithoutNotificationsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -7393,7 +7581,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -7468,7 +7656,6 @@ export type UserUpdateWithoutNotificationsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7481,6 +7668,7 @@ export type UserUpdateWithoutNotificationsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -7527,7 +7715,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7586,7 +7774,6 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -7599,6 +7786,7 @@ export type UserCreateWithoutPushSubscriptionsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -7645,7 +7833,7 @@ export type UserUncheckedCreateWithoutPushSubscriptionsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -7720,7 +7908,6 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7733,6 +7920,7 @@ export type UserUpdateWithoutPushSubscriptionsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -7779,7 +7967,7 @@ export type UserUncheckedUpdateWithoutPushSubscriptionsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7838,7 +8026,6 @@ export type UserCreateWithoutInitiated_vendor_onboardingsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -7851,6 +8038,7 @@ export type UserCreateWithoutInitiated_vendor_onboardingsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -7897,7 +8085,7 @@ export type UserUncheckedCreateWithoutInitiated_vendor_onboardingsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -7972,7 +8160,6 @@ export type UserUpdateWithoutInitiated_vendor_onboardingsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -7985,6 +8172,7 @@ export type UserUpdateWithoutInitiated_vendor_onboardingsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -8031,7 +8219,7 @@ export type UserUncheckedUpdateWithoutInitiated_vendor_onboardingsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8090,7 +8278,6 @@ export type UserCreateWithoutInitiated_medical_claimsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -8103,6 +8290,7 @@ export type UserCreateWithoutInitiated_medical_claimsInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -8149,7 +8337,7 @@ export type UserUncheckedCreateWithoutInitiated_medical_claimsInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -8224,7 +8412,6 @@ export type UserUpdateWithoutInitiated_medical_claimsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8237,6 +8424,7 @@ export type UserUpdateWithoutInitiated_medical_claimsInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -8283,7 +8471,7 @@ export type UserUncheckedUpdateWithoutInitiated_medical_claimsInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8342,7 +8530,6 @@ export type UserCreateWithoutBusinessPartnerInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -8355,6 +8542,7 @@ export type UserCreateWithoutBusinessPartnerInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -8401,7 +8589,7 @@ export type UserUncheckedCreateWithoutBusinessPartnerInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -8486,7 +8674,6 @@ export type UserCreateWithoutBusinessPartnerContactInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -8499,6 +8686,7 @@ export type UserCreateWithoutBusinessPartnerContactInput = {
   grade?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
   designation?: Prisma.DesignationCreateNestedOneWithoutUsersInput
   division?: Prisma.DivisionCreateNestedOneWithoutUsersInput
   costCenter?: Prisma.CostCenterCreateNestedOneWithoutUsersInput
@@ -8545,7 +8733,7 @@ export type UserUncheckedCreateWithoutBusinessPartnerContactInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -8620,7 +8808,6 @@ export type UserUpdateWithoutBusinessPartnerContactInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8633,6 +8820,7 @@ export type UserUpdateWithoutBusinessPartnerContactInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -8679,7 +8867,7 @@ export type UserUncheckedUpdateWithoutBusinessPartnerContactInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8738,7 +8926,6 @@ export type UserUpdateWithoutZonesInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8751,6 +8938,7 @@ export type UserUpdateWithoutZonesInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -8797,7 +8985,7 @@ export type UserUncheckedUpdateWithoutZonesInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8856,7 +9044,191 @@ export type UserUncheckedUpdateManyWithoutZonesInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  divisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  costCenterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type UserCreateManyBranchInput = {
+  id?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  password: string
+  is_active?: boolean
+  is_default_login?: boolean
+  employeeCode?: string | null
+  bydId?: string | null
+  s4Id?: string | null
+  tallyId?: string | null
+  c4cId?: string | null
+  address?: string | null
+  department?: string | null
+  role?: string | null
+  vertical?: string | null
+  managerCode1?: string | null
+  managerCode2?: string | null
+  location?: string | null
+  designationId?: string | null
+  divisionId?: string | null
+  costCenterId?: string | null
+  isDefaultContact?: boolean
+  userType?: string | null
+  joinedOn?: Date | string | null
+  grade?: string | null
+  businessPartnerId?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type UserUpdateWithoutBranchInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
+  division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
+  costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
+  zones?: Prisma.ZoneUpdateManyWithoutUsersNestedInput
+  businessPartner?: Prisma.BusinessPartnerUpdateOneWithoutUsersNestedInput
+  refresh_tokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUpdateManyWithoutGrantedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUpdateManyWithoutUserNestedInput
+  createdCrfs?: Prisma.CRFUpdateManyWithoutCreated_byNestedInput
+  crfsAsRecipient?: Prisma.CRFUpdateManyWithoutRecipientUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBranchInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode1?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerCode2?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  designationId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  divisionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  costCenterId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDefaultContact?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joinedOn?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  businessPartnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  zones?: Prisma.ZoneUncheckedUpdateManyWithoutUsersNestedInput
+  refresh_tokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  password_reset_tokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  workspaceUsers?: Prisma.WorkspaceUserUncheckedUpdateManyWithoutUserNestedInput
+  userProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutUserNestedInput
+  assignedUserProfiles?: Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput
+  administeredApps?: Prisma.AppAdministratorUncheckedUpdateManyWithoutUserNestedInput
+  grantedAppAdministrators?: Prisma.AppAdministratorUncheckedUpdateManyWithoutGrantedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutRecipientNestedInput
+  pushSubscriptions?: Prisma.PushSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  created_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutUpdated_byNestedInput
+  created_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutCreated_byNestedInput
+  updated_workflow?: Prisma.WorkflowTemplateUncheckedUpdateManyWithoutUpdated_byNestedInput
+  initiated_vendor_onboardings?: Prisma.VendorOnboardingUncheckedUpdateManyWithoutInitiatedByNestedInput
+  initiated_medical_claims?: Prisma.MedicalClaimUncheckedUpdateManyWithoutInitiatedByNestedInput
+  approvals?: Prisma.ApprovalUncheckedUpdateManyWithoutApproverNestedInput
+  templateApprovals?: Prisma.TemplateApproverUncheckedUpdateManyWithoutUserNestedInput
+  workFlowUsers?: Prisma.WorkFlowTemplateUserUncheckedUpdateManyWithoutUserNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  reportValidations?: Prisma.EventReportUncheckedUpdateManyWithoutValidatorNestedInput
+  activityLogs?: Prisma.ActivityLogUncheckedUpdateManyWithoutActorNestedInput
+  importExportLogs?: Prisma.ImportExportLogUncheckedUpdateManyWithoutTriggeredByNestedInput
+  businessPartnerContact?: Prisma.BusinessPartnerContactUncheckedUpdateManyWithoutUserNestedInput
+  createdCrfs?: Prisma.CRFUncheckedUpdateManyWithoutCreated_byNestedInput
+  crfsAsRecipient?: Prisma.CRFUncheckedUpdateManyWithoutRecipientUserNestedInput
+}
+
+export type UserUncheckedUpdateManyWithoutBranchInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  first_name?: Prisma.StringFieldUpdateOperationsInput | string
+  last_name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone_number?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  is_default_login?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  employeeCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bydId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s4Id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8890,7 +9262,7 @@ export type UserCreateManyDivisionInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -8923,7 +9295,6 @@ export type UserUpdateWithoutDivisionInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -8936,6 +9307,7 @@ export type UserUpdateWithoutDivisionInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
   zones?: Prisma.ZoneUpdateManyWithoutUsersNestedInput
@@ -8982,7 +9354,7 @@ export type UserUncheckedUpdateWithoutDivisionInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9041,7 +9413,7 @@ export type UserUncheckedUpdateManyWithoutDivisionInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9074,7 +9446,7 @@ export type UserCreateManyDesignationInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -9107,7 +9479,6 @@ export type UserUpdateWithoutDesignationInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9120,6 +9491,7 @@ export type UserUpdateWithoutDesignationInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
   zones?: Prisma.ZoneUpdateManyWithoutUsersNestedInput
@@ -9166,7 +9538,7 @@ export type UserUncheckedUpdateWithoutDesignationInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9225,7 +9597,7 @@ export type UserUncheckedUpdateManyWithoutDesignationInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9258,7 +9630,7 @@ export type UserCreateManyCostCenterInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -9291,7 +9663,6 @@ export type UserUpdateWithoutCostCenterInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9304,6 +9675,7 @@ export type UserUpdateWithoutCostCenterInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   zones?: Prisma.ZoneUpdateManyWithoutUsersNestedInput
@@ -9350,7 +9722,7 @@ export type UserUncheckedUpdateWithoutCostCenterInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9409,7 +9781,7 @@ export type UserUncheckedUpdateManyWithoutCostCenterInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9442,7 +9814,7 @@ export type UserCreateManyBusinessPartnerInput = {
   tallyId?: string | null
   c4cId?: string | null
   address?: string | null
-  branch?: string | null
+  branchId?: string | null
   department?: string | null
   role?: string | null
   vertical?: string | null
@@ -9475,7 +9847,6 @@ export type UserUpdateWithoutBusinessPartnerInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9488,6 +9859,7 @@ export type UserUpdateWithoutBusinessPartnerInput = {
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
   designation?: Prisma.DesignationUpdateOneWithoutUsersNestedInput
   division?: Prisma.DivisionUpdateOneWithoutUsersNestedInput
   costCenter?: Prisma.CostCenterUpdateOneWithoutUsersNestedInput
@@ -9534,7 +9906,7 @@ export type UserUncheckedUpdateWithoutBusinessPartnerInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9593,7 +9965,7 @@ export type UserUncheckedUpdateManyWithoutBusinessPartnerInput = {
   tallyId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   c4cId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  branch?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  branchId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   department?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   vertical?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -9882,7 +10254,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   tallyId?: boolean
   c4cId?: boolean
   address?: boolean
-  branch?: boolean
+  branchId?: boolean
   department?: boolean
   role?: boolean
   vertical?: boolean
@@ -9899,6 +10271,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   businessPartnerId?: boolean
   created_at?: boolean
   updated_at?: boolean
+  branch?: boolean | Prisma.User$branchArgs<ExtArgs>
   designation?: boolean | Prisma.User$designationArgs<ExtArgs>
   division?: boolean | Prisma.User$divisionArgs<ExtArgs>
   costCenter?: boolean | Prisma.User$costCenterArgs<ExtArgs>
@@ -9947,7 +10320,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   tallyId?: boolean
   c4cId?: boolean
   address?: boolean
-  branch?: boolean
+  branchId?: boolean
   department?: boolean
   role?: boolean
   vertical?: boolean
@@ -9964,6 +10337,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   businessPartnerId?: boolean
   created_at?: boolean
   updated_at?: boolean
+  branch?: boolean | Prisma.User$branchArgs<ExtArgs>
   designation?: boolean | Prisma.User$designationArgs<ExtArgs>
   division?: boolean | Prisma.User$divisionArgs<ExtArgs>
   costCenter?: boolean | Prisma.User$costCenterArgs<ExtArgs>
@@ -9985,7 +10359,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   tallyId?: boolean
   c4cId?: boolean
   address?: boolean
-  branch?: boolean
+  branchId?: boolean
   department?: boolean
   role?: boolean
   vertical?: boolean
@@ -10002,6 +10376,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   businessPartnerId?: boolean
   created_at?: boolean
   updated_at?: boolean
+  branch?: boolean | Prisma.User$branchArgs<ExtArgs>
   designation?: boolean | Prisma.User$designationArgs<ExtArgs>
   division?: boolean | Prisma.User$divisionArgs<ExtArgs>
   costCenter?: boolean | Prisma.User$costCenterArgs<ExtArgs>
@@ -10023,7 +10398,7 @@ export type UserSelectScalar = {
   tallyId?: boolean
   c4cId?: boolean
   address?: boolean
-  branch?: boolean
+  branchId?: boolean
   department?: boolean
   role?: boolean
   vertical?: boolean
@@ -10042,8 +10417,9 @@ export type UserSelectScalar = {
   updated_at?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "first_name" | "last_name" | "email" | "phone_number" | "password" | "is_active" | "is_default_login" | "employeeCode" | "bydId" | "s4Id" | "tallyId" | "c4cId" | "address" | "branch" | "department" | "role" | "vertical" | "managerCode1" | "managerCode2" | "location" | "designationId" | "divisionId" | "costCenterId" | "isDefaultContact" | "userType" | "joinedOn" | "grade" | "businessPartnerId" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "first_name" | "last_name" | "email" | "phone_number" | "password" | "is_active" | "is_default_login" | "employeeCode" | "bydId" | "s4Id" | "tallyId" | "c4cId" | "address" | "branchId" | "department" | "role" | "vertical" | "managerCode1" | "managerCode2" | "location" | "designationId" | "divisionId" | "costCenterId" | "isDefaultContact" | "userType" | "joinedOn" | "grade" | "businessPartnerId" | "created_at" | "updated_at", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  branch?: boolean | Prisma.User$branchArgs<ExtArgs>
   designation?: boolean | Prisma.User$designationArgs<ExtArgs>
   division?: boolean | Prisma.User$divisionArgs<ExtArgs>
   costCenter?: boolean | Prisma.User$costCenterArgs<ExtArgs>
@@ -10077,12 +10453,14 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  branch?: boolean | Prisma.User$branchArgs<ExtArgs>
   designation?: boolean | Prisma.User$designationArgs<ExtArgs>
   division?: boolean | Prisma.User$divisionArgs<ExtArgs>
   costCenter?: boolean | Prisma.User$costCenterArgs<ExtArgs>
   businessPartner?: boolean | Prisma.User$businessPartnerArgs<ExtArgs>
 }
 export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  branch?: boolean | Prisma.User$branchArgs<ExtArgs>
   designation?: boolean | Prisma.User$designationArgs<ExtArgs>
   division?: boolean | Prisma.User$divisionArgs<ExtArgs>
   costCenter?: boolean | Prisma.User$costCenterArgs<ExtArgs>
@@ -10092,6 +10470,7 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    branch: Prisma.$BranchPayload<ExtArgs> | null
     designation: Prisma.$DesignationPayload<ExtArgs> | null
     division: Prisma.$DivisionPayload<ExtArgs> | null
     costCenter: Prisma.$CostCenterPayload<ExtArgs> | null
@@ -10138,7 +10517,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     tallyId: string | null
     c4cId: string | null
     address: string | null
-    branch: string | null
+    branchId: string | null
     department: string | null
     role: string | null
     vertical: string | null
@@ -10549,6 +10928,7 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  branch<T extends Prisma.User$branchArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$branchArgs<ExtArgs>>): Prisma.Prisma__BranchClient<runtime.Types.Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   designation<T extends Prisma.User$designationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$designationArgs<ExtArgs>>): Prisma.Prisma__DesignationClient<runtime.Types.Result.GetResult<Prisma.$DesignationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   division<T extends Prisma.User$divisionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$divisionArgs<ExtArgs>>): Prisma.Prisma__DivisionClient<runtime.Types.Result.GetResult<Prisma.$DivisionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   costCenter<T extends Prisma.User$costCenterArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$costCenterArgs<ExtArgs>>): Prisma.Prisma__CostCenterClient<runtime.Types.Result.GetResult<Prisma.$CostCenterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -10622,7 +11002,7 @@ export interface UserFieldRefs {
   readonly tallyId: Prisma.FieldRef<"User", 'String'>
   readonly c4cId: Prisma.FieldRef<"User", 'String'>
   readonly address: Prisma.FieldRef<"User", 'String'>
-  readonly branch: Prisma.FieldRef<"User", 'String'>
+  readonly branchId: Prisma.FieldRef<"User", 'String'>
   readonly department: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'String'>
   readonly vertical: Prisma.FieldRef<"User", 'String'>
@@ -11037,6 +11417,25 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.branch
+ */
+export type User$branchArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Branch
+   */
+  select?: Prisma.BranchSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Branch
+   */
+  omit?: Prisma.BranchOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BranchInclude<ExtArgs> | null
+  where?: Prisma.BranchWhereInput
 }
 
 /**

@@ -233,7 +233,8 @@ model User {
   tallyId          String?
   c4cId            String?
   address          String?
-  branch           String?
+  branchId         String?
+  branch           Branch?       @relation(fields: [branchId], references: [id])
   department       String?
   role             String?
   vertical         String?
@@ -799,6 +800,11 @@ model Branch {
   branch_name     String
   isActive        Boolean         @default(true)
   event_proposals EventProposal[]
+  // User.branchId — reverted back to this FK (was briefly plain text
+  // during the same org-fields sweep that touched location/designation/
+  // division/costCenter; unlike location, Branch already had a governed
+  // master + admin screen, so it went back to being FK-backed).
+  users           User[]
   created_at      DateTime        @default(now())
   updated_at      DateTime        @updatedAt
 }

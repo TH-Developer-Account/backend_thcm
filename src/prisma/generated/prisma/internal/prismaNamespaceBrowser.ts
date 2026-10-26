@@ -142,7 +142,7 @@ export const UserScalarFieldEnum = {
   tallyId: 'tallyId',
   c4cId: 'c4cId',
   address: 'address',
-  branch: 'branch',
+  branchId: 'branchId',
   department: 'department',
   role: 'role',
   vertical: 'vertical',

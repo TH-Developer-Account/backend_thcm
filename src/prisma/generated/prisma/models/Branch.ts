@@ -191,6 +191,7 @@ export type BranchWhereInput = {
   created_at?: Prisma.DateTimeFilter<"Branch"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Branch"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
+  users?: Prisma.UserListRelationFilter
 }
 
 export type BranchOrderByWithRelationInput = {
@@ -201,6 +202,7 @@ export type BranchOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
+  users?: Prisma.UserOrderByRelationAggregateInput
 }
 
 export type BranchWhereUniqueInput = Prisma.AtLeast<{
@@ -214,6 +216,7 @@ export type BranchWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"Branch"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Branch"> | Date | string
   event_proposals?: Prisma.EventProposalListRelationFilter
+  users?: Prisma.UserListRelationFilter
 }, "id" | "branch_code">
 
 export type BranchOrderByWithAggregationInput = {
@@ -248,6 +251,7 @@ export type BranchCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalCreateNestedManyWithoutBranchInput
+  users?: Prisma.UserCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateInput = {
@@ -258,6 +262,7 @@ export type BranchUncheckedCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutBranchInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUpdateInput = {
@@ -268,6 +273,7 @@ export type BranchUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUpdateManyWithoutBranchNestedInput
+  users?: Prisma.UserUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateInput = {
@@ -278,6 +284,7 @@ export type BranchUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutBranchNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchCreateManyInput = {
@@ -305,6 +312,11 @@ export type BranchUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type BranchNullableScalarRelationFilter = {
+  is?: Prisma.BranchWhereInput | null
+  isNot?: Prisma.BranchWhereInput | null
 }
 
 export type BranchScalarRelationFilter = {
@@ -339,6 +351,22 @@ export type BranchMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
+export type BranchCreateNestedOneWithoutUsersInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutUsersInput, Prisma.BranchUncheckedCreateWithoutUsersInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutUsersInput
+  connect?: Prisma.BranchWhereUniqueInput
+}
+
+export type BranchUpdateOneWithoutUsersNestedInput = {
+  create?: Prisma.XOR<Prisma.BranchCreateWithoutUsersInput, Prisma.BranchUncheckedCreateWithoutUsersInput>
+  connectOrCreate?: Prisma.BranchCreateOrConnectWithoutUsersInput
+  upsert?: Prisma.BranchUpsertWithoutUsersInput
+  disconnect?: Prisma.BranchWhereInput | boolean
+  delete?: Prisma.BranchWhereInput | boolean
+  connect?: Prisma.BranchWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutUsersInput, Prisma.BranchUpdateWithoutUsersInput>, Prisma.BranchUncheckedUpdateWithoutUsersInput>
+}
+
 export type BranchCreateNestedOneWithoutEvent_proposalsInput = {
   create?: Prisma.XOR<Prisma.BranchCreateWithoutEvent_proposalsInput, Prisma.BranchUncheckedCreateWithoutEvent_proposalsInput>
   connectOrCreate?: Prisma.BranchCreateOrConnectWithoutEvent_proposalsInput
@@ -353,6 +381,62 @@ export type BranchUpdateOneRequiredWithoutEvent_proposalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.BranchUpdateToOneWithWhereWithoutEvent_proposalsInput, Prisma.BranchUpdateWithoutEvent_proposalsInput>, Prisma.BranchUncheckedUpdateWithoutEvent_proposalsInput>
 }
 
+export type BranchCreateWithoutUsersInput = {
+  id?: string
+  branch_code: string
+  branch_name: string
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  event_proposals?: Prisma.EventProposalCreateNestedManyWithoutBranchInput
+}
+
+export type BranchUncheckedCreateWithoutUsersInput = {
+  id?: string
+  branch_code: string
+  branch_name: string
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutBranchInput
+}
+
+export type BranchCreateOrConnectWithoutUsersInput = {
+  where: Prisma.BranchWhereUniqueInput
+  create: Prisma.XOR<Prisma.BranchCreateWithoutUsersInput, Prisma.BranchUncheckedCreateWithoutUsersInput>
+}
+
+export type BranchUpsertWithoutUsersInput = {
+  update: Prisma.XOR<Prisma.BranchUpdateWithoutUsersInput, Prisma.BranchUncheckedUpdateWithoutUsersInput>
+  create: Prisma.XOR<Prisma.BranchCreateWithoutUsersInput, Prisma.BranchUncheckedCreateWithoutUsersInput>
+  where?: Prisma.BranchWhereInput
+}
+
+export type BranchUpdateToOneWithWhereWithoutUsersInput = {
+  where?: Prisma.BranchWhereInput
+  data: Prisma.XOR<Prisma.BranchUpdateWithoutUsersInput, Prisma.BranchUncheckedUpdateWithoutUsersInput>
+}
+
+export type BranchUpdateWithoutUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_code?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_proposals?: Prisma.EventProposalUpdateManyWithoutBranchNestedInput
+}
+
+export type BranchUncheckedUpdateWithoutUsersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_code?: Prisma.StringFieldUpdateOperationsInput | string
+  branch_name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutBranchNestedInput
+}
+
 export type BranchCreateWithoutEvent_proposalsInput = {
   id?: string
   branch_code: string
@@ -360,6 +444,7 @@ export type BranchCreateWithoutEvent_proposalsInput = {
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutBranchInput
 }
 
 export type BranchUncheckedCreateWithoutEvent_proposalsInput = {
@@ -369,6 +454,7 @@ export type BranchUncheckedCreateWithoutEvent_proposalsInput = {
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutBranchInput
 }
 
 export type BranchCreateOrConnectWithoutEvent_proposalsInput = {
@@ -394,6 +480,7 @@ export type BranchUpdateWithoutEvent_proposalsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutBranchNestedInput
 }
 
 export type BranchUncheckedUpdateWithoutEvent_proposalsInput = {
@@ -403,6 +490,7 @@ export type BranchUncheckedUpdateWithoutEvent_proposalsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutBranchNestedInput
 }
 
 
@@ -412,10 +500,12 @@ export type BranchUncheckedUpdateWithoutEvent_proposalsInput = {
 
 export type BranchCountOutputType = {
   event_proposals: number
+  users: number
 }
 
 export type BranchCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event_proposals?: boolean | BranchCountOutputTypeCountEvent_proposalsArgs
+  users?: boolean | BranchCountOutputTypeCountUsersArgs
 }
 
 /**
@@ -435,6 +525,13 @@ export type BranchCountOutputTypeCountEvent_proposalsArgs<ExtArgs extends runtim
   where?: Prisma.EventProposalWhereInput
 }
 
+/**
+ * BranchCountOutputType without action
+ */
+export type BranchCountOutputTypeCountUsersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserWhereInput
+}
+
 
 export type BranchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -444,6 +541,7 @@ export type BranchSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   created_at?: boolean
   updated_at?: boolean
   event_proposals?: boolean | Prisma.Branch$event_proposalsArgs<ExtArgs>
+  users?: boolean | Prisma.Branch$usersArgs<ExtArgs>
   _count?: boolean | Prisma.BranchCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["branch"]>
 
@@ -477,6 +575,7 @@ export type BranchSelectScalar = {
 export type BranchOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "branch_code" | "branch_name" | "isActive" | "created_at" | "updated_at", ExtArgs["result"]["branch"]>
 export type BranchInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event_proposals?: boolean | Prisma.Branch$event_proposalsArgs<ExtArgs>
+  users?: boolean | Prisma.Branch$usersArgs<ExtArgs>
   _count?: boolean | Prisma.BranchCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type BranchIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -486,6 +585,7 @@ export type $BranchPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name: "Branch"
   objects: {
     event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
+    users: Prisma.$UserPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -889,6 +989,7 @@ readonly fields: BranchFieldRefs;
 export interface Prisma__BranchClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   event_proposals<T extends Prisma.Branch$event_proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$event_proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  users<T extends Prisma.Branch$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Branch$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1338,6 +1439,30 @@ export type Branch$event_proposalsArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.EventProposalScalarFieldEnum | Prisma.EventProposalScalarFieldEnum[]
+}
+
+/**
+ * Branch.users
+ */
+export type Branch$usersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+  orderBy?: Prisma.UserOrderByWithRelationInput | Prisma.UserOrderByWithRelationInput[]
+  cursor?: Prisma.UserWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
 }
 
 /**
