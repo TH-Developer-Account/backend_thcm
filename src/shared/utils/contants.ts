@@ -4,224 +4,225 @@ export const MAX_ATTEMPTS = 5; // max 5 OTPs
 export const WINDOW_SECONDS = 15 * 60; // in 15 minutes
 
 export const budgetMap: Record<string, { min: number; max: number | null }> = {
-  below_20k: { min: 0, max: 20000 },
-  "20k_3l": { min: 20000, max: 300000 },
-  "3l_6l": { min: 300000, max: 600000 },
-  "6l_10l": { min: 600000, max: 1000000 },
-  above_10l: { min: 1000000, max: null },
+	below_20k: { min: 0, max: 20000 },
+	"20k_3l": { min: 20000, max: 300000 },
+	"3l_6l": { min: 300000, max: 600000 },
+	"6l_10l": { min: 600000, max: 1000000 },
+	above_10l: { min: 1000000, max: null },
 };
 
 export const epcFullInfoSelect = {
-  department: {
-    select: {
-      id: true,
-      department_name: true,
-    },
-  },
-  vertical: {
-    select: {
-      id: true,
-      name: true,
-      code: true,
-    },
-  },
-  region: {
-    select: {
-      id: true,
-      region_name: true,
-    },
-  },
-  branch: {
-    select: {
-      id: true,
-      branch_name: true,
-    },
-  },
-  event_name: {
-    select: {
-      id: true,
-      title: true,
-    },
-  },
-  budget_master: {
-    select: {
-      id: true,
-      value: true,
-    },
-  },
-  created_by: {
-    select: {
-      id: true,
-      first_name: true,
-      last_name: true,
-      email: true,
-      phone_number: true,
-    },
-  },
-  epf: {
-    select: {
-      id: true,
-      externalParticipants: true,
-      internalParticipants: true,
-      eventBudget: true,
-      annualBudget: true,
-      availableBudget: true,
-      dealerName: true,
-      dealerPercent: true,
-      dealerShare: true,
-      tataHitachiPoAmount: true,
-      status: true,
-      lineItems: {
-        select: {
-          id: true,
-          quantity: true,
-          amount: true,
-          product: {
-            select: {
-              id: true,
-              partNumber: true,
-              name: true,
-              description: true,
-              category: true,
-            },
-          },
-        },
-      },
-    },
-  },
-  // NOTE: CRF.lineItems (the legacy LineItem relation) is NOT selected here.
-  // Every CRF write goes through CrfItem (CRF.items — see
-  // modules/map/crf.service.ts's buildCrfItemRows / replaceCrfItems), so
-  // lineItems is always empty for any CRF created through the current flow.
-  // Selecting it here previously made GET /epc/:id come back with
-  // `crf: { id, lineItems: [] }` — the CRF existed and its CrfItem rows were
-  // real, but this endpoint never asked for them, so the frontend's
-  // `epcData.crf.items` was always undefined and CrfSection.tsx showed
-  // "No CRF has been created for this EPC yet." even right after a save.
-  // `items` below mirrors the shape getCrfDetail (crf.service.ts) returns
-  // for GET /crf/:id, so both endpoints agree on what a CRF item looks like.
-  //
-  // title/variantTitle/imageUrl: souvenir (SHOPIFY) display-snapshot fields
-  // persisted on CrfItem — see crf.service.ts's buildShopifyItemRows and
-  // schema.prisma's CrfItem doc comment. Added alongside `rate` (already
-  // selected below) so GET /epc/:id returns the same souvenir display data
-  // getCrfDetail does.
-  crf: {
-    select: {
-      id: true,
-      epcId: true,
-      status: true,
-      items: {
-        orderBy: { sortOrder: "asc" as const },
-        select: {
-          id: true,
-          category: true,
-          source: true,
-          sortOrder: true,
-          quantity: true,
-          rate: true,
-          amount: true,
-          width: true,
-          height: true,
-          unit: true,
-          sku: true,
-          requestedQty: true,
-          title: true,
-          variantTitle: true,
-          imageUrl: true,
-          qtyAtApproval: true,
-          status: true,
-          product: {
-            select: {
-              id: true,
-              partNumber: true,
-              name: true,
-              description: true,
-              category: true,
-            },
-          },
-        },
-      },
-    },
-  },
-  report: {
-    select: {
-      id: true,
-      epcId: true,
-      status: true,
-      eventHighlights: true,
-      computedOutcomes: true,
-      rejectionReason: true,
-      clarificationReason: true,
-      generationError: true,
-      submittedAt: true,
-      resubmittedAt: true,
-      validatedAt: true,
-      pdfS3Key: true,
-      validatorId: true,
-      images: {
-        select: {
-          id: true,
-          reportId: true,
-          position: true,
-          caption: true,
-          s3Key: true,
-          fileUrl: true,
-        },
-      },
-    },
-  },
+	department: {
+		select: {
+			id: true,
+			department_name: true,
+		},
+	},
+	vertical: {
+		select: {
+			id: true,
+			name: true,
+			code: true,
+		},
+	},
+	region: {
+		select: {
+			id: true,
+			region_name: true,
+		},
+	},
+	branch: {
+		select: {
+			id: true,
+			branch_name: true,
+		},
+	},
+	event_name: {
+		select: {
+			id: true,
+			title: true,
+		},
+	},
+	budget_master: {
+		select: {
+			id: true,
+			value: true,
+		},
+	},
+	created_by: {
+		select: {
+			id: true,
+			first_name: true,
+			last_name: true,
+			email: true,
+			phone_number: true,
+		},
+	},
+	epf: {
+		select: {
+			id: true,
+			externalParticipants: true,
+			internalParticipants: true,
+			eventBudget: true,
+			annualBudget: true,
+			availableBudget: true,
+			dealerName: true,
+			dealerPercent: true,
+			dealerShare: true,
+			tataHitachiPoAmount: true,
+			status: true,
+			lineItems: {
+				select: {
+					id: true,
+					quantity: true,
+					amount: true,
+					product: {
+						select: {
+							id: true,
+							partNumber: true,
+							name: true,
+							description: true,
+							category: true,
+						},
+					},
+				},
+			},
+		},
+	},
+	// NOTE: CRF.lineItems (the legacy LineItem relation) is NOT selected here.
+	// Every CRF write goes through CrfItem (CRF.items — see
+	// modules/map/crf.service.ts's buildCrfItemRows / replaceCrfItems), so
+	// lineItems is always empty for any CRF created through the current flow.
+	// Selecting it here previously made GET /epc/:id come back with
+	// `crf: { id, lineItems: [] }` — the CRF existed and its CrfItem rows were
+	// real, but this endpoint never asked for them, so the frontend's
+	// `epcData.crf.items` was always undefined and CrfSection.tsx showed
+	// "No CRF has been created for this EPC yet." even right after a save.
+	// `items` below mirrors the shape getCrfDetail (crf.service.ts) returns
+	// for GET /crf/:id, so both endpoints agree on what a CRF item looks like.
+	//
+	// title/variantTitle/imageUrl: souvenir (SHOPIFY) display-snapshot fields
+	// persisted on CrfItem — see crf.service.ts's buildShopifyItemRows and
+	// schema.prisma's CrfItem doc comment. Added alongside `rate` (already
+	// selected below) so GET /epc/:id returns the same souvenir display data
+	// getCrfDetail does.
+	crf: {
+		select: {
+			id: true,
+			epcId: true,
+			status: true,
+			items: {
+				orderBy: { sortOrder: "asc" as const },
+				select: {
+					id: true,
+					category: true,
+					source: true,
+					sortOrder: true,
+					productId: true,
+					quantity: true,
+					rate: true,
+					amount: true,
+					width: true,
+					height: true,
+					unit: true,
+					sku: true,
+					requestedQty: true,
+					title: true,
+					variantTitle: true,
+					imageUrl: true,
+					qtyAtApproval: true,
+					status: true,
+					product: {
+						select: {
+							id: true,
+							partNumber: true,
+							name: true,
+							description: true,
+							category: true,
+						},
+					},
+				},
+			},
+		},
+	},
+	report: {
+		select: {
+			id: true,
+			epcId: true,
+			status: true,
+			eventHighlights: true,
+			computedOutcomes: true,
+			rejectionReason: true,
+			clarificationReason: true,
+			generationError: true,
+			submittedAt: true,
+			resubmittedAt: true,
+			validatedAt: true,
+			pdfS3Key: true,
+			validatorId: true,
+			images: {
+				select: {
+					id: true,
+					reportId: true,
+					position: true,
+					caption: true,
+					s3Key: true,
+					fileUrl: true,
+				},
+			},
+		},
+	},
 } as const;
 
 export const activeWorkflowInclude = {
-  template: {
-    select: { id: true, name: true, description: true, metaData_1: true },
-  },
-  stages: {
-    where: { isCurrentIteration: true },
-    orderBy: { stageOrder: "asc" as const },
-    include: {
-      approvals: {
-        select: {
-          id: true,
-          status: true,
-          isExternalApprover: true,
-          approver: {
-            select: {
-              id: true,
-              first_name: true,
-              last_name: true,
-              email: true,
-              phone_number: true,
-              designation: true,
-            },
-          },
-        },
-      },
-    },
-  },
+	template: {
+		select: { id: true, name: true, description: true, metaData_1: true },
+	},
+	stages: {
+		where: { isCurrentIteration: true },
+		orderBy: { stageOrder: "asc" as const },
+		include: {
+			approvals: {
+				select: {
+					id: true,
+					status: true,
+					isExternalApprover: true,
+					approver: {
+						select: {
+							id: true,
+							first_name: true,
+							last_name: true,
+							email: true,
+							phone_number: true,
+							designation: true,
+						},
+					},
+				},
+			},
+		},
+	},
 } as const;
 
 export const REQUIRED_VENDOR_DOCUMENT_TYPES = [
-  "GST_CERTIFICATE",
-  "PAN_DOCUMENT",
-  "CANCELLED_CHEQUE",
-  "INCORPORATION_CERTIFICATE",
-  "MSME_CERTIFICATE",
-  "NDA_CERTIFICATE",
+	"GST_CERTIFICATE",
+	"PAN_DOCUMENT",
+	"CANCELLED_CHEQUE",
+	"INCORPORATION_CERTIFICATE",
+	"MSME_CERTIFICATE",
+	"NDA_CERTIFICATE",
 ] as const;
 
 export const OPTIONAL_VENDOR_DOCUMENT_TYPES = [
-  "ADDITIONAL_DOC_1",
-  "ADDITIONAL_DOC_2",
-  "ADDITIONAL_DOC_3",
-  "ADDITIONAL_DOC_4",
-  // add more here as needed — no other code changes required
+	"ADDITIONAL_DOC_1",
+	"ADDITIONAL_DOC_2",
+	"ADDITIONAL_DOC_3",
+	"ADDITIONAL_DOC_4",
+	// add more here as needed — no other code changes required
 ] as const;
 
 export const ALL_VENDOR_DOCUMENT_TYPES = [
-  ...REQUIRED_VENDOR_DOCUMENT_TYPES,
-  ...OPTIONAL_VENDOR_DOCUMENT_TYPES,
+	...REQUIRED_VENDOR_DOCUMENT_TYPES,
+	...OPTIONAL_VENDOR_DOCUMENT_TYPES,
 ] as const;
 
 export type VendorDocumentType = (typeof ALL_VENDOR_DOCUMENT_TYPES)[number];
@@ -230,42 +231,42 @@ export type VendorDocumentType = (typeof ALL_VENDOR_DOCUMENT_TYPES)[number];
 // relationship, so it's validated here rather than at the DB layer.
 // Dummy values — fill in once real MaterialType/MaterialSubType enums are set.
 export const MATERIAL_SUBTYPES_BY_TYPE: Record<string, string[]> = {
-  RAW_MATERIAL: ["SUB_TYPE_1"],
-  SERVICE: ["SUB_TYPE_2"],
+	RAW_MATERIAL: ["SUB_TYPE_1"],
+	SERVICE: ["SUB_TYPE_2"],
 };
 
 type VendorDocumentConditions = {
-  msmeVendor: boolean;
-  ndaObtained: boolean;
+	msmeVendor: boolean;
+	ndaObtained: boolean;
 };
 
 type VendorDocumentRequirement = {
-  documentType: VendorDocumentType;
-  isRequired: (conditions: VendorDocumentConditions) => boolean;
+	documentType: VendorDocumentType;
+	isRequired: (conditions: VendorDocumentConditions) => boolean;
 };
 
 // Each document type owns its own requirement rule — adding a new
 // conditional document later means adding one entry here, not a new
 // branch in the controller.
 export const VENDOR_DOCUMENT_REQUIREMENTS: VendorDocumentRequirement[] = [
-  { documentType: "GST_CERTIFICATE", isRequired: () => true },
-  { documentType: "PAN_DOCUMENT", isRequired: () => true },
-  { documentType: "CANCELLED_CHEQUE", isRequired: () => true },
-  { documentType: "INCORPORATION_CERTIFICATE", isRequired: () => true },
-  { documentType: "MSME_CERTIFICATE", isRequired: (c) => c.msmeVendor },
-  { documentType: "NDA_CERTIFICATE", isRequired: (c) => c.ndaObtained },
+	{ documentType: "GST_CERTIFICATE", isRequired: () => true },
+	{ documentType: "PAN_DOCUMENT", isRequired: () => true },
+	{ documentType: "CANCELLED_CHEQUE", isRequired: () => true },
+	{ documentType: "INCORPORATION_CERTIFICATE", isRequired: () => true },
+	{ documentType: "MSME_CERTIFICATE", isRequired: (c) => c.msmeVendor },
+	{ documentType: "NDA_CERTIFICATE", isRequired: (c) => c.ndaObtained },
 ];
 
 export function getRequiredVendorDocumentTypes(
-  conditions: VendorDocumentConditions,
+	conditions: VendorDocumentConditions,
 ): VendorDocumentType[] {
-  return VENDOR_DOCUMENT_REQUIREMENTS.filter((r) =>
-    r.isRequired(conditions),
-  ).map((r) => r.documentType);
+	return VENDOR_DOCUMENT_REQUIREMENTS.filter((r) =>
+		r.isRequired(conditions),
+	).map((r) => r.documentType);
 }
 
 // Form fields arrive as strings ("true"/"false") from multipart form-data,
 // but may already be booleans if the client sends JSON — normalize both.
 export function parseBooleanFormField(value: unknown): boolean {
-  return value === true || value === "true";
+	return value === true || value === "true";
 }
