@@ -17,6 +17,10 @@ import { getOrGeneratePdfUrl } from "@pdf/pdf.services";
 import { buildXlsxBuffer } from "@import-export/utils/xlsxWriter";
 
 import { addMailJob } from "@mail/mail.service";
+import {
+  withInitiatorCc,
+  sendWorkflowMail,
+} from "@mail/workFlowEmail.services";
 
 import {
   issueAccessToken,
@@ -55,6 +59,44 @@ const VENDOR_DOCUMENT_EXTENSIONS_BY_MIME_TYPE: Record<string, string> = {
   "application/pdf": "pdf",
 };
 
+const EMPLOYEE_UPDATABLE_ONBOARDING_FIELDS = [
+  // vendor-filled fields (employee corrections)
+  "vendorName",
+  "state",
+  "city",
+  "pinCode",
+  "address",
+  "mobile",
+  "email",
+  "msmeVendor",
+  "bankName",
+  "bankBranch",
+  "ifscCode",
+  "bankAddress",
+  "accountNumber",
+  "gstin",
+  "pan",
+  "entityRegNo",
+
+  // employee-owned fields
+  "vendorCode",
+  "vendorType",
+  "companyCode",
+  "purchaseOrg",
+  "paymentTerm",
+  "tds",
+  "vendorCategory",
+  "materialType",
+  "materialSubType",
+  "selfAssessmentObtained",
+  "ndaObtained",
+  "gpaObtained",
+  "isRelatedParty",
+  "vendorAuditReportPrepared",
+  "natureOfService",
+  "onboardingReason",
+] as const;
+
 // Throws a field-specific error so the vendor knows exactly which
 // document failed, rather than a generic "invalid file" message.
 function validateVendorDocumentFile(
@@ -86,9 +128,10 @@ type UploadedVendorDocument = { documentType: string; s3Key: string };
 //
 // Validates and uploads every provided file to S3, OUTSIDE of any DB
 // transaction. This used to happen inside persistVendorDocuments, called
-// from within prisma.$transaction — but an S3 round-trip per file is slow
-// enough (especially with several documents) that the combined latency
-// routinely exceeded Prisma's 5s interactive-transaction timeout:
+// from within prisma.$transaction at all three call sites below — but an
+// S3 round-trip per file is slow enough (especially with several documents)
+// that the combined latency routinely exceeded Prisma's 5s interactive-
+// transaction timeout:
 //
 //   "Transaction API error: ... timeout for this transaction was 5000ms,
 //   however 6496ms passed since the start of the transaction."
@@ -99,10 +142,9 @@ type UploadedVendorDocument = { documentType: string; s3Key: string };
 //
 // Validated up front, before any upload starts, so a late validation
 // failure (e.g. document 5 of 6 is oversized) can't leave documents 1-4
-// already sitting in S3 with no DB record ever created for them.
-// Uploads then run in parallel — they're independent of each other, and
-// this is what actually keeps total latency down, which is the root cause
-// here.
+// already sitting in S3 with no DB record ever created for them. Uploads
+// then run in parallel — they're independent of each other, and this is
+// what actually keeps total latency down.
 // ─────────────────────────────────────────────────────────────────────────────
 async function uploadVendorDocumentFiles(
   onboardingId: string,
@@ -148,6 +190,20 @@ async function persistVendorDocumentRecords(
       update: { s3Key, uploadedAt: new Date() },
     });
   }
+}
+
+// Picks only the whitelisted keys off an arbitrary body — same reasoning as
+// VENDOR_LISTING_SORT_FIELD_MAP elsewhere in this file: an explicit
+// whitelist, not raw pass-through, so a field renamed/removed from the
+// schema fails loudly at the call site instead of writing undefined.
+function pickEmployeeUpdatableFields(
+  body: Record<string, unknown>,
+): Record<string, unknown> {
+  const picked: Record<string, unknown> = {};
+  for (const field of EMPLOYEE_UPDATABLE_ONBOARDING_FIELDS) {
+    if (field in body) picked[field] = body[field];
+  }
+  return picked;
 }
 
 // POST /vendor-onboarding
@@ -200,15 +256,18 @@ export const initiateVendorOnboarding = async (
       return { created, tokenRecord };
     });
 
-    await addMailJob({
-      to: email,
-      subject: "Vendor Onboarding — Action Required",
-      templateName: "vendor-onboarding",
-      templateData: {
-        vendorReferenceName,
-        formUrl: `${process.env.FRONTEND_URL}/vendor-form/${onboarding.tokenRecord.token}`,
+    await sendWorkflowMail(
+      {
+        to: email,
+        subject: "Vendor Onboarding - Action Required",
+        templateName: "vendor-onboarding",
+        templateData: {
+          vendorReferenceName,
+          formUrl: `${process.env.FRONTEND_URL}/vendor-form/${onboarding.tokenRecord.token}`,
+        },
       },
-    });
+      userId,
+    );
 
     res.status(201).json({
       success: true,
@@ -282,6 +341,7 @@ export const listVendorOnboardings = async (
         select: {
           id: true,
           referenceNumber: true,
+          vendorReferenceName: true,
           vendorName: true,
           mobile: true,
           email: true,
@@ -422,15 +482,18 @@ export const resendVendorLink = async (
       onboarding.id,
     );
 
-    await addMailJob({
-      to: onboarding.email as string,
-      subject: "Vendor Onboarding — Action Required (Resent)",
-      templateName: "vendor-onboarding-resubmit",
-      templateData: {
-        vendorName: onboarding.vendorName,
-        formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
+    await sendWorkflowMail(
+      {
+        to: onboarding.email as string,
+        subject: "Vendor Onboarding - Action Required (Resent)",
+        templateName: "vendor-onboarding-resubmit",
+        templateData: {
+          vendorName: onboarding.vendorName,
+          formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
+        },
       },
-    });
+      onboarding.initiatedById,
+    );
 
     res.status(200).json({ success: true, message: "Link resent" });
   } catch (error) {
@@ -443,6 +506,19 @@ export const resendVendorLink = async (
 // details, in one call, after vendor submission (IN_REVIEW state).
 // Deliberately does NOT touch status — separate endpoint below moves it forward,
 // mirroring EPC's separate "resubmit" vs "advance" actions.
+// Single source of truth for which fields an employee is allowed to write
+// via this endpoint — used to both read them off req.body and build the
+// Prisma update payload, so a field added/removed here can't drift between
+// the two (previously the same ~25 names were hand-duplicated in both
+// places). msmeCertAttached intentionally excluded — it was accepted but
+// never persisted, and has no corresponding schema field to write to.
+
+// PATCH /vendor-onboarding/:id
+// Employee fills in their own fields AND can correct the vendor's submitted
+// details — including replacing any of the vendor's document images — in
+// one call, after vendor submission (IN_REVIEW state). Deliberately does
+// NOT touch status beyond forcing IN_REVIEW — a separate endpoint moves it
+// forward, mirroring EPC's separate "resubmit" vs "advance" actions.
 export const updateEmployeeFields = async (
   req: Request,
   res: Response,
@@ -452,45 +528,6 @@ export const updateEmployeeFields = async (
     const userId = req.user?.id;
     const { id } = req.params;
     if (!userId) throw new ApiError(401, "Unauthorized");
-
-    const {
-      // ── vendor-filled fields (employee corrections) ──
-      vendorName,
-      state,
-      city,
-      pinCode,
-      address,
-      mobile,
-      email,
-      msmeVendor,
-      msmeCertAttached,
-      bankName,
-      bankBranch,
-      ifscCode,
-      bankAddress,
-      accountNumber,
-      gstin,
-      pan,
-      entityRegNo,
-
-      // ── employee-owned fields ──
-      vendorCode,
-      vendorType,
-      companyCode,
-      purchaseOrg,
-      paymentTerm,
-      tds,
-      vendorCategory,
-      materialType,
-      materialSubType,
-      selfAssessmentObtained,
-      ndaObtained,
-      gpaObtained,
-      isRelatedParty,
-      vendorAuditReportPrepared,
-      natureOfService,
-      onboardingReason,
-    } = req.body;
 
     // if (materialType && materialSubType) {
     //   const validSubTypes = MATERIAL_SUBTYPES_BY_TYPE[materialType] ?? [];
@@ -525,52 +562,43 @@ export const updateEmployeeFields = async (
     }
 
     if (
-      onboarding.status !== "VENDOR_SUBMITTED" &&
-      onboarding.status !== "IN_REVIEW" &&
-      !isExternal
+      !isExternal &&
+      !["VENDOR_SUBMITTED", "IN_REVIEW", "IN_PROGRESS"].includes(
+        onboarding.status,
+      )
     ) {
       throw new ApiError(400, "This request is not awaiting employee review");
     }
 
-    const updated = await prisma.vendorOnboarding.update({
-      where: { id: id as string },
-      data: {
-        status: "IN_REVIEW",
-        vendorName,
-        state,
-        city,
-        pinCode,
-        address,
-        mobile,
-        email,
-        msmeVendor,
-        bankName,
-        bankBranch,
-        ifscCode,
-        bankAddress,
-        accountNumber,
-        gstin,
-        pan,
-        entityRegNo,
+    const files = req.files as
+      | Record<string, Express.Multer.File[]>
+      | undefined;
 
-        // employee-owned fields
-        vendorCode,
-        vendorType,
-        companyCode,
-        purchaseOrg,
-        paymentTerm,
-        tds,
-        vendorCategory,
-        materialType,
-        materialSubType,
-        selfAssessmentObtained,
-        ndaObtained,
-        gpaObtained,
-        isRelatedParty,
-        vendorAuditReportPrepared,
-        natureOfService,
-        onboardingReason,
-      },
+    // Uploaded to S3 *before* the transaction starts — see
+    // uploadVendorDocumentFiles's doc comment for why this can't live
+    // inside prisma.$transaction below.
+    const uploadedDocuments = await uploadVendorDocumentFiles(
+      id as string,
+      files,
+    );
+
+    // Field updates and any replaced document images succeed or fail
+    // together — a partial write here (fields saved, upload failed, or vice
+    // versa) would leave the record in a state neither the employee nor the
+    // vendor asked for. The upload itself already happened above; this
+    // transaction only writes the resulting DB rows, so it stays fast.
+    const updated = await prisma.$transaction(async (tx) => {
+      const result = await tx.vendorOnboarding.update({
+        where: { id: id as string },
+        data: {
+          status: "IN_REVIEW",
+          ...pickEmployeeUpdatableFields(req.body),
+        },
+      });
+
+      await persistVendorDocumentRecords(tx, id as string, uploadedDocuments);
+
+      return result;
     });
 
     res.status(200).json({
@@ -640,14 +668,14 @@ export const sendForApproval = async (
         where: { id: id as string },
         data: { status: "IN_PROGRESS" },
       });
-      await tx.activityLog.create({
-        data: {
-          subjectType: "VENDOR_ONBOARDING",
-          subjectId: id as string,
-          actorId: userId,
-          action: "VENDOR_ONBOARDING_SENT_FOR_APPROVAL",
-        },
-      });
+      // await tx.activityLog.create({
+      //   data: {
+      //     subjectType: "VENDOR_ONBOARDING",
+      //     subjectId: id as string,
+      //     actorId: userId,
+      //     action: "VENDOR_ONBOARDING_SENT_FOR_APPROVAL",
+      //   },
+      // });
     });
 
     res.status(200).json({ success: true, message: "Sent for approval" });
@@ -716,7 +744,7 @@ export const closeVendorOnboarding = async (
     await prisma.$transaction(async (tx) => {
       await tx.vendorOnboarding.update({
         where: { id: id as string },
-        data: { status: "CLOSED" },
+        data: { status: "COMPLETED" },
       });
       await tx.activityLog.create({
         data: {
@@ -742,7 +770,7 @@ export const closeVendorOnboarding = async (
       await addMailJob({
         to: initiatorEmail,
         cc: ccEmails.length ? ccEmails : undefined,
-        subject: `Vendor Onboarding Closed — ${onboarding.vendorName ?? ""}`,
+        subject: `Vendor Onboarding - Completed - ${onboarding.vendorName ?? ""}`,
         templateName: "vendor-onboarding-closed",
         templateData: {
           vendorName: onboarding.vendorName,
@@ -753,16 +781,24 @@ export const closeVendorOnboarding = async (
     }
 
     if (onboarding.email) {
-      await addMailJob({
-        to: onboarding.email,
-        subject: "Your Vendor Onboarding Is Complete — Tata Hitachi",
-        templateName: "vendor-onboarding-closed",
-        templateData: {
-          vendorName: onboarding.vendorName,
-          vendorCode: onboarding.vendorCode,
-          referenceNumber: onboarding.referenceNumber,
-        },
-      });
+      // initiatorEmail was already resolved above for the internal notice —
+      // reused here via the pure merge so this external mail doesn't need
+      // its own DB round trip.
+      await addMailJob(
+        withInitiatorCc(
+          {
+            to: onboarding.email,
+            subject: "Your Vendor Onboarding Is Complete — Tata Hitachi",
+            templateName: "vendor-onboarding-closed",
+            templateData: {
+              vendorName: onboarding.vendorName,
+              vendorCode: onboarding.vendorCode,
+              referenceNumber: onboarding.referenceNumber,
+            },
+          },
+          initiatorEmail,
+        ),
+      );
     }
 
     res
@@ -959,7 +995,7 @@ export const submitVendorForm = async (
         data: {
           subjectType: "VENDOR_ONBOARDING",
           subjectId: onboarding.id,
-          actorId: onboarding.initiatedById,
+          actorId: null,
           action: "VENDOR_FORM_SUBMITTED",
         },
       });
@@ -980,25 +1016,20 @@ export const submitVendorForm = async (
       "VIEW_PDF",
     );
 
-    // req.vendorAccessToken.onboarding is the bare row the token middleware
-    // loads (no relations) — the draft-save path shares that same middleware
-    // and has no need for the initiator's email, so it's fetched here rather
-    // than added to the middleware's query for every vendor-token route.
-    const initiator = await prisma.user.findUnique({
-      where: { id: onboarding.initiatedById },
-      select: { email: true },
-    });
-
-    await addMailJob({
-      to: initiator?.email as string,
-      cc: onboarding.email ? [onboarding.email] : undefined,
-      subject: "Vendor Onboarding — Submission Received",
-      templateName: "vendor-onboarding-submitted",
-      templateData: {
-        vendorName: onboarding.vendorName,
-        pdfViewUrl: `${process.env.BACKEND_URL}/api/v1/vendor-onboarding/public/pdf/${viewToken.token}`,
+    // Initiator CC is resolved by sendWorkflowMail itself now (single seam
+    // for every workflow mail) — no need for a one-off lookup here.
+    await sendWorkflowMail(
+      {
+        to: onboarding.email as string,
+        subject: `Vendor Onboarding - Submission Received ${onboarding.vendorName || onboarding.vendorReferenceName}`,
+        templateName: "vendor-onboarding-submitted",
+        templateData: {
+          vendorName: onboarding.vendorName,
+          pdfViewUrl: `${process.env.BACKEND_URL}/api/v1/vendor-onboarding/public/pdf/${viewToken.token}`,
+        },
       },
-    });
+      onboarding.initiatedById,
+    );
 
     res
       .status(200)
@@ -1066,16 +1097,19 @@ export const sendBackToVendor = async (
       return token;
     });
 
-    await addMailJob({
-      to: onboarding.email as string,
-      subject: "Vendor Onboarding — Correction Required",
-      templateName: "vendor-onboarding-resubmit",
-      templateData: {
-        vendorName: onboarding.vendorName,
-        formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
-        currentYear: new Date().getFullYear(),
+    await sendWorkflowMail(
+      {
+        to: onboarding.email as string,
+        subject: "Vendor Onboarding - Correction Required",
+        templateName: "vendor-onboarding-resubmit",
+        templateData: {
+          vendorName: onboarding.vendorName,
+          formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
+          currentYear: new Date().getFullYear(),
+        },
       },
-    });
+      onboarding.initiatedById,
+    );
 
     res
       .status(200)
@@ -1152,7 +1186,7 @@ export const saveVendorFormDraft = async (
       | undefined;
 
     // Uploaded to S3 *before* the transaction starts — same reasoning as
-    // submitVendorForm above.
+    // submitVendorForm/updateEmployeeFields above.
     const uploadedDocuments = await uploadVendorDocumentFiles(
       onboarding.id,
       files,

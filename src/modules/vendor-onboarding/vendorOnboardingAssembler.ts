@@ -29,6 +29,7 @@ export interface VendorOnboardingWorkflowStage {
   stageOrder: number;
   stageName: string | null;
   strategy: string;
+  minApprovals: number | null;
   status: string;
   approvals: VendorOnboardingWorkflowApproval[];
 }
@@ -140,6 +141,7 @@ export async function assembleVendorOnboardingPdfData(
             stageOrder: true,
             stageName: true,
             strategy: true,
+            minApprovals: true,
             status: true,
             approvals: {
               select: {
@@ -152,9 +154,9 @@ export async function assembleVendorOnboardingPdfData(
                     id: true,
                     first_name: true,
                     last_name: true,
-                    // designation is now an FK relation (not a plain
-                    // string column) — select just the display name we
-                    // actually need, same posture as the other
+                    // designation is a relation (id/name/isActive/...),
+                    // not a plain string — select just the name we
+                    // actually print, same posture as the other
                     // designation/location/division selects elsewhere.
                     designation: { select: { name: true } },
                   },
@@ -230,12 +232,13 @@ export async function assembleVendorOnboardingPdfData(
             stageOrder: stage.stageOrder,
             stageName: stage.stageName,
             strategy: stage.strategy,
+            minApprovals: stage.minApprovals,
             status: stage.status,
             approvals: stage.approvals.map((approval) => ({
               approverName: `${approval.approver.first_name} ${approval.approver.last_name}`,
-              // designation is a relation now — flatten to its name,
-              // same "flatten on read" pattern as formatUser/
-              // formatCurrentUser in users/user.controller.ts.
+              // designation is a relation, not a plain string — flatten to
+              // its name (fixes a type error: the whole relation object
+              // was being assigned where a string was expected).
               approverDesignation: approval.approver.designation?.name ?? null,
               status: approval.status,
               actedAt: approval.actedAt,
