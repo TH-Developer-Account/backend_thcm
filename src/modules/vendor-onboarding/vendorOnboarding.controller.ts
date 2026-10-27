@@ -506,7 +506,7 @@ export const resendVendorLink = async (
 				templateName: "vendor-onboarding-resubmit",
 				templateData: {
 					vendorName: onboarding.vendorName,
-					formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
+					formUrl: `${process.env.FRONTEND_URL}/vendor-form/${tokenRecord.token}`,
 				},
 			},
 			onboarding.initiatedById,
