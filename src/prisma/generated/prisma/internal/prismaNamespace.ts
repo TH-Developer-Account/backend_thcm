@@ -5570,6 +5570,8 @@ export const VendorOnboardingScalarFieldEnum = {
   natureOfService: 'natureOfService',
   onboardingReason: 'onboardingReason',
   guestId: 'guestId',
+  gstApplicability: 'gstApplicability',
+  incorporationApplicability: 'incorporationApplicability',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
