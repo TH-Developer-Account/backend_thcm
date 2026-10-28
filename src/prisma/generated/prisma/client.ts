@@ -195,6 +195,16 @@ export type Designation = Prisma.DesignationModel
  */
 export type CostCenter = Prisma.CostCenterModel
 /**
+ * Model AuthorityLimit
+ * 
+ */
+export type AuthorityLimit = Prisma.AuthorityLimitModel
+/**
+ * Model AuthorityLimitAssignment
+ * 
+ */
+export type AuthorityLimitAssignment = Prisma.AuthorityLimitAssignmentModel
+/**
  * Model ProductMaster
  * 
  */

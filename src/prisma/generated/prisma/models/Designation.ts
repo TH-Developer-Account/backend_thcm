@@ -183,6 +183,7 @@ export type DesignationWhereInput = {
   created_at?: Prisma.DateTimeFilter<"Designation"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Designation"> | Date | string
   users?: Prisma.UserListRelationFilter
+  authorityLimitAssignments?: Prisma.AuthorityLimitAssignmentListRelationFilter
 }
 
 export type DesignationOrderByWithRelationInput = {
@@ -192,6 +193,7 @@ export type DesignationOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   users?: Prisma.UserOrderByRelationAggregateInput
+  authorityLimitAssignments?: Prisma.AuthorityLimitAssignmentOrderByRelationAggregateInput
 }
 
 export type DesignationWhereUniqueInput = Prisma.AtLeast<{
@@ -204,6 +206,7 @@ export type DesignationWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"Designation"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Designation"> | Date | string
   users?: Prisma.UserListRelationFilter
+  authorityLimitAssignments?: Prisma.AuthorityLimitAssignmentListRelationFilter
 }, "id" | "name">
 
 export type DesignationOrderByWithAggregationInput = {
@@ -235,6 +238,7 @@ export type DesignationCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutDesignationInput
+  authorityLimitAssignments?: Prisma.AuthorityLimitAssignmentCreateNestedManyWithoutDesignationInput
 }
 
 export type DesignationUncheckedCreateInput = {
@@ -244,6 +248,7 @@ export type DesignationUncheckedCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutDesignationInput
+  authorityLimitAssignments?: Prisma.AuthorityLimitAssignmentUncheckedCreateNestedManyWithoutDesignationInput
 }
 
 export type DesignationUpdateInput = {
@@ -253,6 +258,7 @@ export type DesignationUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutDesignationNestedInput
+  authorityLimitAssignments?: Prisma.AuthorityLimitAssignmentUpdateManyWithoutDesignationNestedInput
 }
 
 export type DesignationUncheckedUpdateInput = {
@@ -262,6 +268,7 @@ export type DesignationUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutDesignationNestedInput
+  authorityLimitAssignments?: Prisma.AuthorityLimitAssignmentUncheckedUpdateManyWithoutDesignationNestedInput
 }
 
 export type DesignationCreateManyInput = {
@@ -317,6 +324,11 @@ export type DesignationMinOrderByAggregateInput = {
   updated_at?: Prisma.SortOrder
 }
 
+export type DesignationScalarRelationFilter = {
+  is?: Prisma.DesignationWhereInput
+  isNot?: Prisma.DesignationWhereInput
+}
+
 export type DesignationCreateNestedOneWithoutUsersInput = {
   create?: Prisma.XOR<Prisma.DesignationCreateWithoutUsersInput, Prisma.DesignationUncheckedCreateWithoutUsersInput>
   connectOrCreate?: Prisma.DesignationCreateOrConnectWithoutUsersInput
@@ -333,12 +345,27 @@ export type DesignationUpdateOneWithoutUsersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DesignationUpdateToOneWithWhereWithoutUsersInput, Prisma.DesignationUpdateWithoutUsersInput>, Prisma.DesignationUncheckedUpdateWithoutUsersInput>
 }
 
+export type DesignationCreateNestedOneWithoutAuthorityLimitAssignmentsInput = {
+  create?: Prisma.XOR<Prisma.DesignationCreateWithoutAuthorityLimitAssignmentsInput, Prisma.DesignationUncheckedCreateWithoutAuthorityLimitAssignmentsInput>
+  connectOrCreate?: Prisma.DesignationCreateOrConnectWithoutAuthorityLimitAssignmentsInput
+  connect?: Prisma.DesignationWhereUniqueInput
+}
+
+export type DesignationUpdateOneRequiredWithoutAuthorityLimitAssignmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.DesignationCreateWithoutAuthorityLimitAssignmentsInput, Prisma.DesignationUncheckedCreateWithoutAuthorityLimitAssignmentsInput>
+  connectOrCreate?: Prisma.DesignationCreateOrConnectWithoutAuthorityLimitAssignmentsInput
+  upsert?: Prisma.DesignationUpsertWithoutAuthorityLimitAssignmentsInput
+  connect?: Prisma.DesignationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DesignationUpdateToOneWithWhereWithoutAuthorityLimitAssignmentsInput, Prisma.DesignationUpdateWithoutAuthorityLimitAssignmentsInput>, Prisma.DesignationUncheckedUpdateWithoutAuthorityLimitAssignmentsInput>
+}
+
 export type DesignationCreateWithoutUsersInput = {
   id?: string
   name: string
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  authorityLimitAssignments?: Prisma.AuthorityLimitAssignmentCreateNestedManyWithoutDesignationInput
 }
 
 export type DesignationUncheckedCreateWithoutUsersInput = {
@@ -347,6 +374,7 @@ export type DesignationUncheckedCreateWithoutUsersInput = {
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  authorityLimitAssignments?: Prisma.AuthorityLimitAssignmentUncheckedCreateNestedManyWithoutDesignationInput
 }
 
 export type DesignationCreateOrConnectWithoutUsersInput = {
@@ -371,6 +399,7 @@ export type DesignationUpdateWithoutUsersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authorityLimitAssignments?: Prisma.AuthorityLimitAssignmentUpdateManyWithoutDesignationNestedInput
 }
 
 export type DesignationUncheckedUpdateWithoutUsersInput = {
@@ -379,6 +408,59 @@ export type DesignationUncheckedUpdateWithoutUsersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  authorityLimitAssignments?: Prisma.AuthorityLimitAssignmentUncheckedUpdateManyWithoutDesignationNestedInput
+}
+
+export type DesignationCreateWithoutAuthorityLimitAssignmentsInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutDesignationInput
+}
+
+export type DesignationUncheckedCreateWithoutAuthorityLimitAssignmentsInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutDesignationInput
+}
+
+export type DesignationCreateOrConnectWithoutAuthorityLimitAssignmentsInput = {
+  where: Prisma.DesignationWhereUniqueInput
+  create: Prisma.XOR<Prisma.DesignationCreateWithoutAuthorityLimitAssignmentsInput, Prisma.DesignationUncheckedCreateWithoutAuthorityLimitAssignmentsInput>
+}
+
+export type DesignationUpsertWithoutAuthorityLimitAssignmentsInput = {
+  update: Prisma.XOR<Prisma.DesignationUpdateWithoutAuthorityLimitAssignmentsInput, Prisma.DesignationUncheckedUpdateWithoutAuthorityLimitAssignmentsInput>
+  create: Prisma.XOR<Prisma.DesignationCreateWithoutAuthorityLimitAssignmentsInput, Prisma.DesignationUncheckedCreateWithoutAuthorityLimitAssignmentsInput>
+  where?: Prisma.DesignationWhereInput
+}
+
+export type DesignationUpdateToOneWithWhereWithoutAuthorityLimitAssignmentsInput = {
+  where?: Prisma.DesignationWhereInput
+  data: Prisma.XOR<Prisma.DesignationUpdateWithoutAuthorityLimitAssignmentsInput, Prisma.DesignationUncheckedUpdateWithoutAuthorityLimitAssignmentsInput>
+}
+
+export type DesignationUpdateWithoutAuthorityLimitAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutDesignationNestedInput
+}
+
+export type DesignationUncheckedUpdateWithoutAuthorityLimitAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutDesignationNestedInput
 }
 
 
@@ -388,10 +470,12 @@ export type DesignationUncheckedUpdateWithoutUsersInput = {
 
 export type DesignationCountOutputType = {
   users: number
+  authorityLimitAssignments: number
 }
 
 export type DesignationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | DesignationCountOutputTypeCountUsersArgs
+  authorityLimitAssignments?: boolean | DesignationCountOutputTypeCountAuthorityLimitAssignmentsArgs
 }
 
 /**
@@ -411,6 +495,13 @@ export type DesignationCountOutputTypeCountUsersArgs<ExtArgs extends runtime.Typ
   where?: Prisma.UserWhereInput
 }
 
+/**
+ * DesignationCountOutputType without action
+ */
+export type DesignationCountOutputTypeCountAuthorityLimitAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AuthorityLimitAssignmentWhereInput
+}
+
 
 export type DesignationSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -419,6 +510,7 @@ export type DesignationSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   created_at?: boolean
   updated_at?: boolean
   users?: boolean | Prisma.Designation$usersArgs<ExtArgs>
+  authorityLimitAssignments?: boolean | Prisma.Designation$authorityLimitAssignmentsArgs<ExtArgs>
   _count?: boolean | Prisma.DesignationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["designation"]>
 
@@ -449,6 +541,7 @@ export type DesignationSelectScalar = {
 export type DesignationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "isActive" | "created_at" | "updated_at", ExtArgs["result"]["designation"]>
 export type DesignationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Designation$usersArgs<ExtArgs>
+  authorityLimitAssignments?: boolean | Prisma.Designation$authorityLimitAssignmentsArgs<ExtArgs>
   _count?: boolean | Prisma.DesignationCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DesignationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -458,6 +551,7 @@ export type $DesignationPayload<ExtArgs extends runtime.Types.Extensions.Interna
   name: "Designation"
   objects: {
     users: Prisma.$UserPayload<ExtArgs>[]
+    authorityLimitAssignments: Prisma.$AuthorityLimitAssignmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -860,6 +954,7 @@ readonly fields: DesignationFieldRefs;
 export interface Prisma__DesignationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   users<T extends Prisma.Designation$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Designation$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  authorityLimitAssignments<T extends Prisma.Designation$authorityLimitAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Designation$authorityLimitAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuthorityLimitAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1308,6 +1403,30 @@ export type Designation$usersArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
+}
+
+/**
+ * Designation.authorityLimitAssignments
+ */
+export type Designation$authorityLimitAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuthorityLimitAssignment
+   */
+  select?: Prisma.AuthorityLimitAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuthorityLimitAssignment
+   */
+  omit?: Prisma.AuthorityLimitAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuthorityLimitAssignmentInclude<ExtArgs> | null
+  where?: Prisma.AuthorityLimitAssignmentWhereInput
+  orderBy?: Prisma.AuthorityLimitAssignmentOrderByWithRelationInput | Prisma.AuthorityLimitAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.AuthorityLimitAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AuthorityLimitAssignmentScalarFieldEnum | Prisma.AuthorityLimitAssignmentScalarFieldEnum[]
 }
 
 /**

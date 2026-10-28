@@ -150,6 +150,15 @@ export const WorkflowSubjectType = {
 export type WorkflowSubjectType = (typeof WorkflowSubjectType)[keyof typeof WorkflowSubjectType]
 
 
+export const AuthorityRole = {
+  PROPOSER: 'PROPOSER',
+  CHECKER: 'CHECKER',
+  APPROVER: 'APPROVER'
+} as const
+
+export type AuthorityRole = (typeof AuthorityRole)[keyof typeof AuthorityRole]
+
+
 export const NotificationType = {
   APPROVAL_PENDING: 'APPROVAL_PENDING',
   APPROVAL_DECISION: 'APPROVAL_DECISION',

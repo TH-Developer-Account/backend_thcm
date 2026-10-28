@@ -443,6 +443,23 @@ export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDecimalFilter<$PrismaModel>
 }
 
+export type EnumAuthorityRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.AuthorityRole | Prisma.EnumAuthorityRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.AuthorityRole[] | Prisma.ListEnumAuthorityRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AuthorityRole[] | Prisma.ListEnumAuthorityRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAuthorityRoleFilter<$PrismaModel> | $Enums.AuthorityRole
+}
+
+export type EnumAuthorityRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AuthorityRole | Prisma.EnumAuthorityRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.AuthorityRole[] | Prisma.ListEnumAuthorityRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AuthorityRole[] | Prisma.ListEnumAuthorityRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAuthorityRoleWithAggregatesFilter<$PrismaModel> | $Enums.AuthorityRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAuthorityRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAuthorityRoleFilter<$PrismaModel>
+}
+
 export type EnumProductTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.ProductType | Prisma.EnumProductTypeFieldRefInput<$PrismaModel>
   in?: $Enums.ProductType[] | Prisma.ListEnumProductTypeFieldRefInput<$PrismaModel>
@@ -1280,6 +1297,23 @@ export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedDecimalFilter<$PrismaModel>
   _min?: Prisma.NestedDecimalFilter<$PrismaModel>
   _max?: Prisma.NestedDecimalFilter<$PrismaModel>
+}
+
+export type NestedEnumAuthorityRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.AuthorityRole | Prisma.EnumAuthorityRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.AuthorityRole[] | Prisma.ListEnumAuthorityRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AuthorityRole[] | Prisma.ListEnumAuthorityRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAuthorityRoleFilter<$PrismaModel> | $Enums.AuthorityRole
+}
+
+export type NestedEnumAuthorityRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AuthorityRole | Prisma.EnumAuthorityRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.AuthorityRole[] | Prisma.ListEnumAuthorityRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AuthorityRole[] | Prisma.ListEnumAuthorityRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAuthorityRoleWithAggregatesFilter<$PrismaModel> | $Enums.AuthorityRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAuthorityRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAuthorityRoleFilter<$PrismaModel>
 }
 
 export type NestedEnumProductTypeFilter<$PrismaModel = never> = {
