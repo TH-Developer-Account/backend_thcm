@@ -317,3 +317,13 @@ export type MachineStudy = Prisma.MachineStudyModel
  * 
  */
 export type MachineStudyCycle = Prisma.MachineStudyCycleModel
+/**
+ * Model Machine
+ * 
+ */
+export type Machine = Prisma.MachineModel
+/**
+ * Model MachineTelemetry
+ * 
+ */
+export type MachineTelemetry = Prisma.MachineTelemetryModel

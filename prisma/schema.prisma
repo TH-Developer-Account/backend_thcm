@@ -1838,3 +1838,45 @@ model MachineStudyCycle {
 
   @@index([studyId])
 }
+// ─────────────────────────────────────────────────────────────────────────────
+// Machine — master record for one physical machine. serialNumber is both
+// the business key and the primary key — no separate surrogate id.
+// ─────────────────────────────────────────────────────────────────────────────
+model Machine {
+  id           String       @default(uuid())
+  machineSerialNumber String   @id
+  // customerId is intentionally left unset here. It's out of scope for
+  // both the import and the daily C4C sync — filled by a separate process
+  // later. Do not populate this from C4C (CACCOUNT_UUID), even though C4C
+  // returns it on every call — confirmed out of scope for now.
+  customerId   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  telemetry MachineTelemetry[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MachineTelemetry — append-only history, one row per machine per daily
+// sync run. Never updated in place; each 1am job run adds ~11,100 rows.
+//
+// syncedAt is set ONCE per job run (not DateTime @default(now()) per row),
+// so every machine's row from a given day's sync shares an identical
+// timestamp — C4C gives us no per-reading timestamp.
+//
+// hmr defaults to 0: C4C's current $select list for this entity doesn't
+// return an HMR field yet. This column stays real so nothing downstream
+// breaks once the real field is wired in — see
+// machineTelemetryC4CSync.service.ts for the exact TODO line.
+// ─────────────────────────────────────────────────────────────────────────────
+model MachineTelemetry {
+  id           String      @id @default(uuid())
+  machineSerialNumber String
+  machine      Machine  @relation(fields: [machineSerialNumber], references: [machineSerialNumber])
+  latitude     Decimal
+  longitude    Decimal
+  hmr          Decimal  @default(0)
+  syncedAt     DateTime
+
+  @@index([machineSerialNumber, syncedAt])
+}
