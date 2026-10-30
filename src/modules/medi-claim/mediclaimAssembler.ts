@@ -1,5 +1,11 @@
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
+import {
+  SETTLED_CLAIM_STATUSES,
+  approvedPaise,
+  isHospitalisationHead,
+  toPaise,
+} from "./mediclaim.eligibility";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MEDICAL CLAIM — PDF DATA ASSEMBLER
@@ -25,9 +31,18 @@ export interface MedicalClaimPdfData {
     submittedAt: Date | null;
   };
   amounts: {
+    // Non-hospitalisation bucket (every grade).
     eligibleAmount: number | null;
     alreadySettled: number | null;
+    // Hospitalisation bucket — null for grades without hospitalisation cover.
+    hospitalisationEligibleAmount: number | null;
+    hospitalisationAlreadySettled: number | null;
     totalClaimed: number | null;
+    // Split of totalClaimed, computed from the bills.
+    claimedNonHospitalisation: number;
+    claimedHospitalisation: number;
+    // Sum of approved amounts; null while nothing has been approved yet.
+    totalApproved: number | null;
   };
   bills: Array<{
     claimHead: string;
@@ -35,6 +50,8 @@ export interface MedicalClaimPdfData {
     billName: string | null;
     billDate: Date | null;
     amount: number;
+    // The amount the approver accepted. For a settled claim a line approved
+    // without a typed amount shows its claimed amount; null = not reviewed yet.
     approvedClaimAmount: number | null;
     approved: boolean;
   }>;
@@ -59,6 +76,44 @@ export async function assembleMedicalClaimPdfData(
     throw new ApiError(404, "Medical claim record not found");
   }
 
+  const isSettled = (SETTLED_CLAIM_STATUSES as readonly string[]).includes(
+    claim.status,
+  );
+
+  // Paise throughout, rupees once at the end — no float drift in the totals.
+  let claimedHospitalisationPaise = 0;
+  let claimedNonHospitalisationPaise = 0;
+  let approvedTotalPaise = 0;
+  let anyApproved = false;
+
+  const bills = claim.bills.map((bill) => {
+    const claimedPaise = toPaise(bill.amount);
+    if (isHospitalisationHead(bill.claimHead)) {
+      claimedHospitalisationPaise += claimedPaise;
+    } else {
+      claimedNonHospitalisationPaise += claimedPaise;
+    }
+
+    // On a settled claim every line counts (a line approved without a typed
+    // amount is approved at the claimed amount); before that, only lines the
+    // approver has actually approved show an approved amount.
+    const hasApprovedAmount = isSettled || bill.approved;
+    if (hasApprovedAmount) {
+      anyApproved = true;
+      approvedTotalPaise += approvedPaise(bill);
+    }
+
+    return {
+      claimHead: bill.claimHead,
+      billNo: bill.billNo,
+      billName: bill.billName,
+      billDate: bill.billDate,
+      amount: claimedPaise / 100,
+      approvedClaimAmount: hasApprovedAmount ? approvedPaise(bill) / 100 : null,
+      approved: isSettled || bill.approved,
+    };
+  });
+
   return {
     claim: {
       referenceNumber: claim.referenceNumber,
@@ -77,17 +132,14 @@ export async function assembleMedicalClaimPdfData(
     amounts: {
       eligibleAmount: toNumber(claim.eligibleAmount),
       alreadySettled: toNumber(claim.alreadySettled),
+      hospitalisationEligibleAmount: toNumber(claim.hospitalisationEligibleAmount),
+      hospitalisationAlreadySettled: toNumber(claim.hospitalisationAlreadySettled),
       totalClaimed: toNumber(claim.totalClaimed),
+      claimedNonHospitalisation: claimedNonHospitalisationPaise / 100,
+      claimedHospitalisation: claimedHospitalisationPaise / 100,
+      totalApproved: anyApproved ? approvedTotalPaise / 100 : null,
     },
-    bills: claim.bills.map((bill) => ({
-      claimHead: bill.claimHead,
-      billNo: bill.billNo,
-      billName: bill.billName,
-      billDate: bill.billDate,
-      amount: toNumber(bill.amount) as number,
-      approvedClaimAmount: toNumber(bill.approvedClaimAmount),
-      approved: bill.approved,
-    })),
+    bills,
     status: claim.status,
     generatedAt: new Date(),
   };

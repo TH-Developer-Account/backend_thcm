@@ -5624,6 +5624,8 @@ export const MedicalClaimScalarFieldEnum = {
   eligibleAmount: 'eligibleAmount',
   alreadySettled: 'alreadySettled',
   totalClaimed: 'totalClaimed',
+  hospitalisationEligibleAmount: 'hospitalisationEligibleAmount',
+  hospitalisationAlreadySettled: 'hospitalisationAlreadySettled',
   declarationAcceptedAt: 'declarationAcceptedAt',
   signatureName: 'signatureName',
   signatureDate: 'signatureDate',

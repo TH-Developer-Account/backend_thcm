@@ -31,6 +31,8 @@ export type MedicalClaimAvgAggregateOutputType = {
   eligibleAmount: runtime.Decimal | null
   alreadySettled: runtime.Decimal | null
   totalClaimed: runtime.Decimal | null
+  hospitalisationEligibleAmount: runtime.Decimal | null
+  hospitalisationAlreadySettled: runtime.Decimal | null
 }
 
 export type MedicalClaimSumAggregateOutputType = {
@@ -38,6 +40,8 @@ export type MedicalClaimSumAggregateOutputType = {
   eligibleAmount: runtime.Decimal | null
   alreadySettled: runtime.Decimal | null
   totalClaimed: runtime.Decimal | null
+  hospitalisationEligibleAmount: runtime.Decimal | null
+  hospitalisationAlreadySettled: runtime.Decimal | null
 }
 
 export type MedicalClaimMinAggregateOutputType = {
@@ -60,6 +64,8 @@ export type MedicalClaimMinAggregateOutputType = {
   eligibleAmount: runtime.Decimal | null
   alreadySettled: runtime.Decimal | null
   totalClaimed: runtime.Decimal | null
+  hospitalisationEligibleAmount: runtime.Decimal | null
+  hospitalisationAlreadySettled: runtime.Decimal | null
   declarationAcceptedAt: Date | null
   signatureName: string | null
   signatureDate: Date | null
@@ -88,6 +94,8 @@ export type MedicalClaimMaxAggregateOutputType = {
   eligibleAmount: runtime.Decimal | null
   alreadySettled: runtime.Decimal | null
   totalClaimed: runtime.Decimal | null
+  hospitalisationEligibleAmount: runtime.Decimal | null
+  hospitalisationAlreadySettled: runtime.Decimal | null
   declarationAcceptedAt: Date | null
   signatureName: string | null
   signatureDate: Date | null
@@ -116,6 +124,8 @@ export type MedicalClaimCountAggregateOutputType = {
   eligibleAmount: number
   alreadySettled: number
   totalClaimed: number
+  hospitalisationEligibleAmount: number
+  hospitalisationAlreadySettled: number
   declarationAcceptedAt: number
   signatureName: number
   signatureDate: number
@@ -131,6 +141,8 @@ export type MedicalClaimAvgAggregateInputType = {
   eligibleAmount?: true
   alreadySettled?: true
   totalClaimed?: true
+  hospitalisationEligibleAmount?: true
+  hospitalisationAlreadySettled?: true
 }
 
 export type MedicalClaimSumAggregateInputType = {
@@ -138,6 +150,8 @@ export type MedicalClaimSumAggregateInputType = {
   eligibleAmount?: true
   alreadySettled?: true
   totalClaimed?: true
+  hospitalisationEligibleAmount?: true
+  hospitalisationAlreadySettled?: true
 }
 
 export type MedicalClaimMinAggregateInputType = {
@@ -160,6 +174,8 @@ export type MedicalClaimMinAggregateInputType = {
   eligibleAmount?: true
   alreadySettled?: true
   totalClaimed?: true
+  hospitalisationEligibleAmount?: true
+  hospitalisationAlreadySettled?: true
   declarationAcceptedAt?: true
   signatureName?: true
   signatureDate?: true
@@ -188,6 +204,8 @@ export type MedicalClaimMaxAggregateInputType = {
   eligibleAmount?: true
   alreadySettled?: true
   totalClaimed?: true
+  hospitalisationEligibleAmount?: true
+  hospitalisationAlreadySettled?: true
   declarationAcceptedAt?: true
   signatureName?: true
   signatureDate?: true
@@ -216,6 +234,8 @@ export type MedicalClaimCountAggregateInputType = {
   eligibleAmount?: true
   alreadySettled?: true
   totalClaimed?: true
+  hospitalisationEligibleAmount?: true
+  hospitalisationAlreadySettled?: true
   declarationAcceptedAt?: true
   signatureName?: true
   signatureDate?: true
@@ -331,6 +351,8 @@ export type MedicalClaimGroupByOutputType = {
   eligibleAmount: runtime.Decimal | null
   alreadySettled: runtime.Decimal | null
   totalClaimed: runtime.Decimal | null
+  hospitalisationEligibleAmount: runtime.Decimal | null
+  hospitalisationAlreadySettled: runtime.Decimal | null
   declarationAcceptedAt: Date | null
   signatureName: string | null
   signatureDate: Date | null
@@ -382,6 +404,8 @@ export type MedicalClaimWhereInput = {
   eligibleAmount?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.DateTimeNullableFilter<"MedicalClaim"> | Date | string | null
   signatureName?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
   signatureDate?: Prisma.DateTimeNullableFilter<"MedicalClaim"> | Date | string | null
@@ -414,6 +438,8 @@ export type MedicalClaimOrderByWithRelationInput = {
   eligibleAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   alreadySettled?: Prisma.SortOrderInput | Prisma.SortOrder
   totalClaimed?: Prisma.SortOrderInput | Prisma.SortOrder
+  hospitalisationEligibleAmount?: Prisma.SortOrderInput | Prisma.SortOrder
+  hospitalisationAlreadySettled?: Prisma.SortOrderInput | Prisma.SortOrder
   declarationAcceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   signatureName?: Prisma.SortOrderInput | Prisma.SortOrder
   signatureDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -449,6 +475,8 @@ export type MedicalClaimWhereUniqueInput = Prisma.AtLeast<{
   eligibleAmount?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.DateTimeNullableFilter<"MedicalClaim"> | Date | string | null
   signatureName?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
   signatureDate?: Prisma.DateTimeNullableFilter<"MedicalClaim"> | Date | string | null
@@ -481,6 +509,8 @@ export type MedicalClaimOrderByWithAggregationInput = {
   eligibleAmount?: Prisma.SortOrderInput | Prisma.SortOrder
   alreadySettled?: Prisma.SortOrderInput | Prisma.SortOrder
   totalClaimed?: Prisma.SortOrderInput | Prisma.SortOrder
+  hospitalisationEligibleAmount?: Prisma.SortOrderInput | Prisma.SortOrder
+  hospitalisationAlreadySettled?: Prisma.SortOrderInput | Prisma.SortOrder
   declarationAcceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   signatureName?: Prisma.SortOrderInput | Prisma.SortOrder
   signatureDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -517,6 +547,8 @@ export type MedicalClaimScalarWhereWithAggregatesInput = {
   eligibleAmount?: Prisma.DecimalNullableWithAggregatesFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.DecimalNullableWithAggregatesFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.DecimalNullableWithAggregatesFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.DecimalNullableWithAggregatesFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.DecimalNullableWithAggregatesFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"MedicalClaim"> | Date | string | null
   signatureName?: Prisma.StringNullableWithAggregatesFilter<"MedicalClaim"> | string | null
   signatureDate?: Prisma.DateTimeNullableWithAggregatesFilter<"MedicalClaim"> | Date | string | null
@@ -542,6 +574,8 @@ export type MedicalClaimCreateInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -574,6 +608,8 @@ export type MedicalClaimUncheckedCreateInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -600,6 +636,8 @@ export type MedicalClaimUpdateInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -632,6 +670,8 @@ export type MedicalClaimUncheckedUpdateInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -661,6 +701,8 @@ export type MedicalClaimCreateManyInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -686,6 +728,8 @@ export type MedicalClaimUpdateManyMutationInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -714,6 +758,8 @@ export type MedicalClaimUncheckedUpdateManyInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -752,6 +798,8 @@ export type MedicalClaimCountOrderByAggregateInput = {
   eligibleAmount?: Prisma.SortOrder
   alreadySettled?: Prisma.SortOrder
   totalClaimed?: Prisma.SortOrder
+  hospitalisationEligibleAmount?: Prisma.SortOrder
+  hospitalisationAlreadySettled?: Prisma.SortOrder
   declarationAcceptedAt?: Prisma.SortOrder
   signatureName?: Prisma.SortOrder
   signatureDate?: Prisma.SortOrder
@@ -765,6 +813,8 @@ export type MedicalClaimAvgOrderByAggregateInput = {
   eligibleAmount?: Prisma.SortOrder
   alreadySettled?: Prisma.SortOrder
   totalClaimed?: Prisma.SortOrder
+  hospitalisationEligibleAmount?: Prisma.SortOrder
+  hospitalisationAlreadySettled?: Prisma.SortOrder
 }
 
 export type MedicalClaimMaxOrderByAggregateInput = {
@@ -787,6 +837,8 @@ export type MedicalClaimMaxOrderByAggregateInput = {
   eligibleAmount?: Prisma.SortOrder
   alreadySettled?: Prisma.SortOrder
   totalClaimed?: Prisma.SortOrder
+  hospitalisationEligibleAmount?: Prisma.SortOrder
+  hospitalisationAlreadySettled?: Prisma.SortOrder
   declarationAcceptedAt?: Prisma.SortOrder
   signatureName?: Prisma.SortOrder
   signatureDate?: Prisma.SortOrder
@@ -815,6 +867,8 @@ export type MedicalClaimMinOrderByAggregateInput = {
   eligibleAmount?: Prisma.SortOrder
   alreadySettled?: Prisma.SortOrder
   totalClaimed?: Prisma.SortOrder
+  hospitalisationEligibleAmount?: Prisma.SortOrder
+  hospitalisationAlreadySettled?: Prisma.SortOrder
   declarationAcceptedAt?: Prisma.SortOrder
   signatureName?: Prisma.SortOrder
   signatureDate?: Prisma.SortOrder
@@ -828,6 +882,8 @@ export type MedicalClaimSumOrderByAggregateInput = {
   eligibleAmount?: Prisma.SortOrder
   alreadySettled?: Prisma.SortOrder
   totalClaimed?: Prisma.SortOrder
+  hospitalisationEligibleAmount?: Prisma.SortOrder
+  hospitalisationAlreadySettled?: Prisma.SortOrder
 }
 
 export type MedicalClaimScalarRelationFilter = {
@@ -996,6 +1052,8 @@ export type MedicalClaimCreateWithoutInitiatedByInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -1026,6 +1084,8 @@ export type MedicalClaimUncheckedCreateWithoutInitiatedByInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -1084,6 +1144,8 @@ export type MedicalClaimScalarWhereInput = {
   eligibleAmount?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.DecimalNullableFilter<"MedicalClaim"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.DateTimeNullableFilter<"MedicalClaim"> | Date | string | null
   signatureName?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
   signatureDate?: Prisma.DateTimeNullableFilter<"MedicalClaim"> | Date | string | null
@@ -1109,6 +1171,8 @@ export type MedicalClaimCreateWithoutWorkspaceInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -1139,6 +1203,8 @@ export type MedicalClaimUncheckedCreateWithoutWorkspaceInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -1191,6 +1257,8 @@ export type MedicalClaimCreateWithoutBillsInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -1222,6 +1290,8 @@ export type MedicalClaimUncheckedCreateWithoutBillsInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -1263,6 +1333,8 @@ export type MedicalClaimUpdateWithoutBillsInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1294,6 +1366,8 @@ export type MedicalClaimUncheckedUpdateWithoutBillsInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1319,6 +1393,8 @@ export type MedicalClaimCreateWithoutGuestInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -1349,6 +1425,8 @@ export type MedicalClaimUncheckedCreateWithoutGuestInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -1403,6 +1481,8 @@ export type MedicalClaimCreateManyInitiatedByInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -1428,6 +1508,8 @@ export type MedicalClaimUpdateWithoutInitiatedByInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1458,6 +1540,8 @@ export type MedicalClaimUncheckedUpdateWithoutInitiatedByInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1486,6 +1570,8 @@ export type MedicalClaimUncheckedUpdateManyWithoutInitiatedByInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1513,6 +1599,8 @@ export type MedicalClaimCreateManyWorkspaceInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -1538,6 +1626,8 @@ export type MedicalClaimUpdateWithoutWorkspaceInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1568,6 +1658,8 @@ export type MedicalClaimUncheckedUpdateWithoutWorkspaceInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1596,6 +1688,8 @@ export type MedicalClaimUncheckedUpdateManyWithoutWorkspaceInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1623,6 +1717,8 @@ export type MedicalClaimCreateManyGuestInput = {
   eligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Date | string | null
   signatureName?: string | null
   signatureDate?: Date | string | null
@@ -1648,6 +1744,8 @@ export type MedicalClaimUpdateWithoutGuestInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1678,6 +1776,8 @@ export type MedicalClaimUncheckedUpdateWithoutGuestInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1706,6 +1806,8 @@ export type MedicalClaimUncheckedUpdateManyWithoutGuestInput = {
   eligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   alreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   totalClaimed?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationEligibleAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  hospitalisationAlreadySettled?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   declarationAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   signatureName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   signatureDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1765,6 +1867,8 @@ export type MedicalClaimSelect<ExtArgs extends runtime.Types.Extensions.Internal
   eligibleAmount?: boolean
   alreadySettled?: boolean
   totalClaimed?: boolean
+  hospitalisationEligibleAmount?: boolean
+  hospitalisationAlreadySettled?: boolean
   declarationAcceptedAt?: boolean
   signatureName?: boolean
   signatureDate?: boolean
@@ -1798,6 +1902,8 @@ export type MedicalClaimSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   eligibleAmount?: boolean
   alreadySettled?: boolean
   totalClaimed?: boolean
+  hospitalisationEligibleAmount?: boolean
+  hospitalisationAlreadySettled?: boolean
   declarationAcceptedAt?: boolean
   signatureName?: boolean
   signatureDate?: boolean
@@ -1829,6 +1935,8 @@ export type MedicalClaimSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   eligibleAmount?: boolean
   alreadySettled?: boolean
   totalClaimed?: boolean
+  hospitalisationEligibleAmount?: boolean
+  hospitalisationAlreadySettled?: boolean
   declarationAcceptedAt?: boolean
   signatureName?: boolean
   signatureDate?: boolean
@@ -1860,6 +1968,8 @@ export type MedicalClaimSelectScalar = {
   eligibleAmount?: boolean
   alreadySettled?: boolean
   totalClaimed?: boolean
+  hospitalisationEligibleAmount?: boolean
+  hospitalisationAlreadySettled?: boolean
   declarationAcceptedAt?: boolean
   signatureName?: boolean
   signatureDate?: boolean
@@ -1868,7 +1978,7 @@ export type MedicalClaimSelectScalar = {
   updated_at?: boolean
 }
 
-export type MedicalClaimOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceNumber" | "workspaceId" | "initiatedById" | "guestId" | "status" | "mobile" | "email" | "ticketNumber" | "grade" | "location" | "employeeName" | "patientName" | "claimCover" | "spouseName" | "medicalAdvanceTaken" | "eligibleAmount" | "alreadySettled" | "totalClaimed" | "declarationAcceptedAt" | "signatureName" | "signatureDate" | "submittedAt" | "created_at" | "updated_at", ExtArgs["result"]["medicalClaim"]>
+export type MedicalClaimOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceNumber" | "workspaceId" | "initiatedById" | "guestId" | "status" | "mobile" | "email" | "ticketNumber" | "grade" | "location" | "employeeName" | "patientName" | "claimCover" | "spouseName" | "medicalAdvanceTaken" | "eligibleAmount" | "alreadySettled" | "totalClaimed" | "hospitalisationEligibleAmount" | "hospitalisationAlreadySettled" | "declarationAcceptedAt" | "signatureName" | "signatureDate" | "submittedAt" | "created_at" | "updated_at", ExtArgs["result"]["medicalClaim"]>
 export type MedicalClaimInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   initiatedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1915,6 +2025,8 @@ export type $MedicalClaimPayload<ExtArgs extends runtime.Types.Extensions.Intern
     eligibleAmount: runtime.Decimal | null
     alreadySettled: runtime.Decimal | null
     totalClaimed: runtime.Decimal | null
+    hospitalisationEligibleAmount: runtime.Decimal | null
+    hospitalisationAlreadySettled: runtime.Decimal | null
     declarationAcceptedAt: Date | null
     signatureName: string | null
     signatureDate: Date | null
@@ -2367,6 +2479,8 @@ export interface MedicalClaimFieldRefs {
   readonly eligibleAmount: Prisma.FieldRef<"MedicalClaim", 'Decimal'>
   readonly alreadySettled: Prisma.FieldRef<"MedicalClaim", 'Decimal'>
   readonly totalClaimed: Prisma.FieldRef<"MedicalClaim", 'Decimal'>
+  readonly hospitalisationEligibleAmount: Prisma.FieldRef<"MedicalClaim", 'Decimal'>
+  readonly hospitalisationAlreadySettled: Prisma.FieldRef<"MedicalClaim", 'Decimal'>
   readonly declarationAcceptedAt: Prisma.FieldRef<"MedicalClaim", 'DateTime'>
   readonly signatureName: Prisma.FieldRef<"MedicalClaim", 'String'>
   readonly signatureDate: Prisma.FieldRef<"MedicalClaim", 'DateTime'>

@@ -44,8 +44,25 @@ import {
 	upsertMedicalClaimBills,
 	mapMedicalClaimToXlsxRow,
 	MEDICAL_CLAIM_EXPORT_COLUMN_WIDTHS,
-	resolveGradeForTicketNumber,
+	prefillClaimEligibility,
+	resolveEffectiveGrade,
+	eligibilityToClaimColumns,
+	lockRetireeLedger,
+	parseBillsPayload,
+	normalizeBillInputs,
+	finalizeMedicalClaimBillAmounts,
+	SETTLED_CLAIM_STATUSES,
+	approvedPaise,
+	isHospitalisationHead,
+	toPaise,
 } from "./mediclaim.helper";
+
+// Submit / resubmit hold an advisory lock and upload bill files inside the
+// transaction, which can outlast Prisma's 5-second default.
+const SUBMIT_TX_OPTIONS = { maxWait: 10_000, timeout: 60_000 } as const;
+
+const formatRupees = (paise: number): string =>
+	`₹${(paise / 100).toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
 
 const attachSignedUrlsToBills = async <T extends { s3Key: string | null }>(
 	bills: T[],
@@ -66,10 +83,14 @@ export const initiateMedicalClaim = async (
 ) => {
 	try {
 		const userId = req.user?.id;
-		const workspaceId = await resolveWorkspaceId(userId as string);
 		if (!userId) throw new ApiError(401, "Unauthorized");
+		const workspaceId = await resolveWorkspaceId(userId);
 
-		const { employeeName, ticketNumber, mobile, email } = req.body;
+		const { employeeName, mobile, email } = req.body;
+		const ticketNumber =
+			typeof req.body.ticketNumber === "string"
+				? req.body.ticketNumber.trim() || null
+				: null;
 		if (!employeeName || !mobile || !email) {
 			throw new ApiError(400, "Employee name, mobile and email are required");
 		}
@@ -88,33 +109,8 @@ export const initiateMedicalClaim = async (
 				},
 			});
 
-			if (ticketNumber) {
-				const grade = await resolveGradeForTicketNumber(tx, ticketNumber);
-				if (grade) {
-					// A returning retiree already has a Guest (keyed by mobile), so
-					// their earlier claims — settled and in progress — count at
-					// initiation too, not only once the form is submitted.
-					const existingGuest = await tx.guest.findUnique({
-						where: { mobile },
-						select: { id: true },
-					});
-					const eligibility = await computeMedicalClaimEligibility(tx, grade, {
-						guestId: existingGuest?.id,
-						ticketNumber,
-						excludeClaimId: created.id,
-					});
-					if (eligibility) {
-						await tx.medicalClaim.update({
-							where: { id: created.id },
-							data: {
-								grade,
-								eligibleAmount: eligibility.eligibleAmount,
-								alreadySettled: eligibility.alreadySettled,
-							},
-						});
-					}
-				}
-			}
+			// Grade + eligibility prefill — the same function the bulk import uses.
+			const prefilled = await prefillClaimEligibility(tx, created);
 
 			const tokenRecord = await issueAccessToken(APP_KEY, created.id, tx);
 
@@ -127,7 +123,7 @@ export const initiateMedicalClaim = async (
 				},
 			});
 
-			return { created, tokenRecord };
+			return { created: prefilled ?? created, tokenRecord };
 		});
 
 		await sendWorkflowMail(
@@ -243,7 +239,7 @@ export const submitMedicalClaimForm = async (
 	try {
 		const { claim, id: tokenId } = req.medicalClaimAccessToken!;
 		const {
-			grade,
+			grade: clientGrade,
 			location,
 			patientName,
 			claimCover,
@@ -255,16 +251,18 @@ export const submitMedicalClaimForm = async (
 			signatureName,
 			signatureDate,
 		} = req.body;
-		const bills = req.body.bills ? JSON.parse(req.body.bills) : [];
+		// Every bill must be a known head with a finite amount > 0 — a negative
+		// or NaN amount would otherwise slip through the limit check.
+		const bills = normalizeBillInputs(parseBillsPayload(req.body.bills), {
+			allowZero: false,
+		});
 		const files = (req.files as Express.Multer.File[]) ?? [];
 
 		if (!declarationAccepted)
 			throw new ApiError(400, "Declaration must be accepted before submitting");
-		if (!Array.isArray(bills) || bills.length === 0) {
+		if (bills.length === 0) {
 			throw new ApiError(400, "At least one claim head entry is required");
 		}
-		if (!grade)
-			throw new ApiError(400, "Grade is required to compute eligibility");
 		if (!mobile) throw new ApiError(400, "A mobile number is required");
 
 		let guestPlainPassword: string | null = null;
@@ -285,6 +283,17 @@ export const submitMedicalClaimForm = async (
 				});
 				guestPlainPassword = plainPassword;
 			}
+
+			// One submit at a time per retiree: two claims submitted at the same
+			// instant would otherwise both pass the limit check below.
+			await lockRetireeLedger(tx, {
+				ticketNumber: claim.ticketNumber,
+				guestId: guest.id,
+			});
+
+			// The grade decides the cap, so it comes from HR (via the ticket
+			// number), not from whatever the form sent.
+			const grade = (await resolveEffectiveGrade(tx, claim, clientGrade))!;
 
 			const eligibility = await computeMedicalClaimEligibility(tx, grade, {
 				guestId: guest.id,
@@ -312,8 +321,7 @@ export const submitMedicalClaimForm = async (
 					claimCover,
 					spouseName,
 					medicalAdvanceTaken,
-					eligibleAmount: eligibility.eligibleAmount,
-					alreadySettled: eligibility.alreadySettled,
+					...eligibilityToClaimColumns(eligibility),
 					declarationAcceptedAt: new Date(),
 					signatureName,
 					signatureDate,
@@ -372,7 +380,7 @@ export const submitMedicalClaimForm = async (
 			});
 
 			return { updated, assigned };
-		});
+		}, SUBMIT_TX_OPTIONS);
 
 		if (result.assigned.stageOneId) {
 			await notifyStageApprovers({
@@ -415,7 +423,7 @@ export const saveMedicalClaimDraft = async (
 	try {
 		const { claim } = req.medicalClaimAccessToken!;
 		const {
-			grade,
+			grade: clientGrade,
 			location,
 			patientName,
 			claimCover,
@@ -424,20 +432,25 @@ export const saveMedicalClaimDraft = async (
 			mobile,
 			email,
 		} = req.body;
-		const bills = req.body.bills ? JSON.parse(req.body.bills) : [];
+		// Drafts allow a 0 amount (rows are filled in gradually) but never a
+		// negative / non-numeric one or an unknown claim head.
+		const bills = normalizeBillInputs(parseBillsPayload(req.body.bills), {
+			allowZero: true,
+		});
 		const files = (req.files as Express.Multer.File[]) ?? [];
-
-		if (!Array.isArray(bills)) {
-			throw new ApiError(400, "Bills must be an array");
-		}
 
 		// Drafts are deliberately not limit-checked (partial saves are expected);
 		// a draft never holds money — only a submitted claim does.
 		await prisma.$transaction(async (tx) => {
+			// Never let a draft overwrite the HR-resolved grade with form input.
+			const grade = await resolveEffectiveGrade(tx, claim, clientGrade, {
+				required: false,
+			});
+
 			await tx.medicalClaim.update({
 				where: { id: claim.id },
 				data: {
-					grade,
+					grade: grade ?? undefined,
 					location,
 					patientName,
 					claimCover,
@@ -742,6 +755,11 @@ export const closeMedicalClaim = async (
 		}
 
 		await prisma.$transaction(async (tx) => {
+			// A line the approver approved without typing an amount is approved at
+			// its claimed amount — store that, so the PDF/export show the final
+			// figures instead of a blank.
+			await finalizeMedicalClaimBillAmounts(tx, claim.id);
+
 			await tx.medicalClaim.update({
 				where: { id: claim.id },
 				data: { status: "CLOSED" },
@@ -836,14 +854,16 @@ export const resubmitGuestMedicalClaim = async (
 		const guestId = req.guest!.id;
 		const { id } = req.params;
 		const {
-			grade,
+			grade: clientGrade,
 			location,
 			patientName,
 			claimCover,
 			spouseName,
 			medicalAdvanceTaken,
 		} = req.body;
-		const bills = req.body.bills ? JSON.parse(req.body.bills) : [];
+		const bills = normalizeBillInputs(parseBillsPayload(req.body.bills), {
+			allowZero: false,
+		});
 		const files = (req.files as Express.Multer.File[]) ?? [];
 
 		const claim = await prisma.medicalClaim.findUnique({
@@ -855,11 +875,18 @@ export const resubmitGuestMedicalClaim = async (
 		if (claim.status !== "CLARIFICATION_REQUESTED") {
 			throw new ApiError(400, "This claim is not currently open for edits");
 		}
-		if (!Array.isArray(bills) || bills.length === 0) {
+		if (bills.length === 0) {
 			throw new ApiError(400, "At least one claim head entry is required");
 		}
 
 		await prisma.$transaction(async (tx) => {
+			await lockRetireeLedger(tx, {
+				ticketNumber: claim.ticketNumber,
+				guestId,
+			});
+
+			const grade = (await resolveEffectiveGrade(tx, claim, clientGrade))!;
+
 			// excludeClaimId keeps this claim's own bills out of the hold, so
 			// resubmitting never counts the claim against itself.
 			const eligibility = await computeMedicalClaimEligibility(tx, grade, {
@@ -892,8 +919,7 @@ export const resubmitGuestMedicalClaim = async (
 					claimCover,
 					spouseName,
 					medicalAdvanceTaken,
-					eligibleAmount: eligibility.eligibleAmount,
-					alreadySettled: eligibility.alreadySettled,
+					...eligibilityToClaimColumns(eligibility),
 					totalClaimed,
 				},
 			});
@@ -924,7 +950,7 @@ export const resubmitGuestMedicalClaim = async (
 				title: "Medical claim resubmitted",
 				body: `${claim.employeeName ?? "The ex-employee"} has resubmitted their claim after clarification. It is back in the approval workflow.`,
 			});
-		});
+		}, SUBMIT_TX_OPTIONS);
 
 		res.status(200).json({
 			success: true,
@@ -938,6 +964,18 @@ export const resubmitGuestMedicalClaim = async (
 // PATCH /medical-claims/:id/bills/approved-amounts
 // Non-external approvers only, on the claim's currently active stage —
 // separate step before the approve action itself, per product decision.
+//
+// Body: { bills: [{ billId, approvedClaimAmount?, approved? }] }
+//   • approver is happy with the line  → omit approvedClaimAmount: the claimed
+//     amount IS the approved amount
+//   • approver is not happy             → send the amount he approves
+//     (0 ≤ amount ≤ claimed; 0 means nothing is payable on that line)
+//   • approved: false                   → puts the line back to pending
+//
+// Rejected up front, with nothing saved, when:
+//   – an amount is negative / not a number / above the claimed amount
+//   – the claim's approved totals would exceed what the retiree has left in
+//     the non-hospitalisation or hospitalisation bucket
 export const setMedicalClaimBillApprovedAmounts = async (
 	req: Request,
 	res: Response,
@@ -946,7 +984,7 @@ export const setMedicalClaimBillApprovedAmounts = async (
 	try {
 		const userId = req.user?.id;
 		const { id } = req.params;
-		const { bills } = req.body; // [{ billId, approvedClaimAmount }]
+		const { bills } = req.body;
 		if (!userId) throw new ApiError(401, "Unauthorized");
 		if (!Array.isArray(bills) || bills.length === 0) {
 			throw new ApiError(400, "At least one bill amount is required");
@@ -956,6 +994,15 @@ export const setMedicalClaimBillApprovedAmounts = async (
 			where: { id: id as string },
 		});
 		if (!claim) throw new ApiError(404, "Medical claim not found");
+		if (
+			claim.status === "AWAITING_EX_EMPLOYEE" ||
+			(SETTLED_CLAIM_STATUSES as readonly string[]).includes(claim.status)
+		) {
+			throw new ApiError(
+				400,
+				"Amounts can only be changed while the claim is under review",
+			);
+		}
 
 		const activeWorkflow = await prisma.workflowInstance.findFirst({
 			where: {
@@ -986,39 +1033,123 @@ export const setMedicalClaimBillApprovedAmounts = async (
 			);
 		}
 
-		const claimBillIds = new Set(
-			(
-				await prisma.medicalClaimBill.findMany({
-					where: { claimId: claim.id },
-					select: { id: true },
-				})
-			).map((b) => b.id),
-		);
-		const invalid = bills.find((b: any) => !claimBillIds.has(b.billId));
-		if (invalid)
-			throw new ApiError(
-				400,
-				`Bill ${invalid.billId} does not belong to this claim`,
-			);
+		await prisma.$transaction(async (tx) => {
+			const claimBills = await tx.medicalClaimBill.findMany({
+				where: { claimId: claim.id },
+				select: {
+					id: true,
+					claimHead: true,
+					amount: true,
+					approvedClaimAmount: true,
+				},
+			});
+			const billById = new Map(claimBills.map((b) => [b.id, b]));
 
-		const claimBills = await prisma.medicalClaimBill.findMany({
-			where: { claimId: claim.id },
-			select: { id: true, amount: true },
+			// billId → what it becomes (approvedClaimAmount in paise, or null = pending)
+			const planned = new Map<string, number | null>();
+			for (const entry of bills as Array<Record<string, unknown>>) {
+				const billId = typeof entry?.billId === "string" ? entry.billId : "";
+				const bill = billById.get(billId);
+				if (!bill) {
+					throw new ApiError(
+						400,
+						`Bill ${billId || "(missing id)"} does not belong to this claim`,
+					);
+				}
+				if (planned.has(billId)) {
+					throw new ApiError(400, `Bill ${billId} appears more than once`);
+				}
+
+				if (entry.approved === false) {
+					planned.set(billId, null);
+					continue;
+				}
+
+				const claimedPaise = toPaise(bill.amount);
+				let approvedAmountPaise = claimedPaise; // approved as-is
+				const typed = entry.approvedClaimAmount;
+				if (
+					typed !== undefined &&
+					typed !== null &&
+					String(typed).trim() !== ""
+				) {
+					const parsed = Number(typed);
+					if (!Number.isFinite(parsed) || parsed < 0) {
+						throw new ApiError(
+							400,
+							`Approved amount for bill ${billId} must be zero or more`,
+						);
+					}
+					approvedAmountPaise = toPaise(parsed);
+					if (approvedAmountPaise > claimedPaise) {
+						throw new ApiError(
+							400,
+							`Approved amount ${formatRupees(approvedAmountPaise)} cannot exceed the claimed amount ${formatRupees(claimedPaise)}`,
+						);
+					}
+				}
+				planned.set(billId, approvedAmountPaise);
+			}
+
+			// Hard ceiling: what the retiree has left once settled claims (and the
+			// legacy balance) are taken out. Holds are not subtracted — this
+			// claim's own money is part of them.
+			const eligibility = await getLiveEligibilityForClaim(tx, claim);
+			if (!eligibility) {
+				throw new ApiError(
+					400,
+					"Eligibility could not be determined for this claim (grade missing or no cap configured)",
+				);
+			}
+
+			const totals = { standard: 0, hospitalisation: 0 };
+			for (const bill of claimBills) {
+				const bucket = isHospitalisationHead(bill.claimHead)
+					? "hospitalisation"
+					: "standard";
+				const change = planned.get(bill.id);
+				totals[bucket] +=
+					change === undefined
+						? approvedPaise(bill) // untouched: its approved amount, or claimed if none yet
+						: change === null
+							? toPaise(bill.amount) // back to pending: counts at claimed
+							: change;
+			}
+
+			if (totals.standard > toPaise(eligibility.eligibleAmount)) {
+				throw new ApiError(
+					400,
+					`Approved total ${formatRupees(totals.standard)} exceeds the ${formatRupees(toPaise(eligibility.eligibleAmount))} this retiree has left for the year`,
+				);
+			}
+			if (totals.hospitalisation > 0) {
+				if (!eligibility.hospitalisation) {
+					throw new ApiError(
+						400,
+						"Hospitalisation expenses are covered only for EG grades",
+					);
+				}
+				if (
+					totals.hospitalisation >
+					toPaise(eligibility.hospitalisation.eligibleAmount)
+				) {
+					throw new ApiError(
+						400,
+						`Approved hospitalisation total ${formatRupees(totals.hospitalisation)} exceeds the ${formatRupees(toPaise(eligibility.hospitalisation.eligibleAmount))} this retiree has left for the year`,
+					);
+				}
+			}
+
+			for (const [billId, paise] of planned) {
+				await tx.medicalClaimBill.update({
+					where: { id: billId },
+					data:
+						paise === null
+							? { approved: false, approvedClaimAmount: null }
+							: { approved: true, approvedClaimAmount: paise / 100 },
+				});
+			}
 		});
-		const amountByBillId = new Map(claimBills.map((b) => [b.id, b.amount]));
-
-		await Promise.all(
-			bills.map((b: any) =>
-				prisma.medicalClaimBill.update({
-					where: { id: b.billId },
-					data: {
-						approved: true,
-						approvedClaimAmount:
-							b.approvedClaimAmount ?? amountByBillId.get(b.billId),
-					},
-				}),
-			),
-		);
 
 		res
 			.status(200)

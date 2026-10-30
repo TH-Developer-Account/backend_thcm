@@ -3,7 +3,10 @@ import { parseFile, RawRow } from "@import-export/utils/fileParser";
 import { downloadFromS3 } from "@shared/utils/aws-s3.services";
 import { sendWorkflowMail } from "@mail/workFlowEmail.services";
 import { issueAccessToken } from "@shared/services/accessToken.services";
-import { generateMedicalClaimReferenceNumber } from "./mediclaim.helper";
+import {
+  generateMedicalClaimReferenceNumber,
+  prefillClaimEligibility,
+} from "./mediclaim.helper";
 import { APP_KEY } from "./mediclaim.routes";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -105,8 +108,11 @@ function validateRow(
 }
 
 // ── Single-row initiation ─────────────────────────────────────────────────────
-// Same steps as initiateMedicalClaim: create claim + issue access token +
-// activity log, in one transaction, then email the claim-form link.
+// Same steps as initiateMedicalClaim: create claim + grade/eligibility prefill
+// + issue access token + activity log, in one transaction, then email the
+// claim-form link. The prefill is the SAME function the single-initiate
+// endpoint calls (prefillClaimEligibility), so an imported claim opens with
+// exactly the grade and eligibility a hand-initiated one would.
 
 async function initiateClaimFromRow(
   row: ValidClaimRow,
@@ -128,6 +134,8 @@ async function initiateClaimFromRow(
         email: row.email,
       },
     });
+
+    await prefillClaimEligibility(tx, created);
 
     const tokenRecord = await issueAccessToken(APP_KEY, created.id, tx);
 

@@ -1528,10 +1528,13 @@ model MedicalClaim {
   spouseName        String?
   medicalAdvanceTaken Decimal? @db.Decimal(12, 2)
 
-  // ── Computed server-side at submission — never trust client input ──
-  eligibleAmount    Decimal? @db.Decimal(12, 2) // grade cap, looked up at submit time
-  alreadySettled    Decimal? @db.Decimal(12, 2) // sum of this guest's approved claims this calendar year
+  eligibleAmount    Decimal? @db.Decimal(12, 2) // NON-hospitalisation: annual cap − settled
+  alreadySettled    Decimal? @db.Decimal(12, 2) // NON-hospitalisation: settled claims + FY26-27 legacy balance
   totalClaimed      Decimal? @db.Decimal(12, 2) // sum of MedicalClaimBill.amount, stored for audit
+
+  // EG grades only (null for every other grade): the separate ₹1.25 lakh bucket.
+  hospitalisationEligibleAmount  Decimal? @db.Decimal(12, 2) // ₹1,25,000 − hospitalisation settled
+  hospitalisationAlreadySettled  Decimal? @db.Decimal(12, 2) // settled hospitalisation claims + legacy
 
   declarationAcceptedAt DateTime?
   signatureName          String?

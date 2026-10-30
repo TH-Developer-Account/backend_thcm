@@ -5,6 +5,7 @@ import {
   displayBoolean,
   displayDate,
 } from "@pdf/pdfFieldFormatter";
+import { FINANCIAL_YEAR_ELIGIBILITY } from "./mediclaim.eligibility";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MEDICAL CLAIM — DOC DEFINITION BUILDER
@@ -60,27 +61,66 @@ export function buildMedicalClaimDocDefinition(
     fieldRow("Submitted On", displayDate(data.claim.submittedAt)),
   ];
 
+  // Grades with hospitalisation cover (EG) have two separate buckets, so the
+  // labels say which one a figure belongs to. Other grades keep the plain labels.
+  const hasHospitalisation =
+    data.amounts.hospitalisationEligibleAmount !== null ||
+    data.amounts.hospitalisationAlreadySettled !== null;
+  const period = FINANCIAL_YEAR_ELIGIBILITY
+    ? "this financial year"
+    : "this year";
+  const bucketSuffix = hasHospitalisation ? " — Non-Hospitalisation" : "";
+
   const amountRows = [
-    fieldRow("Eligible Amount", displayAmount(data.amounts.eligibleAmount)),
     fieldRow(
-      "Already Settled (this year)",
+      `Eligible Amount${bucketSuffix}`,
+      displayAmount(data.amounts.eligibleAmount),
+    ),
+    fieldRow(
+      `Already Settled (${period})${bucketSuffix}`,
       displayAmount(data.amounts.alreadySettled),
     ),
+    ...(hasHospitalisation
+      ? [
+          fieldRow(
+            "Eligible Amount — Hospitalisation",
+            displayAmount(data.amounts.hospitalisationEligibleAmount),
+          ),
+          fieldRow(
+            `Already Settled (${period}) — Hospitalisation`,
+            displayAmount(data.amounts.hospitalisationAlreadySettled),
+          ),
+        ]
+      : []),
     fieldRow("Total Claimed", displayAmount(data.amounts.totalClaimed)),
+    ...(hasHospitalisation
+      ? [
+          fieldRow(
+            "  of which Non-Hospitalisation",
+            displayAmount(data.amounts.claimedNonHospitalisation),
+          ),
+          fieldRow(
+            "  of which Hospitalisation",
+            displayAmount(data.amounts.claimedHospitalisation),
+          ),
+        ]
+      : []),
+    fieldRow("Total Approved", displayAmount(data.amounts.totalApproved)),
   ];
 
   const billsTable: Content =
     data.bills.length > 0
       ? {
           table: {
-            widths: ["20%", "15%", "20%", "15%", "15%", "15%"],
+            widths: ["19%", "12%", "17%", "12%", "14%", "14%", "12%"],
             body: [
               [
                 { text: "Claim Head", style: LABEL_STYLE },
                 { text: "Bill No.", style: LABEL_STYLE },
                 { text: "Bill Name", style: LABEL_STYLE },
                 { text: "Bill Date", style: LABEL_STYLE },
-                { text: "Amount", style: LABEL_STYLE },
+                { text: "Claimed", style: LABEL_STYLE },
+                { text: "Approved Amt", style: LABEL_STYLE },
                 { text: "Approved", style: LABEL_STYLE },
               ],
               ...data.bills.map((bill) => [
@@ -88,9 +128,8 @@ export function buildMedicalClaimDocDefinition(
                 { text: displayValue(bill.billNo) },
                 { text: displayValue(bill.billName) },
                 { text: displayDate(bill.billDate) },
-                {
-                  text: displayAmount(bill.approvedClaimAmount ?? bill.amount),
-                },
+                { text: displayAmount(bill.amount) },
+                { text: displayAmount(bill.approvedClaimAmount) },
                 { text: displayBoolean(bill.approved) },
               ]),
             ],

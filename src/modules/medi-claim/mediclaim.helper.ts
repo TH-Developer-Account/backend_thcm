@@ -5,7 +5,43 @@ import ApiError from "@shared/utils/apiError";
 import { uploadToS3, deleteReportImage } from "@shared/utils/aws-s3.services";
 import { XlsxRow } from "@import-export/utils/xlsxWriter";
 import { APP_KEY } from "./mediclaim.routes";
-import legacyData from "./legacyBalances.json";
+import {
+	CLAIM_HEADS,
+	HOLD_CLAIM_STATUSES,
+	SETTLED_CLAIM_STATUSES,
+	buildEligibility,
+	emptyHistory,
+	evaluateBillsAgainstEligibility,
+	getEligibilityWindow,
+	getLegacyMediclaimRecord,
+	getLegacyPaise,
+	normalizeGrade,
+	normalizeTicketNumber,
+	round2,
+	sumBillsIntoHistory,
+	toPaise,
+	type ClaimHistoryPaise,
+	type EligibilityWindow,
+	type MedicalClaimEligibility,
+} from "./mediclaim.eligibility";
+
+// The pure rules live in mediclaim.eligibility.ts (unit-tested without a DB).
+// Re-exported so existing imports from "./mediclaim.helper" keep working.
+export {
+	FINANCIAL_YEAR_ELIGIBILITY,
+	HOSPITALISATION_ANNUAL_CAP,
+	HOSPITALISATION_CLAIM_HEAD,
+	SETTLED_CLAIM_STATUSES,
+	approvedPaise,
+	getEligibilityWindow,
+	getEligibilityWindowStart,
+	getLegacyMediclaimRecord,
+	isHospitalisationGrade,
+	isHospitalisationHead,
+	normalizeGrade,
+	toPaise,
+	type MedicalClaimEligibility,
+} from "./mediclaim.eligibility";
 
 type Tx = Prisma.TransactionClient;
 
@@ -19,53 +55,8 @@ const CLAIM_SEARCH_FIELDS = [
 	"referenceNumber",
 ] as const;
 
-// ── eligibility rules ──────────────────────────────────────────────────────
-
-/**
- * Which window "this year's" claims are counted over.
- *   false → calendar year (Jan–Dec) — how the backend has always counted.
- *   true  → financial year (Apr–Mar) — what the process document describes.
- * Mirrors MEDICLAIM_BACKEND.financialYearEligibility on the frontend: flip
- * BOTH together, otherwise the period label and the numbers disagree.
- */
-export const FINANCIAL_YEAR_ELIGIBILITY = false;
-
-/** Hospitalisation is tracked separately, under this existing claim head. */
-export const HOSPITALISATION_CLAIM_HEAD = "EXCESS_HOSPITALISATION";
-
-/** Hospitalisation cover for EG grades — ₹1.25 lakh per eligibility window. */
-export const HOSPITALISATION_ANNUAL_CAP = 125_000;
-
-/** Claims whose approved amounts count as already used. CLOSED = APPROVED + closed. */
-const SETTLED_CLAIM_STATUSES = ["APPROVED", "CLOSED"] as const;
-
-/**
- * Submitted but not yet settled. Their amounts are held back so a second
- * claim can't spend the same money. Released if the claim is rejected,
- * and moves to "settled" once approved.
- */
-const HOLD_CLAIM_STATUSES = ["IN_PROGRESS", "CLARIFICATION_REQUESTED"] as const;
-
-/** EG, EG-1A, EG-2B … — the only grades with hospitalisation cover. */
-export const isHospitalisationGrade = (grade?: string | null): boolean =>
-	/^EG/i.test((grade ?? "").trim());
-
-export function getEligibilityWindowStart(ref: Date = new Date()): Date {
-	if (!FINANCIAL_YEAR_ELIGIBILITY) return new Date(ref.getFullYear(), 0, 1);
-	const startYear =
-		ref.getMonth() >= 3 ? ref.getFullYear() : ref.getFullYear() - 1;
-	return new Date(startYear, 3, 1);
-}
-
-const toNumber = (value: unknown): number => {
-	const parsed = Number(value ?? 0);
-	return Number.isFinite(parsed) ? parsed : 0;
-};
-
-const round2 = (value: number): number => Math.round(value * 100) / 100;
-
-const formatInr = (value: number): string =>
-	`₹${value.toLocaleString("en-IN", { maximumFractionDigits: 2 })}`;
+// Decimal(12,2) tops out near ₹10 billion; the form allows 9 digits.
+const MAX_BILL_AMOUNT = 999_999_999;
 
 export interface MedicalClaimBillInputRaw {
 	id?: string;
@@ -197,9 +188,17 @@ export const resolveMedicalClaimListingOrderBy = (
 
 // ── export ───────────────────────────────────────────────────────────────
 
+// An amount of 0 is a real value (e.g. nothing settled yet); only a missing
+// value exports as blank. The old `x ? Number(x) : ""` hid every zero.
+const amountOrBlank = (value: unknown): number | "" =>
+	value === null || value === undefined || value === "" ? "" : Number(value);
+
 // Row shape for both the single-claim export (exportMedicalClaimById) and
 // the bulk listing export (enqueueMedicalClaimExport) — one mapper, two
 // callers, mirrors mapVendorOnboardingToXlsxRow.
+//
+// "Eligible Amount" / "Already Settled" are the NON-hospitalisation figures;
+// the two Hospitalisation columns are filled for EG grades only.
 export const mapMedicalClaimToXlsxRow = (claim: {
 	referenceNumber: string;
 	employeeName: string | null;
@@ -214,6 +213,8 @@ export const mapMedicalClaimToXlsxRow = (claim: {
 	medicalAdvanceTaken: unknown;
 	eligibleAmount: unknown;
 	alreadySettled: unknown;
+	hospitalisationEligibleAmount?: unknown;
+	hospitalisationAlreadySettled?: unknown;
 	totalClaimed: unknown;
 	status: string;
 	submittedAt: Date | null;
@@ -229,12 +230,16 @@ export const mapMedicalClaimToXlsxRow = (claim: {
 	"Patient Name": claim.patientName ?? "",
 	"Claim Cover": claim.claimCover ?? "",
 	"Spouse Name": claim.spouseName ?? "",
-	"Medical Advance Taken": claim.medicalAdvanceTaken
-		? Number(claim.medicalAdvanceTaken)
-		: "",
-	"Eligible Amount": claim.eligibleAmount ? Number(claim.eligibleAmount) : "",
-	"Already Settled": claim.alreadySettled ? Number(claim.alreadySettled) : "",
-	"Total Claimed": claim.totalClaimed ? Number(claim.totalClaimed) : "",
+	"Medical Advance Taken": amountOrBlank(claim.medicalAdvanceTaken),
+	"Eligible Amount": amountOrBlank(claim.eligibleAmount),
+	"Already Settled": amountOrBlank(claim.alreadySettled),
+	"Hospitalisation Eligible Amount": amountOrBlank(
+		claim.hospitalisationEligibleAmount,
+	),
+	"Hospitalisation Already Settled": amountOrBlank(
+		claim.hospitalisationAlreadySettled,
+	),
+	"Total Claimed": amountOrBlank(claim.totalClaimed),
 	Status: claim.status,
 	"Submitted At": claim.submittedAt ?? "",
 	"Created At": claim.created_at,
@@ -244,6 +249,8 @@ export const MEDICAL_CLAIM_EXPORT_COLUMN_WIDTHS: Record<string, number> = {
 	"Reference Number": 26,
 	"Employee Name": 24,
 	Email: 28,
+	"Hospitalisation Eligible Amount": 30,
+	"Hospitalisation Already Settled": 30,
 };
 
 // Format: MED-<4-letter employee code>-<timestamp>, e.g. MED-SYED-20260811143205
@@ -262,68 +269,125 @@ export function generateMedicalClaimReferenceNumber(
 	return `MED-${code}-${timestamp}`;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// legacyMediclaimBalance.helper.ts
-//
-// One-time migration bridge for FY26-27 mediclaim history that predates this
-// system — ~78 retirees whose manual claim records were never entered here.
-// Loaded once into memory at process start; never written to, never re-read
-// from disk. Consulted only as a fallback in computeMedicalClaimEligibility
-// (zero real claims yet) and at initiation (to prefill grade/eligibility).
-//
-// Keyed by the retiree code (e.g. "RE10214") — exact match against
-// MedicalClaim.ticketNumber, matching how staff enter it at initiation.
-//
-// TODO: remove this file and its one call site in mediclaim.helper.ts once
-// every retiree in this dataset has submitted at least one claim through
-// the system — at that point their real MedicalClaimBill history makes this
-// permanently irrelevant for them, and eventually for everyone in the set.
-// ─────────────────────────────────────────────────────────────────────────────
-
-type LegacyMediclaimRecord = {
-	name: string | null;
-	grade: string | null;
-	utilizedAmount: number;
-};
-
-const legacyBalanceMap = new Map<string, LegacyMediclaimRecord>(
-	Object.entries(legacyData as Record<string, LegacyMediclaimRecord>),
-);
-
-export function getLegacyMediclaimRecord(
-	ticketNumber: string | null | undefined,
-): LegacyMediclaimRecord | null {
-	if (!ticketNumber) return null;
-	return legacyBalanceMap.get(ticketNumber.trim()) ?? null;
-}
-
-// ── claim history (settled vs held) ────────────────────────────────────────
-
-type AmountBuckets = { standard: number; hospitalisation: number };
-
-type ClaimHistory = { settled: AmountBuckets; held: AmountBuckets };
+// ── bill input validation ──────────────────────────────────────────────────
 
 /**
- * What this retiree has already used, and what is currently held, inside the
- * eligibility window. Hospitalisation bills are bucketed separately so they
- * never eat into the regular annual limit (and vice versa).
- *
- *  settled — approvedClaimAmount of bills on APPROVED / CLOSED claims
- *  held    — bills on IN_PROGRESS / CLARIFICATION_REQUESTED claims: the
- *            approved amount if the bill is already approved, otherwise
- *            the claimed amount
+ * `bills` arrives as a JSON string on multipart requests. A malformed payload
+ * is a 400, not a 500.
  */
-async function sumGuestClaimHistory(
+export function parseBillsPayload(raw: unknown): unknown[] {
+	if (raw === undefined || raw === null || raw === "") return [];
+	let parsed: unknown = raw;
+	if (typeof raw === "string") {
+		try {
+			parsed = JSON.parse(raw);
+		} catch {
+			throw new ApiError(400, "Bills must be valid JSON");
+		}
+	}
+	if (!Array.isArray(parsed)) throw new ApiError(400, "Bills must be an array");
+	return parsed;
+}
+
+/**
+ * Validates every bill and normalises its amount to 2 decimals.
+ *   submit / resubmit → allowZero: false (every bill must claim something)
+ *   draft             → allowZero: true  (partially filled rows are expected)
+ * A negative amount would silently offset the other bills in the limit check,
+ * and NaN would slip through every comparison, so both are rejected here.
+ */
+export function normalizeBillInputs(
+	bills: unknown[],
+	options: { allowZero: boolean },
+): MedicalClaimBillInputRaw[] {
+	return bills.map((raw, index) => {
+		const bill = (raw ?? {}) as Record<string, unknown>;
+		const label = `Bill #${index + 1}`;
+
+		const claimHead = String(bill.claimHead ?? "");
+		if (!(CLAIM_HEADS as readonly string[]).includes(claimHead)) {
+			throw new ApiError(400, `${label}: invalid claim head "${claimHead}"`);
+		}
+
+		const amount = round2(Number(bill.amount));
+		if (!Number.isFinite(amount)) {
+			throw new ApiError(400, `${label}: amount must be a number`);
+		}
+		if (options.allowZero ? amount < 0 : amount <= 0) {
+			throw new ApiError(
+				400,
+				`${label}: amount must be greater than zero`,
+			);
+		}
+		if (amount > MAX_BILL_AMOUNT) {
+			throw new ApiError(400, `${label}: amount is too large`);
+		}
+
+		return { ...bill, claimHead, amount } as MedicalClaimBillInputRaw;
+	});
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ELIGIBILITY — DB layer
+//
+// The rules themselves (caps, buckets, legacy, rounding) are in
+// mediclaim.eligibility.ts. This section only fetches what they need.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * GradeEligibility lookup that tolerates stray whitespace / casing on either
+ * side ("EG-4  " from HR data vs "EG-4" in the table). The table has ~15 rows,
+ * so matching in memory is cheaper than being clever in SQL.
+ */
+async function findGradeRow(tx: Tx, grade: string) {
+	const target = normalizeGrade(grade);
+	if (!target) return null;
+	const rows = await tx.gradeEligibility.findMany();
+	return rows.find((row) => normalizeGrade(row.grade) === target) ?? null;
+}
+
+/**
+ * What this retiree has already used / has on hold inside the window.
+ *
+ * Matched by guestId OR ticketNumber: the ticket number (retiree code) is the
+ * real identity, so a retiree who submits again from a different mobile — and
+ * therefore gets a new Guest — still sees their earlier claims.
+ *
+ * The window is on submittedAt (when the money was claimed), falling back to
+ * created_at for any claim that has none. Bucketing by created_at would put a
+ * claim initiated on 28 Mar and submitted on 3 Apr into the wrong year.
+ */
+async function sumRetireeClaimHistory(
 	tx: Tx,
-	guestId: string,
+	identity: { guestId?: string; ticketNumber?: string },
+	window: EligibilityWindow,
 	excludeClaimId?: string,
-): Promise<ClaimHistory> {
+): Promise<ClaimHistoryPaise> {
+	const who: Prisma.MedicalClaimWhereInput[] = [];
+	if (identity.guestId) who.push({ guestId: identity.guestId });
+	if (identity.ticketNumber?.trim()) {
+		who.push({
+			ticketNumber: { equals: identity.ticketNumber.trim(), mode: "insensitive" },
+		});
+	}
+	if (who.length === 0) return emptyHistory();
+
 	const bills = await tx.medicalClaimBill.findMany({
 		where: {
 			claim: {
-				guestId,
+				AND: [
+					{ OR: who },
+					{
+						OR: [
+							{ submittedAt: { gte: window.start, lt: window.end } },
+							{
+								submittedAt: null,
+								created_at: { gte: window.start, lt: window.end },
+							},
+						],
+					},
+				],
 				status: { in: [...SETTLED_CLAIM_STATUSES, ...HOLD_CLAIM_STATUSES] },
-				created_at: { gte: getEligibilityWindowStart() },
 				...(excludeClaimId ? { id: { not: excludeClaimId } } : {}),
 			},
 		},
@@ -336,53 +400,33 @@ async function sumGuestClaimHistory(
 		},
 	});
 
-	const history: ClaimHistory = {
-		settled: { standard: 0, hospitalisation: 0 },
-		held: { standard: 0, hospitalisation: 0 },
-	};
-
-	for (const bill of bills) {
-		const bucket =
-			String(bill.claimHead) === HOSPITALISATION_CLAIM_HEAD
-				? "hospitalisation"
-				: "standard";
-		const isSettled = (SETTLED_CLAIM_STATUSES as readonly string[]).includes(
-			String(bill.claim.status),
-		);
-
-		if (isSettled) {
-			history.settled[bucket] += toNumber(bill.approvedClaimAmount);
-		} else {
-			history.held[bucket] += bill.approved
-				? toNumber(bill.approvedClaimAmount ?? bill.amount)
-				: toNumber(bill.amount);
-		}
-	}
-
-	return history;
+	return sumBillsIntoHistory(
+		bills.map((bill) => ({
+			claimHead: bill.claimHead,
+			amount: bill.amount,
+			approved: bill.approved,
+			approvedClaimAmount: bill.approvedClaimAmount,
+			claimStatus: bill.claim.status,
+		})),
+	);
 }
 
 // Server-side only — never trust a client-submitted eligible/settled amount.
-// Shared between initiateMedicalClaim (no guestId yet), submitMedicalClaimForm,
-// resubmitGuestMedicalClaim and the claim GET endpoints — one calculation, so
-// it can't drift between them.
+// Shared between initiateMedicalClaim, the bulk import, submitMedicalClaimForm,
+// resubmitGuestMedicalClaim, the approver's approved-amounts step and the
+// claim GET endpoints — ONE calculation, so it can't drift between them.
 //
-// guestId is optional: at initiation, no Guest exists yet, so there's no DB
-// claim history to query — alreadySettled starts at 0 and falls straight
-// through to the legacy lookup below.
+// guestId / ticketNumber are both optional; whichever are given identify the
+// retiree's history (see sumRetireeClaimHistory). The legacy FY26-27 balance is
+// keyed by ticketNumber and is ALWAYS added to the real settled amount.
 //
-// ticketNumber is optional: omit it once the legacy migration dataset is
-// retired (see legacyMediclaimBalance.helper.ts).
-//
-// Return shape:
-//   eligibleAmount / alreadySettled — unchanged meaning (annual cap minus
-//     settled). These are what get stored on the claim, and the frontend
-//     derives the annual cap from their sum, so they must NOT include holds.
-//   inProgressAmount / availableAmount — the live hold: money tied up in the
-//     retiree's other submitted-but-unsettled claims, and what is actually
-//     left to claim after it.
-//   hospitalisation — null unless the grade is EG; otherwise the separate
-//     ₹1.25 lakh bucket with its own settled / held / available.
+// Return shape (see BucketEligibility in mediclaim.eligibility.ts):
+//   annualCap / eligibleAmount / alreadySettled / inProgressAmount /
+//   availableAmount — the NON-hospitalisation bucket. These are what get
+//   stored on the claim; eligibleAmount does NOT subtract holds.
+//   hospitalisation — null unless the grade is EG; then the separate
+//   ₹1.25 lakh bucket with the same five figures.
+//   totalAnnualCap / period — for display.
 export async function computeMedicalClaimEligibility(
 	tx: Tx,
 	grade: string,
@@ -391,81 +435,167 @@ export async function computeMedicalClaimEligibility(
 		ticketNumber?: string;
 		excludeClaimId?: string;
 	} = {},
-) {
+): Promise<MedicalClaimEligibility | null> {
 	const { guestId, ticketNumber, excludeClaimId } = options;
 
-	const eligibility = await tx.gradeEligibility.findUnique({
-		where: { grade },
-	});
+	const gradeRow = await findGradeRow(tx, grade);
 	// No row at all (grade truly unknown) OR a row whose annualCap hasn't been
 	// set yet (see updateUserHrData.ts, which inserts grades discovered from
 	// HR data with annualCap: null pending manual entry) — both mean "can't
 	// compute a cap", and must return null, not fall through to
-	// Number(null) === 0, which would silently produce eligibleAmount = 0 (or
-	// negative) instead of "not eligible yet".
-	if (!eligibility || eligibility.annualCap === null) return null;
+	// Number(null) === 0, which would silently produce eligibleAmount = 0
+	// instead of "not eligible yet".
+	if (!gradeRow || gradeRow.annualCap === null) return null;
 
-	const history: ClaimHistory = guestId
-		? await sumGuestClaimHistory(tx, guestId, excludeClaimId)
-		: {
-				settled: { standard: 0, hospitalisation: 0 },
-				held: { standard: 0, hospitalisation: 0 },
-			};
-
-	let alreadySettled = history.settled.standard;
-
-	// No real claim history yet (new Guest, or no Guest at all pre-initiation) —
-	// fall back to the one-time FY26-27 migration snapshot for this retiree.
-	// The legacy sheet is non-hospitalisation history, so it only feeds the
-	// regular bucket.
-	if (alreadySettled === 0 && ticketNumber) {
-		const legacyRecord = getLegacyMediclaimRecord(ticketNumber);
-		if (legacyRecord) alreadySettled = legacyRecord.utilizedAmount;
-	}
-
-	const annualCap = Number(eligibility.annualCap);
-	const eligibleAmount = annualCap - alreadySettled;
-	const inProgressAmount = round2(history.held.standard);
-	const availableAmount = round2(
-		Math.max(eligibleAmount - inProgressAmount, 0),
+	const window = getEligibilityWindow();
+	const history = await sumRetireeClaimHistory(
+		tx,
+		{ guestId, ticketNumber },
+		window,
+		excludeClaimId,
 	);
 
-	const hospitalisation = isHospitalisationGrade(grade)
-		? {
-				annualCap: HOSPITALISATION_ANNUAL_CAP,
-				alreadySettled: round2(history.settled.hospitalisation),
-				inProgressAmount: round2(history.held.hospitalisation),
-				availableAmount: round2(
-					Math.max(
-						HOSPITALISATION_ANNUAL_CAP -
-							history.settled.hospitalisation -
-							history.held.hospitalisation,
-						0,
-					),
-				),
-			}
-		: null;
-
-	return {
-		annualCap,
-		eligibleAmount,
-		alreadySettled,
-		inProgressAmount,
-		availableAmount,
-		hospitalisation,
-	};
+	return buildEligibility({
+		grade: normalizeGrade(grade),
+		standardCap: Number(gradeRow.annualCap),
+		history,
+		legacy: getLegacyPaise(ticketNumber, window),
+		window,
+	});
 }
 
-export type MedicalClaimEligibility = NonNullable<
-	Awaited<ReturnType<typeof computeMedicalClaimEligibility>>
->;
+/** The four eligibility columns stored on MedicalClaim (snapshot at submit). */
+export const eligibilityToClaimColumns = (
+	eligibility: MedicalClaimEligibility,
+) => ({
+	eligibleAmount: eligibility.eligibleAmount,
+	alreadySettled: eligibility.alreadySettled,
+	hospitalisationEligibleAmount: eligibility.hospitalisation?.eligibleAmount ?? null,
+	hospitalisationAlreadySettled: eligibility.hospitalisation?.alreadySettled ?? null,
+});
+
+/**
+ * Serialises concurrent submits for the same retiree. Without it, two claims
+ * submitted at the same instant both read the same "available" figure and both
+ * pass the limit check. pg_advisory_xact_lock is held until the surrounding
+ * transaction ends. Always lock in this order (ticket, then guest) so two
+ * handlers can never deadlock each other.
+ */
+export async function lockRetireeLedger(
+	tx: Tx,
+	identity: { ticketNumber?: string | null; guestId?: string | null },
+): Promise<void> {
+	const keys: string[] = [];
+	const ticket = normalizeTicketNumber(identity.ticketNumber);
+	if (ticket) keys.push(`medclaim:ticket:${ticket}`);
+	if (identity.guestId) keys.push(`medclaim:guest:${identity.guestId}`);
+
+	for (const key of keys) {
+		await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${key}))`;
+	}
+}
+
+// Resolves grade for a retiree from the ticket number. User.grade (live HR
+// master) takes priority since it reflects the current record; the legacy
+// migration snapshot is only a fallback for someone no longer present as a
+// User. Returned normalised ("EG-4  " → "EG-4").
+export async function resolveGradeForTicketNumber(
+	tx: Tx,
+	ticketNumber: string,
+): Promise<string | null> {
+	const ticket = ticketNumber.trim();
+	if (!ticket) return null;
+
+	const user = await tx.user.findFirst({
+		where: { employeeCode: { equals: ticket, mode: "insensitive" } },
+		select: { grade: true },
+	});
+	const fromUser = normalizeGrade(user?.grade);
+	if (fromUser) return fromUser;
+
+	const fromLegacy = normalizeGrade(getLegacyMediclaimRecord(ticket)?.grade);
+	return fromLegacy || null;
+}
+
+/**
+ * The grade that decides the cap. The grade is NOT taken on trust from the
+ * request body: it drives the money, so in order of authority:
+ *   1. the grade HR holds for the claim's ticket number (server-side)
+ *   2. the grade the form sent (only when there is no ticket to look up)
+ *   3. the grade already stored on the claim
+ * Returns null only when `required` is false and nothing is known.
+ */
+export async function resolveEffectiveGrade(
+	tx: Tx,
+	claim: { grade: string | null; ticketNumber: string | null },
+	clientGrade?: unknown,
+	options: { required: boolean } = { required: true },
+): Promise<string | null> {
+	if (claim.ticketNumber) {
+		const authoritative = await resolveGradeForTicketNumber(
+			tx,
+			claim.ticketNumber,
+		);
+		if (authoritative) return authoritative;
+	}
+
+	const supplied =
+		typeof clientGrade === "string" ? normalizeGrade(clientGrade) : "";
+	if (supplied) return supplied;
+
+	const stored = normalizeGrade(claim.grade);
+	if (stored) return stored;
+
+	if (options.required) {
+		throw new ApiError(400, "Grade is required to compute eligibility");
+	}
+	return null;
+}
+
+/**
+ * Initiation-time prefill — ONE function used by both the single initiate
+ * endpoint and the bulk import, so the two can never disagree. Resolves the
+ * retiree's grade from the ticket number, then stores grade + the eligibility
+ * snapshot on the claim. Returns the updated claim, or null when there is
+ * nothing to prefill (no ticket, unknown grade, or no cap configured).
+ */
+export async function prefillClaimEligibility(
+	tx: Tx,
+	claim: { id: string; ticketNumber: string | null; mobile: string | null },
+) {
+	if (!claim.ticketNumber) return null;
+
+	const grade = await resolveGradeForTicketNumber(tx, claim.ticketNumber);
+	if (!grade) return null;
+
+	// A returning retiree already has a Guest (keyed by mobile), so their
+	// earlier claims — settled and in progress — count at initiation too.
+	const existingGuest = claim.mobile
+		? await tx.guest.findUnique({
+				where: { mobile: claim.mobile },
+				select: { id: true },
+			})
+		: null;
+
+	const eligibility = await computeMedicalClaimEligibility(tx, grade, {
+		guestId: existingGuest?.id,
+		ticketNumber: claim.ticketNumber,
+		excludeClaimId: claim.id,
+	});
+	if (!eligibility) return null;
+
+	return tx.medicalClaim.update({
+		where: { id: claim.id },
+		data: { grade, ...eligibilityToClaimColumns(eligibility) },
+	});
+}
 
 /**
  * Live eligibility for an existing claim, excluding the claim itself so its
  * own bills are never counted against it. Guests are keyed by mobile (same
  * identity key submit uses), so a claim that is still awaiting its first
  * submission — no guestId yet — still sees the retiree's earlier claims.
- * Returns null when the claim has no grade yet.
+ * Returns null when the claim's grade can't be determined or has no cap.
  */
 export async function getLiveEligibilityForClaim(
 	tx: Tx,
@@ -477,7 +607,10 @@ export async function getLiveEligibilityForClaim(
 		ticketNumber: string | null;
 	},
 ): Promise<MedicalClaimEligibility | null> {
-	if (!claim.grade) return null;
+	const grade = await resolveEffectiveGrade(tx, claim, null, {
+		required: false,
+	});
+	if (!grade) return null;
 
 	let guestId = claim.guestId ?? undefined;
 	if (!guestId && claim.mobile) {
@@ -488,7 +621,7 @@ export async function getLiveEligibilityForClaim(
 		guestId = guest?.id;
 	}
 
-	return computeMedicalClaimEligibility(tx, claim.grade, {
+	return computeMedicalClaimEligibility(tx, grade, {
 		guestId,
 		ticketNumber: claim.ticketNumber ?? undefined,
 		excludeClaimId: claim.id,
@@ -498,83 +631,42 @@ export async function getLiveEligibilityForClaim(
 /**
  * Submit / resubmit guard — the server-side half of the in-progress hold and
  * the EG-only hospitalisation rule. The frontend enforces the same limits for
- * a good error message, but a client can't be trusted to.
- *
- *  - hospitalisation bills need an EG grade
- *  - regular bills must fit in what's available after holds
- *  - hospitalisation bills must fit in the hospitalisation bucket
- *
- * Known limit: two submits from the same retiree at the same instant can
- * both pass this check; closing that needs a row lock or Serializable
- * isolation around the submit transaction.
+ * a good error message, but a client can't be trusted to. Call it AFTER
+ * lockRetireeLedger inside the same transaction, so two simultaneous submits
+ * for one retiree are checked one after the other.
  */
 export function assertBillsWithinEligibility(
 	bills: MedicalClaimBillInputRaw[],
 	grade: string,
 	eligibility: MedicalClaimEligibility,
 ): void {
-	const totals = bills.reduce(
-		(sum, bill) => {
-			const bucket =
-				String(bill.claimHead) === HOSPITALISATION_CLAIM_HEAD
-					? "hospitalisation"
-					: "standard";
-			sum[bucket] += toNumber(bill.amount);
-			return sum;
-		},
-		{ standard: 0, hospitalisation: 0 },
-	);
-
-	if (totals.hospitalisation > 0 && !eligibility.hospitalisation) {
-		throw new ApiError(
-			400,
-			`Hospitalisation expenses are covered only for EG grades (grade "${grade}" is not eligible)`,
-		);
-	}
-
-	if (totals.standard > eligibility.availableAmount + 0.001) {
-		const hold =
-			eligibility.inProgressAmount > 0
-				? ` ${formatInr(eligibility.inProgressAmount)} of the limit is on hold for claims that are still in progress.`
-				: "";
-		throw new ApiError(
-			400,
-			`Claimed total ${formatInr(totals.standard)} exceeds the ${formatInr(eligibility.availableAmount)} available.${hold}`,
-		);
-	}
-
-	if (
-		eligibility.hospitalisation &&
-		totals.hospitalisation > eligibility.hospitalisation.availableAmount + 0.001
-	) {
-		const { availableAmount, inProgressAmount } = eligibility.hospitalisation;
-		const hold =
-			inProgressAmount > 0
-				? ` ${formatInr(inProgressAmount)} is on hold for hospitalisation claims that are still in progress.`
-				: "";
-		throw new ApiError(
-			400,
-			`Hospitalisation total ${formatInr(totals.hospitalisation)} exceeds the ${formatInr(availableAmount)} available.${hold}`,
-		);
-	}
+	const problem = evaluateBillsAgainstEligibility(bills, grade, eligibility);
+	if (problem) throw new ApiError(400, problem);
 }
 
-// Resolves grade for a retiree at claim-initiation time, before any form
-// submission exists. User.grade (live HR master) takes priority since it
-// reflects the current record; the legacy migration snapshot is only a
-// fallback for someone no longer present as a User.
-export async function resolveGradeForTicketNumber(
+/**
+ * Approver rule: approving a line without typing an amount means the claimed
+ * amount IS the approved amount. Fills every bill that still has no approved
+ * amount with its claimed amount and marks it approved. Safe to call more than
+ * once. (Sums already treat a null approvedClaimAmount on a settled claim as
+ * the claimed amount, so this is about making the stored data match, for the
+ * PDF and the export.)
+ */
+export async function finalizeMedicalClaimBillAmounts(
 	tx: Tx,
-	ticketNumber: string,
-): Promise<string | null> {
-	const user = await tx.user.findFirst({
-		where: { employeeCode: ticketNumber },
-		select: { grade: true },
+	claimId: string,
+): Promise<number> {
+	const pending = await tx.medicalClaimBill.findMany({
+		where: { claimId, approvedClaimAmount: null },
+		select: { id: true, amount: true },
 	});
-	if (user?.grade) return user.grade;
-
-	const legacyRecord = getLegacyMediclaimRecord(ticketNumber);
-	return legacyRecord?.grade ?? null;
+	for (const bill of pending) {
+		await tx.medicalClaimBill.update({
+			where: { id: bill.id },
+			data: { approved: true, approvedClaimAmount: bill.amount },
+		});
+	}
+	return pending.length;
 }
 
 // Called from workflowSubject.helper's postClarifyHooks when an approver
@@ -644,6 +736,10 @@ export function getBillAttachmentExtension(mimetype: string): string {
 // here) are deleted along with their S3 object. requireAttachment governs
 // whether a bill needs SOME attachment (new file or a pre-existing one) —
 // false for drafts (partial saves are expected), true for submit/resubmit.
+//
+// If the ex-employee CHANGES a bill's amount (e.g. after a clarification), any
+// earlier approval on that line is cleared — an approved amount from the old
+// figure must not carry over to the new one. Returns the total claimed.
 export const upsertMedicalClaimBills = async (
 	tx: Tx,
 	claimId: string,
@@ -653,10 +749,13 @@ export const upsertMedicalClaimBills = async (
 ): Promise<number> => {
 	const existingBills = await tx.medicalClaimBill.findMany({
 		where: { claimId },
-		select: { id: true, s3Key: true },
+		select: { id: true, s3Key: true, amount: true },
 	});
 	const existingIds = new Set(existingBills.map((b) => b.id));
 	const s3KeyById = new Map(existingBills.map((b) => [b.id, b.s3Key]));
+	const amountPaiseById = new Map(
+		existingBills.map((b) => [b.id, toPaise(b.amount)]),
+	);
 	const keptIds = new Set<string>();
 
 	if (options.requireAttachment) {
@@ -705,7 +804,14 @@ export const upsertMedicalClaimBills = async (
 		};
 
 		if (isExisting) {
-			await tx.medicalClaimBill.update({ where: { id: bill.id }, data });
+			const amountChanged =
+				amountPaiseById.get(bill.id!) !== toPaise(bill.amount);
+			await tx.medicalClaimBill.update({
+				where: { id: bill.id },
+				data: amountChanged
+					? { ...data, approved: false, approvedClaimAmount: null }
+					: data,
+			});
 			keptIds.add(bill.id!);
 		} else {
 			const created = await tx.medicalClaimBill.create({ data });
@@ -725,5 +831,6 @@ export const upsertMedicalClaimBills = async (
 		);
 	}
 
-	return bills.reduce((sum, b) => sum + Number(b.amount), 0);
+	// Paise sum → rupees once, so 17,754.42 + 1,338.50 never drifts.
+	return bills.reduce((sum, b) => sum + toPaise(b.amount), 0) / 100;
 };
