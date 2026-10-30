@@ -26,9 +26,11 @@ export * from "./enums"
  * Type-safe database client for TypeScript
  * @example
  * ```
- * const prisma = new PrismaClient()
+ * const prisma = new PrismaClient({
+ *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+ * })
  * // Fetch zero or more Users
- * const users = await prisma.users.findMany()
+ * const users = await prisma.user.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -38,22 +40,312 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma }
 
 /**
- * Model users
+ * Model User
  * 
  */
-export type users = Prisma.usersModel
+export type User = Prisma.UserModel
 /**
- * Model password_reset_token
+ * Model PasswordResetToken
  * 
  */
-export type password_reset_token = Prisma.password_reset_tokenModel
+export type PasswordResetToken = Prisma.PasswordResetTokenModel
 /**
- * Model user_otps
+ * Model RefreshToken
  * 
  */
-export type user_otps = Prisma.user_otpsModel
+export type RefreshToken = Prisma.RefreshTokenModel
 /**
- * Model refresh_token
+ * Model DailyVisitors
  * 
  */
-export type refresh_token = Prisma.refresh_tokenModel
+export type DailyVisitors = Prisma.DailyVisitorsModel
+/**
+ * Model Workspace
+ * 
+ */
+export type Workspace = Prisma.WorkspaceModel
+/**
+ * Model WorkspaceUser
+ * 
+ */
+export type WorkspaceUser = Prisma.WorkspaceUserModel
+/**
+ * Model App
+ * 
+ */
+export type App = Prisma.AppModel
+/**
+ * Model WorkspaceApp
+ * 
+ */
+export type WorkspaceApp = Prisma.WorkspaceAppModel
+/**
+ * Model Module
+ * 
+ */
+export type Module = Prisma.ModuleModel
+/**
+ * Model AppAdministrator
+ * 
+ */
+export type AppAdministrator = Prisma.AppAdministratorModel
+/**
+ * Model Profile
+ * 
+ */
+export type Profile = Prisma.ProfileModel
+/**
+ * Model ProfilePermission
+ * 
+ */
+export type ProfilePermission = Prisma.ProfilePermissionModel
+/**
+ * Model UserProfile
+ * 
+ */
+export type UserProfile = Prisma.UserProfileModel
+/**
+ * Model EventProposal
+ * 
+ */
+export type EventProposal = Prisma.EventProposalModel
+/**
+ * Model WorkflowTemplate
+ * 
+ */
+export type WorkflowTemplate = Prisma.WorkflowTemplateModel
+/**
+ * Model TemplateStage
+ * 
+ */
+export type TemplateStage = Prisma.TemplateStageModel
+/**
+ * Model TemplateApprover
+ * 
+ */
+export type TemplateApprover = Prisma.TemplateApproverModel
+/**
+ * Model WorkflowInstance
+ * 
+ */
+export type WorkflowInstance = Prisma.WorkflowInstanceModel
+/**
+ * Model StageInstance
+ * 
+ */
+export type StageInstance = Prisma.StageInstanceModel
+/**
+ * Model Approval
+ * 
+ */
+export type Approval = Prisma.ApprovalModel
+/**
+ * Model WorkFlowTemplateUser
+ * 
+ */
+export type WorkFlowTemplateUser = Prisma.WorkFlowTemplateUserModel
+/**
+ * Model ActivityLog
+ * 
+ */
+export type ActivityLog = Prisma.ActivityLogModel
+/**
+ * Model Department
+ * 
+ */
+export type Department = Prisma.DepartmentModel
+/**
+ * Model Vertical
+ * 
+ */
+export type Vertical = Prisma.VerticalModel
+/**
+ * Model Zone
+ * 
+ */
+export type Zone = Prisma.ZoneModel
+/**
+ * Model Branch
+ * 
+ */
+export type Branch = Prisma.BranchModel
+/**
+ * Model BudgetMaster
+ * 
+ */
+export type BudgetMaster = Prisma.BudgetMasterModel
+/**
+ * Model EventName
+ * 
+ */
+export type EventName = Prisma.EventNameModel
+/**
+ * Model Division
+ * 
+ */
+export type Division = Prisma.DivisionModel
+/**
+ * Model Designation
+ * 
+ */
+export type Designation = Prisma.DesignationModel
+/**
+ * Model CostCenter
+ * 
+ */
+export type CostCenter = Prisma.CostCenterModel
+/**
+ * Model AuthorityLimit
+ * 
+ */
+export type AuthorityLimit = Prisma.AuthorityLimitModel
+/**
+ * Model AuthorityLimitAssignment
+ * 
+ */
+export type AuthorityLimitAssignment = Prisma.AuthorityLimitAssignmentModel
+/**
+ * Model ProductMaster
+ * 
+ */
+export type ProductMaster = Prisma.ProductMasterModel
+/**
+ * Model EPF
+ * 
+ */
+export type EPF = Prisma.EPFModel
+/**
+ * Model CRF
+ * 
+ */
+export type CRF = Prisma.CRFModel
+/**
+ * Model CrfItem
+ * 
+ */
+export type CrfItem = Prisma.CrfItemModel
+/**
+ * Model CrfOrder
+ * 
+ */
+export type CrfOrder = Prisma.CrfOrderModel
+/**
+ * Model LineItem
+ * 
+ */
+export type LineItem = Prisma.LineItemModel
+/**
+ * Model Comment
+ * 
+ */
+export type Comment = Prisma.CommentModel
+/**
+ * Model Operator
+ * 
+ */
+export type Operator = Prisma.OperatorModel
+/**
+ * Model Lead
+ * 
+ */
+export type Lead = Prisma.LeadModel
+/**
+ * Model Pincode
+ * 
+ */
+export type Pincode = Prisma.PincodeModel
+/**
+ * Model EventReport
+ * 
+ */
+export type EventReport = Prisma.EventReportModel
+/**
+ * Model EventReportImage
+ * 
+ */
+export type EventReportImage = Prisma.EventReportImageModel
+/**
+ * Model ImportExportLog
+ * 
+ */
+export type ImportExportLog = Prisma.ImportExportLogModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
+ * Model PushSubscription
+ * 
+ */
+export type PushSubscription = Prisma.PushSubscriptionModel
+/**
+ * Model VendorOnboarding
+ * 
+ */
+export type VendorOnboarding = Prisma.VendorOnboardingModel
+/**
+ * Model VendorOnboardingDocument
+ * 
+ */
+export type VendorOnboardingDocument = Prisma.VendorOnboardingDocumentModel
+/**
+ * Model AccessToken
+ * 
+ */
+export type AccessToken = Prisma.AccessTokenModel
+/**
+ * Model MedicalClaim
+ * 
+ */
+export type MedicalClaim = Prisma.MedicalClaimModel
+/**
+ * Model MedicalClaimBill
+ * 
+ */
+export type MedicalClaimBill = Prisma.MedicalClaimBillModel
+/**
+ * Model GradeEligibility
+ * 
+ */
+export type GradeEligibility = Prisma.GradeEligibilityModel
+/**
+ * Model Guest
+ * 
+ */
+export type Guest = Prisma.GuestModel
+/**
+ * Model BusinessPartner
+ * 
+ */
+export type BusinessPartner = Prisma.BusinessPartnerModel
+/**
+ * Model BusinessPartnerAddress
+ * 
+ */
+export type BusinessPartnerAddress = Prisma.BusinessPartnerAddressModel
+/**
+ * Model BusinessPartnerContact
+ * 
+ */
+export type BusinessPartnerContact = Prisma.BusinessPartnerContactModel
+/**
+ * Model MachineStudy
+ * 
+ */
+export type MachineStudy = Prisma.MachineStudyModel
+/**
+ * Model MachineStudyCycle
+ * 
+ */
+export type MachineStudyCycle = Prisma.MachineStudyCycleModel
+/**
+ * Model Machine
+ * 
+ */
+export type Machine = Prisma.MachineModel
+/**
+ * Model MachineTelemetry
+ * 
+ */
+export type MachineTelemetry = Prisma.MachineTelemetryModel

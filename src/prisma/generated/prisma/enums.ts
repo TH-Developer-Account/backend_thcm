@@ -9,7 +9,287 @@
 * 🟢 You can import this file directly.
 */
 
+export const PermissionAction = {
+  read: 'read',
+  write: 'write'
+} as const
+
+export type PermissionAction = (typeof PermissionAction)[keyof typeof PermissionAction]
 
 
-// This file is empty because there are no enums in the schema.
-export {}
+export const TemplateOwnerType = {
+  ADMIN: 'ADMIN',
+  USER: 'USER'
+} as const
+
+export type TemplateOwnerType = (typeof TemplateOwnerType)[keyof typeof TemplateOwnerType]
+
+
+export const StrategyType = {
+  ALL: 'ALL',
+  ANY: 'ANY',
+  SOME: 'SOME'
+} as const
+
+export type StrategyType = (typeof StrategyType)[keyof typeof StrategyType]
+
+
+export const WorkflowStatus = {
+  IN_PROGRESS: 'IN_PROGRESS',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  SUPERSEDED: 'SUPERSEDED'
+} as const
+
+export type WorkflowStatus = (typeof WorkflowStatus)[keyof typeof WorkflowStatus]
+
+
+export const StageStatus = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type StageStatus = (typeof StageStatus)[keyof typeof StageStatus]
+
+
+export const ApprovalStatus = {
+  PENDING: 'PENDING',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CLARIFY: 'CLARIFY'
+} as const
+
+export type ApprovalStatus = (typeof ApprovalStatus)[keyof typeof ApprovalStatus]
+
+
+export const WorkflowType = {
+  STANDARD: 'STANDARD',
+  DEVIATION: 'DEVIATION'
+} as const
+
+export type WorkflowType = (typeof WorkflowType)[keyof typeof WorkflowType]
+
+
+export const AccessTokenSubjectType = {
+  VENDOR_ONBOARDING: 'VENDOR_ONBOARDING',
+  MEDICAL_CLAIM: 'MEDICAL_CLAIM'
+} as const
+
+export type AccessTokenSubjectType = (typeof AccessTokenSubjectType)[keyof typeof AccessTokenSubjectType]
+
+
+export const ProductType = {
+  EPF: 'EPF',
+  CRF: 'CRF'
+} as const
+
+export type ProductType = (typeof ProductType)[keyof typeof ProductType]
+
+
+export const ProductCategory = {
+  EVENT_OVERHEAD: 'EVENT_OVERHEAD',
+  PRINTED_MATERIAL: 'PRINTED_MATERIAL',
+  SOUVENIR: 'SOUVENIR',
+  ARTWORK: 'ARTWORK'
+} as const
+
+export type ProductCategory = (typeof ProductCategory)[keyof typeof ProductCategory]
+
+
+export const ReportStatus = {
+  GENERATING: 'GENERATING',
+  GENERATION_FAILED: 'GENERATION_FAILED',
+  SUBMITTED: 'SUBMITTED',
+  VALIDATED: 'VALIDATED',
+  REJECTED: 'REJECTED',
+  CLARIFICATION_REQUESTED: 'CLARIFICATION_REQUESTED'
+} as const
+
+export type ReportStatus = (typeof ReportStatus)[keyof typeof ReportStatus]
+
+
+export const OutcomeStatus = {
+  SUCCESSFUL: 'SUCCESSFUL',
+  PARTIALLY_SUCCESSFUL: 'PARTIALLY_SUCCESSFUL',
+  UNSUCCESSFUL: 'UNSUCCESSFUL'
+} as const
+
+export type OutcomeStatus = (typeof OutcomeStatus)[keyof typeof OutcomeStatus]
+
+
+export const ImportExportType = {
+  LEAD_IMPORT: 'LEAD_IMPORT',
+  LEAD_EXPORT: 'LEAD_EXPORT',
+  EPC_EXPORT: 'EPC_EXPORT',
+  VENDOR_ONBOARDING_EXPORT: 'VENDOR_ONBOARDING_EXPORT',
+  MEDICAL_CLAIM_EXPORT: 'MEDICAL_CLAIM_EXPORT',
+  MEDICAL_CLAIM_IMPORT: 'MEDICAL_CLAIM_IMPORT'
+} as const
+
+export type ImportExportType = (typeof ImportExportType)[keyof typeof ImportExportType]
+
+
+export const ImportExportStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type ImportExportStatus = (typeof ImportExportStatus)[keyof typeof ImportExportStatus]
+
+
+export const WorkflowSubjectType = {
+  EVENT_PROPOSAL: 'EVENT_PROPOSAL',
+  VENDOR_ONBOARDING: 'VENDOR_ONBOARDING',
+  MEDICAL_CLAIM: 'MEDICAL_CLAIM'
+} as const
+
+export type WorkflowSubjectType = (typeof WorkflowSubjectType)[keyof typeof WorkflowSubjectType]
+
+
+export const AuthorityRole = {
+  PROPOSER: 'PROPOSER',
+  CHECKER: 'CHECKER',
+  APPROVER: 'APPROVER'
+} as const
+
+export type AuthorityRole = (typeof AuthorityRole)[keyof typeof AuthorityRole]
+
+
+export const NotificationType = {
+  APPROVAL_PENDING: 'APPROVAL_PENDING',
+  APPROVAL_DECISION: 'APPROVAL_DECISION',
+  REPORT_STATUS: 'REPORT_STATUS',
+  GENERIC: 'GENERIC'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
+
+
+export const ClaimCover = {
+  SELF: 'SELF',
+  SPOUSE: 'SPOUSE',
+  BOTH: 'BOTH'
+} as const
+
+export type ClaimCover = (typeof ClaimCover)[keyof typeof ClaimCover]
+
+
+export const ClaimHead = {
+  VISIT_FEES: 'VISIT_FEES',
+  MEDICINES_INVESTIGATIONS: 'MEDICINES_INVESTIGATIONS',
+  OPHTHALMIC_TREATMENT: 'OPHTHALMIC_TREATMENT',
+  EXECUTIVE_HEALTH_CHECKUP: 'EXECUTIVE_HEALTH_CHECKUP',
+  EXCESS_HOSPITALISATION: 'EXCESS_HOSPITALISATION'
+} as const
+
+export type ClaimHead = (typeof ClaimHead)[keyof typeof ClaimHead]
+
+
+export const ParticipantType = {
+  CUSTOMER: 'CUSTOMER',
+  CUSTOMER_KEY_ACCOUNT: 'CUSTOMER_KEY_ACCOUNT',
+  CUSTOMER_STAFF: 'CUSTOMER_STAFF',
+  VENDOR_PARTNER: 'VENDOR_PARTNER',
+  HITACHI_REPRESENTATIVE: 'HITACHI_REPRESENTATIVE',
+  TATA_HITACHI_EXECUTIVE: 'TATA_HITACHI_EXECUTIVE',
+  DEALERSHIP_EXECUTIVE: 'DEALERSHIP_EXECUTIVE',
+  FINANCIER_EXECUTIVE: 'FINANCIER_EXECUTIVE',
+  MACHINE_OPERATOR: 'MACHINE_OPERATOR',
+  MACHINE_MECHANIC: 'MACHINE_MECHANIC',
+  OTHER: 'OTHER'
+} as const
+
+export type ParticipantType = (typeof ParticipantType)[keyof typeof ParticipantType]
+
+
+export const ParticipantStatus = {
+  COLD_ENQUIRY: 'COLD_ENQUIRY',
+  WARM_ENQUIRY: 'WARM_ENQUIRY',
+  HOT_ENQUIRY: 'HOT_ENQUIRY',
+  EVENT_ATTENDEE: 'EVENT_ATTENDEE',
+  FELICITATION: 'FELICITATION',
+  KEY_HANDOVER: 'KEY_HANDOVER',
+  BOOKING: 'BOOKING'
+} as const
+
+export type ParticipantStatus = (typeof ParticipantStatus)[keyof typeof ParticipantStatus]
+
+
+export const FuelType = {
+  DIESEL: 'DIESEL',
+  ELECTRIC: 'ELECTRIC'
+} as const
+
+export type FuelType = (typeof FuelType)[keyof typeof FuelType]
+
+
+export const CrfStatus = {
+  OPEN: 'OPEN',
+  APPROVED: 'APPROVED',
+  STOCK_SHORTFALL: 'STOCK_SHORTFALL',
+  STOCK_CHECK_FAILED: 'STOCK_CHECK_FAILED',
+  ORDER_FAILED: 'ORDER_FAILED',
+  ORDERED: 'ORDERED',
+  CANCELLED: 'CANCELLED',
+  CLOSED: 'CLOSED'
+} as const
+
+export type CrfStatus = (typeof CrfStatus)[keyof typeof CrfStatus]
+
+
+export const CrfRecipientType = {
+  SELF: 'SELF',
+  EMPLOYEE: 'EMPLOYEE',
+  DEALER_CONTACT: 'DEALER_CONTACT',
+  OTHER: 'OTHER'
+} as const
+
+export type CrfRecipientType = (typeof CrfRecipientType)[keyof typeof CrfRecipientType]
+
+
+export const CrfAddressSource = {
+  MANUAL: 'MANUAL',
+  USER_PROFILE: 'USER_PROFILE',
+  BUSINESS_PARTNER_ADDRESS: 'BUSINESS_PARTNER_ADDRESS'
+} as const
+
+export type CrfAddressSource = (typeof CrfAddressSource)[keyof typeof CrfAddressSource]
+
+
+export const CrfItemSource = {
+  CATALOG: 'CATALOG',
+  SHOPIFY: 'SHOPIFY'
+} as const
+
+export type CrfItemSource = (typeof CrfItemSource)[keyof typeof CrfItemSource]
+
+
+export const CrfItemStatus = {
+  REQUESTED: 'REQUESTED',
+  OUT_OF_STOCK: 'OUT_OF_STOCK',
+  REMOVED: 'REMOVED',
+  ORDERED: 'ORDERED',
+  DEBITED: 'DEBITED'
+} as const
+
+export type CrfItemStatus = (typeof CrfItemStatus)[keyof typeof CrfItemStatus]
+
+
+export const CrfOrderStatus = {
+  ACTIVE: 'ACTIVE',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type CrfOrderStatus = (typeof CrfOrderStatus)[keyof typeof CrfOrderStatus]
+
+
+export const BusinessPartnerOfficeType = {
+  HEAD_OFFICE: 'HEAD_OFFICE',
+  BRANCH_OFFICE: 'BRANCH_OFFICE'
+} as const
+
+export type BusinessPartnerOfficeType = (typeof BusinessPartnerOfficeType)[keyof typeof BusinessPartnerOfficeType]
