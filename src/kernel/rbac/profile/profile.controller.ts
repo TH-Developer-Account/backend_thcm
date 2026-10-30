@@ -7,7 +7,11 @@ import { getAuthenticatedUser } from "@kernel/auth/auth.middleware";
 
 import { getManageableAppIds } from "./accessPolicy";
 import * as profileService from "./profile.services";
-import { setProfileAssignees } from "./profileAssignment.service";
+import {
+  previewSelectAllAssignment,
+  setProfileAssignees,
+} from "./profileAssignment.service";
+import { listActiveWorkspaceMemberIds } from "../workSpace/workspaceMembership.services";
 
 function optionalQueryString(value: unknown): string | undefined {
   return typeof value === "string" && value.trim() ? value.trim() : undefined;
@@ -79,27 +83,67 @@ export async function deleteProfile(request: Request, response: Response) {
   response.json({ message: `Profile "${profileName}" deleted successfully` });
 }
 
-export async function updateProfileAssignees(
-  request: Request,
-  response: Response,
-) {
-  const actor = getAuthenticatedUser(request);
-  const { userIds } = request.body;
+// Resolves either request shape into a concrete id list before it ever
+// reaches setProfileAssignees — that function doesn't need to know or
+// care how the caller decided who's being assigned.
+async function resolveAssignmentTargetUserIds(
+  workspaceId: string,
+  body: Record<string, unknown>,
+): Promise<string[]> {
+  if (body.selectAll === true) {
+    const excludeUserIds = Array.isArray(body.excludeUserIds)
+      ? body.excludeUserIds.filter((id): id is string => typeof id === "string")
+      : [];
+    return listActiveWorkspaceMemberIds(workspaceId, excludeUserIds);
+  }
+
+  const { userIds } = body;
   if (
     !Array.isArray(userIds) ||
     userIds.some((userId) => typeof userId !== "string")
   ) {
     throw new ApiError(
       400,
-      "userIds must be an array of user ids (send [] to clear)",
+      "Send either { userIds: string[] } or { selectAll: true, excludeUserIds?: string[] }",
     );
   }
+  return userIds;
+}
+
+export async function updateProfileAssignees(
+  request: Request,
+  response: Response,
+) {
+  const actor = getAuthenticatedUser(request);
+  const targetUserIds = await resolveAssignmentTargetUserIds(
+    actor.workspaceId,
+    request.body,
+  );
 
   const result = await setProfileAssignees(
     actor.workspaceId,
     getRouteParameter(request, "profileId"),
-    userIds,
+    targetUserIds,
     actor.id,
   );
   response.json({ message: "Profile assignments updated", data: result });
+}
+
+export async function previewProfileAssignment(
+  request: Request,
+  response: Response,
+) {
+  const actor = getAuthenticatedUser(request);
+  const excludeUserIds =
+    optionalQueryString(request.query.excludeUserIds)
+      ?.split(",")
+      .map((id) => id.trim())
+      .filter(Boolean) ?? [];
+
+  const preview = await previewSelectAllAssignment(
+    actor.workspaceId,
+    getRouteParameter(request, "profileId"),
+    excludeUserIds,
+  );
+  response.json(preview);
 }
