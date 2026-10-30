@@ -114,6 +114,20 @@ const EMPLOYEE_UPDATABLE_ONBOARDING_FIELDS = [
 	"onboardingReason",
 ] as const;
 
+// Columns stored as Boolean? — multipart sends "true" / "false" as strings,
+// JSON sends real booleans. parseBooleanFormField (same parser as
+// submitVendorForm / saveVendorFormDraft) handles both.
+const EMPLOYEE_BOOLEAN_FIELDS = new Set<string>([
+	"msmeVendor",
+	"ndaObtained",
+	"gstApplicability",
+	"incorporationApplicability",
+	"selfAssessmentObtained",
+	"gpaObtained",
+	"isRelatedParty",
+	"vendorAuditReportPrepared",
+]);
+
 // Throws a field-specific error so the vendor knows exactly which
 // document failed, rather than a generic "invalid file" message.
 function validateVendorDocumentFile(
@@ -209,17 +223,31 @@ async function persistVendorDocumentRecords(
 	}
 }
 
-// Picks only the whitelisted keys off an arbitrary body — same reasoning as
-// VENDOR_LISTING_SORT_FIELD_MAP elsewhere in this file: an explicit
-// whitelist, not raw pass-through, so a field renamed/removed from the
-// schema fails loudly at the call site instead of writing undefined.
+// Picks only the whitelisted keys off the body (explicit whitelist, not raw
+// pass-through) and normalises multipart string values:
+//   booleans: "true" / "false" → true / false (via parseBooleanFormField)
+//   strings:  "" → null (a cleared field is sent as "" in multipart)
+// `body` can be undefined when no body parser ran, hence the default.
 function pickEmployeeUpdatableFields(
-	body: Record<string, unknown>,
+	body: Record<string, unknown> | undefined,
 ): Record<string, unknown> {
+	const source = body ?? {};
 	const picked: Record<string, unknown> = {};
+
 	for (const field of EMPLOYEE_UPDATABLE_ONBOARDING_FIELDS) {
-		if (field in body) picked[field] = body[field];
+		if (!(field in source)) continue;
+
+		const value = source[field];
+
+		if (EMPLOYEE_BOOLEAN_FIELDS.has(field)) {
+			picked[field] = parseBooleanFormField(value);
+		} else if (typeof value === "string") {
+			picked[field] = value.trim() === "" ? null : value;
+		} else {
+			picked[field] = value;
+		}
 	}
+
 	return picked;
 }
 
@@ -506,7 +534,7 @@ export const resendVendorLink = async (
 				templateName: "vendor-onboarding-resubmit",
 				templateData: {
 					vendorName: onboarding.vendorName,
-					formUrl: `${process.env.VENDOR_FORM_BASE_URL}/${tokenRecord.token}`,
+					formUrl: `${process.env.FRONTEND_URL}/vendor-form/${tokenRecord.token}`,
 				},
 			},
 			onboarding.initiatedById,
@@ -560,6 +588,15 @@ export const updateEmployeeFields = async (
 			where: { id: id as string },
 		});
 		if (!onboarding) throw new ApiError(404, "Vendor onboarding not found");
+
+		// A closed request can't be edited again (this endpoint would also
+		// reset its status to IN_REVIEW). closeVendorOnboarding sets COMPLETED.
+		if (["COMPLETED", "CLOSED"].includes(onboarding.status)) {
+			throw new ApiError(
+				400,
+				"This request is closed and can no longer be edited",
+			);
+		}
 
 		const activeWorkflow = await getActiveWorkflowForSubject(
 			"VENDOR_ONBOARDING",

@@ -121,6 +121,7 @@ const CURRENT_USER_SELECT = {
 	is_active: true,
 	created_at: true,
 	updated_at: true,
+	userType: true,
 	zones: { select: { id: true, region_name: true } },
 	branch: { select: { id: true, branch_name: true } },
 } satisfies Prisma.UserSelect;
