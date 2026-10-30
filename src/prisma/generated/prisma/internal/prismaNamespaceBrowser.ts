@@ -82,6 +82,8 @@ export const ModelName = {
   Division: 'Division',
   Designation: 'Designation',
   CostCenter: 'CostCenter',
+  AuthorityLimit: 'AuthorityLimit',
+  AuthorityLimitAssignment: 'AuthorityLimitAssignment',
   ProductMaster: 'ProductMaster',
   EPF: 'EPF',
   CRF: 'CRF',
@@ -108,7 +110,9 @@ export const ModelName = {
   BusinessPartnerAddress: 'BusinessPartnerAddress',
   BusinessPartnerContact: 'BusinessPartnerContact',
   MachineStudy: 'MachineStudy',
-  MachineStudyCycle: 'MachineStudyCycle'
+  MachineStudyCycle: 'MachineStudyCycle',
+  Machine: 'Machine',
+  MachineTelemetry: 'MachineTelemetry'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -553,6 +557,29 @@ export const CostCenterScalarFieldEnum = {
 } as const
 
 export type CostCenterScalarFieldEnum = (typeof CostCenterScalarFieldEnum)[keyof typeof CostCenterScalarFieldEnum]
+
+
+export const AuthorityLimitScalarFieldEnum = {
+  id: 'id',
+  label: 'label',
+  minAmount: 'minAmount',
+  maxAmount: 'maxAmount',
+  isActive: 'isActive',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type AuthorityLimitScalarFieldEnum = (typeof AuthorityLimitScalarFieldEnum)[keyof typeof AuthorityLimitScalarFieldEnum]
+
+
+export const AuthorityLimitAssignmentScalarFieldEnum = {
+  id: 'id',
+  authorityLimitId: 'authorityLimitId',
+  role: 'role',
+  designationId: 'designationId'
+} as const
+
+export type AuthorityLimitAssignmentScalarFieldEnum = (typeof AuthorityLimitAssignmentScalarFieldEnum)[keyof typeof AuthorityLimitAssignmentScalarFieldEnum]
 
 
 export const ProductMasterScalarFieldEnum = {
@@ -1124,6 +1151,29 @@ export const MachineStudyCycleScalarFieldEnum = {
 } as const
 
 export type MachineStudyCycleScalarFieldEnum = (typeof MachineStudyCycleScalarFieldEnum)[keyof typeof MachineStudyCycleScalarFieldEnum]
+
+
+export const MachineScalarFieldEnum = {
+  id: 'id',
+  machineSerialNumber: 'machineSerialNumber',
+  customerId: 'customerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MachineScalarFieldEnum = (typeof MachineScalarFieldEnum)[keyof typeof MachineScalarFieldEnum]
+
+
+export const MachineTelemetryScalarFieldEnum = {
+  id: 'id',
+  machineSerialNumber: 'machineSerialNumber',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  hmr: 'hmr',
+  syncedAt: 'syncedAt'
+} as const
+
+export type MachineTelemetryScalarFieldEnum = (typeof MachineTelemetryScalarFieldEnum)[keyof typeof MachineTelemetryScalarFieldEnum]
 
 
 export const SortOrder = {

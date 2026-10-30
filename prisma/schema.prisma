@@ -109,6 +109,41 @@ enum WorkflowSubjectType {
   MEDICAL_CLAIM
 }
 
+// ─────────────────────────────────────────────
+// SCHEDULE OF AUTHORITY (SOA) — MAP EPC ONLY
+//
+// Governs two things, both scoped to MAP's EPC approval flow:
+//   1. Which designation(s) may propose/check/approve an EPC whose
+//      Tata Hitachi share (EPF.tataHitachiPoAmount — dealer share
+//      excluded) falls in a given amount band.
+//   2. The auto-approval bypass: if the EPC creator's designation is
+//      APPROVER-eligible for the matched band, the EPC is approved
+//      directly and no WorkflowInstance is created at all.
+//
+// Deliberately kept OUT of the Designation table and out of the
+// existing WorkflowTemplate/TemplateStage/TemplateApprover system —
+// this is MAP-specific policy, not an org-wide identity concern, and
+// not the same mechanism as the existing budget-banded template
+// routing (which stays keyed on EPF.eventBudget via budgetMap/
+// templateMatchResolvers and is untouched by this table).
+//
+// CHECKER is defined but not yet consumed by any bypass logic — the
+// current requirement only bypasses on APPROVER eligibility. Kept in
+// the enum so the admin screen can record Checker assignments now
+// without a future schema change when Checker-stage logic is added.
+//
+// Inheritance rule (service-layer, not enforced here): APPROVER
+// eligibility inherits upward — a designation listed as Approver on a
+// higher tier is also eligible for every lower tier's amount. PROPOSER
+// and CHECKER are strict-match only, no inheritance.
+// ─────────────────────────────────────────────
+
+enum AuthorityRole {
+  PROPOSER
+  CHECKER
+  APPROVER
+}
+
 enum NotificationType {
   APPROVAL_PENDING   // a workflow stage now requires this user's approval
   APPROVAL_DECISION  // an approval/rejection/clarify happened on something this user owns
@@ -857,6 +892,12 @@ model Designation {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   users      User[]
+
+  // ── Schedule of Authority (MAP EPC) ──────────────────────────────────
+  // See the AuthorityRole enum / AuthorityLimit / AuthorityLimitAssignment
+  // models above for the full design note. This is purely a back-relation —
+  // Designation itself carries no SOA logic or fields.
+  authorityLimitAssignments AuthorityLimitAssignment[]
 }
 
 model CostCenter {
@@ -867,6 +908,41 @@ model CostCenter {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   users      User[]
+}
+
+// ─────────────────────────────────────────────
+// SCHEDULE OF AUTHORITY (SOA) MODELS
+//
+// See the AuthorityRole enum (top of file, ENUMS section) for the full
+// design note on why this is its own table rather than living on
+// Designation, and how the APPROVER-inheritance rule works.
+// ─────────────────────────────────────────────
+
+model AuthorityLimit {
+  id         String   @id @default(uuid())
+  label      String                      // "Limit 1".."Limit 5" — admin-facing display only
+  minAmount  Decimal  @db.Decimal(12, 2)
+  maxAmount  Decimal? @db.Decimal(12, 2) // null = unbounded (top tier)
+  isActive   Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  assignments AuthorityLimitAssignment[]
+
+  @@index([minAmount, maxAmount])
+}
+
+model AuthorityLimitAssignment {
+  id               String        @id @default(uuid())
+  authorityLimitId String
+  role             AuthorityRole
+  designationId    String
+
+  authorityLimit AuthorityLimit @relation(fields: [authorityLimitId], references: [id], onDelete: Cascade)
+  designation    Designation    @relation(fields: [designationId], references: [id])
+
+  @@unique([authorityLimitId, role, designationId])
+  @@index([designationId, role])
 }
 
 model ProductMaster {
@@ -1666,7 +1742,7 @@ model BusinessPartnerAddress {
   zone              String?
   branch            String?
   latitude          Float?
-  longitude         Float?
+  longitude          Float?
   email             String?
   phoneNo           String?
   website           String?
@@ -1715,12 +1791,12 @@ model MachineStudy {
   startDate           DateTime
   endDate             DateTime
   application         String
-  fuelType            FuelType
-  startHmr            Decimal   @db.Decimal(10, 2)
-  endHmr              Decimal   @db.Decimal(10, 2)
-  bucketVolumeCuM     Decimal   @db.Decimal(6, 2)
-  acStatus            String
-  operationMode       String
+  fuelType             FuelType
+  startHmr             Decimal   @db.Decimal(10, 2)
+  endHmr               Decimal   @db.Decimal(10, 2)
+  bucketVolumeCuM      Decimal   @db.Decimal(6, 2)
+  acStatus             String
+  operationMode        String
 
   // Fuel-efficiency inputs — exactly one side populated, based on fuelType.
   dieselTopUpLtr      Decimal?  @db.Decimal(8, 2)   // required when fuelType = DIESEL
@@ -1761,4 +1837,46 @@ model MachineStudyCycle {
   study MachineStudy @relation(fields: [studyId], references: [id], onDelete: Cascade)
 
   @@index([studyId])
+}
+// ─────────────────────────────────────────────────────────────────────────────
+// Machine — master record for one physical machine. serialNumber is both
+// the business key and the primary key — no separate surrogate id.
+// ─────────────────────────────────────────────────────────────────────────────
+model Machine {
+  id           String       @default(uuid())
+  machineSerialNumber String   @id
+  // customerId is intentionally left unset here. It's out of scope for
+  // both the import and the daily C4C sync — filled by a separate process
+  // later. Do not populate this from C4C (CACCOUNT_UUID), even though C4C
+  // returns it on every call — confirmed out of scope for now.
+  customerId   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  telemetry MachineTelemetry[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MachineTelemetry — append-only history, one row per machine per daily
+// sync run. Never updated in place; each 1am job run adds ~11,100 rows.
+//
+// syncedAt is set ONCE per job run (not DateTime @default(now()) per row),
+// so every machine's row from a given day's sync shares an identical
+// timestamp — C4C gives us no per-reading timestamp.
+//
+// hmr defaults to 0: C4C's current $select list for this entity doesn't
+// return an HMR field yet. This column stays real so nothing downstream
+// breaks once the real field is wired in — see
+// machineTelemetryC4CSync.service.ts for the exact TODO line.
+// ─────────────────────────────────────────────────────────────────────────────
+model MachineTelemetry {
+  id           String      @id @default(uuid())
+  machineSerialNumber String
+  machine      Machine  @relation(fields: [machineSerialNumber], references: [machineSerialNumber])
+  latitude     Decimal
+  longitude    Decimal
+  hmr          Decimal  @default(0)
+  syncedAt     DateTime
+
+  @@index([machineSerialNumber, syncedAt])
 }
