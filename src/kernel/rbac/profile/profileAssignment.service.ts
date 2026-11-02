@@ -53,6 +53,40 @@ export async function removeUserFromApp(slot: AppSlot, userId: string) {
   return count > 0;
 }
 
+// Counts only — no writes. Lets the FE show "this will assign N users, M
+// of them moved off another profile" before the person commits to it.
+export async function previewSelectAllAssignment(
+  workspaceId: string,
+  profileId: string,
+  excludeUserIds: string[],
+) {
+  const profile = await prisma.profile.findFirst({
+    where: { id: profileId, workspaceId },
+    select: { id: true, appId: true },
+  });
+  if (!profile) throw new ApiError(404, "Profile not found");
+
+  const slot = { workspaceId, appId: profile.appId };
+  const excludeFilter =
+    excludeUserIds.length > 0 ? { userId: { notIn: excludeUserIds } } : {};
+
+  const [willBeAssignedCount, willBeReplacedCount] = await Promise.all([
+    prisma.workspaceUser.count({
+      where: { workspaceId, user: { is_active: true }, ...excludeFilter },
+    }),
+    prisma.userProfile.count({
+      where: {
+        ...slot,
+        profileId: { not: profileId },
+        user: { is_active: true },
+        ...excludeFilter,
+      },
+    }),
+  ]);
+
+  return { willBeAssignedCount, willBeReplacedCount };
+}
+
 // Set semantics scoped to one profile: listed users end up holding it (their
 // previous profile in this app is replaced), users who held it and are no
 // longer listed lose it, and everyone else is left alone.
@@ -88,8 +122,23 @@ export async function setProfileAssignees(
       (userId) => currentProfileByUser.get(userId) !== profileId,
     );
 
-    for (const userId of usersToWrite) {
-      await upsertAppSlot(transaction, slot, userId, profileId, assignedById);
+    if (usersToWrite.length > 0) {
+      // Bulk delete-then-insert instead of a per-user upsert loop: every
+      // row here is moving to the same profileId, so there's no per-row
+      // variation an upsert needs — two set-based queries replace what
+      // used to be N sequential round-trips (matters once N is ~2,000).
+      await transaction.userProfile.deleteMany({
+        where: { ...slot, userId: { in: usersToWrite } },
+      });
+      await transaction.userProfile.createMany({
+        data: usersToWrite.map((userId) => ({
+          userId,
+          ...slot,
+          profileId,
+          assignedById,
+          assignedAt: new Date(),
+        })),
+      });
     }
 
     return {

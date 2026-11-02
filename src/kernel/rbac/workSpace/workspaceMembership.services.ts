@@ -32,3 +32,21 @@ export async function assertActiveWorkspaceMembers(
     );
   }
 }
+
+// Active workspace members minus an exclusion list — the full target set
+// for a "select all" profile assignment, resolved entirely in the DB so
+// the caller never has to trust or materialize a client-supplied id list.
+export async function listActiveWorkspaceMemberIds(
+  workspaceId: string,
+  excludeUserIds: string[] = [],
+): Promise<string[]> {
+  const members = await prisma.workspaceUser.findMany({
+    where: {
+      workspaceId,
+      user: { is_active: true },
+      ...(excludeUserIds.length > 0 && { userId: { notIn: excludeUserIds } }),
+    },
+    select: { userId: true },
+  });
+  return members.map((member) => member.userId);
+}

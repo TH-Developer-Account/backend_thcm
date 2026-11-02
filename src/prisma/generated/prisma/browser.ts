@@ -173,6 +173,16 @@ export type Designation = Prisma.DesignationModel
  */
 export type CostCenter = Prisma.CostCenterModel
 /**
+ * Model AuthorityLimit
+ * 
+ */
+export type AuthorityLimit = Prisma.AuthorityLimitModel
+/**
+ * Model AuthorityLimitAssignment
+ * 
+ */
+export type AuthorityLimitAssignment = Prisma.AuthorityLimitAssignmentModel
+/**
  * Model ProductMaster
  * 
  */
@@ -307,3 +317,13 @@ export type MachineStudy = Prisma.MachineStudyModel
  * 
  */
 export type MachineStudyCycle = Prisma.MachineStudyCycleModel
+/**
+ * Model Machine
+ * 
+ */
+export type Machine = Prisma.MachineModel
+/**
+ * Model MachineTelemetry
+ * 
+ */
+export type MachineTelemetry = Prisma.MachineTelemetryModel

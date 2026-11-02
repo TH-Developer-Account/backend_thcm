@@ -17,6 +17,7 @@ import {
   deleteProfile,
   getProfile,
   listProfiles,
+  previewProfileAssignment,
   updateProfile,
   updateProfileAssignees,
 } from "./profile.controller";
@@ -55,6 +56,11 @@ router.put(
   "/:profileId/assignments",
   requireProfileAppAdministration,
   asyncHandler(updateProfileAssignees),
+);
+router.get(
+  "/:profileId/assignments/preview",
+  requireProfileAppAdministration,
+  asyncHandler(previewProfileAssignment),
 );
 
 export default router;
