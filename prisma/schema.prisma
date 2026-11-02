@@ -1591,11 +1591,14 @@ model MedicalClaim {
   initiatedById   String
   guestId         String?
   status          String   @default("AWAITING_EX_EMPLOYEE")
-  mobile       String?
-  email        String?
+   mobile         String?
+  email          String?
+ 
+  createdByGuest Boolean @default(false)   // true = made by the retiree, not by HR
+
 
   // ── Ex-employee-filled ──
-  ticketNumber      String?
+   ticketNumber   String?
   grade             String?
   location          String?
   employeeName      String?
@@ -1627,6 +1630,10 @@ model MedicalClaim {
 
   @@index([workspaceId, status])
   @@index([guestId])
+  
+  @@index([ticketNumber])
+  @@index([mobile])
+  @@index([email])
 }
 
 model MedicalClaimBill {

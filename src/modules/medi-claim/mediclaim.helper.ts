@@ -314,10 +314,7 @@ export function normalizeBillInputs(
 			throw new ApiError(400, `${label}: amount must be a number`);
 		}
 		if (options.allowZero ? amount < 0 : amount <= 0) {
-			throw new ApiError(
-				400,
-				`${label}: amount must be greater than zero`,
-			);
+			throw new ApiError(400, `${label}: amount must be greater than zero`);
 		}
 		if (amount > MAX_BILL_AMOUNT) {
 			throw new ApiError(400, `${label}: amount is too large`);
@@ -367,7 +364,10 @@ async function sumRetireeClaimHistory(
 	if (identity.guestId) who.push({ guestId: identity.guestId });
 	if (identity.ticketNumber?.trim()) {
 		who.push({
-			ticketNumber: { equals: identity.ticketNumber.trim(), mode: "insensitive" },
+			ticketNumber: {
+				equals: identity.ticketNumber.trim(),
+				mode: "insensitive",
+			},
 		});
 	}
 	if (who.length === 0) return emptyHistory();
@@ -470,8 +470,10 @@ export const eligibilityToClaimColumns = (
 ) => ({
 	eligibleAmount: eligibility.eligibleAmount,
 	alreadySettled: eligibility.alreadySettled,
-	hospitalisationEligibleAmount: eligibility.hospitalisation?.eligibleAmount ?? null,
-	hospitalisationAlreadySettled: eligibility.hospitalisation?.alreadySettled ?? null,
+	hospitalisationEligibleAmount:
+		eligibility.hospitalisation?.eligibleAmount ?? null,
+	hospitalisationAlreadySettled:
+		eligibility.hospitalisation?.alreadySettled ?? null,
 });
 
 /**
@@ -834,3 +836,203 @@ export const upsertMedicalClaimBills = async (
 	// Paise sum → rupees once, so 17,754.42 + 1,338.50 never drifts.
 	return bills.reduce((sum, b) => sum + toPaise(b.amount), 0) / 100;
 };
+
+// ── retiree identity ───────────────────────────────────────────────────────
+// MedicalClaim has @unique on ticketNumber, mobile and email, and Postgres
+// compares them exactly. So every write goes through these normalisers first;
+// otherwise "re37561" / "RE37561 " or "+91 99999 99999" / "9999999999" would
+// count as different retirees.
+
+/**
+ * One canonical mobile. Same cleaning as the frontend's toIndianNationalMobile:
+ *   "+91 99999-99999" / "099999 99999" -> "9999999999"
+ *   other countries ("+447911123456")  -> kept as typed, spaces removed
+ */
+export const normalizeMobile = (value?: string | null): string =>
+	(value ?? "").replace(/[\s-]/g, "").replace(/^(\+91|91|0)(?=\d{10}$)/, "");
+
+export const normalizeEmail = (value?: string | null): string =>
+	(value ?? "").trim().toLowerCase();
+
+/**
+ * Two initiations that share ANY of ticket / mobile / email must run one after
+ * the other, otherwise both could read "no match" and create conflicting
+ * claims. Keys are locked in sorted order, so two callers can never deadlock.
+ * The ticket key is the same one lockRetireeLedger uses at submit.
+ */
+async function lockClaimIdentity(
+	tx: Tx,
+	identity: { ticket: string; mobile: string; email: string },
+): Promise<void> {
+	const keys = [
+		`medclaim:ticket:${identity.ticket}`,
+		`medclaim:mobile:${identity.mobile}`,
+		`medclaim:email:${identity.email}`,
+	].sort();
+
+	for (const key of keys) {
+		await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${key}))`;
+	}
+}
+
+/**
+ * HR-initiation guard. Call it FIRST inside the initiation transaction
+ * (before tx.medicalClaim.create), from initiateMedicalClaim and from every
+ * bulk-import row. Pass values already run through the normalisers above.
+ *
+ * HR starts a retiree ONCE. Every later claim is created by the retiree from
+ * the guest portal (createGuestMedicalClaim), carrying the same ticket, mobile
+ * and email, so at initiation:
+ *   - ticket, mobile and email all unused                  -> allowed
+ *   - all three match an earlier claim (already initiated) -> 409
+ *   - only some match (a different retiree, or a typo)     -> 409
+ * Claims of any status count.
+ */
+export async function assertCanInitiateClaim(
+	tx: Tx,
+	input: { ticketNumber?: string | null; mobile: string; email: string },
+): Promise<void> {
+	const ticket = normalizeTicketNumber(input.ticketNumber);
+	if (!ticket) {
+		throw new ApiError(
+			400,
+			"Ticket number is required to start a medical claim",
+		);
+	}
+	const mobile = normalizeMobile(input.mobile);
+	const email = normalizeEmail(input.email);
+
+	await lockClaimIdentity(tx, { ticket, mobile, email });
+
+	const matches = await tx.medicalClaim.findMany({
+		where: {
+			OR: [
+				{ ticketNumber: { equals: ticket, mode: "insensitive" } },
+				{ mobile },
+				{ email: { equals: email, mode: "insensitive" } },
+			],
+		},
+		select: {
+			referenceNumber: true,
+			status: true,
+			ticketNumber: true,
+			mobile: true,
+			email: true,
+		},
+		orderBy: { created_at: "desc" },
+	});
+
+	const sameRetiree: typeof matches = [];
+	for (const claim of matches) {
+		const sameTicket = normalizeTicketNumber(claim.ticketNumber) === ticket;
+		const sameMobile = claim.mobile === mobile;
+		const sameEmail = normalizeEmail(claim.email) === email;
+
+		if (sameTicket && sameMobile && sameEmail) {
+			sameRetiree.push(claim);
+			continue;
+		}
+
+		// Partial match: these details belong to a different set of details.
+		const shared = [
+			sameTicket && "ticket number",
+			sameMobile && "mobile number",
+			sameEmail && "email",
+		].filter(Boolean);
+		const different = [
+			!sameTicket && "ticket number",
+			!sameMobile && "mobile number",
+			!sameEmail && "email",
+		].filter(Boolean);
+		throw new ApiError(
+			409,
+			`Claim ${claim.referenceNumber} already uses this ${shared.join(" and ")} with a different ${different.join(" and ")}. A retiree's ticket number, mobile and email must match.`,
+		);
+	}
+
+	// All three match: this retiree was already initiated.
+	if (sameRetiree.length > 0) {
+		const waiting = sameRetiree.find(
+			(claim) => claim.status === CLAIM_INITIATION_STATUS,
+		);
+		if (waiting) {
+			throw new ApiError(
+				409,
+				`This retiree was already initiated (claim ${waiting.referenceNumber}) and is still waiting for the employee — re-send that claim's link instead.`,
+			);
+		}
+		const latest = sameRetiree[0];
+		throw new ApiError(
+			409,
+			`This retiree was already initiated (claim ${latest.referenceNumber}, ${latest.status}). HR starts a retiree only once — they create further claims themselves from the guest portal.`,
+		);
+	}
+
+	// Brand-new retiree: they need a grade and must have something left to claim.
+	const grade = await resolveGradeForTicketNumber(tx, ticket);
+	if (!grade) {
+		throw new ApiError(400, `No grade on record for ticket ${ticket}`);
+	}
+
+	const eligibility = await computeMedicalClaimEligibility(tx, grade, {
+		ticketNumber: ticket,
+	});
+	if (!eligibility) {
+		throw new ApiError(
+			400,
+			`No annual limit is configured for grade "${grade}"`,
+		);
+	}
+
+	const unsettled =
+		eligibility.eligibleAmount +
+		(eligibility.hospitalisation?.eligibleAmount ?? 0);
+	if (unsettled <= 0) {
+		throw new ApiError(
+			409,
+			`The ${eligibility.period.label} limit for ticket ${ticket} is already used up (for example by the legacy balance).`,
+		);
+	}
+}
+
+/**
+ * Guest-portal guard: a retiree creating a further claim must have something
+ * left to claim. Parallel claims are fine while money remains; when nothing is
+ * left, say whether it is USED UP (settled) or ON HOLD (still under review),
+ * because a hold is released if that claim is rejected or approved for less.
+ * Call it AFTER lockRetireeLedger, with the eligibility computed for the
+ * retiree (no claim excluded), and BEFORE assertBillsWithinEligibility.
+ */
+export async function assertHasBalanceToClaim(
+	tx: Tx,
+	eligibility: MedicalClaimEligibility,
+	ticketNumber: string,
+): Promise<void> {
+	const available =
+		eligibility.availableAmount +
+		(eligibility.hospitalisation?.availableAmount ?? 0);
+	if (available > 0) return;
+
+	const unsettled =
+		eligibility.eligibleAmount +
+		(eligibility.hospitalisation?.eligibleAmount ?? 0);
+	if (unsettled <= 0) {
+		throw new ApiError(
+			409,
+			`Your ${eligibility.period.label} limit is used up, so no new claim can be made. You can claim again in the next period.`,
+		);
+	}
+
+	const holding = await tx.medicalClaim.findMany({
+		where: {
+			ticketNumber: { equals: ticketNumber, mode: "insensitive" },
+			status: { in: [...HOLD_CLAIM_STATUSES] },
+		},
+		select: { referenceNumber: true },
+	});
+	const refs = holding.map((claim) => claim.referenceNumber).join(", ");
+	throw new ApiError(
+		409,
+		`Your remaining limit is on hold in claim ${refs}, which is still under review. You can make a new claim if it is rejected or approved for less.`,
+	);
+}

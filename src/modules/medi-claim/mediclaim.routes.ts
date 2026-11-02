@@ -5,22 +5,24 @@ import { requireAuth, authorize } from "@kernel/auth/auth.middleware";
 import { requireGuestAuth } from "@guest/guest.middleware";
 import { requireMedicalClaimAccessToken } from "./mediclaim.middleware";
 import {
-  initiateMedicalClaim,
-  resendMedicalClaimLink,
-  closeMedicalClaim,
-  listMedicalClaims,
-  getMedicalClaimById,
-  exportMedicalClaimById,
-  enqueueMedicalClaimExport,
-  getMedicalClaimExportStatus,
-  getMedicalClaimFormByToken,
-  submitMedicalClaimForm,
-  saveMedicalClaimDraft,
-  listGuestMedicalClaims,
-  getGuestMedicalClaimById,
-  resubmitGuestMedicalClaim,
-  setMedicalClaimBillApprovedAmounts,
-  setMedicalClaimBillRemarks,
+	initiateMedicalClaim,
+	resendMedicalClaimLink,
+	closeMedicalClaim,
+	listMedicalClaims,
+	getMedicalClaimById,
+	exportMedicalClaimById,
+	enqueueMedicalClaimExport,
+	getMedicalClaimExportStatus,
+	getMedicalClaimFormByToken,
+	submitMedicalClaimForm,
+	saveMedicalClaimDraft,
+	listGuestMedicalClaims,
+	getGuestMedicalClaimById,
+	getGuestClaimProfile,
+	createGuestMedicalClaim,
+	resubmitGuestMedicalClaim,
+	setMedicalClaimBillApprovedAmounts,
+	setMedicalClaimBillRemarks,
 } from "./mediclaim.controller";
 
 const router = Router();
@@ -31,99 +33,111 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // ── Guest surface ──
 router.get("/guest", requireGuestAuth, asyncHandler(listGuestMedicalClaims));
+// Fixed paths must be registered BEFORE "/guest/:id", or "profile" is read as an id.
 router.get(
-  "/guest/:id",
-  requireGuestAuth,
-  asyncHandler(getGuestMedicalClaimById),
+	"/guest/profile",
+	requireGuestAuth,
+	asyncHandler(getGuestClaimProfile),
+);
+router.post(
+	"/guest/submit",
+	requireGuestAuth,
+	upload.array("billAttachments"),
+	asyncHandler(createGuestMedicalClaim),
+);
+router.get(
+	"/guest/:id",
+	requireGuestAuth,
+	asyncHandler(getGuestMedicalClaimById),
 );
 router.patch(
-  "/guest/:id/resubmit",
-  requireGuestAuth,
-  upload.array("billAttachments"),
-  asyncHandler(resubmitGuestMedicalClaim),
+	"/guest/:id/resubmit",
+	requireGuestAuth,
+	upload.array("billAttachments"),
+	asyncHandler(resubmitGuestMedicalClaim),
 );
 
 // ── Internal staff surface ──
 router.get(
-  "/",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "read"),
-  asyncHandler(listMedicalClaims),
+	"/",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "read"),
+	asyncHandler(listMedicalClaims),
 );
 router.get(
-  "/:id",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "read"),
-  asyncHandler(getMedicalClaimById),
+	"/:id",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "read"),
+	asyncHandler(getMedicalClaimById),
 );
 router.get(
-  "/export/:id",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "read"),
-  asyncHandler(exportMedicalClaimById),
+	"/export/:id",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "read"),
+	asyncHandler(exportMedicalClaimById),
 );
 router.post(
-  "/export",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "read"),
-  asyncHandler(enqueueMedicalClaimExport),
+	"/export",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "read"),
+	asyncHandler(enqueueMedicalClaimExport),
 );
 router.get(
-  "/export/status/:jobId",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "read"),
-  asyncHandler(getMedicalClaimExportStatus),
+	"/export/status/:jobId",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "read"),
+	asyncHandler(getMedicalClaimExportStatus),
 );
 router.post(
-  "/",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "write"),
-  asyncHandler(initiateMedicalClaim),
+	"/",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "write"),
+	asyncHandler(initiateMedicalClaim),
 );
 router.post(
-  "/:id/resend-link",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "write"),
-  asyncHandler(resendMedicalClaimLink),
+	"/:id/resend-link",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "write"),
+	asyncHandler(resendMedicalClaimLink),
 );
 router.post(
-  "/:id/close",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "write"),
-  asyncHandler(closeMedicalClaim),
+	"/:id/close",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "write"),
+	asyncHandler(closeMedicalClaim),
 );
 
 router.patch(
-  "/:id/bills/approved-amounts",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "write"),
-  asyncHandler(setMedicalClaimBillApprovedAmounts),
+	"/:id/bills/approved-amounts",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "write"),
+	asyncHandler(setMedicalClaimBillApprovedAmounts),
 );
 
 router.patch(
-  "/:id/bills/remarks",
-  requireAuth,
-  authorize(APP_KEY, MODULE, "write"),
-  asyncHandler(setMedicalClaimBillRemarks),
+	"/:id/bills/remarks",
+	requireAuth,
+	authorize(APP_KEY, MODULE, "write"),
+	asyncHandler(setMedicalClaimBillRemarks),
 );
 
 // ── First-touch, token-based (AWAITING_EX_EMPLOYEE only) ──
 router.get(
-  "/public/:token",
-  requireMedicalClaimAccessToken,
-  asyncHandler(getMedicalClaimFormByToken),
+	"/public/:token",
+	requireMedicalClaimAccessToken,
+	asyncHandler(getMedicalClaimFormByToken),
 );
 router.post(
-  "/public/:token/submit",
-  requireMedicalClaimAccessToken,
-  upload.array("billAttachments"),
-  asyncHandler(submitMedicalClaimForm),
+	"/public/:token/submit",
+	requireMedicalClaimAccessToken,
+	upload.array("billAttachments"),
+	asyncHandler(submitMedicalClaimForm),
 );
 router.patch(
-  "/public/:token/draft",
-  requireMedicalClaimAccessToken,
-  upload.array("billAttachments"),
-  asyncHandler(saveMedicalClaimDraft),
+	"/public/:token/draft",
+	requireMedicalClaimAccessToken,
+	upload.array("billAttachments"),
+	asyncHandler(saveMedicalClaimDraft),
 );
 
 export default router;

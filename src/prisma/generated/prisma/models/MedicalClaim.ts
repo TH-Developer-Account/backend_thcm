@@ -53,6 +53,7 @@ export type MedicalClaimMinAggregateOutputType = {
   status: string | null
   mobile: string | null
   email: string | null
+  createdByGuest: boolean | null
   ticketNumber: string | null
   grade: string | null
   location: string | null
@@ -83,6 +84,7 @@ export type MedicalClaimMaxAggregateOutputType = {
   status: string | null
   mobile: string | null
   email: string | null
+  createdByGuest: boolean | null
   ticketNumber: string | null
   grade: string | null
   location: string | null
@@ -113,6 +115,7 @@ export type MedicalClaimCountAggregateOutputType = {
   status: number
   mobile: number
   email: number
+  createdByGuest: number
   ticketNumber: number
   grade: number
   location: number
@@ -163,6 +166,7 @@ export type MedicalClaimMinAggregateInputType = {
   status?: true
   mobile?: true
   email?: true
+  createdByGuest?: true
   ticketNumber?: true
   grade?: true
   location?: true
@@ -193,6 +197,7 @@ export type MedicalClaimMaxAggregateInputType = {
   status?: true
   mobile?: true
   email?: true
+  createdByGuest?: true
   ticketNumber?: true
   grade?: true
   location?: true
@@ -223,6 +228,7 @@ export type MedicalClaimCountAggregateInputType = {
   status?: true
   mobile?: true
   email?: true
+  createdByGuest?: true
   ticketNumber?: true
   grade?: true
   location?: true
@@ -340,6 +346,7 @@ export type MedicalClaimGroupByOutputType = {
   status: string
   mobile: string | null
   email: string | null
+  createdByGuest: boolean
   ticketNumber: string | null
   grade: string | null
   location: string | null
@@ -393,6 +400,7 @@ export type MedicalClaimWhereInput = {
   status?: Prisma.StringFilter<"MedicalClaim"> | string
   mobile?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
   email?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
+  createdByGuest?: Prisma.BoolFilter<"MedicalClaim"> | boolean
   ticketNumber?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
   grade?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
   location?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
@@ -427,6 +435,7 @@ export type MedicalClaimOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   mobile?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdByGuest?: Prisma.SortOrder
   ticketNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   grade?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -464,6 +473,7 @@ export type MedicalClaimWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.StringFilter<"MedicalClaim"> | string
   mobile?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
   email?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
+  createdByGuest?: Prisma.BoolFilter<"MedicalClaim"> | boolean
   ticketNumber?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
   grade?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
   location?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
@@ -498,6 +508,7 @@ export type MedicalClaimOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   mobile?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdByGuest?: Prisma.SortOrder
   ticketNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   grade?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -536,6 +547,7 @@ export type MedicalClaimScalarWhereWithAggregatesInput = {
   status?: Prisma.StringWithAggregatesFilter<"MedicalClaim"> | string
   mobile?: Prisma.StringNullableWithAggregatesFilter<"MedicalClaim"> | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"MedicalClaim"> | string | null
+  createdByGuest?: Prisma.BoolWithAggregatesFilter<"MedicalClaim"> | boolean
   ticketNumber?: Prisma.StringNullableWithAggregatesFilter<"MedicalClaim"> | string | null
   grade?: Prisma.StringNullableWithAggregatesFilter<"MedicalClaim"> | string | null
   location?: Prisma.StringNullableWithAggregatesFilter<"MedicalClaim"> | string | null
@@ -563,6 +575,7 @@ export type MedicalClaimCreateInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -597,6 +610,7 @@ export type MedicalClaimUncheckedCreateInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -625,6 +639,7 @@ export type MedicalClaimUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -659,6 +674,7 @@ export type MedicalClaimUncheckedUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -690,6 +706,7 @@ export type MedicalClaimCreateManyInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -717,6 +734,7 @@ export type MedicalClaimUpdateManyMutationInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -747,6 +765,7 @@ export type MedicalClaimUncheckedUpdateManyInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -787,6 +806,7 @@ export type MedicalClaimCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   mobile?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  createdByGuest?: Prisma.SortOrder
   ticketNumber?: Prisma.SortOrder
   grade?: Prisma.SortOrder
   location?: Prisma.SortOrder
@@ -826,6 +846,7 @@ export type MedicalClaimMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   mobile?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  createdByGuest?: Prisma.SortOrder
   ticketNumber?: Prisma.SortOrder
   grade?: Prisma.SortOrder
   location?: Prisma.SortOrder
@@ -856,6 +877,7 @@ export type MedicalClaimMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   mobile?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  createdByGuest?: Prisma.SortOrder
   ticketNumber?: Prisma.SortOrder
   grade?: Prisma.SortOrder
   location?: Prisma.SortOrder
@@ -1041,6 +1063,7 @@ export type MedicalClaimCreateWithoutInitiatedByInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -1073,6 +1096,7 @@ export type MedicalClaimUncheckedCreateWithoutInitiatedByInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -1133,6 +1157,7 @@ export type MedicalClaimScalarWhereInput = {
   status?: Prisma.StringFilter<"MedicalClaim"> | string
   mobile?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
   email?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
+  createdByGuest?: Prisma.BoolFilter<"MedicalClaim"> | boolean
   ticketNumber?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
   grade?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
   location?: Prisma.StringNullableFilter<"MedicalClaim"> | string | null
@@ -1160,6 +1185,7 @@ export type MedicalClaimCreateWithoutWorkspaceInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -1192,6 +1218,7 @@ export type MedicalClaimUncheckedCreateWithoutWorkspaceInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -1246,6 +1273,7 @@ export type MedicalClaimCreateWithoutBillsInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -1279,6 +1307,7 @@ export type MedicalClaimUncheckedCreateWithoutBillsInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -1322,6 +1351,7 @@ export type MedicalClaimUpdateWithoutBillsInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1355,6 +1385,7 @@ export type MedicalClaimUncheckedUpdateWithoutBillsInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1382,6 +1413,7 @@ export type MedicalClaimCreateWithoutGuestInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -1414,6 +1446,7 @@ export type MedicalClaimUncheckedCreateWithoutGuestInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -1470,6 +1503,7 @@ export type MedicalClaimCreateManyInitiatedByInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -1497,6 +1531,7 @@ export type MedicalClaimUpdateWithoutInitiatedByInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1529,6 +1564,7 @@ export type MedicalClaimUncheckedUpdateWithoutInitiatedByInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1559,6 +1595,7 @@ export type MedicalClaimUncheckedUpdateManyWithoutInitiatedByInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1588,6 +1625,7 @@ export type MedicalClaimCreateManyWorkspaceInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -1615,6 +1653,7 @@ export type MedicalClaimUpdateWithoutWorkspaceInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1647,6 +1686,7 @@ export type MedicalClaimUncheckedUpdateWithoutWorkspaceInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1677,6 +1717,7 @@ export type MedicalClaimUncheckedUpdateManyWithoutWorkspaceInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1706,6 +1747,7 @@ export type MedicalClaimCreateManyGuestInput = {
   status?: string
   mobile?: string | null
   email?: string | null
+  createdByGuest?: boolean
   ticketNumber?: string | null
   grade?: string | null
   location?: string | null
@@ -1733,6 +1775,7 @@ export type MedicalClaimUpdateWithoutGuestInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1765,6 +1808,7 @@ export type MedicalClaimUncheckedUpdateWithoutGuestInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1795,6 +1839,7 @@ export type MedicalClaimUncheckedUpdateManyWithoutGuestInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   mobile?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdByGuest?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   grade?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1856,6 +1901,7 @@ export type MedicalClaimSelect<ExtArgs extends runtime.Types.Extensions.Internal
   status?: boolean
   mobile?: boolean
   email?: boolean
+  createdByGuest?: boolean
   ticketNumber?: boolean
   grade?: boolean
   location?: boolean
@@ -1891,6 +1937,7 @@ export type MedicalClaimSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   status?: boolean
   mobile?: boolean
   email?: boolean
+  createdByGuest?: boolean
   ticketNumber?: boolean
   grade?: boolean
   location?: boolean
@@ -1924,6 +1971,7 @@ export type MedicalClaimSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   status?: boolean
   mobile?: boolean
   email?: boolean
+  createdByGuest?: boolean
   ticketNumber?: boolean
   grade?: boolean
   location?: boolean
@@ -1957,6 +2005,7 @@ export type MedicalClaimSelectScalar = {
   status?: boolean
   mobile?: boolean
   email?: boolean
+  createdByGuest?: boolean
   ticketNumber?: boolean
   grade?: boolean
   location?: boolean
@@ -1978,7 +2027,7 @@ export type MedicalClaimSelectScalar = {
   updated_at?: boolean
 }
 
-export type MedicalClaimOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceNumber" | "workspaceId" | "initiatedById" | "guestId" | "status" | "mobile" | "email" | "ticketNumber" | "grade" | "location" | "employeeName" | "patientName" | "claimCover" | "spouseName" | "medicalAdvanceTaken" | "eligibleAmount" | "alreadySettled" | "totalClaimed" | "hospitalisationEligibleAmount" | "hospitalisationAlreadySettled" | "declarationAcceptedAt" | "signatureName" | "signatureDate" | "submittedAt" | "created_at" | "updated_at", ExtArgs["result"]["medicalClaim"]>
+export type MedicalClaimOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceNumber" | "workspaceId" | "initiatedById" | "guestId" | "status" | "mobile" | "email" | "createdByGuest" | "ticketNumber" | "grade" | "location" | "employeeName" | "patientName" | "claimCover" | "spouseName" | "medicalAdvanceTaken" | "eligibleAmount" | "alreadySettled" | "totalClaimed" | "hospitalisationEligibleAmount" | "hospitalisationAlreadySettled" | "declarationAcceptedAt" | "signatureName" | "signatureDate" | "submittedAt" | "created_at" | "updated_at", ExtArgs["result"]["medicalClaim"]>
 export type MedicalClaimInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   initiatedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2014,6 +2063,7 @@ export type $MedicalClaimPayload<ExtArgs extends runtime.Types.Extensions.Intern
     status: string
     mobile: string | null
     email: string | null
+    createdByGuest: boolean
     ticketNumber: string | null
     grade: string | null
     location: string | null
@@ -2468,6 +2518,7 @@ export interface MedicalClaimFieldRefs {
   readonly status: Prisma.FieldRef<"MedicalClaim", 'String'>
   readonly mobile: Prisma.FieldRef<"MedicalClaim", 'String'>
   readonly email: Prisma.FieldRef<"MedicalClaim", 'String'>
+  readonly createdByGuest: Prisma.FieldRef<"MedicalClaim", 'Boolean'>
   readonly ticketNumber: Prisma.FieldRef<"MedicalClaim", 'String'>
   readonly grade: Prisma.FieldRef<"MedicalClaim", 'String'>
   readonly location: Prisma.FieldRef<"MedicalClaim", 'String'>

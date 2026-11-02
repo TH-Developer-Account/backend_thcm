@@ -40,6 +40,7 @@ import {
 	generateMedicalClaimReferenceNumber,
 	computeMedicalClaimEligibility,
 	getLiveEligibilityForClaim,
+	assertCanInitiateClaim,
 	assertBillsWithinEligibility,
 	upsertMedicalClaimBills,
 	mapMedicalClaimToXlsxRow,
@@ -55,7 +56,11 @@ import {
 	approvedPaise,
 	isHospitalisationHead,
 	toPaise,
+	normalizeMobile,
+	normalizeEmail,
+	assertHasBalanceToClaim,
 } from "./mediclaim.helper";
+import { normalizeTicketNumber } from "./mediclaim.eligibility";
 
 // Submit / resubmit hold an advisory lock and upload bill files inside the
 // transaction, which can outlast Prisma's 5-second default.
@@ -86,16 +91,21 @@ export const initiateMedicalClaim = async (
 		if (!userId) throw new ApiError(401, "Unauthorized");
 		const workspaceId = await resolveWorkspaceId(userId);
 
-		const { employeeName, mobile, email } = req.body;
+		const { employeeName } = req.body;
+		// One canonical form per identity field, so the unique constraints on
+		// ticketNumber / mobile / email can't be dodged by case or formatting.
 		const ticketNumber =
 			typeof req.body.ticketNumber === "string"
-				? req.body.ticketNumber.trim() || null
+				? normalizeTicketNumber(req.body.ticketNumber) || null
 				: null;
+		const mobile = normalizeMobile(req.body.mobile);
+		const email = normalizeEmail(req.body.email);
 		if (!employeeName || !mobile || !email) {
 			throw new ApiError(400, "Employee name, mobile and email are required");
 		}
 
 		const result = await prisma.$transaction(async (tx) => {
+			await assertCanInitiateClaim(tx, { ticketNumber, mobile, email });
 			const referenceNumber = generateMedicalClaimReferenceNumber(employeeName);
 			const created = await tx.medicalClaim.create({
 				data: {
@@ -145,6 +155,17 @@ export const initiateMedicalClaim = async (
 			data: result.created,
 		});
 	} catch (error) {
+		// Backstop for two initiations racing past the pre-check: the database's
+		// unique constraints on ticketNumber / mobile / email have the last word.
+		if ((error as { code?: string })?.code === "P2002") {
+			next(
+				new ApiError(
+					409,
+					"A medical claim already exists with this ticket number, mobile number or email.",
+				),
+			);
+			return;
+		}
 		next(error);
 	}
 };
@@ -245,12 +266,14 @@ export const submitMedicalClaimForm = async (
 			claimCover,
 			spouseName,
 			medicalAdvanceTaken,
-			mobile,
-			email,
 			declarationAccepted,
 			signatureName,
 			signatureDate,
 		} = req.body;
+		// Identity comes from the claim HR initiated, never from the request body:
+		// the guest login is keyed on this mobile, and mobile / email are unique.
+		const mobile = normalizeMobile(claim.mobile);
+		const email = normalizeEmail(claim.email);
 		// Every bill must be a known head with a finite amount > 0 — a negative
 		// or NaN amount would otherwise slip through the limit check.
 		const bills = normalizeBillInputs(parseBillsPayload(req.body.bills), {
@@ -290,6 +313,16 @@ export const submitMedicalClaimForm = async (
 				ticketNumber: claim.ticketNumber,
 				guestId: guest.id,
 			});
+
+			// The link check ran before this transaction, so a second request that
+			// arrived at the same moment would still be here. Re-check under the lock.
+			const fresh = await tx.medicalClaim.findUnique({
+				where: { id: claim.id },
+				select: { status: true },
+			});
+			if (fresh?.status !== "AWAITING_EX_EMPLOYEE") {
+				throw new ApiError(409, "This claim has already been submitted");
+			}
 
 			// The grade decides the cap, so it comes from HR (via the ticket
 			// number), not from whatever the form sent.
@@ -429,8 +462,6 @@ export const saveMedicalClaimDraft = async (
 			claimCover,
 			spouseName,
 			medicalAdvanceTaken,
-			mobile,
-			email,
 		} = req.body;
 		// Drafts allow a 0 amount (rows are filled in gradually) but never a
 		// negative / non-numeric one or an unknown claim head.
@@ -456,8 +487,8 @@ export const saveMedicalClaimDraft = async (
 					claimCover,
 					spouseName,
 					medicalAdvanceTaken,
-					mobile,
-					email,
+					// mobile / email are HR's values (and unique) — a draft never
+					// changes them.
 				},
 			});
 
@@ -838,6 +869,236 @@ export const getGuestMedicalClaimById = async (
 				bills: billsWithSignedUrls,
 				liveEligibility,
 			},
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+// GET /medical-claims/guest/profile
+// What the guest portal needs to start a further claim: the identity HR set up
+// (never editable by the retiree) and the live limit. The claim HR initiated
+// (createdByGuest = false) is the source of truth; later claims copy it.
+export const getGuestClaimProfile = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const guestId = req.guest!.id;
+
+		const initial = await prisma.medicalClaim.findFirst({
+			where: { guestId, createdByGuest: false },
+			orderBy: { created_at: "asc" },
+		});
+		if (!initial) {
+			res.status(200).json({ success: true, data: { canCreate: false } });
+			return;
+		}
+
+		// No claim is excluded here: every claim the retiree has made, this
+		// one included, counts against the limit.
+		const grade = await resolveEffectiveGrade(prisma, initial, null, {
+			required: false,
+		});
+		const eligibility = grade
+			? await computeMedicalClaimEligibility(prisma, grade, {
+					guestId,
+					ticketNumber: initial.ticketNumber ?? undefined,
+				})
+			: null;
+
+		res.status(200).json({
+			success: true,
+			data: {
+				canCreate: true,
+				employeeName: initial.employeeName,
+				ticketNumber: initial.ticketNumber,
+				grade,
+				location: initial.location,
+				claimCover: initial.claimCover,
+				spouseName: initial.spouseName,
+				mobile: initial.mobile,
+				email: initial.email,
+				// eligibleAmount + alreadySettled = the annual cap, which is what
+				// the form uses to pick the grade's limit.
+				alreadySettled: eligibility?.alreadySettled ?? null,
+				eligibleAmount: eligibility?.eligibleAmount ?? null,
+				liveEligibility: eligibility,
+			},
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+// POST /medical-claims/guest/submit — a logged-in retiree makes a further claim
+// HR initiates a retiree once; every later claim is created here, by the
+// retiree, until the limit is used up. The claim is created and submitted in
+// one step (there is no draft stage), and carries the identity of the claim HR
+// initiated — ticket, mobile, email and name come from there, never from the
+// request body.
+export const createGuestMedicalClaim = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const guestId = req.guest!.id;
+		const {
+			grade: clientGrade,
+			location,
+			patientName,
+			claimCover,
+			spouseName,
+			medicalAdvanceTaken,
+			declarationAccepted,
+			signatureName,
+			signatureDate,
+		} = req.body;
+		const bills = normalizeBillInputs(parseBillsPayload(req.body.bills), {
+			allowZero: false,
+		});
+		const files = (req.files as Express.Multer.File[]) ?? [];
+
+		// Multipart fields arrive as strings, so "false" is truthy: compare exactly.
+		if (declarationAccepted !== true && declarationAccepted !== "true") {
+			throw new ApiError(400, "Declaration must be accepted before submitting");
+		}
+		if (bills.length === 0) {
+			throw new ApiError(400, "At least one claim head entry is required");
+		}
+
+		const result = await prisma.$transaction(async (tx) => {
+			const initial = await tx.medicalClaim.findFirst({
+				where: { guestId, createdByGuest: false },
+				orderBy: { created_at: "asc" },
+			});
+			if (!initial) {
+				throw new ApiError(
+					403,
+					"New claims can only be made after HR has started your first claim.",
+				);
+			}
+			if (!initial.ticketNumber) {
+				throw new ApiError(400, "Your claim has no ticket number on record.");
+			}
+
+			// One submit at a time per retiree, so two claims made together can't
+			// both pass the limit check below.
+			await lockRetireeLedger(tx, {
+				ticketNumber: initial.ticketNumber,
+				guestId,
+			});
+
+			const grade = (await resolveEffectiveGrade(tx, initial, clientGrade))!;
+			const eligibility = await computeMedicalClaimEligibility(tx, grade, {
+				guestId,
+				ticketNumber: initial.ticketNumber,
+			});
+			if (!eligibility) {
+				throw new ApiError(
+					400,
+					`No eligibility configured for grade "${grade}"`,
+				);
+			}
+
+			await assertHasBalanceToClaim(tx, eligibility, initial.ticketNumber);
+			assertBillsWithinEligibility(bills, grade, eligibility);
+
+			const created = await tx.medicalClaim.create({
+				data: {
+					workspaceId: initial.workspaceId,
+					initiatedById: initial.initiatedById,
+					referenceNumber: generateMedicalClaimReferenceNumber(
+						initial.employeeName ?? "",
+					),
+					guestId,
+					createdByGuest: true,
+					// Identity: copied from the claim HR started.
+					employeeName: initial.employeeName,
+					ticketNumber: initial.ticketNumber,
+					mobile: initial.mobile,
+					email: initial.email,
+					grade,
+					// Filled in by the retiree.
+					location,
+					patientName,
+					claimCover,
+					spouseName,
+					medicalAdvanceTaken,
+					...eligibilityToClaimColumns(eligibility),
+					declarationAcceptedAt: new Date(),
+					signatureName,
+					signatureDate,
+					submittedAt: new Date(),
+					status: "IN_PROGRESS",
+				},
+			});
+
+			const totalClaimed = await upsertMedicalClaimBills(
+				tx,
+				created.id,
+				bills,
+				files,
+				{ requireAttachment: true },
+			);
+			const updated = await tx.medicalClaim.update({
+				where: { id: created.id },
+				data: { totalClaimed },
+			});
+
+			const app = await tx.app.findUnique({
+				where: { key: APP_KEY },
+				select: { id: true },
+			});
+			if (!app) {
+				throw new ApiError(404, `App "${APP_KEY}" not found`);
+			}
+
+			const assigned = await assignWorkflow(tx, {
+				subjectType: APP_KEY,
+				subjectId: updated.id,
+				workspaceId: updated.workspaceId,
+				appId: app.id,
+				userId: updated.initiatedById,
+			});
+
+			await tx.activityLog.create({
+				data: {
+					subjectType: APP_KEY,
+					subjectId: updated.id,
+					actorGuestId: guestId,
+					action: "MEDICAL_CLAIM_SUBMITTED",
+				},
+			});
+
+			await notify({
+				workspaceId: updated.workspaceId,
+				recipientId: updated.initiatedById,
+				type: "GENERIC",
+				title: "Medical claim submitted",
+				body: `${updated.employeeName ?? "The ex-employee"} has submitted a new medical claim. It is now in the approval workflow.`,
+			});
+
+			return { updated, assigned };
+		}, SUBMIT_TX_OPTIONS);
+
+		if (result.assigned.stageOneId) {
+			await notifyStageApprovers({
+				workflowId: result.assigned.workflowInstance.id,
+				subjectType: APP_KEY,
+				subjectId: result.updated.id,
+				appId: APP_KEY,
+				stageId: result.assigned.stageOneId,
+				approverIds: result.assigned.stageOneApproverIds,
+			});
+		}
+
+		res.status(201).json({
+			success: true,
+			message: "Claim submitted successfully",
+			data: result.updated,
 		});
 	} catch (error) {
 		next(error);

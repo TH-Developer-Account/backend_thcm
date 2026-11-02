@@ -975,6 +975,7 @@ export const MedicalClaimScalarFieldEnum = {
   status: 'status',
   mobile: 'mobile',
   email: 'email',
+  createdByGuest: 'createdByGuest',
   ticketNumber: 'ticketNumber',
   grade: 'grade',
   location: 'location',
