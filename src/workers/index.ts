@@ -1,4 +1,6 @@
 import { Worker, Job } from "bullmq";
+import { prisma } from "@shared/config/prisma";
+import logger from "@shared/utils/logger";
 
 import { redisConnectionQueue } from "@shared/config/redis";
 import {
@@ -27,6 +29,16 @@ import { exportMedicalClaimsToS3 } from "@medi-claim/mediclaimExport.service";
 import { MedicalClaimExportJobData } from "@medi-claim/mediclaimExport.queue";
 import { importMedicalClaimsFromS3 } from "@medi-claim/mediclaimImport.service";
 import { MedicalClaimImportJobData } from "@medi-claim/mediclaimImport.queue";
+
+import { EventReportGenerationJobData } from "@modules/map/eventReportGeneration.queue";
+import { generateEventReport } from "@map/reports/eventReportGenerator.services";
+
+// adjust this alias to wherever the machine-telemetry module actually resolves
+import {
+  MACHINE_TELEMETRY_SYNC_QUEUE_NAME,
+  MachineTelemetrySyncJobData,
+} from "@modules/machine-telemetry/machineTelemetry.queue";
+import { runC4CSync } from "@modules/machine-telemetry/machineTelemetryC4CSync.service";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // workers/index.ts — BullMQ worker definitions
@@ -556,6 +568,87 @@ export function startMedicalClaimImportWorker() {
         ),
       );
     }
+  });
+
+  return worker;
+}
+
+// ── Event Report Generation Worker ────────────────────────────────────────────
+// Concurrency 2 — each job does DB aggregation + pdfmake rendering + S3 upload,
+// heavier than notification delivery but lighter than the EPC export scan.
+
+export function startEventReportGenerationWorker() {
+  const worker = new Worker<EventReportGenerationJobData>(
+    "event-report-generation",
+    async (job: Job<EventReportGenerationJobData>) => {
+      const { reportId } = job.data;
+      await job.updateProgress({ status: "generating" });
+      await generateEventReport(reportId);
+      await job.updateProgress({ status: "completed" });
+    },
+    {
+      connection: redisConnectionQueue,
+      concurrency: 2,
+    },
+  );
+
+  worker.on("completed", (job) => {
+    console.info(`[event-report-generation] Job ${job.id} completed`);
+  });
+
+  worker.on("failed", async (job, error) => {
+    console.error(
+      `[event-report-generation] Job ${job?.id} failed:`,
+      error.message,
+    );
+    if (job?.data?.reportId) {
+      await prisma.eventReport
+        .update({
+          where: { id: job.data.reportId },
+          data: { status: "GENERATION_FAILED", generationError: error.message },
+        })
+        .catch((updateError) =>
+          console.error(
+            "[event-report-generation] Failed to mark report as failed:",
+            updateError,
+          ),
+        );
+    }
+  });
+
+  return worker;
+}
+
+// ── Machine Telemetry C4C Sync Worker ─────────────────────────────────────────
+// Concurrency 1 — the job itself fans out internally (CONCURRENT_C4C_CALLS
+// in machineTelemetryC4CSync.service.ts), so only one sync run should ever
+// be active at once; a second concurrent run would double the outbound
+// load on C4C for no benefit. Same factory-function shape as every other
+// worker above, so worker.ts can start it and close it on shutdown like
+// the rest.
+
+export function startMachineTelemetrySyncWorker() {
+  const worker = new Worker<MachineTelemetrySyncJobData>(
+    MACHINE_TELEMETRY_SYNC_QUEUE_NAME,
+    async (job: Job<MachineTelemetrySyncJobData>) => {
+      return runC4CSync({
+        machineSerialNumber: job.data.machineSerialNumbers,
+      });
+    },
+    {
+      connection: redisConnectionQueue,
+      concurrency: 1,
+    },
+  );
+
+  worker.on("completed", (job) => {
+    logger.info(`[machine-telemetry-sync] Job ${job.id} completed`);
+  });
+
+  worker.on("failed", (job, error) => {
+    logger.error(
+      `[machine-telemetry-sync] Job ${job?.id} failed: ${error.message}`,
+    );
   });
 
   return worker;

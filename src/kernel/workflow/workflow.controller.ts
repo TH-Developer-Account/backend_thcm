@@ -303,9 +303,16 @@ export const approveStageController = async (
   try {
     const { stageId } = req.params;
     const userId = req.user?.id;
+    const { reason } = req.body;
 
     if (!stageId) throw new ApiError(400, "stageId is required");
     if (!userId) throw new ApiError(401, "Unauthorized");
+    if (!reason || String(reason).trim().length < 3) {
+      throw new ApiError(
+        400,
+        "A reason of at least 3 characters is required for clarification",
+      );
+    }
 
     // Validate the stage is current before handing off to the service
     const stage = await prisma.stageInstance.findUnique({
@@ -330,11 +337,23 @@ export const approveStageController = async (
       );
     }
 
-    await approveStage({ stageId: stageId as string, userId });
+    // approveStage now returns whatever its post-final-approval hook
+    // reported (e.g. EPC's { stockCheckFailed }) — included in `data` so
+    // the frontend can toast an immediate "retry" prompt on the approve
+    // action itself, rather than the failure only surfacing later if
+    // someone happens to reopen the record. Empty object for every
+    // subject type/outcome that has nothing to report, so this is a
+    // backward-compatible addition, not a breaking response shape change.
+    const hookResult = await approveStage({
+      stageId: stageId as string,
+      userId,
+      reason,
+    });
 
     res.status(200).json({
       success: true,
       message: "Stage approval processed successfully",
+      data: hookResult,
     });
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -1089,7 +1108,12 @@ export const getWorkflowController = async (
             approvals: {
               include: {
                 approver: {
-                  select: { id: true, first_name: true, last_name: true },
+                  select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    designation: true,
+                  },
                 },
                 comments: { orderBy: { createdAt: "asc" } },
               },

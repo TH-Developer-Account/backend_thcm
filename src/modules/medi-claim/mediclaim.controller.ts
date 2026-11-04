@@ -6,6 +6,7 @@ import ApiError from "@shared/utils/apiError";
 import { resolveWorkspaceId } from "@import-export/export.controller";
 import { notify } from "@notifications/notification.services";
 import { addMailJob } from "@mail/mail.service";
+import { sendWorkflowMail } from "@mail/workFlowEmail.services";
 import { getSignedImageUrl } from "@shared/utils/aws-s3.services";
 import { buildXlsxBuffer } from "@import-export/utils/xlsxWriter";
 import { createPendingLog } from "@import-export/importExportLog.services";
@@ -19,6 +20,9 @@ import {
 	getActiveWorkflowForSubject,
 	getResubmitAction,
 	getResubmitStatus,
+	resolveMedicalClaimPendingOn,
+	computePendingOn,
+	getPendingOnForMany,
 } from "@workflow/workflowSubject.helper";
 import {
 	activateFirstStageForResubmit,
@@ -35,9 +39,12 @@ import {
 	resolveMedicalClaimSubjectIdsForApprovalTab,
 	generateMedicalClaimReferenceNumber,
 	computeMedicalClaimEligibility,
+	getLiveEligibilityForClaim,
+	assertBillsWithinEligibility,
 	upsertMedicalClaimBills,
 	mapMedicalClaimToXlsxRow,
 	MEDICAL_CLAIM_EXPORT_COLUMN_WIDTHS,
+	resolveGradeForTicketNumber,
 } from "./mediclaim.helper";
 
 const attachSignedUrlsToBills = async <T extends { s3Key: string | null }>(
@@ -81,6 +88,34 @@ export const initiateMedicalClaim = async (
 				},
 			});
 
+			if (ticketNumber) {
+				const grade = await resolveGradeForTicketNumber(tx, ticketNumber);
+				if (grade) {
+					// A returning retiree already has a Guest (keyed by mobile), so
+					// their earlier claims — settled and in progress — count at
+					// initiation too, not only once the form is submitted.
+					const existingGuest = await tx.guest.findUnique({
+						where: { mobile },
+						select: { id: true },
+					});
+					const eligibility = await computeMedicalClaimEligibility(tx, grade, {
+						guestId: existingGuest?.id,
+						ticketNumber,
+						excludeClaimId: created.id,
+					});
+					if (eligibility) {
+						await tx.medicalClaim.update({
+							where: { id: created.id },
+							data: {
+								grade,
+								eligibleAmount: eligibility.eligibleAmount,
+								alreadySettled: eligibility.alreadySettled,
+							},
+						});
+					}
+				}
+			}
+
 			const tokenRecord = await issueAccessToken(APP_KEY, created.id, tx);
 
 			await tx.activityLog.create({
@@ -95,15 +130,18 @@ export const initiateMedicalClaim = async (
 			return { created, tokenRecord };
 		});
 
-		await addMailJob({
-			to: email,
-			subject: "Medical Claim — Action Required",
-			templateName: "medi-claim-initiation",
-			templateData: {
-				employeeName,
-				formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${result.tokenRecord.token}`,
+		await sendWorkflowMail(
+			{
+				to: email,
+				subject: "Medical Claim — Action Required",
+				templateName: "medi-claim-initiation",
+				templateData: {
+					employeeName,
+					formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${result.tokenRecord.token}`,
+				},
 			},
-		});
+			userId,
+		);
 
 		res.status(201).json({
 			success: true,
@@ -139,15 +177,18 @@ export const resendMedicalClaimLink = async (
 
 		const tokenRecord = await issueAccessToken(APP_KEY, claim.id);
 
-		await addMailJob({
-			to: claim.email as string,
-			subject: "Medical Claim — Action Required (Reminder)",
-			templateName: "medi-claim-initiation",
-			templateData: {
-				employeeName: claim.employeeName,
-				formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${tokenRecord.token}`,
+		await sendWorkflowMail(
+			{
+				to: claim.email as string,
+				subject: "Medical Claim — Action Required (Reminder)",
+				templateName: "medi-claim-initiation",
+				templateData: {
+					employeeName: claim.employeeName,
+					formUrl: `${process.env.FRONTEND_URL}/medical-claim-form/${tokenRecord.token}`,
+				},
 			},
-		});
+			claim.initiatedById,
+		);
 
 		res
 			.status(200)
@@ -173,11 +214,17 @@ export const getMedicalClaimFormByToken = async (
 
 		const billsWithSignedUrls = await attachSignedUrlsToBills(claim.bills);
 
+		// The stored eligibleAmount / alreadySettled are a snapshot from
+		// initiation and go stale (e.g. another claim was submitted since), so
+		// the form gets live numbers, including what is currently on hold.
+		const liveEligibility = await getLiveEligibilityForClaim(prisma, claim);
+
 		res.status(200).json({
 			success: true,
 			data: {
 				...claim,
 				bills: billsWithSignedUrls,
+				liveEligibility,
 			},
 		});
 	} catch (error) {
@@ -239,16 +286,21 @@ export const submitMedicalClaimForm = async (
 				guestPlainPassword = plainPassword;
 			}
 
-			const eligibility = await computeMedicalClaimEligibility(
-				tx,
-				guest.id,
-				grade,
-			);
+			const eligibility = await computeMedicalClaimEligibility(tx, grade, {
+				guestId: guest.id,
+				ticketNumber: claim.ticketNumber ?? undefined,
+				excludeClaimId: claim.id,
+			});
 			if (!eligibility)
 				throw new ApiError(
 					400,
 					`No eligibility configured for grade "${grade}"`,
 				);
+
+			// Server-side limit check: amounts on hold in the retiree's other
+			// in-progress claims are unavailable, and hospitalisation is EG-only
+			// with its own ₹1.25 lakh limit.
+			assertBillsWithinEligibility(bills, grade, eligibility);
 
 			const updated = await tx.medicalClaim.update({
 				where: { id: claim.id },
@@ -306,16 +358,8 @@ export const submitMedicalClaimForm = async (
 				data: {
 					subjectType: APP_KEY,
 					subjectId: updated.id,
-					actorId: updated.initiatedById,
+					actorId: null,
 					action: "MEDICAL_CLAIM_SUBMITTED",
-				},
-			});
-			await tx.activityLog.create({
-				data: {
-					subjectType: APP_KEY,
-					subjectId: updated.id,
-					actorId: updated.initiatedById,
-					action: "MEDICAL_CLAIM_SENT_FOR_APPROVAL",
 				},
 			});
 
@@ -387,6 +431,8 @@ export const saveMedicalClaimDraft = async (
 			throw new ApiError(400, "Bills must be an array");
 		}
 
+		// Drafts are deliberately not limit-checked (partial saves are expected);
+		// a draft never holds money — only a submitted claim does.
 		await prisma.$transaction(async (tx) => {
 			await tx.medicalClaim.update({
 				where: { id: claim.id },
@@ -460,9 +506,22 @@ export const listMedicalClaims = async (
 			prisma.medicalClaim.count({ where }),
 		]);
 
+		const pendingOnBySubjectId = await getPendingOnForMany(
+			APP_KEY,
+			items.map((item) => item.id),
+		);
+
+		const itemsWithPendingOn = items.map((item) => ({
+			...item,
+			pendingOn: resolveMedicalClaimPendingOn(
+				item.status,
+				pendingOnBySubjectId[item.id],
+			),
+		}));
+
 		res.status(200).json({
 			success: true,
-			data: items,
+			data: itemsWithPendingOn,
 			total,
 			page_index: reqPageIndex,
 			page_size: reqPageSize,
@@ -487,14 +546,21 @@ export const getMedicalClaimById = async (
 		if (!claim) throw new ApiError(404, "Medical claim not found");
 
 		const activeWorkflow = await getActiveWorkflowForSubject(APP_KEY, claim.id);
-
 		const billsWithSignedUrls = await attachSignedUrlsToBills(claim.bills);
+		const pendingOn = resolveMedicalClaimPendingOn(
+			claim.status,
+			computePendingOn(activeWorkflow),
+		);
+		const liveEligibility = await getLiveEligibilityForClaim(prisma, claim);
+
 		res.status(200).json({
 			success: true,
 			data: {
 				...claim,
 				bills: billsWithSignedUrls,
 				activeWorkflow,
+				pendingOn,
+				liveEligibility,
 			},
 		});
 	} catch (error) {
@@ -742,6 +808,8 @@ export const getGuestMedicalClaimById = async (
 		});
 
 		const billsWithSignedUrls = await attachSignedUrlsToBills(claim.bills);
+		const liveEligibility = await getLiveEligibilityForClaim(prisma, claim);
+
 		res.status(200).json({
 			success: true,
 			data: {
@@ -750,6 +818,7 @@ export const getGuestMedicalClaimById = async (
 					(latestClarification?.metadata as { reason?: string } | null)
 						?.reason ?? null,
 				bills: billsWithSignedUrls,
+				liveEligibility,
 			},
 		});
 	} catch (error) {
@@ -791,17 +860,20 @@ export const resubmitGuestMedicalClaim = async (
 		}
 
 		await prisma.$transaction(async (tx) => {
-			const eligibility = await computeMedicalClaimEligibility(
-				tx,
+			// excludeClaimId keeps this claim's own bills out of the hold, so
+			// resubmitting never counts the claim against itself.
+			const eligibility = await computeMedicalClaimEligibility(tx, grade, {
 				guestId,
-				grade,
-				claim.id,
-			);
+				ticketNumber: claim.ticketNumber ?? undefined,
+				excludeClaimId: claim.id,
+			});
 			if (!eligibility)
 				throw new ApiError(
 					400,
 					`No eligibility configured for grade "${grade}"`,
 				);
+
+			assertBillsWithinEligibility(bills, grade, eligibility);
 
 			const totalClaimed = await upsertMedicalClaimBills(
 				tx,

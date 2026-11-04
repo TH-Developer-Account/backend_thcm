@@ -257,6 +257,7 @@ export type ProductMasterWhereInput = {
   created_at?: Prisma.DateTimeFilter<"ProductMaster"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"ProductMaster"> | Date | string
   lineItems?: Prisma.LineItemListRelationFilter
+  crfItems?: Prisma.CrfItemListRelationFilter
 }
 
 export type ProductMasterOrderByWithRelationInput = {
@@ -271,6 +272,7 @@ export type ProductMasterOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   lineItems?: Prisma.LineItemOrderByRelationAggregateInput
+  crfItems?: Prisma.CrfItemOrderByRelationAggregateInput
 }
 
 export type ProductMasterWhereUniqueInput = Prisma.AtLeast<{
@@ -288,6 +290,7 @@ export type ProductMasterWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"ProductMaster"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"ProductMaster"> | Date | string
   lineItems?: Prisma.LineItemListRelationFilter
+  crfItems?: Prisma.CrfItemListRelationFilter
 }, "id" | "partNumber">
 
 export type ProductMasterOrderByWithAggregationInput = {
@@ -336,6 +339,7 @@ export type ProductMasterCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   lineItems?: Prisma.LineItemCreateNestedManyWithoutProductInput
+  crfItems?: Prisma.CrfItemCreateNestedManyWithoutProductInput
 }
 
 export type ProductMasterUncheckedCreateInput = {
@@ -350,6 +354,7 @@ export type ProductMasterUncheckedCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   lineItems?: Prisma.LineItemUncheckedCreateNestedManyWithoutProductInput
+  crfItems?: Prisma.CrfItemUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductMasterUpdateInput = {
@@ -364,6 +369,7 @@ export type ProductMasterUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.LineItemUpdateManyWithoutProductNestedInput
+  crfItems?: Prisma.CrfItemUpdateManyWithoutProductNestedInput
 }
 
 export type ProductMasterUncheckedUpdateInput = {
@@ -378,6 +384,7 @@ export type ProductMasterUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lineItems?: Prisma.LineItemUncheckedUpdateManyWithoutProductNestedInput
+  crfItems?: Prisma.CrfItemUncheckedUpdateManyWithoutProductNestedInput
 }
 
 export type ProductMasterCreateManyInput = {
@@ -466,6 +473,11 @@ export type ProductMasterSumOrderByAggregateInput = {
   unitRate?: Prisma.SortOrder
 }
 
+export type ProductMasterNullableScalarRelationFilter = {
+  is?: Prisma.ProductMasterWhereInput | null
+  isNot?: Prisma.ProductMasterWhereInput | null
+}
+
 export type ProductMasterScalarRelationFilter = {
   is?: Prisma.ProductMasterWhereInput
   isNot?: Prisma.ProductMasterWhereInput
@@ -477,6 +489,22 @@ export type EnumProductTypeFieldUpdateOperationsInput = {
 
 export type EnumProductCategoryFieldUpdateOperationsInput = {
   set?: $Enums.ProductCategory
+}
+
+export type ProductMasterCreateNestedOneWithoutCrfItemsInput = {
+  create?: Prisma.XOR<Prisma.ProductMasterCreateWithoutCrfItemsInput, Prisma.ProductMasterUncheckedCreateWithoutCrfItemsInput>
+  connectOrCreate?: Prisma.ProductMasterCreateOrConnectWithoutCrfItemsInput
+  connect?: Prisma.ProductMasterWhereUniqueInput
+}
+
+export type ProductMasterUpdateOneWithoutCrfItemsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductMasterCreateWithoutCrfItemsInput, Prisma.ProductMasterUncheckedCreateWithoutCrfItemsInput>
+  connectOrCreate?: Prisma.ProductMasterCreateOrConnectWithoutCrfItemsInput
+  upsert?: Prisma.ProductMasterUpsertWithoutCrfItemsInput
+  disconnect?: Prisma.ProductMasterWhereInput | boolean
+  delete?: Prisma.ProductMasterWhereInput | boolean
+  connect?: Prisma.ProductMasterWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductMasterUpdateToOneWithWhereWithoutCrfItemsInput, Prisma.ProductMasterUpdateWithoutCrfItemsInput>, Prisma.ProductMasterUncheckedUpdateWithoutCrfItemsInput>
 }
 
 export type ProductMasterCreateNestedOneWithoutLineItemsInput = {
@@ -493,6 +521,78 @@ export type ProductMasterUpdateOneRequiredWithoutLineItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProductMasterUpdateToOneWithWhereWithoutLineItemsInput, Prisma.ProductMasterUpdateWithoutLineItemsInput>, Prisma.ProductMasterUncheckedUpdateWithoutLineItemsInput>
 }
 
+export type ProductMasterCreateWithoutCrfItemsInput = {
+  id?: string
+  productType: $Enums.ProductType
+  category: $Enums.ProductCategory
+  partNumber: string
+  name: string
+  description?: string | null
+  unitRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  lineItems?: Prisma.LineItemCreateNestedManyWithoutProductInput
+}
+
+export type ProductMasterUncheckedCreateWithoutCrfItemsInput = {
+  id?: string
+  productType: $Enums.ProductType
+  category: $Enums.ProductCategory
+  partNumber: string
+  name: string
+  description?: string | null
+  unitRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  lineItems?: Prisma.LineItemUncheckedCreateNestedManyWithoutProductInput
+}
+
+export type ProductMasterCreateOrConnectWithoutCrfItemsInput = {
+  where: Prisma.ProductMasterWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductMasterCreateWithoutCrfItemsInput, Prisma.ProductMasterUncheckedCreateWithoutCrfItemsInput>
+}
+
+export type ProductMasterUpsertWithoutCrfItemsInput = {
+  update: Prisma.XOR<Prisma.ProductMasterUpdateWithoutCrfItemsInput, Prisma.ProductMasterUncheckedUpdateWithoutCrfItemsInput>
+  create: Prisma.XOR<Prisma.ProductMasterCreateWithoutCrfItemsInput, Prisma.ProductMasterUncheckedCreateWithoutCrfItemsInput>
+  where?: Prisma.ProductMasterWhereInput
+}
+
+export type ProductMasterUpdateToOneWithWhereWithoutCrfItemsInput = {
+  where?: Prisma.ProductMasterWhereInput
+  data: Prisma.XOR<Prisma.ProductMasterUpdateWithoutCrfItemsInput, Prisma.ProductMasterUncheckedUpdateWithoutCrfItemsInput>
+}
+
+export type ProductMasterUpdateWithoutCrfItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  productType?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  category?: Prisma.EnumProductCategoryFieldUpdateOperationsInput | $Enums.ProductCategory
+  partNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unitRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lineItems?: Prisma.LineItemUpdateManyWithoutProductNestedInput
+}
+
+export type ProductMasterUncheckedUpdateWithoutCrfItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  productType?: Prisma.EnumProductTypeFieldUpdateOperationsInput | $Enums.ProductType
+  category?: Prisma.EnumProductCategoryFieldUpdateOperationsInput | $Enums.ProductCategory
+  partNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unitRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  lineItems?: Prisma.LineItemUncheckedUpdateManyWithoutProductNestedInput
+}
+
 export type ProductMasterCreateWithoutLineItemsInput = {
   id?: string
   productType: $Enums.ProductType
@@ -504,6 +604,7 @@ export type ProductMasterCreateWithoutLineItemsInput = {
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  crfItems?: Prisma.CrfItemCreateNestedManyWithoutProductInput
 }
 
 export type ProductMasterUncheckedCreateWithoutLineItemsInput = {
@@ -517,6 +618,7 @@ export type ProductMasterUncheckedCreateWithoutLineItemsInput = {
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  crfItems?: Prisma.CrfItemUncheckedCreateNestedManyWithoutProductInput
 }
 
 export type ProductMasterCreateOrConnectWithoutLineItemsInput = {
@@ -546,6 +648,7 @@ export type ProductMasterUpdateWithoutLineItemsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  crfItems?: Prisma.CrfItemUpdateManyWithoutProductNestedInput
 }
 
 export type ProductMasterUncheckedUpdateWithoutLineItemsInput = {
@@ -559,6 +662,7 @@ export type ProductMasterUncheckedUpdateWithoutLineItemsInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  crfItems?: Prisma.CrfItemUncheckedUpdateManyWithoutProductNestedInput
 }
 
 
@@ -568,10 +672,12 @@ export type ProductMasterUncheckedUpdateWithoutLineItemsInput = {
 
 export type ProductMasterCountOutputType = {
   lineItems: number
+  crfItems: number
 }
 
 export type ProductMasterCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lineItems?: boolean | ProductMasterCountOutputTypeCountLineItemsArgs
+  crfItems?: boolean | ProductMasterCountOutputTypeCountCrfItemsArgs
 }
 
 /**
@@ -591,6 +697,13 @@ export type ProductMasterCountOutputTypeCountLineItemsArgs<ExtArgs extends runti
   where?: Prisma.LineItemWhereInput
 }
 
+/**
+ * ProductMasterCountOutputType without action
+ */
+export type ProductMasterCountOutputTypeCountCrfItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CrfItemWhereInput
+}
+
 
 export type ProductMasterSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -604,6 +717,7 @@ export type ProductMasterSelect<ExtArgs extends runtime.Types.Extensions.Interna
   created_at?: boolean
   updated_at?: boolean
   lineItems?: boolean | Prisma.ProductMaster$lineItemsArgs<ExtArgs>
+  crfItems?: boolean | Prisma.ProductMaster$crfItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductMasterCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["productMaster"]>
 
@@ -649,6 +763,7 @@ export type ProductMasterSelectScalar = {
 export type ProductMasterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "productType" | "category" | "partNumber" | "name" | "description" | "unitRate" | "isActive" | "created_at" | "updated_at", ExtArgs["result"]["productMaster"]>
 export type ProductMasterInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   lineItems?: boolean | Prisma.ProductMaster$lineItemsArgs<ExtArgs>
+  crfItems?: boolean | Prisma.ProductMaster$crfItemsArgs<ExtArgs>
   _count?: boolean | Prisma.ProductMasterCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProductMasterIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -658,6 +773,7 @@ export type $ProductMasterPayload<ExtArgs extends runtime.Types.Extensions.Inter
   name: "ProductMaster"
   objects: {
     lineItems: Prisma.$LineItemPayload<ExtArgs>[]
+    crfItems: Prisma.$CrfItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1065,6 +1181,7 @@ readonly fields: ProductMasterFieldRefs;
 export interface Prisma__ProductMasterClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   lineItems<T extends Prisma.ProductMaster$lineItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductMaster$lineItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LineItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  crfItems<T extends Prisma.ProductMaster$crfItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductMaster$crfItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CrfItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1518,6 +1635,30 @@ export type ProductMaster$lineItemsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.LineItemScalarFieldEnum | Prisma.LineItemScalarFieldEnum[]
+}
+
+/**
+ * ProductMaster.crfItems
+ */
+export type ProductMaster$crfItemsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CrfItem
+   */
+  select?: Prisma.CrfItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CrfItem
+   */
+  omit?: Prisma.CrfItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CrfItemInclude<ExtArgs> | null
+  where?: Prisma.CrfItemWhereInput
+  orderBy?: Prisma.CrfItemOrderByWithRelationInput | Prisma.CrfItemOrderByWithRelationInput[]
+  cursor?: Prisma.CrfItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CrfItemScalarFieldEnum | Prisma.CrfItemScalarFieldEnum[]
 }
 
 /**

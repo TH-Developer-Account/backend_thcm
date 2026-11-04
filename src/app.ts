@@ -5,8 +5,9 @@ import cors from "cors";
 // Import routes
 import userRoutes from "@users/user.routes";
 import authRoutes from "@auth/auth.routes";
-import workspaceRoutes from "@rbac/workspace.routes";
-import profileRoutes from "@rbac/profile.routes";
+import workspaceRoutes from "@kernel/rbac/workSpace/workspace.routes";
+import profileRoutes from "@rbac/profile/profile.routes";
+import appRoutes from "@rbac/app/app.routes";
 import pdfRoutes from "@pdf/pdf.routes";
 import notificationRoutes from "@notifications/notification.routes";
 import pincodeRoutes from "@reference-data/pincode.routes";
@@ -17,20 +18,23 @@ import exportRoutes from "@import-export/export.routes";
 import importExportLogRoutes from "@import-export/importExportLog.routes";
 import workflowTemplateRoutes from "@workflow/workflowTemplate.routes";
 import workflowRoutes from "@workflow/workflow.routes";
-import "@mail/mail.queue"; // boots the BullMQ worker
+import "@mail/mail.queue";
 import commentRoutes from "@comments/comments.routes";
 import vendorOnboardRoutes from "@vendor-onboarding/vendorOnboarding.routes";
 import mediClaimRoutes from "@medi-claim/mediclaim.routes";
 import leadRoutes from "@leads/leads.routes";
-import reportRoutes from "@map/report.routes";
+import reportRoutes from "@modules/map/reports/report.routes";
 import epcRoutes from "@map/epc.routes";
-import efpRoutes from "@map/epf.routes";
-import crfRoutes from "@map/crf.routes";
+import efpRoutes from "@modules/map/epf/epf.routes";
+import crfRoutes from "@modules/map/crf/crf.routes";
 import guestRoutes from "@guest/guest.routes";
 import bpRoutes from "@business-partner/businessPartner.routes";
 import healthRouter from "@kernel/health/health.routes";
 import dealerAuditRoutes from "@dealerAudit/dealerAudit.routes";
+import machineStudyRoutes from "@map/reports/machineStudy.routes";
+import crfShopRoutes from "@modules/map/crf/crf-shop.routes";
 import errorHandler from "@shared/middleware/error.middleware";
+import authorityScheduleRoutes from "@map/authority-schedule/authoritySchedule.routes";
 import ApiError from "@shared/utils/apiError";
 import { startJobs } from "@shared/jobs/scheduler";
 
@@ -48,7 +52,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 
-app.use("/api", healthRouter); // exposes GET /api/health
+app.use("/api", healthRouter);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/epc", epcRoutes);
@@ -72,7 +76,11 @@ app.use("/api/v1/vendor-onboarding", vendorOnboardRoutes);
 app.use("/api/v1/medi-claim", mediClaimRoutes);
 app.use("/api/v1/pdf", pdfRoutes);
 app.use("/api/v1/guest", guestRoutes);
-app.use("/api/v1/bp", bpRoutes);
+app.use("/api/v1/business-partner", bpRoutes);
+app.use("/api/v1/apps", appRoutes);
+app.use("/api/v1/machine-studies", machineStudyRoutes);
+app.use("/api/v1/crf-shop", crfShopRoutes);
+app.use("/api/v1/authority-schedule", authorityScheduleRoutes);
 app.use("/api/v1/dealer-audit", dealerAuditRoutes);
 
 // Scheduler

@@ -1,39 +1,59 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
+
 import asyncHandler from "@shared/middleware/async.middleware";
 import { firstAuthRequestPerDay } from "@shared/middleware/dailyActiveUsers.middleware";
-import { requireAuth, requireSuperAdmin } from "../kernel/auth/auth.middleware";
 import {
-  getUsers,
-  getCurrentUser,
-  getUserById,
-  createUser,
-  updateUser,
-  deactivateUser,
-  getByDEmployees,
-  getC4CEmployees,
-  assignUserProfiles,
-  removeUserFromWorkspace,
-} from "../users/user.controller";
+	requireAdministrationAccess,
+	requireAuth,
+	requireSuperAdmin,
+} from "@kernel/auth/auth.middleware";
+
+import {
+	createUser,
+	deactivateUser,
+	getByDEmployees,
+	getC4CEmployees,
+	getCurrentUser,
+	getUserById,
+	getUsers,
+	removeUserFromWorkspace,
+	updateCurrentUser,
+	updateUser,
+} from "./user.controller";
 
 const router = Router();
 
-router.use(requireAuth); // sets req.user
-router.use(firstAuthRequestPerDay); // tracks DAU
+router.use(requireAuth);
+router.use(firstAuthRequestPerDay);
 
-router.get("/", asyncHandler(getUsers));
 router.get("/me", asyncHandler(getCurrentUser));
-router.get("/byd-employees", asyncHandler(getByDEmployees));
-router.get("/c4c-employees", asyncHandler(getC4CEmployees));
-router.post("/assign-profile", asyncHandler(assignUserProfiles));
+// Must stay above PATCH /:id, otherwise "me" is captured as an :id and the
+// super-admin-only update runs instead.
+router.patch("/me", asyncHandler(updateCurrentUser));
 
-router.get("/:id", asyncHandler(getUserById));
-router.post("/", requireSuperAdmin, asyncHandler(createUser));
+router.get(
+	"/byd-employees",
+	requireAdministrationAccess,
+	asyncHandler(getByDEmployees),
+);
+router.get(
+	"/c4c-employees",
+	requireAdministrationAccess,
+	asyncHandler(getC4CEmployees),
+);
+
+// router.get("/", requireAdministrationAccess, asyncHandler(getUsers));
+router.get("/", asyncHandler(getUsers));
+router.post("/", requireAdministrationAccess, asyncHandler(createUser));
+
+router.delete(
+	"/workspace-users/:userId",
+	requireSuperAdmin,
+	asyncHandler(removeUserFromWorkspace),
+);
+
+router.get("/:id", requireAdministrationAccess, asyncHandler(getUserById));
 router.patch("/:id", requireSuperAdmin, asyncHandler(updateUser));
 router.delete("/:id", requireSuperAdmin, asyncHandler(deactivateUser));
-router.delete(
-  "/workspace-users/:userId",
-  requireSuperAdmin,
-  asyncHandler(removeUserFromWorkspace),
-);
 
 export default router;

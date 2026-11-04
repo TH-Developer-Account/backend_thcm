@@ -24,19 +24,20 @@ import logger from "@shared/utils/logger";
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function addMailJob(payload: MailJobPayload): Promise<void> {
-  try {
-    await mailQueue.add("send-mail", payload);
-
-    logger.info(
-      `[MailService] Job enqueued — template: "${payload.templateName}", ` +
-        `to: ${[payload.to].flat().join(", ")}`,
-    );
-  } catch (error: any) {
-    // Enqueue failure (e.g. Redis is down) — log and continue.
-    // Never let a mail failure break the parent operation.
-    logger.error(
-      `[MailService] Failed to enqueue mail job — template: "${payload.templateName}". ` +
-        `Error: ${error.message}`,
-    );
-  }
+	try {
+		await mailQueue.add("send-mail", {
+			...payload,
+			templateData: {
+				logoUrl: process.env.EMAIL_LOGO_URL, // default for every email
+				...payload.templateData,
+			},
+		});
+	} catch (error: any) {
+		// Enqueue failure (e.g. Redis is down) — log and continue.
+		// Never let a mail failure break the parent operation.
+		logger.error(
+			`[MailService] Failed to enqueue mail job — template: "${payload.templateName}". ` +
+				`Error: ${error.message}`,
+		);
+	}
 }

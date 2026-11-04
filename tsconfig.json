@@ -6,6 +6,7 @@
     "outDir": "./dist",
     "esModuleInterop": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
     "paths": {
       /* Umbrella aliases — barrel imports / cross-cutting references */
       "@kernel/*": ["./src/kernel/*"],
@@ -35,7 +36,11 @@
       "@dealerAudit/*": ["./src/modules/dealer-audit/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/modules/map/shopify/thcmShop.d.ts"
+  ],
   "exclude": [
     "node_modules",
     "dist",

@@ -11,8 +11,51 @@ import {
   budgetCodeData,
   verticalsData,
   products,
+  SAMPLE_PROFILE_TEMPLATES,
 } from "./constants";
 import { ProductMasterCreateManyInput } from "./generated/prisma/models";
+
+type PermissionActionValue =
+  (typeof SAMPLE_PROFILE_TEMPLATES)[number]["actions"][number];
+
+function buildModulePermissionRows(
+  profileId: string,
+  moduleIds: string[],
+  actions: readonly PermissionActionValue[],
+) {
+  return moduleIds.flatMap((moduleId) =>
+    actions.map((action) => ({ profileId, moduleId, action })),
+  );
+}
+
+async function createSampleProfiles(workspaceId: string): Promise<void> {
+  const apps = await prisma.app.findMany({
+    select: { id: true, modules: { select: { id: true } } },
+  });
+
+  for (const app of apps) {
+    const moduleIds = app.modules.map((appModule) => appModule.id);
+
+    for (const template of SAMPLE_PROFILE_TEMPLATES) {
+      const profile = await prisma.profile.create({
+        data: {
+          workspaceId,
+          appId: app.id,
+          name: template.name,
+          description: template.description,
+        },
+      });
+
+      await prisma.profilePermission.createMany({
+        data: buildModulePermissionRows(
+          profile.id,
+          moduleIds,
+          template.actions,
+        ),
+      });
+    }
+  }
+}
 
 async function main() {
   console.log("🌱 Seeding database...");
@@ -34,6 +77,7 @@ async function main() {
   await prisma.workflowTemplate.deleteMany();
 
   await prisma.userProfile.deleteMany();
+  await prisma.appAdministrator.deleteMany();
   await prisma.profilePermission.deleteMany();
   await prisma.profile.deleteMany();
   await prisma.workspaceUser.deleteMany();
@@ -56,7 +100,9 @@ async function main() {
 
   await prisma.eventProposal.deleteMany();
   await prisma.branch.deleteMany();
-  await prisma.region.deleteMany();
+  // Region was renamed to Zone (same table — EventProposal's business
+  // region and User's zone are the same concept, unified into one master).
+  await prisma.zone.deleteMany();
   await prisma.vertical.deleteMany();
   await prisma.department.deleteMany();
   await prisma.budgetMaster.deleteMany();
@@ -123,6 +169,9 @@ async function main() {
 
   console.log("✅ Modules created for MAP and Vendor Onboarding");
 
+  await createSampleProfiles(workspace.id);
+  console.log("✅ Sample Viewer / Editor profiles created for every app");
+
   const departments = await Promise.all(
     [
       "Marketing",
@@ -156,7 +205,9 @@ async function main() {
     });
   }
 
-  await prisma.region.createMany({ data: regionData, skipDuplicates: true });
+  // regionData still uses region_code/region_name — unchanged, Zone kept
+  // those column names when it absorbed the old Region model.
+  await prisma.zone.createMany({ data: regionData, skipDuplicates: true });
 
   await prisma.branch.createMany({ data: branchData, skipDuplicates: true });
 

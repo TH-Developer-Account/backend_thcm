@@ -23,12 +23,24 @@ const formatOptions = <T>(
   }));
 };
 
+// Note: "region" is intentionally absent here — Region was merged into Zone
+// (same table; EventProposal's business region and User's zone are the same
+// concept). The Masters admin UI only manages it under "zone" now; the
+// `regions` key in getMasterData's response below stays only as a
+// backward-compat bridge for other-module read consumers.
+//
+// "userRegion"/Locations is also absent — User.location went back to being
+// plain free text (not a master-backed FK), so there's no Locations master
+// screen or model to manage here anymore. See decisions-and-learnings.md.
 const MODEL_MAP: Record<string, any> = {
   department: prisma.department,
-  region: prisma.region,
   branch: prisma.branch,
   eventName: prisma.eventName,
   budgetMaster: prisma.budgetMaster,
+  division: prisma.division,
+  designation: prisma.designation,
+  costCenter: prisma.costCenter,
+  zone: prisma.zone,
 };
 
 export const getMasterData = async (req: Request, res: Response) => {
@@ -36,10 +48,13 @@ export const getMasterData = async (req: Request, res: Response) => {
     const [
       departments,
       verticals,
-      regions,
+      zones,
       branches,
       budgetMasters,
       eventNames,
+      divisions,
+      designations,
+      costCenters,
     ] = await Promise.all([
       prisma.department.findMany({
         // where: { status: "active" },
@@ -64,8 +79,11 @@ export const getMasterData = async (req: Request, res: Response) => {
         orderBy: { name: "asc" },
       }),
 
-      prisma.region.findMany({
-        // where: { status: "active" },
+      // One query backs both the `regions` and `zones` response keys below —
+      // Region and Zone are the same table now (see schema.prisma's Zone
+      // model comment), so there's no separate "region" query anymore.
+      prisma.zone.findMany({
+        where: { isActive: true },
         select: {
           id: true,
           region_name: true,
@@ -102,17 +120,40 @@ export const getMasterData = async (req: Request, res: Response) => {
           title: true,
         },
       }),
+
+      prisma.division.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      }),
+
+      prisma.designation.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true },
+        orderBy: { name: "asc" },
+      }),
+
+      prisma.costCenter.findMany({
+        where: { isActive: true },
+        select: { id: true, code: true, name: true },
+        orderBy: { code: "asc" },
+      }),
     ]);
+
+    const zoneOptions = formatOptions(zones, {
+      label: (z) => z.region_name,
+      extra: (z) => ({ code: z.region_code }),
+    });
 
     res.json({
       departments: formatOptions(departments, {
         label: (d) => d.department_name,
         extra: (d) => ({ code: d.department_code }),
       }),
-      regions: formatOptions(regions, {
-        label: (r) => r.region_name,
-        extra: (r) => ({ code: r.region_code }),
-      }),
+      // Bridge: other-module consumers (e.g. EPCTopbar) still read
+      // `data.regions` — kept pointed at the same Zone data as `zones` below
+      // rather than duplicating the query.
+      regions: zoneOptions,
       branches: formatOptions(branches, {
         label: (b) => b.branch_name,
         extra: (b) => ({ code: b.branch_code }),
@@ -132,6 +173,17 @@ export const getMasterData = async (req: Request, res: Response) => {
         code: `${b.code}`,
         department: b.departmentId,
       })),
+      divisions: formatOptions(divisions, {
+        label: (d) => d.name,
+      }),
+      designations: formatOptions(designations, {
+        label: (d) => d.name,
+      }),
+      costCenters: formatOptions(costCenters, {
+        label: (c) => c.name,
+        extra: (c) => ({ code: c.code }),
+      }),
+      zones: zoneOptions,
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch master data" });

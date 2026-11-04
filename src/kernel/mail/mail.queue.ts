@@ -1,5 +1,5 @@
 import { Queue, Worker, Job } from "bullmq";
-import transporter from "@kernel/mail/mail.config";
+import transporter, { MAIL_FROM } from "@kernel/mail/mail.config";
 import { compileTemplate } from "./mail.template";
 import logger from "@shared/utils/logger";
 import { redisConnectionQueue } from "@shared/config/redis";
@@ -7,7 +7,7 @@ import { redisConnectionQueue } from "@shared/config/redis";
 // ─────────────────────────────────────────────────────────────────────────────
 // MailJobPayload — everything a job needs to send one email.
 //
-// templateName maps directly to a file in src/templates/emails/
+// templateName maps directly to a file in src/kernel/mail/email-templates/
 // templateData is the context injected into that template.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -49,8 +49,8 @@ export const mailQueue = new Queue<MailJobPayload>(QUEUE_NAME, {
 });
 
 // ── Worker (consumer side) ────────────────────────────────────────────────────
-// Runs in the same process. One concurrency slot is enough for a shared
-// O365 SMTP account — avoids hitting Microsoft's rate limits.
+// Runs in the same process. A single concurrency slot keeps us well under the
+// SES sending rate, which is low while the account is in the sandbox.
 
 const mailWorker = new Worker<MailJobPayload>(
   QUEUE_NAME,
@@ -60,7 +60,7 @@ const mailWorker = new Worker<MailJobPayload>(
     const html = compileTemplate(templateName, templateData);
 
     await transporter.sendMail({
-      from: process.env.GMAIL_MAIL_ID,
+      from: MAIL_FROM,
       to,
       ...(cc ? { cc } : {}),
       subject,

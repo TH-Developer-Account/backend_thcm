@@ -4,9 +4,18 @@ import { buildWorkflowStages } from "./workflow.helper";
 import { notify } from "@notifications/notification.services";
 import { addMailJob } from "@mail/mail.service";
 import { runPreApprovalValidation } from "./workflowSubject.helper";
+import {
+  resolveInitiatorEmail,
+  withInitiatorCc,
+} from "@mail/workFlowEmail.services";
 import ApiError from "@shared/utils/apiError";
+import logger from "@shared/utils/logger";
 
-import { updateSubjectStatus } from "./workflowSubject.helper";
+import {
+  updateSubjectStatus,
+  getSubjectOwnerId,
+  runPostFinalApprovalHook,
+} from "./workflowSubject.helper";
 import {
   getSubjectNotificationMeta,
   SubjectNotificationMeta,
@@ -18,7 +27,6 @@ import {
   StrategyType,
   WorkflowStatus,
   WorkflowSubjectType,
-  ActivityAction,
 } from "../../prisma/generated/prisma/client";
 import { templateMatchResolvers } from "./workflow.helper";
 
@@ -122,22 +130,31 @@ const notifyAboutWorkflowEvent = ({
 // testable. Uses the generic approval-pending.hbs template (subject-type
 // agnostic, via subjectMeta.displayLabel) rather than the EPC-only
 // approval-approved.hbs, since this fires for EPC/Vendor/Medical Claim alike.
+//
+// Every workflow mail CCs the record's initiator (per product decision) —
+// resolved ONCE here via getSubjectOwnerId + resolveInitiatorEmail, then
+// merged into each per-approver mail via withInitiatorCc, rather than
+// re-resolved per approver.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const emailStageApprovers = async ({
   appName,
   stageId,
   approverIds,
+  subjectType,
+  subjectId,
   subjectMeta,
 }: {
   appName: string;
   stageId: string;
   approverIds: string[];
+  subjectType: WorkflowSubjectType;
+  subjectId: string;
   subjectMeta: SubjectNotificationMeta;
 }) => {
   if (!approverIds.length) return;
 
-  const [approvers, stage] = await Promise.all([
+  const [approvers, stage, initiatorEmail] = await Promise.all([
     prisma.user.findMany({
       where: { id: { in: approverIds } },
       select: { email: true, first_name: true, last_name: true },
@@ -146,6 +163,9 @@ const emailStageApprovers = async ({
       where: { id: stageId },
       select: { stageName: true },
     }),
+    // subjectMeta.ownerId already carries the initiator id — reuse it
+    // instead of a second getSubjectOwnerId lookup.
+    resolveInitiatorEmail(subjectMeta.ownerId),
   ]);
 
   const dashboardUrl = `${process.env.FRONTEND_URL ?? ""}${subjectMeta.link}`;
@@ -154,18 +174,23 @@ const emailStageApprovers = async ({
     approvers
       .filter((approver) => approver.email)
       .map((approver) =>
-        addMailJob({
-          to: approver.email as string,
-          subject: `Approval required — ${subjectMeta.displayLabel}`,
-          templateName: "approval-pending",
-          templateData: {
-            appName,
-            approverName: `${approver.first_name} ${approver.last_name}`,
-            subjectLabel: subjectMeta.displayLabel,
-            stageName: stage?.stageName ?? "",
-            dashboardUrl,
-          },
-        }),
+        addMailJob(
+          withInitiatorCc(
+            {
+              to: approver.email as string,
+              subject: `Approval required - ${subjectMeta.displayLabel}`,
+              templateName: "approval-pending",
+              templateData: {
+                appName,
+                approverName: `${approver.first_name} ${approver.last_name}`,
+                subjectLabel: subjectMeta.displayLabel,
+                stageName: stage?.stageName ?? "",
+                dashboardUrl,
+              },
+            },
+            initiatorEmail,
+          ),
+        ),
       ),
   );
 };
@@ -218,6 +243,8 @@ export const notifyStageApprovers = async ({
       appName: app?.name ?? "THCM",
       stageId,
       approverIds,
+      subjectType,
+      subjectId,
       subjectMeta,
     }),
   ]);
@@ -312,10 +339,12 @@ export const createEventProposalWithWorkflow = async (input: any) => {
 export const approveStage = async ({
   stageId,
   userId,
+  reason,
 }: {
   stageId: string;
   userId: string;
-}) => {
+  reason: string;
+}): Promise<Record<string, unknown>> => {
   try {
     const result: ApproveStageResult = await prisma.$transaction(async (tx) => {
       await tx.approval.update({
@@ -424,7 +453,9 @@ export const approveStage = async ({
           action: "APPROVED",
           workflowId: stage!.workflowId,
           stageId: stageId as string,
-          metadata: { reason: "This is approved" },
+          metadata: {
+            reason: reason.trim(),
+          },
         },
       });
 
@@ -432,7 +463,7 @@ export const approveStage = async ({
     });
 
     // ── Notify — strictly after the transaction has committed ─────────────
-    if (result.kind === "no_change") return;
+    if (result.kind === "no_change") return {};
 
     const app = await prisma.app.findUnique({
       where: { id: result.appId },
@@ -472,6 +503,37 @@ export const approveStage = async ({
         extraMetadata: { workflowId: result.workflowId },
       });
     }
+
+    // ── Subject-specific post-final-approval hook (e.g. EPC's CRF stock
+    // check) — also strictly post-commit, and deliberately isolated in its
+    // own try/catch: the approval itself has already succeeded and been
+    // persisted, so a downstream failure here (e.g. Shopify unreachable)
+    // must never surface as a failed approval request. Same defensive
+    // posture as safeNotifyCrfEvent in crfOrder.service.ts.
+    //
+    // hookResult is returned to the controller (and from there, to the
+    // frontend) so a failure the hook already handled gracefully — e.g.
+    // { stockCheckFailed: true } — can still reach the person who just
+    // clicked Approve as a toast, right now, rather than only being
+    // discoverable later by reopening the record. A hook throwing outright
+    // (vs. returning a handled-failure flag) is a second, unexpected
+    // failure mode, so that case is still just logged and swallowed here,
+    // same as before — the approval response stays successful either way.
+    let hookResult: Record<string, unknown> = {};
+    if (result.kind === "final_approved") {
+      try {
+        hookResult = await runPostFinalApprovalHook(
+          result.subjectType,
+          result.subjectId,
+        );
+      } catch (error: any) {
+        logger.error(
+          `[workflow.service] Post-final-approval hook failed for ${result.subjectType} ${result.subjectId}: ${error.message}`,
+        );
+      }
+    }
+
+    return hookResult;
   } catch (error) {
     throw error;
   }
@@ -558,7 +620,7 @@ export async function activateFirstStageForResubmit(
   tx: Prisma.TransactionClient,
   workflowId: string,
   actor: ActivityActor,
-  resubmittedAction: ActivityAction,
+  resubmittedAction: string,
   resubmittedStatus: string,
 ) {
   const workflow = await tx.workflowInstance.findUnique({

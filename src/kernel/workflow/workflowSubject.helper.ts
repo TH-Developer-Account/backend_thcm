@@ -22,11 +22,15 @@ import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import { activeWorkflowInclude } from "@shared/utils/contants";
 import { notifyGuestOfClarification } from "@medi-claim/mediclaim.helper";
+import { runEventProposalFinalApprovalHooks } from "@map/crf/services/crfOrder.services";
 
 import {
   Prisma,
   WorkflowSubjectType,
   ActivityAction,
+  WorkflowStatus,
+  ApprovalStatus,
+  StageStatus,
 } from "../../prisma/generated/prisma/client";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -352,6 +356,59 @@ export async function runPreApprovalValidation(
   if (validator) await validator(subjectId);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// postFinalApprovalHooks  ✅ NEW
+//
+// Mirrors postClarifyHooks above — same strategy-map reasoning (new subject
+// type = one new entry, no existing branch touched) — but deliberately NOT
+// shaped like it: these hooks take no `tx`, because they must run strictly
+// AFTER the approval transaction has committed, never inside it.
+//
+// runEventProposalFinalApprovalHooks talks to Shopify, sends mail, and
+// opens its own transactions; running any of that while still holding
+// approveStage's transaction locks would violate the transaction-
+// discipline principle this codebase follows everywhere else (see
+// crfOrder.service.ts's own notification comments). So the caller
+// (workflow.service.ts's approveStage) invokes this only in its
+// post-commit notify section, exactly where it already fires the "fully
+// approved" notification.
+//
+// EVENT_PROPOSAL → runEventProposalFinalApprovalHooks, which composes the
+// CRF post-approval souvenir stock check (order-readiness) AND the
+// marketing artwork/printed-material forward — both defined in
+// crfOrder.service.ts, both EPC-final-approval-triggered, so they're kept
+// as one entry here rather than this registry growing a second slot per
+// subject type.
+//
+// Return type is Promise<Record<string, unknown>> rather than Promise<void>
+// — not every hook has something worth surfacing back to the approve
+// response (most subject types have no hook at all), but EVENT_PROPOSAL's
+// does: { stockCheckFailed } needs to reach approveStage's response so the
+// frontend can toast "Shopify unreachable — retry" right on the approve
+// action, instead of the failure only being discoverable by reopening the
+// CRF later. Hooks with nothing to report just resolve to {} — same
+// convention as runPostClarifyHook returning void, just non-void here
+// because this one has a caller that needs the data.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const postFinalApprovalHooks: Partial<
+  Record<
+    WorkflowSubjectType,
+    (subjectId: string) => Promise<Record<string, unknown>>
+  >
+> = {
+  EVENT_PROPOSAL: (subjectId) => runEventProposalFinalApprovalHooks(subjectId),
+};
+
+export async function runPostFinalApprovalHook(
+  subjectType: WorkflowSubjectType,
+  subjectId: string,
+): Promise<Record<string, unknown>> {
+  const hook = postFinalApprovalHooks[subjectType];
+  if (!hook) return {};
+  return hook(subjectId);
+}
+
 // Subject-specific action name + status for the "resubmitted" transition —
 // same reasoning as clarifyResetStatus. Without this, every subject type
 // resubmitting through activateFirstStageController would get EPC's
@@ -422,4 +479,115 @@ export async function getCurrentStageApprovalOrThrow(
   }
 
   return { workflowInstanceId: activeWorkflow.id, stageId: approval.stageId };
+}
+
+export type PendingOn =
+  | { role: "NONE"; outcome: "APPROVED" | "REJECTED" }
+  | { role: "PROPOSER" }
+  | { role: "VENDOR" }
+  | { role: "GUEST" }
+  | { role: "APPROVER"; approvers: { id: string; name: string }[] };
+
+type PendingOnApproval = {
+  status: ApprovalStatus;
+  approver: { id: string; first_name: string; last_name: string };
+};
+
+type PendingOnStage = {
+  status: StageStatus;
+  approvals: PendingOnApproval[];
+};
+
+type PendingOnWorkflow = {
+  status: WorkflowStatus;
+  stages: PendingOnStage[];
+};
+
+function isAwaitingProposer(currentStage: PendingOnStage | undefined): boolean {
+  return (
+    currentStage?.status === "IN_PROGRESS" &&
+    currentStage.approvals.length === 0
+  );
+}
+
+export function computePendingOn(
+  workflow: PendingOnWorkflow | null,
+): PendingOn {
+  if (!workflow) return { role: "PROPOSER" };
+  if (workflow.status === "APPROVED" || workflow.status === "REJECTED") {
+    return { role: "NONE", outcome: workflow.status };
+  }
+
+  const currentStage = workflow.stages.find((s) => s.status === "IN_PROGRESS");
+  if (isAwaitingProposer(currentStage)) return { role: "PROPOSER" };
+
+  const pendingApprovals =
+    currentStage?.approvals.filter((a) => a.status === "PENDING") ?? [];
+
+  return {
+    role: "APPROVER",
+    approvers: pendingApprovals.map((a) => ({
+      id: a.approver.id,
+      name: `${a.approver.first_name} ${a.approver.last_name}`,
+    })),
+  };
+}
+
+// Batched — one query for every subject id on a page, instead of N calls.
+export async function getPendingOnForMany(
+  subjectType: WorkflowSubjectType,
+  subjectIds: string[],
+): Promise<Record<string, PendingOn>> {
+  if (subjectIds.length === 0) return {};
+
+  const workflows = await prisma.workflowInstance.findMany({
+    where: { subjectType, subjectId: { in: subjectIds }, isActive: true },
+    select: {
+      subjectId: true,
+      status: true,
+      stages: {
+        where: { isCurrentIteration: true, status: "IN_PROGRESS" },
+        select: {
+          status: true,
+          approvals: {
+            where: { status: "PENDING" },
+            select: {
+              status: true,
+              approver: {
+                select: { id: true, first_name: true, last_name: true },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const bySubjectId = new Map(workflows.map((w) => [w.subjectId, w]));
+  return Object.fromEntries(
+    subjectIds.map((id) => [id, computePendingOn(bySubjectId.get(id) ?? null)]),
+  );
+}
+
+export function resolveVendorOnboardingPendingOn(
+  status: string,
+  workflowBasedPendingOn: PendingOn,
+): PendingOn {
+  return status === "AWAITING_VENDOR"
+    ? { role: "VENDOR" }
+    : workflowBasedPendingOn;
+}
+
+const GUEST_TURN_STATUSES = new Set([
+  "AWAITING_EX_EMPLOYEE",
+  "CLARIFICATION_REQUESTED",
+]);
+
+export function resolveMedicalClaimPendingOn(
+  status: string,
+  workflowBasedPendingOn: PendingOn,
+): PendingOn {
+  return GUEST_TURN_STATUSES.has(status)
+    ? { role: "GUEST" }
+    : workflowBasedPendingOn;
 }

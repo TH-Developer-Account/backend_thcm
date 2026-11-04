@@ -5,9 +5,10 @@ import bcrypt from "bcrypt";
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import { SALT_ROUNDS } from "@shared/utils/contants";
+import { addMailJob } from "@mail/mail.service";
 
 import { checkOtpLimit, updateOtpLimit } from "./otpRateLimiter";
-import { buildUserPermissions } from "@kernel/rbac/userPermission";
+import { buildUserPermissions } from "@rbac/profile/userPermission";
 // import { sendPasswordResetEmail } from "../utils/sendEmail";
 import { signAccessToken, createRefreshToken } from "./auth.services";
 import { OtpService } from "./otp.services";
@@ -79,7 +80,7 @@ export const loginWithPassword = async (
 
     // Check if user exists
     const existingUser = await prisma.user.findUnique({
-      where: { email },
+      where: { email, is_active: true },
     });
 
     if (!existingUser) {
@@ -192,7 +193,7 @@ export const sendOtp = async (
     }
 
     const user = await prisma.user.findUnique({
-      where: { phone_number },
+      where: { phone_number, is_active: true },
     });
 
     if (!user) {
@@ -527,20 +528,29 @@ export const forgotPassword = async (
     });
 
     // Create new reset token (expires in 1 hour)
+    const RESET_TOKEN_TTL_MINUTES = 60;
     await prisma.passwordResetToken.create({
       data: {
         user_id: user.id,
         token: hashedToken,
-        expires_at: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+        expires_at: new Date(Date.now() + RESET_TOKEN_TTL_MINUTES * 60 * 1000),
       },
     });
 
-    // Send email with original (unhashed) token
-    // await sendPasswordResetEmail(user.email, resetToken);
-    console.log(
-      "Forgot password link==========>",
-      `${process.env.FRONTEND_URL}/reset-password/${resetToken}`,
-    );
+    // Send email with original (unhashed) token.
+    // Enqueued, not awaited-to-completion beyond the queue add — addMailJob
+    // swallows/logs its own enqueue failures so a mail outage never blocks
+    // or fails this request (see kernel/mail/mail.service.ts).
+    await addMailJob({
+      to: user.email as string,
+      subject: "Reset your password",
+      templateName: "forgot-password",
+      templateData: {
+        firstName: user.first_name,
+        resetUrl: `${process.env.FRONTEND_URL}/reset-password/${resetToken}`,
+        expiresInMinutes: RESET_TOKEN_TTL_MINUTES,
+      },
+    });
 
     res.status(200).json({
       message:

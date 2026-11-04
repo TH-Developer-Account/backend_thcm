@@ -7,9 +7,20 @@ import { epcFullInfoSelect } from "@shared/utils/contants";
 import { uploadDeviationDoc } from "@shared/utils/aws-s3.services";
 import { getValidatorForApp } from "@shared/utils/validators.constant";
 import { addMailJob } from "@kernel/mail/mail.service";
+import logger from "@shared/utils/logger";
 
 import { searchEventProposals } from "./helpers/searchEventProposal.helper";
-import { getActiveWorkflowForSubject } from "@workflow/workflowSubject.helper";
+import {
+  resolveAuthorityEligibilityForAmount,
+  resolveEpcAuthorityEligibility,
+} from "./helpers/authorityLimit.helper";
+import {
+  getActiveWorkflowForSubject,
+  getPendingOnForMany,
+  computePendingOn,
+  updateSubjectStatus,
+  runPostFinalApprovalHook,
+} from "@workflow/workflowSubject.helper";
 
 const OUTCOME_STATUSES = new Set(["CONDUCTED", "CANCELLED"]);
 
@@ -196,14 +207,64 @@ export const getAllEventProposals = async (
       createdDate: createdDate ? new Date(createdDate as string) : undefined,
     });
 
+    const pendingOnBySubjectId = await getPendingOnForMany(
+      "EVENT_PROPOSAL",
+      data.map((row) => row.id),
+    );
+
     res.status(200).json({
       success: true,
-      data,
+      data: data.map((row) => ({
+        ...row,
+        pendingOn: pendingOnBySubjectId[row.id],
+      })),
       pagination: {
         total,
         page: pageNumber,
         pageSize: take,
         totalPages: Math.ceil(total / take),
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /epc/authority-check?amount=<number>
+//
+// Read-only, EPC-agnostic. Lets the EPF form check whether the logged-in
+// user's designation is authorized to PROPOSE (and, separately, to
+// auto-approve) a given Tata Hitachi share BEFORE anything is saved —
+// unlike getAuthorityEligibility below, which reads a SAVED EPC's amount.
+//
+// Mounted ahead of GET /:id in epc.routes.ts so "authority-check" is never
+// swallowed by the :id param.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const checkAuthorityForAmount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const amount = Number(req.query.amount);
+    if (!Number.isFinite(amount) || amount < 0) {
+      throw new ApiError(400, "amount must be a non-negative number");
+    }
+
+    const { eligible, proposerEligible, applicableLimit } =
+      await resolveAuthorityEligibilityForAmount(userId, amount);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        eligible,
+        proposerEligible,
+        authorityLimitLabel: applicableLimit?.label ?? null,
       },
     });
   } catch (error) {
@@ -245,6 +306,7 @@ export const getEventProposalById = async (
     const response = {
       ...epc,
       activeWorkflow: activeWorkflow ?? null,
+      pendingOn: computePendingOn(activeWorkflow),
     };
 
     res.status(200).json({ success: true, data: response });
@@ -270,7 +332,16 @@ export const updateEventProposal = async (
 ) => {
   try {
     const id = String(req.params.id);
-    const { ...data } = req.body;
+    // const { ...data } = req.body;
+    const data = {
+      ...req.body,
+      ...(req.body.event_from_date && {
+        event_from_date: new Date(req.body.event_from_date),
+      }),
+      ...(req.body.event_to_date && {
+        event_to_date: new Date(req.body.event_to_date),
+      }),
+    };
     const userId = req?.user?.id;
 
     if (!userId) throw new ApiError(401, "Unauthorized");
@@ -564,6 +635,190 @@ export const closeEpc = async (
     res.status(200).json({
       success: true,
       message: "EPC closed successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GET /epc/:id/authority-check
+//
+// Read-only. Tells the frontend whether the current user's designation is
+// already an eligible Schedule of Authority Approver for this EPC's Tata
+// Hitachi share, BEFORE they hit Final Submit — and whether they are even
+// authorized to PROPOSE (submit) this amount at all. Never writes anything —
+// see finalizeEventProposal below for the committing counterpart. Both share
+// resolveEpcAuthorityEligibility so the two can never disagree.
+//
+// Unlike checkAuthorityForAmount above, this reads the SAVED EPF amount —
+// use it only once an EPF already exists for this EPC.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getAuthorityEligibility = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const id = String(req.params.id);
+
+    const epc = await prisma.eventProposal.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    if (!epc) throw new ApiError(404, "EPC not found");
+
+    const { eligible, proposerEligible, applicableLimit } =
+      await resolveEpcAuthorityEligibility(id, userId);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        eligible,
+        proposerEligible,
+        authorityLimitLabel: eligible ? (applicableLimit?.label ?? null) : null,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// POST /epc/:id/finalize
+//
+// The ONLY place an EPC gets committed under the Schedule of Authority.
+//
+//   1. PROPOSER gate (hard rejection, no fallback): the creator's designation
+//      must be explicitly authorized to submit an amount in this band at
+//      all. Not authorized → 403, straight away. There is no escalation path
+//      for an amount you were never allowed to create in the first place —
+//      this is checked BEFORE any auto-approve or workflow-preview logic.
+//   2. APPROVER check: if the creator's own designation is also an eligible
+//      Approver for this band, the EPC is approved directly — no workflow is
+//      ever created — and the SAME post-final-approval hook that a normal
+//      workflow approval fires (runPostFinalApprovalHook, strictly
+//      post-commit, same as approveStage in workflow.service.ts) runs here
+//      too, since the CRF souvenir stock-check / artwork-forward flow must
+//      not depend on how the EPC got approved.
+//
+// Proposer-eligible but not Approver-eligible → responds { bypassed: false }
+// and does nothing; the frontend then falls back to its normal
+// preview/assign-workflow flow for this same amount.
+//
+// This remains the authoritative, server-side enforcement of the PROPOSER
+// gate regardless of what the frontend's own pre-submit authority check
+// (checkAuthorityForAmount) found — that check is a courtesy against a
+// live, unsaved amount; this one is against what was actually saved.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const finalizeEventProposal = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) throw new ApiError(401, "Unauthorized");
+
+    const id = String(req.params.id);
+
+    const [epc, existingWorkflow] = await Promise.all([
+      prisma.eventProposal.findUnique({
+        where: { id },
+        select: { id: true, status: true, created_by_id: true },
+      }),
+      prisma.workflowInstance.findFirst({
+        where: { subjectType: "EVENT_PROPOSAL", subjectId: id, isActive: true },
+        select: { id: true, status: true },
+      }),
+    ]);
+
+    if (!epc) throw new ApiError(404, "EPC not found");
+
+    if (epc.created_by_id !== userId) {
+      throw new ApiError(403, "Only the EPC creator can submit it");
+    }
+
+    if (epc.status !== "SUBMITTED" && epc.status !== "PENDING") {
+      throw new ApiError(
+        400,
+        `EPC cannot be finalized from status "${epc.status}"`,
+      );
+    }
+
+    if (existingWorkflow) {
+      throw new ApiError(
+        409,
+        `This EPC already has an active workflow (status: ${existingWorkflow.status})`,
+      );
+    }
+
+    const { eligible, proposerEligible, applicableLimit, tataHitachiPoAmount } =
+      await resolveEpcAuthorityEligibility(id, userId);
+
+    // ── Hard gate: exceeding your own PROPOSER limit is a straight
+    // rejection, never an escalation to a workflow. ─────────────────────
+    if (!proposerEligible) {
+      throw new ApiError(
+        403,
+        applicableLimit
+          ? `You are not authorized to submit an Event Proposal in the "${applicableLimit.label}" band. This amount exceeds your assigned limit.`
+          : "You are not authorized to submit an Event Proposal for this amount — no authority band covers it.",
+      );
+    }
+
+    if (!eligible) {
+      res.status(200).json({
+        success: true,
+        data: { bypassed: false },
+      });
+      return;
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await updateSubjectStatus(tx, "EVENT_PROPOSAL", id, "APPROVED");
+
+      await tx.activityLog.create({
+        data: {
+          subjectType: "EVENT_PROPOSAL",
+          subjectId: id,
+          actorId: userId,
+          action: "EPC_AUTO_APPROVED_SOA",
+          metadata: {
+            reason:
+              "Creator's designation is an eligible Approver under the Schedule of Authority — approved without a workflow.",
+            authorityLimitId: applicableLimit?.id ?? null,
+            authorityLimitLabel: applicableLimit?.label ?? null,
+            tataHitachiPoAmount,
+          },
+        },
+      });
+    });
+
+    // Strictly post-commit, same discipline as approveStage's final-stage
+    // branch (workflow.service.ts) — this hook talks to Shopify/mail and
+    // opens its own transactions, so it must never run inside the one
+    // above. Its failure is logged, never thrown — the EPC is already
+    // approved by this point and that must stand regardless.
+    let hookResult: Record<string, unknown> = {};
+    try {
+      hookResult = await runPostFinalApprovalHook("EVENT_PROPOSAL", id);
+    } catch (error) {
+      logger.error("runPostFinalApprovalHook failed after SOA auto-approve", {
+        epcId: id,
+        error,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "EPC auto-approved under the Schedule of Authority.",
+      data: { bypassed: true, ...hookResult },
     });
   } catch (error) {
     next(error);

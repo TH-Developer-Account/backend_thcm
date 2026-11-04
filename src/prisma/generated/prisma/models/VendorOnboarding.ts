@@ -67,6 +67,8 @@ export type VendorOnboardingMinAggregateOutputType = {
   natureOfService: string | null
   onboardingReason: string | null
   guestId: string | null
+  gstApplicability: boolean | null
+  incorporationApplicability: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -114,6 +116,8 @@ export type VendorOnboardingMaxAggregateOutputType = {
   natureOfService: string | null
   onboardingReason: string | null
   guestId: string | null
+  gstApplicability: boolean | null
+  incorporationApplicability: boolean | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -161,6 +165,8 @@ export type VendorOnboardingCountAggregateOutputType = {
   natureOfService: number
   onboardingReason: number
   guestId: number
+  gstApplicability: number
+  incorporationApplicability: number
   created_at: number
   updated_at: number
   _all: number
@@ -210,6 +216,8 @@ export type VendorOnboardingMinAggregateInputType = {
   natureOfService?: true
   onboardingReason?: true
   guestId?: true
+  gstApplicability?: true
+  incorporationApplicability?: true
   created_at?: true
   updated_at?: true
 }
@@ -257,6 +265,8 @@ export type VendorOnboardingMaxAggregateInputType = {
   natureOfService?: true
   onboardingReason?: true
   guestId?: true
+  gstApplicability?: true
+  incorporationApplicability?: true
   created_at?: true
   updated_at?: true
 }
@@ -304,6 +314,8 @@ export type VendorOnboardingCountAggregateInputType = {
   natureOfService?: true
   onboardingReason?: true
   guestId?: true
+  gstApplicability?: true
+  incorporationApplicability?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -424,6 +436,8 @@ export type VendorOnboardingGroupByOutputType = {
   natureOfService: string | null
   onboardingReason: string | null
   guestId: string | null
+  gstApplicability: boolean | null
+  incorporationApplicability: boolean | null
   created_at: Date
   updated_at: Date
   _count: VendorOnboardingCountAggregateOutputType | null
@@ -492,6 +506,8 @@ export type VendorOnboardingWhereInput = {
   natureOfService?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   onboardingReason?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   guestId?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
+  gstApplicability?: Prisma.BoolNullableFilter<"VendorOnboarding"> | boolean | null
+  incorporationApplicability?: Prisma.BoolNullableFilter<"VendorOnboarding"> | boolean | null
   created_at?: Prisma.DateTimeFilter<"VendorOnboarding"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"VendorOnboarding"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
@@ -543,6 +559,8 @@ export type VendorOnboardingOrderByWithRelationInput = {
   natureOfService?: Prisma.SortOrderInput | Prisma.SortOrder
   onboardingReason?: Prisma.SortOrderInput | Prisma.SortOrder
   guestId?: Prisma.SortOrderInput | Prisma.SortOrder
+  gstApplicability?: Prisma.SortOrderInput | Prisma.SortOrder
+  incorporationApplicability?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
@@ -597,6 +615,8 @@ export type VendorOnboardingWhereUniqueInput = Prisma.AtLeast<{
   natureOfService?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   onboardingReason?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   guestId?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
+  gstApplicability?: Prisma.BoolNullableFilter<"VendorOnboarding"> | boolean | null
+  incorporationApplicability?: Prisma.BoolNullableFilter<"VendorOnboarding"> | boolean | null
   created_at?: Prisma.DateTimeFilter<"VendorOnboarding"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"VendorOnboarding"> | Date | string
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
@@ -648,6 +668,8 @@ export type VendorOnboardingOrderByWithAggregationInput = {
   natureOfService?: Prisma.SortOrderInput | Prisma.SortOrder
   onboardingReason?: Prisma.SortOrderInput | Prisma.SortOrder
   guestId?: Prisma.SortOrderInput | Prisma.SortOrder
+  gstApplicability?: Prisma.SortOrderInput | Prisma.SortOrder
+  incorporationApplicability?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.VendorOnboardingCountOrderByAggregateInput
@@ -701,6 +723,8 @@ export type VendorOnboardingScalarWhereWithAggregatesInput = {
   natureOfService?: Prisma.StringNullableWithAggregatesFilter<"VendorOnboarding"> | string | null
   onboardingReason?: Prisma.StringNullableWithAggregatesFilter<"VendorOnboarding"> | string | null
   guestId?: Prisma.StringNullableWithAggregatesFilter<"VendorOnboarding"> | string | null
+  gstApplicability?: Prisma.BoolNullableWithAggregatesFilter<"VendorOnboarding"> | boolean | null
+  incorporationApplicability?: Prisma.BoolNullableWithAggregatesFilter<"VendorOnboarding"> | boolean | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"VendorOnboarding"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"VendorOnboarding"> | Date | string
 }
@@ -745,6 +769,8 @@ export type VendorOnboardingCreateInput = {
   vendorAuditReportPrepared?: boolean | null
   natureOfService?: string | null
   onboardingReason?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutVendorOnboardingsInput
@@ -796,6 +822,8 @@ export type VendorOnboardingUncheckedCreateInput = {
   natureOfService?: string | null
   onboardingReason?: string | null
   guestId?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
   documents?: Prisma.VendorOnboardingDocumentUncheckedCreateNestedManyWithoutOnboardingInput
@@ -841,6 +869,8 @@ export type VendorOnboardingUpdateInput = {
   vendorAuditReportPrepared?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutVendorOnboardingsNestedInput
@@ -892,6 +922,8 @@ export type VendorOnboardingUncheckedUpdateInput = {
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.VendorOnboardingDocumentUncheckedUpdateManyWithoutOnboardingNestedInput
@@ -940,6 +972,8 @@ export type VendorOnboardingCreateManyInput = {
   natureOfService?: string | null
   onboardingReason?: string | null
   guestId?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -984,6 +1018,8 @@ export type VendorOnboardingUpdateManyMutationInput = {
   vendorAuditReportPrepared?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1031,6 +1067,8 @@ export type VendorOnboardingUncheckedUpdateManyInput = {
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1088,6 +1126,8 @@ export type VendorOnboardingCountOrderByAggregateInput = {
   natureOfService?: Prisma.SortOrder
   onboardingReason?: Prisma.SortOrder
   guestId?: Prisma.SortOrder
+  gstApplicability?: Prisma.SortOrder
+  incorporationApplicability?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -1135,6 +1175,8 @@ export type VendorOnboardingMaxOrderByAggregateInput = {
   natureOfService?: Prisma.SortOrder
   onboardingReason?: Prisma.SortOrder
   guestId?: Prisma.SortOrder
+  gstApplicability?: Prisma.SortOrder
+  incorporationApplicability?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -1182,6 +1224,8 @@ export type VendorOnboardingMinOrderByAggregateInput = {
   natureOfService?: Prisma.SortOrder
   onboardingReason?: Prisma.SortOrder
   guestId?: Prisma.SortOrder
+  gstApplicability?: Prisma.SortOrder
+  incorporationApplicability?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -1375,6 +1419,8 @@ export type VendorOnboardingCreateWithoutInitiatedByInput = {
   vendorAuditReportPrepared?: boolean | null
   natureOfService?: string | null
   onboardingReason?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutVendorOnboardingsInput
@@ -1424,6 +1470,8 @@ export type VendorOnboardingUncheckedCreateWithoutInitiatedByInput = {
   natureOfService?: string | null
   onboardingReason?: string | null
   guestId?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
   documents?: Prisma.VendorOnboardingDocumentUncheckedCreateNestedManyWithoutOnboardingInput
@@ -1501,6 +1549,8 @@ export type VendorOnboardingScalarWhereInput = {
   natureOfService?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   onboardingReason?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
   guestId?: Prisma.StringNullableFilter<"VendorOnboarding"> | string | null
+  gstApplicability?: Prisma.BoolNullableFilter<"VendorOnboarding"> | boolean | null
+  incorporationApplicability?: Prisma.BoolNullableFilter<"VendorOnboarding"> | boolean | null
   created_at?: Prisma.DateTimeFilter<"VendorOnboarding"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"VendorOnboarding"> | Date | string
 }
@@ -1545,6 +1595,8 @@ export type VendorOnboardingCreateWithoutWorkspaceInput = {
   vendorAuditReportPrepared?: boolean | null
   natureOfService?: string | null
   onboardingReason?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
   initiatedBy: Prisma.UserCreateNestedOneWithoutInitiated_vendor_onboardingsInput
@@ -1594,6 +1646,8 @@ export type VendorOnboardingUncheckedCreateWithoutWorkspaceInput = {
   natureOfService?: string | null
   onboardingReason?: string | null
   guestId?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
   documents?: Prisma.VendorOnboardingDocumentUncheckedCreateNestedManyWithoutOnboardingInput
@@ -1665,6 +1719,8 @@ export type VendorOnboardingCreateWithoutDocumentsInput = {
   vendorAuditReportPrepared?: boolean | null
   natureOfService?: string | null
   onboardingReason?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutVendorOnboardingsInput
@@ -1715,6 +1771,8 @@ export type VendorOnboardingUncheckedCreateWithoutDocumentsInput = {
   natureOfService?: string | null
   onboardingReason?: string | null
   guestId?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -1775,6 +1833,8 @@ export type VendorOnboardingUpdateWithoutDocumentsInput = {
   vendorAuditReportPrepared?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutVendorOnboardingsNestedInput
@@ -1825,6 +1885,8 @@ export type VendorOnboardingUncheckedUpdateWithoutDocumentsInput = {
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1869,6 +1931,8 @@ export type VendorOnboardingCreateWithoutGuestInput = {
   vendorAuditReportPrepared?: boolean | null
   natureOfService?: string | null
   onboardingReason?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
   workspace: Prisma.WorkspaceCreateNestedOneWithoutVendorOnboardingsInput
@@ -1918,6 +1982,8 @@ export type VendorOnboardingUncheckedCreateWithoutGuestInput = {
   vendorAuditReportPrepared?: boolean | null
   natureOfService?: string | null
   onboardingReason?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
   documents?: Prisma.VendorOnboardingDocumentUncheckedCreateNestedManyWithoutOnboardingInput
@@ -1991,6 +2057,8 @@ export type VendorOnboardingCreateManyInitiatedByInput = {
   natureOfService?: string | null
   onboardingReason?: string | null
   guestId?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -2035,6 +2103,8 @@ export type VendorOnboardingUpdateWithoutInitiatedByInput = {
   vendorAuditReportPrepared?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutVendorOnboardingsNestedInput
@@ -2084,6 +2154,8 @@ export type VendorOnboardingUncheckedUpdateWithoutInitiatedByInput = {
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.VendorOnboardingDocumentUncheckedUpdateManyWithoutOnboardingNestedInput
@@ -2131,6 +2203,8 @@ export type VendorOnboardingUncheckedUpdateManyWithoutInitiatedByInput = {
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2177,6 +2251,8 @@ export type VendorOnboardingCreateManyWorkspaceInput = {
   natureOfService?: string | null
   onboardingReason?: string | null
   guestId?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -2221,6 +2297,8 @@ export type VendorOnboardingUpdateWithoutWorkspaceInput = {
   vendorAuditReportPrepared?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   initiatedBy?: Prisma.UserUpdateOneRequiredWithoutInitiated_vendor_onboardingsNestedInput
@@ -2270,6 +2348,8 @@ export type VendorOnboardingUncheckedUpdateWithoutWorkspaceInput = {
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.VendorOnboardingDocumentUncheckedUpdateManyWithoutOnboardingNestedInput
@@ -2317,6 +2397,8 @@ export type VendorOnboardingUncheckedUpdateManyWithoutWorkspaceInput = {
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2363,6 +2445,8 @@ export type VendorOnboardingCreateManyGuestInput = {
   vendorAuditReportPrepared?: boolean | null
   natureOfService?: string | null
   onboardingReason?: string | null
+  gstApplicability?: boolean | null
+  incorporationApplicability?: boolean | null
   created_at?: Date | string
   updated_at?: Date | string
 }
@@ -2407,6 +2491,8 @@ export type VendorOnboardingUpdateWithoutGuestInput = {
   vendorAuditReportPrepared?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutVendorOnboardingsNestedInput
@@ -2456,6 +2542,8 @@ export type VendorOnboardingUncheckedUpdateWithoutGuestInput = {
   vendorAuditReportPrepared?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   documents?: Prisma.VendorOnboardingDocumentUncheckedUpdateManyWithoutOnboardingNestedInput
@@ -2503,6 +2591,8 @@ export type VendorOnboardingUncheckedUpdateManyWithoutGuestInput = {
   vendorAuditReportPrepared?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   natureOfService?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   onboardingReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  incorporationApplicability?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -2581,6 +2671,8 @@ export type VendorOnboardingSelect<ExtArgs extends runtime.Types.Extensions.Inte
   natureOfService?: boolean
   onboardingReason?: boolean
   guestId?: boolean
+  gstApplicability?: boolean
+  incorporationApplicability?: boolean
   created_at?: boolean
   updated_at?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -2633,6 +2725,8 @@ export type VendorOnboardingSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   natureOfService?: boolean
   onboardingReason?: boolean
   guestId?: boolean
+  gstApplicability?: boolean
+  incorporationApplicability?: boolean
   created_at?: boolean
   updated_at?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -2683,6 +2777,8 @@ export type VendorOnboardingSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   natureOfService?: boolean
   onboardingReason?: boolean
   guestId?: boolean
+  gstApplicability?: boolean
+  incorporationApplicability?: boolean
   created_at?: boolean
   updated_at?: boolean
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
@@ -2733,11 +2829,13 @@ export type VendorOnboardingSelectScalar = {
   natureOfService?: boolean
   onboardingReason?: boolean
   guestId?: boolean
+  gstApplicability?: boolean
+  incorporationApplicability?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type VendorOnboardingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceNumber" | "workspaceId" | "initiatedById" | "status" | "vendorReferenceName" | "vendorName" | "state" | "city" | "pinCode" | "address" | "mobile" | "email" | "msmeVendor" | "bankName" | "bankBranch" | "ifscCode" | "bankAddress" | "accountNumber" | "gstin" | "pan" | "entityRegNo" | "dpdpConsentedAt" | "dpdpConsentIp" | "vendorSubmittedAt" | "vendorCode" | "vendorType" | "companyCode" | "purchaseOrg" | "paymentTerm" | "tds" | "vendorCategory" | "materialType" | "materialSubType" | "selfAssessmentObtained" | "ndaObtained" | "gpaObtained" | "isRelatedParty" | "vendorAuditReportPrepared" | "natureOfService" | "onboardingReason" | "guestId" | "created_at" | "updated_at", ExtArgs["result"]["vendorOnboarding"]>
+export type VendorOnboardingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "referenceNumber" | "workspaceId" | "initiatedById" | "status" | "vendorReferenceName" | "vendorName" | "state" | "city" | "pinCode" | "address" | "mobile" | "email" | "msmeVendor" | "bankName" | "bankBranch" | "ifscCode" | "bankAddress" | "accountNumber" | "gstin" | "pan" | "entityRegNo" | "dpdpConsentedAt" | "dpdpConsentIp" | "vendorSubmittedAt" | "vendorCode" | "vendorType" | "companyCode" | "purchaseOrg" | "paymentTerm" | "tds" | "vendorCategory" | "materialType" | "materialSubType" | "selfAssessmentObtained" | "ndaObtained" | "gpaObtained" | "isRelatedParty" | "vendorAuditReportPrepared" | "natureOfService" | "onboardingReason" | "guestId" | "gstApplicability" | "incorporationApplicability" | "created_at" | "updated_at", ExtArgs["result"]["vendorOnboarding"]>
 export type VendorOnboardingInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   initiatedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -2807,6 +2905,8 @@ export type $VendorOnboardingPayload<ExtArgs extends runtime.Types.Extensions.In
     natureOfService: string | null
     onboardingReason: string | null
     guestId: string | null
+    gstApplicability: boolean | null
+    incorporationApplicability: boolean | null
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["vendorOnboarding"]>
@@ -3278,6 +3378,8 @@ export interface VendorOnboardingFieldRefs {
   readonly natureOfService: Prisma.FieldRef<"VendorOnboarding", 'String'>
   readonly onboardingReason: Prisma.FieldRef<"VendorOnboarding", 'String'>
   readonly guestId: Prisma.FieldRef<"VendorOnboarding", 'String'>
+  readonly gstApplicability: Prisma.FieldRef<"VendorOnboarding", 'Boolean'>
+  readonly incorporationApplicability: Prisma.FieldRef<"VendorOnboarding", 'Boolean'>
   readonly created_at: Prisma.FieldRef<"VendorOnboarding", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"VendorOnboarding", 'DateTime'>
 }

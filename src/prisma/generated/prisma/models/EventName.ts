@@ -27,16 +27,19 @@ export type AggregateEventName = {
 export type EventNameMinAggregateOutputType = {
   id: string | null
   title: string | null
+  reportTemplateKey: string | null
 }
 
 export type EventNameMaxAggregateOutputType = {
   id: string | null
   title: string | null
+  reportTemplateKey: string | null
 }
 
 export type EventNameCountAggregateOutputType = {
   id: number
   title: number
+  reportTemplateKey: number
   _all: number
 }
 
@@ -44,16 +47,19 @@ export type EventNameCountAggregateOutputType = {
 export type EventNameMinAggregateInputType = {
   id?: true
   title?: true
+  reportTemplateKey?: true
 }
 
 export type EventNameMaxAggregateInputType = {
   id?: true
   title?: true
+  reportTemplateKey?: true
 }
 
 export type EventNameCountAggregateInputType = {
   id?: true
   title?: true
+  reportTemplateKey?: true
   _all?: true
 }
 
@@ -132,6 +138,7 @@ export type EventNameGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 export type EventNameGroupByOutputType = {
   id: string
   title: string
+  reportTemplateKey: string | null
   _count: EventNameCountAggregateOutputType | null
   _min: EventNameMinAggregateOutputType | null
   _max: EventNameMaxAggregateOutputType | null
@@ -158,27 +165,31 @@ export type EventNameWhereInput = {
   NOT?: Prisma.EventNameWhereInput | Prisma.EventNameWhereInput[]
   id?: Prisma.StringFilter<"EventName"> | string
   title?: Prisma.StringFilter<"EventName"> | string
+  reportTemplateKey?: Prisma.StringNullableFilter<"EventName"> | string | null
   events?: Prisma.EventProposalListRelationFilter
 }
 
 export type EventNameOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  reportTemplateKey?: Prisma.SortOrderInput | Prisma.SortOrder
   events?: Prisma.EventProposalOrderByRelationAggregateInput
 }
 
 export type EventNameWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  reportTemplateKey?: string
   AND?: Prisma.EventNameWhereInput | Prisma.EventNameWhereInput[]
   OR?: Prisma.EventNameWhereInput[]
   NOT?: Prisma.EventNameWhereInput | Prisma.EventNameWhereInput[]
   title?: Prisma.StringFilter<"EventName"> | string
   events?: Prisma.EventProposalListRelationFilter
-}, "id">
+}, "id" | "reportTemplateKey">
 
 export type EventNameOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  reportTemplateKey?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.EventNameCountOrderByAggregateInput
   _max?: Prisma.EventNameMaxOrderByAggregateInput
   _min?: Prisma.EventNameMinOrderByAggregateInput
@@ -190,45 +201,53 @@ export type EventNameScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EventNameScalarWhereWithAggregatesInput | Prisma.EventNameScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"EventName"> | string
   title?: Prisma.StringWithAggregatesFilter<"EventName"> | string
+  reportTemplateKey?: Prisma.StringNullableWithAggregatesFilter<"EventName"> | string | null
 }
 
 export type EventNameCreateInput = {
   id?: string
   title: string
+  reportTemplateKey?: string | null
   events?: Prisma.EventProposalCreateNestedManyWithoutEvent_nameInput
 }
 
 export type EventNameUncheckedCreateInput = {
   id?: string
   title: string
+  reportTemplateKey?: string | null
   events?: Prisma.EventProposalUncheckedCreateNestedManyWithoutEvent_nameInput
 }
 
 export type EventNameUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  reportTemplateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   events?: Prisma.EventProposalUpdateManyWithoutEvent_nameNestedInput
 }
 
 export type EventNameUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  reportTemplateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   events?: Prisma.EventProposalUncheckedUpdateManyWithoutEvent_nameNestedInput
 }
 
 export type EventNameCreateManyInput = {
   id?: string
   title: string
+  reportTemplateKey?: string | null
 }
 
 export type EventNameUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  reportTemplateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type EventNameUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  reportTemplateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type EventNameScalarRelationFilter = {
@@ -239,16 +258,19 @@ export type EventNameScalarRelationFilter = {
 export type EventNameCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  reportTemplateKey?: Prisma.SortOrder
 }
 
 export type EventNameMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  reportTemplateKey?: Prisma.SortOrder
 }
 
 export type EventNameMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   title?: Prisma.SortOrder
+  reportTemplateKey?: Prisma.SortOrder
 }
 
 export type EventNameCreateNestedOneWithoutEventsInput = {
@@ -268,11 +290,13 @@ export type EventNameUpdateOneRequiredWithoutEventsNestedInput = {
 export type EventNameCreateWithoutEventsInput = {
   id?: string
   title: string
+  reportTemplateKey?: string | null
 }
 
 export type EventNameUncheckedCreateWithoutEventsInput = {
   id?: string
   title: string
+  reportTemplateKey?: string | null
 }
 
 export type EventNameCreateOrConnectWithoutEventsInput = {
@@ -294,11 +318,13 @@ export type EventNameUpdateToOneWithWhereWithoutEventsInput = {
 export type EventNameUpdateWithoutEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  reportTemplateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type EventNameUncheckedUpdateWithoutEventsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   title?: Prisma.StringFieldUpdateOperationsInput | string
+  reportTemplateKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -335,6 +361,7 @@ export type EventNameCountOutputTypeCountEventsArgs<ExtArgs extends runtime.Type
 export type EventNameSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  reportTemplateKey?: boolean
   events?: boolean | Prisma.EventName$eventsArgs<ExtArgs>
   _count?: boolean | Prisma.EventNameCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["eventName"]>
@@ -342,19 +369,22 @@ export type EventNameSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type EventNameSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  reportTemplateKey?: boolean
 }, ExtArgs["result"]["eventName"]>
 
 export type EventNameSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   title?: boolean
+  reportTemplateKey?: boolean
 }, ExtArgs["result"]["eventName"]>
 
 export type EventNameSelectScalar = {
   id?: boolean
   title?: boolean
+  reportTemplateKey?: boolean
 }
 
-export type EventNameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title", ExtArgs["result"]["eventName"]>
+export type EventNameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "reportTemplateKey", ExtArgs["result"]["eventName"]>
 export type EventNameInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   events?: boolean | Prisma.EventName$eventsArgs<ExtArgs>
   _count?: boolean | Prisma.EventNameCountOutputTypeDefaultArgs<ExtArgs>
@@ -370,6 +400,7 @@ export type $EventNamePayload<ExtArgs extends runtime.Types.Extensions.InternalA
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     title: string
+    reportTemplateKey: string | null
   }, ExtArgs["result"]["eventName"]>
   composites: {}
 }
@@ -796,6 +827,7 @@ export interface Prisma__EventNameClient<T, Null = never, ExtArgs extends runtim
 export interface EventNameFieldRefs {
   readonly id: Prisma.FieldRef<"EventName", 'String'>
   readonly title: Prisma.FieldRef<"EventName", 'String'>
+  readonly reportTemplateKey: Prisma.FieldRef<"EventName", 'String'>
 }
     
 

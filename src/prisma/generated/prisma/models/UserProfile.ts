@@ -25,59 +25,59 @@ export type AggregateUserProfile = {
 }
 
 export type UserProfileMinAggregateOutputType = {
-  id: string | null
   userId: string | null
   workspaceId: string | null
+  appId: string | null
   profileId: string | null
+  assignedById: string | null
   assignedAt: Date | null
-  assignedBy: string | null
 }
 
 export type UserProfileMaxAggregateOutputType = {
-  id: string | null
   userId: string | null
   workspaceId: string | null
+  appId: string | null
   profileId: string | null
+  assignedById: string | null
   assignedAt: Date | null
-  assignedBy: string | null
 }
 
 export type UserProfileCountAggregateOutputType = {
-  id: number
   userId: number
   workspaceId: number
+  appId: number
   profileId: number
+  assignedById: number
   assignedAt: number
-  assignedBy: number
   _all: number
 }
 
 
 export type UserProfileMinAggregateInputType = {
-  id?: true
   userId?: true
   workspaceId?: true
+  appId?: true
   profileId?: true
+  assignedById?: true
   assignedAt?: true
-  assignedBy?: true
 }
 
 export type UserProfileMaxAggregateInputType = {
-  id?: true
   userId?: true
   workspaceId?: true
+  appId?: true
   profileId?: true
+  assignedById?: true
   assignedAt?: true
-  assignedBy?: true
 }
 
 export type UserProfileCountAggregateInputType = {
-  id?: true
   userId?: true
   workspaceId?: true
+  appId?: true
   profileId?: true
+  assignedById?: true
   assignedAt?: true
-  assignedBy?: true
   _all?: true
 }
 
@@ -154,12 +154,12 @@ export type UserProfileGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 }
 
 export type UserProfileGroupByOutputType = {
-  id: string
   userId: string
   workspaceId: string
+  appId: string
   profileId: string
+  assignedById: string | null
   assignedAt: Date
-  assignedBy: string | null
   _count: UserProfileCountAggregateOutputType | null
   _min: UserProfileMinAggregateOutputType | null
   _max: UserProfileMaxAggregateOutputType | null
@@ -184,52 +184,55 @@ export type UserProfileWhereInput = {
   AND?: Prisma.UserProfileWhereInput | Prisma.UserProfileWhereInput[]
   OR?: Prisma.UserProfileWhereInput[]
   NOT?: Prisma.UserProfileWhereInput | Prisma.UserProfileWhereInput[]
-  id?: Prisma.StringFilter<"UserProfile"> | string
   userId?: Prisma.StringFilter<"UserProfile"> | string
   workspaceId?: Prisma.StringFilter<"UserProfile"> | string
+  appId?: Prisma.StringFilter<"UserProfile"> | string
   profileId?: Prisma.StringFilter<"UserProfile"> | string
+  assignedById?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   assignedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
-  assignedBy?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  assignedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
 }
 
 export type UserProfileOrderByWithRelationInput = {
-  id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
+  assignedById?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
-  assignedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  assignedBy?: Prisma.UserOrderByWithRelationInput
   workspace?: Prisma.WorkspaceOrderByWithRelationInput
   profile?: Prisma.ProfileOrderByWithRelationInput
 }
 
 export type UserProfileWhereUniqueInput = Prisma.AtLeast<{
-  id?: string
-  userId_workspaceId_profileId?: Prisma.UserProfileUserIdWorkspaceIdProfileIdCompoundUniqueInput
+  userId_workspaceId_appId?: Prisma.UserProfileUserIdWorkspaceIdAppIdCompoundUniqueInput
   AND?: Prisma.UserProfileWhereInput | Prisma.UserProfileWhereInput[]
   OR?: Prisma.UserProfileWhereInput[]
   NOT?: Prisma.UserProfileWhereInput | Prisma.UserProfileWhereInput[]
   userId?: Prisma.StringFilter<"UserProfile"> | string
   workspaceId?: Prisma.StringFilter<"UserProfile"> | string
+  appId?: Prisma.StringFilter<"UserProfile"> | string
   profileId?: Prisma.StringFilter<"UserProfile"> | string
+  assignedById?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   assignedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
-  assignedBy?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  assignedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   workspace?: Prisma.XOR<Prisma.WorkspaceScalarRelationFilter, Prisma.WorkspaceWhereInput>
   profile?: Prisma.XOR<Prisma.ProfileScalarRelationFilter, Prisma.ProfileWhereInput>
-}, "id" | "userId_workspaceId_profileId">
+}, "userId_workspaceId_appId">
 
 export type UserProfileOrderByWithAggregationInput = {
-  id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
+  assignedById?: Prisma.SortOrderInput | Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
-  assignedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserProfileCountOrderByAggregateInput
   _max?: Prisma.UserProfileMaxOrderByAggregateInput
   _min?: Prisma.UserProfileMinOrderByAggregateInput
@@ -239,72 +242,68 @@ export type UserProfileScalarWhereWithAggregatesInput = {
   AND?: Prisma.UserProfileScalarWhereWithAggregatesInput | Prisma.UserProfileScalarWhereWithAggregatesInput[]
   OR?: Prisma.UserProfileScalarWhereWithAggregatesInput[]
   NOT?: Prisma.UserProfileScalarWhereWithAggregatesInput | Prisma.UserProfileScalarWhereWithAggregatesInput[]
-  id?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
   userId?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
   workspaceId?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
+  appId?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
   profileId?: Prisma.StringWithAggregatesFilter<"UserProfile"> | string
+  assignedById?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
   assignedAt?: Prisma.DateTimeWithAggregatesFilter<"UserProfile"> | Date | string
-  assignedBy?: Prisma.StringNullableWithAggregatesFilter<"UserProfile"> | string | null
 }
 
 export type UserProfileCreateInput = {
-  id?: string
   assignedAt?: Date | string
-  assignedBy?: string | null
   user: Prisma.UserCreateNestedOneWithoutUserProfilesInput
+  assignedBy?: Prisma.UserCreateNestedOneWithoutAssignedUserProfilesInput
   workspace: Prisma.WorkspaceCreateNestedOneWithoutUserProfilesInput
   profile: Prisma.ProfileCreateNestedOneWithoutUserProfilesInput
 }
 
 export type UserProfileUncheckedCreateInput = {
-  id?: string
   userId: string
   workspaceId: string
+  appId: string
   profileId: string
+  assignedById?: string | null
   assignedAt?: Date | string
-  assignedBy?: string | null
 }
 
 export type UserProfileUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutUserProfilesNestedInput
+  assignedBy?: Prisma.UserUpdateOneWithoutAssignedUserProfilesNestedInput
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutUserProfilesNestedInput
   profile?: Prisma.ProfileUpdateOneRequiredWithoutUserProfilesNestedInput
 }
 
 export type UserProfileUncheckedUpdateInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserProfileCreateManyInput = {
-  id?: string
   userId: string
   workspaceId: string
+  appId: string
   profileId: string
+  assignedById?: string | null
   assignedAt?: Date | string
-  assignedBy?: string | null
 }
 
 export type UserProfileUpdateManyMutationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserProfileUncheckedUpdateManyInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserProfileListRelationFilter = {
@@ -317,37 +316,37 @@ export type UserProfileOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type UserProfileUserIdWorkspaceIdProfileIdCompoundUniqueInput = {
+export type UserProfileUserIdWorkspaceIdAppIdCompoundUniqueInput = {
   userId: string
   workspaceId: string
-  profileId: string
+  appId: string
 }
 
 export type UserProfileCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
+  assignedById?: Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
-  assignedBy?: Prisma.SortOrder
 }
 
 export type UserProfileMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
+  assignedById?: Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
-  assignedBy?: Prisma.SortOrder
 }
 
 export type UserProfileMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   workspaceId?: Prisma.SortOrder
+  appId?: Prisma.SortOrder
   profileId?: Prisma.SortOrder
+  assignedById?: Prisma.SortOrder
   assignedAt?: Prisma.SortOrder
-  assignedBy?: Prisma.SortOrder
 }
 
 export type UserProfileCreateNestedManyWithoutUserInput = {
@@ -357,10 +356,24 @@ export type UserProfileCreateNestedManyWithoutUserInput = {
   connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
 }
 
+export type UserProfileCreateNestedManyWithoutAssignedByInput = {
+  create?: Prisma.XOR<Prisma.UserProfileCreateWithoutAssignedByInput, Prisma.UserProfileUncheckedCreateWithoutAssignedByInput> | Prisma.UserProfileCreateWithoutAssignedByInput[] | Prisma.UserProfileUncheckedCreateWithoutAssignedByInput[]
+  connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutAssignedByInput | Prisma.UserProfileCreateOrConnectWithoutAssignedByInput[]
+  createMany?: Prisma.UserProfileCreateManyAssignedByInputEnvelope
+  connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
+}
+
 export type UserProfileUncheckedCreateNestedManyWithoutUserInput = {
   create?: Prisma.XOR<Prisma.UserProfileCreateWithoutUserInput, Prisma.UserProfileUncheckedCreateWithoutUserInput> | Prisma.UserProfileCreateWithoutUserInput[] | Prisma.UserProfileUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutUserInput | Prisma.UserProfileCreateOrConnectWithoutUserInput[]
   createMany?: Prisma.UserProfileCreateManyUserInputEnvelope
+  connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
+}
+
+export type UserProfileUncheckedCreateNestedManyWithoutAssignedByInput = {
+  create?: Prisma.XOR<Prisma.UserProfileCreateWithoutAssignedByInput, Prisma.UserProfileUncheckedCreateWithoutAssignedByInput> | Prisma.UserProfileCreateWithoutAssignedByInput[] | Prisma.UserProfileUncheckedCreateWithoutAssignedByInput[]
+  connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutAssignedByInput | Prisma.UserProfileCreateOrConnectWithoutAssignedByInput[]
+  createMany?: Prisma.UserProfileCreateManyAssignedByInputEnvelope
   connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
 }
 
@@ -378,6 +391,20 @@ export type UserProfileUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.UserProfileScalarWhereInput | Prisma.UserProfileScalarWhereInput[]
 }
 
+export type UserProfileUpdateManyWithoutAssignedByNestedInput = {
+  create?: Prisma.XOR<Prisma.UserProfileCreateWithoutAssignedByInput, Prisma.UserProfileUncheckedCreateWithoutAssignedByInput> | Prisma.UserProfileCreateWithoutAssignedByInput[] | Prisma.UserProfileUncheckedCreateWithoutAssignedByInput[]
+  connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutAssignedByInput | Prisma.UserProfileCreateOrConnectWithoutAssignedByInput[]
+  upsert?: Prisma.UserProfileUpsertWithWhereUniqueWithoutAssignedByInput | Prisma.UserProfileUpsertWithWhereUniqueWithoutAssignedByInput[]
+  createMany?: Prisma.UserProfileCreateManyAssignedByInputEnvelope
+  set?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
+  disconnect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
+  delete?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
+  connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
+  update?: Prisma.UserProfileUpdateWithWhereUniqueWithoutAssignedByInput | Prisma.UserProfileUpdateWithWhereUniqueWithoutAssignedByInput[]
+  updateMany?: Prisma.UserProfileUpdateManyWithWhereWithoutAssignedByInput | Prisma.UserProfileUpdateManyWithWhereWithoutAssignedByInput[]
+  deleteMany?: Prisma.UserProfileScalarWhereInput | Prisma.UserProfileScalarWhereInput[]
+}
+
 export type UserProfileUncheckedUpdateManyWithoutUserNestedInput = {
   create?: Prisma.XOR<Prisma.UserProfileCreateWithoutUserInput, Prisma.UserProfileUncheckedCreateWithoutUserInput> | Prisma.UserProfileCreateWithoutUserInput[] | Prisma.UserProfileUncheckedCreateWithoutUserInput[]
   connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutUserInput | Prisma.UserProfileCreateOrConnectWithoutUserInput[]
@@ -389,6 +416,20 @@ export type UserProfileUncheckedUpdateManyWithoutUserNestedInput = {
   connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
   update?: Prisma.UserProfileUpdateWithWhereUniqueWithoutUserInput | Prisma.UserProfileUpdateWithWhereUniqueWithoutUserInput[]
   updateMany?: Prisma.UserProfileUpdateManyWithWhereWithoutUserInput | Prisma.UserProfileUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.UserProfileScalarWhereInput | Prisma.UserProfileScalarWhereInput[]
+}
+
+export type UserProfileUncheckedUpdateManyWithoutAssignedByNestedInput = {
+  create?: Prisma.XOR<Prisma.UserProfileCreateWithoutAssignedByInput, Prisma.UserProfileUncheckedCreateWithoutAssignedByInput> | Prisma.UserProfileCreateWithoutAssignedByInput[] | Prisma.UserProfileUncheckedCreateWithoutAssignedByInput[]
+  connectOrCreate?: Prisma.UserProfileCreateOrConnectWithoutAssignedByInput | Prisma.UserProfileCreateOrConnectWithoutAssignedByInput[]
+  upsert?: Prisma.UserProfileUpsertWithWhereUniqueWithoutAssignedByInput | Prisma.UserProfileUpsertWithWhereUniqueWithoutAssignedByInput[]
+  createMany?: Prisma.UserProfileCreateManyAssignedByInputEnvelope
+  set?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
+  disconnect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
+  delete?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
+  connect?: Prisma.UserProfileWhereUniqueInput | Prisma.UserProfileWhereUniqueInput[]
+  update?: Prisma.UserProfileUpdateWithWhereUniqueWithoutAssignedByInput | Prisma.UserProfileUpdateWithWhereUniqueWithoutAssignedByInput[]
+  updateMany?: Prisma.UserProfileUpdateManyWithWhereWithoutAssignedByInput | Prisma.UserProfileUpdateManyWithWhereWithoutAssignedByInput[]
   deleteMany?: Prisma.UserProfileScalarWhereInput | Prisma.UserProfileScalarWhereInput[]
 }
 
@@ -477,19 +518,18 @@ export type UserProfileUncheckedUpdateManyWithoutProfileNestedInput = {
 }
 
 export type UserProfileCreateWithoutUserInput = {
-  id?: string
   assignedAt?: Date | string
-  assignedBy?: string | null
+  assignedBy?: Prisma.UserCreateNestedOneWithoutAssignedUserProfilesInput
   workspace: Prisma.WorkspaceCreateNestedOneWithoutUserProfilesInput
   profile: Prisma.ProfileCreateNestedOneWithoutUserProfilesInput
 }
 
 export type UserProfileUncheckedCreateWithoutUserInput = {
-  id?: string
   workspaceId: string
+  appId: string
   profileId: string
+  assignedById?: string | null
   assignedAt?: Date | string
-  assignedBy?: string | null
 }
 
 export type UserProfileCreateOrConnectWithoutUserInput = {
@@ -499,6 +539,31 @@ export type UserProfileCreateOrConnectWithoutUserInput = {
 
 export type UserProfileCreateManyUserInputEnvelope = {
   data: Prisma.UserProfileCreateManyUserInput | Prisma.UserProfileCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type UserProfileCreateWithoutAssignedByInput = {
+  assignedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutUserProfilesInput
+  workspace: Prisma.WorkspaceCreateNestedOneWithoutUserProfilesInput
+  profile: Prisma.ProfileCreateNestedOneWithoutUserProfilesInput
+}
+
+export type UserProfileUncheckedCreateWithoutAssignedByInput = {
+  userId: string
+  workspaceId: string
+  appId: string
+  profileId: string
+  assignedAt?: Date | string
+}
+
+export type UserProfileCreateOrConnectWithoutAssignedByInput = {
+  where: Prisma.UserProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserProfileCreateWithoutAssignedByInput, Prisma.UserProfileUncheckedCreateWithoutAssignedByInput>
+}
+
+export type UserProfileCreateManyAssignedByInputEnvelope = {
+  data: Prisma.UserProfileCreateManyAssignedByInput | Prisma.UserProfileCreateManyAssignedByInput[]
   skipDuplicates?: boolean
 }
 
@@ -522,28 +587,43 @@ export type UserProfileScalarWhereInput = {
   AND?: Prisma.UserProfileScalarWhereInput | Prisma.UserProfileScalarWhereInput[]
   OR?: Prisma.UserProfileScalarWhereInput[]
   NOT?: Prisma.UserProfileScalarWhereInput | Prisma.UserProfileScalarWhereInput[]
-  id?: Prisma.StringFilter<"UserProfile"> | string
   userId?: Prisma.StringFilter<"UserProfile"> | string
   workspaceId?: Prisma.StringFilter<"UserProfile"> | string
+  appId?: Prisma.StringFilter<"UserProfile"> | string
   profileId?: Prisma.StringFilter<"UserProfile"> | string
+  assignedById?: Prisma.StringNullableFilter<"UserProfile"> | string | null
   assignedAt?: Prisma.DateTimeFilter<"UserProfile"> | Date | string
-  assignedBy?: Prisma.StringNullableFilter<"UserProfile"> | string | null
+}
+
+export type UserProfileUpsertWithWhereUniqueWithoutAssignedByInput = {
+  where: Prisma.UserProfileWhereUniqueInput
+  update: Prisma.XOR<Prisma.UserProfileUpdateWithoutAssignedByInput, Prisma.UserProfileUncheckedUpdateWithoutAssignedByInput>
+  create: Prisma.XOR<Prisma.UserProfileCreateWithoutAssignedByInput, Prisma.UserProfileUncheckedCreateWithoutAssignedByInput>
+}
+
+export type UserProfileUpdateWithWhereUniqueWithoutAssignedByInput = {
+  where: Prisma.UserProfileWhereUniqueInput
+  data: Prisma.XOR<Prisma.UserProfileUpdateWithoutAssignedByInput, Prisma.UserProfileUncheckedUpdateWithoutAssignedByInput>
+}
+
+export type UserProfileUpdateManyWithWhereWithoutAssignedByInput = {
+  where: Prisma.UserProfileScalarWhereInput
+  data: Prisma.XOR<Prisma.UserProfileUpdateManyMutationInput, Prisma.UserProfileUncheckedUpdateManyWithoutAssignedByInput>
 }
 
 export type UserProfileCreateWithoutWorkspaceInput = {
-  id?: string
   assignedAt?: Date | string
-  assignedBy?: string | null
   user: Prisma.UserCreateNestedOneWithoutUserProfilesInput
+  assignedBy?: Prisma.UserCreateNestedOneWithoutAssignedUserProfilesInput
   profile: Prisma.ProfileCreateNestedOneWithoutUserProfilesInput
 }
 
 export type UserProfileUncheckedCreateWithoutWorkspaceInput = {
-  id?: string
   userId: string
+  appId: string
   profileId: string
+  assignedById?: string | null
   assignedAt?: Date | string
-  assignedBy?: string | null
 }
 
 export type UserProfileCreateOrConnectWithoutWorkspaceInput = {
@@ -573,19 +653,17 @@ export type UserProfileUpdateManyWithWhereWithoutWorkspaceInput = {
 }
 
 export type UserProfileCreateWithoutProfileInput = {
-  id?: string
   assignedAt?: Date | string
-  assignedBy?: string | null
   user: Prisma.UserCreateNestedOneWithoutUserProfilesInput
+  assignedBy?: Prisma.UserCreateNestedOneWithoutAssignedUserProfilesInput
   workspace: Prisma.WorkspaceCreateNestedOneWithoutUserProfilesInput
 }
 
 export type UserProfileUncheckedCreateWithoutProfileInput = {
-  id?: string
   userId: string
   workspaceId: string
+  assignedById?: string | null
   assignedAt?: Date | string
-  assignedBy?: string | null
 }
 
 export type UserProfileCreateOrConnectWithoutProfileInput = {
@@ -615,161 +693,192 @@ export type UserProfileUpdateManyWithWhereWithoutProfileInput = {
 }
 
 export type UserProfileCreateManyUserInput = {
-  id?: string
   workspaceId: string
+  appId: string
+  profileId: string
+  assignedById?: string | null
+  assignedAt?: Date | string
+}
+
+export type UserProfileCreateManyAssignedByInput = {
+  userId: string
+  workspaceId: string
+  appId: string
   profileId: string
   assignedAt?: Date | string
-  assignedBy?: string | null
 }
 
 export type UserProfileUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assignedBy?: Prisma.UserUpdateOneWithoutAssignedUserProfilesNestedInput
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutUserProfilesNestedInput
   profile?: Prisma.ProfileUpdateOneRequiredWithoutUserProfilesNestedInput
 }
 
 export type UserProfileUncheckedUpdateWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserProfileUncheckedUpdateManyWithoutUserInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  profileId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type UserProfileUpdateWithoutAssignedByInput = {
+  assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutUserProfilesNestedInput
+  workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutUserProfilesNestedInput
+  profile?: Prisma.ProfileUpdateOneRequiredWithoutUserProfilesNestedInput
+}
+
+export type UserProfileUncheckedUpdateWithoutAssignedByInput = {
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type UserProfileUncheckedUpdateManyWithoutAssignedByInput = {
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
+  profileId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type UserProfileCreateManyWorkspaceInput = {
-  id?: string
   userId: string
+  appId: string
   profileId: string
+  assignedById?: string | null
   assignedAt?: Date | string
-  assignedBy?: string | null
 }
 
 export type UserProfileUpdateWithoutWorkspaceInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutUserProfilesNestedInput
+  assignedBy?: Prisma.UserUpdateOneWithoutAssignedUserProfilesNestedInput
   profile?: Prisma.ProfileUpdateOneRequiredWithoutUserProfilesNestedInput
 }
 
 export type UserProfileUncheckedUpdateWithoutWorkspaceInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserProfileUncheckedUpdateManyWithoutWorkspaceInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  appId?: Prisma.StringFieldUpdateOperationsInput | string
   profileId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserProfileCreateManyProfileInput = {
-  id?: string
   userId: string
   workspaceId: string
+  assignedById?: string | null
   assignedAt?: Date | string
-  assignedBy?: string | null
 }
 
 export type UserProfileUpdateWithoutProfileInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutUserProfilesNestedInput
+  assignedBy?: Prisma.UserUpdateOneWithoutAssignedUserProfilesNestedInput
   workspace?: Prisma.WorkspaceUpdateOneRequiredWithoutUserProfilesNestedInput
 }
 
 export type UserProfileUncheckedUpdateWithoutProfileInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserProfileUncheckedUpdateManyWithoutProfileInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   assignedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
 
 export type UserProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
   userId?: boolean
   workspaceId?: boolean
+  appId?: boolean
   profileId?: boolean
+  assignedById?: boolean
   assignedAt?: boolean
-  assignedBy?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserProfile$assignedByArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userProfile"]>
 
 export type UserProfileSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
   userId?: boolean
   workspaceId?: boolean
+  appId?: boolean
   profileId?: boolean
+  assignedById?: boolean
   assignedAt?: boolean
-  assignedBy?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserProfile$assignedByArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userProfile"]>
 
 export type UserProfileSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
-  id?: boolean
   userId?: boolean
   workspaceId?: boolean
+  appId?: boolean
   profileId?: boolean
+  assignedById?: boolean
   assignedAt?: boolean
-  assignedBy?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserProfile$assignedByArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userProfile"]>
 
 export type UserProfileSelectScalar = {
-  id?: boolean
   userId?: boolean
   workspaceId?: boolean
+  appId?: boolean
   profileId?: boolean
+  assignedById?: boolean
   assignedAt?: boolean
-  assignedBy?: boolean
 }
 
-export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "workspaceId" | "profileId" | "assignedAt" | "assignedBy", ExtArgs["result"]["userProfile"]>
+export type UserProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"userId" | "workspaceId" | "appId" | "profileId" | "assignedById" | "assignedAt", ExtArgs["result"]["userProfile"]>
 export type UserProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserProfile$assignedByArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
 export type UserProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserProfile$assignedByArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
 export type UserProfileIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserProfile$assignedByArgs<ExtArgs>
   workspace?: boolean | Prisma.WorkspaceDefaultArgs<ExtArgs>
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
@@ -778,16 +887,17 @@ export type $UserProfilePayload<ExtArgs extends runtime.Types.Extensions.Interna
   name: "UserProfile"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    assignedBy: Prisma.$UserPayload<ExtArgs> | null
     workspace: Prisma.$WorkspacePayload<ExtArgs>
     profile: Prisma.$ProfilePayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: string
     userId: string
     workspaceId: string
+    appId: string
     profileId: string
+    assignedById: string | null
     assignedAt: Date
-    assignedBy: string | null
   }, ExtArgs["result"]["userProfile"]>
   composites: {}
 }
@@ -871,8 +981,8 @@ export interface UserProfileDelegate<ExtArgs extends runtime.Types.Extensions.In
    * // Get first 10 UserProfiles
    * const userProfiles = await prisma.userProfile.findMany({ take: 10 })
    * 
-   * // Only select the `id`
-   * const userProfileWithIdOnly = await prisma.userProfile.findMany({ select: { id: true } })
+   * // Only select the `userId`
+   * const userProfileWithUserIdOnly = await prisma.userProfile.findMany({ select: { userId: true } })
    * 
    */
   findMany<T extends UserProfileFindManyArgs>(args?: Prisma.SelectSubset<T, UserProfileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
@@ -916,9 +1026,9 @@ export interface UserProfileDelegate<ExtArgs extends runtime.Types.Extensions.In
    *   ]
    * })
    * 
-   * // Create many UserProfiles and only return the `id`
-   * const userProfileWithIdOnly = await prisma.userProfile.createManyAndReturn({
-   *   select: { id: true },
+   * // Create many UserProfiles and only return the `userId`
+   * const userProfileWithUserIdOnly = await prisma.userProfile.createManyAndReturn({
+   *   select: { userId: true },
    *   data: [
    *     // ... provide data here
    *   ]
@@ -1007,9 +1117,9 @@ export interface UserProfileDelegate<ExtArgs extends runtime.Types.Extensions.In
    *   ]
    * })
    * 
-   * // Update zero or more UserProfiles and only return the `id`
-   * const userProfileWithIdOnly = await prisma.userProfile.updateManyAndReturn({
-   *   select: { id: true },
+   * // Update zero or more UserProfiles and only return the `userId`
+   * const userProfileWithUserIdOnly = await prisma.userProfile.updateManyAndReturn({
+   *   select: { userId: true },
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1183,6 +1293,7 @@ readonly fields: UserProfileFieldRefs;
 export interface Prisma__UserProfileClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  assignedBy<T extends Prisma.UserProfile$assignedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserProfile$assignedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   workspace<T extends Prisma.WorkspaceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.WorkspaceDefaultArgs<ExtArgs>>): Prisma.Prisma__WorkspaceClient<runtime.Types.Result.GetResult<Prisma.$WorkspacePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   profile<T extends Prisma.ProfileDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProfileDefaultArgs<ExtArgs>>): Prisma.Prisma__ProfileClient<runtime.Types.Result.GetResult<Prisma.$ProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
@@ -1214,12 +1325,12 @@ export interface Prisma__UserProfileClient<T, Null = never, ExtArgs extends runt
  * Fields of the UserProfile model
  */
 export interface UserProfileFieldRefs {
-  readonly id: Prisma.FieldRef<"UserProfile", 'String'>
   readonly userId: Prisma.FieldRef<"UserProfile", 'String'>
   readonly workspaceId: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly appId: Prisma.FieldRef<"UserProfile", 'String'>
   readonly profileId: Prisma.FieldRef<"UserProfile", 'String'>
+  readonly assignedById: Prisma.FieldRef<"UserProfile", 'String'>
   readonly assignedAt: Prisma.FieldRef<"UserProfile", 'DateTime'>
-  readonly assignedBy: Prisma.FieldRef<"UserProfile", 'String'>
 }
     
 
@@ -1618,6 +1729,25 @@ export type UserProfileDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
    * Limit how many UserProfiles to delete.
    */
   limit?: number
+}
+
+/**
+ * UserProfile.assignedBy
+ */
+export type UserProfile$assignedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

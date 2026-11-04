@@ -1,80 +1,18 @@
-import { Prisma } from "../../prisma/generated/prisma/client";
-
 export const SALT_ROUNDS = 10;
 export const COOLDOWN_SECONDS = 60; // 1 OTP per 60s
 export const MAX_ATTEMPTS = 5; // max 5 OTPs
 export const WINDOW_SECONDS = 15 * 60; // in 15 minutes
 
-export const profileInclude = {
-  permissions: {
-    include: {
-      module: {
-        select: {
-          key: true,
-          name: true,
-          app: { select: { key: true, name: true } },
-        },
-      },
-      app: { select: { key: true, name: true } }, // populated for APP-scope rows
-    },
-    orderBy: [{ action: "asc" as const }],
-  },
-  userProfiles: {
-    select: {
-      user: {
-        select: {
-          id: true,
-          first_name: true,
-          last_name: true,
-          email: true,
-        },
-      },
-    },
-  },
-  _count: { select: { userProfiles: true } },
-} satisfies Prisma.ProfileInclude;
-
-export function formatProfile(profile: any) {
-  return {
-    id: profile.id,
-    name: profile.name,
-    description: profile.description,
-    isSystemProfile: profile.isSystemProfile,
-    assignedUserCount: profile._count.userProfiles,
-    users: profile.userProfiles.map((up: any) => ({
-      id: up.user.id,
-      firstName: up.user.first_name,
-      lastName: up.user.last_name,
-      email: up.user.email,
-    })),
-    // Two shapes depending on scope — the FE distinguishes an "admin of
-    // this app" row (scope: "APP", no moduleKey) from a regular
-    // module-level grant (scope: "MODULE") by this field, not by guessing
-    // from which relation happens to be populated.
-    permissions: profile.permissions.map((p: any) =>
-      p.scope === "APP"
-        ? {
-            scope: "APP" as const,
-            action: p.action,
-            appKey: p.app.key,
-            appName: p.app.name,
-          }
-        : {
-            scope: "MODULE" as const,
-            action: p.action,
-            appKey: p.module.app.key,
-            appName: p.module.app.name,
-            moduleKey: p.module.key,
-            moduleName: p.module.name,
-          },
-    ),
-  };
-}
-
+// Bands match the Schedule of Authority (SOA) picture exactly, so a
+// template's metaData_1 range key and an AuthorityLimit band mean the same
+// thing — one for the generic workflow-template fallback path, the other
+// for the SOA auto-approve gate (see modules/map/authorityLimit.helper.ts).
+// Previous bands (20k/3L/6L/10L) are gone — they predated SOA and no longer
+// match it.
 export const budgetMap: Record<string, { min: number; max: number | null }> = {
   below_20k: { min: 0, max: 20000 },
-  "20k_3l": { min: 20000, max: 300000 },
-  "3l_6l": { min: 300000, max: 600000 },
+  "20k_1l": { min: 20000, max: 100000 },
+  "1l_6l": { min: 100000, max: 600000 },
   "6l_10l": { min: 600000, max: 1000000 },
   above_10l: { min: 1000000, max: null },
 };
@@ -157,14 +95,49 @@ export const epcFullInfoSelect = {
       },
     },
   },
+  // NOTE: CRF.lineItems (the legacy LineItem relation) is NOT selected here.
+  // Every CRF write goes through CrfItem (CRF.items — see
+  // modules/map/crf.service.ts's buildCrfItemRows / replaceCrfItems), so
+  // lineItems is always empty for any CRF created through the current flow.
+  // Selecting it here previously made GET /epc/:id come back with
+  // `crf: { id, lineItems: [] }` — the CRF existed and its CrfItem rows were
+  // real, but this endpoint never asked for them, so the frontend's
+  // `epcData.crf.items` was always undefined and CrfSection.tsx showed
+  // "No CRF has been created for this EPC yet." even right after a save.
+  // `items` below mirrors the shape getCrfDetail (crf.service.ts) returns
+  // for GET /crf/:id, so both endpoints agree on what a CRF item looks like.
+  //
+  // title/variantTitle/imageUrl: souvenir (SHOPIFY) display-snapshot fields
+  // persisted on CrfItem — see crf.service.ts's buildShopifyItemRows and
+  // schema.prisma's CrfItem doc comment. Added alongside `rate` (already
+  // selected below) so GET /epc/:id returns the same souvenir display data
+  // getCrfDetail does.
   crf: {
     select: {
       id: true,
-      lineItems: {
+      epcId: true,
+      status: true,
+      items: {
+        orderBy: { sortOrder: "asc" as const },
         select: {
           id: true,
+          category: true,
+          source: true,
+          sortOrder: true,
+          productId: true,
           quantity: true,
+          rate: true,
           amount: true,
+          width: true,
+          height: true,
+          unit: true,
+          sku: true,
+          requestedQty: true,
+          title: true,
+          variantTitle: true,
+          imageUrl: true,
+          qtyAtApproval: true,
+          status: true,
           product: {
             select: {
               id: true,
@@ -183,17 +156,22 @@ export const epcFullInfoSelect = {
       id: true,
       epcId: true,
       status: true,
-      remarks: true,
-      outcomeStatus: true,
-      totalLeadsGenerated: true,
-      approvedEventCost: true,
-      expectedConversion: true,
+      eventHighlights: true,
+      computedOutcomes: true,
+      rejectionReason: true,
+      clarificationReason: true,
+      generationError: true,
+      submittedAt: true,
+      resubmittedAt: true,
+      validatedAt: true,
+      pdfS3Key: true,
       validatorId: true,
       images: {
         select: {
           id: true,
           reportId: true,
           position: true,
+          caption: true,
           s3Key: true,
           fileUrl: true,
         },
@@ -222,6 +200,7 @@ export const activeWorkflowInclude = {
               last_name: true,
               email: true,
               phone_number: true,
+              designation: true,
             },
           },
         },
@@ -242,6 +221,8 @@ export const REQUIRED_VENDOR_DOCUMENT_TYPES = [
 export const OPTIONAL_VENDOR_DOCUMENT_TYPES = [
   "ADDITIONAL_DOC_1",
   "ADDITIONAL_DOC_2",
+  "ADDITIONAL_DOC_3",
+  "ADDITIONAL_DOC_4",
   // add more here as needed — no other code changes required
 ] as const;
 

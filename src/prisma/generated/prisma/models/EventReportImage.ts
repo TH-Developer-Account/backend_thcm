@@ -38,24 +38,30 @@ export type EventReportImageMinAggregateOutputType = {
   id: string | null
   reportId: string | null
   position: number | null
+  caption: string | null
   s3Key: string | null
   fileUrl: string | null
+  mimeType: string | null
 }
 
 export type EventReportImageMaxAggregateOutputType = {
   id: string | null
   reportId: string | null
   position: number | null
+  caption: string | null
   s3Key: string | null
   fileUrl: string | null
+  mimeType: string | null
 }
 
 export type EventReportImageCountAggregateOutputType = {
   id: number
   reportId: number
   position: number
+  caption: number
   s3Key: number
   fileUrl: number
+  mimeType: number
   _all: number
 }
 
@@ -72,24 +78,30 @@ export type EventReportImageMinAggregateInputType = {
   id?: true
   reportId?: true
   position?: true
+  caption?: true
   s3Key?: true
   fileUrl?: true
+  mimeType?: true
 }
 
 export type EventReportImageMaxAggregateInputType = {
   id?: true
   reportId?: true
   position?: true
+  caption?: true
   s3Key?: true
   fileUrl?: true
+  mimeType?: true
 }
 
 export type EventReportImageCountAggregateInputType = {
   id?: true
   reportId?: true
   position?: true
+  caption?: true
   s3Key?: true
   fileUrl?: true
+  mimeType?: true
   _all?: true
 }
 
@@ -183,8 +195,10 @@ export type EventReportImageGroupByOutputType = {
   id: string
   reportId: string
   position: number
+  caption: string | null
   s3Key: string
   fileUrl: string
+  mimeType: string | null
   _count: EventReportImageCountAggregateOutputType | null
   _avg: EventReportImageAvgAggregateOutputType | null
   _sum: EventReportImageSumAggregateOutputType | null
@@ -214,8 +228,10 @@ export type EventReportImageWhereInput = {
   id?: Prisma.StringFilter<"EventReportImage"> | string
   reportId?: Prisma.StringFilter<"EventReportImage"> | string
   position?: Prisma.IntFilter<"EventReportImage"> | number
+  caption?: Prisma.StringNullableFilter<"EventReportImage"> | string | null
   s3Key?: Prisma.StringFilter<"EventReportImage"> | string
   fileUrl?: Prisma.StringFilter<"EventReportImage"> | string
+  mimeType?: Prisma.StringNullableFilter<"EventReportImage"> | string | null
   report?: Prisma.XOR<Prisma.EventReportScalarRelationFilter, Prisma.EventReportWhereInput>
 }
 
@@ -223,8 +239,10 @@ export type EventReportImageOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   reportId?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  caption?: Prisma.SortOrderInput | Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
+  mimeType?: Prisma.SortOrderInput | Prisma.SortOrder
   report?: Prisma.EventReportOrderByWithRelationInput
 }
 
@@ -236,8 +254,10 @@ export type EventReportImageWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.EventReportImageWhereInput | Prisma.EventReportImageWhereInput[]
   reportId?: Prisma.StringFilter<"EventReportImage"> | string
   position?: Prisma.IntFilter<"EventReportImage"> | number
+  caption?: Prisma.StringNullableFilter<"EventReportImage"> | string | null
   s3Key?: Prisma.StringFilter<"EventReportImage"> | string
   fileUrl?: Prisma.StringFilter<"EventReportImage"> | string
+  mimeType?: Prisma.StringNullableFilter<"EventReportImage"> | string | null
   report?: Prisma.XOR<Prisma.EventReportScalarRelationFilter, Prisma.EventReportWhereInput>
 }, "id" | "reportId_position">
 
@@ -245,8 +265,10 @@ export type EventReportImageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   reportId?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  caption?: Prisma.SortOrderInput | Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
+  mimeType?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.EventReportImageCountOrderByAggregateInput
   _avg?: Prisma.EventReportImageAvgOrderByAggregateInput
   _max?: Prisma.EventReportImageMaxOrderByAggregateInput
@@ -261,15 +283,19 @@ export type EventReportImageScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"EventReportImage"> | string
   reportId?: Prisma.StringWithAggregatesFilter<"EventReportImage"> | string
   position?: Prisma.IntWithAggregatesFilter<"EventReportImage"> | number
+  caption?: Prisma.StringNullableWithAggregatesFilter<"EventReportImage"> | string | null
   s3Key?: Prisma.StringWithAggregatesFilter<"EventReportImage"> | string
   fileUrl?: Prisma.StringWithAggregatesFilter<"EventReportImage"> | string
+  mimeType?: Prisma.StringNullableWithAggregatesFilter<"EventReportImage"> | string | null
 }
 
 export type EventReportImageCreateInput = {
   id?: string
   position: number
+  caption?: string | null
   s3Key: string
   fileUrl: string
+  mimeType?: string | null
   report: Prisma.EventReportCreateNestedOneWithoutImagesInput
 }
 
@@ -277,15 +303,19 @@ export type EventReportImageUncheckedCreateInput = {
   id?: string
   reportId: string
   position: number
+  caption?: string | null
   s3Key: string
   fileUrl: string
+  mimeType?: string | null
 }
 
 export type EventReportImageUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   report?: Prisma.EventReportUpdateOneRequiredWithoutImagesNestedInput
 }
 
@@ -293,31 +323,39 @@ export type EventReportImageUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reportId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type EventReportImageCreateManyInput = {
   id?: string
   reportId: string
   position: number
+  caption?: string | null
   s3Key: string
   fileUrl: string
+  mimeType?: string | null
 }
 
 export type EventReportImageUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type EventReportImageUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   reportId?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type EventReportImageListRelationFilter = {
@@ -339,8 +377,10 @@ export type EventReportImageCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   reportId?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  caption?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
+  mimeType?: Prisma.SortOrder
 }
 
 export type EventReportImageAvgOrderByAggregateInput = {
@@ -351,16 +391,20 @@ export type EventReportImageMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   reportId?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  caption?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
+  mimeType?: Prisma.SortOrder
 }
 
 export type EventReportImageMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   reportId?: Prisma.SortOrder
   position?: Prisma.SortOrder
+  caption?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
+  mimeType?: Prisma.SortOrder
 }
 
 export type EventReportImageSumOrderByAggregateInput = {
@@ -412,15 +456,19 @@ export type EventReportImageUncheckedUpdateManyWithoutReportNestedInput = {
 export type EventReportImageCreateWithoutReportInput = {
   id?: string
   position: number
+  caption?: string | null
   s3Key: string
   fileUrl: string
+  mimeType?: string | null
 }
 
 export type EventReportImageUncheckedCreateWithoutReportInput = {
   id?: string
   position: number
+  caption?: string | null
   s3Key: string
   fileUrl: string
+  mimeType?: string | null
 }
 
 export type EventReportImageCreateOrConnectWithoutReportInput = {
@@ -456,36 +504,46 @@ export type EventReportImageScalarWhereInput = {
   id?: Prisma.StringFilter<"EventReportImage"> | string
   reportId?: Prisma.StringFilter<"EventReportImage"> | string
   position?: Prisma.IntFilter<"EventReportImage"> | number
+  caption?: Prisma.StringNullableFilter<"EventReportImage"> | string | null
   s3Key?: Prisma.StringFilter<"EventReportImage"> | string
   fileUrl?: Prisma.StringFilter<"EventReportImage"> | string
+  mimeType?: Prisma.StringNullableFilter<"EventReportImage"> | string | null
 }
 
 export type EventReportImageCreateManyReportInput = {
   id?: string
   position: number
+  caption?: string | null
   s3Key: string
   fileUrl: string
+  mimeType?: string | null
 }
 
 export type EventReportImageUpdateWithoutReportInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type EventReportImageUncheckedUpdateWithoutReportInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type EventReportImageUncheckedUpdateManyWithoutReportInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   position?: Prisma.IntFieldUpdateOperationsInput | number
+  caption?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  mimeType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -494,8 +552,10 @@ export type EventReportImageSelect<ExtArgs extends runtime.Types.Extensions.Inte
   id?: boolean
   reportId?: boolean
   position?: boolean
+  caption?: boolean
   s3Key?: boolean
   fileUrl?: boolean
+  mimeType?: boolean
   report?: boolean | Prisma.EventReportDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["eventReportImage"]>
 
@@ -503,8 +563,10 @@ export type EventReportImageSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   id?: boolean
   reportId?: boolean
   position?: boolean
+  caption?: boolean
   s3Key?: boolean
   fileUrl?: boolean
+  mimeType?: boolean
   report?: boolean | Prisma.EventReportDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["eventReportImage"]>
 
@@ -512,8 +574,10 @@ export type EventReportImageSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   id?: boolean
   reportId?: boolean
   position?: boolean
+  caption?: boolean
   s3Key?: boolean
   fileUrl?: boolean
+  mimeType?: boolean
   report?: boolean | Prisma.EventReportDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["eventReportImage"]>
 
@@ -521,11 +585,13 @@ export type EventReportImageSelectScalar = {
   id?: boolean
   reportId?: boolean
   position?: boolean
+  caption?: boolean
   s3Key?: boolean
   fileUrl?: boolean
+  mimeType?: boolean
 }
 
-export type EventReportImageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "reportId" | "position" | "s3Key" | "fileUrl", ExtArgs["result"]["eventReportImage"]>
+export type EventReportImageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "reportId" | "position" | "caption" | "s3Key" | "fileUrl" | "mimeType", ExtArgs["result"]["eventReportImage"]>
 export type EventReportImageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   report?: boolean | Prisma.EventReportDefaultArgs<ExtArgs>
 }
@@ -545,8 +611,10 @@ export type $EventReportImagePayload<ExtArgs extends runtime.Types.Extensions.In
     id: string
     reportId: string
     position: number
+    caption: string | null
     s3Key: string
     fileUrl: string
+    mimeType: string | null
   }, ExtArgs["result"]["eventReportImage"]>
   composites: {}
 }
@@ -974,8 +1042,10 @@ export interface EventReportImageFieldRefs {
   readonly id: Prisma.FieldRef<"EventReportImage", 'String'>
   readonly reportId: Prisma.FieldRef<"EventReportImage", 'String'>
   readonly position: Prisma.FieldRef<"EventReportImage", 'Int'>
+  readonly caption: Prisma.FieldRef<"EventReportImage", 'String'>
   readonly s3Key: Prisma.FieldRef<"EventReportImage", 'String'>
   readonly fileUrl: Prisma.FieldRef<"EventReportImage", 'String'>
+  readonly mimeType: Prisma.FieldRef<"EventReportImage", 'String'>
 }
     
 
