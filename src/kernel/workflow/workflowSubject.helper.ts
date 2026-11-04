@@ -27,7 +27,6 @@ import { runEventProposalFinalApprovalHooks } from "@map/crf/services/crfOrder.s
 import {
   Prisma,
   WorkflowSubjectType,
-  ActivityAction,
   WorkflowStatus,
   ApprovalStatus,
   StageStatus,
@@ -418,14 +417,13 @@ export async function runPostFinalApprovalHook(
 // FACTORY_AUDIT_INSTANCE's action is a genuine UNVERIFIED PLACEHOLDER value —
 // approve-only chain, resubmit path unused until Reject/Clarify semantics
 // are defined. DEALER_AUDIT_INSTANCE's is real and correct.
-const resubmitActionBySubjectType: Record<WorkflowSubjectType, ActivityAction> =
-  {
-    EVENT_PROPOSAL: "EPC_RESUBMITTED",
-    VENDOR_ONBOARDING: "VENDOR_FORM_SUBMITTED",
-    MEDICAL_CLAIM: "MEDICAL_CLAIM_RESUBMITTED",
-    DEALER_AUDIT_INSTANCE: "DEALER_AUDIT_RESUBMITTED",
-    FACTORY_AUDIT_INSTANCE: "FACTORY_AUDIT_RESUBMITTED", // UNVERIFIED PLACEHOLDER — see note above
-  };
+const resubmitActionBySubjectType: Record<WorkflowSubjectType, string> = {
+  EVENT_PROPOSAL: "EPC_RESUBMITTED",
+  VENDOR_ONBOARDING: "VENDOR_FORM_SUBMITTED",
+  MEDICAL_CLAIM: "MEDICAL_CLAIM_RESUBMITTED",
+  DEALER_AUDIT_INSTANCE: "DEALER_AUDIT_RESUBMITTED",
+  FACTORY_AUDIT_INSTANCE: "FACTORY_AUDIT_RESUBMITTED", // UNVERIFIED PLACEHOLDER — see note above
+};
 
 const resubmitStatusBySubjectType: Record<WorkflowSubjectType, string> = {
   EVENT_PROPOSAL: "Resubmitted",
@@ -435,9 +433,7 @@ const resubmitStatusBySubjectType: Record<WorkflowSubjectType, string> = {
   FACTORY_AUDIT_INSTANCE: "IN_PROGRESS", // UNVERIFIED — see note above
 };
 
-export function getResubmitAction(
-  subjectType: WorkflowSubjectType,
-): ActivityAction {
+export function getResubmitAction(subjectType: WorkflowSubjectType): string {
   return resubmitActionBySubjectType[subjectType];
 }
 
