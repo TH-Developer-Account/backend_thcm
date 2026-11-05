@@ -1,4 +1,11 @@
 {
+	"RE10000": {
+		"name": "MONICA",
+		"grade": "EG",
+		"nonHospitalisationAmount": 0.0,
+		"hospitalisationAmount": 0.0,
+		"utilizedAmount": 0.0
+	},
 	"RE10214": {
 		"name": "SANJOY KUMAR RAY",
 		"grade": "EG-3",
