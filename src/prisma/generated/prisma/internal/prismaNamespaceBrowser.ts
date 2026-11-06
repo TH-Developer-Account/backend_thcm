@@ -82,8 +82,6 @@ export const ModelName = {
   Division: 'Division',
   Designation: 'Designation',
   CostCenter: 'CostCenter',
-  AuthorityLimit: 'AuthorityLimit',
-  AuthorityLimitAssignment: 'AuthorityLimitAssignment',
   ProductMaster: 'ProductMaster',
   EPF: 'EPF',
   CRF: 'CRF',
@@ -557,29 +555,6 @@ export const CostCenterScalarFieldEnum = {
 } as const
 
 export type CostCenterScalarFieldEnum = (typeof CostCenterScalarFieldEnum)[keyof typeof CostCenterScalarFieldEnum]
-
-
-export const AuthorityLimitScalarFieldEnum = {
-  id: 'id',
-  label: 'label',
-  minAmount: 'minAmount',
-  maxAmount: 'maxAmount',
-  isActive: 'isActive',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type AuthorityLimitScalarFieldEnum = (typeof AuthorityLimitScalarFieldEnum)[keyof typeof AuthorityLimitScalarFieldEnum]
-
-
-export const AuthorityLimitAssignmentScalarFieldEnum = {
-  id: 'id',
-  authorityLimitId: 'authorityLimitId',
-  role: 'role',
-  designationId: 'designationId'
-} as const
-
-export type AuthorityLimitAssignmentScalarFieldEnum = (typeof AuthorityLimitAssignmentScalarFieldEnum)[keyof typeof AuthorityLimitAssignmentScalarFieldEnum]
 
 
 export const ProductMasterScalarFieldEnum = {
