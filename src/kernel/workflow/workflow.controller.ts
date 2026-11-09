@@ -882,7 +882,8 @@ export const activateFirstStageController = async (
 //
 // Flow:
 //   1. Validate there is an active IN_PROGRESS workflow for the EPC
-//   2. Find a template matching the new budget
+//   2. Find a template matching the new budget (and zone, when supplied —
+//      see Step 2 below)
 //   3. In a transaction:
 //      a. Mark old workflow SUPERSEDED + isActive=false
 //      b. Archive old workflow's current stages (isCurrentIteration=false)
@@ -903,7 +904,7 @@ export const triggerDeviationController = async (
 ) => {
   try {
     const userId = req.user?.id;
-    const { eventProposalId, workspaceId, appId, newBudget } = req.body;
+    const { eventProposalId, workspaceId, appId, newBudget, zone } = req.body;
 
     if (!userId) throw new ApiError(401, "Unauthorized");
     if (!eventProposalId || !workspaceId || !appId || newBudget === undefined) {
@@ -962,9 +963,16 @@ export const triggerDeviationController = async (
       );
     }
 
-    const matchedTemplate = templates.find((t) =>
-      evaluateBudget(t.metaData_1 || "", Number(newBudget)),
-    );
+    // ✅ CHANGED — reuses templateMatchResolvers.EVENT_PROPOSAL (same
+    // zone-first-then-budget rule assign/preview now use) instead of the
+    // budget-only `evaluateBudget` call this used to make directly. `zone`
+    // is optional here: the frontend's deviation flow does not pass it yet,
+    // so until it's wired up this still matches on budget only, exactly as
+    // before — no behavior change for existing callers.
+    const matchedTemplate = templateMatchResolvers.EVENT_PROPOSAL(templates, {
+      budget: newBudget,
+      zone,
+    });
     if (!matchedTemplate) {
       throw new ApiError(
         400,

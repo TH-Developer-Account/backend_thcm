@@ -1,5 +1,9 @@
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
+import {
+  reconcileLiveWorkflowInstances,
+  type ReconcileNotification,
+} from "./workflow.helper";
 
 type TemplateOwnerType = "ADMIN" | "USER";
 
@@ -112,27 +116,55 @@ export const createWorkflowTemplate = async (
   });
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// updateTemplate
+//
+// ✅ CHANGED — editing a template with active (IN_PROGRESS) workflow
+// instances running on it is no longer blocked outright. What's allowed and
+// what isn't:
+//
+//   - Add/remove approvers within an existing stage          → allowed,
+//     propagated onto every live instance (see reconcileLiveWorkflowInstances
+//     in workflow.helper.ts).
+//   - Append a brand-new stage at the end                    → allowed, same
+//     propagation — materialized fresh on every live instance.
+//   - Remove an existing stage                                → still BLOCKED
+//     while any instance is IN_PROGRESS. approveStage advances purely by
+//     looking up `stageOrder + 1` on the live instance; removing or
+//     renumbering a stageOrder that a running instance already has would
+//     break that lookup for every instance on this template. Appending
+//     never has this problem — existing stageOrders never move.
+//
+// An approval already cast (APPROVED/REJECTED/CLARIFY) is never touched,
+// whatever the edit — reconcileLiveWorkflowInstances enforces that, not
+// this function.
+// ─────────────────────────────────────────────────────────────────────────────
+
 export const updateTemplate = async (
   templateId: string,
   payload: any,
   caller: { userId: string; isSuperAdmin: boolean },
-) => {
+): Promise<{ message: string; notifications: ReconcileNotification[] }> => {
   const {
     name,
     metaData_1,
     metaData_2,
     metaData_3,
     isActive,
-    isReusable, // ✅ NEW — lets a user "promote" a fork to reusable, or vice versa
+    isReusable, // lets a user "promote" a fork to reusable, or vice versa
     stages, // full replacement expected
     appId,
   } = payload;
 
   return prisma.$transaction(async (tx) => {
-    // 1. Check template exists
+    // 1. Check template exists — now also loaded with its own current
+    //    stages, needed below to detect a removed stageOrder.
     const existing = await tx.workflowTemplate.findUnique({
       where: { id: templateId },
-      include: { workflowInstances: true },
+      include: {
+        workflowInstances: true,
+        stages: { include: { approvers: true } },
+      },
     });
 
     if (!existing) throw new ApiError(404, "Template not found");
@@ -141,16 +173,33 @@ export const updateTemplate = async (
     //    their own USER-owned templates.
     assertCanMutateTemplate(existing, caller);
 
-    // 3. Prevent breaking active workflows
     const activeInstances = existing.workflowInstances.filter(
       (w) => w.status === "IN_PROGRESS",
     );
 
-    if (activeInstances.length > 0) {
-      throw new ApiError(
-        409,
-        "Cannot modify template with active workflows. Create new version instead.",
+    // 3. Stage-removal guard — see the comment above updateTemplate. Only
+    //    matters when there are live instances AND the caller is sending a
+    //    stage list at all; `stages` omitted entirely is a metadata-only
+    //    update and never touches stages.
+    if (activeInstances.length > 0 && stages) {
+      const existingStageOrders = new Set(
+        existing.stages.map((s) => s.stageOrder),
       );
+      const nextStageOrders = new Set(stages.map((s: any) => s.stageOrder));
+
+      const removedStageOrder = [...existingStageOrders].find(
+        (order) => !nextStageOrders.has(order),
+      );
+
+      if (removedStageOrder !== undefined) {
+        throw new ApiError(
+          409,
+          `Cannot remove stage ${removedStageOrder} — ${activeInstances.length} ` +
+            "active workflow(s) are running on this template. You can add a " +
+            "new stage or add/remove approvers within an existing stage, but " +
+            "not remove a stage while workflows are in progress.",
+        );
+      }
     }
 
     // 4. Update basic fields
@@ -168,9 +217,18 @@ export const updateTemplate = async (
       },
     });
 
-    if (!stages) return { message: "Template updated (no stage change)" };
+    if (!stages) {
+      return {
+        message: "Template updated (no stage change)",
+        notifications: [],
+      };
+    }
 
-    // 5. Delete existing stages (cascade deletes approvers)
+    // 5. Delete existing stages (cascade deletes approvers). This only
+    //    rewrites the TEMPLATE's own definition rows (TemplateStage /
+    //    TemplateApprover) — a running WorkflowInstance's StageInstance /
+    //    Approval rows are a separate, already-materialized copy and are
+    //    untouched by this. Propagating onto those is step 7, below.
     await tx.templateStage.deleteMany({
       where: { templateId },
     });
@@ -200,7 +258,25 @@ export const updateTemplate = async (
       }
     }
 
-    return { message: "Template updated successfully" };
+    // 7. Propagate the edit onto every live (IN_PROGRESS) instance of this
+    //    template. Notifications for anyone newly added to a stage that's
+    //    already running are returned here, not sent — the caller
+    //    (workflowTemplate.controller.ts) sends them once this transaction
+    //    has committed, same post-commit-only rule every other workflow
+    //    notification in this app follows.
+    const notifications = await reconcileLiveWorkflowInstances(tx, {
+      templateId,
+      stages: stages.map((stage: any) => ({
+        stageOrder: stage.stageOrder,
+        strategy: stage.strategy,
+        minApprovals: stage.minApprovals ?? null,
+        approverIds: (stage.approverIds ?? []).map(
+          (approver: { userId: string }) => approver.userId,
+        ),
+      })),
+    });
+
+    return { message: "Template updated successfully", notifications };
   });
 };
 
@@ -297,7 +373,7 @@ const buildScopeFilter = (
 // ─────────────────────────────────────────────────────────────────────────────
 // getTemplates
 //
-// Visibility rule (✅ NEW):
+// Visibility rule:
 //   - Admin caller (isSuperAdmin) → sees every template in the workspace,
 //     same as before this change.
 //   - Regular caller → only templates they're assigned to via
@@ -477,7 +553,7 @@ export const getTemplateById = async (templateId: string) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // selectTemplate
 //
-// ✅ NEW: only matches against isReusable templates — an ad-hoc, one-off
+// Only matches against isReusable templates — an ad-hoc, one-off
 // template (isReusable: false) was scaffolding for a single run and should
 // never be auto-selected for a different subject later.
 // ─────────────────────────────────────────────────────────────────────────────
