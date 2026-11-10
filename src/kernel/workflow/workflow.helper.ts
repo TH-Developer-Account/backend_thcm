@@ -39,7 +39,27 @@ export const evaluateBudget = (
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// templateMatchResolvers  ✅ NEW
+// evaluateZone  ✅ NEW
+//
+// A template's `metaData_2` holds the zone (region_code) it's scoped to for
+// matching purposes — same lightweight, migration-free convention as
+// `metaData_1` holding the budget-range key. A template with no zone set
+// (metaData_2 empty — every non-MAP template today) never matches a
+// zone-scoped lookup; it's only reachable when the caller doesn't pass a
+// zone at all (see templateMatchResolvers.EVENT_PROPOSAL below), which is
+// what keeps this fully backward-compatible for apps that don't use zones.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const evaluateZone = (
+  templateZone: string,
+  selectedZone: string,
+): boolean => {
+  if (!templateZone) return false;
+  return templateZone === selectedZone;
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// templateMatchResolvers
 //
 // assignWorkflowController used to hardcode budget-based matching, but budget
 // only means something for EVENT_PROPOSAL. This is the single place that
@@ -47,7 +67,9 @@ export const evaluateBudget = (
 // same strategy-map shape as workflowSubject.helper.ts, so adding a new app's
 // matching rule means adding one entry here, not touching the controller.
 //
-// EVENT_PROPOSAL    → budget range match against template.metaData_1
+// EVENT_PROPOSAL    → zone first (when supplied), then budget range match
+//                      against template.metaData_1. See the zone-matching
+//                      note below.
 // VENDOR_ONBOARDING → STUB: first active template, no criteria yet
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -64,10 +86,35 @@ export const templateMatchResolvers: Record<
     criteria: Record<string, unknown> | undefined,
   ) => CandidateTemplate | undefined
 > = {
+  // ✅ CHANGED — zone-first-then-budget, for the Marketing Activity Planner.
+  //
+  // `criteria.zone` is the EPC's selected zone (its region_code — see
+  // common.app.helper's `useUserInfo`/the Zone master for the id↔code
+  // mapping). When it's supplied, the candidate list is narrowed to
+  // templates whose own `metaData_2` matches that zone FIRST, and only the
+  // zone-matching candidates are then checked against budget — a budget
+  // match against a template scoped to a different zone must never win.
+  //
+  // When no zone is supplied (every caller outside MAP today — preview/
+  // assign calls that don't pass `criteria.zone`, and any template with
+  // `metaData_2` left blank), this resolves exactly as before: budget-only,
+  // against every candidate. This is what keeps the change additive rather
+  // than breaking: a workspace with no zone-scoped templates yet behaves
+  // identically to pre-zone behavior.
   EVENT_PROPOSAL: (templates, criteria) => {
     const budget = criteria?.budget;
     if (budget === undefined) return undefined;
-    return templates.find((t) =>
+
+    const zone =
+      typeof criteria?.zone === "string" && criteria.zone
+        ? criteria.zone
+        : undefined;
+
+    const zoneCandidates = zone
+      ? templates.filter((t) => evaluateZone(t.metaData_2 || "", zone))
+      : templates;
+
+    return zoneCandidates.find((t) =>
       evaluateBudget(t.metaData_1 || "", Number(budget)),
     );
   },
@@ -280,6 +327,176 @@ export const buildWorkflowStages = (templateStages: any[]) => {
       })),
     },
   }));
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// reconcileLiveWorkflowInstances  ✅ NEW
+//
+// Requirement: editing a template with running (IN_PROGRESS) workflow
+// instances must no longer be blocked outright — it should propagate onto
+// every live instance, EXCEPT that an approval already cast must never be
+// touched, and a stage can never be removed while instances are running
+// (that guard lives in template.service.ts's updateTemplate, before this
+// runs — by the time this is called, `stages` is already known to contain
+// every stageOrder the live instances currently have).
+//
+// For each live instance (status IN_PROGRESS, this template), per stage:
+//   - Stage doesn't exist yet on the instance (a brand-new stageOrder was
+//     appended) → materialize it fresh, PENDING, with the template's
+//     current approvers. Appending is the only stage-level change allowed
+//     while instances are running (see the guard above), so a "new"
+//     stageOrder here is always a genuine append, never a renumbered one —
+//     that's what keeps approveStage's `stageOrder + 1` lookup safe: no
+//     existing stageOrder ever shifts.
+//   - Stage already APPROVED or REJECTED → history. Left untouched,
+//     strategy/approvers included — the edit doesn't rewrite the past.
+//   - Stage still PENDING or IN_PROGRESS → still open, so it's brought in
+//     line with the edited template:
+//       • strategy/minApprovals updated to the template's current values.
+//       • approvers newly added to the stage get a fresh PENDING Approval.
+//       • approvers dropped from the stage lose their approval slot, but
+//         ONLY if it's still PENDING — an approver who already acted
+//         (APPROVED/REJECTED/CLARIFY) keeps that record exactly as cast,
+//         per "approvers that already approved should not be changed".
+//
+// Returns the set of { workflowId, stageId, newApproverIds, ... } entries
+// for stages that are IN_PROGRESS right now and gained an approver — the
+// caller notifies those approvers after the transaction commits (workflow
+// notifications are always post-commit, never inside the transaction that
+// creates them). A newly added approver on a stage that hasn't activated
+// yet needs no notification here: they'll be notified the normal way, via
+// notifyStageApprovers, whenever that stage actually activates.
+// ─────────────────────────────────────────────────────────────────────────────
+
+type ReconcileStageInput = {
+  stageOrder: number;
+  strategy: "ALL" | "ANY" | "SOME";
+  minApprovals?: number | null;
+  approverIds: string[];
+};
+
+export type ReconcileNotification = {
+  workflowId: string;
+  subjectType: WorkflowSubjectType;
+  subjectId: string;
+  appId: string;
+  stageId: string;
+  newApproverIds: string[];
+};
+
+export const reconcileLiveWorkflowInstances = async (
+  tx: Tx,
+  params: {
+    templateId: string;
+    stages: ReconcileStageInput[];
+  },
+): Promise<ReconcileNotification[]> => {
+  const { templateId, stages } = params;
+
+  const liveInstances = await tx.workflowInstance.findMany({
+    where: { templateId, status: "IN_PROGRESS" },
+    include: {
+      stages: {
+        where: { isCurrentIteration: true },
+        include: { approvals: true },
+      },
+    },
+  });
+
+  if (!liveInstances.length) return [];
+
+  const notifications: ReconcileNotification[] = [];
+
+  for (const instance of liveInstances) {
+    const liveStagesByOrder = new Map(
+      instance.stages.map((stage) => [stage.stageOrder, stage]),
+    );
+
+    for (const templateStage of stages) {
+      const liveStage = liveStagesByOrder.get(templateStage.stageOrder);
+
+      // ── A new stage, appended at the end ────────────────────────────
+      if (!liveStage) {
+        await tx.stageInstance.create({
+          data: {
+            workflowId: instance.id,
+            stageName: `Stage ${templateStage.stageOrder}`,
+            stageOrder: templateStage.stageOrder,
+            iteration: instance.iteration,
+            isCurrentIteration: true,
+            strategy: templateStage.strategy,
+            minApprovals: templateStage.minApprovals ?? null,
+            status: "PENDING",
+            approvals: {
+              create: templateStage.approverIds.map((approverId) => ({
+                approverId,
+                status: "PENDING",
+              })),
+            },
+          },
+        });
+        continue;
+      }
+
+      // ── Already concluded — history, never rewritten ────────────────
+      if (liveStage.status === "APPROVED" || liveStage.status === "REJECTED") {
+        continue;
+      }
+
+      // ── Still open (PENDING or IN_PROGRESS) — bring it in line ──────
+      await tx.stageInstance.update({
+        where: { id: liveStage.id },
+        data: {
+          strategy: templateStage.strategy,
+          minApprovals: templateStage.minApprovals ?? null,
+        },
+      });
+
+      const existingApproverIds = new Set(
+        liveStage.approvals.map((a) => a.approverId),
+      );
+      const nextApproverIds = new Set(templateStage.approverIds);
+
+      const toAdd = templateStage.approverIds.filter(
+        (approverId) => !existingApproverIds.has(approverId),
+      );
+      if (toAdd.length) {
+        await tx.approval.createMany({
+          data: toAdd.map((approverId) => ({
+            stageId: liveStage.id,
+            approverId,
+            status: "PENDING",
+          })),
+        });
+
+        // Only a stage that's already running needs an immediate nudge —
+        // a PENDING stage's approvers are notified later, when it activates.
+        if (liveStage.status === "IN_PROGRESS") {
+          notifications.push({
+            workflowId: instance.id,
+            subjectType: instance.subjectType,
+            subjectId: instance.subjectId,
+            appId: instance.appId,
+            stageId: liveStage.id,
+            newApproverIds: toAdd,
+          });
+        }
+      }
+
+      // Dropped approvers lose only a still-PENDING slot — anything already
+      // acted on (APPROVED/REJECTED/CLARIFY) is left exactly as cast.
+      const toRemove = liveStage.approvals.filter(
+        (a) => a.status === "PENDING" && !nextApproverIds.has(a.approverId),
+      );
+      if (toRemove.length) {
+        await tx.approval.deleteMany({
+          where: { id: { in: toRemove.map((a) => a.id) } },
+        });
+      }
+    }
+  }
+
+  return notifications;
 };
 
 export const approveStage = async ({
