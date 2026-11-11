@@ -686,7 +686,10 @@ export const sendForApproval = async (
       include: { documents: true },
     });
     if (!onboarding) throw new ApiError(404, "Vendor onboarding not found");
-    if (onboarding.status !== "IN_REVIEW") {
+    if (
+      onboarding.status !== "IN_REVIEW" &&
+      onboarding.status !== "FORM_SUBMITTED"
+    ) {
       throw new ApiError(400, "Employee review must be completed first");
     }
 
