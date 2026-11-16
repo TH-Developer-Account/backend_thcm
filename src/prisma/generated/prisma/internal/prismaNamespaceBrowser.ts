@@ -111,6 +111,7 @@ export const ModelName = {
   Supplier: 'Supplier',
   ChecklistTemplate: 'ChecklistTemplate',
   ChecklistItem: 'ChecklistItem',
+  ChecklistScoreLevel: 'ChecklistScoreLevel',
   DealerAuditInstance: 'DealerAuditInstance',
   AuditItemResponse: 'AuditItemResponse',
   FactoryAuditTemplate: 'FactoryAuditTemplate',
@@ -1131,10 +1132,15 @@ export type SupplierScalarFieldEnum = (typeof SupplierScalarFieldEnum)[keyof typ
 export const ChecklistTemplateScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  description: 'description',
   officeType: 'officeType',
   version: 'version',
   status: 'status',
   isActive: 'isActive',
+  totalScore: 'totalScore',
+  publishedAt: 'publishedAt',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1145,18 +1151,33 @@ export type ChecklistTemplateScalarFieldEnum = (typeof ChecklistTemplateScalarFi
 export const ChecklistItemScalarFieldEnum = {
   id: 'id',
   templateId: 'templateId',
-  sectionName: 'sectionName',
   order: 'order',
+  functionName: 'functionName',
+  categoryName: 'categoryName',
   label: 'label',
   checkPoint: 'checkPoint',
-  category: 'category',
   requiresScore: 'requiresScore',
-  requiresEvidence: 'requiresEvidence',
   maxScore: 'maxScore',
+  requiresEvidence: 'requiresEvidence',
+  minEvidence: 'minEvidence',
+  maxEvidence: 'maxEvidence',
+  referencePhotoKey: 'referencePhotoKey',
+  sectionName: 'sectionName',
+  category: 'category',
   scoringGuidance: 'scoringGuidance'
 } as const
 
 export type ChecklistItemScalarFieldEnum = (typeof ChecklistItemScalarFieldEnum)[keyof typeof ChecklistItemScalarFieldEnum]
+
+
+export const ChecklistScoreLevelScalarFieldEnum = {
+  id: 'id',
+  itemId: 'itemId',
+  score: 'score',
+  criteria: 'criteria'
+} as const
+
+export type ChecklistScoreLevelScalarFieldEnum = (typeof ChecklistScoreLevelScalarFieldEnum)[keyof typeof ChecklistScoreLevelScalarFieldEnum]
 
 
 export const DealerAuditInstanceScalarFieldEnum = {

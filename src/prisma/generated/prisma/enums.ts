@@ -133,7 +133,8 @@ export type ImportExportType = (typeof ImportExportType)[keyof typeof ImportExpo
 
 export const TemplateLifecycleStatus = {
   DRAFT: 'DRAFT',
-  PUBLISHED: 'PUBLISHED'
+  PUBLISHED: 'PUBLISHED',
+  ARCHIVED: 'ARCHIVED'
 } as const
 
 export type TemplateLifecycleStatus = (typeof TemplateLifecycleStatus)[keyof typeof TemplateLifecycleStatus]

@@ -444,6 +444,7 @@ export const ModelName = {
   Supplier: 'Supplier',
   ChecklistTemplate: 'ChecklistTemplate',
   ChecklistItem: 'ChecklistItem',
+  ChecklistScoreLevel: 'ChecklistScoreLevel',
   DealerAuditInstance: 'DealerAuditInstance',
   AuditItemResponse: 'AuditItemResponse',
   FactoryAuditTemplate: 'FactoryAuditTemplate',
@@ -478,7 +479,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "zone" | "branch" | "budgetMaster" | "eventName" | "division" | "designation" | "costCenter" | "productMaster" | "ePF" | "cRF" | "crfItem" | "crfOrder" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "gradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact" | "evidence" | "supplier" | "checklistTemplate" | "checklistItem" | "dealerAuditInstance" | "auditItemResponse" | "factoryAuditTemplate" | "factoryAuditSection" | "factoryAuditCheckpoint" | "checkpointRubricLevel" | "factoryClassificationBand" | "factoryAuditInstance" | "auditRound" | "auditRoundCheckpointScope" | "auditAssignment" | "auditAssignmentCheckpoint" | "auditResponse" | "auditCheckpointResult" | "vendorClassificationHistory" | "machineStudy" | "machineStudyCycle" | "machine" | "machineTelemetry"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "zone" | "branch" | "budgetMaster" | "eventName" | "division" | "designation" | "costCenter" | "productMaster" | "ePF" | "cRF" | "crfItem" | "crfOrder" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "gradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact" | "evidence" | "supplier" | "checklistTemplate" | "checklistItem" | "checklistScoreLevel" | "dealerAuditInstance" | "auditItemResponse" | "factoryAuditTemplate" | "factoryAuditSection" | "factoryAuditCheckpoint" | "checkpointRubricLevel" | "factoryClassificationBand" | "factoryAuditInstance" | "auditRound" | "auditRoundCheckpointScope" | "auditAssignment" | "auditAssignmentCheckpoint" | "auditResponse" | "auditCheckpointResult" | "vendorClassificationHistory" | "machineStudy" | "machineStudyCycle" | "machine" | "machineTelemetry"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4922,6 +4923,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    ChecklistScoreLevel: {
+      payload: Prisma.$ChecklistScoreLevelPayload<ExtArgs>
+      fields: Prisma.ChecklistScoreLevelFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ChecklistScoreLevelFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistScoreLevelPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ChecklistScoreLevelFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistScoreLevelPayload>
+        }
+        findFirst: {
+          args: Prisma.ChecklistScoreLevelFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistScoreLevelPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ChecklistScoreLevelFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistScoreLevelPayload>
+        }
+        findMany: {
+          args: Prisma.ChecklistScoreLevelFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistScoreLevelPayload>[]
+        }
+        create: {
+          args: Prisma.ChecklistScoreLevelCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistScoreLevelPayload>
+        }
+        createMany: {
+          args: Prisma.ChecklistScoreLevelCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ChecklistScoreLevelCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistScoreLevelPayload>[]
+        }
+        delete: {
+          args: Prisma.ChecklistScoreLevelDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistScoreLevelPayload>
+        }
+        update: {
+          args: Prisma.ChecklistScoreLevelUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistScoreLevelPayload>
+        }
+        deleteMany: {
+          args: Prisma.ChecklistScoreLevelDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ChecklistScoreLevelUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ChecklistScoreLevelUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistScoreLevelPayload>[]
+        }
+        upsert: {
+          args: Prisma.ChecklistScoreLevelUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ChecklistScoreLevelPayload>
+        }
+        aggregate: {
+          args: Prisma.ChecklistScoreLevelAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateChecklistScoreLevel>
+        }
+        groupBy: {
+          args: Prisma.ChecklistScoreLevelGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChecklistScoreLevelGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ChecklistScoreLevelCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ChecklistScoreLevelCountAggregateOutputType> | number
+        }
+      }
+    }
     DealerAuditInstance: {
       payload: Prisma.$DealerAuditInstancePayload<ExtArgs>
       fields: Prisma.DealerAuditInstanceFieldRefs
@@ -7350,10 +7425,15 @@ export type SupplierScalarFieldEnum = (typeof SupplierScalarFieldEnum)[keyof typ
 export const ChecklistTemplateScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  description: 'description',
   officeType: 'officeType',
   version: 'version',
   status: 'status',
   isActive: 'isActive',
+  totalScore: 'totalScore',
+  publishedAt: 'publishedAt',
+  createdById: 'createdById',
+  updatedById: 'updatedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -7364,18 +7444,33 @@ export type ChecklistTemplateScalarFieldEnum = (typeof ChecklistTemplateScalarFi
 export const ChecklistItemScalarFieldEnum = {
   id: 'id',
   templateId: 'templateId',
-  sectionName: 'sectionName',
   order: 'order',
+  functionName: 'functionName',
+  categoryName: 'categoryName',
   label: 'label',
   checkPoint: 'checkPoint',
-  category: 'category',
   requiresScore: 'requiresScore',
-  requiresEvidence: 'requiresEvidence',
   maxScore: 'maxScore',
+  requiresEvidence: 'requiresEvidence',
+  minEvidence: 'minEvidence',
+  maxEvidence: 'maxEvidence',
+  referencePhotoKey: 'referencePhotoKey',
+  sectionName: 'sectionName',
+  category: 'category',
   scoringGuidance: 'scoringGuidance'
 } as const
 
 export type ChecklistItemScalarFieldEnum = (typeof ChecklistItemScalarFieldEnum)[keyof typeof ChecklistItemScalarFieldEnum]
+
+
+export const ChecklistScoreLevelScalarFieldEnum = {
+  id: 'id',
+  itemId: 'itemId',
+  score: 'score',
+  criteria: 'criteria'
+} as const
+
+export type ChecklistScoreLevelScalarFieldEnum = (typeof ChecklistScoreLevelScalarFieldEnum)[keyof typeof ChecklistScoreLevelScalarFieldEnum]
 
 
 export const DealerAuditInstanceScalarFieldEnum = {
@@ -8444,6 +8539,7 @@ export type GlobalOmitConfig = {
   supplier?: Prisma.SupplierOmit
   checklistTemplate?: Prisma.ChecklistTemplateOmit
   checklistItem?: Prisma.ChecklistItemOmit
+  checklistScoreLevel?: Prisma.ChecklistScoreLevelOmit
   dealerAuditInstance?: Prisma.DealerAuditInstanceOmit
   auditItemResponse?: Prisma.AuditItemResponseOmit
   factoryAuditTemplate?: Prisma.FactoryAuditTemplateOmit

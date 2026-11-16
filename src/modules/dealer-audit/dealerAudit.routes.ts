@@ -3,33 +3,32 @@ import multer from "multer";
 import asyncHandler from "@shared/middleware/async.middleware";
 import { requireAuth, authorize } from "@kernel/auth/auth.middleware";
 import {
-  // ── Templates (Admin) ──
-  createChecklistTemplate,
-  listChecklistTemplates,
-  getChecklistTemplateById,
-  updateChecklistTemplateDraft,
-  createTemplateDraftVersion,
-  publishChecklistTemplate,
+	// ── Internal staff surface: Admin/Reviewer view any instance, Reviewer acts ──
+	triggerDealerAuditInstance,
+	listDealerAuditInstances,
+	getDealerAuditInstanceById,
+	setDealerAuditReviewerNotes,
+	setDealerAuditReviewStatus,
+	generateAndSendDealerAuditReport,
 
-  // ── Cycles (Admin, read-only for now — scheduler wiring comes later) ──
-  // Removed — see note in dealerAudit.service.ts on why DealerAuditCycle
-  // itself was collapsed; nothing left to list.
+	// ── Dealer surface: own instances only ──
+	listMyDealerAuditInstances,
+	getMyDealerAuditInstanceById,
+	saveMyDealerAuditResponses,
+	submitMyDealerAuditInstance,
+	resubmitMyDealerAuditInstance,
+	uploadMyDealerAuditItemEvidence,
 
-  // ── Internal staff surface: Admin/Reviewer view any instance, Reviewer acts ──
-  triggerDealerAuditInstance,
-  listDealerAuditInstances,
-  getDealerAuditInstanceById,
-  setDealerAuditReviewerNotes,
-  setDealerAuditReviewStatus,
-  generateAndSendDealerAuditReport,
-
-  // ── Dealer surface: own instances only ──
-  listMyDealerAuditInstances,
-  getMyDealerAuditInstanceById,
-  saveMyDealerAuditResponses,
-  submitMyDealerAuditInstance,
-  resubmitMyDealerAuditInstance,
-  uploadMyDealerAuditItemEvidence,
+	// ── Templates (Admin) ──
+	listChecklistTemplates,
+	getChecklistTemplateById,
+	createChecklistTemplate,
+	updateChecklistTemplateDraft,
+	publishChecklistTemplate,
+	createTemplateDraftVersion,
+	archiveChecklistTemplate,
+	deleteChecklistTemplate,
+	uploadChecklistReferencePhoto,
 } from "./dealerAudit.controller";
 
 const router = Router();
@@ -39,6 +38,12 @@ const MODULE_REVIEW = "DEALER_AUDIT_REVIEW";
 const MODULE_DEALER = "DEALER_AUDIT_DEALER";
 
 const upload = multer({ storage: multer.memoryStorage() });
+// Reference photos: one image, 5 MB cap enforced at the edge as well as in
+// the service.
+const uploadPhoto = multer({
+	storage: multer.memoryStorage(),
+	limits: { fileSize: 5 * 1024 * 1024, files: 1 },
+});
 
 // ── Dealer surface (own instances only) ──
 //
@@ -54,41 +59,41 @@ const upload = multer({ storage: multer.memoryStorage() });
 // dealership from ever reaching another's rows regardless of module access.
 
 router.get(
-  "/mine",
-  requireAuth,
-  authorize(APP_KEY, MODULE_DEALER, "read"),
-  asyncHandler(listMyDealerAuditInstances),
+	"/mine",
+	requireAuth,
+	authorize(APP_KEY, MODULE_DEALER, "read"),
+	asyncHandler(listMyDealerAuditInstances),
 );
 router.get(
-  "/mine/:id",
-  requireAuth,
-  authorize(APP_KEY, MODULE_DEALER, "read"),
-  asyncHandler(getMyDealerAuditInstanceById),
+	"/mine/:id",
+	requireAuth,
+	authorize(APP_KEY, MODULE_DEALER, "read"),
+	asyncHandler(getMyDealerAuditInstanceById),
 );
 router.patch(
-  "/mine/:id/responses",
-  requireAuth,
-  authorize(APP_KEY, MODULE_DEALER, "write"),
-  asyncHandler(saveMyDealerAuditResponses),
+	"/mine/:id/responses",
+	requireAuth,
+	authorize(APP_KEY, MODULE_DEALER, "write"),
+	asyncHandler(saveMyDealerAuditResponses),
 );
 router.post(
-  "/mine/:id/submit",
-  requireAuth,
-  authorize(APP_KEY, MODULE_DEALER, "write"),
-  asyncHandler(submitMyDealerAuditInstance),
+	"/mine/:id/submit",
+	requireAuth,
+	authorize(APP_KEY, MODULE_DEALER, "write"),
+	asyncHandler(submitMyDealerAuditInstance),
 );
 router.post(
-  "/mine/:id/resubmit",
-  requireAuth,
-  authorize(APP_KEY, MODULE_DEALER, "write"),
-  asyncHandler(resubmitMyDealerAuditInstance),
+	"/mine/:id/resubmit",
+	requireAuth,
+	authorize(APP_KEY, MODULE_DEALER, "write"),
+	asyncHandler(resubmitMyDealerAuditInstance),
 );
 router.post(
-  "/mine/:id/items/:itemId/evidence",
-  requireAuth,
-  authorize(APP_KEY, MODULE_DEALER, "write"),
-  upload.array("files"),
-  asyncHandler(uploadMyDealerAuditItemEvidence),
+	"/mine/:id/items/:itemId/evidence",
+	requireAuth,
+	authorize(APP_KEY, MODULE_DEALER, "write"),
+	upload.array("files"),
+	asyncHandler(uploadMyDealerAuditItemEvidence),
 );
 
 // ── Internal staff surface ──
@@ -99,78 +104,101 @@ router.post(
 // that cross-need is handled via the Reviewer profile's permissions,
 // not by this route accepting two modules.
 
+// ── Checklist templates (Admin) ──
+// The fixed path /reference-photos is declared BEFORE /:id so Express
+// never reads it as an id.
+
+router.get(
+	"/templates",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	asyncHandler(listChecklistTemplates),
+);
 router.post(
-  "/templates",
-  requireAuth,
-  authorize(APP_KEY, MODULE_ADMIN, "write"),
-  asyncHandler(createChecklistTemplate),
+	"/templates/reference-photos",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	uploadPhoto.single("file"),
+	asyncHandler(uploadChecklistReferencePhoto),
+);
+router.post(
+	"/templates",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	asyncHandler(createChecklistTemplate),
 );
 router.get(
-  "/templates",
-  requireAuth,
-  authorize(APP_KEY, MODULE_ADMIN, "read"),
-  asyncHandler(listChecklistTemplates),
-);
-router.get(
-  "/templates/:id",
-  requireAuth,
-  authorize(APP_KEY, MODULE_ADMIN, "read"),
-  asyncHandler(getChecklistTemplateById),
+	"/templates/:id",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	asyncHandler(getChecklistTemplateById),
 );
 router.patch(
-  "/templates/:id",
-  requireAuth,
-  authorize(APP_KEY, MODULE_ADMIN, "write"),
-  asyncHandler(updateChecklistTemplateDraft),
+	"/templates/:id",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	asyncHandler(updateChecklistTemplateDraft),
 );
 router.post(
-  "/templates/:id/new-draft",
-  requireAuth,
-  authorize(APP_KEY, MODULE_ADMIN, "write"),
-  asyncHandler(createTemplateDraftVersion),
+	"/templates/:id/publish",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	asyncHandler(publishChecklistTemplate),
 );
 router.post(
-  "/templates/:id/publish",
-  requireAuth,
-  authorize(APP_KEY, MODULE_ADMIN, "write"),
-  asyncHandler(publishChecklistTemplate),
+	"/templates/:id/new-draft",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	asyncHandler(createTemplateDraftVersion),
+);
+router.post(
+	"/templates/:id/archive",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	asyncHandler(archiveChecklistTemplate),
+);
+router.delete(
+	"/templates/:id",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	asyncHandler(deleteChecklistTemplate),
 );
 
 router.post(
-  "/instances",
-  requireAuth,
-  authorize(APP_KEY, MODULE_ADMIN, "write"),
-  asyncHandler(triggerDealerAuditInstance),
+	"/instances",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	asyncHandler(triggerDealerAuditInstance),
 );
 router.get(
-  "/instances",
-  requireAuth,
-  authorize(APP_KEY, MODULE_ADMIN, "read"),
-  asyncHandler(listDealerAuditInstances),
+	"/instances",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	asyncHandler(listDealerAuditInstances),
 );
 router.get(
-  "/instances/:id",
-  requireAuth,
-  authorize(APP_KEY, MODULE_ADMIN, "read"),
-  asyncHandler(getDealerAuditInstanceById),
+	"/instances/:id",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	asyncHandler(getDealerAuditInstanceById),
 );
 router.patch(
-  "/instances/:id/reviewer-notes",
-  requireAuth,
-  authorize(APP_KEY, MODULE_REVIEW, "write"),
-  asyncHandler(setDealerAuditReviewerNotes),
+	"/instances/:id/reviewer-notes",
+	requireAuth,
+	authorize(APP_KEY, MODULE_REVIEW, "write"),
+	asyncHandler(setDealerAuditReviewerNotes),
 );
 router.patch(
-  "/instances/:id/review-status",
-  requireAuth,
-  authorize(APP_KEY, MODULE_REVIEW, "write"),
-  asyncHandler(setDealerAuditReviewStatus),
+	"/instances/:id/review-status",
+	requireAuth,
+	authorize(APP_KEY, MODULE_REVIEW, "write"),
+	asyncHandler(setDealerAuditReviewStatus),
 );
 router.post(
-  "/instances/:id/report",
-  requireAuth,
-  authorize(APP_KEY, MODULE_REVIEW, "write"),
-  asyncHandler(generateAndSendDealerAuditReport),
+	"/instances/:id/report",
+	requireAuth,
+	authorize(APP_KEY, MODULE_REVIEW, "write"),
+	asyncHandler(generateAndSendDealerAuditReport),
 );
 
 // No approve/reject/clarify routes here — those go through the existing

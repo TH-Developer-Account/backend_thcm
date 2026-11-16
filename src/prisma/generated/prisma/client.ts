@@ -340,6 +340,11 @@ export type ChecklistTemplate = Prisma.ChecklistTemplateModel
  */
 export type ChecklistItem = Prisma.ChecklistItemModel
 /**
+ * Model ChecklistScoreLevel
+ * 
+ */
+export type ChecklistScoreLevel = Prisma.ChecklistScoreLevelModel
+/**
  * Model DealerAuditInstance
  * 
  */

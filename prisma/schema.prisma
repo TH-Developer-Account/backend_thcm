@@ -99,6 +99,7 @@ enum ImportExportType {
 enum TemplateLifecycleStatus {
   DRAFT
   PUBLISHED
+  ARCHIVED
 }
 
 enum ImportExportStatus {
@@ -1801,42 +1802,78 @@ model Supplier {
 
   auditInstances FactoryAuditInstance[]
 }
-
 model ChecklistTemplate {
-  id         String     @id @default(uuid())
-  name       String
-  officeType BusinessPartnerOfficeType
-  version    Int        @default(1)
-  status     TemplateLifecycleStatus @default(DRAFT)
-  isActive   Boolean    @default(false) // a draft is never active; publish sets this true
+  id          String                    @id @default(uuid())
+  name        String
+  description String?
+  officeType  BusinessPartnerOfficeType // facility type: HEAD_OFFICE | BRANCH_OFFICE
+  version     Int                       @default(1)
+  status      TemplateLifecycleStatus   @default(DRAFT)
+  // true only for the one PUBLISHED version audits should pick up.
+  isActive    Boolean                   @default(false)
+
+  // Sum of every scored parameter's highest level. Recomputed on every
+  // draft save and on publish.
+  totalScore  Float                     @default(0)
+  publishedAt DateTime?
+
+  // Plain ids (no relation) so the User model needs no back-reference.
+  createdById String?
+  updatedById String?
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt // also the optimistic-lock token (expectedUpdatedAt)
 
-  items              ChecklistItem[]
-  auditInstances     DealerAuditInstance[]
+  items          ChecklistItem[]
+  auditInstances DealerAuditInstance[]
 
   @@unique([name, officeType, version])
+  @@index([status, officeType])
 }
 
 model ChecklistItem {
-  id             String  @id @default(uuid())
-  templateId     String
-  sectionName    String  
-  order          Int     
-  label          String
-  checkPoint     String
-  category       ChecklistItemCategory?
-  requiresScore  Boolean @default(true)
+  id         String @id @default(uuid())
+  templateId String
+  order      Int
+
+  functionName String? // e.g. "Common", "Sales", "Service", "Parts"
+  categoryName String? // e.g. "Infra", "Process"
+
+  label      String // the parameter title shown to the auditor
+  checkPoint String // check point / criteria text
+
+  requiresScore    Boolean @default(true)
+  maxScore         Float?  // highest score level, denormalised for reports and totals
   requiresEvidence Boolean @default(false)
-  maxScore       Float?
+  minEvidence      Int?
+  maxEvidence      Int?
+  referencePhotoKey String? // S3 key of the optional reference photo
+
+  // ── DEPRECATED: nothing writes these any more. Kept until the old
+  // execution code is migrated, then drop in a follow-up migration.
+  sectionName     String?
+  category        ChecklistItemCategory?
   scoringGuidance String?
 
-  template  ChecklistTemplate    @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  responses AuditItemResponse[]
+  template    ChecklistTemplate     @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  scoreLevels ChecklistScoreLevel[]
+  responses   AuditItemResponse[]
 
   @@unique([templateId, order])
 }
+
+// Scoring matrix rows: any subset of 0-5, each with its criteria text.
+model ChecklistScoreLevel {
+  id       String @id @default(uuid())
+  itemId   String
+  score    Int // 0..5
+  criteria String
+
+  item ChecklistItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId, score])
+}
+
 model DealerAuditInstance {
   id                  String   @id @default(uuid())
   businessPartnerId   String

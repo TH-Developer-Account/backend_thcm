@@ -28,19 +28,26 @@ export type AggregateChecklistTemplate = {
 
 export type ChecklistTemplateAvgAggregateOutputType = {
   version: number | null
+  totalScore: number | null
 }
 
 export type ChecklistTemplateSumAggregateOutputType = {
   version: number | null
+  totalScore: number | null
 }
 
 export type ChecklistTemplateMinAggregateOutputType = {
   id: string | null
   name: string | null
+  description: string | null
   officeType: $Enums.BusinessPartnerOfficeType | null
   version: number | null
   status: $Enums.TemplateLifecycleStatus | null
   isActive: boolean | null
+  totalScore: number | null
+  publishedAt: Date | null
+  createdById: string | null
+  updatedById: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -48,10 +55,15 @@ export type ChecklistTemplateMinAggregateOutputType = {
 export type ChecklistTemplateMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  description: string | null
   officeType: $Enums.BusinessPartnerOfficeType | null
   version: number | null
   status: $Enums.TemplateLifecycleStatus | null
   isActive: boolean | null
+  totalScore: number | null
+  publishedAt: Date | null
+  createdById: string | null
+  updatedById: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -59,10 +71,15 @@ export type ChecklistTemplateMaxAggregateOutputType = {
 export type ChecklistTemplateCountAggregateOutputType = {
   id: number
   name: number
+  description: number
   officeType: number
   version: number
   status: number
   isActive: number
+  totalScore: number
+  publishedAt: number
+  createdById: number
+  updatedById: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -71,19 +88,26 @@ export type ChecklistTemplateCountAggregateOutputType = {
 
 export type ChecklistTemplateAvgAggregateInputType = {
   version?: true
+  totalScore?: true
 }
 
 export type ChecklistTemplateSumAggregateInputType = {
   version?: true
+  totalScore?: true
 }
 
 export type ChecklistTemplateMinAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   officeType?: true
   version?: true
   status?: true
   isActive?: true
+  totalScore?: true
+  publishedAt?: true
+  createdById?: true
+  updatedById?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -91,10 +115,15 @@ export type ChecklistTemplateMinAggregateInputType = {
 export type ChecklistTemplateMaxAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   officeType?: true
   version?: true
   status?: true
   isActive?: true
+  totalScore?: true
+  publishedAt?: true
+  createdById?: true
+  updatedById?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -102,10 +131,15 @@ export type ChecklistTemplateMaxAggregateInputType = {
 export type ChecklistTemplateCountAggregateInputType = {
   id?: true
   name?: true
+  description?: true
   officeType?: true
   version?: true
   status?: true
   isActive?: true
+  totalScore?: true
+  publishedAt?: true
+  createdById?: true
+  updatedById?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -200,10 +234,15 @@ export type ChecklistTemplateGroupByArgs<ExtArgs extends runtime.Types.Extension
 export type ChecklistTemplateGroupByOutputType = {
   id: string
   name: string
+  description: string | null
   officeType: $Enums.BusinessPartnerOfficeType
   version: number
   status: $Enums.TemplateLifecycleStatus
   isActive: boolean
+  totalScore: number
+  publishedAt: Date | null
+  createdById: string | null
+  updatedById: string | null
   createdAt: Date
   updatedAt: Date
   _count: ChecklistTemplateCountAggregateOutputType | null
@@ -234,10 +273,15 @@ export type ChecklistTemplateWhereInput = {
   NOT?: Prisma.ChecklistTemplateWhereInput | Prisma.ChecklistTemplateWhereInput[]
   id?: Prisma.StringFilter<"ChecklistTemplate"> | string
   name?: Prisma.StringFilter<"ChecklistTemplate"> | string
+  description?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFilter<"ChecklistTemplate"> | $Enums.BusinessPartnerOfficeType
   version?: Prisma.IntFilter<"ChecklistTemplate"> | number
   status?: Prisma.EnumTemplateLifecycleStatusFilter<"ChecklistTemplate"> | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFilter<"ChecklistTemplate"> | boolean
+  totalScore?: Prisma.FloatFilter<"ChecklistTemplate"> | number
+  publishedAt?: Prisma.DateTimeNullableFilter<"ChecklistTemplate"> | Date | string | null
+  createdById?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
+  updatedById?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ChecklistTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ChecklistTemplate"> | Date | string
   items?: Prisma.ChecklistItemListRelationFilter
@@ -247,10 +291,15 @@ export type ChecklistTemplateWhereInput = {
 export type ChecklistTemplateOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   officeType?: Prisma.SortOrder
   version?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  totalScore?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
+  updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   items?: Prisma.ChecklistItemOrderByRelationAggregateInput
@@ -264,10 +313,15 @@ export type ChecklistTemplateWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ChecklistTemplateWhereInput[]
   NOT?: Prisma.ChecklistTemplateWhereInput | Prisma.ChecklistTemplateWhereInput[]
   name?: Prisma.StringFilter<"ChecklistTemplate"> | string
+  description?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFilter<"ChecklistTemplate"> | $Enums.BusinessPartnerOfficeType
   version?: Prisma.IntFilter<"ChecklistTemplate"> | number
   status?: Prisma.EnumTemplateLifecycleStatusFilter<"ChecklistTemplate"> | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFilter<"ChecklistTemplate"> | boolean
+  totalScore?: Prisma.FloatFilter<"ChecklistTemplate"> | number
+  publishedAt?: Prisma.DateTimeNullableFilter<"ChecklistTemplate"> | Date | string | null
+  createdById?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
+  updatedById?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
   createdAt?: Prisma.DateTimeFilter<"ChecklistTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ChecklistTemplate"> | Date | string
   items?: Prisma.ChecklistItemListRelationFilter
@@ -277,10 +331,15 @@ export type ChecklistTemplateWhereUniqueInput = Prisma.AtLeast<{
 export type ChecklistTemplateOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrderInput | Prisma.SortOrder
   officeType?: Prisma.SortOrder
   version?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  totalScore?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  createdById?: Prisma.SortOrderInput | Prisma.SortOrder
+  updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ChecklistTemplateCountOrderByAggregateInput
@@ -296,10 +355,15 @@ export type ChecklistTemplateScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ChecklistTemplateScalarWhereWithAggregatesInput | Prisma.ChecklistTemplateScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ChecklistTemplate"> | string
   name?: Prisma.StringWithAggregatesFilter<"ChecklistTemplate"> | string
+  description?: Prisma.StringNullableWithAggregatesFilter<"ChecklistTemplate"> | string | null
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeWithAggregatesFilter<"ChecklistTemplate"> | $Enums.BusinessPartnerOfficeType
   version?: Prisma.IntWithAggregatesFilter<"ChecklistTemplate"> | number
   status?: Prisma.EnumTemplateLifecycleStatusWithAggregatesFilter<"ChecklistTemplate"> | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolWithAggregatesFilter<"ChecklistTemplate"> | boolean
+  totalScore?: Prisma.FloatWithAggregatesFilter<"ChecklistTemplate"> | number
+  publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ChecklistTemplate"> | Date | string | null
+  createdById?: Prisma.StringNullableWithAggregatesFilter<"ChecklistTemplate"> | string | null
+  updatedById?: Prisma.StringNullableWithAggregatesFilter<"ChecklistTemplate"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"ChecklistTemplate"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"ChecklistTemplate"> | Date | string
 }
@@ -307,10 +371,15 @@ export type ChecklistTemplateScalarWhereWithAggregatesInput = {
 export type ChecklistTemplateCreateInput = {
   id?: string
   name: string
+  description?: string | null
   officeType: $Enums.BusinessPartnerOfficeType
   version?: number
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
+  totalScore?: number
+  publishedAt?: Date | string | null
+  createdById?: string | null
+  updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ChecklistItemCreateNestedManyWithoutTemplateInput
@@ -320,10 +389,15 @@ export type ChecklistTemplateCreateInput = {
 export type ChecklistTemplateUncheckedCreateInput = {
   id?: string
   name: string
+  description?: string | null
   officeType: $Enums.BusinessPartnerOfficeType
   version?: number
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
+  totalScore?: number
+  publishedAt?: Date | string | null
+  createdById?: string | null
+  updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutTemplateInput
@@ -333,10 +407,15 @@ export type ChecklistTemplateUncheckedCreateInput = {
 export type ChecklistTemplateUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ChecklistItemUpdateManyWithoutTemplateNestedInput
@@ -346,10 +425,15 @@ export type ChecklistTemplateUpdateInput = {
 export type ChecklistTemplateUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ChecklistItemUncheckedUpdateManyWithoutTemplateNestedInput
@@ -359,10 +443,15 @@ export type ChecklistTemplateUncheckedUpdateInput = {
 export type ChecklistTemplateCreateManyInput = {
   id?: string
   name: string
+  description?: string | null
   officeType: $Enums.BusinessPartnerOfficeType
   version?: number
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
+  totalScore?: number
+  publishedAt?: Date | string | null
+  createdById?: string | null
+  updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -370,10 +459,15 @@ export type ChecklistTemplateCreateManyInput = {
 export type ChecklistTemplateUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -381,10 +475,15 @@ export type ChecklistTemplateUpdateManyMutationInput = {
 export type ChecklistTemplateUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -398,25 +497,36 @@ export type ChecklistTemplateNameOfficeTypeVersionCompoundUniqueInput = {
 export type ChecklistTemplateCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   officeType?: Prisma.SortOrder
   version?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  totalScore?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
+  updatedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type ChecklistTemplateAvgOrderByAggregateInput = {
   version?: Prisma.SortOrder
+  totalScore?: Prisma.SortOrder
 }
 
 export type ChecklistTemplateMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   officeType?: Prisma.SortOrder
   version?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  totalScore?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
+  updatedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -424,16 +534,22 @@ export type ChecklistTemplateMaxOrderByAggregateInput = {
 export type ChecklistTemplateMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  description?: Prisma.SortOrder
   officeType?: Prisma.SortOrder
   version?: Prisma.SortOrder
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
+  totalScore?: Prisma.SortOrder
+  publishedAt?: Prisma.SortOrder
+  createdById?: Prisma.SortOrder
+  updatedById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type ChecklistTemplateSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
+  totalScore?: Prisma.SortOrder
 }
 
 export type ChecklistTemplateScalarRelationFilter = {
@@ -476,10 +592,15 @@ export type ChecklistTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput =
 export type ChecklistTemplateCreateWithoutItemsInput = {
   id?: string
   name: string
+  description?: string | null
   officeType: $Enums.BusinessPartnerOfficeType
   version?: number
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
+  totalScore?: number
+  publishedAt?: Date | string | null
+  createdById?: string | null
+  updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   auditInstances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutTemplateInput
@@ -488,10 +609,15 @@ export type ChecklistTemplateCreateWithoutItemsInput = {
 export type ChecklistTemplateUncheckedCreateWithoutItemsInput = {
   id?: string
   name: string
+  description?: string | null
   officeType: $Enums.BusinessPartnerOfficeType
   version?: number
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
+  totalScore?: number
+  publishedAt?: Date | string | null
+  createdById?: string | null
+  updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   auditInstances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutTemplateInput
@@ -516,10 +642,15 @@ export type ChecklistTemplateUpdateToOneWithWhereWithoutItemsInput = {
 export type ChecklistTemplateUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   auditInstances?: Prisma.DealerAuditInstanceUpdateManyWithoutTemplateNestedInput
@@ -528,10 +659,15 @@ export type ChecklistTemplateUpdateWithoutItemsInput = {
 export type ChecklistTemplateUncheckedUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   auditInstances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutTemplateNestedInput
@@ -540,10 +676,15 @@ export type ChecklistTemplateUncheckedUpdateWithoutItemsInput = {
 export type ChecklistTemplateCreateWithoutAuditInstancesInput = {
   id?: string
   name: string
+  description?: string | null
   officeType: $Enums.BusinessPartnerOfficeType
   version?: number
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
+  totalScore?: number
+  publishedAt?: Date | string | null
+  createdById?: string | null
+  updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ChecklistItemCreateNestedManyWithoutTemplateInput
@@ -552,10 +693,15 @@ export type ChecklistTemplateCreateWithoutAuditInstancesInput = {
 export type ChecklistTemplateUncheckedCreateWithoutAuditInstancesInput = {
   id?: string
   name: string
+  description?: string | null
   officeType: $Enums.BusinessPartnerOfficeType
   version?: number
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
+  totalScore?: number
+  publishedAt?: Date | string | null
+  createdById?: string | null
+  updatedById?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutTemplateInput
@@ -580,10 +726,15 @@ export type ChecklistTemplateUpdateToOneWithWhereWithoutAuditInstancesInput = {
 export type ChecklistTemplateUpdateWithoutAuditInstancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ChecklistItemUpdateManyWithoutTemplateNestedInput
@@ -592,10 +743,15 @@ export type ChecklistTemplateUpdateWithoutAuditInstancesInput = {
 export type ChecklistTemplateUncheckedUpdateWithoutAuditInstancesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
   version?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ChecklistItemUncheckedUpdateManyWithoutTemplateNestedInput
@@ -644,10 +800,15 @@ export type ChecklistTemplateCountOutputTypeCountAuditInstancesArgs<ExtArgs exte
 export type ChecklistTemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   officeType?: boolean
   version?: boolean
   status?: boolean
   isActive?: boolean
+  totalScore?: boolean
+  publishedAt?: boolean
+  createdById?: boolean
+  updatedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   items?: boolean | Prisma.ChecklistTemplate$itemsArgs<ExtArgs>
@@ -658,10 +819,15 @@ export type ChecklistTemplateSelect<ExtArgs extends runtime.Types.Extensions.Int
 export type ChecklistTemplateSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   officeType?: boolean
   version?: boolean
   status?: boolean
   isActive?: boolean
+  totalScore?: boolean
+  publishedAt?: boolean
+  createdById?: boolean
+  updatedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["checklistTemplate"]>
@@ -669,10 +835,15 @@ export type ChecklistTemplateSelectCreateManyAndReturn<ExtArgs extends runtime.T
 export type ChecklistTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  description?: boolean
   officeType?: boolean
   version?: boolean
   status?: boolean
   isActive?: boolean
+  totalScore?: boolean
+  publishedAt?: boolean
+  createdById?: boolean
+  updatedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["checklistTemplate"]>
@@ -680,15 +851,20 @@ export type ChecklistTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.T
 export type ChecklistTemplateSelectScalar = {
   id?: boolean
   name?: boolean
+  description?: boolean
   officeType?: boolean
   version?: boolean
   status?: boolean
   isActive?: boolean
+  totalScore?: boolean
+  publishedAt?: boolean
+  createdById?: boolean
+  updatedById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ChecklistTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "officeType" | "version" | "status" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["checklistTemplate"]>
+export type ChecklistTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "officeType" | "version" | "status" | "isActive" | "totalScore" | "publishedAt" | "createdById" | "updatedById" | "createdAt" | "updatedAt", ExtArgs["result"]["checklistTemplate"]>
 export type ChecklistTemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | Prisma.ChecklistTemplate$itemsArgs<ExtArgs>
   auditInstances?: boolean | Prisma.ChecklistTemplate$auditInstancesArgs<ExtArgs>
@@ -706,10 +882,15 @@ export type $ChecklistTemplatePayload<ExtArgs extends runtime.Types.Extensions.I
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    description: string | null
     officeType: $Enums.BusinessPartnerOfficeType
     version: number
     status: $Enums.TemplateLifecycleStatus
     isActive: boolean
+    totalScore: number
+    publishedAt: Date | null
+    createdById: string | null
+    updatedById: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["checklistTemplate"]>
@@ -1139,10 +1320,15 @@ export interface Prisma__ChecklistTemplateClient<T, Null = never, ExtArgs extend
 export interface ChecklistTemplateFieldRefs {
   readonly id: Prisma.FieldRef<"ChecklistTemplate", 'String'>
   readonly name: Prisma.FieldRef<"ChecklistTemplate", 'String'>
+  readonly description: Prisma.FieldRef<"ChecklistTemplate", 'String'>
   readonly officeType: Prisma.FieldRef<"ChecklistTemplate", 'BusinessPartnerOfficeType'>
   readonly version: Prisma.FieldRef<"ChecklistTemplate", 'Int'>
   readonly status: Prisma.FieldRef<"ChecklistTemplate", 'TemplateLifecycleStatus'>
   readonly isActive: Prisma.FieldRef<"ChecklistTemplate", 'Boolean'>
+  readonly totalScore: Prisma.FieldRef<"ChecklistTemplate", 'Float'>
+  readonly publishedAt: Prisma.FieldRef<"ChecklistTemplate", 'DateTime'>
+  readonly createdById: Prisma.FieldRef<"ChecklistTemplate", 'String'>
+  readonly updatedById: Prisma.FieldRef<"ChecklistTemplate", 'String'>
   readonly createdAt: Prisma.FieldRef<"ChecklistTemplate", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"ChecklistTemplate", 'DateTime'>
 }
