@@ -1766,17 +1766,37 @@ model MachineStudyCycle {
 // the business key and the primary key — no separate surrogate id.
 // ─────────────────────────────────────────────────────────────────────────────
 model Machine {
-  id           String       @default(uuid())
-  machineSerialNumber String   @id
-  // customerId is intentionally left unset here. It's out of scope for
-  // both the import and the daily C4C sync — filled by a separate process
-  // later. Do not populate this from C4C (CACCOUNT_UUID), even though C4C
-  // returns it on every call — confirmed out of scope for now.
-  customerId   String?
+  id                  String    @default(uuid())
+  machineSerialNumber String    @id
+  customerId          String?
+
+  custCode            String?   // raw SAP/C4C customer code — kept even if it can't be resolved to a BusinessPartner
+  modelName           String?   // e.g. "ZX490LCH-7G" — not in your screenshot's list, added so this data isn't lost
+  siteLocation        String?   // same
+
+  mcDescription       String?
+  mcStatus            String?
+  warrantyStart        DateTime?
+  warrantyEnd          DateTime?
+  masterWarranty       Int?       // assumed: years
+  serviceDealerCode    String?    // assumed name for the truncated "Service_Dealer_"
+
+  purchaseOrderNo      String?
+  purchaseOrderDate    DateTime?
+  goodsReceiptDate     DateTime?
+  goodsReceiptValue    Int?
+  plant                String?
+
+  invoiceNo            String?
+  invoiceDate          DateTime?
+  invoiceValue         Int?
+
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   telemetry MachineTelemetry[]
+
+  @@index([custCode])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
