@@ -286,6 +286,7 @@ export type ChecklistTemplateWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"ChecklistTemplate"> | Date | string
   items?: Prisma.ChecklistItemListRelationFilter
   auditInstances?: Prisma.DealerAuditInstanceListRelationFilter
+  dealerAuditCycles?: Prisma.DealerAuditCycleListRelationFilter
 }
 
 export type ChecklistTemplateOrderByWithRelationInput = {
@@ -304,6 +305,7 @@ export type ChecklistTemplateOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   items?: Prisma.ChecklistItemOrderByRelationAggregateInput
   auditInstances?: Prisma.DealerAuditInstanceOrderByRelationAggregateInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleOrderByRelationAggregateInput
 }
 
 export type ChecklistTemplateWhereUniqueInput = Prisma.AtLeast<{
@@ -326,6 +328,7 @@ export type ChecklistTemplateWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"ChecklistTemplate"> | Date | string
   items?: Prisma.ChecklistItemListRelationFilter
   auditInstances?: Prisma.DealerAuditInstanceListRelationFilter
+  dealerAuditCycles?: Prisma.DealerAuditCycleListRelationFilter
 }, "id" | "name_officeType_version">
 
 export type ChecklistTemplateOrderByWithAggregationInput = {
@@ -384,6 +387,7 @@ export type ChecklistTemplateCreateInput = {
   updatedAt?: Date | string
   items?: Prisma.ChecklistItemCreateNestedManyWithoutTemplateInput
   auditInstances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutTemplateInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleCreateNestedManyWithoutTemplateInput
 }
 
 export type ChecklistTemplateUncheckedCreateInput = {
@@ -402,6 +406,7 @@ export type ChecklistTemplateUncheckedCreateInput = {
   updatedAt?: Date | string
   items?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutTemplateInput
   auditInstances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutTemplateInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleUncheckedCreateNestedManyWithoutTemplateInput
 }
 
 export type ChecklistTemplateUpdateInput = {
@@ -420,6 +425,7 @@ export type ChecklistTemplateUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ChecklistItemUpdateManyWithoutTemplateNestedInput
   auditInstances?: Prisma.DealerAuditInstanceUpdateManyWithoutTemplateNestedInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleUpdateManyWithoutTemplateNestedInput
 }
 
 export type ChecklistTemplateUncheckedUpdateInput = {
@@ -438,6 +444,7 @@ export type ChecklistTemplateUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ChecklistItemUncheckedUpdateManyWithoutTemplateNestedInput
   auditInstances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutTemplateNestedInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleUncheckedUpdateManyWithoutTemplateNestedInput
 }
 
 export type ChecklistTemplateCreateManyInput = {
@@ -575,6 +582,20 @@ export type ChecklistTemplateUpdateOneRequiredWithoutItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ChecklistTemplateUpdateToOneWithWhereWithoutItemsInput, Prisma.ChecklistTemplateUpdateWithoutItemsInput>, Prisma.ChecklistTemplateUncheckedUpdateWithoutItemsInput>
 }
 
+export type ChecklistTemplateCreateNestedOneWithoutDealerAuditCyclesInput = {
+  create?: Prisma.XOR<Prisma.ChecklistTemplateCreateWithoutDealerAuditCyclesInput, Prisma.ChecklistTemplateUncheckedCreateWithoutDealerAuditCyclesInput>
+  connectOrCreate?: Prisma.ChecklistTemplateCreateOrConnectWithoutDealerAuditCyclesInput
+  connect?: Prisma.ChecklistTemplateWhereUniqueInput
+}
+
+export type ChecklistTemplateUpdateOneRequiredWithoutDealerAuditCyclesNestedInput = {
+  create?: Prisma.XOR<Prisma.ChecklistTemplateCreateWithoutDealerAuditCyclesInput, Prisma.ChecklistTemplateUncheckedCreateWithoutDealerAuditCyclesInput>
+  connectOrCreate?: Prisma.ChecklistTemplateCreateOrConnectWithoutDealerAuditCyclesInput
+  upsert?: Prisma.ChecklistTemplateUpsertWithoutDealerAuditCyclesInput
+  connect?: Prisma.ChecklistTemplateWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ChecklistTemplateUpdateToOneWithWhereWithoutDealerAuditCyclesInput, Prisma.ChecklistTemplateUpdateWithoutDealerAuditCyclesInput>, Prisma.ChecklistTemplateUncheckedUpdateWithoutDealerAuditCyclesInput>
+}
+
 export type ChecklistTemplateCreateNestedOneWithoutAuditInstancesInput = {
   create?: Prisma.XOR<Prisma.ChecklistTemplateCreateWithoutAuditInstancesInput, Prisma.ChecklistTemplateUncheckedCreateWithoutAuditInstancesInput>
   connectOrCreate?: Prisma.ChecklistTemplateCreateOrConnectWithoutAuditInstancesInput
@@ -604,6 +625,7 @@ export type ChecklistTemplateCreateWithoutItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   auditInstances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutTemplateInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleCreateNestedManyWithoutTemplateInput
 }
 
 export type ChecklistTemplateUncheckedCreateWithoutItemsInput = {
@@ -621,6 +643,7 @@ export type ChecklistTemplateUncheckedCreateWithoutItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   auditInstances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutTemplateInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleUncheckedCreateNestedManyWithoutTemplateInput
 }
 
 export type ChecklistTemplateCreateOrConnectWithoutItemsInput = {
@@ -654,6 +677,7 @@ export type ChecklistTemplateUpdateWithoutItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   auditInstances?: Prisma.DealerAuditInstanceUpdateManyWithoutTemplateNestedInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleUpdateManyWithoutTemplateNestedInput
 }
 
 export type ChecklistTemplateUncheckedUpdateWithoutItemsInput = {
@@ -670,6 +694,95 @@ export type ChecklistTemplateUncheckedUpdateWithoutItemsInput = {
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  auditInstances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutTemplateNestedInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleUncheckedUpdateManyWithoutTemplateNestedInput
+}
+
+export type ChecklistTemplateCreateWithoutDealerAuditCyclesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  officeType: $Enums.BusinessPartnerOfficeType
+  version?: number
+  status?: $Enums.TemplateLifecycleStatus
+  isActive?: boolean
+  totalScore?: number
+  publishedAt?: Date | string | null
+  createdById?: string | null
+  updatedById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.ChecklistItemCreateNestedManyWithoutTemplateInput
+  auditInstances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutTemplateInput
+}
+
+export type ChecklistTemplateUncheckedCreateWithoutDealerAuditCyclesInput = {
+  id?: string
+  name: string
+  description?: string | null
+  officeType: $Enums.BusinessPartnerOfficeType
+  version?: number
+  status?: $Enums.TemplateLifecycleStatus
+  isActive?: boolean
+  totalScore?: number
+  publishedAt?: Date | string | null
+  createdById?: string | null
+  updatedById?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  items?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutTemplateInput
+  auditInstances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutTemplateInput
+}
+
+export type ChecklistTemplateCreateOrConnectWithoutDealerAuditCyclesInput = {
+  where: Prisma.ChecklistTemplateWhereUniqueInput
+  create: Prisma.XOR<Prisma.ChecklistTemplateCreateWithoutDealerAuditCyclesInput, Prisma.ChecklistTemplateUncheckedCreateWithoutDealerAuditCyclesInput>
+}
+
+export type ChecklistTemplateUpsertWithoutDealerAuditCyclesInput = {
+  update: Prisma.XOR<Prisma.ChecklistTemplateUpdateWithoutDealerAuditCyclesInput, Prisma.ChecklistTemplateUncheckedUpdateWithoutDealerAuditCyclesInput>
+  create: Prisma.XOR<Prisma.ChecklistTemplateCreateWithoutDealerAuditCyclesInput, Prisma.ChecklistTemplateUncheckedCreateWithoutDealerAuditCyclesInput>
+  where?: Prisma.ChecklistTemplateWhereInput
+}
+
+export type ChecklistTemplateUpdateToOneWithWhereWithoutDealerAuditCyclesInput = {
+  where?: Prisma.ChecklistTemplateWhereInput
+  data: Prisma.XOR<Prisma.ChecklistTemplateUpdateWithoutDealerAuditCyclesInput, Prisma.ChecklistTemplateUncheckedUpdateWithoutDealerAuditCyclesInput>
+}
+
+export type ChecklistTemplateUpdateWithoutDealerAuditCyclesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.ChecklistItemUpdateManyWithoutTemplateNestedInput
+  auditInstances?: Prisma.DealerAuditInstanceUpdateManyWithoutTemplateNestedInput
+}
+
+export type ChecklistTemplateUncheckedUpdateWithoutDealerAuditCyclesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  items?: Prisma.ChecklistItemUncheckedUpdateManyWithoutTemplateNestedInput
   auditInstances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutTemplateNestedInput
 }
 
@@ -688,6 +801,7 @@ export type ChecklistTemplateCreateWithoutAuditInstancesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ChecklistItemCreateNestedManyWithoutTemplateInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleCreateNestedManyWithoutTemplateInput
 }
 
 export type ChecklistTemplateUncheckedCreateWithoutAuditInstancesInput = {
@@ -705,6 +819,7 @@ export type ChecklistTemplateUncheckedCreateWithoutAuditInstancesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.ChecklistItemUncheckedCreateNestedManyWithoutTemplateInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleUncheckedCreateNestedManyWithoutTemplateInput
 }
 
 export type ChecklistTemplateCreateOrConnectWithoutAuditInstancesInput = {
@@ -738,6 +853,7 @@ export type ChecklistTemplateUpdateWithoutAuditInstancesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ChecklistItemUpdateManyWithoutTemplateNestedInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleUpdateManyWithoutTemplateNestedInput
 }
 
 export type ChecklistTemplateUncheckedUpdateWithoutAuditInstancesInput = {
@@ -755,6 +871,7 @@ export type ChecklistTemplateUncheckedUpdateWithoutAuditInstancesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.ChecklistItemUncheckedUpdateManyWithoutTemplateNestedInput
+  dealerAuditCycles?: Prisma.DealerAuditCycleUncheckedUpdateManyWithoutTemplateNestedInput
 }
 
 
@@ -765,11 +882,13 @@ export type ChecklistTemplateUncheckedUpdateWithoutAuditInstancesInput = {
 export type ChecklistTemplateCountOutputType = {
   items: number
   auditInstances: number
+  dealerAuditCycles: number
 }
 
 export type ChecklistTemplateCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | ChecklistTemplateCountOutputTypeCountItemsArgs
   auditInstances?: boolean | ChecklistTemplateCountOutputTypeCountAuditInstancesArgs
+  dealerAuditCycles?: boolean | ChecklistTemplateCountOutputTypeCountDealerAuditCyclesArgs
 }
 
 /**
@@ -796,6 +915,13 @@ export type ChecklistTemplateCountOutputTypeCountAuditInstancesArgs<ExtArgs exte
   where?: Prisma.DealerAuditInstanceWhereInput
 }
 
+/**
+ * ChecklistTemplateCountOutputType without action
+ */
+export type ChecklistTemplateCountOutputTypeCountDealerAuditCyclesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DealerAuditCycleWhereInput
+}
+
 
 export type ChecklistTemplateSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -813,6 +939,7 @@ export type ChecklistTemplateSelect<ExtArgs extends runtime.Types.Extensions.Int
   updatedAt?: boolean
   items?: boolean | Prisma.ChecklistTemplate$itemsArgs<ExtArgs>
   auditInstances?: boolean | Prisma.ChecklistTemplate$auditInstancesArgs<ExtArgs>
+  dealerAuditCycles?: boolean | Prisma.ChecklistTemplate$dealerAuditCyclesArgs<ExtArgs>
   _count?: boolean | Prisma.ChecklistTemplateCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["checklistTemplate"]>
 
@@ -868,6 +995,7 @@ export type ChecklistTemplateOmit<ExtArgs extends runtime.Types.Extensions.Inter
 export type ChecklistTemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | Prisma.ChecklistTemplate$itemsArgs<ExtArgs>
   auditInstances?: boolean | Prisma.ChecklistTemplate$auditInstancesArgs<ExtArgs>
+  dealerAuditCycles?: boolean | Prisma.ChecklistTemplate$dealerAuditCyclesArgs<ExtArgs>
   _count?: boolean | Prisma.ChecklistTemplateCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ChecklistTemplateIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -878,6 +1006,7 @@ export type $ChecklistTemplatePayload<ExtArgs extends runtime.Types.Extensions.I
   objects: {
     items: Prisma.$ChecklistItemPayload<ExtArgs>[]
     auditInstances: Prisma.$DealerAuditInstancePayload<ExtArgs>[]
+    dealerAuditCycles: Prisma.$DealerAuditCyclePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1289,6 +1418,7 @@ export interface Prisma__ChecklistTemplateClient<T, Null = never, ExtArgs extend
   readonly [Symbol.toStringTag]: "PrismaPromise"
   items<T extends Prisma.ChecklistTemplate$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChecklistTemplate$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChecklistItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditInstances<T extends Prisma.ChecklistTemplate$auditInstancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChecklistTemplate$auditInstancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DealerAuditInstancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dealerAuditCycles<T extends Prisma.ChecklistTemplate$dealerAuditCyclesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChecklistTemplate$dealerAuditCyclesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DealerAuditCyclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1769,6 +1899,30 @@ export type ChecklistTemplate$auditInstancesArgs<ExtArgs extends runtime.Types.E
   take?: number
   skip?: number
   distinct?: Prisma.DealerAuditInstanceScalarFieldEnum | Prisma.DealerAuditInstanceScalarFieldEnum[]
+}
+
+/**
+ * ChecklistTemplate.dealerAuditCycles
+ */
+export type ChecklistTemplate$dealerAuditCyclesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DealerAuditCycle
+   */
+  select?: Prisma.DealerAuditCycleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DealerAuditCycle
+   */
+  omit?: Prisma.DealerAuditCycleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DealerAuditCycleInclude<ExtArgs> | null
+  where?: Prisma.DealerAuditCycleWhereInput
+  orderBy?: Prisma.DealerAuditCycleOrderByWithRelationInput | Prisma.DealerAuditCycleOrderByWithRelationInput[]
+  cursor?: Prisma.DealerAuditCycleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DealerAuditCycleScalarFieldEnum | Prisma.DealerAuditCycleScalarFieldEnum[]
 }
 
 /**

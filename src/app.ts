@@ -33,6 +33,7 @@ import healthRouter from "@kernel/health/health.routes";
 import dealerAuditRoutes from "@dealerAudit/dealerAudit.routes";
 import machineStudyRoutes from "@map/reports/machineStudy.routes";
 import crfShopRoutes from "@modules/map/crf/crf-shop.routes";
+import cppRoutes from "@modules/cpp/cpp.routes";
 import errorHandler from "@shared/middleware/error.middleware";
 import ApiError from "@shared/utils/apiError";
 import { startJobs } from "@shared/jobs/scheduler";
@@ -81,6 +82,7 @@ app.use("/api/v1/machine-studies", machineStudyRoutes);
 app.use("/api/v1/crf-shop", crfShopRoutes);
 app.use("/api/v1/dealer-audit", dealerAuditRoutes);
 
+app.use("/api/v1/cpp", cppRoutes);
 // Scheduler
 startJobs();
 

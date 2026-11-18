@@ -323,6 +323,11 @@ export type ChecklistItem = Prisma.ChecklistItemModel
  */
 export type ChecklistScoreLevel = Prisma.ChecklistScoreLevelModel
 /**
+ * Model DealerAuditCycle
+ * 
+ */
+export type DealerAuditCycle = Prisma.DealerAuditCycleModel
+/**
  * Model DealerAuditInstance
  * 
  */
@@ -417,3 +422,18 @@ export type Machine = Prisma.MachineModel
  * 
  */
 export type MachineTelemetry = Prisma.MachineTelemetryModel
+/**
+ * Model CppRequest
+ * 
+ */
+export type CppRequest = Prisma.CppRequestModel
+/**
+ * Model CppAttachment
+ * 
+ */
+export type CppAttachment = Prisma.CppAttachmentModel
+/**
+ * Model CppSlotAssignment
+ * 
+ */
+export type CppSlotAssignment = Prisma.CppSlotAssignmentModel

@@ -114,7 +114,8 @@ enum WorkflowSubjectType {
   VENDOR_ONBOARDING
   MEDICAL_CLAIM
   DEALER_AUDIT_INSTANCE
-  FACTORY_AUDIT_INSTANCE 
+  FACTORY_AUDIT_INSTANCE
+  CPP_REQUEST
 }
 
 enum EvidenceSubjectType {
@@ -355,7 +356,8 @@ model User {
   factoryAuditAssignments       AuditAssignment[]         @relation("FactoryAuditAssignmentAuditor")
   factoryCheckpointReviews      AuditCheckpointResult[]   @relation("FactoryAuditCheckpointReviewer")
   factoryAuditInstancesCreated  FactoryAuditInstance[]    @relation("FactoryAuditInstanceCreatedBy")
-
+  dealerAuditCyclesCreated DealerAuditCycle[]    @relation("DealerAuditCycleCreator")
+  dealerAuditsToReview     DealerAuditInstance[] @relation("DealerAuditReviewer")
   // ── CRF × Shopify (souvenirs) ────────────────────────────────────────
   createdCrfs     CRF[] @relation("CrfCreatedBy")
   crfsAsRecipient CRF[] @relation("CrfRecipientUser")
@@ -1826,6 +1828,7 @@ model ChecklistTemplate {
 
   items          ChecklistItem[]
   auditInstances DealerAuditInstance[]
+  dealerAuditCycles DealerAuditCycle[]
 
   @@unique([name, officeType, version])
   @@index([status, officeType])
@@ -1873,6 +1876,27 @@ model ChecklistScoreLevel {
 
   @@unique([itemId, score])
 }
+model DealerAuditCycle {
+  id                  String   @id @default(uuid())
+  name                String
+  checklistTemplateId String
+  periodType          String   // QUARTERLY | YEARLY
+  periodYear          Int      // year the fiscal year STARTS (FY 2026-27 -> 2026)
+  periodQuarter       Int?     // 1-4, null for YEARLY
+  periodLabel         String   // e.g. "Q3 FY 2026-27"
+  dueAt               DateTime
+  createdById         String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  template  ChecklistTemplate     @relation(fields: [checklistTemplateId], references: [id])
+  createdBy User                  @relation("DealerAuditCycleCreator", fields: [createdById], references: [id])
+  instances DealerAuditInstance[]
+
+  @@index([periodLabel])
+  @@index([createdAt])
+}
 
 model DealerAuditInstance {
   id                  String   @id @default(uuid())
@@ -1885,14 +1909,25 @@ model DealerAuditInstance {
   maxScore            Float?
   closedAt            DateTime?
 
+  // added for audit cycles
+  cycleId    String?
+  reviewerId String?
+  dueAt      DateTime?
+  status     String    @default("DRAFT") // values live in dealerAudit.constants.ts
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   businessPartner BusinessPartner   @relation(fields: [businessPartnerId], references: [id])
-  template ChecklistTemplate @relation(fields: [checklistTemplateId], references: [id])
-  responses AuditItemResponse[]
+  template        ChecklistTemplate @relation(fields: [checklistTemplateId], references: [id])
+  cycle           DealerAuditCycle? @relation(fields: [cycleId], references: [id])
+  reviewer        User?             @relation("DealerAuditReviewer", fields: [reviewerId], references: [id])
+  responses       AuditItemResponse[]
 
   @@unique([businessPartnerId, officeType, periodLabel])
+  @@index([cycleId])
+  @@index([reviewerId, status])
+  @@index([status, dueAt])
 }
 
 model AuditItemResponse {
@@ -2252,4 +2287,85 @@ model MachineTelemetry {
   syncedAt     DateTime
 
   @@index([machineSerialNumber, syncedAt])
+}
+
+
+// ─────────────────────────────────────────────
+// CPP (CONTRACT PRICE PROCUREMENT)
+//
+// Status is a plain String on purpose (no enum): new statuses are added to
+// CPP_STATUS in cpp.constants.ts only, so there is never a migration for them.
+// Values today: DRAFT, IN_PROGRESS, CLARIFICATION_REQUESTED, PRICE_FEEDING, COMPLETED.
+// Scalars only (no @relation to existing models). Needs the sequence in
+// cpp_reference_seq.sql (run once after the migration).
+// ─────────────────────────────────────────────
+
+model CppRequest {
+  id              String    @id @default(uuid())
+  referenceNumber String    @unique
+  workspaceId     String
+  initiatedById   String
+  status          String    @default("DRAFT")
+
+  // routing — decides the approval workflow
+  category  String?
+  plant     String?
+  condition String?
+  isSpare   Boolean @default(false)
+
+  // derived from the sections on every save (listing + search); never trusted from the client
+  reasonCode   String?
+  supplierName String? // recommended supplier
+  supplierCode String?
+
+  // approval values — only the column the condition's bands read is filled
+  maxPartValue     Decimal? @db.Decimal(18, 2)
+  maxVariationPct  Decimal? @db.Decimal(9, 4)
+  annualisedValue  Decimal? @db.Decimal(18, 2)
+  annualisedImpact Decimal? @db.Decimal(18, 2)
+  actualImpact     Decimal? @db.Decimal(18, 2)
+
+  // [{ key, label, data }] — one object per wizard tab (see cpp.sections.ts)
+  sections    Json?
+  submittedAt DateTime?
+
+  attachments CppAttachment[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([workspaceId, initiatedById, status])
+  @@index([status])
+  @@index([category, plant, condition])
+}
+
+model CppAttachment {
+  id           String     @id @default(uuid())
+  requestId    String
+  request      CppRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  type         String // purchasingFile | modelImpact | zbc | ... (see cpp.constants.ts)
+  fileName     String
+  s3Key        String
+  uploadedAt   DateTime   @default(now())
+
+  @@unique([requestId, type])
+  @@index([requestId])
+}
+
+// Approval matrix: who sits in which role. scope = ALL, or KGP / DWD for plant roles.
+// The routing rules only name roles, so replacing a person is one update here.
+model CppSlotAssignment {
+  id          String   @id @default(uuid())
+  workspaceId String
+  roleKey     String // see cpp.roles.ts
+  scope       String // ALL | KGP | DWD
+  userId      String
+  position    Int      @default(0)
+  updatedById String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@unique([workspaceId, roleKey, scope, userId])
+  @@index([workspaceId, roleKey, scope])
+  @@index([userId])
 }

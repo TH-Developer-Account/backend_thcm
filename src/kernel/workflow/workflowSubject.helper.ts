@@ -25,11 +25,11 @@ import { notifyGuestOfClarification } from "@medi-claim/mediclaim.helper";
 import { runEventProposalFinalApprovalHooks } from "@map/crf/services/crfOrder.services";
 
 import {
-  Prisma,
-  WorkflowSubjectType,
-  WorkflowStatus,
-  ApprovalStatus,
-  StageStatus,
+	Prisma,
+	WorkflowSubjectType,
+	WorkflowStatus,
+	ApprovalStatus,
+	StageStatus,
 } from "../../prisma/generated/prisma/client";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -54,80 +54,88 @@ import {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ownerIdResolvers: Record<
-  WorkflowSubjectType,
-  (subjectId: string) => Promise<string | null>
+	WorkflowSubjectType,
+	(subjectId: string) => Promise<string | null>
 > = {
-  EVENT_PROPOSAL: async (subjectId) => {
-    const epc = await prisma.eventProposal.findUnique({
-      where: { id: subjectId },
-      select: { created_by_id: true },
-    });
-    return epc?.created_by_id ?? null;
-  },
-  VENDOR_ONBOARDING: async (subjectId) => {
-    const onboarding = await prisma.vendorOnboarding.findUnique({
-      where: { id: subjectId },
-      select: { initiatedById: true },
-    });
-    return onboarding?.initiatedById ?? null;
-  },
+	EVENT_PROPOSAL: async (subjectId) => {
+		const epc = await prisma.eventProposal.findUnique({
+			where: { id: subjectId },
+			select: { created_by_id: true },
+		});
+		return epc?.created_by_id ?? null;
+	},
+	VENDOR_ONBOARDING: async (subjectId) => {
+		const onboarding = await prisma.vendorOnboarding.findUnique({
+			where: { id: subjectId },
+			select: { initiatedById: true },
+		});
+		return onboarding?.initiatedById ?? null;
+	},
 
-  MEDICAL_CLAIM: async (subjectId) => {
-    const claim = await prisma.medicalClaim.findUnique({
-      where: { id: subjectId },
-      select: { initiatedById: true },
-    });
-    return claim?.initiatedById ?? null;
-  },
+	MEDICAL_CLAIM: async (subjectId) => {
+		const claim = await prisma.medicalClaim.findUnique({
+			where: { id: subjectId },
+			select: { initiatedById: true },
+		});
+		return claim?.initiatedById ?? null;
+	},
 
-  DEALER_AUDIT_INSTANCE: async (subjectId) => {
-    const audit = await prisma.dealerAuditInstance.findUnique({
-      where: { id: subjectId },
-      select: { businessPartnerId: true },
-    });
-    if (!audit) return null;
+	DEALER_AUDIT_INSTANCE: async (subjectId) => {
+		const audit = await prisma.dealerAuditInstance.findUnique({
+			where: { id: subjectId },
+			select: { businessPartnerId: true },
+		});
+		if (!audit) return null;
 
-    // DealerAuditInstance belongs to a BusinessPartner, not a single User
-    // (a dealership can have several linked Users) — its "owner" for this
-    // generic guard is the dealership's designated primary contact.
-    // Duplicated inline rather than imported from dealerAudit.service.ts's
-    // getPrimaryContactUser, matching this file's existing boundary of not
-    // depending on app-specific service modules.
-    const primaryContact = await prisma.user.findFirst({
-      where: {
-        businessPartnerId: audit.businessPartnerId,
-        isDefaultContact: true,
-        is_active: true,
-      },
-      select: { id: true },
-    });
-    return primaryContact?.id ?? null;
-  },
+		// DealerAuditInstance belongs to a BusinessPartner, not a single User
+		// (a dealership can have several linked Users) — its "owner" for this
+		// generic guard is the dealership's designated primary contact.
+		// Duplicated inline rather than imported from dealerAudit.service.ts's
+		// getPrimaryContactUser, matching this file's existing boundary of not
+		// depending on app-specific service modules.
+		const primaryContact = await prisma.user.findFirst({
+			where: {
+				businessPartnerId: audit.businessPartnerId,
+				isDefaultContact: true,
+				is_active: true,
+			},
+			select: { id: true },
+		});
+		return primaryContact?.id ?? null;
+	},
 
-  FACTORY_AUDIT_INSTANCE: async (subjectId) => {
-    const audit = await prisma.factoryAuditInstance.findUnique({
-      where: { id: subjectId },
-      select: { createdByUserId: true },
-    });
-    return audit?.createdByUserId ?? null;
-  },
+	FACTORY_AUDIT_INSTANCE: async (subjectId) => {
+		const audit = await prisma.factoryAuditInstance.findUnique({
+			where: { id: subjectId },
+			select: { createdByUserId: true },
+		});
+		return audit?.createdByUserId ?? null;
+	},
+
+	CPP_REQUEST: async (subjectId) => {
+		const row = await prisma.cppRequest.findUnique({
+			where: { id: subjectId },
+			select: { initiatedById: true },
+		});
+		return row?.initiatedById ?? null;
+	},
 };
 
 export async function getSubjectOwnerId(
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
 ): Promise<string> {
-  const resolver = ownerIdResolvers[subjectType];
-  if (!resolver) {
-    throw new ApiError(400, `Unknown workflow subject type "${subjectType}"`);
-  }
+	const resolver = ownerIdResolvers[subjectType];
+	if (!resolver) {
+		throw new ApiError(400, `Unknown workflow subject type "${subjectType}"`);
+	}
 
-  const ownerId = await resolver(subjectId);
-  if (!ownerId) {
-    throw new ApiError(404, `${subjectType} not found for id "${subjectId}"`);
-  }
+	const ownerId = await resolver(subjectId);
+	if (!ownerId) {
+		throw new ApiError(404, `${subjectType} not found for id "${subjectId}"`);
+	}
 
-  return ownerId;
+	return ownerId;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -144,51 +152,54 @@ export async function getSubjectOwnerId(
 // ─────────────────────────────────────────────────────────────────────────────
 
 const subjectResolvers: Record<
-  WorkflowSubjectType,
-  (subjectId: string) => Promise<Record<string, unknown> | null>
+	WorkflowSubjectType,
+	(subjectId: string) => Promise<Record<string, unknown> | null>
 > = {
-  EVENT_PROPOSAL: (subjectId) =>
-    prisma.eventProposal.findUnique({ where: { id: subjectId } }),
+	EVENT_PROPOSAL: (subjectId) =>
+		prisma.eventProposal.findUnique({ where: { id: subjectId } }),
 
-  VENDOR_ONBOARDING: (subjectId) =>
-    prisma.vendorOnboarding.findUnique({ where: { id: subjectId } }),
+	VENDOR_ONBOARDING: (subjectId) =>
+		prisma.vendorOnboarding.findUnique({ where: { id: subjectId } }),
 
-  MEDICAL_CLAIM: (subjectId) =>
-    prisma.medicalClaim.findUnique({ where: { id: subjectId } }),
+	MEDICAL_CLAIM: (subjectId) =>
+		prisma.medicalClaim.findUnique({ where: { id: subjectId } }),
 
-  DEALER_AUDIT_INSTANCE: (subjectId) =>
-    prisma.dealerAuditInstance.findUnique({ where: { id: subjectId } }),
+	DEALER_AUDIT_INSTANCE: (subjectId) =>
+		prisma.dealerAuditInstance.findUnique({ where: { id: subjectId } }),
 
-  FACTORY_AUDIT_INSTANCE: (subjectId) =>
-    prisma.factoryAuditInstance.findUnique({ where: { id: subjectId } }),
+	FACTORY_AUDIT_INSTANCE: (subjectId) =>
+		prisma.factoryAuditInstance.findUnique({ where: { id: subjectId } }),
+
+	CPP_REQUEST: (subjectId) =>
+		prisma.cppRequest.findUnique({ where: { id: subjectId } }),
 };
 
 export async function findSubjectById(
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
 ): Promise<Record<string, unknown>> {
-  const resolver = subjectResolvers[subjectType];
-  if (!resolver) {
-    throw new ApiError(400, `Unknown workflow subject type "${subjectType}"`);
-  }
+	const resolver = subjectResolvers[subjectType];
+	if (!resolver) {
+		throw new ApiError(400, `Unknown workflow subject type "${subjectType}"`);
+	}
 
-  const subject = await resolver(subjectId);
-  if (!subject) {
-    throw new ApiError(404, `${subjectType} not found for id "${subjectId}"`);
-  }
+	const subject = await resolver(subjectId);
+	if (!subject) {
+		throw new ApiError(404, `${subjectType} not found for id "${subjectId}"`);
+	}
 
-  return subject;
+	return subject;
 }
 
 export async function getActiveWorkflowForSubject(
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
 ) {
-  return prisma.workflowInstance.findFirst({
-    where: { subjectType, subjectId, isActive: true },
-    orderBy: { created_at: "desc" },
-    include: activeWorkflowInclude,
-  });
+	return prisma.workflowInstance.findFirst({
+		where: { subjectType, subjectId, isActive: true },
+		orderBy: { created_at: "desc" },
+		include: activeWorkflowInclude,
+	});
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -208,31 +219,34 @@ export async function getActiveWorkflowForSubject(
 type Tx = Prisma.TransactionClient;
 
 const statusUpdaters: Record<
-  WorkflowSubjectType,
-  (tx: Tx, subjectId: string, status: string) => Promise<unknown>
+	WorkflowSubjectType,
+	(tx: Tx, subjectId: string, status: string) => Promise<unknown>
 > = {
-  EVENT_PROPOSAL: (tx, subjectId, status) =>
-    tx.eventProposal.update({ where: { id: subjectId }, data: { status } }),
+	EVENT_PROPOSAL: (tx, subjectId, status) =>
+		tx.eventProposal.update({ where: { id: subjectId }, data: { status } }),
 
-  VENDOR_ONBOARDING: (tx, subjectId, status) =>
-    tx.vendorOnboarding.update({ where: { id: subjectId }, data: { status } }),
+	VENDOR_ONBOARDING: (tx, subjectId, status) =>
+		tx.vendorOnboarding.update({ where: { id: subjectId }, data: { status } }),
 
-  MEDICAL_CLAIM: (tx, subjectId, status) =>
-    tx.medicalClaim.update({ where: { id: subjectId }, data: { status } }),
+	MEDICAL_CLAIM: (tx, subjectId, status) =>
+		tx.medicalClaim.update({ where: { id: subjectId }, data: { status } }),
 
-  DEALER_AUDIT_INSTANCE: async () => undefined,
-  FACTORY_AUDIT_INSTANCE: async () => undefined,
+	DEALER_AUDIT_INSTANCE: async () => undefined,
+	FACTORY_AUDIT_INSTANCE: async () => undefined,
+
+	CPP_REQUEST: (tx, subjectId, status) =>
+		tx.cppRequest.update({ where: { id: subjectId }, data: { status } }),
 };
 
 export async function updateSubjectStatus(
-  tx: Tx,
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
-  status: string,
+	tx: Tx,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
+	status: string,
 ): Promise<void> {
-  const updater = statusUpdaters[subjectType];
-  if (!updater) return; // unwired subject type — no-op, same as commented-out AUDIT_INSTANCE branches above
-  await updater(tx, subjectId, status);
+	const updater = statusUpdaters[subjectType];
+	if (!updater) return; // unwired subject type — no-op, same as commented-out AUDIT_INSTANCE branches above
+	await updater(tx, subjectId, status);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -264,32 +278,33 @@ export async function updateSubjectStatus(
 // ─────────────────────────────────────────────────────────────────────────────
 
 const clarifyResetStatus: Record<WorkflowSubjectType, string> = {
-  EVENT_PROPOSAL: "PENDING",
-  VENDOR_ONBOARDING: "IN_REVIEW",
-  MEDICAL_CLAIM: "CLARIFICATION_REQUESTED",
-  DEALER_AUDIT_INSTANCE: "PENDING",
-  FACTORY_AUDIT_INSTANCE: "PENDING", // UNVERIFIED — see comment above
+	EVENT_PROPOSAL: "PENDING",
+	VENDOR_ONBOARDING: "IN_REVIEW",
+	MEDICAL_CLAIM: "CLARIFICATION_REQUESTED",
+	DEALER_AUDIT_INSTANCE: "PENDING",
+	FACTORY_AUDIT_INSTANCE: "PENDING", // UNVERIFIED — see comment above
+	CPP_REQUEST: "CLARIFICATION_REQUESTED",
 };
 
 export function getClarifyResetStatus(
-  subjectType: WorkflowSubjectType,
+	subjectType: WorkflowSubjectType,
 ): string {
-  return clarifyResetStatus[subjectType] ?? "PENDING";
+	return clarifyResetStatus[subjectType] ?? "PENDING";
 }
 
 const postClarifyHooks: Partial<
-  Record<WorkflowSubjectType, (tx: Tx, subjectId: string) => Promise<void>>
+	Record<WorkflowSubjectType, (tx: Tx, subjectId: string) => Promise<void>>
 > = {
-  MEDICAL_CLAIM: (tx, subjectId) => notifyGuestOfClarification(tx, subjectId),
+	MEDICAL_CLAIM: (tx, subjectId) => notifyGuestOfClarification(tx, subjectId),
 };
 
 export async function runPostClarifyHook(
-  tx: Tx,
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
+	tx: Tx,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
 ): Promise<void> {
-  const hook = postClarifyHooks[subjectType];
-  if (hook) await hook(tx, subjectId);
+	const hook = postClarifyHooks[subjectType];
+	if (hook) await hook(tx, subjectId);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -315,44 +330,44 @@ export async function runPostClarifyHook(
 // ─────────────────────────────────────────────────────────────────────────────
 
 const preApprovalValidators: Partial<
-  Record<WorkflowSubjectType, (subjectId: string) => Promise<void>>
+	Record<WorkflowSubjectType, (subjectId: string) => Promise<void>>
 > = {
-  DEALER_AUDIT_INSTANCE: async (subjectId) => {
-    // AuditItemResponse keeps one row per round now (never overwritten),
-    // so a flat count of reviewStatus != APPROVED would wrongly include
-    // old, already-superseded rounds forever. Only the latest iteration
-    // per item reflects current state — mirrors dealerAudit.service.ts's
-    // pickLatestPerItem; duplicated here rather than imported, since this
-    // shared kernel file shouldn't depend on a specific app's module.
-    const responses = await prisma.auditItemResponse.findMany({
-      where: { auditInstanceId: subjectId },
-      select: { itemId: true, iteration: true, reviewStatus: true },
-    });
-    const latestByItem = new Map<string, (typeof responses)[number]>();
-    for (const response of responses) {
-      const current = latestByItem.get(response.itemId);
-      if (!current || response.iteration > current.iteration) {
-        latestByItem.set(response.itemId, response);
-      }
-    }
-    const unresolved = [...latestByItem.values()].filter(
-      (r) => r.reviewStatus !== "APPROVED",
-    ).length;
-    if (unresolved > 0) {
-      throw new ApiError(
-        400,
-        `${unresolved} item(s) still need a review decision before this can be approved`,
-      );
-    }
-  },
+	DEALER_AUDIT_INSTANCE: async (subjectId) => {
+		// AuditItemResponse keeps one row per round now (never overwritten),
+		// so a flat count of reviewStatus != APPROVED would wrongly include
+		// old, already-superseded rounds forever. Only the latest iteration
+		// per item reflects current state — mirrors dealerAudit.service.ts's
+		// pickLatestPerItem; duplicated here rather than imported, since this
+		// shared kernel file shouldn't depend on a specific app's module.
+		const responses = await prisma.auditItemResponse.findMany({
+			where: { auditInstanceId: subjectId },
+			select: { itemId: true, iteration: true, reviewStatus: true },
+		});
+		const latestByItem = new Map<string, (typeof responses)[number]>();
+		for (const response of responses) {
+			const current = latestByItem.get(response.itemId);
+			if (!current || response.iteration > current.iteration) {
+				latestByItem.set(response.itemId, response);
+			}
+		}
+		const unresolved = [...latestByItem.values()].filter(
+			(r) => r.reviewStatus !== "APPROVED",
+		).length;
+		if (unresolved > 0) {
+			throw new ApiError(
+				400,
+				`${unresolved} item(s) still need a review decision before this can be approved`,
+			);
+		}
+	},
 };
 
 export async function runPreApprovalValidation(
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
 ): Promise<void> {
-  const validator = preApprovalValidators[subjectType];
-  if (validator) await validator(subjectId);
+	const validator = preApprovalValidators[subjectType];
+	if (validator) await validator(subjectId);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -391,21 +406,21 @@ export async function runPreApprovalValidation(
 // ─────────────────────────────────────────────────────────────────────────────
 
 const postFinalApprovalHooks: Partial<
-  Record<
-    WorkflowSubjectType,
-    (subjectId: string) => Promise<Record<string, unknown>>
-  >
+	Record<
+		WorkflowSubjectType,
+		(subjectId: string) => Promise<Record<string, unknown>>
+	>
 > = {
-  EVENT_PROPOSAL: (subjectId) => runEventProposalFinalApprovalHooks(subjectId),
+	EVENT_PROPOSAL: (subjectId) => runEventProposalFinalApprovalHooks(subjectId),
 };
 
 export async function runPostFinalApprovalHook(
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
 ): Promise<Record<string, unknown>> {
-  const hook = postFinalApprovalHooks[subjectType];
-  if (!hook) return {};
-  return hook(subjectId);
+	const hook = postFinalApprovalHooks[subjectType];
+	if (!hook) return {};
+	return hook(subjectId);
 }
 
 // Subject-specific action name + status for the "resubmitted" transition —
@@ -418,172 +433,174 @@ export async function runPostFinalApprovalHook(
 // approve-only chain, resubmit path unused until Reject/Clarify semantics
 // are defined. DEALER_AUDIT_INSTANCE's is real and correct.
 const resubmitActionBySubjectType: Record<WorkflowSubjectType, string> = {
-  EVENT_PROPOSAL: "EPC_RESUBMITTED",
-  VENDOR_ONBOARDING: "VENDOR_FORM_SUBMITTED",
-  MEDICAL_CLAIM: "MEDICAL_CLAIM_RESUBMITTED",
-  DEALER_AUDIT_INSTANCE: "DEALER_AUDIT_RESUBMITTED",
-  FACTORY_AUDIT_INSTANCE: "FACTORY_AUDIT_RESUBMITTED", // UNVERIFIED PLACEHOLDER — see note above
+	EVENT_PROPOSAL: "EPC_RESUBMITTED",
+	VENDOR_ONBOARDING: "VENDOR_FORM_SUBMITTED",
+	MEDICAL_CLAIM: "MEDICAL_CLAIM_RESUBMITTED",
+	DEALER_AUDIT_INSTANCE: "DEALER_AUDIT_RESUBMITTED",
+	FACTORY_AUDIT_INSTANCE: "FACTORY_AUDIT_RESUBMITTED", // UNVERIFIED PLACEHOLDER — see note above
+	CPP_REQUEST: "CPP_RESUBMITTED",
 };
 
 const resubmitStatusBySubjectType: Record<WorkflowSubjectType, string> = {
-  EVENT_PROPOSAL: "Resubmitted",
-  VENDOR_ONBOARDING: "IN_PROGRESS",
-  MEDICAL_CLAIM: "IN_PROGRESS",
-  DEALER_AUDIT_INSTANCE: "IN_PROGRESS",
-  FACTORY_AUDIT_INSTANCE: "IN_PROGRESS", // UNVERIFIED — see note above
+	EVENT_PROPOSAL: "Resubmitted",
+	VENDOR_ONBOARDING: "IN_PROGRESS",
+	MEDICAL_CLAIM: "IN_PROGRESS",
+	DEALER_AUDIT_INSTANCE: "IN_PROGRESS",
+	FACTORY_AUDIT_INSTANCE: "IN_PROGRESS", // UNVERIFIED — see note above
+	CPP_REQUEST: "IN_PROGRESS",
 };
 
 export function getResubmitAction(subjectType: WorkflowSubjectType): string {
-  return resubmitActionBySubjectType[subjectType];
+	return resubmitActionBySubjectType[subjectType];
 }
 
 export function getResubmitStatus(subjectType: WorkflowSubjectType): string {
-  return resubmitStatusBySubjectType[subjectType];
+	return resubmitStatusBySubjectType[subjectType];
 }
 
 // workflowSubject.helper.ts — new export
 export async function getCurrentStageApprovalOrThrow(
-  userId: string,
-  subjectType: WorkflowSubjectType,
-  subjectId: string,
+	userId: string,
+	subjectType: WorkflowSubjectType,
+	subjectId: string,
 ): Promise<{ workflowInstanceId: string; stageId: string }> {
-  const activeWorkflow = await prisma.workflowInstance.findFirst({
-    where: { subjectType, subjectId, isActive: true },
-    select: { id: true },
-  });
-  if (!activeWorkflow) {
-    throw new ApiError(404, "No active workflow found for this record");
-  }
+	const activeWorkflow = await prisma.workflowInstance.findFirst({
+		where: { subjectType, subjectId, isActive: true },
+		select: { id: true },
+	});
+	if (!activeWorkflow) {
+		throw new ApiError(404, "No active workflow found for this record");
+	}
 
-  const approval = await prisma.approval.findFirst({
-    where: {
-      approverId: userId,
-      isExternalApprover: false,
-      stage: {
-        workflowId: activeWorkflow.id,
-        isCurrentIteration: true,
-        status: "IN_PROGRESS",
-      },
-    },
-    select: { stageId: true },
-  });
-  if (!approval) {
-    throw new ApiError(
-      403,
-      "You are not authorized to act on this record's current stage",
-    );
-  }
+	const approval = await prisma.approval.findFirst({
+		where: {
+			approverId: userId,
+			isExternalApprover: false,
+			stage: {
+				workflowId: activeWorkflow.id,
+				isCurrentIteration: true,
+				status: "IN_PROGRESS",
+			},
+		},
+		select: { stageId: true },
+	});
+	if (!approval) {
+		throw new ApiError(
+			403,
+			"You are not authorized to act on this record's current stage",
+		);
+	}
 
-  return { workflowInstanceId: activeWorkflow.id, stageId: approval.stageId };
+	return { workflowInstanceId: activeWorkflow.id, stageId: approval.stageId };
 }
 
 export type PendingOn =
-  | { role: "NONE"; outcome: "APPROVED" | "REJECTED" }
-  | { role: "PROPOSER" }
-  | { role: "VENDOR" }
-  | { role: "GUEST" }
-  | { role: "APPROVER"; approvers: { id: string; name: string }[] };
+	| { role: "NONE"; outcome: "APPROVED" | "REJECTED" }
+	| { role: "PROPOSER" }
+	| { role: "VENDOR" }
+	| { role: "GUEST" }
+	| { role: "APPROVER"; approvers: { id: string; name: string }[] };
 
 type PendingOnApproval = {
-  status: ApprovalStatus;
-  approver: { id: string; first_name: string; last_name: string };
+	status: ApprovalStatus;
+	approver: { id: string; first_name: string; last_name: string };
 };
 
 type PendingOnStage = {
-  status: StageStatus;
-  approvals: PendingOnApproval[];
+	status: StageStatus;
+	approvals: PendingOnApproval[];
 };
 
 type PendingOnWorkflow = {
-  status: WorkflowStatus;
-  stages: PendingOnStage[];
+	status: WorkflowStatus;
+	stages: PendingOnStage[];
 };
 
 function isAwaitingProposer(currentStage: PendingOnStage | undefined): boolean {
-  return (
-    currentStage?.status === "IN_PROGRESS" &&
-    currentStage.approvals.length === 0
-  );
+	return (
+		currentStage?.status === "IN_PROGRESS" &&
+		currentStage.approvals.length === 0
+	);
 }
 
 export function computePendingOn(
-  workflow: PendingOnWorkflow | null,
+	workflow: PendingOnWorkflow | null,
 ): PendingOn {
-  if (!workflow) return { role: "PROPOSER" };
-  if (workflow.status === "APPROVED" || workflow.status === "REJECTED") {
-    return { role: "NONE", outcome: workflow.status };
-  }
+	if (!workflow) return { role: "PROPOSER" };
+	if (workflow.status === "APPROVED" || workflow.status === "REJECTED") {
+		return { role: "NONE", outcome: workflow.status };
+	}
 
-  const currentStage = workflow.stages.find((s) => s.status === "IN_PROGRESS");
-  if (isAwaitingProposer(currentStage)) return { role: "PROPOSER" };
+	const currentStage = workflow.stages.find((s) => s.status === "IN_PROGRESS");
+	if (isAwaitingProposer(currentStage)) return { role: "PROPOSER" };
 
-  const pendingApprovals =
-    currentStage?.approvals.filter((a) => a.status === "PENDING") ?? [];
+	const pendingApprovals =
+		currentStage?.approvals.filter((a) => a.status === "PENDING") ?? [];
 
-  return {
-    role: "APPROVER",
-    approvers: pendingApprovals.map((a) => ({
-      id: a.approver.id,
-      name: `${a.approver.first_name} ${a.approver.last_name}`,
-    })),
-  };
+	return {
+		role: "APPROVER",
+		approvers: pendingApprovals.map((a) => ({
+			id: a.approver.id,
+			name: `${a.approver.first_name} ${a.approver.last_name}`,
+		})),
+	};
 }
 
 // Batched — one query for every subject id on a page, instead of N calls.
 export async function getPendingOnForMany(
-  subjectType: WorkflowSubjectType,
-  subjectIds: string[],
+	subjectType: WorkflowSubjectType,
+	subjectIds: string[],
 ): Promise<Record<string, PendingOn>> {
-  if (subjectIds.length === 0) return {};
+	if (subjectIds.length === 0) return {};
 
-  const workflows = await prisma.workflowInstance.findMany({
-    where: { subjectType, subjectId: { in: subjectIds }, isActive: true },
-    select: {
-      subjectId: true,
-      status: true,
-      stages: {
-        where: { isCurrentIteration: true, status: "IN_PROGRESS" },
-        select: {
-          status: true,
-          approvals: {
-            where: { status: "PENDING" },
-            select: {
-              status: true,
-              approver: {
-                select: { id: true, first_name: true, last_name: true },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
+	const workflows = await prisma.workflowInstance.findMany({
+		where: { subjectType, subjectId: { in: subjectIds }, isActive: true },
+		select: {
+			subjectId: true,
+			status: true,
+			stages: {
+				where: { isCurrentIteration: true, status: "IN_PROGRESS" },
+				select: {
+					status: true,
+					approvals: {
+						where: { status: "PENDING" },
+						select: {
+							status: true,
+							approver: {
+								select: { id: true, first_name: true, last_name: true },
+							},
+						},
+					},
+				},
+			},
+		},
+	});
 
-  const bySubjectId = new Map(workflows.map((w) => [w.subjectId, w]));
-  return Object.fromEntries(
-    subjectIds.map((id) => [id, computePendingOn(bySubjectId.get(id) ?? null)]),
-  );
+	const bySubjectId = new Map(workflows.map((w) => [w.subjectId, w]));
+	return Object.fromEntries(
+		subjectIds.map((id) => [id, computePendingOn(bySubjectId.get(id) ?? null)]),
+	);
 }
 
 export function resolveVendorOnboardingPendingOn(
-  status: string,
-  workflowBasedPendingOn: PendingOn,
+	status: string,
+	workflowBasedPendingOn: PendingOn,
 ): PendingOn {
-  return status === "AWAITING_VENDOR"
-    ? { role: "VENDOR" }
-    : workflowBasedPendingOn;
+	return status === "AWAITING_VENDOR"
+		? { role: "VENDOR" }
+		: workflowBasedPendingOn;
 }
 
 const GUEST_TURN_STATUSES = new Set([
-  "AWAITING_EX_EMPLOYEE",
-  "CLARIFICATION_REQUESTED",
+	"AWAITING_EX_EMPLOYEE",
+	"CLARIFICATION_REQUESTED",
 ]);
 
 export function resolveMedicalClaimPendingOn(
-  status: string,
-  workflowBasedPendingOn: PendingOn,
+	status: string,
+	workflowBasedPendingOn: PendingOn,
 ): PendingOn {
-  return GUEST_TURN_STATUSES.has(status)
-    ? { role: "GUEST" }
-    : workflowBasedPendingOn;
+	return GUEST_TURN_STATUSES.has(status)
+		? { role: "GUEST" }
+		: workflowBasedPendingOn;
 }

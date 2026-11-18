@@ -445,6 +445,7 @@ export const ModelName = {
   ChecklistTemplate: 'ChecklistTemplate',
   ChecklistItem: 'ChecklistItem',
   ChecklistScoreLevel: 'ChecklistScoreLevel',
+  DealerAuditCycle: 'DealerAuditCycle',
   DealerAuditInstance: 'DealerAuditInstance',
   AuditItemResponse: 'AuditItemResponse',
   FactoryAuditTemplate: 'FactoryAuditTemplate',
@@ -463,7 +464,10 @@ export const ModelName = {
   MachineStudy: 'MachineStudy',
   MachineStudyCycle: 'MachineStudyCycle',
   Machine: 'Machine',
-  MachineTelemetry: 'MachineTelemetry'
+  MachineTelemetry: 'MachineTelemetry',
+  CppRequest: 'CppRequest',
+  CppAttachment: 'CppAttachment',
+  CppSlotAssignment: 'CppSlotAssignment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -479,7 +483,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "zone" | "branch" | "budgetMaster" | "eventName" | "division" | "designation" | "costCenter" | "productMaster" | "ePF" | "cRF" | "crfItem" | "crfOrder" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "gradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact" | "evidence" | "supplier" | "checklistTemplate" | "checklistItem" | "checklistScoreLevel" | "dealerAuditInstance" | "auditItemResponse" | "factoryAuditTemplate" | "factoryAuditSection" | "factoryAuditCheckpoint" | "checkpointRubricLevel" | "factoryClassificationBand" | "factoryAuditInstance" | "auditRound" | "auditRoundCheckpointScope" | "auditAssignment" | "auditAssignmentCheckpoint" | "auditResponse" | "auditCheckpointResult" | "vendorClassificationHistory" | "machineStudy" | "machineStudyCycle" | "machine" | "machineTelemetry"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "zone" | "branch" | "budgetMaster" | "eventName" | "division" | "designation" | "costCenter" | "productMaster" | "ePF" | "cRF" | "crfItem" | "crfOrder" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "gradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact" | "evidence" | "supplier" | "checklistTemplate" | "checklistItem" | "checklistScoreLevel" | "dealerAuditCycle" | "dealerAuditInstance" | "auditItemResponse" | "factoryAuditTemplate" | "factoryAuditSection" | "factoryAuditCheckpoint" | "checkpointRubricLevel" | "factoryClassificationBand" | "factoryAuditInstance" | "auditRound" | "auditRoundCheckpointScope" | "auditAssignment" | "auditAssignmentCheckpoint" | "auditResponse" | "auditCheckpointResult" | "vendorClassificationHistory" | "machineStudy" | "machineStudyCycle" | "machine" | "machineTelemetry" | "cppRequest" | "cppAttachment" | "cppSlotAssignment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4997,6 +5001,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    DealerAuditCycle: {
+      payload: Prisma.$DealerAuditCyclePayload<ExtArgs>
+      fields: Prisma.DealerAuditCycleFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DealerAuditCycleFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DealerAuditCyclePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DealerAuditCycleFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DealerAuditCyclePayload>
+        }
+        findFirst: {
+          args: Prisma.DealerAuditCycleFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DealerAuditCyclePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DealerAuditCycleFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DealerAuditCyclePayload>
+        }
+        findMany: {
+          args: Prisma.DealerAuditCycleFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DealerAuditCyclePayload>[]
+        }
+        create: {
+          args: Prisma.DealerAuditCycleCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DealerAuditCyclePayload>
+        }
+        createMany: {
+          args: Prisma.DealerAuditCycleCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DealerAuditCycleCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DealerAuditCyclePayload>[]
+        }
+        delete: {
+          args: Prisma.DealerAuditCycleDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DealerAuditCyclePayload>
+        }
+        update: {
+          args: Prisma.DealerAuditCycleUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DealerAuditCyclePayload>
+        }
+        deleteMany: {
+          args: Prisma.DealerAuditCycleDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DealerAuditCycleUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DealerAuditCycleUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DealerAuditCyclePayload>[]
+        }
+        upsert: {
+          args: Prisma.DealerAuditCycleUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DealerAuditCyclePayload>
+        }
+        aggregate: {
+          args: Prisma.DealerAuditCycleAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDealerAuditCycle>
+        }
+        groupBy: {
+          args: Prisma.DealerAuditCycleGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DealerAuditCycleGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DealerAuditCycleCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DealerAuditCycleCountAggregateOutputType> | number
+        }
+      }
+    }
     DealerAuditInstance: {
       payload: Prisma.$DealerAuditInstancePayload<ExtArgs>
       fields: Prisma.DealerAuditInstanceFieldRefs
@@ -6403,6 +6481,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CppRequest: {
+      payload: Prisma.$CppRequestPayload<ExtArgs>
+      fields: Prisma.CppRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CppRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CppRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.CppRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CppRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppRequestPayload>
+        }
+        findMany: {
+          args: Prisma.CppRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppRequestPayload>[]
+        }
+        create: {
+          args: Prisma.CppRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppRequestPayload>
+        }
+        createMany: {
+          args: Prisma.CppRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CppRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.CppRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppRequestPayload>
+        }
+        update: {
+          args: Prisma.CppRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.CppRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CppRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CppRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.CppRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.CppRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCppRequest>
+        }
+        groupBy: {
+          args: Prisma.CppRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CppRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CppRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CppRequestCountAggregateOutputType> | number
+        }
+      }
+    }
+    CppAttachment: {
+      payload: Prisma.$CppAttachmentPayload<ExtArgs>
+      fields: Prisma.CppAttachmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CppAttachmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppAttachmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CppAttachmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppAttachmentPayload>
+        }
+        findFirst: {
+          args: Prisma.CppAttachmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppAttachmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CppAttachmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppAttachmentPayload>
+        }
+        findMany: {
+          args: Prisma.CppAttachmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppAttachmentPayload>[]
+        }
+        create: {
+          args: Prisma.CppAttachmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppAttachmentPayload>
+        }
+        createMany: {
+          args: Prisma.CppAttachmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CppAttachmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppAttachmentPayload>[]
+        }
+        delete: {
+          args: Prisma.CppAttachmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppAttachmentPayload>
+        }
+        update: {
+          args: Prisma.CppAttachmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppAttachmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.CppAttachmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CppAttachmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CppAttachmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppAttachmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.CppAttachmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppAttachmentPayload>
+        }
+        aggregate: {
+          args: Prisma.CppAttachmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCppAttachment>
+        }
+        groupBy: {
+          args: Prisma.CppAttachmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CppAttachmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CppAttachmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CppAttachmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    CppSlotAssignment: {
+      payload: Prisma.$CppSlotAssignmentPayload<ExtArgs>
+      fields: Prisma.CppSlotAssignmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CppSlotAssignmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppSlotAssignmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CppSlotAssignmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppSlotAssignmentPayload>
+        }
+        findFirst: {
+          args: Prisma.CppSlotAssignmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppSlotAssignmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CppSlotAssignmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppSlotAssignmentPayload>
+        }
+        findMany: {
+          args: Prisma.CppSlotAssignmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppSlotAssignmentPayload>[]
+        }
+        create: {
+          args: Prisma.CppSlotAssignmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppSlotAssignmentPayload>
+        }
+        createMany: {
+          args: Prisma.CppSlotAssignmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CppSlotAssignmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppSlotAssignmentPayload>[]
+        }
+        delete: {
+          args: Prisma.CppSlotAssignmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppSlotAssignmentPayload>
+        }
+        update: {
+          args: Prisma.CppSlotAssignmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppSlotAssignmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.CppSlotAssignmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CppSlotAssignmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CppSlotAssignmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppSlotAssignmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.CppSlotAssignmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CppSlotAssignmentPayload>
+        }
+        aggregate: {
+          args: Prisma.CppSlotAssignmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCppSlotAssignment>
+        }
+        groupBy: {
+          args: Prisma.CppSlotAssignmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CppSlotAssignmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CppSlotAssignmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CppSlotAssignmentCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -7473,6 +7773,23 @@ export const ChecklistScoreLevelScalarFieldEnum = {
 export type ChecklistScoreLevelScalarFieldEnum = (typeof ChecklistScoreLevelScalarFieldEnum)[keyof typeof ChecklistScoreLevelScalarFieldEnum]
 
 
+export const DealerAuditCycleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  checklistTemplateId: 'checklistTemplateId',
+  periodType: 'periodType',
+  periodYear: 'periodYear',
+  periodQuarter: 'periodQuarter',
+  periodLabel: 'periodLabel',
+  dueAt: 'dueAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DealerAuditCycleScalarFieldEnum = (typeof DealerAuditCycleScalarFieldEnum)[keyof typeof DealerAuditCycleScalarFieldEnum]
+
+
 export const DealerAuditInstanceScalarFieldEnum = {
   id: 'id',
   businessPartnerId: 'businessPartnerId',
@@ -7483,6 +7800,10 @@ export const DealerAuditInstanceScalarFieldEnum = {
   finalScore: 'finalScore',
   maxScore: 'maxScore',
   closedAt: 'closedAt',
+  cycleId: 'cycleId',
+  reviewerId: 'reviewerId',
+  dueAt: 'dueAt',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -7733,6 +8054,60 @@ export const MachineTelemetryScalarFieldEnum = {
 } as const
 
 export type MachineTelemetryScalarFieldEnum = (typeof MachineTelemetryScalarFieldEnum)[keyof typeof MachineTelemetryScalarFieldEnum]
+
+
+export const CppRequestScalarFieldEnum = {
+  id: 'id',
+  referenceNumber: 'referenceNumber',
+  workspaceId: 'workspaceId',
+  initiatedById: 'initiatedById',
+  status: 'status',
+  category: 'category',
+  plant: 'plant',
+  condition: 'condition',
+  isSpare: 'isSpare',
+  reasonCode: 'reasonCode',
+  supplierName: 'supplierName',
+  supplierCode: 'supplierCode',
+  maxPartValue: 'maxPartValue',
+  maxVariationPct: 'maxVariationPct',
+  annualisedValue: 'annualisedValue',
+  annualisedImpact: 'annualisedImpact',
+  actualImpact: 'actualImpact',
+  sections: 'sections',
+  submittedAt: 'submittedAt',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CppRequestScalarFieldEnum = (typeof CppRequestScalarFieldEnum)[keyof typeof CppRequestScalarFieldEnum]
+
+
+export const CppAttachmentScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  type: 'type',
+  fileName: 'fileName',
+  s3Key: 's3Key',
+  uploadedAt: 'uploadedAt'
+} as const
+
+export type CppAttachmentScalarFieldEnum = (typeof CppAttachmentScalarFieldEnum)[keyof typeof CppAttachmentScalarFieldEnum]
+
+
+export const CppSlotAssignmentScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  roleKey: 'roleKey',
+  scope: 'scope',
+  userId: 'userId',
+  position: 'position',
+  updatedById: 'updatedById',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CppSlotAssignmentScalarFieldEnum = (typeof CppSlotAssignmentScalarFieldEnum)[keyof typeof CppSlotAssignmentScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -8540,6 +8915,7 @@ export type GlobalOmitConfig = {
   checklistTemplate?: Prisma.ChecklistTemplateOmit
   checklistItem?: Prisma.ChecklistItemOmit
   checklistScoreLevel?: Prisma.ChecklistScoreLevelOmit
+  dealerAuditCycle?: Prisma.DealerAuditCycleOmit
   dealerAuditInstance?: Prisma.DealerAuditInstanceOmit
   auditItemResponse?: Prisma.AuditItemResponseOmit
   factoryAuditTemplate?: Prisma.FactoryAuditTemplateOmit
@@ -8559,6 +8935,9 @@ export type GlobalOmitConfig = {
   machineStudyCycle?: Prisma.MachineStudyCycleOmit
   machine?: Prisma.MachineOmit
   machineTelemetry?: Prisma.MachineTelemetryOmit
+  cppRequest?: Prisma.CppRequestOmit
+  cppAttachment?: Prisma.CppAttachmentOmit
+  cppSlotAssignment?: Prisma.CppSlotAssignmentOmit
 }
 
 /* Types for Logging */

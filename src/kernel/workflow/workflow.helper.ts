@@ -1,9 +1,9 @@
 import { prisma } from "@shared/config/prisma";
 import {
-  StageStatus,
-  ApprovalStatus,
-  Prisma,
-  WorkflowSubjectType,
+	StageStatus,
+	ApprovalStatus,
+	Prisma,
+	WorkflowSubjectType,
 } from "../../prisma/generated/prisma/client";
 import ApiError from "@shared/utils/apiError";
 import { budgetMap } from "@shared/utils/contants";
@@ -28,14 +28,14 @@ import { budgetMap } from "@shared/utils/contants";
 type Tx = Prisma.TransactionClient;
 
 export const evaluateBudget = (
-  selectedValue: string,
-  actualValue: number,
+	selectedValue: string,
+	actualValue: number,
 ): boolean => {
-  const range = budgetMap[selectedValue];
-  if (!range) return false;
-  const { min, max } = range;
-  if (max === null) return actualValue >= min;
-  return actualValue >= min && actualValue <= max;
+	const range = budgetMap[selectedValue];
+	if (!range) return false;
+	const { min, max } = range;
+	if (max === null) return actualValue >= min;
+	return actualValue >= min && actualValue <= max;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -51,11 +51,11 @@ export const evaluateBudget = (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const evaluateZone = (
-  templateZone: string,
-  selectedZone: string,
+	templateZone: string,
+	selectedZone: string,
 ): boolean => {
-  if (!templateZone) return false;
-  return templateZone === selectedZone;
+	if (!templateZone) return false;
+	return templateZone === selectedZone;
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -74,125 +74,130 @@ export const evaluateZone = (
 // ─────────────────────────────────────────────────────────────────────────────
 
 type CandidateTemplate = Prisma.WorkflowTemplateGetPayload<{
-  include: {
-    stages: { include: { approvers: true } };
-  };
+	include: {
+		stages: { include: { approvers: true } };
+	};
 }>;
 
 export const templateMatchResolvers: Record<
-  WorkflowSubjectType,
-  (
-    templates: CandidateTemplate[],
-    criteria: Record<string, unknown> | undefined,
-  ) => CandidateTemplate | undefined
+	WorkflowSubjectType,
+	(
+		templates: CandidateTemplate[],
+		criteria: Record<string, unknown> | undefined,
+	) => CandidateTemplate | undefined
 > = {
-  // ✅ CHANGED — zone-first-then-budget, for the Marketing Activity Planner.
-  //
-  // `criteria.zone` is the EPC's selected zone (its region_code — see
-  // common.app.helper's `useUserInfo`/the Zone master for the id↔code
-  // mapping). When it's supplied, the candidate list is narrowed to
-  // templates whose own `metaData_2` matches that zone FIRST, and only the
-  // zone-matching candidates are then checked against budget — a budget
-  // match against a template scoped to a different zone must never win.
-  //
-  // When no zone is supplied (every caller outside MAP today — preview/
-  // assign calls that don't pass `criteria.zone`, and any template with
-  // `metaData_2` left blank), this resolves exactly as before: budget-only,
-  // against every candidate. This is what keeps the change additive rather
-  // than breaking: a workspace with no zone-scoped templates yet behaves
-  // identically to pre-zone behavior.
-  EVENT_PROPOSAL: (templates, criteria) => {
-    const budget = criteria?.budget;
-    if (budget === undefined) return undefined;
+	// ✅ CHANGED — zone-first-then-budget, for the Marketing Activity Planner.
+	//
+	// `criteria.zone` is the EPC's selected zone (its region_code — see
+	// common.app.helper's `useUserInfo`/the Zone master for the id↔code
+	// mapping). When it's supplied, the candidate list is narrowed to
+	// templates whose own `metaData_2` matches that zone FIRST, and only the
+	// zone-matching candidates are then checked against budget — a budget
+	// match against a template scoped to a different zone must never win.
+	//
+	// When no zone is supplied (every caller outside MAP today — preview/
+	// assign calls that don't pass `criteria.zone`, and any template with
+	// `metaData_2` left blank), this resolves exactly as before: budget-only,
+	// against every candidate. This is what keeps the change additive rather
+	// than breaking: a workspace with no zone-scoped templates yet behaves
+	// identically to pre-zone behavior.
+	EVENT_PROPOSAL: (templates, criteria) => {
+		const budget = criteria?.budget;
+		if (budget === undefined) return undefined;
 
-    const zone =
-      typeof criteria?.zone === "string" && criteria.zone
-        ? criteria.zone
-        : undefined;
+		const zone =
+			typeof criteria?.zone === "string" && criteria.zone
+				? criteria.zone
+				: undefined;
 
-    const zoneCandidates = zone
-      ? templates.filter((t) => evaluateZone(t.metaData_2 || "", zone))
-      : templates;
+		const zoneCandidates = zone
+			? templates.filter((t) => evaluateZone(t.metaData_2 || "", zone))
+			: templates;
 
-    return zoneCandidates.find((t) =>
-      evaluateBudget(t.metaData_1 || "", Number(budget)),
-    );
-  },
+		return zoneCandidates.find((t) =>
+			evaluateBudget(t.metaData_1 || "", Number(budget)),
+		);
+	},
 
-  // STUB — no matching criteria decided yet for Vendor Onboarding.
-  // Replace with a real resolver once that's defined; until then this
-  // just takes the first active template configured for the workspace/app.
-  VENDOR_ONBOARDING: (templates, criteria) => {
-    const { workflowId } = criteria || {};
-    return templates.find((t) => t.id === workflowId);
-  },
+	// STUB — no matching criteria decided yet for Vendor Onboarding.
+	// Replace with a real resolver once that's defined; until then this
+	// just takes the first active template configured for the workspace/app.
+	VENDOR_ONBOARDING: (templates, criteria) => {
+		const { workflowId } = criteria || {};
+		return templates.find((t) => t.id === workflowId);
+	},
 
-  MEDICAL_CLAIM: (templates) => {
-    return templates.find(
-      (t) => t.isActive === true && t.ownerType === "ADMIN",
-    );
-  },
+	MEDICAL_CLAIM: (templates) => {
+		return templates.find(
+			(t) => t.isActive === true && t.ownerType === "ADMIN",
+		);
+	},
 
-  DEALER_AUDIT_INSTANCE: (templates, criteria) => {
-    const zone = criteria?.zone;
-    if (!zone) return undefined;
-    return templates.find((t) => t.metaData_1 === zone);
-  },
+	DEALER_AUDIT_INSTANCE: (templates, criteria) => {
+		const zone = criteria?.zone;
+		if (!zone) return undefined;
+		return templates.find((t) => t.metaData_1 === zone);
+	},
 
-  FACTORY_AUDIT_INSTANCE: (templates) => templates[0],
+	FACTORY_AUDIT_INSTANCE: (templates) => templates[0],
+
+	// CPP routes through its own role-based chains, not a WorkflowTemplate.
+	// Placeholder so the Record type compiles until CPP submit is built.
+	CPP_REQUEST: (templates) =>
+		templates.find((t) => t.isActive === true && t.ownerType === "ADMIN"),
 };
 
 export const forkTemplateForClarify = async (
-  tx: Tx,
-  baseTemplate: {
-    name: string;
-    description: string;
-    workspaceId: string;
-    appId: string;
-    metaData_1: string;
-    metaData_2: string;
-    metaData_3: string;
-  },
-  editedStages: Array<{
-    stageOrder: number;
-    strategy: "ALL" | "ANY" | "SOME";
-    minApprovals?: number | null;
-    approvers: Array<{ approverId: string; isExternalApprover?: boolean }>;
-  }>,
-  userId: string,
+	tx: Tx,
+	baseTemplate: {
+		name: string;
+		description: string;
+		workspaceId: string;
+		appId: string;
+		metaData_1: string;
+		metaData_2: string;
+		metaData_3: string;
+	},
+	editedStages: Array<{
+		stageOrder: number;
+		strategy: "ALL" | "ANY" | "SOME";
+		minApprovals?: number | null;
+		approvers: Array<{ approverId: string; isExternalApprover?: boolean }>;
+	}>,
+	userId: string,
 ) => {
-  return tx.workflowTemplate.create({
-    data: {
-      name: `${baseTemplate.name} (edited)`,
-      description: baseTemplate.description,
-      workspaceId: baseTemplate.workspaceId,
-      appId: baseTemplate.appId,
-      metaData_1: baseTemplate.metaData_1,
-      metaData_2: baseTemplate.metaData_2,
-      metaData_3: baseTemplate.metaData_3,
-      ownerType: "USER",
-      isReusable: false,
-      created_by_id: userId,
-      updated_by_id: userId,
-      stages: {
-        create: editedStages.map((stage) => ({
-          name: `Stage ${stage.stageOrder}`,
-          stageOrder: stage.stageOrder,
-          strategy: stage.strategy,
-          minApprovals: stage.minApprovals ?? null,
-          approvers: {
-            create: stage.approvers.map((approver) => ({
-              userId: approver.approverId,
-              isExternalApprover: approver.isExternalApprover ?? false,
-            })),
-          },
-        })),
-      },
-    },
-    include: {
-      stages: { include: { approvers: true }, orderBy: { stageOrder: "asc" } },
-    },
-  });
+	return tx.workflowTemplate.create({
+		data: {
+			name: `${baseTemplate.name} (edited)`,
+			description: baseTemplate.description,
+			workspaceId: baseTemplate.workspaceId,
+			appId: baseTemplate.appId,
+			metaData_1: baseTemplate.metaData_1,
+			metaData_2: baseTemplate.metaData_2,
+			metaData_3: baseTemplate.metaData_3,
+			ownerType: "USER",
+			isReusable: false,
+			created_by_id: userId,
+			updated_by_id: userId,
+			stages: {
+				create: editedStages.map((stage) => ({
+					name: `Stage ${stage.stageOrder}`,
+					stageOrder: stage.stageOrder,
+					strategy: stage.strategy,
+					minApprovals: stage.minApprovals ?? null,
+					approvers: {
+						create: stage.approvers.map((approver) => ({
+							userId: approver.approverId,
+							isExternalApprover: approver.isExternalApprover ?? false,
+						})),
+					},
+				})),
+			},
+		},
+		include: {
+			stages: { include: { approvers: true }, orderBy: { stageOrder: "asc" } },
+		},
+	});
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -209,56 +214,56 @@ export const forkTemplateForClarify = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 type TemplateStageInput = {
-  name: string;
-  stageOrder: number;
-  strategy: "ALL" | "ANY" | "SOME";
-  minApprovals?: number | null;
-  approvers: Array<{ userId: string; isExternalApprover?: boolean }>;
+	name: string;
+	stageOrder: number;
+	strategy: "ALL" | "ANY" | "SOME";
+	minApprovals?: number | null;
+	approvers: Array<{ userId: string; isExternalApprover?: boolean }>;
 };
 
 export const createIterationStages = async (
-  tx: Tx,
-  params: {
-    workflowId: string;
-    iteration: number;
-    templateStages: TemplateStageInput[];
-    activateFirst: boolean;
-  },
+	tx: Tx,
+	params: {
+		workflowId: string;
+		iteration: number;
+		templateStages: TemplateStageInput[];
+		activateFirst: boolean;
+	},
 ) => {
-  const createdStages = [];
-  let firstStageInstanceId: string | undefined;
+	const createdStages = [];
+	let firstStageInstanceId: string | undefined;
 
-  for (const templateStage of params.templateStages) {
-    const isFirstStage = templateStage.stageOrder === 1;
-    const shouldActivate = isFirstStage && params.activateFirst;
+	for (const templateStage of params.templateStages) {
+		const isFirstStage = templateStage.stageOrder === 1;
+		const shouldActivate = isFirstStage && params.activateFirst;
 
-    const stage = await tx.stageInstance.create({
-      data: {
-        stageName: templateStage.name,
-        workflowId: params.workflowId,
-        stageOrder: templateStage.stageOrder,
-        iteration: params.iteration,
-        isCurrentIteration: true,
-        strategy: templateStage.strategy,
-        minApprovals: templateStage.minApprovals ?? null,
-        status: shouldActivate ? "IN_PROGRESS" : "PENDING",
-        startedAt: shouldActivate ? new Date() : null,
-        approvals: {
-          create: templateStage.approvers.map((a) => ({
-            approverId: a.userId,
-            status: "PENDING",
-            isExternalApprover: a.isExternalApprover ?? false,
-          })),
-        },
-      },
-      include: { approvals: true },
-    });
+		const stage = await tx.stageInstance.create({
+			data: {
+				stageName: templateStage.name,
+				workflowId: params.workflowId,
+				stageOrder: templateStage.stageOrder,
+				iteration: params.iteration,
+				isCurrentIteration: true,
+				strategy: templateStage.strategy,
+				minApprovals: templateStage.minApprovals ?? null,
+				status: shouldActivate ? "IN_PROGRESS" : "PENDING",
+				startedAt: shouldActivate ? new Date() : null,
+				approvals: {
+					create: templateStage.approvers.map((a) => ({
+						approverId: a.userId,
+						status: "PENDING",
+						isExternalApprover: a.isExternalApprover ?? false,
+					})),
+				},
+			},
+			include: { approvals: true },
+		});
 
-    createdStages.push(stage);
-    if (isFirstStage) firstStageInstanceId = stage.id;
-  }
+		createdStages.push(stage);
+		if (isFirstStage) firstStageInstanceId = stage.id;
+	}
 
-  return { createdStages, firstStageInstanceId };
+	return { createdStages, firstStageInstanceId };
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -271,70 +276,70 @@ export const createIterationStages = async (
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const assertTemplateAssignable = async (
-  tx: Tx,
-  params: {
-    templateId: string;
-    appId: string;
-    userId: string;
-    isSuperAdmin: boolean;
-  },
+	tx: Tx,
+	params: {
+		templateId: string;
+		appId: string;
+		userId: string;
+		isSuperAdmin: boolean;
+	},
 ) => {
-  const template = await tx.workflowTemplate.findUnique({
-    where: { id: params.templateId },
-    include: {
-      stages: { include: { approvers: true }, orderBy: { stageOrder: "asc" } },
-    },
-  });
+	const template = await tx.workflowTemplate.findUnique({
+		where: { id: params.templateId },
+		include: {
+			stages: { include: { approvers: true }, orderBy: { stageOrder: "asc" } },
+		},
+	});
 
-  if (!template) throw new ApiError(404, "Workflow template not found");
-  // if (!template.isActive || !template.isReusable) {
-  //   throw new ApiError(400, "This template is not available for use");
-  // }
-  if (!template.isActive) {
-    throw new ApiError(400, "This template is not available for use");
-  }
-  if (template.appId !== params.appId) {
-    throw new ApiError(
-      400,
-      "This template belongs to a different app than this record",
-    );
-  }
+	if (!template) throw new ApiError(404, "Workflow template not found");
+	// if (!template.isActive || !template.isReusable) {
+	//   throw new ApiError(400, "This template is not available for use");
+	// }
+	if (!template.isActive) {
+		throw new ApiError(400, "This template is not available for use");
+	}
+	if (template.appId !== params.appId) {
+		throw new ApiError(
+			400,
+			"This template belongs to a different app than this record",
+		);
+	}
 
-  if (!params.isSuperAdmin) {
-    const isAssigned = await tx.workFlowTemplateUser.findUnique({
-      where: {
-        templateId_userId: {
-          templateId: params.templateId,
-          userId: params.userId,
-        },
-      },
-    });
-    if (!isAssigned) {
-      throw new ApiError(403, "You are not assigned to this workflow template");
-    }
-  }
+	if (!params.isSuperAdmin) {
+		const isAssigned = await tx.workFlowTemplateUser.findUnique({
+			where: {
+				templateId_userId: {
+					templateId: params.templateId,
+					userId: params.userId,
+				},
+			},
+		});
+		if (!isAssigned) {
+			throw new ApiError(403, "You are not assigned to this workflow template");
+		}
+	}
 
-  return template;
+	return template;
 };
 
 export const buildWorkflowStages = (templateStages: any[]) => {
-  return templateStages.map((stage: any) => ({
-    name: stage.name,
-    stageOrder: stage.stageOrder,
-    strategy: stage.strategy,
-    minApprovals: stage.minApprovals,
-    stageName: stage.name,
-    status:
-      stage.stageOrder === 1 ? StageStatus.IN_PROGRESS : StageStatus.PENDING,
+	return templateStages.map((stage: any) => ({
+		name: stage.name,
+		stageOrder: stage.stageOrder,
+		strategy: stage.strategy,
+		minApprovals: stage.minApprovals,
+		stageName: stage.name,
+		status:
+			stage.stageOrder === 1 ? StageStatus.IN_PROGRESS : StageStatus.PENDING,
 
-    approvals: {
-      create: stage.approvers.map((a: any) => ({
-        approverId: a.userId,
-        status: ApprovalStatus.PENDING,
-        isExternalApprover: a.isExternalApprover,
-      })),
-    },
-  }));
+		approvals: {
+			create: stage.approvers.map((a: any) => ({
+				approverId: a.userId,
+				status: ApprovalStatus.PENDING,
+				isExternalApprover: a.isExternalApprover,
+			})),
+		},
+	}));
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -377,215 +382,215 @@ export const buildWorkflowStages = (templateStages: any[]) => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 type ReconcileStageInput = {
-  stageOrder: number;
-  strategy: "ALL" | "ANY" | "SOME";
-  minApprovals?: number | null;
-  approverIds: string[];
+	stageOrder: number;
+	strategy: "ALL" | "ANY" | "SOME";
+	minApprovals?: number | null;
+	approverIds: string[];
 };
 
 export type ReconcileNotification = {
-  workflowId: string;
-  subjectType: WorkflowSubjectType;
-  subjectId: string;
-  appId: string;
-  stageId: string;
-  newApproverIds: string[];
+	workflowId: string;
+	subjectType: WorkflowSubjectType;
+	subjectId: string;
+	appId: string;
+	stageId: string;
+	newApproverIds: string[];
 };
 
 export const reconcileLiveWorkflowInstances = async (
-  tx: Tx,
-  params: {
-    templateId: string;
-    stages: ReconcileStageInput[];
-  },
+	tx: Tx,
+	params: {
+		templateId: string;
+		stages: ReconcileStageInput[];
+	},
 ): Promise<ReconcileNotification[]> => {
-  const { templateId, stages } = params;
+	const { templateId, stages } = params;
 
-  const liveInstances = await tx.workflowInstance.findMany({
-    where: { templateId, status: "IN_PROGRESS" },
-    include: {
-      stages: {
-        where: { isCurrentIteration: true },
-        include: { approvals: true },
-      },
-    },
-  });
+	const liveInstances = await tx.workflowInstance.findMany({
+		where: { templateId, status: "IN_PROGRESS" },
+		include: {
+			stages: {
+				where: { isCurrentIteration: true },
+				include: { approvals: true },
+			},
+		},
+	});
 
-  if (!liveInstances.length) return [];
+	if (!liveInstances.length) return [];
 
-  const notifications: ReconcileNotification[] = [];
+	const notifications: ReconcileNotification[] = [];
 
-  for (const instance of liveInstances) {
-    const liveStagesByOrder = new Map(
-      instance.stages.map((stage) => [stage.stageOrder, stage]),
-    );
+	for (const instance of liveInstances) {
+		const liveStagesByOrder = new Map(
+			instance.stages.map((stage) => [stage.stageOrder, stage]),
+		);
 
-    for (const templateStage of stages) {
-      const liveStage = liveStagesByOrder.get(templateStage.stageOrder);
+		for (const templateStage of stages) {
+			const liveStage = liveStagesByOrder.get(templateStage.stageOrder);
 
-      // ── A new stage, appended at the end ────────────────────────────
-      if (!liveStage) {
-        await tx.stageInstance.create({
-          data: {
-            workflowId: instance.id,
-            stageName: `Stage ${templateStage.stageOrder}`,
-            stageOrder: templateStage.stageOrder,
-            iteration: instance.iteration,
-            isCurrentIteration: true,
-            strategy: templateStage.strategy,
-            minApprovals: templateStage.minApprovals ?? null,
-            status: "PENDING",
-            approvals: {
-              create: templateStage.approverIds.map((approverId) => ({
-                approverId,
-                status: "PENDING",
-              })),
-            },
-          },
-        });
-        continue;
-      }
+			// ── A new stage, appended at the end ────────────────────────────
+			if (!liveStage) {
+				await tx.stageInstance.create({
+					data: {
+						workflowId: instance.id,
+						stageName: `Stage ${templateStage.stageOrder}`,
+						stageOrder: templateStage.stageOrder,
+						iteration: instance.iteration,
+						isCurrentIteration: true,
+						strategy: templateStage.strategy,
+						minApprovals: templateStage.minApprovals ?? null,
+						status: "PENDING",
+						approvals: {
+							create: templateStage.approverIds.map((approverId) => ({
+								approverId,
+								status: "PENDING",
+							})),
+						},
+					},
+				});
+				continue;
+			}
 
-      // ── Already concluded — history, never rewritten ────────────────
-      if (liveStage.status === "APPROVED" || liveStage.status === "REJECTED") {
-        continue;
-      }
+			// ── Already concluded — history, never rewritten ────────────────
+			if (liveStage.status === "APPROVED" || liveStage.status === "REJECTED") {
+				continue;
+			}
 
-      // ── Still open (PENDING or IN_PROGRESS) — bring it in line ──────
-      await tx.stageInstance.update({
-        where: { id: liveStage.id },
-        data: {
-          strategy: templateStage.strategy,
-          minApprovals: templateStage.minApprovals ?? null,
-        },
-      });
+			// ── Still open (PENDING or IN_PROGRESS) — bring it in line ──────
+			await tx.stageInstance.update({
+				where: { id: liveStage.id },
+				data: {
+					strategy: templateStage.strategy,
+					minApprovals: templateStage.minApprovals ?? null,
+				},
+			});
 
-      const existingApproverIds = new Set(
-        liveStage.approvals.map((a) => a.approverId),
-      );
-      const nextApproverIds = new Set(templateStage.approverIds);
+			const existingApproverIds = new Set(
+				liveStage.approvals.map((a) => a.approverId),
+			);
+			const nextApproverIds = new Set(templateStage.approverIds);
 
-      const toAdd = templateStage.approverIds.filter(
-        (approverId) => !existingApproverIds.has(approverId),
-      );
-      if (toAdd.length) {
-        await tx.approval.createMany({
-          data: toAdd.map((approverId) => ({
-            stageId: liveStage.id,
-            approverId,
-            status: "PENDING",
-          })),
-        });
+			const toAdd = templateStage.approverIds.filter(
+				(approverId) => !existingApproverIds.has(approverId),
+			);
+			if (toAdd.length) {
+				await tx.approval.createMany({
+					data: toAdd.map((approverId) => ({
+						stageId: liveStage.id,
+						approverId,
+						status: "PENDING",
+					})),
+				});
 
-        // Only a stage that's already running needs an immediate nudge —
-        // a PENDING stage's approvers are notified later, when it activates.
-        if (liveStage.status === "IN_PROGRESS") {
-          notifications.push({
-            workflowId: instance.id,
-            subjectType: instance.subjectType,
-            subjectId: instance.subjectId,
-            appId: instance.appId,
-            stageId: liveStage.id,
-            newApproverIds: toAdd,
-          });
-        }
-      }
+				// Only a stage that's already running needs an immediate nudge —
+				// a PENDING stage's approvers are notified later, when it activates.
+				if (liveStage.status === "IN_PROGRESS") {
+					notifications.push({
+						workflowId: instance.id,
+						subjectType: instance.subjectType,
+						subjectId: instance.subjectId,
+						appId: instance.appId,
+						stageId: liveStage.id,
+						newApproverIds: toAdd,
+					});
+				}
+			}
 
-      // Dropped approvers lose only a still-PENDING slot — anything already
-      // acted on (APPROVED/REJECTED/CLARIFY) is left exactly as cast.
-      const toRemove = liveStage.approvals.filter(
-        (a) => a.status === "PENDING" && !nextApproverIds.has(a.approverId),
-      );
-      if (toRemove.length) {
-        await tx.approval.deleteMany({
-          where: { id: { in: toRemove.map((a) => a.id) } },
-        });
-      }
-    }
-  }
+			// Dropped approvers lose only a still-PENDING slot — anything already
+			// acted on (APPROVED/REJECTED/CLARIFY) is left exactly as cast.
+			const toRemove = liveStage.approvals.filter(
+				(a) => a.status === "PENDING" && !nextApproverIds.has(a.approverId),
+			);
+			if (toRemove.length) {
+				await tx.approval.deleteMany({
+					where: { id: { in: toRemove.map((a) => a.id) } },
+				});
+			}
+		}
+	}
 
-  return notifications;
+	return notifications;
 };
 
 export const approveStage = async ({
-  stageId,
-  userId,
+	stageId,
+	userId,
 }: {
-  stageId: string;
-  userId: string;
+	stageId: string;
+	userId: string;
 }) => {
-  return prisma.$transaction(async (tx) => {
-    // 1. Mark approval
-    await tx.approval.update({
-      where: {
-        stageId_approverId: {
-          stageId,
-          approverId: userId,
-        },
-      },
-      data: {
-        status: "APPROVED",
-        actedAt: new Date(),
-      },
-    });
+	return prisma.$transaction(async (tx) => {
+		// 1. Mark approval
+		await tx.approval.update({
+			where: {
+				stageId_approverId: {
+					stageId,
+					approverId: userId,
+				},
+			},
+			data: {
+				status: "APPROVED",
+				actedAt: new Date(),
+			},
+		});
 
-    const stage = await tx.stageInstance.findUnique({
-      where: { id: stageId },
-      include: { approvals: true, workflow: true },
-    });
+		const stage = await tx.stageInstance.findUnique({
+			where: { id: stageId },
+			include: { approvals: true, workflow: true },
+		});
 
-    const approvedCount = stage!.approvals.filter(
-      (a) => a.status === "APPROVED",
-    ).length;
+		const approvedCount = stage!.approvals.filter(
+			(a) => a.status === "APPROVED",
+		).length;
 
-    const total = stage!.approvals.length;
+		const total = stage!.approvals.length;
 
-    let isStageApproved = false;
+		let isStageApproved = false;
 
-    switch (stage!.strategy) {
-      case "ALL":
-        isStageApproved = approvedCount === total;
-        break;
-      case "ANY":
-        isStageApproved = approvedCount >= 1;
-        break;
-      case "SOME":
-        isStageApproved = approvedCount >= (stage!.minApprovals || 1);
-        break;
-    }
+		switch (stage!.strategy) {
+			case "ALL":
+				isStageApproved = approvedCount === total;
+				break;
+			case "ANY":
+				isStageApproved = approvedCount >= 1;
+				break;
+			case "SOME":
+				isStageApproved = approvedCount >= (stage!.minApprovals || 1);
+				break;
+		}
 
-    if (!isStageApproved) return;
+		if (!isStageApproved) return;
 
-    // 2. Approve stage
-    await tx.stageInstance.update({
-      where: { id: stageId },
-      data: { status: "APPROVED" },
-    });
+		// 2. Approve stage
+		await tx.stageInstance.update({
+			where: { id: stageId },
+			data: { status: "APPROVED" },
+		});
 
-    // 3. Move to next stage
-    const nextStage = await tx.stageInstance.findFirst({
-      where: {
-        workflowId: stage!.workflowId,
-        stageOrder: stage!.stageOrder + 1,
-      },
-    });
+		// 3. Move to next stage
+		const nextStage = await tx.stageInstance.findFirst({
+			where: {
+				workflowId: stage!.workflowId,
+				stageOrder: stage!.stageOrder + 1,
+			},
+		});
 
-    if (nextStage) {
-      await tx.stageInstance.update({
-        where: { id: nextStage.id },
-        data: { status: "IN_PROGRESS" },
-      });
+		if (nextStage) {
+			await tx.stageInstance.update({
+				where: { id: nextStage.id },
+				data: { status: "IN_PROGRESS" },
+			});
 
-      await tx.workflowInstance.update({
-        where: { id: stage!.workflowId },
-        data: { currentStage: nextStage.stageOrder },
-      });
-    } else {
-      // final stage
-      await tx.workflowInstance.update({
-        where: { id: stage!.workflowId },
-        data: { status: "APPROVED" },
-      });
-    }
-  });
+			await tx.workflowInstance.update({
+				where: { id: stage!.workflowId },
+				data: { currentStage: nextStage.stageOrder },
+			});
+		} else {
+			// final stage
+			await tx.workflowInstance.update({
+				where: { id: stage!.workflowId },
+				data: { status: "APPROVED" },
+			});
+		}
+	});
 };

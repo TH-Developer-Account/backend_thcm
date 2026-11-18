@@ -46,6 +46,10 @@ export type DealerAuditInstanceMinAggregateOutputType = {
   finalScore: number | null
   maxScore: number | null
   closedAt: Date | null
+  cycleId: string | null
+  reviewerId: string | null
+  dueAt: Date | null
+  status: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -60,6 +64,10 @@ export type DealerAuditInstanceMaxAggregateOutputType = {
   finalScore: number | null
   maxScore: number | null
   closedAt: Date | null
+  cycleId: string | null
+  reviewerId: string | null
+  dueAt: Date | null
+  status: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -74,6 +82,10 @@ export type DealerAuditInstanceCountAggregateOutputType = {
   finalScore: number
   maxScore: number
   closedAt: number
+  cycleId: number
+  reviewerId: number
+  dueAt: number
+  status: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -100,6 +112,10 @@ export type DealerAuditInstanceMinAggregateInputType = {
   finalScore?: true
   maxScore?: true
   closedAt?: true
+  cycleId?: true
+  reviewerId?: true
+  dueAt?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -114,6 +130,10 @@ export type DealerAuditInstanceMaxAggregateInputType = {
   finalScore?: true
   maxScore?: true
   closedAt?: true
+  cycleId?: true
+  reviewerId?: true
+  dueAt?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -128,6 +148,10 @@ export type DealerAuditInstanceCountAggregateInputType = {
   finalScore?: true
   maxScore?: true
   closedAt?: true
+  cycleId?: true
+  reviewerId?: true
+  dueAt?: true
+  status?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -229,6 +253,10 @@ export type DealerAuditInstanceGroupByOutputType = {
   finalScore: number | null
   maxScore: number | null
   closedAt: Date | null
+  cycleId: string | null
+  reviewerId: string | null
+  dueAt: Date | null
+  status: string
   createdAt: Date
   updatedAt: Date
   _count: DealerAuditInstanceCountAggregateOutputType | null
@@ -266,10 +294,16 @@ export type DealerAuditInstanceWhereInput = {
   finalScore?: Prisma.FloatNullableFilter<"DealerAuditInstance"> | number | null
   maxScore?: Prisma.FloatNullableFilter<"DealerAuditInstance"> | number | null
   closedAt?: Prisma.DateTimeNullableFilter<"DealerAuditInstance"> | Date | string | null
+  cycleId?: Prisma.StringNullableFilter<"DealerAuditInstance"> | string | null
+  reviewerId?: Prisma.StringNullableFilter<"DealerAuditInstance"> | string | null
+  dueAt?: Prisma.DateTimeNullableFilter<"DealerAuditInstance"> | Date | string | null
+  status?: Prisma.StringFilter<"DealerAuditInstance"> | string
   createdAt?: Prisma.DateTimeFilter<"DealerAuditInstance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DealerAuditInstance"> | Date | string
   businessPartner?: Prisma.XOR<Prisma.BusinessPartnerScalarRelationFilter, Prisma.BusinessPartnerWhereInput>
   template?: Prisma.XOR<Prisma.ChecklistTemplateScalarRelationFilter, Prisma.ChecklistTemplateWhereInput>
+  cycle?: Prisma.XOR<Prisma.DealerAuditCycleNullableScalarRelationFilter, Prisma.DealerAuditCycleWhereInput> | null
+  reviewer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   responses?: Prisma.AuditItemResponseListRelationFilter
 }
 
@@ -283,10 +317,16 @@ export type DealerAuditInstanceOrderByWithRelationInput = {
   finalScore?: Prisma.SortOrderInput | Prisma.SortOrder
   maxScore?: Prisma.SortOrderInput | Prisma.SortOrder
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cycleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   businessPartner?: Prisma.BusinessPartnerOrderByWithRelationInput
   template?: Prisma.ChecklistTemplateOrderByWithRelationInput
+  cycle?: Prisma.DealerAuditCycleOrderByWithRelationInput
+  reviewer?: Prisma.UserOrderByWithRelationInput
   responses?: Prisma.AuditItemResponseOrderByRelationAggregateInput
 }
 
@@ -304,10 +344,16 @@ export type DealerAuditInstanceWhereUniqueInput = Prisma.AtLeast<{
   finalScore?: Prisma.FloatNullableFilter<"DealerAuditInstance"> | number | null
   maxScore?: Prisma.FloatNullableFilter<"DealerAuditInstance"> | number | null
   closedAt?: Prisma.DateTimeNullableFilter<"DealerAuditInstance"> | Date | string | null
+  cycleId?: Prisma.StringNullableFilter<"DealerAuditInstance"> | string | null
+  reviewerId?: Prisma.StringNullableFilter<"DealerAuditInstance"> | string | null
+  dueAt?: Prisma.DateTimeNullableFilter<"DealerAuditInstance"> | Date | string | null
+  status?: Prisma.StringFilter<"DealerAuditInstance"> | string
   createdAt?: Prisma.DateTimeFilter<"DealerAuditInstance"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DealerAuditInstance"> | Date | string
   businessPartner?: Prisma.XOR<Prisma.BusinessPartnerScalarRelationFilter, Prisma.BusinessPartnerWhereInput>
   template?: Prisma.XOR<Prisma.ChecklistTemplateScalarRelationFilter, Prisma.ChecklistTemplateWhereInput>
+  cycle?: Prisma.XOR<Prisma.DealerAuditCycleNullableScalarRelationFilter, Prisma.DealerAuditCycleWhereInput> | null
+  reviewer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   responses?: Prisma.AuditItemResponseListRelationFilter
 }, "id" | "businessPartnerId_officeType_periodLabel">
 
@@ -321,6 +367,10 @@ export type DealerAuditInstanceOrderByWithAggregationInput = {
   finalScore?: Prisma.SortOrderInput | Prisma.SortOrder
   maxScore?: Prisma.SortOrderInput | Prisma.SortOrder
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  cycleId?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.DealerAuditInstanceCountOrderByAggregateInput
@@ -343,6 +393,10 @@ export type DealerAuditInstanceScalarWhereWithAggregatesInput = {
   finalScore?: Prisma.FloatNullableWithAggregatesFilter<"DealerAuditInstance"> | number | null
   maxScore?: Prisma.FloatNullableWithAggregatesFilter<"DealerAuditInstance"> | number | null
   closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DealerAuditInstance"> | Date | string | null
+  cycleId?: Prisma.StringNullableWithAggregatesFilter<"DealerAuditInstance"> | string | null
+  reviewerId?: Prisma.StringNullableWithAggregatesFilter<"DealerAuditInstance"> | string | null
+  dueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DealerAuditInstance"> | Date | string | null
+  status?: Prisma.StringWithAggregatesFilter<"DealerAuditInstance"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DealerAuditInstance"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"DealerAuditInstance"> | Date | string
 }
@@ -355,10 +409,14 @@ export type DealerAuditInstanceCreateInput = {
   finalScore?: number | null
   maxScore?: number | null
   closedAt?: Date | string | null
+  dueAt?: Date | string | null
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   businessPartner: Prisma.BusinessPartnerCreateNestedOneWithoutDealerAuditInstancesInput
   template: Prisma.ChecklistTemplateCreateNestedOneWithoutAuditInstancesInput
+  cycle?: Prisma.DealerAuditCycleCreateNestedOneWithoutInstancesInput
+  reviewer?: Prisma.UserCreateNestedOneWithoutDealerAuditsToReviewInput
   responses?: Prisma.AuditItemResponseCreateNestedManyWithoutAuditInstanceInput
 }
 
@@ -372,6 +430,10 @@ export type DealerAuditInstanceUncheckedCreateInput = {
   finalScore?: number | null
   maxScore?: number | null
   closedAt?: Date | string | null
+  cycleId?: string | null
+  reviewerId?: string | null
+  dueAt?: Date | string | null
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   responses?: Prisma.AuditItemResponseUncheckedCreateNestedManyWithoutAuditInstanceInput
@@ -385,10 +447,14 @@ export type DealerAuditInstanceUpdateInput = {
   finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneRequiredWithoutDealerAuditInstancesNestedInput
   template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
+  cycle?: Prisma.DealerAuditCycleUpdateOneWithoutInstancesNestedInput
+  reviewer?: Prisma.UserUpdateOneWithoutDealerAuditsToReviewNestedInput
   responses?: Prisma.AuditItemResponseUpdateManyWithoutAuditInstanceNestedInput
 }
 
@@ -402,6 +468,10 @@ export type DealerAuditInstanceUncheckedUpdateInput = {
   finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cycleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   responses?: Prisma.AuditItemResponseUncheckedUpdateManyWithoutAuditInstanceNestedInput
@@ -417,6 +487,10 @@ export type DealerAuditInstanceCreateManyInput = {
   finalScore?: number | null
   maxScore?: number | null
   closedAt?: Date | string | null
+  cycleId?: string | null
+  reviewerId?: string | null
+  dueAt?: Date | string | null
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -429,6 +503,8 @@ export type DealerAuditInstanceUpdateManyMutationInput = {
   finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -443,6 +519,10 @@ export type DealerAuditInstanceUncheckedUpdateManyInput = {
   finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cycleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -473,6 +553,10 @@ export type DealerAuditInstanceCountOrderByAggregateInput = {
   finalScore?: Prisma.SortOrder
   maxScore?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
+  cycleId?: Prisma.SortOrder
+  reviewerId?: Prisma.SortOrder
+  dueAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -492,6 +576,10 @@ export type DealerAuditInstanceMaxOrderByAggregateInput = {
   finalScore?: Prisma.SortOrder
   maxScore?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
+  cycleId?: Prisma.SortOrder
+  reviewerId?: Prisma.SortOrder
+  dueAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -506,6 +594,10 @@ export type DealerAuditInstanceMinOrderByAggregateInput = {
   finalScore?: Prisma.SortOrder
   maxScore?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
+  cycleId?: Prisma.SortOrder
+  reviewerId?: Prisma.SortOrder
+  dueAt?: Prisma.SortOrder
+  status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -518,6 +610,48 @@ export type DealerAuditInstanceSumOrderByAggregateInput = {
 export type DealerAuditInstanceScalarRelationFilter = {
   is?: Prisma.DealerAuditInstanceWhereInput
   isNot?: Prisma.DealerAuditInstanceWhereInput
+}
+
+export type DealerAuditInstanceCreateNestedManyWithoutReviewerInput = {
+  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutReviewerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutReviewerInput> | Prisma.DealerAuditInstanceCreateWithoutReviewerInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutReviewerInput[]
+  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutReviewerInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutReviewerInput[]
+  createMany?: Prisma.DealerAuditInstanceCreateManyReviewerInputEnvelope
+  connect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+}
+
+export type DealerAuditInstanceUncheckedCreateNestedManyWithoutReviewerInput = {
+  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutReviewerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutReviewerInput> | Prisma.DealerAuditInstanceCreateWithoutReviewerInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutReviewerInput[]
+  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutReviewerInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutReviewerInput[]
+  createMany?: Prisma.DealerAuditInstanceCreateManyReviewerInputEnvelope
+  connect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+}
+
+export type DealerAuditInstanceUpdateManyWithoutReviewerNestedInput = {
+  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutReviewerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutReviewerInput> | Prisma.DealerAuditInstanceCreateWithoutReviewerInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutReviewerInput[]
+  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutReviewerInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutReviewerInput[]
+  upsert?: Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutReviewerInput | Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutReviewerInput[]
+  createMany?: Prisma.DealerAuditInstanceCreateManyReviewerInputEnvelope
+  set?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  disconnect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  delete?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  connect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  update?: Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutReviewerInput | Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutReviewerInput[]
+  updateMany?: Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutReviewerInput | Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutReviewerInput[]
+  deleteMany?: Prisma.DealerAuditInstanceScalarWhereInput | Prisma.DealerAuditInstanceScalarWhereInput[]
+}
+
+export type DealerAuditInstanceUncheckedUpdateManyWithoutReviewerNestedInput = {
+  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutReviewerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutReviewerInput> | Prisma.DealerAuditInstanceCreateWithoutReviewerInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutReviewerInput[]
+  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutReviewerInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutReviewerInput[]
+  upsert?: Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutReviewerInput | Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutReviewerInput[]
+  createMany?: Prisma.DealerAuditInstanceCreateManyReviewerInputEnvelope
+  set?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  disconnect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  delete?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  connect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  update?: Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutReviewerInput | Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutReviewerInput[]
+  updateMany?: Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutReviewerInput | Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutReviewerInput[]
+  deleteMany?: Prisma.DealerAuditInstanceScalarWhereInput | Prisma.DealerAuditInstanceScalarWhereInput[]
 }
 
 export type DealerAuditInstanceCreateNestedManyWithoutBusinessPartnerInput = {
@@ -604,6 +738,48 @@ export type DealerAuditInstanceUncheckedUpdateManyWithoutTemplateNestedInput = {
   deleteMany?: Prisma.DealerAuditInstanceScalarWhereInput | Prisma.DealerAuditInstanceScalarWhereInput[]
 }
 
+export type DealerAuditInstanceCreateNestedManyWithoutCycleInput = {
+  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutCycleInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutCycleInput> | Prisma.DealerAuditInstanceCreateWithoutCycleInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutCycleInput[]
+  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutCycleInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutCycleInput[]
+  createMany?: Prisma.DealerAuditInstanceCreateManyCycleInputEnvelope
+  connect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+}
+
+export type DealerAuditInstanceUncheckedCreateNestedManyWithoutCycleInput = {
+  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutCycleInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutCycleInput> | Prisma.DealerAuditInstanceCreateWithoutCycleInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutCycleInput[]
+  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutCycleInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutCycleInput[]
+  createMany?: Prisma.DealerAuditInstanceCreateManyCycleInputEnvelope
+  connect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+}
+
+export type DealerAuditInstanceUpdateManyWithoutCycleNestedInput = {
+  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutCycleInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutCycleInput> | Prisma.DealerAuditInstanceCreateWithoutCycleInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutCycleInput[]
+  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutCycleInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutCycleInput[]
+  upsert?: Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutCycleInput | Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutCycleInput[]
+  createMany?: Prisma.DealerAuditInstanceCreateManyCycleInputEnvelope
+  set?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  disconnect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  delete?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  connect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  update?: Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutCycleInput | Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutCycleInput[]
+  updateMany?: Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutCycleInput | Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutCycleInput[]
+  deleteMany?: Prisma.DealerAuditInstanceScalarWhereInput | Prisma.DealerAuditInstanceScalarWhereInput[]
+}
+
+export type DealerAuditInstanceUncheckedUpdateManyWithoutCycleNestedInput = {
+  create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutCycleInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutCycleInput> | Prisma.DealerAuditInstanceCreateWithoutCycleInput[] | Prisma.DealerAuditInstanceUncheckedCreateWithoutCycleInput[]
+  connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutCycleInput | Prisma.DealerAuditInstanceCreateOrConnectWithoutCycleInput[]
+  upsert?: Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutCycleInput | Prisma.DealerAuditInstanceUpsertWithWhereUniqueWithoutCycleInput[]
+  createMany?: Prisma.DealerAuditInstanceCreateManyCycleInputEnvelope
+  set?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  disconnect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  delete?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  connect?: Prisma.DealerAuditInstanceWhereUniqueInput | Prisma.DealerAuditInstanceWhereUniqueInput[]
+  update?: Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutCycleInput | Prisma.DealerAuditInstanceUpdateWithWhereUniqueWithoutCycleInput[]
+  updateMany?: Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutCycleInput | Prisma.DealerAuditInstanceUpdateManyWithWhereWithoutCycleInput[]
+  deleteMany?: Prisma.DealerAuditInstanceScalarWhereInput | Prisma.DealerAuditInstanceScalarWhereInput[]
+}
+
 export type DealerAuditInstanceCreateNestedOneWithoutResponsesInput = {
   create?: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutResponsesInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutResponsesInput>
   connectOrCreate?: Prisma.DealerAuditInstanceCreateOrConnectWithoutResponsesInput
@@ -618,6 +794,89 @@ export type DealerAuditInstanceUpdateOneRequiredWithoutResponsesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DealerAuditInstanceUpdateToOneWithWhereWithoutResponsesInput, Prisma.DealerAuditInstanceUpdateWithoutResponsesInput>, Prisma.DealerAuditInstanceUncheckedUpdateWithoutResponsesInput>
 }
 
+export type DealerAuditInstanceCreateWithoutReviewerInput = {
+  id?: string
+  workspaceId: string
+  officeType: $Enums.BusinessPartnerOfficeType
+  periodLabel: string
+  finalScore?: number | null
+  maxScore?: number | null
+  closedAt?: Date | string | null
+  dueAt?: Date | string | null
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  businessPartner: Prisma.BusinessPartnerCreateNestedOneWithoutDealerAuditInstancesInput
+  template: Prisma.ChecklistTemplateCreateNestedOneWithoutAuditInstancesInput
+  cycle?: Prisma.DealerAuditCycleCreateNestedOneWithoutInstancesInput
+  responses?: Prisma.AuditItemResponseCreateNestedManyWithoutAuditInstanceInput
+}
+
+export type DealerAuditInstanceUncheckedCreateWithoutReviewerInput = {
+  id?: string
+  businessPartnerId: string
+  workspaceId: string
+  officeType: $Enums.BusinessPartnerOfficeType
+  periodLabel: string
+  checklistTemplateId: string
+  finalScore?: number | null
+  maxScore?: number | null
+  closedAt?: Date | string | null
+  cycleId?: string | null
+  dueAt?: Date | string | null
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  responses?: Prisma.AuditItemResponseUncheckedCreateNestedManyWithoutAuditInstanceInput
+}
+
+export type DealerAuditInstanceCreateOrConnectWithoutReviewerInput = {
+  where: Prisma.DealerAuditInstanceWhereUniqueInput
+  create: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutReviewerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutReviewerInput>
+}
+
+export type DealerAuditInstanceCreateManyReviewerInputEnvelope = {
+  data: Prisma.DealerAuditInstanceCreateManyReviewerInput | Prisma.DealerAuditInstanceCreateManyReviewerInput[]
+  skipDuplicates?: boolean
+}
+
+export type DealerAuditInstanceUpsertWithWhereUniqueWithoutReviewerInput = {
+  where: Prisma.DealerAuditInstanceWhereUniqueInput
+  update: Prisma.XOR<Prisma.DealerAuditInstanceUpdateWithoutReviewerInput, Prisma.DealerAuditInstanceUncheckedUpdateWithoutReviewerInput>
+  create: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutReviewerInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutReviewerInput>
+}
+
+export type DealerAuditInstanceUpdateWithWhereUniqueWithoutReviewerInput = {
+  where: Prisma.DealerAuditInstanceWhereUniqueInput
+  data: Prisma.XOR<Prisma.DealerAuditInstanceUpdateWithoutReviewerInput, Prisma.DealerAuditInstanceUncheckedUpdateWithoutReviewerInput>
+}
+
+export type DealerAuditInstanceUpdateManyWithWhereWithoutReviewerInput = {
+  where: Prisma.DealerAuditInstanceScalarWhereInput
+  data: Prisma.XOR<Prisma.DealerAuditInstanceUpdateManyMutationInput, Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutReviewerInput>
+}
+
+export type DealerAuditInstanceScalarWhereInput = {
+  AND?: Prisma.DealerAuditInstanceScalarWhereInput | Prisma.DealerAuditInstanceScalarWhereInput[]
+  OR?: Prisma.DealerAuditInstanceScalarWhereInput[]
+  NOT?: Prisma.DealerAuditInstanceScalarWhereInput | Prisma.DealerAuditInstanceScalarWhereInput[]
+  id?: Prisma.StringFilter<"DealerAuditInstance"> | string
+  businessPartnerId?: Prisma.StringFilter<"DealerAuditInstance"> | string
+  workspaceId?: Prisma.StringFilter<"DealerAuditInstance"> | string
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFilter<"DealerAuditInstance"> | $Enums.BusinessPartnerOfficeType
+  periodLabel?: Prisma.StringFilter<"DealerAuditInstance"> | string
+  checklistTemplateId?: Prisma.StringFilter<"DealerAuditInstance"> | string
+  finalScore?: Prisma.FloatNullableFilter<"DealerAuditInstance"> | number | null
+  maxScore?: Prisma.FloatNullableFilter<"DealerAuditInstance"> | number | null
+  closedAt?: Prisma.DateTimeNullableFilter<"DealerAuditInstance"> | Date | string | null
+  cycleId?: Prisma.StringNullableFilter<"DealerAuditInstance"> | string | null
+  reviewerId?: Prisma.StringNullableFilter<"DealerAuditInstance"> | string | null
+  dueAt?: Prisma.DateTimeNullableFilter<"DealerAuditInstance"> | Date | string | null
+  status?: Prisma.StringFilter<"DealerAuditInstance"> | string
+  createdAt?: Prisma.DateTimeFilter<"DealerAuditInstance"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"DealerAuditInstance"> | Date | string
+}
+
 export type DealerAuditInstanceCreateWithoutBusinessPartnerInput = {
   id?: string
   workspaceId: string
@@ -626,9 +885,13 @@ export type DealerAuditInstanceCreateWithoutBusinessPartnerInput = {
   finalScore?: number | null
   maxScore?: number | null
   closedAt?: Date | string | null
+  dueAt?: Date | string | null
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   template: Prisma.ChecklistTemplateCreateNestedOneWithoutAuditInstancesInput
+  cycle?: Prisma.DealerAuditCycleCreateNestedOneWithoutInstancesInput
+  reviewer?: Prisma.UserCreateNestedOneWithoutDealerAuditsToReviewInput
   responses?: Prisma.AuditItemResponseCreateNestedManyWithoutAuditInstanceInput
 }
 
@@ -641,6 +904,10 @@ export type DealerAuditInstanceUncheckedCreateWithoutBusinessPartnerInput = {
   finalScore?: number | null
   maxScore?: number | null
   closedAt?: Date | string | null
+  cycleId?: string | null
+  reviewerId?: string | null
+  dueAt?: Date | string | null
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   responses?: Prisma.AuditItemResponseUncheckedCreateNestedManyWithoutAuditInstanceInput
@@ -672,23 +939,6 @@ export type DealerAuditInstanceUpdateManyWithWhereWithoutBusinessPartnerInput = 
   data: Prisma.XOR<Prisma.DealerAuditInstanceUpdateManyMutationInput, Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutBusinessPartnerInput>
 }
 
-export type DealerAuditInstanceScalarWhereInput = {
-  AND?: Prisma.DealerAuditInstanceScalarWhereInput | Prisma.DealerAuditInstanceScalarWhereInput[]
-  OR?: Prisma.DealerAuditInstanceScalarWhereInput[]
-  NOT?: Prisma.DealerAuditInstanceScalarWhereInput | Prisma.DealerAuditInstanceScalarWhereInput[]
-  id?: Prisma.StringFilter<"DealerAuditInstance"> | string
-  businessPartnerId?: Prisma.StringFilter<"DealerAuditInstance"> | string
-  workspaceId?: Prisma.StringFilter<"DealerAuditInstance"> | string
-  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFilter<"DealerAuditInstance"> | $Enums.BusinessPartnerOfficeType
-  periodLabel?: Prisma.StringFilter<"DealerAuditInstance"> | string
-  checklistTemplateId?: Prisma.StringFilter<"DealerAuditInstance"> | string
-  finalScore?: Prisma.FloatNullableFilter<"DealerAuditInstance"> | number | null
-  maxScore?: Prisma.FloatNullableFilter<"DealerAuditInstance"> | number | null
-  closedAt?: Prisma.DateTimeNullableFilter<"DealerAuditInstance"> | Date | string | null
-  createdAt?: Prisma.DateTimeFilter<"DealerAuditInstance"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"DealerAuditInstance"> | Date | string
-}
-
 export type DealerAuditInstanceCreateWithoutTemplateInput = {
   id?: string
   workspaceId: string
@@ -697,9 +947,13 @@ export type DealerAuditInstanceCreateWithoutTemplateInput = {
   finalScore?: number | null
   maxScore?: number | null
   closedAt?: Date | string | null
+  dueAt?: Date | string | null
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   businessPartner: Prisma.BusinessPartnerCreateNestedOneWithoutDealerAuditInstancesInput
+  cycle?: Prisma.DealerAuditCycleCreateNestedOneWithoutInstancesInput
+  reviewer?: Prisma.UserCreateNestedOneWithoutDealerAuditsToReviewInput
   responses?: Prisma.AuditItemResponseCreateNestedManyWithoutAuditInstanceInput
 }
 
@@ -712,6 +966,10 @@ export type DealerAuditInstanceUncheckedCreateWithoutTemplateInput = {
   finalScore?: number | null
   maxScore?: number | null
   closedAt?: Date | string | null
+  cycleId?: string | null
+  reviewerId?: string | null
+  dueAt?: Date | string | null
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   responses?: Prisma.AuditItemResponseUncheckedCreateNestedManyWithoutAuditInstanceInput
@@ -743,6 +1001,68 @@ export type DealerAuditInstanceUpdateManyWithWhereWithoutTemplateInput = {
   data: Prisma.XOR<Prisma.DealerAuditInstanceUpdateManyMutationInput, Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutTemplateInput>
 }
 
+export type DealerAuditInstanceCreateWithoutCycleInput = {
+  id?: string
+  workspaceId: string
+  officeType: $Enums.BusinessPartnerOfficeType
+  periodLabel: string
+  finalScore?: number | null
+  maxScore?: number | null
+  closedAt?: Date | string | null
+  dueAt?: Date | string | null
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  businessPartner: Prisma.BusinessPartnerCreateNestedOneWithoutDealerAuditInstancesInput
+  template: Prisma.ChecklistTemplateCreateNestedOneWithoutAuditInstancesInput
+  reviewer?: Prisma.UserCreateNestedOneWithoutDealerAuditsToReviewInput
+  responses?: Prisma.AuditItemResponseCreateNestedManyWithoutAuditInstanceInput
+}
+
+export type DealerAuditInstanceUncheckedCreateWithoutCycleInput = {
+  id?: string
+  businessPartnerId: string
+  workspaceId: string
+  officeType: $Enums.BusinessPartnerOfficeType
+  periodLabel: string
+  checklistTemplateId: string
+  finalScore?: number | null
+  maxScore?: number | null
+  closedAt?: Date | string | null
+  reviewerId?: string | null
+  dueAt?: Date | string | null
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  responses?: Prisma.AuditItemResponseUncheckedCreateNestedManyWithoutAuditInstanceInput
+}
+
+export type DealerAuditInstanceCreateOrConnectWithoutCycleInput = {
+  where: Prisma.DealerAuditInstanceWhereUniqueInput
+  create: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutCycleInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutCycleInput>
+}
+
+export type DealerAuditInstanceCreateManyCycleInputEnvelope = {
+  data: Prisma.DealerAuditInstanceCreateManyCycleInput | Prisma.DealerAuditInstanceCreateManyCycleInput[]
+  skipDuplicates?: boolean
+}
+
+export type DealerAuditInstanceUpsertWithWhereUniqueWithoutCycleInput = {
+  where: Prisma.DealerAuditInstanceWhereUniqueInput
+  update: Prisma.XOR<Prisma.DealerAuditInstanceUpdateWithoutCycleInput, Prisma.DealerAuditInstanceUncheckedUpdateWithoutCycleInput>
+  create: Prisma.XOR<Prisma.DealerAuditInstanceCreateWithoutCycleInput, Prisma.DealerAuditInstanceUncheckedCreateWithoutCycleInput>
+}
+
+export type DealerAuditInstanceUpdateWithWhereUniqueWithoutCycleInput = {
+  where: Prisma.DealerAuditInstanceWhereUniqueInput
+  data: Prisma.XOR<Prisma.DealerAuditInstanceUpdateWithoutCycleInput, Prisma.DealerAuditInstanceUncheckedUpdateWithoutCycleInput>
+}
+
+export type DealerAuditInstanceUpdateManyWithWhereWithoutCycleInput = {
+  where: Prisma.DealerAuditInstanceScalarWhereInput
+  data: Prisma.XOR<Prisma.DealerAuditInstanceUpdateManyMutationInput, Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutCycleInput>
+}
+
 export type DealerAuditInstanceCreateWithoutResponsesInput = {
   id?: string
   workspaceId: string
@@ -751,10 +1071,14 @@ export type DealerAuditInstanceCreateWithoutResponsesInput = {
   finalScore?: number | null
   maxScore?: number | null
   closedAt?: Date | string | null
+  dueAt?: Date | string | null
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   businessPartner: Prisma.BusinessPartnerCreateNestedOneWithoutDealerAuditInstancesInput
   template: Prisma.ChecklistTemplateCreateNestedOneWithoutAuditInstancesInput
+  cycle?: Prisma.DealerAuditCycleCreateNestedOneWithoutInstancesInput
+  reviewer?: Prisma.UserCreateNestedOneWithoutDealerAuditsToReviewInput
 }
 
 export type DealerAuditInstanceUncheckedCreateWithoutResponsesInput = {
@@ -767,6 +1091,10 @@ export type DealerAuditInstanceUncheckedCreateWithoutResponsesInput = {
   finalScore?: number | null
   maxScore?: number | null
   closedAt?: Date | string | null
+  cycleId?: string | null
+  reviewerId?: string | null
+  dueAt?: Date | string | null
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -795,10 +1123,14 @@ export type DealerAuditInstanceUpdateWithoutResponsesInput = {
   finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneRequiredWithoutDealerAuditInstancesNestedInput
   template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
+  cycle?: Prisma.DealerAuditCycleUpdateOneWithoutInstancesNestedInput
+  reviewer?: Prisma.UserUpdateOneWithoutDealerAuditsToReviewNestedInput
 }
 
 export type DealerAuditInstanceUncheckedUpdateWithoutResponsesInput = {
@@ -811,6 +1143,80 @@ export type DealerAuditInstanceUncheckedUpdateWithoutResponsesInput = {
   finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cycleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DealerAuditInstanceCreateManyReviewerInput = {
+  id?: string
+  businessPartnerId: string
+  workspaceId: string
+  officeType: $Enums.BusinessPartnerOfficeType
+  periodLabel: string
+  checklistTemplateId: string
+  finalScore?: number | null
+  maxScore?: number | null
+  closedAt?: Date | string | null
+  cycleId?: string | null
+  dueAt?: Date | string | null
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DealerAuditInstanceUpdateWithoutReviewerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
+  periodLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneRequiredWithoutDealerAuditInstancesNestedInput
+  template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
+  cycle?: Prisma.DealerAuditCycleUpdateOneWithoutInstancesNestedInput
+  responses?: Prisma.AuditItemResponseUpdateManyWithoutAuditInstanceNestedInput
+}
+
+export type DealerAuditInstanceUncheckedUpdateWithoutReviewerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  businessPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
+  periodLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  checklistTemplateId?: Prisma.StringFieldUpdateOperationsInput | string
+  finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cycleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  responses?: Prisma.AuditItemResponseUncheckedUpdateManyWithoutAuditInstanceNestedInput
+}
+
+export type DealerAuditInstanceUncheckedUpdateManyWithoutReviewerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  businessPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
+  periodLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  checklistTemplateId?: Prisma.StringFieldUpdateOperationsInput | string
+  finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cycleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -824,6 +1230,10 @@ export type DealerAuditInstanceCreateManyBusinessPartnerInput = {
   finalScore?: number | null
   maxScore?: number | null
   closedAt?: Date | string | null
+  cycleId?: string | null
+  reviewerId?: string | null
+  dueAt?: Date | string | null
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -836,9 +1246,13 @@ export type DealerAuditInstanceUpdateWithoutBusinessPartnerInput = {
   finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
+  cycle?: Prisma.DealerAuditCycleUpdateOneWithoutInstancesNestedInput
+  reviewer?: Prisma.UserUpdateOneWithoutDealerAuditsToReviewNestedInput
   responses?: Prisma.AuditItemResponseUpdateManyWithoutAuditInstanceNestedInput
 }
 
@@ -851,6 +1265,10 @@ export type DealerAuditInstanceUncheckedUpdateWithoutBusinessPartnerInput = {
   finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cycleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   responses?: Prisma.AuditItemResponseUncheckedUpdateManyWithoutAuditInstanceNestedInput
@@ -865,6 +1283,10 @@ export type DealerAuditInstanceUncheckedUpdateManyWithoutBusinessPartnerInput = 
   finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cycleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -878,6 +1300,10 @@ export type DealerAuditInstanceCreateManyTemplateInput = {
   finalScore?: number | null
   maxScore?: number | null
   closedAt?: Date | string | null
+  cycleId?: string | null
+  reviewerId?: string | null
+  dueAt?: Date | string | null
+  status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -890,9 +1316,13 @@ export type DealerAuditInstanceUpdateWithoutTemplateInput = {
   finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   businessPartner?: Prisma.BusinessPartnerUpdateOneRequiredWithoutDealerAuditInstancesNestedInput
+  cycle?: Prisma.DealerAuditCycleUpdateOneWithoutInstancesNestedInput
+  reviewer?: Prisma.UserUpdateOneWithoutDealerAuditsToReviewNestedInput
   responses?: Prisma.AuditItemResponseUpdateManyWithoutAuditInstanceNestedInput
 }
 
@@ -905,6 +1335,10 @@ export type DealerAuditInstanceUncheckedUpdateWithoutTemplateInput = {
   finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cycleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   responses?: Prisma.AuditItemResponseUncheckedUpdateManyWithoutAuditInstanceNestedInput
@@ -919,6 +1353,80 @@ export type DealerAuditInstanceUncheckedUpdateManyWithoutTemplateInput = {
   finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cycleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DealerAuditInstanceCreateManyCycleInput = {
+  id?: string
+  businessPartnerId: string
+  workspaceId: string
+  officeType: $Enums.BusinessPartnerOfficeType
+  periodLabel: string
+  checklistTemplateId: string
+  finalScore?: number | null
+  maxScore?: number | null
+  closedAt?: Date | string | null
+  reviewerId?: string | null
+  dueAt?: Date | string | null
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type DealerAuditInstanceUpdateWithoutCycleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
+  periodLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  businessPartner?: Prisma.BusinessPartnerUpdateOneRequiredWithoutDealerAuditInstancesNestedInput
+  template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutAuditInstancesNestedInput
+  reviewer?: Prisma.UserUpdateOneWithoutDealerAuditsToReviewNestedInput
+  responses?: Prisma.AuditItemResponseUpdateManyWithoutAuditInstanceNestedInput
+}
+
+export type DealerAuditInstanceUncheckedUpdateWithoutCycleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  businessPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
+  periodLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  checklistTemplateId?: Prisma.StringFieldUpdateOperationsInput | string
+  finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  responses?: Prisma.AuditItemResponseUncheckedUpdateManyWithoutAuditInstanceNestedInput
+}
+
+export type DealerAuditInstanceUncheckedUpdateManyWithoutCycleInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  businessPartnerId?: Prisma.StringFieldUpdateOperationsInput | string
+  workspaceId?: Prisma.StringFieldUpdateOperationsInput | string
+  officeType?: Prisma.EnumBusinessPartnerOfficeTypeFieldUpdateOperationsInput | $Enums.BusinessPartnerOfficeType
+  periodLabel?: Prisma.StringFieldUpdateOperationsInput | string
+  checklistTemplateId?: Prisma.StringFieldUpdateOperationsInput | string
+  finalScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -964,10 +1472,16 @@ export type DealerAuditInstanceSelect<ExtArgs extends runtime.Types.Extensions.I
   finalScore?: boolean
   maxScore?: boolean
   closedAt?: boolean
+  cycleId?: boolean
+  reviewerId?: boolean
+  dueAt?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
+  cycle?: boolean | Prisma.DealerAuditInstance$cycleArgs<ExtArgs>
+  reviewer?: boolean | Prisma.DealerAuditInstance$reviewerArgs<ExtArgs>
   responses?: boolean | Prisma.DealerAuditInstance$responsesArgs<ExtArgs>
   _count?: boolean | Prisma.DealerAuditInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["dealerAuditInstance"]>
@@ -982,10 +1496,16 @@ export type DealerAuditInstanceSelectCreateManyAndReturn<ExtArgs extends runtime
   finalScore?: boolean
   maxScore?: boolean
   closedAt?: boolean
+  cycleId?: boolean
+  reviewerId?: boolean
+  dueAt?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
+  cycle?: boolean | Prisma.DealerAuditInstance$cycleArgs<ExtArgs>
+  reviewer?: boolean | Prisma.DealerAuditInstance$reviewerArgs<ExtArgs>
 }, ExtArgs["result"]["dealerAuditInstance"]>
 
 export type DealerAuditInstanceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -998,10 +1518,16 @@ export type DealerAuditInstanceSelectUpdateManyAndReturn<ExtArgs extends runtime
   finalScore?: boolean
   maxScore?: boolean
   closedAt?: boolean
+  cycleId?: boolean
+  reviewerId?: boolean
+  dueAt?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
+  cycle?: boolean | Prisma.DealerAuditInstance$cycleArgs<ExtArgs>
+  reviewer?: boolean | Prisma.DealerAuditInstance$reviewerArgs<ExtArgs>
 }, ExtArgs["result"]["dealerAuditInstance"]>
 
 export type DealerAuditInstanceSelectScalar = {
@@ -1014,24 +1540,34 @@ export type DealerAuditInstanceSelectScalar = {
   finalScore?: boolean
   maxScore?: boolean
   closedAt?: boolean
+  cycleId?: boolean
+  reviewerId?: boolean
+  dueAt?: boolean
+  status?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DealerAuditInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "businessPartnerId" | "workspaceId" | "officeType" | "periodLabel" | "checklistTemplateId" | "finalScore" | "maxScore" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["dealerAuditInstance"]>
+export type DealerAuditInstanceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "businessPartnerId" | "workspaceId" | "officeType" | "periodLabel" | "checklistTemplateId" | "finalScore" | "maxScore" | "closedAt" | "cycleId" | "reviewerId" | "dueAt" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["dealerAuditInstance"]>
 export type DealerAuditInstanceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
+  cycle?: boolean | Prisma.DealerAuditInstance$cycleArgs<ExtArgs>
+  reviewer?: boolean | Prisma.DealerAuditInstance$reviewerArgs<ExtArgs>
   responses?: boolean | Prisma.DealerAuditInstance$responsesArgs<ExtArgs>
   _count?: boolean | Prisma.DealerAuditInstanceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DealerAuditInstanceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
+  cycle?: boolean | Prisma.DealerAuditInstance$cycleArgs<ExtArgs>
+  reviewer?: boolean | Prisma.DealerAuditInstance$reviewerArgs<ExtArgs>
 }
 export type DealerAuditInstanceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   businessPartner?: boolean | Prisma.BusinessPartnerDefaultArgs<ExtArgs>
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
+  cycle?: boolean | Prisma.DealerAuditInstance$cycleArgs<ExtArgs>
+  reviewer?: boolean | Prisma.DealerAuditInstance$reviewerArgs<ExtArgs>
 }
 
 export type $DealerAuditInstancePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1039,6 +1575,8 @@ export type $DealerAuditInstancePayload<ExtArgs extends runtime.Types.Extensions
   objects: {
     businessPartner: Prisma.$BusinessPartnerPayload<ExtArgs>
     template: Prisma.$ChecklistTemplatePayload<ExtArgs>
+    cycle: Prisma.$DealerAuditCyclePayload<ExtArgs> | null
+    reviewer: Prisma.$UserPayload<ExtArgs> | null
     responses: Prisma.$AuditItemResponsePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1051,6 +1589,10 @@ export type $DealerAuditInstancePayload<ExtArgs extends runtime.Types.Extensions
     finalScore: number | null
     maxScore: number | null
     closedAt: Date | null
+    cycleId: string | null
+    reviewerId: string | null
+    dueAt: Date | null
+    status: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["dealerAuditInstance"]>
@@ -1449,6 +1991,8 @@ export interface Prisma__DealerAuditInstanceClient<T, Null = never, ExtArgs exte
   readonly [Symbol.toStringTag]: "PrismaPromise"
   businessPartner<T extends Prisma.BusinessPartnerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BusinessPartnerDefaultArgs<ExtArgs>>): Prisma.Prisma__BusinessPartnerClient<runtime.Types.Result.GetResult<Prisma.$BusinessPartnerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   template<T extends Prisma.ChecklistTemplateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChecklistTemplateDefaultArgs<ExtArgs>>): Prisma.Prisma__ChecklistTemplateClient<runtime.Types.Result.GetResult<Prisma.$ChecklistTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  cycle<T extends Prisma.DealerAuditInstance$cycleArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DealerAuditInstance$cycleArgs<ExtArgs>>): Prisma.Prisma__DealerAuditCycleClient<runtime.Types.Result.GetResult<Prisma.$DealerAuditCyclePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  reviewer<T extends Prisma.DealerAuditInstance$reviewerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DealerAuditInstance$reviewerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   responses<T extends Prisma.DealerAuditInstance$responsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DealerAuditInstance$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditItemResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1488,6 +2032,10 @@ export interface DealerAuditInstanceFieldRefs {
   readonly finalScore: Prisma.FieldRef<"DealerAuditInstance", 'Float'>
   readonly maxScore: Prisma.FieldRef<"DealerAuditInstance", 'Float'>
   readonly closedAt: Prisma.FieldRef<"DealerAuditInstance", 'DateTime'>
+  readonly cycleId: Prisma.FieldRef<"DealerAuditInstance", 'String'>
+  readonly reviewerId: Prisma.FieldRef<"DealerAuditInstance", 'String'>
+  readonly dueAt: Prisma.FieldRef<"DealerAuditInstance", 'DateTime'>
+  readonly status: Prisma.FieldRef<"DealerAuditInstance", 'String'>
   readonly createdAt: Prisma.FieldRef<"DealerAuditInstance", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"DealerAuditInstance", 'DateTime'>
 }
@@ -1888,6 +2436,44 @@ export type DealerAuditInstanceDeleteManyArgs<ExtArgs extends runtime.Types.Exte
    * Limit how many DealerAuditInstances to delete.
    */
   limit?: number
+}
+
+/**
+ * DealerAuditInstance.cycle
+ */
+export type DealerAuditInstance$cycleArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DealerAuditCycle
+   */
+  select?: Prisma.DealerAuditCycleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DealerAuditCycle
+   */
+  omit?: Prisma.DealerAuditCycleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DealerAuditCycleInclude<ExtArgs> | null
+  where?: Prisma.DealerAuditCycleWhereInput
+}
+
+/**
+ * DealerAuditInstance.reviewer
+ */
+export type DealerAuditInstance$reviewerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

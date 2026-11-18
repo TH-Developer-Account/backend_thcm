@@ -112,6 +112,7 @@ export const ModelName = {
   ChecklistTemplate: 'ChecklistTemplate',
   ChecklistItem: 'ChecklistItem',
   ChecklistScoreLevel: 'ChecklistScoreLevel',
+  DealerAuditCycle: 'DealerAuditCycle',
   DealerAuditInstance: 'DealerAuditInstance',
   AuditItemResponse: 'AuditItemResponse',
   FactoryAuditTemplate: 'FactoryAuditTemplate',
@@ -130,7 +131,10 @@ export const ModelName = {
   MachineStudy: 'MachineStudy',
   MachineStudyCycle: 'MachineStudyCycle',
   Machine: 'Machine',
-  MachineTelemetry: 'MachineTelemetry'
+  MachineTelemetry: 'MachineTelemetry',
+  CppRequest: 'CppRequest',
+  CppAttachment: 'CppAttachment',
+  CppSlotAssignment: 'CppSlotAssignment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1180,6 +1184,23 @@ export const ChecklistScoreLevelScalarFieldEnum = {
 export type ChecklistScoreLevelScalarFieldEnum = (typeof ChecklistScoreLevelScalarFieldEnum)[keyof typeof ChecklistScoreLevelScalarFieldEnum]
 
 
+export const DealerAuditCycleScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  checklistTemplateId: 'checklistTemplateId',
+  periodType: 'periodType',
+  periodYear: 'periodYear',
+  periodQuarter: 'periodQuarter',
+  periodLabel: 'periodLabel',
+  dueAt: 'dueAt',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DealerAuditCycleScalarFieldEnum = (typeof DealerAuditCycleScalarFieldEnum)[keyof typeof DealerAuditCycleScalarFieldEnum]
+
+
 export const DealerAuditInstanceScalarFieldEnum = {
   id: 'id',
   businessPartnerId: 'businessPartnerId',
@@ -1190,6 +1211,10 @@ export const DealerAuditInstanceScalarFieldEnum = {
   finalScore: 'finalScore',
   maxScore: 'maxScore',
   closedAt: 'closedAt',
+  cycleId: 'cycleId',
+  reviewerId: 'reviewerId',
+  dueAt: 'dueAt',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1440,6 +1465,60 @@ export const MachineTelemetryScalarFieldEnum = {
 } as const
 
 export type MachineTelemetryScalarFieldEnum = (typeof MachineTelemetryScalarFieldEnum)[keyof typeof MachineTelemetryScalarFieldEnum]
+
+
+export const CppRequestScalarFieldEnum = {
+  id: 'id',
+  referenceNumber: 'referenceNumber',
+  workspaceId: 'workspaceId',
+  initiatedById: 'initiatedById',
+  status: 'status',
+  category: 'category',
+  plant: 'plant',
+  condition: 'condition',
+  isSpare: 'isSpare',
+  reasonCode: 'reasonCode',
+  supplierName: 'supplierName',
+  supplierCode: 'supplierCode',
+  maxPartValue: 'maxPartValue',
+  maxVariationPct: 'maxVariationPct',
+  annualisedValue: 'annualisedValue',
+  annualisedImpact: 'annualisedImpact',
+  actualImpact: 'actualImpact',
+  sections: 'sections',
+  submittedAt: 'submittedAt',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CppRequestScalarFieldEnum = (typeof CppRequestScalarFieldEnum)[keyof typeof CppRequestScalarFieldEnum]
+
+
+export const CppAttachmentScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  type: 'type',
+  fileName: 'fileName',
+  s3Key: 's3Key',
+  uploadedAt: 'uploadedAt'
+} as const
+
+export type CppAttachmentScalarFieldEnum = (typeof CppAttachmentScalarFieldEnum)[keyof typeof CppAttachmentScalarFieldEnum]
+
+
+export const CppSlotAssignmentScalarFieldEnum = {
+  id: 'id',
+  workspaceId: 'workspaceId',
+  roleKey: 'roleKey',
+  scope: 'scope',
+  userId: 'userId',
+  position: 'position',
+  updatedById: 'updatedById',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type CppSlotAssignmentScalarFieldEnum = (typeof CppSlotAssignmentScalarFieldEnum)[keyof typeof CppSlotAssignmentScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -3,6 +3,14 @@ import multer from "multer";
 import asyncHandler from "@shared/middleware/async.middleware";
 import { requireAuth, authorize } from "@kernel/auth/auth.middleware";
 import {
+	// ── Templates (Admin) ──
+	createChecklistTemplate,
+	listChecklistTemplates,
+	getChecklistTemplateById,
+	updateChecklistTemplateDraft,
+	createTemplateDraftVersion,
+	publishChecklistTemplate,
+
 	// ── Internal staff surface: Admin/Reviewer view any instance, Reviewer acts ──
 	triggerDealerAuditInstance,
 	listDealerAuditInstances,
@@ -18,18 +26,13 @@ import {
 	submitMyDealerAuditInstance,
 	resubmitMyDealerAuditInstance,
 	uploadMyDealerAuditItemEvidence,
-
-	// ── Templates (Admin) ──
-	listChecklistTemplates,
-	getChecklistTemplateById,
-	createChecklistTemplate,
-	updateChecklistTemplateDraft,
-	publishChecklistTemplate,
-	createTemplateDraftVersion,
-	archiveChecklistTemplate,
-	deleteChecklistTemplate,
-	uploadChecklistReferencePhoto,
 } from "./dealerAudit.controller";
+import {
+	// ── Audit cycles (Admin): launch + the option lists its wizard needs ──
+	launchDealerAuditCycle,
+	listReviewerOptions,
+	listDealerOptions,
+} from "./dealerAuditCycle.controller";
 
 const router = Router();
 export const APP_KEY = "DEALER_AUDIT";
@@ -38,12 +41,6 @@ const MODULE_REVIEW = "DEALER_AUDIT_REVIEW";
 const MODULE_DEALER = "DEALER_AUDIT_DEALER";
 
 const upload = multer({ storage: multer.memoryStorage() });
-// Reference photos: one image, 5 MB cap enforced at the edge as well as in
-// the service.
-const uploadPhoto = multer({
-	storage: multer.memoryStorage(),
-	limits: { fileSize: 5 * 1024 * 1024, files: 1 },
-});
 
 // ── Dealer surface (own instances only) ──
 //
@@ -104,28 +101,40 @@ router.post(
 // that cross-need is handled via the Reviewer profile's permissions,
 // not by this route accepting two modules.
 
-// ── Checklist templates (Admin) ──
-// The fixed path /reference-photos is declared BEFORE /:id so Express
-// never reads it as an id.
-
-router.get(
-	"/templates",
-	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "read"),
-	asyncHandler(listChecklistTemplates),
-);
+// ── Audit cycles (Admin) ──
+// One POST creates the cycle and every dealer's audit in one transaction.
+// The option lists feed the wizard's "Select dealers" / "Assign reviewers"
+// steps; both are read-only and need the admin read grant.
 router.post(
-	"/templates/reference-photos",
+	"/cycles",
 	requireAuth,
 	authorize(APP_KEY, MODULE_ADMIN, "write"),
-	uploadPhoto.single("file"),
-	asyncHandler(uploadChecklistReferencePhoto),
+	asyncHandler(launchDealerAuditCycle),
 );
+router.get(
+	"/options/reviewers",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	asyncHandler(listReviewerOptions),
+);
+router.get(
+	"/options/dealers",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	asyncHandler(listDealerOptions),
+);
+
 router.post(
 	"/templates",
 	requireAuth,
 	authorize(APP_KEY, MODULE_ADMIN, "write"),
 	asyncHandler(createChecklistTemplate),
+);
+router.get(
+	"/templates",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	asyncHandler(listChecklistTemplates),
 );
 router.get(
 	"/templates/:id",
@@ -140,28 +149,16 @@ router.patch(
 	asyncHandler(updateChecklistTemplateDraft),
 );
 router.post(
-	"/templates/:id/publish",
-	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "write"),
-	asyncHandler(publishChecklistTemplate),
-);
-router.post(
 	"/templates/:id/new-draft",
 	requireAuth,
 	authorize(APP_KEY, MODULE_ADMIN, "write"),
 	asyncHandler(createTemplateDraftVersion),
 );
 router.post(
-	"/templates/:id/archive",
+	"/templates/:id/publish",
 	requireAuth,
 	authorize(APP_KEY, MODULE_ADMIN, "write"),
-	asyncHandler(archiveChecklistTemplate),
-);
-router.delete(
-	"/templates/:id",
-	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "write"),
-	asyncHandler(deleteChecklistTemplate),
+	asyncHandler(publishChecklistTemplate),
 );
 
 router.post(
