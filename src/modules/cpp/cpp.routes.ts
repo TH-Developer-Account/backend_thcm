@@ -12,11 +12,6 @@ import {
 	CPP_MODULE,
 } from "./cpp.constants";
 import {
-	getApprovalChains,
-	getApprovalMatrix,
-	replaceMatrixUser,
-	saveApprovalMatrix,
-	searchMatrixUsers,
 	createCppRequest,
 	deleteCppAttachment,
 	deleteCppDraft,
@@ -25,6 +20,14 @@ import {
 	updateCppRequest,
 	uploadCppAttachment,
 } from "./cpp.controller";
+import {
+	getApprovalChains,
+	getApprovalMatrix,
+	replaceMatrixUser,
+	saveApprovalMatrix,
+	searchMatrixUsers,
+} from "./cpp.controller";
+import { previewCppApproval, submitCppRequest } from "./cpp.submit.controller";
 
 const router = Router();
 
@@ -36,19 +39,82 @@ const upload = multer({
 
 /* Approval matrix (admin). Registered BEFORE "/:id" so "approval-matrix" is
  * never read as a request id. */
-router.get("/approval-matrix", requireAuth, authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "read"), asyncHandler(getApprovalMatrix));
-router.put("/approval-matrix", requireAuth, authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "write"), asyncHandler(saveApprovalMatrix));
-router.post("/approval-matrix/replace-user", requireAuth, authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "write"), asyncHandler(replaceMatrixUser));
-router.get("/approval-matrix/users", requireAuth, authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "write"), asyncHandler(searchMatrixUsers));
-router.get("/approval-matrix/chains", requireAuth, authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "read"), asyncHandler(getApprovalChains));
+router.get(
+	"/approval-matrix",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "read"),
+	asyncHandler(getApprovalMatrix),
+);
+router.put(
+	"/approval-matrix",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "write"),
+	asyncHandler(saveApprovalMatrix),
+);
+router.post(
+	"/approval-matrix/replace-user",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "write"),
+	asyncHandler(replaceMatrixUser),
+);
+router.get(
+	"/approval-matrix/users",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "write"),
+	asyncHandler(searchMatrixUsers),
+);
+router.get(
+	"/approval-matrix/chains",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "read"),
+	asyncHandler(getApprovalChains),
+);
 
 /* Requests */
-router.get("/", requireAuth, authorize(CPP_APP_KEY, CPP_MODULE, "read"), asyncHandler(listCppRequests));
-router.post("/", requireAuth, authorize(CPP_APP_KEY, CPP_MODULE, "write"), asyncHandler(createCppRequest));
+router.get(
+	"/",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MODULE, "read"),
+	asyncHandler(listCppRequests),
+);
+router.post(
+	"/",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MODULE, "write"),
+	asyncHandler(createCppRequest),
+);
 
-router.get("/:id", requireAuth, authorize(CPP_APP_KEY, CPP_MODULE, "read"), asyncHandler(getCppRequestById));
-router.put("/:id", requireAuth, authorize(CPP_APP_KEY, CPP_MODULE, "write"), asyncHandler(updateCppRequest));
-router.delete("/:id", requireAuth, authorize(CPP_APP_KEY, CPP_MODULE, "write"), asyncHandler(deleteCppDraft));
+router.get(
+	"/:id",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MODULE, "read"),
+	asyncHandler(getCppRequestById),
+);
+router.put(
+	"/:id",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MODULE, "write"),
+	asyncHandler(updateCppRequest),
+);
+router.delete(
+	"/:id",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MODULE, "write"),
+	asyncHandler(deleteCppDraft),
+);
+
+router.get(
+	"/:id/approval-preview",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MODULE, "read"),
+	asyncHandler(previewCppApproval),
+);
+router.post(
+	"/:id/submit",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MODULE, "write"),
+	asyncHandler(submitCppRequest),
+);
 
 router.post(
 	"/:id/attachments",

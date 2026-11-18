@@ -20,6 +20,7 @@ import {
 	type CppAttachmentType,
 	scopesForRole,
 } from "./cpp.constants";
+import { getActiveWorkflowForSubject } from "@kernel/workflow/workflowSubject.helper";
 import {
 	type CppAttachmentWithUrl,
 	type SlotUpdate,
@@ -193,7 +194,11 @@ export const getCppRequestById = async (
 
 		// Open to every signed-in user with CPP read access in the workspace:
 		// approvers and observers must be able to open it. Tighten here if needed.
-		res.status(200).json({ success: true, data: await loadDetail(id) });
+		const detail = await loadDetail(id);
+		const activeWorkflow = await getActiveWorkflowForSubject("CPP_REQUEST", id);
+		res
+			.status(200)
+			.json({ success: true, data: { ...detail, activeWorkflow } });
 	} catch (error) {
 		next(error);
 	}

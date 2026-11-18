@@ -1,235 +1,255 @@
 import { prisma } from "@shared/config/prisma";
 import { faker } from "@faker-js/faker";
 import {
-  MARKETING_ACTIVITY_PLANNER,
-  VENDOR_ONBOARDING,
-  MEDICAL_CLAIM,
-  EVENT_PLANNING_CALENDAR,
-  branchData,
-  eventNameData,
-  regionData,
-  budgetCodeData,
-  verticalsData,
-  products,
-  SAMPLE_PROFILE_TEMPLATES,
+	MARKETING_ACTIVITY_PLANNER,
+	VENDOR_ONBOARDING,
+	MEDICAL_CLAIM,
+	EVENT_PLANNING_CALENDAR,
+	branchData,
+	eventNameData,
+	regionData,
+	budgetCodeData,
+	verticalsData,
+	products,
+	SAMPLE_PROFILE_TEMPLATES,
 } from "./constants";
 import { ProductMasterCreateManyInput } from "./generated/prisma/models";
 
 type PermissionActionValue =
-  (typeof SAMPLE_PROFILE_TEMPLATES)[number]["actions"][number];
+	(typeof SAMPLE_PROFILE_TEMPLATES)[number]["actions"][number];
 
 function buildModulePermissionRows(
-  profileId: string,
-  moduleIds: string[],
-  actions: readonly PermissionActionValue[],
+	profileId: string,
+	moduleIds: string[],
+	actions: readonly PermissionActionValue[],
 ) {
-  return moduleIds.flatMap((moduleId) =>
-    actions.map((action) => ({ profileId, moduleId, action })),
-  );
+	return moduleIds.flatMap((moduleId) =>
+		actions.map((action) => ({ profileId, moduleId, action })),
+	);
 }
 
 async function createSampleProfiles(workspaceId: string): Promise<void> {
-  const apps = await prisma.app.findMany({
-    select: { id: true, modules: { select: { id: true } } },
-  });
+	const apps = await prisma.app.findMany({
+		select: { id: true, modules: { select: { id: true } } },
+	});
 
-  for (const app of apps) {
-    const moduleIds = app.modules.map((appModule) => appModule.id);
+	for (const app of apps) {
+		const moduleIds = app.modules.map((appModule) => appModule.id);
 
-    for (const template of SAMPLE_PROFILE_TEMPLATES) {
-      const profile = await prisma.profile.create({
-        data: {
-          workspaceId,
-          appId: app.id,
-          name: template.name,
-          description: template.description,
-        },
-      });
+		for (const template of SAMPLE_PROFILE_TEMPLATES) {
+			const profile = await prisma.profile.create({
+				data: {
+					workspaceId,
+					appId: app.id,
+					name: template.name,
+					description: template.description,
+				},
+			});
 
-      await prisma.profilePermission.createMany({
-        data: buildModulePermissionRows(
-          profile.id,
-          moduleIds,
-          template.actions,
-        ),
-      });
-    }
-  }
+			await prisma.profilePermission.createMany({
+				data: buildModulePermissionRows(
+					profile.id,
+					moduleIds,
+					template.actions,
+				),
+			});
+		}
+	}
 }
 
 async function main() {
-  console.log("🌱 Seeding database...");
+	console.log("🌱 Seeding database...");
 
-  // ─────────────────────────────────────────────
-  // STEP 1: CLEAN ALL TABLES
-  // ─────────────────────────────────────────────
-  await prisma.importExportLog.deleteMany();
-  await prisma.notification.deleteMany();
-  await prisma.vendorOnboardingDocument.deleteMany();
-  await prisma.vendorOnboarding.deleteMany();
-  await prisma.medicalClaim.deleteMany();
-  await prisma.medicalClaimBill.deleteMany();
-  await prisma.approval.deleteMany();
-  await prisma.stageInstance.deleteMany();
-  await prisma.workflowInstance.deleteMany();
-  await prisma.templateApprover.deleteMany();
-  await prisma.templateStage.deleteMany();
-  await prisma.workflowTemplate.deleteMany();
+	// ─────────────────────────────────────────────
+	// STEP 1: CLEAN ALL TABLES
+	// ─────────────────────────────────────────────
+	await prisma.importExportLog.deleteMany();
+	await prisma.notification.deleteMany();
+	await prisma.vendorOnboardingDocument.deleteMany();
+	await prisma.vendorOnboarding.deleteMany();
+	await prisma.medicalClaim.deleteMany();
+	await prisma.medicalClaimBill.deleteMany();
+	await prisma.cppAttachment.deleteMany();
+	await prisma.cppRequest.deleteMany();
+	await prisma.cppSlotAssignment.deleteMany();
+	await prisma.approval.deleteMany();
+	await prisma.stageInstance.deleteMany();
+	await prisma.workflowInstance.deleteMany();
+	await prisma.templateApprover.deleteMany();
+	await prisma.templateStage.deleteMany();
+	await prisma.workflowTemplate.deleteMany();
 
-  await prisma.userProfile.deleteMany();
-  await prisma.appAdministrator.deleteMany();
-  await prisma.profilePermission.deleteMany();
-  await prisma.profile.deleteMany();
-  await prisma.workspaceUser.deleteMany();
-  await prisma.workspaceApp.deleteMany();
-  await prisma.module.deleteMany();
-  await prisma.app.deleteMany();
-  await prisma.workspace.deleteMany();
-  await prisma.lineItem.deleteMany();
-  await prisma.productMaster.deleteMany();
-  await prisma.cRF.deleteMany();
-  await prisma.ePF.deleteMany();
-  await prisma.activityLog.deleteMany();
-  await prisma.lead.deleteMany();
-  await prisma.comment.deleteMany();
+	await prisma.userProfile.deleteMany();
+	await prisma.appAdministrator.deleteMany();
+	await prisma.profilePermission.deleteMany();
+	await prisma.profile.deleteMany();
+	await prisma.workspaceUser.deleteMany();
+	await prisma.workspaceApp.deleteMany();
+	await prisma.module.deleteMany();
+	await prisma.app.deleteMany();
+	await prisma.workspace.deleteMany();
+	await prisma.lineItem.deleteMany();
+	await prisma.productMaster.deleteMany();
+	await prisma.cRF.deleteMany();
+	await prisma.ePF.deleteMany();
+	await prisma.activityLog.deleteMany();
+	await prisma.lead.deleteMany();
+	await prisma.comment.deleteMany();
 
-  // ✅ NEW — clean vendor onboarding tables too
-  await prisma.accessToken.deleteMany();
-  await prisma.vendorOnboardingDocument.deleteMany();
-  await prisma.vendorOnboarding.deleteMany();
+	// ✅ NEW — clean vendor onboarding tables too
+	await prisma.accessToken.deleteMany();
+	await prisma.vendorOnboardingDocument.deleteMany();
+	await prisma.vendorOnboarding.deleteMany();
 
-  await prisma.eventProposal.deleteMany();
-  await prisma.branch.deleteMany();
-  // Region was renamed to Zone (same table — EventProposal's business
-  // region and User's zone are the same concept, unified into one master).
-  await prisma.zone.deleteMany();
-  await prisma.vertical.deleteMany();
-  await prisma.department.deleteMany();
-  await prisma.budgetMaster.deleteMany();
-  await prisma.eventName.deleteMany();
-  await prisma.user.deleteMany();
+	await prisma.eventProposal.deleteMany();
+	await prisma.branch.deleteMany();
+	// Region was renamed to Zone (same table — EventProposal's business
+	// region and User's zone are the same concept, unified into one master).
+	await prisma.zone.deleteMany();
+	await prisma.vertical.deleteMany();
+	await prisma.department.deleteMany();
+	await prisma.budgetMaster.deleteMany();
+	await prisma.eventName.deleteMany();
+	await prisma.user.deleteMany();
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // STEP 2: WORKSPACE
-  // ─────────────────────────────────────────────────────────────────────────
+	// ─────────────────────────────────────────────────────────────────────────
+	// STEP 2: WORKSPACE
+	// ─────────────────────────────────────────────────────────────────────────
 
-  const workspace = await prisma.workspace.create({
-    data: { name: "Tata Hitachi Workspace" },
-  });
-  console.log("✅ Workspace created:", workspace.name);
+	const workspace = await prisma.workspace.create({
+		data: { name: "Tata Hitachi Workspace" },
+	});
+	console.log("✅ Workspace created:", workspace.name);
 
-  // ─────────────────────────────────────────────────────────────────────────
-  // STEP 3: APPS — only MAP and Vendor Onboarding
-  // ─────────────────────────────────────────────────────────────────────────
+	// ─────────────────────────────────────────────────────────────────────────
+	// STEP 3: APPS — only MAP and Vendor Onboarding
+	// ─────────────────────────────────────────────────────────────────────────
 
-  const mapApp = await prisma.app.create({
-    data: { key: "MAP", name: MARKETING_ACTIVITY_PLANNER },
-  });
+	const mapApp = await prisma.app.create({
+		data: { key: "MAP", name: MARKETING_ACTIVITY_PLANNER },
+	});
 
-  const vendorApp = await prisma.app.create({
-    data: { key: "VENDOR_ONBOARDING", name: VENDOR_ONBOARDING },
-  });
-  const mediclaimApp = await prisma.app.create({
-    data: { key: "MEDICAL_CLAIM", name: MEDICAL_CLAIM },
-  });
+	const vendorApp = await prisma.app.create({
+		data: { key: "VENDOR_ONBOARDING", name: VENDOR_ONBOARDING },
+	});
+	const mediclaimApp = await prisma.app.create({
+		data: { key: "MEDICAL_CLAIM", name: MEDICAL_CLAIM },
+	});
+	const cppApp = await prisma.app.create({
+		data: { key: "CPP", name: "Contract Price Procurement" },
+	});
 
-  await prisma.workspaceApp.createMany({
-    data: [
-      { workspaceId: workspace.id, appId: mapApp.id },
-      { workspaceId: workspace.id, appId: vendorApp.id },
-      { workspaceId: workspace.id, appId: mediclaimApp.id },
-    ],
-  });
-  console.log("✅ Apps enabled: MAP, Vendor Onboarding");
+	await prisma.workspaceApp.createMany({
+		data: [
+			{ workspaceId: workspace.id, appId: mapApp.id },
+			{ workspaceId: workspace.id, appId: vendorApp.id },
+			{ workspaceId: workspace.id, appId: mediclaimApp.id },
+			{ workspaceId: workspace.id, appId: cppApp.id },
+		],
+	});
+	console.log("✅ Apps enabled: MAP, Vendor Onboarding");
 
-  await prisma.module.create({
-    data: { key: "EPC", name: EVENT_PLANNING_CALENDAR, appId: mapApp.id },
-  });
-  await prisma.module.create({
-    data: { key: "EPF", name: "Event Proposal Form", appId: mapApp.id },
-  });
-  await prisma.module.create({
-    data: { key: "CRF", name: "Customer Response Form", appId: mapApp.id },
-  });
+	await prisma.module.create({
+		data: { key: "EPC", name: EVENT_PLANNING_CALENDAR, appId: mapApp.id },
+	});
+	await prisma.module.create({
+		data: { key: "EPF", name: "Event Proposal Form", appId: mapApp.id },
+	});
+	await prisma.module.create({
+		data: { key: "CRF", name: "Customer Response Form", appId: mapApp.id },
+	});
 
-  await prisma.module.create({
-    data: {
-      key: "VENDOR_INITIATION",
-      name: "Vendor Initiation",
-      appId: vendorApp.id,
-    },
-  });
-  await prisma.module.create({
-    data: {
-      key: "MEDICAL_CLAIM_INITIATION",
-      name: "Medical Claim Initiation",
-      appId: mediclaimApp.id,
-    },
-  });
+	await prisma.module.create({
+		data: {
+			key: "VENDOR_INITIATION",
+			name: "Vendor Initiation",
+			appId: vendorApp.id,
+		},
+	});
+	await prisma.module.create({
+		data: {
+			key: "MEDICAL_CLAIM_INITIATION",
+			name: "Medical Claim Initiation",
+			appId: mediclaimApp.id,
+		},
+	});
 
-  console.log("✅ Modules created for MAP and Vendor Onboarding");
+	await prisma.module.create({
+		data: { key: "CPP_REQUEST", name: "CPP Request", appId: cppApp.id },
+	});
+	await prisma.module.create({
+		data: {
+			key: "CPP_APPROVAL_MATRIX",
+			name: "CPP Approval Matrix",
+			appId: cppApp.id,
+		},
+	});
 
-  await createSampleProfiles(workspace.id);
-  console.log("✅ Sample Viewer / Editor profiles created for every app");
+	console.log(
+		"✅ Modules created for MAP, Vendor Onboarding, Medical Claim and CPP",
+	);
 
-  const departments = await Promise.all(
-    [
-      "Marketing",
-      "Service",
-      "Corporate",
-      "Parts",
-      "Sales",
-      "Manufacturing and Plant Administration",
-    ].map((name) =>
-      prisma.department.create({
-        data: {
-          department_code: name.slice(0, 3).toUpperCase(),
-          department_name: name,
-        },
-      }),
-    ),
-  );
+	await createSampleProfiles(workspace.id);
+	console.log("✅ Sample Viewer / Editor profiles created for every app");
 
-  for (const item of verticalsData) {
-    const dept = departments.find(
-      (d) => d.department_name === item.departmentName,
-    );
-    if (!dept) continue;
+	const departments = await Promise.all(
+		[
+			"Marketing",
+			"Service",
+			"Corporate",
+			"Parts",
+			"Sales",
+			"Manufacturing and Plant Administration",
+		].map((name) =>
+			prisma.department.create({
+				data: {
+					department_code: name.slice(0, 3).toUpperCase(),
+					department_name: name,
+				},
+			}),
+		),
+	);
 
-    await prisma.vertical.createMany({
-      data: item.verticals.map((v) => ({
-        name: v,
-        code: v.slice(0, 3).toUpperCase(),
-        departmentId: dept.id,
-      })),
-    });
-  }
+	for (const item of verticalsData) {
+		const dept = departments.find(
+			(d) => d.department_name === item.departmentName,
+		);
+		if (!dept) continue;
 
-  // regionData still uses region_code/region_name — unchanged, Zone kept
-  // those column names when it absorbed the old Region model.
-  await prisma.zone.createMany({ data: regionData, skipDuplicates: true });
+		await prisma.vertical.createMany({
+			data: item.verticals.map((v) => ({
+				name: v,
+				code: v.slice(0, 3).toUpperCase(),
+				departmentId: dept.id,
+			})),
+		});
+	}
 
-  await prisma.branch.createMany({ data: branchData, skipDuplicates: true });
+	// regionData still uses region_code/region_name — unchanged, Zone kept
+	// those column names when it absorbed the old Region model.
+	await prisma.zone.createMany({ data: regionData, skipDuplicates: true });
 
-  await prisma.budgetMaster.createMany({
-    data: budgetCodeData,
-    skipDuplicates: true,
-  });
+	await prisma.branch.createMany({ data: branchData, skipDuplicates: true });
 
-  await prisma.eventName.createMany({
-    data: eventNameData,
-    skipDuplicates: true,
-  });
+	await prisma.budgetMaster.createMany({
+		data: budgetCodeData,
+		skipDuplicates: true,
+	});
 
-  await prisma.productMaster.createMany({
-    data: products as ProductMasterCreateManyInput[],
-    skipDuplicates: true,
-  });
+	await prisma.eventName.createMany({
+		data: eventNameData,
+		skipDuplicates: true,
+	});
 
-  console.log("✅ Products created");
-  console.log("\n🎉 Seeding completed successfully\n");
+	await prisma.productMaster.createMany({
+		data: products as ProductMasterCreateManyInput[],
+		skipDuplicates: true,
+	});
+
+	console.log("✅ Products created");
+	console.log("\n🎉 Seeding completed successfully\n");
 }
 
 main()
-  .catch(console.error)
-  .finally(() => prisma.$disconnect());
+	.catch(console.error)
+	.finally(() => prisma.$disconnect());
