@@ -5945,6 +5945,25 @@ export const MachineScalarFieldEnum = {
   id: 'id',
   machineSerialNumber: 'machineSerialNumber',
   customerId: 'customerId',
+  custCode: 'custCode',
+  modelName: 'modelName',
+  siteLocation: 'siteLocation',
+  isConsiteMachine: 'isConsiteMachine',
+  isKeyAccount: 'isKeyAccount',
+  mcDescription: 'mcDescription',
+  mcStatus: 'mcStatus',
+  warrantyStart: 'warrantyStart',
+  warrantyEnd: 'warrantyEnd',
+  masterWarranty: 'masterWarranty',
+  serviceDealerCode: 'serviceDealerCode',
+  purchaseOrderNo: 'purchaseOrderNo',
+  purchaseOrderDate: 'purchaseOrderDate',
+  goodsReceiptDate: 'goodsReceiptDate',
+  goodsReceiptValue: 'goodsReceiptValue',
+  plant: 'plant',
+  invoiceNo: 'invoiceNo',
+  invoiceDate: 'invoiceDate',
+  invoiceValue: 'invoiceValue',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -5958,6 +5977,8 @@ export const MachineTelemetryScalarFieldEnum = {
   latitude: 'latitude',
   longitude: 'longitude',
   hmr: 'hmr',
+  dailyOperationHrs: 'dailyOperationHrs',
+  pincode: 'pincode',
   syncedAt: 'syncedAt'
 } as const
 

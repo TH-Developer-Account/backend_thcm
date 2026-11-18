@@ -1766,40 +1766,105 @@ model MachineStudyCycle {
 // the business key and the primary key — no separate surrogate id.
 // ─────────────────────────────────────────────────────────────────────────────
 model Machine {
-  id           String       @default(uuid())
-  machineSerialNumber String   @id
-  // customerId is intentionally left unset here. It's out of scope for
-  // both the import and the daily C4C sync — filled by a separate process
-  // later. Do not populate this from C4C (CACCOUNT_UUID), even though C4C
-  // returns it on every call — confirmed out of scope for now.
-  customerId   String?
+  id                  String    @default(uuid())
+  machineSerialNumber String    @id
+  customerId          String?
+
+  custCode            String?   // raw SAP/C4C customer code — kept even if it can't be resolved to a BusinessPartner
+  modelName           String?   // e.g. "ZX490LCH-7G" — not in your screenshot's list, added so this data isn't lost
+  siteLocation        String?   // same
+
+  // ── Telematics source classification (new) ──────────────────────────────
+  // true  = ConSite (bulk API, via Common_Machine_Info_Search)
+  // false/null = InSite (per-machine C4C OData call, the original sync)
+  // null  = not yet classified — run scripts/classifyMachineTelematicsSource.ts
+  // Set purely from the serial number (see
+  // modules/machine-telemetry/machineTelematicsClassifier.ts), independent
+  // of isKeyAccount below.
+  isConsiteMachine    Boolean?
+
+  // ── Key-account flag (new) ───────────────────────────────────────────────
+  // Set from the key-account Excel (scripts/importKeyAccountMachines.ts).
+  // Gates whether this machine's telemetry is actually fetched at all —
+  // see machineTelemetrySync.service.ts. Independent of
+  // BusinessPartner.isKeyAccount (confirmed as a deliberate choice: this
+  // Excel is a specific machine list for the telemetry rollout, not a
+  // restatement of account-level key-account status).
+  isKeyAccount        Boolean   @default(false)
+
+  mcDescription       String?
+  mcStatus             String?
+  warrantyStart        DateTime?
+  warrantyEnd          DateTime?
+  masterWarranty       Int?       // assumed: years
+  serviceDealerCode    String?    // assumed name for the truncated "Service_Dealer_"
+
+  purchaseOrderNo      String?
+  purchaseOrderDate    DateTime?
+  goodsReceiptDate     DateTime?
+  goodsReceiptValue    Int?
+  plant                String?
+
+  invoiceNo            String?
+  invoiceDate          DateTime?
+  invoiceValue         Int?
+
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   telemetry MachineTelemetry[]
+
+  @@index([custCode])
+  @@index([isKeyAccount])
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MachineTelemetry — append-only history, one row per machine per daily
-// sync run. Never updated in place; each 1am job run adds ~11,100 rows.
+// sync run. Never updated in place; each 1am job run adds rows for every
+// synced machine (ConSite + C4C/InSite combined).
 //
 // syncedAt is set ONCE per job run (not DateTime @default(now()) per row),
 // so every machine's row from a given day's sync shares an identical
-// timestamp — C4C gives us no per-reading timestamp.
+// timestamp — neither source gives us a per-reading timestamp.
 //
-// hmr defaults to 0: C4C's current $select list for this entity doesn't
-// return an HMR field yet. This column stays real so nothing downstream
-// breaks once the real field is wired in — see
-// machineTelemetryC4CSync.service.ts for the exact TODO line.
+// hmr defaults to 0 on the C4C/InSite path: C4C's current $select list for
+// this entity doesn't return an HMR field yet. This column stays real so
+// nothing downstream breaks once the real field is wired in — see
+// machineTelemetryC4CSync.service.ts for the exact TODO line. The ConSite
+// path populates hmr from operationTm.
+//
+// dailyOperationHrs is derived, not sourced directly from either API: both
+// ConSite and C4C only ever return a machine's CUMULATIVE hmr reading as
+// of today, never "yesterday's" value on its own. This column stores
+// today's reading minus the machine's previous stored reading — i.e. the
+// day's actual hours of operation — computed once at sync time from this
+// same table's own history (see modules/machine-telemetry/utils/
+// dailyOperation.ts). Nullable: null means "no reliable delta for this
+// day" — either there's no previous reading yet (first-ever sync for this
+// machine) or today's cumulative reading was LESS than the previous one
+// (meter reset, serial number reassigned to a different physical machine,
+// or a bad reading) — never guessed or backfilled with 0 in that case.
 // ─────────────────────────────────────────────────────────────────────────────
 model MachineTelemetry {
-  id           String      @id @default(uuid())
+  id                String   @id @default(uuid())
   machineSerialNumber String
-  machine      Machine  @relation(fields: [machineSerialNumber], references: [machineSerialNumber])
-  latitude     Decimal
-  longitude    Decimal
-  hmr          Decimal  @default(0)
-  syncedAt     DateTime
+  machine           Machine  @relation(fields: [machineSerialNumber], references: [machineSerialNumber])
+  latitude          Decimal
+  longitude         Decimal
+  hmr               Decimal  @default(0)
+  dailyOperationHrs Decimal?
+
+  // Resolved via point-in-polygon against the "All India Pincode Boundary
+  // GeoJSON" dataset (AIKosh / data.gov.in, Open Government License,
+  // India) — see modules/machine-telemetry/utils/pincodeResolver.ts.
+  // Deliberately NOT nearest-centroid matching against the existing
+  // Pincode table — confirmed too inaccurate for this use case. Nullable:
+  // null means this reading's lat/long fell inside no boundary polygon at
+  // all (gaps in the dataset, a border/coastal location, or bad GPS data)
+  // — never guessed, same philosophy as dailyOperationHrs.
+  pincode           String?
+
+  syncedAt          DateTime
 
   @@index([machineSerialNumber, syncedAt])
 }

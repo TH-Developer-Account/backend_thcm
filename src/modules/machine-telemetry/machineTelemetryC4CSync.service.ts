@@ -1,13 +1,19 @@
 // ─────────────────────────────────────────────────────────────────────────────
+// This is the InSite sync path now (see machineTelemetrySync.service.ts):
+// one call per machine, same as always, just invoked for a smaller,
+// filtered set of serial numbers.
+//
 // Orchestrates the daily "ask C4C for every machine's lat/long/HMR" sync.
 // One call per machine (C4C has no confirmed bulk endpoint yet), with
 // bounded concurrency so we never spike outbound connections or the DB.
 //
 // Flow: fetch all machine serial numbers → call C4C for each, with limited
-// concurrency and per-call retry → batch-write the successes into
-// MachineTelemetry → log a summary. This is a full daily sync, so a machine
-// that fails today is retried automatically tomorrow — no same-day re-run
-// logic, per the agreed design.
+// concurrency and per-call retry → attach each row's dailyOperationHrs
+// (batched previous-reading lookup) and pincode (in-memory point-in-
+// polygon) → batch-write the successes into MachineTelemetry → log a
+// summary. This is a full daily sync, so a machine that fails today is
+// retried automatically tomorrow — no same-day re-run logic, per the
+// agreed design.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { prisma } from "@shared/config/prisma";
@@ -15,6 +21,11 @@ import logger from "@shared/utils/logger";
 import { fetchOData, unwrapODataResults } from "@shared/utils/odata";
 import { mapWithConcurrency } from "./utils/concurrency";
 import { withRetry } from "./utils/withRetry";
+import {
+  computeDailyOperationHrs,
+  getPreviousHmrMap,
+} from "./utils/dailyOperation";
+import { resolvePincodeFromBoundary } from "./utils/pincodeResolver";
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -53,11 +64,17 @@ type TelemetryRow = {
   latitude: number;
   longitude: number;
   hmr: number;
+  dailyOperationHrs: number | null;
+  pincode: string | null;
   syncedAt: Date;
 };
 
+// dailyOperationHrs and pincode aren't known at per-machine-fetch time —
+// see enrichRows below, applied once to the whole batch.
+type RawTelemetryRow = Omit<TelemetryRow, "dailyOperationHrs" | "pincode">;
+
 type FetchOutcome =
-  | { status: "success"; row: TelemetryRow }
+  | { status: "success"; row: RawTelemetryRow }
   | { status: "failure"; serialNumber: string; reason: string };
 
 export type SyncSummary = {
@@ -104,7 +121,7 @@ function mapC4CResultToTelemetryRow(
   machineSerialNumber: string,
   result: C4CTelemetryResult,
   syncedAt: Date,
-): TelemetryRow {
+): RawTelemetryRow {
   return {
     machineSerialNumber,
     latitude: Number(result.Cs1ANs6B8788AE5252FD8),
@@ -112,6 +129,29 @@ function mapC4CResultToTelemetryRow(
     hmr: 0, // TODO: see C4C_SELECT_FIELDS comment above
     syncedAt,
   };
+}
+
+// ── Row enrichment (dailyOperationHrs + pincode) ────────────────────────────
+//
+// Same shared helpers and same batching rule as the ConSite path — the
+// dailyOperationHrs lookup is one batched query for the whole run, applied
+// before any of this run's rows are inserted (see utils/dailyOperation.ts
+// for why); pincode resolution is pure/synchronous/in-memory, so it's just
+// folded into the same per-row map.
+
+async function enrichRows(rows: RawTelemetryRow[]): Promise<TelemetryRow[]> {
+  const previousHmrBySerial = await getPreviousHmrMap(
+    rows.map((row) => row.machineSerialNumber),
+  );
+
+  return rows.map((row) => ({
+    ...row,
+    dailyOperationHrs: computeDailyOperationHrs(
+      row.hmr,
+      previousHmrBySerial.get(row.machineSerialNumber) ?? null,
+    ),
+    pincode: resolvePincodeFromBoundary(row.latitude, row.longitude),
+  }));
 }
 
 // ── Per-machine fetch, with retry ────────────────────────────────────────────
@@ -170,9 +210,9 @@ export async function runC4CSync(
     (serialNumber) => fetchOutcomeForMachine(serialNumber, syncedAt),
   );
 
-  const succeededRows = outcomes
+  const rawSucceededRows = outcomes
     .filter(
-      (outcome): outcome is { status: "success"; row: TelemetryRow } =>
+      (outcome): outcome is { status: "success"; row: RawTelemetryRow } =>
         outcome.status === "success",
     )
     .map((outcome) => outcome.row);
@@ -183,6 +223,10 @@ export async function runC4CSync(
     ): outcome is { status: "failure"; serialNumber: string; reason: string } =>
       outcome.status === "failure",
   );
+
+  // Looked up and attached BEFORE the insert pass below, so this run's own
+  // rows can never be mistaken for "the previous reading".
+  const succeededRows = await enrichRows(rawSucceededRows);
 
   // DB writes are a separate pass over the already-collected results, not
   // interleaved with the C4C calls above — avoids any shared-mutable-state

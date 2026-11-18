@@ -12,10 +12,7 @@ import {
   startEventReportGenerationWorker,
   startMachineTelemetrySyncWorker,
 } from "./workers";
-import {
-  machineTelemetrySyncQueue,
-  registerMachineTelemetrySyncSchedule,
-} from "@modules/machine-telemetry/machineTelemetry.queue";
+import { registerMachineTelemetrySyncSchedule } from "@modules/machine-telemetry/machineTelemetry.queue";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // worker.ts — separate process entry point
@@ -57,26 +54,6 @@ registerMachineTelemetrySyncSchedule().catch((error) => {
     error,
   );
 });
-
-// ─────────────────────────────────────────────────────────────────────────────
-// TEMPORARY — manual test run through the real queue. Comment out the
-// enqueue call below (or this whole block) once testing is done; nothing
-// else needs to change to go back to pure production behavior, since the
-// 1am repeatable job above is untouched by this. Runs once per
-// worker-process start/restart, so restarting a few times while testing
-// will enqueue a few of these — harmless, but expect a few duplicate test
-// rows in MachineTelemetry as a result.
-// ─────────────────────────────────────────────────────────────────────────────
-const TEST_MACHINE_SERIAL_NUMBERS = [
-  "THEDCRL0C00003939",
-  "THEDCRL0C00003942",
-  "THEDCRL0C00003948",
-  "THEDCRL0C00003951",
-];
-
-machineTelemetrySyncQueue
-  .add("test-sync", { machineSerialNumbers: TEST_MACHINE_SERIAL_NUMBERS })
-  .catch((error) => console.error("[Worker] Test sync enqueue failed:", error));
 
 // ── Graceful shutdown ─────────────────────────────────────────────────────────
 // On SIGTERM/SIGINT: stop accepting new jobs, wait for active jobs to finish,
