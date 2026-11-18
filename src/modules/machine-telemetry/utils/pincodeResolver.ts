@@ -42,6 +42,7 @@
 
 import fs from "fs";
 import path from "path";
+import logger from "@shared/utils/logger";
 import bbox from "@turf/bbox";
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
 import { point } from "@turf/helpers";
@@ -78,17 +79,45 @@ function loadBoundaries(): IndexedBoundary[] {
   }
 
   const raw = fs.readFileSync(BOUNDARY_FILE_PATH, "utf-8");
+  const lines = raw.split("\n");
 
   const indexed: IndexedBoundary[] = [];
-  for (const line of raw.split("\n")) {
-    const trimmed = line.trim();
+  let skippedMalformed = 0;
+
+  for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
+    const trimmed = lines[lineNumber].trim();
     if (!trimmed) continue; // skip trailing blank line
 
-    const feature = JSON.parse(trimmed) as BoundaryFeature;
+    // One bad line (a truncated write, a stray non-UTF8 byte) shouldn't
+    // take down pincode resolution for every machine — skip it and keep
+    // going, same "don't use a boundary we're not confident about"
+    // philosophy as the missing-pincode check below, just logged loudly
+    // since a malformed line is more likely to signal real file
+    // corruption than an ordinary missing-property gap.
+    let feature: BoundaryFeature;
+    try {
+      feature = JSON.parse(trimmed) as BoundaryFeature;
+    } catch (error) {
+      skippedMalformed++;
+      logger.error(
+        `[pincodeResolver] Skipping malformed line ${lineNumber + 1} in ` +
+          `${BOUNDARY_FILE_PATH}: ${(error as Error).message}`,
+      );
+      continue;
+    }
+
     const pincode = feature.properties?.Pincode;
     if (!pincode) continue; // can't use a boundary we can't attribute to a pincode
 
     indexed.push({ pincode: String(pincode), bbox: bbox(feature), feature });
+  }
+
+  if (skippedMalformed > 0) {
+    logger.error(
+      `[pincodeResolver] Loaded ${indexed.length} boundaries, but skipped ` +
+        `${skippedMalformed} malformed line(s) — check whether ` +
+        `${BOUNDARY_FILE_PATH} is corrupted or truncated.`,
+    );
   }
 
   boundariesCache = indexed;
@@ -117,6 +146,13 @@ function isInsideBBox(longitude: number, latitude: number, box: BBox): boolean {
 // runs — this is what keeps a nationwide, detailed boundary dataset fast
 // enough for a daily batch job over thousands of machines without needing
 // a full spatial index (R-tree) on top of Turf.
+//
+// Known, accepted limitation: if two boundary polygons genuinely overlap
+// at a shared edge (possible with real-world government boundary data),
+// this returns whichever one happens to come first in the source file —
+// there's no tie-breaking logic. Only matters for a point sitting almost
+// exactly on a pincode boundary line; not worth engineering around given
+// the alternative (nearest-centroid matching) was already confirmed worse.
 
 export function resolvePincodeFromBoundary(
   latitude: number,

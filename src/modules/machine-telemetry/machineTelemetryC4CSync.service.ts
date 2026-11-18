@@ -8,12 +8,12 @@
 // bounded concurrency so we never spike outbound connections or the DB.
 //
 // Flow: fetch all machine serial numbers → call C4C for each, with limited
-// concurrency and per-call retry → attach each row's dailyOperationHrs
-// (batched previous-reading lookup) and pincode (in-memory point-in-
-// polygon) → batch-write the successes into MachineTelemetry → log a
-// summary. This is a full daily sync, so a machine that fails today is
-// retried automatically tomorrow — no same-day re-run logic, per the
-// agreed design.
+// concurrency and per-call retry → attach each row's pincode (in-memory
+// point-in-polygon; dailyOperationHrs is forced to null here for now, see
+// the TODO on enrichRows below) → batch-write the successes into
+// MachineTelemetry → log a summary. This is a full daily sync, so a
+// machine that fails today is retried automatically tomorrow — no
+// same-day re-run logic, per the agreed design.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { prisma } from "@shared/config/prisma";
@@ -21,10 +21,6 @@ import logger from "@shared/utils/logger";
 import { fetchOData, unwrapODataResults } from "@shared/utils/odata";
 import { mapWithConcurrency } from "./utils/concurrency";
 import { withRetry } from "./utils/withRetry";
-import {
-  computeDailyOperationHrs,
-  getPreviousHmrMap,
-} from "./utils/dailyOperation";
 import { resolvePincodeFromBoundary } from "./utils/pincodeResolver";
 
 // ── Config ────────────────────────────────────────────────────────────────────
@@ -46,7 +42,11 @@ const C4C_ENTITY_SET = "RPZB73EE6307DAE3DED5CAC90QueryResults";
 // payload, less load, matches the "optimized" requirement.
 //
 // TODO: once C4C confirms the HMR field name for this entity, add it here
-// and replace the `hmr: 0` fallback in mapC4CResultToTelemetryRow below.
+// and replace the `hmr: 0` fallback in mapC4CResultToTelemetryRow below —
+// AND, when you do, see the matching TODO on enrichRows() further down:
+// dailyOperationHrs is forced to null here specifically because this hmr
+// value isn't real yet, and that override needs to come out at the same
+// time or dailyOperationHrs will silently stay null forever.
 const C4C_SELECT_FIELDS = [
   "CUUID",
   "Cs1ANs6B8788AE5252FD8",
@@ -133,23 +133,31 @@ function mapC4CResultToTelemetryRow(
 
 // ── Row enrichment (dailyOperationHrs + pincode) ────────────────────────────
 //
-// Same shared helpers and same batching rule as the ConSite path — the
-// dailyOperationHrs lookup is one batched query for the whole run, applied
-// before any of this run's rows are inserted (see utils/dailyOperation.ts
-// for why); pincode resolution is pure/synchronous/in-memory, so it's just
-// folded into the same per-row map.
+// pincode resolution is pure/synchronous/in-memory, same as the ConSite
+// path. dailyOperationHrs is NOT computed here, unlike ConSite — see the
+// TODO below.
+//
+// TODO: dailyOperationHrs is forced to null for every C4C row, deliberately
+// NOT diffed from hmr. hmr is still a hardcoded 0 (see C4C_SELECT_FIELDS
+// comment above) — diffing a fake value against yesterday's fake value
+// would produce 0 - 0 = 0 every time, which reads as "this machine did
+// zero hours of work today," a specific, confident, WRONG claim — not
+// "we don't know yet," which null correctly conveys. Once C4C's real HMR
+// field is wired up, remove this override and restore the real diff:
+//   const previousHmrBySerial = await getPreviousHmrMap(
+//     rows.map((row) => row.machineSerialNumber),
+//   );
+//   dailyOperationHrs: computeDailyOperationHrs(
+//     row.hmr,
+//     previousHmrBySerial.get(row.machineSerialNumber) ?? null,
+//   ),
+// (getPreviousHmrMap isn't called at all right now — no point paying for
+// that query for a diff we're just going to discard.)
 
 async function enrichRows(rows: RawTelemetryRow[]): Promise<TelemetryRow[]> {
-  const previousHmrBySerial = await getPreviousHmrMap(
-    rows.map((row) => row.machineSerialNumber),
-  );
-
   return rows.map((row) => ({
     ...row,
-    dailyOperationHrs: computeDailyOperationHrs(
-      row.hmr,
-      previousHmrBySerial.get(row.machineSerialNumber) ?? null,
-    ),
+    dailyOperationHrs: null,
     pincode: resolvePincodeFromBoundary(row.latitude, row.longitude),
   }));
 }
@@ -224,8 +232,6 @@ export async function runC4CSync(
       outcome.status === "failure",
   );
 
-  // Looked up and attached BEFORE the insert pass below, so this run's own
-  // rows can never be mistaken for "the previous reading".
   const succeededRows = await enrichRows(rawSucceededRows);
 
   // DB writes are a separate pass over the already-collected results, not
