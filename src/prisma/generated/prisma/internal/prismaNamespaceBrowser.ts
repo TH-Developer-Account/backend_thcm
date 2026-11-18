@@ -1135,6 +1135,8 @@ export const MachineScalarFieldEnum = {
   custCode: 'custCode',
   modelName: 'modelName',
   siteLocation: 'siteLocation',
+  isConsiteMachine: 'isConsiteMachine',
+  isKeyAccount: 'isKeyAccount',
   mcDescription: 'mcDescription',
   mcStatus: 'mcStatus',
   warrantyStart: 'warrantyStart',
@@ -1162,6 +1164,8 @@ export const MachineTelemetryScalarFieldEnum = {
   latitude: 'latitude',
   longitude: 'longitude',
   hmr: 'hmr',
+  dailyOperationHrs: 'dailyOperationHrs',
+  pincode: 'pincode',
   syncedAt: 'syncedAt'
 } as const
 

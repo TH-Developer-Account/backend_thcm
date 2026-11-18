@@ -45,6 +45,8 @@ export type MachineMinAggregateOutputType = {
   custCode: string | null
   modelName: string | null
   siteLocation: string | null
+  isConsiteMachine: boolean | null
+  isKeyAccount: boolean | null
   mcDescription: string | null
   mcStatus: string | null
   warrantyStart: Date | null
@@ -70,6 +72,8 @@ export type MachineMaxAggregateOutputType = {
   custCode: string | null
   modelName: string | null
   siteLocation: string | null
+  isConsiteMachine: boolean | null
+  isKeyAccount: boolean | null
   mcDescription: string | null
   mcStatus: string | null
   warrantyStart: Date | null
@@ -95,6 +99,8 @@ export type MachineCountAggregateOutputType = {
   custCode: number
   modelName: number
   siteLocation: number
+  isConsiteMachine: number
+  isKeyAccount: number
   mcDescription: number
   mcStatus: number
   warrantyStart: number
@@ -134,6 +140,8 @@ export type MachineMinAggregateInputType = {
   custCode?: true
   modelName?: true
   siteLocation?: true
+  isConsiteMachine?: true
+  isKeyAccount?: true
   mcDescription?: true
   mcStatus?: true
   warrantyStart?: true
@@ -159,6 +167,8 @@ export type MachineMaxAggregateInputType = {
   custCode?: true
   modelName?: true
   siteLocation?: true
+  isConsiteMachine?: true
+  isKeyAccount?: true
   mcDescription?: true
   mcStatus?: true
   warrantyStart?: true
@@ -184,6 +194,8 @@ export type MachineCountAggregateInputType = {
   custCode?: true
   modelName?: true
   siteLocation?: true
+  isConsiteMachine?: true
+  isKeyAccount?: true
   mcDescription?: true
   mcStatus?: true
   warrantyStart?: true
@@ -296,6 +308,8 @@ export type MachineGroupByOutputType = {
   custCode: string | null
   modelName: string | null
   siteLocation: string | null
+  isConsiteMachine: boolean | null
+  isKeyAccount: boolean
   mcDescription: string | null
   mcStatus: string | null
   warrantyStart: Date | null
@@ -344,6 +358,8 @@ export type MachineWhereInput = {
   custCode?: Prisma.StringNullableFilter<"Machine"> | string | null
   modelName?: Prisma.StringNullableFilter<"Machine"> | string | null
   siteLocation?: Prisma.StringNullableFilter<"Machine"> | string | null
+  isConsiteMachine?: Prisma.BoolNullableFilter<"Machine"> | boolean | null
+  isKeyAccount?: Prisma.BoolFilter<"Machine"> | boolean
   mcDescription?: Prisma.StringNullableFilter<"Machine"> | string | null
   mcStatus?: Prisma.StringNullableFilter<"Machine"> | string | null
   warrantyStart?: Prisma.DateTimeNullableFilter<"Machine"> | Date | string | null
@@ -370,6 +386,8 @@ export type MachineOrderByWithRelationInput = {
   custCode?: Prisma.SortOrderInput | Prisma.SortOrder
   modelName?: Prisma.SortOrderInput | Prisma.SortOrder
   siteLocation?: Prisma.SortOrderInput | Prisma.SortOrder
+  isConsiteMachine?: Prisma.SortOrderInput | Prisma.SortOrder
+  isKeyAccount?: Prisma.SortOrder
   mcDescription?: Prisma.SortOrderInput | Prisma.SortOrder
   mcStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   warrantyStart?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -399,6 +417,8 @@ export type MachineWhereUniqueInput = Prisma.AtLeast<{
   custCode?: Prisma.StringNullableFilter<"Machine"> | string | null
   modelName?: Prisma.StringNullableFilter<"Machine"> | string | null
   siteLocation?: Prisma.StringNullableFilter<"Machine"> | string | null
+  isConsiteMachine?: Prisma.BoolNullableFilter<"Machine"> | boolean | null
+  isKeyAccount?: Prisma.BoolFilter<"Machine"> | boolean
   mcDescription?: Prisma.StringNullableFilter<"Machine"> | string | null
   mcStatus?: Prisma.StringNullableFilter<"Machine"> | string | null
   warrantyStart?: Prisma.DateTimeNullableFilter<"Machine"> | Date | string | null
@@ -425,6 +445,8 @@ export type MachineOrderByWithAggregationInput = {
   custCode?: Prisma.SortOrderInput | Prisma.SortOrder
   modelName?: Prisma.SortOrderInput | Prisma.SortOrder
   siteLocation?: Prisma.SortOrderInput | Prisma.SortOrder
+  isConsiteMachine?: Prisma.SortOrderInput | Prisma.SortOrder
+  isKeyAccount?: Prisma.SortOrder
   mcDescription?: Prisma.SortOrderInput | Prisma.SortOrder
   mcStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   warrantyStart?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -458,6 +480,8 @@ export type MachineScalarWhereWithAggregatesInput = {
   custCode?: Prisma.StringNullableWithAggregatesFilter<"Machine"> | string | null
   modelName?: Prisma.StringNullableWithAggregatesFilter<"Machine"> | string | null
   siteLocation?: Prisma.StringNullableWithAggregatesFilter<"Machine"> | string | null
+  isConsiteMachine?: Prisma.BoolNullableWithAggregatesFilter<"Machine"> | boolean | null
+  isKeyAccount?: Prisma.BoolWithAggregatesFilter<"Machine"> | boolean
   mcDescription?: Prisma.StringNullableWithAggregatesFilter<"Machine"> | string | null
   mcStatus?: Prisma.StringNullableWithAggregatesFilter<"Machine"> | string | null
   warrantyStart?: Prisma.DateTimeNullableWithAggregatesFilter<"Machine"> | Date | string | null
@@ -483,6 +507,8 @@ export type MachineCreateInput = {
   custCode?: string | null
   modelName?: string | null
   siteLocation?: string | null
+  isConsiteMachine?: boolean | null
+  isKeyAccount?: boolean
   mcDescription?: string | null
   mcStatus?: string | null
   warrantyStart?: Date | string | null
@@ -509,6 +535,8 @@ export type MachineUncheckedCreateInput = {
   custCode?: string | null
   modelName?: string | null
   siteLocation?: string | null
+  isConsiteMachine?: boolean | null
+  isKeyAccount?: boolean
   mcDescription?: string | null
   mcStatus?: string | null
   warrantyStart?: Date | string | null
@@ -535,6 +563,8 @@ export type MachineUpdateInput = {
   custCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   modelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isConsiteMachine?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isKeyAccount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mcDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mcStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warrantyStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -561,6 +591,8 @@ export type MachineUncheckedUpdateInput = {
   custCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   modelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isConsiteMachine?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isKeyAccount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mcDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mcStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warrantyStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -587,6 +619,8 @@ export type MachineCreateManyInput = {
   custCode?: string | null
   modelName?: string | null
   siteLocation?: string | null
+  isConsiteMachine?: boolean | null
+  isKeyAccount?: boolean
   mcDescription?: string | null
   mcStatus?: string | null
   warrantyStart?: Date | string | null
@@ -612,6 +646,8 @@ export type MachineUpdateManyMutationInput = {
   custCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   modelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isConsiteMachine?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isKeyAccount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mcDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mcStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warrantyStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -637,6 +673,8 @@ export type MachineUncheckedUpdateManyInput = {
   custCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   modelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isConsiteMachine?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isKeyAccount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mcDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mcStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warrantyStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -662,6 +700,8 @@ export type MachineCountOrderByAggregateInput = {
   custCode?: Prisma.SortOrder
   modelName?: Prisma.SortOrder
   siteLocation?: Prisma.SortOrder
+  isConsiteMachine?: Prisma.SortOrder
+  isKeyAccount?: Prisma.SortOrder
   mcDescription?: Prisma.SortOrder
   mcStatus?: Prisma.SortOrder
   warrantyStart?: Prisma.SortOrder
@@ -693,6 +733,8 @@ export type MachineMaxOrderByAggregateInput = {
   custCode?: Prisma.SortOrder
   modelName?: Prisma.SortOrder
   siteLocation?: Prisma.SortOrder
+  isConsiteMachine?: Prisma.SortOrder
+  isKeyAccount?: Prisma.SortOrder
   mcDescription?: Prisma.SortOrder
   mcStatus?: Prisma.SortOrder
   warrantyStart?: Prisma.SortOrder
@@ -718,6 +760,8 @@ export type MachineMinOrderByAggregateInput = {
   custCode?: Prisma.SortOrder
   modelName?: Prisma.SortOrder
   siteLocation?: Prisma.SortOrder
+  isConsiteMachine?: Prisma.SortOrder
+  isKeyAccount?: Prisma.SortOrder
   mcDescription?: Prisma.SortOrder
   mcStatus?: Prisma.SortOrder
   warrantyStart?: Prisma.SortOrder
@@ -768,6 +812,8 @@ export type MachineCreateWithoutTelemetryInput = {
   custCode?: string | null
   modelName?: string | null
   siteLocation?: string | null
+  isConsiteMachine?: boolean | null
+  isKeyAccount?: boolean
   mcDescription?: string | null
   mcStatus?: string | null
   warrantyStart?: Date | string | null
@@ -793,6 +839,8 @@ export type MachineUncheckedCreateWithoutTelemetryInput = {
   custCode?: string | null
   modelName?: string | null
   siteLocation?: string | null
+  isConsiteMachine?: boolean | null
+  isKeyAccount?: boolean
   mcDescription?: string | null
   mcStatus?: string | null
   warrantyStart?: Date | string | null
@@ -834,6 +882,8 @@ export type MachineUpdateWithoutTelemetryInput = {
   custCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   modelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isConsiteMachine?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isKeyAccount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mcDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mcStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warrantyStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -859,6 +909,8 @@ export type MachineUncheckedUpdateWithoutTelemetryInput = {
   custCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   modelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   siteLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isConsiteMachine?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
+  isKeyAccount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   mcDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   mcStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   warrantyStart?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -915,6 +967,8 @@ export type MachineSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   custCode?: boolean
   modelName?: boolean
   siteLocation?: boolean
+  isConsiteMachine?: boolean
+  isKeyAccount?: boolean
   mcDescription?: boolean
   mcStatus?: boolean
   warrantyStart?: boolean
@@ -942,6 +996,8 @@ export type MachineSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   custCode?: boolean
   modelName?: boolean
   siteLocation?: boolean
+  isConsiteMachine?: boolean
+  isKeyAccount?: boolean
   mcDescription?: boolean
   mcStatus?: boolean
   warrantyStart?: boolean
@@ -967,6 +1023,8 @@ export type MachineSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   custCode?: boolean
   modelName?: boolean
   siteLocation?: boolean
+  isConsiteMachine?: boolean
+  isKeyAccount?: boolean
   mcDescription?: boolean
   mcStatus?: boolean
   warrantyStart?: boolean
@@ -992,6 +1050,8 @@ export type MachineSelectScalar = {
   custCode?: boolean
   modelName?: boolean
   siteLocation?: boolean
+  isConsiteMachine?: boolean
+  isKeyAccount?: boolean
   mcDescription?: boolean
   mcStatus?: boolean
   warrantyStart?: boolean
@@ -1010,7 +1070,7 @@ export type MachineSelectScalar = {
   updatedAt?: boolean
 }
 
-export type MachineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "machineSerialNumber" | "customerId" | "custCode" | "modelName" | "siteLocation" | "mcDescription" | "mcStatus" | "warrantyStart" | "warrantyEnd" | "masterWarranty" | "serviceDealerCode" | "purchaseOrderNo" | "purchaseOrderDate" | "goodsReceiptDate" | "goodsReceiptValue" | "plant" | "invoiceNo" | "invoiceDate" | "invoiceValue" | "createdAt" | "updatedAt", ExtArgs["result"]["machine"]>
+export type MachineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "machineSerialNumber" | "customerId" | "custCode" | "modelName" | "siteLocation" | "isConsiteMachine" | "isKeyAccount" | "mcDescription" | "mcStatus" | "warrantyStart" | "warrantyEnd" | "masterWarranty" | "serviceDealerCode" | "purchaseOrderNo" | "purchaseOrderDate" | "goodsReceiptDate" | "goodsReceiptValue" | "plant" | "invoiceNo" | "invoiceDate" | "invoiceValue" | "createdAt" | "updatedAt", ExtArgs["result"]["machine"]>
 export type MachineInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   telemetry?: boolean | Prisma.Machine$telemetryArgs<ExtArgs>
   _count?: boolean | Prisma.MachineCountOutputTypeDefaultArgs<ExtArgs>
@@ -1030,6 +1090,8 @@ export type $MachinePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     custCode: string | null
     modelName: string | null
     siteLocation: string | null
+    isConsiteMachine: boolean | null
+    isKeyAccount: boolean
     mcDescription: string | null
     mcStatus: string | null
     warrantyStart: Date | null
@@ -1476,6 +1538,8 @@ export interface MachineFieldRefs {
   readonly custCode: Prisma.FieldRef<"Machine", 'String'>
   readonly modelName: Prisma.FieldRef<"Machine", 'String'>
   readonly siteLocation: Prisma.FieldRef<"Machine", 'String'>
+  readonly isConsiteMachine: Prisma.FieldRef<"Machine", 'Boolean'>
+  readonly isKeyAccount: Prisma.FieldRef<"Machine", 'Boolean'>
   readonly mcDescription: Prisma.FieldRef<"Machine", 'String'>
   readonly mcStatus: Prisma.FieldRef<"Machine", 'String'>
   readonly warrantyStart: Prisma.FieldRef<"Machine", 'DateTime'>
