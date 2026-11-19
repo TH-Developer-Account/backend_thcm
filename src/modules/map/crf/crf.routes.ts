@@ -4,14 +4,14 @@ import asyncHandler from "@shared/middleware/async.middleware";
 import { firstAuthRequestPerDay } from "@shared/middleware/dailyActiveUsers.middleware";
 
 import { requireAuth } from "@auth/auth.middleware";
-import { shopifyAuth } from "@auth/internalAuth.middleware";
+// import { shopifyAuth } from "@auth/internalAuth.middleware";
 import { getCRFById, updateCRF, createCRF } from "@map/crf/crf.controller";
 import {
   postCrfOrder,
   postCrfOrderCancel,
   postCrfOrderRetry,
   postCrfStockCheckRetry,
-  postShopifyOrderTracking,
+  // postShopifyOrderTracking,
   putCrfDispatchDetails,
   putCrfSouvenirs,
 } from "@map/crf/crf-order.controller";
@@ -21,11 +21,11 @@ const router = Router();
 // ── Inbound Shopify callback — shopifyAuth only, no MAP session. ────────
 // Registered before router.use(requireAuth) below, same pattern as
 // leads.routes.ts's internalAuth-guarded "/get-lead-by-phone".
-router.post(
-  "/order/tracking",
-  shopifyAuth,
-  asyncHandler(postShopifyOrderTracking),
-);
+// router.post(
+//   "/order/tracking",
+//   shopifyAuth,
+//   asyncHandler(postShopifyOrderTracking),
+// );
 
 router.use(requireAuth); // sets req.user
 router.use(firstAuthRequestPerDay);

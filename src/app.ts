@@ -35,6 +35,8 @@ import crfShopRoutes from "@modules/map/crf/crf-shop.routes";
 import errorHandler from "@shared/middleware/error.middleware";
 import ApiError from "@shared/utils/apiError";
 import { startJobs } from "@shared/jobs/scheduler";
+import { shopifyAuth } from "@kernel/auth/internalAuth.middleware";
+import { postShopifyOrderTracking } from "@modules/map/crf/crf-order.controller";
 
 const corsOptions = {
   origin: process.env.FRONTEND_URL, // frontend URL
@@ -43,7 +45,20 @@ const corsOptions = {
   credentials: true, // allow cookies / auth headers
 };
 
+const publicApiCors = cors({
+  origin: "https://www.brandshop.tatahitachi.co.in", // the one extra origin for this endpoint
+  methods: ["GET", "POST"],
+  credentials: true,
+});
+
 const app = express();
+
+app.use(
+  "/api/v1/crf/order/tracking",
+  publicApiCors,
+  shopifyAuth,
+  postShopifyOrderTracking,
+);
 
 //Middlewares
 app.use(cors(corsOptions));
