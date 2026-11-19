@@ -29,6 +29,7 @@ import {
   getPreviousHmrMap,
 } from "./utils/dailyOperation";
 import { resolvePincodeFromBoundary } from "./utils/pincodeResolver";
+import { hasValidCoordinates } from "./utils/coordinates";
 
 const DB_WRITE_BATCH_SIZE = 500;
 
@@ -166,6 +167,16 @@ export async function runConSiteSync(
       failedSerialNumbers.push(record.pin ?? record.serialNo ?? "unknown");
       continue;
     }
+
+    // Checked here, not left for enrichRows to discover — a NaN here
+    // would otherwise throw out of enrichRows' single batch .map() and
+    // take every other machine's already-mapped data down with it, same
+    // failure mode as the C4C path.
+    if (!hasValidCoordinates(row.latitude, row.longitude)) {
+      failedSerialNumbers.push(row.machineSerialNumber);
+      continue;
+    }
+
     rawRows.push(row);
   }
 

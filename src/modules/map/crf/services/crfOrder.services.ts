@@ -33,6 +33,11 @@
  *   fully resolves the shortfall for less than that budget, the unused
  *   balance accumulates in CRF.pendingDebitAmount, which executeOrderPlacement
  *   folds into the placed order's debitNoteAmount and then clears.
+ *
+ * Inbound Shopify tracking callback (recordShopifyTracking, bottom of this
+ * file): the reverse direction — THCM's Shopify proxy pushes tracking info
+ * INTO MAP once a shipment has it, via POST /crf/order/tracking
+ * (shopifyAuth-guarded, see crf.routes.ts / internalAuth.middleware.ts).
  */
 
 import type { CRF, Prisma } from "../../../../prisma/generated/prisma/client";
@@ -40,6 +45,7 @@ import type { CRF, Prisma } from "../../../../prisma/generated/prisma/client";
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import logger from "@shared/utils/logger";
+import { activeWorkflowInclude } from "@shared/utils/contants";
 import type { AccessActor } from "@rbac/profile/access.types";
 import { getCrfAccess, assertCrfAccess } from "@map/crf/crfAccess.helper";
 import {
@@ -916,6 +922,7 @@ async function executeOrderPlacement(
     name: crf.recipientName,
     email: crf.recipientEmail,
     phone: crf.recipientPhone,
+    mapId: crf.epcId ?? undefined,
     channel: "MAP",
     shippingAddress: {
       country: crf.addressCountry ?? "India",
@@ -1242,4 +1249,216 @@ export async function cancelOrder(
   }
 
   return result;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// getEpcApproverEmails — every approver on the EPC's active workflow
+// (current iteration), deduped by email. Queries WorkflowInstance directly
+// with the shared activeWorkflowInclude shape rather than calling
+// workflowSubject.helper.ts's getActiveWorkflowForSubject: that file
+// imports runEventProposalFinalApprovalHooks FROM this one, so importing
+// it back here would create a circular dependency between the two.
+// activeWorkflowInclude itself has no such import, so it's safe to reuse.
+//
+// Returns [] for an EPC with no WorkflowInstance at all — the SOA
+// auto-approve bypass (see decisions-and-learnings.md) skips workflow
+// creation entirely, so there's simply no one to CC in that case.
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function getEpcApproverEmails(epcId: string): Promise<string[]> {
+  const workflow = await prisma.workflowInstance.findFirst({
+    where: { subjectType: "EVENT_PROPOSAL", subjectId: epcId, isActive: true },
+    orderBy: { created_at: "desc" },
+    include: activeWorkflowInclude,
+  });
+  if (!workflow) return [];
+
+  const emails = new Set<string>();
+  for (const stage of workflow.stages) {
+    for (const approval of stage.approvals) {
+      const email = approval.approver?.email?.trim();
+      if (email) emails.add(email);
+    }
+  }
+  return [...emails];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// notifyTrackingUpdated — in-app notify() to the proposer only (CC has no
+// in-app equivalent), plus one email with the proposer as `to` and every
+// current-iteration approver as `cc`. Fired after recordShopifyTracking's
+// transaction has committed, same posture as every other notification in
+// this file (never from inside a transaction — see the notifications
+// comment block above).
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function notifyTrackingUpdated(params: {
+  epcId: string;
+  shopifyOrderId: string;
+  trackingId: string;
+  trackingUrl: string;
+}): Promise<void> {
+  const subjectMeta = await getSubjectNotificationMeta(
+    "EVENT_PROPOSAL",
+    params.epcId,
+  );
+  if (!subjectMeta.ownerId) {
+    logger.error(
+      `[crfOrder.service] EPC ${params.epcId} has no owner — skipping tracking notification`,
+    );
+    return;
+  }
+
+  const [workspaceId, proposer, approverEmails] = await Promise.all([
+    getOwnerWorkspaceId(subjectMeta.ownerId),
+    prisma.user.findUnique({
+      where: { id: subjectMeta.ownerId },
+      select: { email: true },
+    }),
+    getEpcApproverEmails(params.epcId),
+  ]);
+
+  const dashboardUrl = `${process.env.FRONTEND_URL ?? ""}${subjectMeta.link}`;
+
+  if (workspaceId) {
+    await notify({
+      workspaceId,
+      recipientId: subjectMeta.ownerId,
+      type: "GENERIC",
+      title: "Tracking available for your souvenir order",
+      body: `Tracking is now available for ${subjectMeta.displayLabel}'s souvenir order.`,
+      link: subjectMeta.link,
+      metadata: {
+        appKey: "MAP",
+        subjectType: "EVENT_PROPOSAL",
+        subjectId: params.epcId,
+      },
+    });
+  } else {
+    logger.error(
+      `[crfOrder.service] CRF owner ${subjectMeta.ownerId} has no workspace membership — skipping in-app tracking notification`,
+    );
+  }
+
+  if (!proposer?.email) {
+    logger.error(
+      `[crfOrder.service] Proposer for EPC ${params.epcId} has no email — skipping tracking email`,
+    );
+    return;
+  }
+
+  // The proposer may also appear in the approver list (e.g. SOA inheritance
+  // across tiers) — keep them out of cc since they're already the `to`.
+  const cc = approverEmails.filter(
+    (email) => email.toLowerCase() !== proposer.email!.toLowerCase(),
+  );
+
+  await addMailJob({
+    to: proposer.email,
+    cc: cc.length > 0 ? cc : undefined,
+    subject: `Tracking available — ${subjectMeta.displayLabel}`,
+    templateName: "crf-order-tracking",
+    templateData: {
+      subjectLabel: subjectMeta.displayLabel,
+      shopifyOrderId: params.shopifyOrderId,
+      trackingId: params.trackingId,
+      trackingUrl: params.trackingUrl,
+      dashboardUrl,
+    },
+  });
+}
+
+async function safeNotifyTrackingUpdated(
+  params: Parameters<typeof notifyTrackingUpdated>[0],
+): Promise<void> {
+  try {
+    await notifyTrackingUpdated(params);
+  } catch (error: any) {
+    logger.error(
+      `[crfOrder.service] Tracking notification failed for EPC ${params.epcId}: ${error.message}`,
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// recordShopifyTracking — the inbound half of order tracking. THCM's
+// Shopify proxy calls POST /crf/order/tracking (shopifyAuth-guarded) once a
+// shipment has tracking info, instead of MAP having to poll Get Order
+// Status (3.4) for every ORDERED CrfOrder. No MAP user is behind this call,
+// so there's no actor/permission check — same posture as
+// markStockCheckFailed's system-triggered write (actorId: null on the
+// ActivityLog row).
+//
+// Looked up by shopifyOrderId (CrfOrder.shopifyOrderId is @unique — the
+// reliable key). epcId is accepted too and cross-checked only as a sanity
+// guard against a misdirected call; a mismatch is logged and the update
+// still proceeds, since shopifyOrderId is what THCM actually transacted
+// against.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type ShopifyTrackingInput = {
+  orderId: string;
+  epcId: string;
+  trackingId: string;
+  trackingUrl: string;
+};
+
+export async function recordShopifyTracking(
+  input: ShopifyTrackingInput,
+): Promise<{ id: string }> {
+  const crfOrder = await prisma.crfOrder.findUnique({
+    where: { shopifyOrderId: input.orderId },
+    include: { crf: { select: { epcId: true } } },
+  });
+
+  if (!crfOrder) {
+    throw new ApiError(
+      404,
+      `No CRF order found for Shopify order ${input.orderId}`,
+    );
+  }
+
+  if (crfOrder.crf.epcId !== input.epcId) {
+    logger.warn(
+      `[crfOrder.service] Tracking callback epcId mismatch for Shopify order ${input.orderId}: expected ${crfOrder.crf.epcId}, got ${input.epcId}`,
+    );
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.crfOrder.update({
+      where: { shopifyOrderId: input.orderId },
+      data: {
+        trackingNumber: input.trackingId,
+        trackingUrl: input.trackingUrl,
+        trackingUpdatedAt: new Date(),
+      },
+    });
+
+    await tx.activityLog.create({
+      data: {
+        subjectType: "EVENT_PROPOSAL",
+        subjectId: crfOrder.crf.epcId,
+        actorId: null,
+        action: "CRF_ORDER_TRACKING_UPDATED",
+        workflowId: null,
+        stageId: null,
+        metadata: {
+          shopifyOrderId: input.orderId,
+          trackingId: input.trackingId,
+          trackingUrl: input.trackingUrl,
+        },
+      },
+    });
+  });
+
+  // Strictly after the transaction has committed — same rule as every
+  // other notification in this file.
+  await safeNotifyTrackingUpdated({
+    epcId: crfOrder.crf.epcId,
+    shopifyOrderId: input.orderId,
+    trackingId: input.trackingId,
+    trackingUrl: input.trackingUrl,
+  });
+
+  return { id: crfOrder.id };
 }

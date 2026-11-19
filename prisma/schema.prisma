@@ -1087,6 +1087,9 @@ model CrfOrder {
   cancelledAt   DateTime?
   cancelledById String?
   cancelReason  String?
+  trackingNumber    String?
+  trackingUrl       String?
+  trackingUpdatedAt DateTime?
 
   placedAt   DateTime @default(now())
   created_at DateTime @default(now())
