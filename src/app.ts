@@ -53,6 +53,10 @@ const publicApiCors = cors({
 
 const app = express();
 
+//Middlewares
+app.use(cookieParser());
+app.use(express.json());
+
 app.use(
   "/api/v1/crf/order/tracking",
   publicApiCors,
@@ -60,10 +64,7 @@ app.use(
   postShopifyOrderTracking,
 );
 
-//Middlewares
 app.use(cors(corsOptions));
-app.use(cookieParser());
-app.use(express.json());
 
 app.use("/api", healthRouter);
 app.use("/api/v1/auth", authRoutes);
