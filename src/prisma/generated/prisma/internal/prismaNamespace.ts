@@ -5490,6 +5490,9 @@ export const CrfOrderScalarFieldEnum = {
   cancelledAt: 'cancelledAt',
   cancelledById: 'cancelledById',
   cancelReason: 'cancelReason',
+  trackingNumber: 'trackingNumber',
+  trackingUrl: 'trackingUrl',
+  trackingUpdatedAt: 'trackingUpdatedAt',
   placedAt: 'placedAt',
   created_at: 'created_at',
   updated_at: 'updated_at'
