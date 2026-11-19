@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "CrfStatus" ADD VALUE 'STOCK_CHECK_FAILED';
