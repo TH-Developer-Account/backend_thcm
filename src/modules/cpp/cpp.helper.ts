@@ -10,6 +10,7 @@ import {
 	CPP_PRICE_TYPES,
 	CPP_SLOT_SCOPES,
 	CPP_STATUS,
+	CPP_STATUSES,
 	getRole,
 	isCppStatus,
 	isValidSlot,
@@ -25,7 +26,93 @@ import {
 	resolveCombination,
 	roleUsage,
 } from "./cpp.rules";
+// cpp/cpp.helper.ts
+//
+// CPP mail, kept in one helper the same way mediclaim.helper.ts keeps its
+// guest mails. Called from workflowSubject.helper.ts's postFinalApprovalHooks,
+// which runs after the approval transaction has committed, so this takes no
+// tx and reads through the shared prisma client.
 
+import { prisma } from "@shared/config/prisma";
+import { sendWorkflowMail } from "@mail/workFlowEmail.services";
+
+type RecommendedSupplier = { name?: string; code?: string };
+
+// sections is a JSON array of { key, data }; supplier lives at
+// purchasing → suppliers.recommended (see cpp.submit.controller.ts).
+function getRecommendedSupplier(
+	sections: unknown,
+): RecommendedSupplier | undefined {
+	const list = sections as { key: string; data: unknown }[] | null;
+	const purchasing = list?.find((s) => s.key === "purchasing")?.data as
+		| { suppliers?: { recommended?: RecommendedSupplier } }
+		| undefined;
+	return purchasing?.suppliers?.recommended;
+}
+
+/**
+ * Approved mail: TCS gets it, the proposer is CC'd (sendWorkflowMail adds the
+ * initiator as CC), and every generated file is attached.
+ *
+ * TODO (attachments): the PDF / Excel / text exports and the uploaded
+ * cpp.attachments are not attached yet. MailJobPayload has no attachments
+ * field. Add it in mail.queue.ts, then build the files here.
+ */
+export async function notifyCppApproved(requestId: string): Promise<void> {
+	const to = process.env.CPP_TCS_EMAIL;
+	if (!to) {
+		console.warn("[cpp] CPP_TCS_EMAIL is not set; approved mail not sent");
+		return;
+	}
+
+	const cpp = await prisma.cppRequest.findUnique({
+		where: { id: requestId },
+		select: {
+			id: true,
+			referenceNumber: true,
+			category: true,
+			plant: true,
+			condition: true,
+			initiatedById: true,
+			sections: true,
+			attachments: {
+				orderBy: { uploadedAt: "asc" },
+				select: { fileName: true },
+			},
+		},
+	});
+	if (!cpp) return;
+
+	const proposer = await prisma.user.findUnique({
+		where: { id: cpp.initiatedById },
+		select: { first_name: true, last_name: true },
+	});
+	const supplier = getRecommendedSupplier(cpp.sections);
+
+	await sendWorkflowMail(
+		{
+			to,
+			subject: `CPP ${cpp.referenceNumber} approved`,
+			templateName: "cpp-approved",
+			templateData: {
+				referenceNo: cpp.referenceNumber,
+				category: cpp.category,
+				plant: cpp.plant,
+				condition: cpp.condition,
+				supplierName: supplier?.name ?? "",
+				supplierCode: supplier?.code ?? "",
+				proposerName: proposer
+					? `${proposer.first_name} ${proposer.last_name}`
+					: "",
+				approvedOn: new Date().toLocaleDateString("en-IN"),
+				recipientName: "Team",
+				attachments: cpp.attachments.map((a) => a.fileName),
+				dashboardUrl: `${process.env.FRONTEND_URL}/cpp/${cpp.id}`,
+			},
+		},
+		cpp.initiatedById,
+	);
+}
 /* ===== sections ===== */
 // cpp.sections.ts — a CPP request is saved as an array of sections, one per
 // wizard tab:   [{ key: "basic", label: "Basic details", data: { … } }, …]
@@ -33,10 +120,16 @@ import {
 // unknown keys are dropped, types and lengths are checked, and an empty section
 // always comes back with every field present, so the UI never meets `undefined`.
 // Files are NOT part of the sections — they are separate uploads (cpp_attachment).
+//
+// Requests saved before a section existed ("financial", "amortisation",
+// "volumes") get it back empty (defaultSectionData), so no migration is needed.
 
 export const CPP_SECTION_KEYS = [
 	"basic",
 	"purchasing",
+	"amortisation",
+	"volumes",
+	"financial",
 	"master",
 	"other",
 ] as const;
@@ -45,6 +138,9 @@ export type CppSectionKey = (typeof CPP_SECTION_KEYS)[number];
 export const CPP_SECTION_LABELS: Record<CppSectionKey, string> = {
 	basic: "Basic details",
 	purchasing: "Purchasing details",
+	amortisation: "Amortisation",
+	volumes: "Volumes & impact",
+	financial: "Financial impact",
 	master: "Master data",
 	other: "Other data",
 };
@@ -56,16 +152,54 @@ type Spec =
 	| { t: "bool" }
 	| { t: "oneOf"; allowed: readonly string[] }
 	| { t: "list"; max: number; item: number; allowed?: readonly string[] }
-	| { t: "object"; fields: Record<string, Spec> };
+	| { t: "object"; fields: Record<string, Spec> }
+	/** List of objects (table rows). Every row is cleaned with `fields`. */
+	| { t: "rows"; max: number; fields: Record<string, Spec> };
 
 const text = (max: number): Spec => ({ t: "text", max });
 const obj = (fields: Record<string, Spec>): Spec => ({ t: "object", fields });
+const tableRows = (max: number, fields: Record<string, Spec>): Spec => ({
+	t: "rows",
+	max,
+	fields,
+});
+const decimal: Spec = { t: "decimal" };
+
+/** SAP plant codes from "Applicable Plant(s)" in the CPP format. */
+export const CPP_LOCATION_CODES = [
+	"1006", // DWD
+	"3006", // KGP
+	"8445", // KGP WH
+	"8580", // DWD WH
+	"8400", // NGP
+] as const;
+
+/** Same cap as the form (CPP_MAX_TABLE_ROWS). */
+const CPP_MAX_TABLE_ROWS = 20;
 
 const supplier = obj({
 	partnerId: text(60),
 	name: text(200),
 	code: text(40),
 	manual: { t: "bool" },
+});
+
+/** Plant rows of the Financial Impact box. Same keys as the frontend CppPlant. */
+export const CPP_FINANCIAL_PLANTS = ["KGP", "DWD", "SPARE"] as const;
+
+/** "Volumes Taken For Calculation": a / b for actual, c for annualised. */
+const volume = obj({
+	received: decimal,
+	remaining: decimal,
+	annual: decimal,
+});
+
+/** One plant row: +ve = price increase, -ve = price decrease. */
+const financialRow = obj({
+	actualInr: { t: "decimal" },
+	actualPct: { t: "decimal" },
+	annualisedInr: { t: "decimal" },
+	annualisedPct: { t: "decimal" },
 });
 
 const SPECS: Record<CppSectionKey, Spec> = {
@@ -94,6 +228,43 @@ const SPECS: Record<CppSectionKey, Spec> = {
 			amount: { t: "decimal" },
 		}),
 	}),
+	// "In case of Amortisation Only" — filled only for pricing condition PB50.
+	amortisation: obj({
+		rows: tableRows(CPP_MAX_TABLE_ROWS, {
+			partNo: text(40),
+			priceInclAmort: decimal,
+			cutoffDate: { t: "date" },
+			amortQty: decimal,
+			priceAfterAmort: decimal,
+		}),
+	}),
+	// Optional tables. Tracker values are ₹ lakhs; per-machine impact is ₹.
+	volumes: obj({
+		volumes: obj({ DWD: volume, KGP: volume, SPARE: volume }),
+		perMachineImpact: tableRows(CPP_MAX_TABLE_ROWS, {
+			plant: { t: "oneOf", allowed: ["", "DWD", "KGP", "SPARE"] },
+			model: text(60),
+			withAmort: decimal,
+			withoutAmort: decimal,
+		}),
+		costTracker: tableRows(CPP_MAX_TABLE_ROWS, {
+			model: text(60),
+			perMachineImpact: decimal,
+			budgetedIncrease: decimal,
+			statusYtd: decimal,
+			budgetedMaterialCost: decimal,
+			materialCostYtd: decimal,
+		}),
+	}),
+	financial: obj({
+		plants: obj({
+			KGP: financialRow,
+			DWD: financialRow,
+			SPARE: financialRow,
+		}),
+		totalActualPct: { t: "decimal" },
+		totalAnnualisedPct: { t: "decimal" },
+	}),
 	master: obj({
 		materialGroup: text(80),
 		materialType: text(40),
@@ -104,6 +275,18 @@ const SPECS: Record<CppSectionKey, Spec> = {
 		validFrom: { t: "date" },
 		updateSourceList: text(10),
 		note: text(1000),
+		// Applicable plant / spare codes only. Code + purchasing group feed the
+		// TCS text files (ZINFOUPDATE_ME11, ZCHANGEINFO).
+		plantDetails: tableRows(CPP_LOCATION_CODES.length, {
+			code: { t: "oneOf", allowed: CPP_LOCATION_CODES },
+			name: text(20),
+			group: { t: "oneOf", allowed: ["PLANT", "SPARE"] },
+			incoTerms: text(20),
+			purchasingGroup: text(10),
+			taxCode: text(20),
+			storeLocation: text(60),
+			pfPct: decimal,
+		}),
 	}),
 	other: obj({ remarks: text(2000) }),
 };
@@ -174,6 +357,19 @@ const clean = (value: unknown, spec: Spec, path: string): unknown => {
 			});
 			return [...new Set(items)];
 		}
+		case "rows": {
+			if (value === undefined || value === null) return [];
+			if (!Array.isArray(value))
+				throw new ApiError(400, `${path} must be a list`);
+			if (value.length > spec.max)
+				throw new ApiError(400, `${path} has too many rows (max ${spec.max})`);
+			const rowSpec = obj(spec.fields);
+			return value.map((row, index) => {
+				if (!isObject(row))
+					throw new ApiError(400, `${path}[${index}] must be an object`);
+				return clean(row, rowSpec, `${path}[${index}]`);
+			});
+		}
 		case "object": {
 			if (value !== undefined && value !== null && !isObject(value))
 				throw new ApiError(400, `${path} must be an object`);
@@ -240,7 +436,10 @@ export const readStoredSections = (
 	return out;
 };
 
-/** Map → the array that is stored and returned (canonical order, labels from here). */
+/**
+ * Map → the array that is stored and returned (canonical order, labels from here).
+ * Requests saved before a section existed (e.g. "financial") get it with defaults.
+ */
 export const toSectionList = (
 	map: Partial<Record<CppSectionKey, Record<string, unknown>>>,
 ): CppSection[] =>
@@ -263,19 +462,40 @@ export const toSectionList = (
 // replaces that whole section. Listing / routing columns are DERIVED here from
 // the sections, never taken from the client.
 
+type Tx = Prisma.TransactionClient;
 type Json = Record<string, unknown>;
 
 /* ---------------------------- reference number ---------------------------- */
 
-// Format: WS-<timestamp>, e.g. WS-20261118102705123 (UTC, down to the millisecond).
-// Same approach as generateMedicalClaimReferenceNumber; the column is a plain unique string.
-export function generateCppReferenceNumber(): string {
-	const timestamp = new Date()
-		.toISOString()
-		.replace(/[-:T.Z]/g, "")
-		.slice(0, 17);
+/**
+ * "WS" + ddMMyyHHmmss + milliseconds (IST), e.g. WS191126154912347.
+ * Same approach as generateVendorOnboardingReferenceNumber: no DB sequence.
+ * Uniqueness comes from the timestamp plus the @unique constraint on
+ * CppRequest.referenceNumber. A same-millisecond clash fails loudly with P2002
+ * instead of creating a duplicate.
+ */
+const CPP_REFERENCE_TIMEZONE = "Asia/Kolkata";
 
-	return `WS-${timestamp}`;
+const getCppReferenceDateParts = (date: Date): Record<string, string> => {
+	const parts = new Intl.DateTimeFormat("en-GB", {
+		timeZone: CPP_REFERENCE_TIMEZONE,
+		day: "2-digit",
+		month: "2-digit",
+		year: "2-digit",
+		hour: "2-digit",
+		minute: "2-digit",
+		second: "2-digit",
+		hourCycle: "h23",
+	}).formatToParts(date);
+	return Object.fromEntries(parts.map((p) => [p.type, p.value]));
+};
+
+export function generateCppReferenceNumber(): string {
+	const now = new Date();
+	const { day, month, year, hour, minute, second } =
+		getCppReferenceDateParts(now);
+	const ms = String(now.getMilliseconds()).padStart(3, "0");
+	return `WS${day}${month}${year}${hour}${minute}${second}${ms}`;
 }
 
 /* ------------------------------ small parsers ----------------------------- */
@@ -396,7 +616,16 @@ export function buildCppData(
 		const values = isObject(purchasing.approvalValues)
 			? (purchasing.approvalValues as Record<string, string | null>)
 			: {};
-		Object.assign(data, deriveBandColumns(condition, values));
+		// The financial table wins over a typed amount, so the band always
+		// matches the financial impact the approvers see.
+		const fromTable = financialAmount(condition, sections.financial);
+		Object.assign(
+			data,
+			deriveBandColumns(
+				condition,
+				fromTable === null ? values : { ...values, amount: fromTable },
+			),
+		);
 	}
 	return data;
 }
@@ -416,8 +645,37 @@ export function assertValidCombination(input: {
 		plant: plant ?? "KGP",
 		condition,
 	});
-	if (!result.ok)
-		throw new ApiError(400, (result as { reason: string }).reason);
+	if (result.ok === false) throw new ApiError(400, result.reason);
+}
+
+/**
+ * The approval amount = |Total| of the financial column the condition reads
+ * (actual impact for ACTUAL_IMPACT, otherwise the annualised column). Negative
+ * totals are price decreases; bands are absolute (Q5). null = the table has no
+ * value in that column (old requests fall back to approvalValues.amount).
+ */
+export function financialAmount(
+	condition: string | null,
+	financial: unknown,
+): string | null {
+	const def = condition ? getConditionDef(condition) : undefined;
+	if (!def || !isObject(financial) || !isObject(financial.plants)) return null;
+	const key =
+		def.amountBasis === "ACTUAL_IMPACT" ? "actualInr" : "annualisedInr";
+	let found = false;
+	let sum = 0;
+	for (const plant of CPP_FINANCIAL_PLANTS) {
+		const row = (financial.plants as Json)[plant];
+		if (!isObject(row)) continue;
+		const raw = row[key];
+		if (typeof raw !== "string" || raw === "") continue;
+		const n = Number(raw);
+		if (!Number.isFinite(n)) continue;
+		found = true;
+		sum += n;
+	}
+	if (!found) return null;
+	return String(Math.abs(Math.round(sum * 100) / 100));
 }
 
 /** Only the column the condition's bands read is filled; the rest are cleared. */
@@ -495,14 +753,31 @@ export const toCppDetail = (
 	attachments: CppAttachmentWithUrl[],
 ) => ({
 	...toCppListItem(row),
-	/** Always all four sections, in tab order, every field present. */
+	/** Always every section, in tab order, every field present. */
 	sections: toSectionList(readStoredSections(row.sections)),
 	attachments: attachments.map(toCppAttachment),
 });
 
 /* --------------------------------- listing -------------------------------- */
 
-export type CppListingTab = "myRequests" | "drafts";
+export type CppListingTab =
+	| "myRequests"
+	| "drafts"
+	| "pendingOnMe"
+	| "approvedByMe";
+
+const CPP_LISTING_TABS: readonly CppListingTab[] = [
+	"myRequests",
+	"drafts",
+	"pendingOnMe",
+	"approvedByMe",
+];
+
+/** The two tabs that list other people's requests because I am an approver on them. */
+export const isCppApprovalTab = (
+	tab: CppListingTab,
+): tab is "pendingOnMe" | "approvedByMe" =>
+	tab === "pendingOnMe" || tab === "approvedByMe";
 
 export function parseCppListingParams(query: Record<string, unknown>) {
 	const pageIndex = Math.max(
@@ -519,7 +794,11 @@ export function parseCppListingParams(query: Record<string, unknown>) {
 			? requested
 			: CPP_DEFAULT_PAGE_SIZE,
 	);
-	const tab: CppListingTab = query.tab === "drafts" ? "drafts" : "myRequests";
+	const tab: CppListingTab = (CPP_LISTING_TABS as readonly unknown[]).includes(
+		query.tab,
+	)
+		? (query.tab as CppListingTab)
+		: "myRequests";
 	return {
 		tab,
 		pageIndex,
@@ -534,13 +813,18 @@ export function buildCppWhere(
 	workspaceId: string,
 	userId: string,
 	params: ReturnType<typeof parseCppListingParams>,
+	/** For the approver tabs: ids of the requests I am an approver on (see resolveApprovalSubjectIds). */
+	approvalSubjectIds: string[] = [],
 ): Prisma.CppRequestWhereInput {
-	const where: Prisma.CppRequestWhereInput = {
-		workspaceId,
-		initiatedById: userId,
-	};
+	const approvalTab = isCppApprovalTab(params.tab);
+	// Approver tabs show other people's requests; my own tabs show only mine.
+	const where: Prisma.CppRequestWhereInput = approvalTab
+		? { workspaceId, id: { in: approvalSubjectIds } }
+		: { workspaceId, initiatedById: userId };
 
-	if (params.tab === "drafts") where.status = CPP_STATUS.DRAFT;
+	if (approvalTab) {
+		// A draft has no workflow, so it can never appear here; nothing else to filter.
+	} else if (params.tab === "drafts") where.status = CPP_STATUS.DRAFT;
 	else {
 		// "My requests" = everything I have actually submitted.
 		where.status =

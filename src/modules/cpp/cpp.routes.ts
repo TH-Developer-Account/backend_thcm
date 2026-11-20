@@ -15,19 +15,23 @@ import {
 	createCppRequest,
 	deleteCppAttachment,
 	deleteCppDraft,
-	getCppRequestById,
-	listCppRequests,
-	updateCppRequest,
-	uploadCppAttachment,
-} from "./cpp.controller";
-import {
 	getApprovalChains,
 	getApprovalMatrix,
+	getCppRequestById,
+	listCppRequests,
 	replaceMatrixUser,
 	saveApprovalMatrix,
 	searchMatrixUsers,
+	syncApprovalTemplates,
+	updateCppRequest,
+	uploadCppAttachment,
 } from "./cpp.controller";
-import { previewCppApproval, submitCppRequest } from "./cpp.submit.controller";
+import { exportCppExcel, exportCppText } from "./cpp.export.controller";
+import {
+	previewCppApproval,
+	resubmitCppRequest,
+	submitCppRequest,
+} from "./cpp.submit.controller";
 
 const router = Router();
 
@@ -56,6 +60,12 @@ router.post(
 	requireAuth,
 	authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "write"),
 	asyncHandler(replaceMatrixUser),
+);
+router.post(
+	"/approval-matrix/sync-templates",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "write"),
+	asyncHandler(syncApprovalTemplates),
 );
 router.get(
 	"/approval-matrix/users",
@@ -103,6 +113,7 @@ router.delete(
 	asyncHandler(deleteCppDraft),
 );
 
+/* Approval */
 router.get(
 	"/:id/approval-preview",
 	requireAuth,
@@ -115,7 +126,28 @@ router.post(
 	authorize(CPP_APP_KEY, CPP_MODULE, "write"),
 	asyncHandler(submitCppRequest),
 );
+router.post(
+	"/:id/resubmit",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MODULE, "write"),
+	asyncHandler(resubmitCppRequest),
+);
 
+/* Export */
+router.get(
+	"/:id/export/excel",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MODULE, "read"),
+	asyncHandler(exportCppExcel),
+);
+router.get(
+	"/:id/export/text",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MODULE, "read"),
+	asyncHandler(exportCppText),
+);
+
+/* Attachments */
 router.post(
 	"/:id/attachments",
 	requireAuth,

@@ -197,6 +197,16 @@ describe("cpp.sections", () => {
 		expect(defaultSectionData("other")).toEqual({ remarks: "" });
 		const basic = defaultSectionData("basic") as { workflow: { models: string[] } };
 		expect(basic.workflow.models).toEqual([]);
+		expect(defaultSectionData("amortisation")).toEqual({ rows: [] });
+		const volumes = defaultSectionData("volumes") as {
+			volumes: Record<string, unknown>;
+			perMachineImpact: unknown[];
+			costTracker: unknown[];
+		};
+		expect(volumes.volumes.DWD).toEqual({ received: "", remaining: "", annual: "" });
+		expect(volumes.perMachineImpact).toEqual([]);
+		expect(volumes.costTracker).toEqual([]);
+		expect((defaultSectionData("master") as { plantDetails: unknown[] }).plantDetails).toEqual([]);
 	});
 
 	it("drops unknown keys and trims text", () => {
@@ -217,8 +227,38 @@ describe("cpp.sections", () => {
 		expect(() => sanitizeSection("purchasing", { approvalValues: { amount: "abc" } })).toThrow();
 	});
 
-	it("always returns the four sections in tab order", () => {
-		expect(toSectionList({}).map((s) => s.key)).toEqual(["basic", "purchasing", "master", "other"]);
+	it("cleans table rows: every field present, unknown keys dropped, numbers checked", () => {
+		const out = sanitizeSection("amortisation", {
+			rows: [{ partNo: " P1 ", priceInclAmort: "1,100", amortQty: "500", hack: "x" }],
+		}) as { rows: Record<string, string>[] };
+		expect(out.rows).toEqual([
+			{ partNo: "P1", priceInclAmort: "1100", cutoffDate: "", amortQty: "500", priceAfterAmort: "" },
+		]);
+		expect(() => sanitizeSection("amortisation", { rows: [{ amortQty: "lots" }] })).toThrow();
+		expect(() => sanitizeSection("amortisation", { rows: "P1" })).toThrow();
+		expect(() => sanitizeSection("amortisation", { rows: ["P1"] })).toThrow();
+		expect(() =>
+			sanitizeSection("volumes", { costTracker: Array.from({ length: 21 }, () => ({})) }),
+		).toThrow();
+	});
+
+	it("only accepts the five SAP plant codes", () => {
+		const out = sanitizeSection("master", {
+			plantDetails: [{ code: "8580", name: "DWD WH", group: "SPARE", purchasingGroup: "S01", pfPct: "2" }],
+		}) as { plantDetails: Record<string, string>[] };
+		expect(out.plantDetails[0]).toMatchObject({ code: "8580", group: "SPARE", purchasingGroup: "S01", pfPct: "2", storeLocation: "" });
+		expect(() => sanitizeSection("master", { plantDetails: [{ code: "9999", group: "PLANT" }] })).toThrow();
+	});
+
+	it("always returns every section in tab order", () => {
+		expect(toSectionList({}).map((s) => s.key)).toEqual([
+			"basic",
+			"purchasing",
+			"amortisation",
+			"volumes",
+			"master",
+			"other",
+		]);
 	});
 });
 }

@@ -23,6 +23,7 @@ import ApiError from "@shared/utils/apiError";
 import { activeWorkflowInclude } from "@shared/utils/contants";
 import { notifyGuestOfClarification } from "@medi-claim/mediclaim.helper";
 import { runEventProposalFinalApprovalHooks } from "@map/crf/services/crfOrder.services";
+import { notifyCppApproved } from "@cpp/cpp.helper";
 
 import {
 	Prisma,
@@ -412,6 +413,11 @@ const postFinalApprovalHooks: Partial<
 	>
 > = {
 	EVENT_PROPOSAL: (subjectId) => runEventProposalFinalApprovalHooks(subjectId),
+	// Approved mail to TCS (CC proposer). Runs after the approval commit.
+	CPP_REQUEST: async (subjectId) => {
+		await notifyCppApproved(subjectId);
+		return {};
+	},
 };
 
 export async function runPostFinalApprovalHook(

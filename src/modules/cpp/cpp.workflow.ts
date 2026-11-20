@@ -31,6 +31,8 @@ export type PlanStage = {
 	/** Which part of the lifecycle this stage belongs to. */
 	phase: "WF1" | "WF2";
 	roleKeys: string[];
+	/** The exact matrix seats behind this stage, e.g. "HEAD_SCM:KGP". Identifies the shared template. */
+	slots: string[];
 };
 
 export type PlanInput = {
@@ -179,6 +181,149 @@ const effectiveRoles = (
 	return roles;
 };
 
+export type BuiltStages = {
+	stages: PlanStage[];
+	/** Roles to inform only (not approval stages). */
+	reportingUserIds: string[];
+	problems: string[];
+	/** The same problems, split by which workflow (WF1 / WF2) the stage belongs to. */
+	phaseProblems: Record<"WF1" | "WF2", string[]>;
+	/** True when the stages cannot be laid out at all (plant slot unknown), whoever is assigned. */
+	structural: boolean;
+	feeding: { roleKey: string; users: string[] };
+};
+
+/**
+ * The stages of ONE rule for ONE category / plant slot. Used by the submit plan
+ * and by the template builder (which calls it with an empty matrix to learn the
+ * shape of every template, and with the real matrix to fill it).
+ */
+export function buildStagesForRule(args: {
+	ruleId: string;
+	category: string;
+	plantSlot: "DWD" | "KGP" | null;
+	def: ConditionDef;
+	slots: SlotMap;
+	/** Only used to word the problem message. */
+	plantLabel?: string;
+}): BuiltStages | null {
+	const { ruleId, category, plantSlot, def, slots, plantLabel } = args;
+	const chain = getChain(ruleId);
+	if (!chain) return null;
+
+	const problems: string[] = [];
+	const phaseProblems: Record<"WF1" | "WF2", string[]> = { WF1: [], WF2: [] };
+	const stages: PlanStage[] = [];
+	const reportingUserIds: string[] = [];
+	let structural = false;
+	const addProblem = (phase: "WF1" | "WF2", text: string) => {
+		problems.push(text);
+		phaseProblems[phase].push(text);
+	};
+
+	for (const step of chain.steps) {
+		if (step.kind === "PROPOSER") continue;
+
+		const roles = effectiveRoles(step, category, def);
+		if (roles === null) continue;
+
+		const perRole = roles.map((roleKey) => ({
+			roleKey,
+			...usersFor(slots, roleKey, plantSlot),
+		}));
+		const label = `${step.label} · ${step.title}`;
+
+		if (perRole.some((r) => r.missingPlant)) {
+			structural = true;
+			addProblem(
+				step.stage,
+				`${label}: the plant is "${plantLabel ?? "not KGP or DWD"}", so the KGP/DWD person cannot be chosen (open question Q28).`,
+			);
+			continue;
+		}
+
+		const users = unique(perRole.flatMap((r) => r.users));
+		const seats = perRole.map((r) => slotKey(r.roleKey, r.scope));
+
+		if (step.kind === "REPORTING") {
+			reportingUserIds.push(...users);
+			continue;
+		}
+
+		if (step.kind === "COMMITTEE") {
+			const required = step.required ?? 3;
+			if (users.length < required)
+				addProblem(
+					step.stage,
+					`${label}: needs ${required} different people but only ${users.length} are assigned. Assign at least ${required} different committee members.`,
+				);
+			stages.push({
+				name: label,
+				stageOrder: stages.length + 1,
+				strategy: "SOME",
+				minApprovals: required,
+				approverIds: users,
+				phase: step.stage,
+				roleKeys: roles,
+				slots: seats,
+			});
+			continue;
+		}
+
+		if (step.mode === "ANY_ONE") {
+			if (users.length === 0)
+				addProblem(
+					step.stage,
+					`${label}: nobody is assigned to ${roles.join(" / ")}.`,
+				);
+			stages.push({
+				name: label,
+				stageOrder: stages.length + 1,
+				strategy: "ANY",
+				approverIds: users,
+				phase: step.stage,
+				roleKeys: roles,
+				slots: seats,
+			});
+			continue;
+		}
+
+		// One seat. If the admin put two people in it, either one can act (ANY),
+		// so a holiday or a leaver never leaves a request stuck.
+		if (users.length === 0) {
+			const scope = perRole[0]?.scope ?? "ALL";
+			addProblem(
+				step.stage,
+				`${label}: nobody is assigned to ${roles.join(" / ")} (${scope}).`,
+			);
+		}
+		stages.push({
+			name: label,
+			stageOrder: stages.length + 1,
+			strategy: users.length > 1 ? "ANY" : "ALL",
+			approverIds: users,
+			phase: step.stage,
+			roleKeys: roles,
+			slots: seats,
+		});
+	}
+
+	const feeding = usersFor(slots, chain.priceFeeding.roleKey, plantSlot);
+	if (feeding.missingPlant) structural = true;
+
+	return {
+		stages,
+		reportingUserIds: unique(reportingUserIds),
+		problems,
+		phaseProblems,
+		structural,
+		feeding: {
+			roleKey: chain.priceFeeding.roleKey,
+			users: unique(feeding.users),
+		},
+	};
+}
+
 export function buildCppApprovalPlan(input: PlanInput): PlanResult {
 	const combo = resolveCombination({
 		category: input.category,
@@ -192,107 +337,31 @@ export function buildCppApprovalPlan(input: PlanInput): PlanResult {
 	const picked = pickRule(input, combo.block, def);
 	if ("problem" in picked) return { ok: false, problems: [picked.problem] };
 
-	const chain = getChain(picked.ruleId);
-	if (!chain)
+	const built = buildStagesForRule({
+		ruleId: picked.ruleId,
+		category: input.category,
+		plantSlot: combo.plantSlot,
+		def,
+		slots: input.slots,
+		plantLabel: input.plant,
+	});
+	if (!built)
 		return {
 			ok: false,
 			problems: [`No approval chain is defined for ${picked.ruleId}.`],
 		};
 
-	const problems: string[] = [];
-	const stages: PlanStage[] = [];
-	const reportingUserIds: string[] = [];
+	const problems = [...built.problems];
 	const warnings = [...combo.warnings];
-
-	for (const step of chain.steps) {
-		if (step.kind === "PROPOSER") continue;
-
-		const roles = effectiveRoles(step, input.category, def);
-		if (roles === null) continue;
-
-		const perRole = roles.map((roleKey) => ({
-			roleKey,
-			...usersFor(input.slots, roleKey, combo.plantSlot),
-		}));
-		const label = `${step.label} · ${step.title}`;
-
-		if (perRole.some((r) => r.missingPlant)) {
-			problems.push(
-				`${label}: the plant is "${input.plant}", so the KGP/DWD person cannot be chosen (open question Q28).`,
-			);
-			continue;
-		}
-
-		const users = unique(perRole.flatMap((r) => r.users));
-
-		if (step.kind === "REPORTING") {
-			reportingUserIds.push(...users);
-			continue;
-		}
-
-		if (step.kind === "COMMITTEE") {
-			const required = step.required ?? 3;
-			if (users.length < required)
-				problems.push(
-					`${label}: needs ${required} different people but only ${users.length} are assigned. Assign at least ${required} different committee members.`,
-				);
-			stages.push({
-				name: label,
-				stageOrder: stages.length + 1,
-				strategy: "SOME",
-				minApprovals: required,
-				approverIds: users,
-				phase: step.stage,
-				roleKeys: roles,
-			});
-			continue;
-		}
-
-		if (step.mode === "ANY_ONE") {
-			if (users.length === 0)
-				problems.push(`${label}: nobody is assigned to ${roles.join(" / ")}.`);
-			stages.push({
-				name: label,
-				stageOrder: stages.length + 1,
-				strategy: "ANY",
-				approverIds: users,
-				phase: step.stage,
-				roleKeys: roles,
-			});
-			continue;
-		}
-
-		// One seat. If the admin put two people in it, either one can act (ANY),
-		// so a holiday or a leaver never leaves a request stuck.
-		if (users.length === 0) {
-			const scope = perRole[0]?.scope ?? "ALL";
-			problems.push(
-				`${label}: nobody is assigned to ${roles.join(" / ")} (${scope}).`,
-			);
-		}
-		stages.push({
-			name: label,
-			stageOrder: stages.length + 1,
-			strategy: users.length > 1 ? "ANY" : "ALL",
-			approverIds: users,
-			phase: step.stage,
-			roleKeys: roles,
-		});
-	}
 
 	// The price-feeding task comes after the approvals; check it now so the
 	// request can never get stuck at the very end.
-	const feeding = usersFor(
-		input.slots,
-		chain.priceFeeding.roleKey,
-		combo.plantSlot,
-	);
-	if (feeding.users.length === 0)
+	if (built.feeding.users.length === 0)
 		problems.push(
-			`Price feeding: nobody is assigned to ${chain.priceFeeding.roleKey}.`,
+			`Price feeding: nobody is assigned to ${built.feeding.roleKey}.`,
 		);
 
-	if (stages.length === 0)
+	if (built.stages.length === 0)
 		problems.push("The approval chain has no approval stages.");
 	if (problems.length) return { ok: false, problems };
 
@@ -302,9 +371,9 @@ export function buildCppApprovalPlan(input: PlanInput): PlanResult {
 		bandLabel: picked.label,
 		level: picked.level,
 		block: combo.block,
-		stages,
-		priceFeedingUserIds: unique(feeding.users),
-		reportingUserIds: unique(reportingUserIds),
+		stages: built.stages,
+		priceFeedingUserIds: built.feeding.users,
+		reportingUserIds: built.reportingUserIds,
 		warnings,
 	};
 }

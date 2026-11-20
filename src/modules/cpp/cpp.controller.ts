@@ -23,9 +23,11 @@ import {
 import { getActiveWorkflowForSubject } from "@kernel/workflow/workflowSubject.helper";
 import {
 	type CppAttachmentWithUrl,
+	type SlotMap,
 	type SlotUpdate,
 	buildCppData,
 	buildCppWhere,
+	isCppApprovalTab,
 	computeCoverage,
 	fileExtension,
 	generateCppReferenceNumber,
@@ -40,6 +42,7 @@ import {
 	toCppListItem,
 } from "./cpp.helper";
 import { CPP_CHAINS, chainProblems, roleUsage } from "./cpp.rules";
+import { syncCppTemplates, type TemplateSyncReport } from "./cpp.template.sync";
 
 /* ===== controller ===== */
 // cpp.controller.ts — save side of a CPP request: create / update draft / read /
@@ -204,7 +207,33 @@ export const getCppRequestById = async (
 	}
 };
 
-// GET /cpp?tab=myRequests|drafts&search=&status=&page_index=&page_size=&sortBy=&sortOrder=
+/**
+ * Requests where I am an approver: "pendingOnMe" = my approval is waiting on a stage that is
+ * running now; "approvedByMe" = I have approved. Same rule as the medical claim listing.
+ */
+const resolveApprovalSubjectIds = async (
+	userId: string,
+	tab: "pendingOnMe" | "approvedByMe",
+): Promise<string[]> => {
+	const approvals = await prisma.approval.findMany({
+		where: {
+			approverId: userId,
+			status: tab === "pendingOnMe" ? "PENDING" : "APPROVED",
+			stage: {
+				workflow: { subjectType: "CPP_REQUEST", isActive: true },
+				...(tab === "pendingOnMe"
+					? { isCurrentIteration: true, status: "IN_PROGRESS" }
+					: {}),
+			},
+		},
+		select: {
+			stage: { select: { workflow: { select: { subjectId: true } } } },
+		},
+	});
+	return [...new Set(approvals.map((a) => a.stage.workflow.subjectId))];
+};
+
+// GET /cpp?tab=myRequests|drafts|pendingOnMe|approvedByMe&search=&status=&page_index=&page_size=&sortBy=&sortOrder=
 export const listCppRequests = async (
 	req: Request,
 	res: Response,
@@ -215,7 +244,10 @@ export const listCppRequests = async (
 		const workspaceId = requireWorkspaceId(req);
 
 		const params = parseCppListingParams(req.query);
-		const where = buildCppWhere(workspaceId, userId, params);
+		const approvalIds = isCppApprovalTab(params.tab)
+			? await resolveApprovalSubjectIds(userId, params.tab)
+			: [];
+		const where = buildCppWhere(workspaceId, userId, params, approvalIds);
 		const orderBy = resolveCppOrderBy(req.query.sortBy, req.query.sortOrder);
 
 		const [rows, total] = await Promise.all([
@@ -408,6 +440,79 @@ export const deleteCppAttachment = async (
 	}
 };
 
+/* -------------------------- TCS close (after approval) -------------------- */
+
+// POST /cpp/:id/close — TCS closes the request once the SAP update is done.
+// TCS is not the proposer, so access is checked against the request's
+// approval workflow instead of initiatedById. No mail is sent here: the
+// approved mail is sent from the workflow's final-approval hook (see
+// cpp.mail.ts), because the approve action is not handled in this controller.
+export const closeCppRequest = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const userId = requireUserId(req);
+		const workspaceId = requireWorkspaceId(req);
+		const id = req.params.id as string;
+
+		const request = await prisma.cppRequest.findUnique({
+			where: { id },
+			select: { workspaceId: true, status: true },
+		});
+		if (!request || request.workspaceId !== workspaceId)
+			throw new ApiError(404, "CPP request not found");
+		// CPP_STATUS has no APPROVED. After the last approval the request waits in
+		// PRICE_FEEDING; closing is allowed from there and moves it to COMPLETED.
+		if (request.status !== CPP_STATUS.PRICE_FEEDING)
+			throw new ApiError(400, "Only a request in price feeding can be closed");
+
+		// Any approval row on this request's active workflow (TCS is a stage member).
+		const onWorkflow = await prisma.approval.findFirst({
+			where: {
+				approverId: userId,
+				stage: {
+					workflow: {
+						subjectType: "CPP_REQUEST",
+						subjectId: id,
+						isActive: true,
+					},
+				},
+			},
+			select: { id: true },
+		});
+		if (!onWorkflow)
+			throw new ApiError(
+				403,
+				"You are not on this CPP request's approval workflow",
+			);
+
+		await prisma.$transaction(async (tx) => {
+			await tx.cppRequest.update({
+				where: { id },
+				data: { status: CPP_STATUS.COMPLETED, updated_at: new Date() },
+			});
+			await tx.activityLog.create({
+				data: {
+					subjectType: CPP_LOG_SUBJECT.REQUEST,
+					subjectId: id,
+					actorId: userId,
+					action: "CPP_CLOSED",
+				},
+			});
+		});
+
+		res.status(200).json({
+			success: true,
+			message: "CPP request closed",
+			data: await loadDetail(id),
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
 /* ===== matrix.controller ===== */
 // cpp.matrix.controller.ts — admin approval matrix: who sits in which approval role.
 //   GET  /cpp/approval-matrix           roles, assignments, coverage problems
@@ -478,6 +583,29 @@ const loadMatrix = async (workspaceId: string) => {
 			null,
 		),
 	};
+};
+
+/**
+ * Creates the reusable approval templates that do not exist yet and swaps the changed
+ * people into the ones that do (everything else an admin edited in a template stays).
+ * Writes workflow templates only, never user records. Never throws:
+ * the matrix change is already saved, so a problem here is reported, not fatal
+ * (a request being submitted builds any missing template by itself).
+ */
+const refreshTemplates = async (
+	workspaceId: string,
+	actorId: string,
+	before?: SlotMap,
+): Promise<TemplateSyncReport | { error: string }> => {
+	try {
+		return await syncCppTemplates({ workspaceId, actorId, before });
+	} catch (error) {
+		console.error("CPP: template sync failed", error);
+		return {
+			error:
+				"Matrix saved, but the workflow templates could not be refreshed. Use Sync templates to retry.",
+		};
+	}
 };
 
 export const getApprovalMatrix = async (
@@ -564,10 +692,12 @@ export const saveApprovalMatrix = async (
 			});
 		});
 
+		const templates = await refreshTemplates(workspaceId, userId, before);
 		res.status(200).json({
 			success: true,
 			message: "Approval matrix saved",
 			data: await loadMatrix(workspaceId),
+			templates,
 		});
 	} catch (error) {
 		next(error);
@@ -631,11 +761,17 @@ export const replaceMatrixUser = async (
 			});
 		});
 
-		// Requests already in flight keep their own snapshot of approvers (added with the workflow step).
+		// The new person is swapped into the templates too, and requests still waiting move to them.
+		const templates = await refreshTemplates(
+			workspaceId,
+			userId,
+			rowsToSlotMap(rows),
+		);
 		res.status(200).json({
 			success: true,
 			message: `Replaced in ${plan.updates.length + plan.deletes.length} role(s)`,
 			data: await loadMatrix(workspaceId),
+			templates,
 		});
 	} catch (error) {
 		next(error);
@@ -676,6 +812,27 @@ export const searchMatrixUsers = async (
 		res.status(200).json({
 			success: true,
 			data: users.map((u) => ({ id: u.id, name: fullName(u), email: u.email })),
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+// POST /approval-matrix/sync-templates — rebuild the templates from the matrix as it is now
+// (use it once after deploying, or to retry after a problem).
+export const syncApprovalTemplates = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const userId = requireUserId(req);
+		const workspaceId = requireWorkspaceId(req);
+		const templates = await refreshTemplates(workspaceId, userId);
+		res.status(200).json({
+			success: true,
+			message: "Workflow templates refreshed",
+			data: templates,
 		});
 	} catch (error) {
 		next(error);

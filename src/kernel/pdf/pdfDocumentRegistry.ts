@@ -1,23 +1,30 @@
 import type { TDocumentDefinitions } from "pdfmake/interfaces";
 import {
-  assembleVendorOnboardingPdfData,
-  computeVendorOnboardingDocumentsCacheVersion,
-  VendorOnboardingPdfData,
+	assembleVendorOnboardingPdfData,
+	computeVendorOnboardingDocumentsCacheVersion,
+	VendorOnboardingPdfData,
 } from "@vendor-onboarding/vendorOnboardingAssembler";
 import {
-  buildVendorOnboardingDocDefinition,
-  buildVendorOnboardingVendorCopyDocDefinition,
+	buildVendorOnboardingDocDefinition,
+	buildVendorOnboardingVendorCopyDocDefinition,
 } from "@vendor-onboarding/vendorOnboardingDocDofination";
 import {
-  assembleMedicalClaimPdfData,
-  MedicalClaimPdfData,
+	assembleMedicalClaimPdfData,
+	MedicalClaimPdfData,
 } from "@medi-claim/mediclaimAssembler";
 import { buildMedicalClaimDocDefinition } from "@medi-claim/mediclaimDocDefination";
 import {
-  assembleDealerAuditPdfData,
-  DealerAuditPdfData,
+	assembleDealerAuditPdfData,
+	DealerAuditPdfData,
 } from "@dealerAudit/dealerAuditAssembler";
 import { buildDealerAuditDocDefinition } from "@dealerAudit/dealerAuditDocDefination";
+import {
+	assembleCppPdfData,
+	computeCppCacheVersion,
+	getCppAttachmentS3Keys,
+	CppPdfData,
+} from "@modules/cpp/cppAssembler";
+import { buildCppDocDefinition } from "@modules/cpp/cppDocDefinition";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PDF DOCUMENT REGISTRY
@@ -35,73 +42,82 @@ import { buildDealerAuditDocDefinition } from "@dealerAudit/dealerAuditDocDefina
 // getAttachmentS3Keys / computeCacheVersion are both optional, per-type
 // hooks (see pdf.services.ts for how they're used). Most document types
 // define neither — MEDICAL_CLAIM and the vendor copy keep the original,
-// zero-extra-cost cache-hit path untouched. Only VENDOR_ONBOARDING (the
-// internal copy) defines both, to append the vendor's uploaded documents as
-// extra pages and invalidate the cached PDF whenever those documents change.
+// zero-extra-cost cache-hit path untouched. VENDOR_ONBOARDING (the internal
+// copy) and CPP_REQUEST define both, to append uploaded documents as extra
+// pages and invalidate the cached PDF whenever those documents, the status or
+// an approval changes.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type PdfDocumentType =
-  | "VENDOR_ONBOARDING"
-  | "MEDICAL_CLAIM"
-  | "DEALER_AUDIT"
-  | "VENDOR_ONBOARDING_VENDOR_COPY";
+	| "VENDOR_ONBOARDING"
+	| "MEDICAL_CLAIM"
+	| "DEALER_AUDIT"
+	| "VENDOR_ONBOARDING_VENDOR_COPY"
+	| "CPP_REQUEST";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface PdfDocumentDefinition<TData = any> {
-  assembleData: (id: string) => Promise<TData>;
-  buildDocDefinition: (data: TData) => TDocumentDefinitions;
-  buildS3Key: (id: string) => string;
-  // S3 keys of user-uploaded files to append as extra pages after the
-  // generated record pages. Omit (or return []) to skip merging entirely.
-  getAttachmentS3Keys?: (data: TData) => string[];
-  // Derives a short cache-key suffix from data that can change between
-  // generations (e.g. the attached documents). Omit for types whose cached
-  // PDF never needs invalidating beyond "does one already exist for this id".
-  computeCacheVersion?: (data: TData) => string;
+	assembleData: (id: string) => Promise<TData>;
+	buildDocDefinition: (data: TData) => TDocumentDefinitions;
+	buildS3Key: (id: string) => string;
+	// S3 keys of user-uploaded files to append as extra pages after the
+	// generated record pages. Omit (or return []) to skip merging entirely.
+	getAttachmentS3Keys?: (data: TData) => string[];
+	// Derives a short cache-key suffix from data that can change between
+	// generations (e.g. the attached documents). Omit for types whose cached
+	// PDF never needs invalidating beyond "does one already exist for this id".
+	computeCacheVersion?: (data: TData) => string;
 }
 
 export const pdfDocumentRegistry: Record<
-  PdfDocumentType,
-  PdfDocumentDefinition
+	PdfDocumentType,
+	PdfDocumentDefinition
 > = {
-  VENDOR_ONBOARDING: {
-    assembleData: assembleVendorOnboardingPdfData,
-    buildDocDefinition: (data: VendorOnboardingPdfData) =>
-      buildVendorOnboardingDocDefinition(data),
-    buildS3Key: (onboardingId: string) =>
-      `vendor-onboarding-pdfs/${onboardingId}.pdf`,
-    getAttachmentS3Keys: (data: VendorOnboardingPdfData) =>
-      data.documents.map((doc) => doc.s3Key),
-    computeCacheVersion: computeVendorOnboardingDocumentsCacheVersion,
-  },
-  VENDOR_ONBOARDING_VENDOR_COPY: {
-    assembleData: assembleVendorOnboardingPdfData,
-    buildDocDefinition: (data: VendorOnboardingPdfData) =>
-      buildVendorOnboardingVendorCopyDocDefinition(data),
-    buildS3Key: (onboardingId: string) =>
-      `vendor-onboarding-pdfs/${onboardingId}-vendor-copy.pdf`,
-  },
-  MEDICAL_CLAIM: {
-    assembleData: assembleMedicalClaimPdfData,
-    buildDocDefinition: (data: MedicalClaimPdfData) =>
-      buildMedicalClaimDocDefinition(data),
-    buildS3Key: (claimId: string) => `medical-claim-pdfs/${claimId}.pdf`,
-  },
-  DEALER_AUDIT: {
-    assembleData: assembleDealerAuditPdfData,
-    buildDocDefinition: (data: DealerAuditPdfData) =>
-      buildDealerAuditDocDefinition(data),
-    buildS3Key: (instanceId: string) => `dealer-audit-pdfs/${instanceId}.pdf`,
-  },
+	VENDOR_ONBOARDING: {
+		assembleData: assembleVendorOnboardingPdfData,
+		buildDocDefinition: (data: VendorOnboardingPdfData) =>
+			buildVendorOnboardingDocDefinition(data),
+		buildS3Key: (onboardingId: string) =>
+			`vendor-onboarding-pdfs/${onboardingId}.pdf`,
+		getAttachmentS3Keys: (data: VendorOnboardingPdfData) =>
+			data.documents.map((doc) => doc.s3Key),
+		computeCacheVersion: computeVendorOnboardingDocumentsCacheVersion,
+	},
+	VENDOR_ONBOARDING_VENDOR_COPY: {
+		assembleData: assembleVendorOnboardingPdfData,
+		buildDocDefinition: (data: VendorOnboardingPdfData) =>
+			buildVendorOnboardingVendorCopyDocDefinition(data),
+		buildS3Key: (onboardingId: string) =>
+			`vendor-onboarding-pdfs/${onboardingId}-vendor-copy.pdf`,
+	},
+	MEDICAL_CLAIM: {
+		assembleData: assembleMedicalClaimPdfData,
+		buildDocDefinition: (data: MedicalClaimPdfData) =>
+			buildMedicalClaimDocDefinition(data),
+		buildS3Key: (claimId: string) => `medical-claim-pdfs/${claimId}.pdf`,
+	},
+	DEALER_AUDIT: {
+		assembleData: assembleDealerAuditPdfData,
+		buildDocDefinition: (data: DealerAuditPdfData) =>
+			buildDealerAuditDocDefinition(data),
+		buildS3Key: (instanceId: string) => `dealer-audit-pdfs/${instanceId}.pdf`,
+	},
+	CPP_REQUEST: {
+		assembleData: assembleCppPdfData,
+		buildDocDefinition: (data: CppPdfData) => buildCppDocDefinition(data),
+		buildS3Key: (cppId: string) => `cpp-pdfs/${cppId}.pdf`,
+		getAttachmentS3Keys: (data: CppPdfData) => getCppAttachmentS3Keys(data),
+		computeCacheVersion: (data: CppPdfData) => computeCppCacheVersion(data),
+	},
 };
 
 export function resolvePdfDocumentDefinition(
-  type: PdfDocumentType,
+	type: PdfDocumentType,
 ): PdfDocumentDefinition {
-  const definition = pdfDocumentRegistry[type];
-  if (!definition) {
-    // Guards against a bad/typo'd type reaching here at runtime, even
-    // though the PdfDocumentType union should prevent it at compile time.
-    throw new Error(`No PDF document definition registered for type: ${type}`);
-  }
-  return definition;
+	const definition = pdfDocumentRegistry[type];
+	if (!definition) {
+		// Guards against a bad/typo'd type reaching here at runtime, even
+		// though the PdfDocumentType union should prevent it at compile time.
+		throw new Error(`No PDF document definition registered for type: ${type}`);
+	}
+	return definition;
 }

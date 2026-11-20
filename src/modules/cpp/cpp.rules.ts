@@ -367,8 +367,7 @@ export type CombinationResult =
 			block: CppBlock;
 			isSpare: boolean;
 			sheet: string;
-			/** The KGP/DWD plant slot. null = not resolvable (plant = Spares, Q28). */
-			plantSlot: "DWD" | "KGP" | null;
+			plantSlot: "DWD" | "KGP";
 			ruleIds: string[];
 			bandCount: number;
 			notes: CppNoteId[];
@@ -382,10 +381,7 @@ const isString = <T extends readonly string[]>(
 ): value is T[number] => (list as readonly string[]).includes(value);
 
 /** Notes that only make sense for certain categories. */
-const categoryNotes = (
-	def: ConditionDef,
-	category: CppCategory,
-): CppNoteId[] =>
+const categoryNotes = (def: ConditionDef, category: CppCategory): CppNoteId[] =>
 	def.notes.filter((note) => {
 		if (note === "N_DOMP_SKIP") return category === "DOMP";
 		if (note === "N_IMPORT_NON_HCM") return category === "IMPORT_NON_HCM";
@@ -434,7 +430,8 @@ export const resolveCombination = (input: {
 	if (def.code === "STEEL_COMMODITY" && category !== "STEEL")
 		return {
 			ok: false,
-			reason: "Steel Commodity Price Change applies to the Steel category only.",
+			reason:
+				"Steel Commodity Price Change applies to the Steel category only.",
 		};
 	if (category === "STEEL" && def.code !== "STEEL_COMMODITY")
 		return {
@@ -458,20 +455,24 @@ export const resolveCombination = (input: {
 	if (useSpareBlock) notes.push("N_SPARES_EXTRA_STAGES");
 	const warnings: string[] = [];
 	if (isSpare && !def.hasSpareBlock)
-		warnings.push(`"${def.sheet}" has no Spares block: the Main workflow is used (interim decision).`);
+		warnings.push(
+			`"${def.sheet}" has no Spares block: the Main workflow is used (interim decision).`,
+		);
 	if (plant === "Spares")
 		warnings.push(
 			"Plant is 'Spares': the KGP/DWD plant slots cannot be resolved yet (open question Q28).",
 		);
 	if (notes.includes("N_RECOMMENDER_NO_IMPORTS"))
-		warnings.push("No second recommender defined for Import categories here (Q11).");
+		warnings.push(
+			"No second recommender defined for Import categories here (Q11).",
+		);
 
 	return {
 		ok: true,
 		block,
 		isSpare,
 		sheet: def.sheet,
-		plantSlot: plant === "DWD" || plant === "KGP" ? plant : null,
+		plantSlot: plant === "DWD" || plant === "KGP" ? plant : "KGP",
 		ruleIds,
 		bandCount: grid.length,
 		notes,
@@ -502,8 +503,7 @@ export const listAllCombinations = () => {
 /** Which conditions a category may pick (drives the frontend dropdown). */
 export const getAllowedConditions = (category: string): CppConditionCode[] =>
 	CPP_CONDITION_CODES.filter(
-		(condition) =>
-			resolveCombination({ category, plant: "KGP", condition }).ok,
+		(condition) => resolveCombination({ category, plant: "KGP", condition }).ok,
 	);
 
 /* ===== chains ===== */
@@ -564,12 +564,18 @@ const bandLabels = (): Map<string, string> => {
 	const map = new Map<string, string>();
 	for (const def of CPP_CONDITIONS_DEF) {
 		def.grid.forEach((cell, index) => {
-			map.set(`${def.ruleIdPrefix}-M-${String(index + 1).padStart(2, "0")}`, cell.label);
+			map.set(
+				`${def.ruleIdPrefix}-M-${String(index + 1).padStart(2, "0")}`,
+				cell.label,
+			);
 		});
 		const spare = def.spareGrid ?? def.grid;
 		if (def.hasSpareBlock)
 			spare.forEach((cell, index) => {
-				map.set(`${def.ruleIdPrefix}-S-${String(index + 1).padStart(2, "0")}`, cell.label);
+				map.set(
+					`${def.ruleIdPrefix}-S-${String(index + 1).padStart(2, "0")}`,
+					cell.label,
+				);
 			});
 	}
 	return map;
@@ -593,7 +599,8 @@ export const rolesInChain = (chain: CppChainRaw): string[] => {
 	const keys = new Set<string>();
 	for (const step of chain.steps) {
 		step.roleKeys.forEach((key) => keys.add(key));
-		if (step.variants) Object.values(step.variants).forEach((key) => keys.add(key));
+		if (step.variants)
+			Object.values(step.variants).forEach((key) => keys.add(key));
 	}
 	keys.add(chain.priceFeeding.roleKey);
 	return [...keys];
@@ -603,7 +610,8 @@ export const rolesInChain = (chain: CppChainRaw): string[] => {
 export const roleUsage = (): Map<string, number> => {
 	const usage = new Map<string, number>();
 	for (const chain of CPP_CHAINS)
-		for (const key of rolesInChain(chain)) usage.set(key, (usage.get(key) ?? 0) + 1);
+		for (const key of rolesInChain(chain))
+			usage.set(key, (usage.get(key) ?? 0) + 1);
 	return usage;
 };
 
