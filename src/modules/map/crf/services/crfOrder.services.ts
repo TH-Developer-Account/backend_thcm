@@ -922,7 +922,7 @@ async function executeOrderPlacement(
     name: crf.recipientName,
     email: crf.recipientEmail,
     phone: crf.recipientPhone,
-    mapId: crf.epcId ?? undefined,
+    mapNo: crf.epcId ?? undefined,
     channel: "MAP",
     shippingAddress: {
       country: crf.addressCountry ?? "India",

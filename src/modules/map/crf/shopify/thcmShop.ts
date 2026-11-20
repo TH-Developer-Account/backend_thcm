@@ -150,7 +150,7 @@ export type ThcmCreateOrderRequest = {
   name: string;
   email: string;
   phone?: string;
-  mapId?: string;
+  mapNo?: string;
   channel?: string;
   shippingAddress: ThcmShippingAddress;
 };
