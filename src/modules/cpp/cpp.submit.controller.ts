@@ -2,6 +2,7 @@
 // the approval matrix, create ONE workflow (WF1 then WF2) and start it.
 // GET  /cpp/:id/approval-preview  -> what would happen, nothing is written
 // POST /cpp/:id/submit            -> does it
+// POST /cpp/:id/resubmit          -> same checks, restarts the approval after a clarification
 import { type NextFunction, type Request, type Response } from "express";
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
@@ -12,6 +13,8 @@ import { notifyStageApprovers } from "@kernel/workflow/workflow.service";
 import { CPP_APP_KEY, CPP_LOG_SUBJECT, CPP_STATUS } from "./cpp.constants";
 import { rowsToSlotMap } from "./cpp.helper";
 import { getConditionDef } from "./cpp.rules";
+import { plantCodeOf } from "./cpp.plants";
+import type { PartSummaryData, PartSummaryRow } from "./cpp.partSummary";
 import {
 	previewStagesForPlan,
 	resolveTemplatesForPlan,
@@ -113,6 +116,92 @@ const completenessProblems = (request: RequestRow): string[] => {
 	return problems;
 };
 
+/* ------------------- summary sheet vs Master Data (export) ----------------- */
+
+/** Master Data plant rows, as the TCS text export reads them. */
+const masterPlantsOf = (
+	sections: unknown,
+): { code: string; purchasingGroup: string; taxCode: string }[] => {
+	const list = Array.isArray(sections) ? sections : [];
+	const master = asObject(
+		asObject(list.find((s) => asObject(s).key === "master")).data,
+	);
+	const plants = Array.isArray(master.plantDetails) ? master.plantDetails : [];
+	return plants.map((p) => {
+		const r = asObject(p);
+		return {
+			code: str(r.code),
+			purchasingGroup: str(r.purchasingGroup),
+			taxCode: str(r.taxCode),
+		};
+	});
+};
+
+/**
+ * Every plant on the uploaded summary sheet must have a Master Data row with a
+ * purchasing group and a tax code, or the TCS text files cannot be exported.
+ * Checked here at submit so the proposer finds out now, not after approval.
+ */
+const summaryProblems = async (
+	requestId: string,
+	sections: unknown,
+): Promise<string[]> => {
+	const found = await prisma.cppRequest.findUnique({
+		where: { id: requestId },
+		select: {
+			attachments: {
+				where: { type: "partSummary" },
+				select: { parsedData: true },
+			},
+		},
+	});
+	const summary = found?.attachments[0]?.parsedData as unknown as
+		| PartSummaryData
+		| null
+		| undefined;
+	if (!summary || !Array.isArray(summary.rows) || summary.rows.length === 0)
+		return ["Upload the summary sheet (part info) before submitting."];
+
+	const plants = masterPlantsOf(sections);
+	const unknownNames = new Set<string>();
+	const notSelected = new Set<string>();
+	const incomplete = new Set<string>();
+
+	for (const r of summary.rows as PartSummaryRow[]) {
+		const raw = String(r.plant ?? "").trim();
+		const code = plantCodeOf(raw);
+		if (!code) {
+			unknownNames.add(raw || "(blank)");
+			continue;
+		}
+		const plant = plants.find((p) => p.code === code);
+		if (!plant) notSelected.add(`${raw} (${code})`);
+		else if (!plant.purchasingGroup || !plant.taxCode)
+			incomplete.add(`${raw} (${code})`);
+	}
+
+	const problems: string[] = [];
+	if (unknownNames.size)
+		problems.push(
+			`The summary sheet has plant(s) that are not known SAP plants: ${[...unknownNames].join(", ")}.`,
+		);
+	if (notSelected.size)
+		problems.push(
+			`Plant(s) ${[...notSelected].join(", ")} are on the summary sheet but not selected as applicable in Master Data.`,
+		);
+	if (incomplete.size)
+		problems.push(
+			`Master Data needs a purchasing group and tax code for plant(s) ${[...incomplete].join(", ")}.`,
+		);
+	return problems;
+};
+
+/** Everything that must be true before a request can enter (or re-enter) approval. */
+const allProblems = async (request: RequestRow): Promise<string[]> => [
+	...completenessProblems(request),
+	...(await summaryProblems(request.id, request.sections)),
+];
+
 const planFor = async (
 	request: RequestRow,
 	workspaceId: string,
@@ -184,7 +273,7 @@ export const previewCppApproval = async (
 	try {
 		const { request, workspaceId } = await loadForSubmit(req);
 
-		const problems = completenessProblems(request);
+		const problems = await allProblems(request);
 		if (problems.length) {
 			res.status(200).json({ success: true, data: { ok: false, problems } });
 			return;
@@ -237,7 +326,7 @@ export const submitCppRequest = async (
 	try {
 		const { request, userId, workspaceId } = await loadForSubmit(req);
 
-		const missing = completenessProblems(request);
+		const missing = await allProblems(request);
 		if (missing.length)
 			throw new ApiError(400, `Cannot submit yet: ${missing.join(" ")}`);
 
@@ -450,7 +539,7 @@ export const resubmitCppRequest = async (
 				"This request is not waiting for a clarification",
 			);
 
-		const missing = completenessProblems(request);
+		const missing = await allProblems(request);
 		if (missing.length)
 			throw new ApiError(400, `Cannot resubmit yet: ${missing.join(" ")}`);
 

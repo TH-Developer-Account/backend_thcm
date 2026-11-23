@@ -18,6 +18,7 @@ import {
 	getApprovalChains,
 	getApprovalMatrix,
 	getCppRequestById,
+	getPartSummaryTemplate,
 	listCppRequests,
 	replaceMatrixUser,
 	saveApprovalMatrix,
@@ -81,6 +82,13 @@ router.get(
 );
 
 /* Requests */
+// Above "/:id" so "part-summary-template" is not read as a request id.
+router.get(
+	"/part-summary-template",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MODULE, "read"),
+	asyncHandler(getPartSummaryTemplate),
+);
 router.get(
 	"/",
 	requireAuth,

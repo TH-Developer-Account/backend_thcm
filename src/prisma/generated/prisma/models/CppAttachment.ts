@@ -49,6 +49,7 @@ export type CppAttachmentCountAggregateOutputType = {
   fileName: number
   s3Key: number
   uploadedAt: number
+  parsedData: number
   _all: number
 }
 
@@ -78,6 +79,7 @@ export type CppAttachmentCountAggregateInputType = {
   fileName?: true
   s3Key?: true
   uploadedAt?: true
+  parsedData?: true
   _all?: true
 }
 
@@ -160,6 +162,7 @@ export type CppAttachmentGroupByOutputType = {
   fileName: string
   s3Key: string
   uploadedAt: Date
+  parsedData: runtime.JsonValue | null
   _count: CppAttachmentCountAggregateOutputType | null
   _min: CppAttachmentMinAggregateOutputType | null
   _max: CppAttachmentMaxAggregateOutputType | null
@@ -190,6 +193,7 @@ export type CppAttachmentWhereInput = {
   fileName?: Prisma.StringFilter<"CppAttachment"> | string
   s3Key?: Prisma.StringFilter<"CppAttachment"> | string
   uploadedAt?: Prisma.DateTimeFilter<"CppAttachment"> | Date | string
+  parsedData?: Prisma.JsonNullableFilter<"CppAttachment">
   request?: Prisma.XOR<Prisma.CppRequestScalarRelationFilter, Prisma.CppRequestWhereInput>
 }
 
@@ -200,6 +204,7 @@ export type CppAttachmentOrderByWithRelationInput = {
   fileName?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
+  parsedData?: Prisma.SortOrderInput | Prisma.SortOrder
   request?: Prisma.CppRequestOrderByWithRelationInput
 }
 
@@ -214,6 +219,7 @@ export type CppAttachmentWhereUniqueInput = Prisma.AtLeast<{
   fileName?: Prisma.StringFilter<"CppAttachment"> | string
   s3Key?: Prisma.StringFilter<"CppAttachment"> | string
   uploadedAt?: Prisma.DateTimeFilter<"CppAttachment"> | Date | string
+  parsedData?: Prisma.JsonNullableFilter<"CppAttachment">
   request?: Prisma.XOR<Prisma.CppRequestScalarRelationFilter, Prisma.CppRequestWhereInput>
 }, "id" | "requestId_type">
 
@@ -224,6 +230,7 @@ export type CppAttachmentOrderByWithAggregationInput = {
   fileName?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
+  parsedData?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.CppAttachmentCountOrderByAggregateInput
   _max?: Prisma.CppAttachmentMaxOrderByAggregateInput
   _min?: Prisma.CppAttachmentMinOrderByAggregateInput
@@ -239,6 +246,7 @@ export type CppAttachmentScalarWhereWithAggregatesInput = {
   fileName?: Prisma.StringWithAggregatesFilter<"CppAttachment"> | string
   s3Key?: Prisma.StringWithAggregatesFilter<"CppAttachment"> | string
   uploadedAt?: Prisma.DateTimeWithAggregatesFilter<"CppAttachment"> | Date | string
+  parsedData?: Prisma.JsonNullableWithAggregatesFilter<"CppAttachment">
 }
 
 export type CppAttachmentCreateInput = {
@@ -247,6 +255,7 @@ export type CppAttachmentCreateInput = {
   fileName: string
   s3Key: string
   uploadedAt?: Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   request: Prisma.CppRequestCreateNestedOneWithoutAttachmentsInput
 }
 
@@ -257,6 +266,7 @@ export type CppAttachmentUncheckedCreateInput = {
   fileName: string
   s3Key: string
   uploadedAt?: Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CppAttachmentUpdateInput = {
@@ -265,6 +275,7 @@ export type CppAttachmentUpdateInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   request?: Prisma.CppRequestUpdateOneRequiredWithoutAttachmentsNestedInput
 }
 
@@ -275,6 +286,7 @@ export type CppAttachmentUncheckedUpdateInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CppAttachmentCreateManyInput = {
@@ -284,6 +296,7 @@ export type CppAttachmentCreateManyInput = {
   fileName: string
   s3Key: string
   uploadedAt?: Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CppAttachmentUpdateManyMutationInput = {
@@ -292,6 +305,7 @@ export type CppAttachmentUpdateManyMutationInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CppAttachmentUncheckedUpdateManyInput = {
@@ -301,6 +315,7 @@ export type CppAttachmentUncheckedUpdateManyInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CppAttachmentListRelationFilter = {
@@ -325,6 +340,7 @@ export type CppAttachmentCountOrderByAggregateInput = {
   fileName?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   uploadedAt?: Prisma.SortOrder
+  parsedData?: Prisma.SortOrder
 }
 
 export type CppAttachmentMaxOrderByAggregateInput = {
@@ -393,6 +409,7 @@ export type CppAttachmentCreateWithoutRequestInput = {
   fileName: string
   s3Key: string
   uploadedAt?: Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CppAttachmentUncheckedCreateWithoutRequestInput = {
@@ -401,6 +418,7 @@ export type CppAttachmentUncheckedCreateWithoutRequestInput = {
   fileName: string
   s3Key: string
   uploadedAt?: Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CppAttachmentCreateOrConnectWithoutRequestInput = {
@@ -439,6 +457,7 @@ export type CppAttachmentScalarWhereInput = {
   fileName?: Prisma.StringFilter<"CppAttachment"> | string
   s3Key?: Prisma.StringFilter<"CppAttachment"> | string
   uploadedAt?: Prisma.DateTimeFilter<"CppAttachment"> | Date | string
+  parsedData?: Prisma.JsonNullableFilter<"CppAttachment">
 }
 
 export type CppAttachmentCreateManyRequestInput = {
@@ -447,6 +466,7 @@ export type CppAttachmentCreateManyRequestInput = {
   fileName: string
   s3Key: string
   uploadedAt?: Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CppAttachmentUpdateWithoutRequestInput = {
@@ -455,6 +475,7 @@ export type CppAttachmentUpdateWithoutRequestInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CppAttachmentUncheckedUpdateWithoutRequestInput = {
@@ -463,6 +484,7 @@ export type CppAttachmentUncheckedUpdateWithoutRequestInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type CppAttachmentUncheckedUpdateManyWithoutRequestInput = {
@@ -471,6 +493,7 @@ export type CppAttachmentUncheckedUpdateManyWithoutRequestInput = {
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  parsedData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 
@@ -482,6 +505,7 @@ export type CppAttachmentSelect<ExtArgs extends runtime.Types.Extensions.Interna
   fileName?: boolean
   s3Key?: boolean
   uploadedAt?: boolean
+  parsedData?: boolean
   request?: boolean | Prisma.CppRequestDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cppAttachment"]>
 
@@ -492,6 +516,7 @@ export type CppAttachmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   fileName?: boolean
   s3Key?: boolean
   uploadedAt?: boolean
+  parsedData?: boolean
   request?: boolean | Prisma.CppRequestDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cppAttachment"]>
 
@@ -502,6 +527,7 @@ export type CppAttachmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   fileName?: boolean
   s3Key?: boolean
   uploadedAt?: boolean
+  parsedData?: boolean
   request?: boolean | Prisma.CppRequestDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["cppAttachment"]>
 
@@ -512,9 +538,10 @@ export type CppAttachmentSelectScalar = {
   fileName?: boolean
   s3Key?: boolean
   uploadedAt?: boolean
+  parsedData?: boolean
 }
 
-export type CppAttachmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "requestId" | "type" | "fileName" | "s3Key" | "uploadedAt", ExtArgs["result"]["cppAttachment"]>
+export type CppAttachmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "requestId" | "type" | "fileName" | "s3Key" | "uploadedAt" | "parsedData", ExtArgs["result"]["cppAttachment"]>
 export type CppAttachmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   request?: boolean | Prisma.CppRequestDefaultArgs<ExtArgs>
 }
@@ -537,6 +564,7 @@ export type $CppAttachmentPayload<ExtArgs extends runtime.Types.Extensions.Inter
     fileName: string
     s3Key: string
     uploadedAt: Date
+    parsedData: runtime.JsonValue | null
   }, ExtArgs["result"]["cppAttachment"]>
   composites: {}
 }
@@ -967,6 +995,7 @@ export interface CppAttachmentFieldRefs {
   readonly fileName: Prisma.FieldRef<"CppAttachment", 'String'>
   readonly s3Key: Prisma.FieldRef<"CppAttachment", 'String'>
   readonly uploadedAt: Prisma.FieldRef<"CppAttachment", 'DateTime'>
+  readonly parsedData: Prisma.FieldRef<"CppAttachment", 'Json'>
 }
     
 

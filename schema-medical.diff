@@ -1,0 +1,39 @@
+commit 1438cdfa5187eb8b1dbee6161c044a7306f9e88e
+Author: TH-Developer-Account <powerbi.dev@tatahitachi.co.in>
+Date:   Mon Nov 2 16:19:29 2026 +0530
+
+    Medical Form changes
+
+diff --git a/prisma/schema.prisma b/prisma/schema.prisma
+index 1c3ad72..edca82e 100644
+--- a/prisma/schema.prisma
++++ b/prisma/schema.prisma
+@@ -1591,11 +1591,14 @@ model MedicalClaim {
+   initiatedById   String
+   guestId         String?
+   status          String   @default("AWAITING_EX_EMPLOYEE")
+-  mobile       String?
+-  email        String?
++   mobile         String?
++  email          String?
++ 
++  createdByGuest Boolean @default(false)   // true = made by the retiree, not by HR
++
+ 
+   // ── Ex-employee-filled ──
+-  ticketNumber      String?
++   ticketNumber   String?
+   grade             String?
+   location          String?
+   employeeName      String?
+@@ -1627,6 +1630,10 @@ model MedicalClaim {
+ 
+   @@index([workspaceId, status])
+   @@index([guestId])
++  
++  @@index([ticketNumber])
++  @@index([mobile])
++  @@index([email])
+ }
+ 
+ model MedicalClaimBill {

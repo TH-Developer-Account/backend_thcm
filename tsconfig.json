@@ -47,7 +47,8 @@
 		"dist",
 		"generated",
 		"prisma.config.ts",
-		"prisma"
+		"prisma",
+		"**/*.spec.ts"
 	],
 	"ts-node": {
 		"files": true

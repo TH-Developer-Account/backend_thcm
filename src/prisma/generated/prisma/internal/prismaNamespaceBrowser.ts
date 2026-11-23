@@ -975,6 +975,7 @@ export const MedicalClaimScalarFieldEnum = {
   status: 'status',
   mobile: 'mobile',
   email: 'email',
+  createdByGuest: 'createdByGuest',
   ticketNumber: 'ticketNumber',
   grade: 'grade',
   location: 'location',
@@ -986,6 +987,8 @@ export const MedicalClaimScalarFieldEnum = {
   eligibleAmount: 'eligibleAmount',
   alreadySettled: 'alreadySettled',
   totalClaimed: 'totalClaimed',
+  hospitalisationEligibleAmount: 'hospitalisationEligibleAmount',
+  hospitalisationAlreadySettled: 'hospitalisationAlreadySettled',
   declarationAcceptedAt: 'declarationAcceptedAt',
   signatureName: 'signatureName',
   signatureDate: 'signatureDate',
@@ -1500,7 +1503,8 @@ export const CppAttachmentScalarFieldEnum = {
   type: 'type',
   fileName: 'fileName',
   s3Key: 's3Key',
-  uploadedAt: 'uploadedAt'
+  uploadedAt: 'uploadedAt',
+  parsedData: 'parsedData'
 } as const
 
 export type CppAttachmentScalarFieldEnum = (typeof CppAttachmentScalarFieldEnum)[keyof typeof CppAttachmentScalarFieldEnum]

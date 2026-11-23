@@ -194,7 +194,14 @@ describe("cpp.helper", () => {
 {
 describe("cpp.sections", () => {
 	it("an empty section has every field", () => {
-		expect(defaultSectionData("other")).toEqual({ remarks: "" });
+		const other = defaultSectionData("other") as {
+			remarks: string;
+			checklist: Record<string, string>;
+			plantPrices: unknown[];
+		};
+		expect(other.remarks).toBe("");
+		expect(Object.values(other.checklist).every((v) => v === "")).toBe(true);
+		expect(other.plantPrices).toEqual([]);
 		const basic = defaultSectionData("basic") as { workflow: { models: string[] } };
 		expect(basic.workflow.models).toEqual([]);
 		expect(defaultSectionData("amortisation")).toEqual({ rows: [] });
@@ -256,6 +263,7 @@ describe("cpp.sections", () => {
 			"purchasing",
 			"amortisation",
 			"volumes",
+			"financial",
 			"master",
 			"other",
 		]);

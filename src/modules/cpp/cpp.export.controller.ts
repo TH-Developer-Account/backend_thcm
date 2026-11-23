@@ -1,13 +1,14 @@
-// cpp.export.controller.ts — Excel export and the two SAP text files of a CPP
-// request. Both are built from the Price Update rows in the purchasing Excel
-// the proposer uploaded (attachment type "purchasingFile").
+// cpp.export.controller.ts — Excel export and the two SAP text files of a CPP request.
+// Part rows come from the summary sheet (part info) the proposer uploaded; the parsed rows
+// are stored on the "partSummary" attachment at upload (see cpp.partSummary.ts).
 //
-//   GET /cpp/:id/export/excel                  -> .xlsx ("Price Update" layout)
+//   GET /cpp/:id/export/excel                  -> .xlsx, summary table only
 //   GET /cpp/:id/export/text                   -> ZINFOUPDATE_ME11 (default)
 //   GET /cpp/:id/export/text?file=me11         -> ZINFOUPDATE_ME11
 //   GET /cpp/:id/export/text?file=changeinfo   -> ZCHANGEINFO
 //
-// The PDF goes through the shared  GET /pdf/CPP_REQUEST/:id/url  endpoint.
+// The PDF goes through the shared  GET /pdf/CPP_REQUEST/:id/url  endpoint and is unchanged.
+// Plant names -> SAP codes live in cpp.plants.ts (shared with the submit check).
 import type { Request, Response } from "express";
 import * as XLSX from "xlsx";
 
@@ -16,16 +17,19 @@ import ApiError from "@shared/utils/apiError";
 import { downloadFromS3 } from "@shared/utils/aws-s3.services";
 
 import {
-	parseCppPartRows,
-	type CppPirRow,
-	type CppPirHeader,
-} from "@modules/cpp/cppPartRows";
+	PART_SUMMARY_COLUMNS,
+	type PartSummaryData,
+	type PartSummaryRow,
+} from "@modules/cpp/cpp.partSummary";
+import { plantCodeOf } from "@modules/cpp/cpp.plants";
+import { parseCppPartRows, type CppPirHeader } from "@modules/cpp/cppPartRows";
 
 const MAX_BYTES = 8 * 1024 * 1024;
 
 /* ── EDIT HERE: text-file settings ────────────────────────────────────────── */
 const DELIMITER = "\t"; // "|" or "," if the target system needs it
-const INCLUDE_HEADER_ROW = true;
+/** Off: the part table is written without its column header line. */
+const INCLUDE_HEADER_ROW = false;
 /** SAP purchasing organisation, the same on every row. */
 const PURCHASE_ORG = "P501";
 /** Printed in the blank column: 31.12.9999 with the dots removed. */
@@ -35,15 +39,23 @@ const SAP_OPEN_END = "31129999";
 /* Master data for one SAP plant code (from the request's Master Data tab). */
 type PlantMaster = { code: string; purchasingGroup: string; taxCode: string };
 
+/** One part row as the text files need it. */
+type TextRow = {
+	partNo: string;
+	plant: string;
+	price: number | null;
+	validFrom: string;
+};
+
 type LoadedRows = {
 	reference: string;
 	sections: unknown;
-	pir: CppPirRow[];
 	pirHeader: CppPirHeader | null;
+	summary: PartSummaryData;
 };
 
 type TextContext = {
-	row: CppPirRow;
+	row: TextRow;
 	vendorCode: string;
 	reference: string;
 	plant: PlantMaster;
@@ -67,6 +79,7 @@ const ZINFOUPDATE_ME11: TextColumn[] = [
 	{ header: "", value: () => SAP_OPEN_END },
 	{ header: "CPP Reference No", value: (c) => c.reference },
 ];
+/* ───────────────────────────────────────────────────────────────────────────── */
 
 const ZCHANGEINFO: TextColumn[] = [
 	{ header: "Vendor Code", value: (c) => c.vendorCode },
@@ -79,7 +92,6 @@ const ZCHANGEINFO: TextColumn[] = [
 	{ header: "Price", value: (c) => priceText(c.row.price) },
 	{ header: "CPP Reference No", value: (c) => c.reference },
 ];
-/* ─────────────────────────────────────────────────────────────────────────── */
 
 const TEXT_FILES: Record<string, TextFile> = {
 	me11: { fileName: "ZINFOUPDATE_ME11", columns: ZINFOUPDATE_ME11 },
@@ -141,38 +153,43 @@ async function loadRows(id: string): Promise<LoadedRows> {
 			referenceNumber: true,
 			sections: true,
 			attachments: {
-				where: { type: "purchasingFile" },
-				select: { s3Key: true, fileName: true },
+				where: { type: { in: ["partSummary", "purchasingFile"] } },
+				select: { type: true, s3Key: true, parsedData: true },
 			},
 		},
 	});
 	if (!request) throw new ApiError(404, "CPP request not found");
 
-	const file = request.attachments[0];
-	if (!file) {
+	const summaryFile = request.attachments.find((a) => a.type === "partSummary");
+	const summary = summaryFile?.parsedData as unknown as PartSummaryData | null;
+	if (!summary || !Array.isArray(summary.rows) || summary.rows.length === 0) {
 		throw new ApiError(
 			422,
-			"No Purchase Info Record Excel has been uploaded for this request.",
+			"No summary sheet (part info) with part rows has been uploaded for this request.",
 		);
 	}
 
-	const buffer = await downloadFromS3(file.s3Key);
-	if (!buffer || buffer.length > MAX_BYTES) {
-		throw new ApiError(422, "The uploaded Excel could not be read.");
+	// The purchasing Excel is only needed for the supplier code on the text files.
+	// If it cannot be read, the recommended supplier from the request is used.
+	let pirHeader: CppPirHeader | null = null;
+	const purchasing = request.attachments.find(
+		(a) => a.type === "purchasingFile",
+	);
+	if (purchasing) {
+		try {
+			const buffer = await downloadFromS3(purchasing.s3Key);
+			if (buffer && buffer.length <= MAX_BYTES)
+				pirHeader = parseCppPartRows(buffer).pirHeader;
+		} catch {
+			pirHeader = null;
+		}
 	}
 
-	const parsed = parseCppPartRows(buffer);
-	if (parsed.pir.length === 0) {
-		throw new ApiError(
-			422,
-			'No part rows were found. The Excel needs a "Price Update" sheet with the Part No / Price columns.',
-		);
-	}
 	return {
 		reference: request.referenceNumber,
 		sections: request.sections,
-		pir: parsed.pir,
-		pirHeader: parsed.pirHeader,
+		pirHeader,
+		summary,
 	};
 }
 
@@ -187,18 +204,30 @@ export const buildCppTextFile = (file: TextFile, data: LoadedRows): string => {
 
 	const missing = new Set<string>();
 	const rows: TextContext[] = [];
-	for (const row of data.pir) {
-		const plant = plants.find((p) => p.code === row.plant);
-		if (!plant || !plant.purchasingGroup || !plant.taxCode) {
-			missing.add(row.plant || "(blank)");
+	for (const r of data.summary.rows as PartSummaryRow[]) {
+		const rawPlant = String(r.plant ?? "");
+		const code = plantCodeOf(rawPlant);
+		const plant = code ? plants.find((p) => p.code === code) : undefined;
+		if (!code || !plant || !plant.purchasingGroup || !plant.taxCode) {
+			missing.add(rawPlant || "(blank)");
 			continue;
 		}
-		rows.push({ row, vendorCode, reference, plant });
+		rows.push({
+			row: {
+				partNo: String(r.partNo ?? ""),
+				plant: code,
+				price: typeof r.newPrice === "number" ? r.newPrice : null,
+				validFrom: String(r.effectiveDate ?? ""),
+			},
+			vendorCode,
+			reference,
+			plant,
+		});
 	}
 	if (missing.size > 0) {
 		throw new ApiError(
 			422,
-			`Purchasing group or tax code is missing in Master Data for plant ${[...missing].join(", ")}.`,
+			`Purchasing group or tax code is missing in Master Data for plant ${[...missing].join(", ")}. Fix it in the Master Data tab, or the request will be blocked at submit.`,
 		);
 	}
 
@@ -231,46 +260,38 @@ export const exportCppText = async (req: Request, res: Response) => {
 
 /* ── excel ────────────────────────────────────────────────────────────────── */
 
+/** Summary table only: group row, sub-header row, then the part rows. */
+const summaryTableSheet = (table: PartSummaryData): XLSX.WorkSheet => {
+	const columns = PART_SUMMARY_COLUMNS;
+	const groupRow = columns.map((c, i) =>
+		i === 0 || columns[i - 1].group !== c.group ? c.group : "",
+	);
+	const headerRow = columns.map((c) => c.header);
+	const dataRows = (table.rows as PartSummaryRow[]).map((r) =>
+		columns.map((c) => r[c.key] ?? null),
+	);
+
+	const merges: XLSX.Range[] = [];
+	let start = 0;
+	for (let i = 1; i <= columns.length; i += 1) {
+		if (i === columns.length || columns[i].group !== columns[start].group) {
+			if (i - 1 > start)
+				merges.push({ s: { r: 0, c: start }, e: { r: 0, c: i - 1 } });
+			start = i;
+		}
+	}
+
+	const ws = XLSX.utils.aoa_to_sheet([groupRow, headerRow, ...dataRows]);
+	ws["!merges"] = merges;
+	ws["!cols"] = columns.map(() => ({ wch: 16 }));
+	return ws;
+};
+
 export const exportCppExcel = async (req: Request, res: Response) => {
-	const { reference, pir, pirHeader } = await loadRows(String(req.params.id));
+	const { reference, summary } = await loadRows(String(req.params.id));
 
-	const aoa: (string | number | null)[][] = [
-		["Purchase Info Record — Price Update"],
-		["CPP Reference No", pirHeader?.referenceNo || reference],
-		["Plant(s)", pirHeader?.plants ?? ""],
-		["Supplier Code", pirHeader?.supplierCode ?? ""],
-		["Special notes", pirHeader?.specialNotes ?? ""],
-		[],
-		[
-			"Sr",
-			"Part No",
-			"Description",
-			"WEFrom",
-			"Upto",
-			"Condition",
-			"Price",
-			"Needs Material Master Change?",
-			"Plant",
-			"PO for POSA",
-		],
-		...pir.map((r, i) => [
-			r.sr ?? i + 1,
-			r.partNo,
-			r.description,
-			r.validFrom,
-			r.validTo,
-			r.condition,
-			r.price,
-			r.needsMasterChange,
-			r.plant,
-			r.poForPosa,
-		]),
-	];
-
-	const ws = XLSX.utils.aoa_to_sheet(aoa);
-	ws["!cols"] = [6, 16, 34, 12, 12, 10, 12, 18, 8, 16].map((wch) => ({ wch }));
 	const wb = XLSX.utils.book_new();
-	XLSX.utils.book_append_sheet(wb, ws, "Price Update");
+	XLSX.utils.book_append_sheet(wb, summaryTableSheet(summary), "Summary");
 	const out = XLSX.write(wb, { type: "buffer", bookType: "xlsx" }) as Buffer;
 
 	res

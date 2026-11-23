@@ -202,6 +202,18 @@ const financialRow = obj({
 	annualisedPct: { t: "decimal" },
 });
 
+/** Mandatory Check List answers (CPP_CHECKLIST on the frontend). */
+const MANDATORY_CHECKLIST = [
+	"annualisedImpact",
+	"modelImpact",
+	"zbc",
+	"commodityTrend",
+	"ecn",
+	"nesting",
+	"comparativeQuote",
+] as const;
+const checklistAnswer: Spec = { t: "oneOf", allowed: ["", "Yes", "No", "NA"] };
+
 const SPECS: Record<CppSectionKey, Spec> = {
 	basic: obj({
 		materialType: { t: "oneOf", allowed: ["", "Direct", "Indirect"] },
@@ -288,7 +300,19 @@ const SPECS: Record<CppSectionKey, Spec> = {
 			pfPct: decimal,
 		}),
 	}),
-	other: obj({ remarks: text(2000) }),
+	other: obj({
+		remarks: text(2000),
+		// Mandatory Check List: Yes / No / NA per row.
+		checklist: obj(
+			Object.fromEntries(MANDATORY_CHECKLIST.map((key) => [key, checklistAnswer])),
+		),
+		// "Price in Other Plant Location (if any)".
+		plantPrices: tableRows(CPP_MAX_TABLE_ROWS, {
+			plant: text(20),
+			partNumber: text(40),
+			price: decimal,
+		}),
+	}),
 };
 
 const clean = (value: unknown, spec: Spec, path: string): unknown => {
@@ -740,12 +764,19 @@ export type CppAttachmentWithUrl = RequestRow["attachments"][number] & {
 	url: string | null;
 };
 
+/** Rows read from the summary sheet at upload; 0 for every other file. */
+const parsedRowCount = (value: unknown): number =>
+	isObject(value) && Array.isArray(value.rows) ? value.rows.length : 0;
+
 export const toCppAttachment = (a: CppAttachmentWithUrl) => ({
 	id: a.id,
 	type: a.type,
 	fileName: a.fileName,
 	uploadedAt: a.uploadedAt,
 	url: a.url ?? undefined,
+	...(a.type === "partSummary"
+		? { partRowCount: parsedRowCount((a as { parsedData?: unknown }).parsedData) }
+		: {}),
 });
 
 export const toCppDetail = (

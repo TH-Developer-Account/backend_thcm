@@ -1580,28 +1580,31 @@ model MedicalClaim {
   initiatedById   String
   guestId         String?
   status          String   @default("AWAITING_EX_EMPLOYEE")
-  mobile       String?
-  email        String?
+  mobile          String?
+  email           String?
+  createdByGuest  Boolean  @default(false) // true = made by the retiree, not by HR
 
   // ── Ex-employee-filled ──
-  ticketNumber      String?
-  grade             String?
-  location          String?
-  employeeName      String?
-  patientName       String?
-  claimCover        ClaimCover?
-  spouseName        String?
+  ticketNumber        String?
+  grade               String?
+  location            String?
+  employeeName        String?
+  patientName         String?
+  claimCover          ClaimCover?
+  spouseName          String?
   medicalAdvanceTaken Decimal? @db.Decimal(12, 2)
 
   // ── Computed server-side at submission — never trust client input ──
-  eligibleAmount    Decimal? @db.Decimal(12, 2) // grade cap, looked up at submit time
-  alreadySettled    Decimal? @db.Decimal(12, 2) // sum of this guest's approved claims this calendar year
-  totalClaimed      Decimal? @db.Decimal(12, 2) // sum of MedicalClaimBill.amount, stored for audit
+  eligibleAmount                 Decimal? @db.Decimal(12, 2) // grade cap, looked up at submit time
+  alreadySettled                 Decimal? @db.Decimal(12, 2) // sum of this guest's approved claims this calendar year
+  totalClaimed                   Decimal? @db.Decimal(12, 2) // sum of MedicalClaimBill.amount, stored for audit
+  hospitalisationEligibleAmount  Decimal? @db.Decimal(12, 2)
+  hospitalisationAlreadySettled  Decimal? @db.Decimal(12, 2)
 
   declarationAcceptedAt DateTime?
-  signatureName          String?
-  signatureDate           DateTime?
-  submittedAt             DateTime?
+  signatureName         String?
+  signatureDate         DateTime?
+  submittedAt           DateTime?
 
   workspace   Workspace          @relation(fields: [workspaceId], references: [id])
   initiatedBy User               @relation("MedicalClaimInitiatedBy", fields: [initiatedById], references: [id])
@@ -1613,6 +1616,9 @@ model MedicalClaim {
 
   @@index([workspaceId, status])
   @@index([guestId])
+  @@index([ticketNumber])
+  @@index([mobile])
+  @@index([email])
 }
 
 model MedicalClaimBill {
@@ -2347,7 +2353,8 @@ model CppAttachment {
   fileName     String
   s3Key        String
   uploadedAt   DateTime   @default(now())
-
+  parsedData Json?
+  
   @@unique([requestId, type])
   @@index([requestId])
 }

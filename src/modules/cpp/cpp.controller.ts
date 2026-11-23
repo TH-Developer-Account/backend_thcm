@@ -4,6 +4,7 @@ import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import {
 	deleteReportImage, // generic "delete one S3 key" despite the name
+	downloadFromS3,
 	getSignedImageUrl,
 	uploadToS3,
 } from "@shared/utils/aws-s3.services";
@@ -43,6 +44,12 @@ import {
 } from "./cpp.helper";
 import { CPP_CHAINS, chainProblems, roleUsage } from "./cpp.rules";
 import { syncCppTemplates, type TemplateSyncReport } from "./cpp.template.sync";
+import {
+	buildPartSummaryTemplate,
+	parsePartSummary,
+	type PartSummaryData,
+} from "./cpp.partSummary";
+import { Prisma } from "../../prisma/generated/prisma/client";
 
 /* ===== controller ===== */
 // cpp.controller.ts — save side of a CPP request: create / update draft / read /
@@ -359,6 +366,22 @@ export const uploadCppAttachment = async (
 		const s3Key = `cpp/${id}/${attachmentType}/${randomUUID()}-${fileName}`;
 		await uploadToS3(s3Key, file.buffer, file.mimetype);
 
+		// The summary sheet is read from the stored copy. If it cannot be read, the
+		// stored file is removed again and the proposer gets the reason.
+		let partSummary: PartSummaryData | null = null;
+		if (attachmentType === "partSummary") {
+			try {
+				partSummary = parsePartSummary(await downloadFromS3(s3Key));
+			} catch (error) {
+				await deleteReportImage(s3Key).catch(() => undefined);
+				throw error;
+			}
+		}
+		const parsedData =
+			partSummary === null
+				? Prisma.DbNull
+				: (partSummary as unknown as Prisma.InputJsonValue);
+
 		const previous = await prisma.cppAttachment.findUnique({
 			where: { requestId_type: { requestId: id, type: attachmentType } },
 			select: { s3Key: true },
@@ -372,11 +395,13 @@ export const uploadCppAttachment = async (
 					type: attachmentType,
 					fileName: file.originalname,
 					s3Key,
+					parsedData,
 				},
 				update: {
 					fileName: file.originalname,
 					s3Key,
 					uploadedAt: new Date(),
+					parsedData,
 				},
 			});
 			await tx.cppRequest.update({
@@ -398,8 +423,33 @@ export const uploadCppAttachment = async (
 				fileName: saved.fileName,
 				uploadedAt: saved.uploadedAt,
 				url: withUrl?.url ?? undefined,
+				...(partSummary ? { partRowCount: partSummary.rows.length } : {}),
 			},
 		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+// GET /cpp/part-summary-template — the blank summary sheet in the expected format.
+export const getPartSummaryTemplate = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		requireUserId(req);
+		res
+			.status(200)
+			.setHeader(
+				"Content-Type",
+				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+			)
+			.setHeader(
+				"Content-Disposition",
+				'attachment; filename="CPP-summary-sheet-template.xlsx"',
+			)
+			.send(buildPartSummaryTemplate());
 	} catch (error) {
 		next(error);
 	}

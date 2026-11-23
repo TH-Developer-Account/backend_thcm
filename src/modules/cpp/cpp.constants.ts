@@ -64,6 +64,8 @@ export const CPP_ATTACHMENT_TYPES = [
 	"oldCost",
 	"clpSpares",
 	"steelApproval",
+	"annualisedImpact",
+	"partSummary",
 ] as const;
 export type CppAttachmentType = (typeof CPP_ATTACHMENT_TYPES)[number];
 
@@ -104,8 +106,13 @@ export const CPP_FILE_RULES: Record<
 		ext: SPREADSHEET_EXT,
 		label: "XLSX, XLS or CSV",
 	},
+	partSummary: {
+		mime: SPREADSHEET_MIME,
+		ext: SPREADSHEET_EXT,
+		label: "XLSX, XLS or CSV (use the summary sheet template)",
+	},
 	...Object.fromEntries(
-		CPP_ATTACHMENT_TYPES.filter((t) => t !== "purchasingFile").map((t) => [
+		CPP_ATTACHMENT_TYPES.filter((t) => t !== "purchasingFile" && t !== "partSummary").map((t) => [
 			t,
 			{
 				mime: DOCUMENT_MIME,
