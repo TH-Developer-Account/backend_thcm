@@ -1868,6 +1868,7 @@ model MachineTelemetry {
   pincode           String?
 
   syncedAt          DateTime
+  operationDate     String?
 
   @@index([machineSerialNumber, syncedAt])
 }

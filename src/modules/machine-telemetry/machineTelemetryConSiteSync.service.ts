@@ -40,6 +40,7 @@ type TelemetryRow = {
   hmr: number;
   dailyOperationHrs: number | null;
   pincode: string | null;
+  operationDate: string | null;
   syncedAt: Date;
 };
 
@@ -79,6 +80,11 @@ function mapConSiteRecordToTelemetryRow(
     latitude: Number(record.lat),
     longitude: Number(record.lon),
     hmr: Number(record.operationTm) || 0,
+    // Stored as-is, not parsed — see the operationDate comment on the
+    // MachineTelemetry model for why. ConSite doesn't guarantee every
+    // record has one, so an empty value is stored as null rather than
+    // an empty string.
+    operationDate: record.operationTmDate || null,
     syncedAt,
   };
 }

@@ -1169,7 +1169,8 @@ export const MachineTelemetryScalarFieldEnum = {
   hmr: 'hmr',
   dailyOperationHrs: 'dailyOperationHrs',
   pincode: 'pincode',
-  syncedAt: 'syncedAt'
+  syncedAt: 'syncedAt',
+  operationDate: 'operationDate'
 } as const
 
 export type MachineTelemetryScalarFieldEnum = (typeof MachineTelemetryScalarFieldEnum)[keyof typeof MachineTelemetryScalarFieldEnum]

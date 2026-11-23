@@ -82,6 +82,7 @@ type TelemetryRow = {
   hmr: number;
   dailyOperationHrs: number | null;
   pincode: string | null;
+  operationDate: string | null;
   syncedAt: Date;
 };
 
@@ -143,6 +144,7 @@ function mapC4CResultToTelemetryRow(
     latitude: Number(result.Cs1ANs6B8788AE5252FD8),
     longitude: Number(result.Cs1ANs6E1FCA19B68687C),
     hmr: 0, // TODO: see C4C_SELECT_FIELDS comment above
+    operationDate: null, // C4C/InSite has no equivalent field — ConSite-only
     syncedAt,
   };
 }
