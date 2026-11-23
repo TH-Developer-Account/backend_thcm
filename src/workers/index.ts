@@ -40,6 +40,14 @@ import {
 } from "@modules/machine-telemetry/machineTelemetry.queue";
 import { runMachineTelemetrySync } from "@modules/machine-telemetry/machineTelemetrySync.service";
 
+// ── machine-billing (GR + Invoice sync) ───────────────────────────────────────
+import {
+  MACHINE_BILLING_SYNC_QUEUE_NAME,
+  MachineBillingSyncJobData,
+  computeDailyLookbackWindow,
+} from "@modules/machine-billing/machineBilling.queue";
+import { runMachineBillingSync } from "@modules/machine-billing/machineBillingSync.service";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // workers/index.ts — BullMQ worker definitions
 //
@@ -650,6 +658,42 @@ export function startMachineTelemetrySyncWorker() {
   worker.on("failed", (job, error) => {
     logger.error(
       `[machine-telemetry-sync] Job ${job?.id} failed: ${error.message}`,
+    );
+  });
+
+  return worker;
+}
+
+// ── Machine Billing (GR + Invoice) Sync Worker ────────────────────────────────
+// Concurrency 1 — one sync run at a time is enough; SAP has no confirmed
+// rate limit for either GR or Invoice OData service. Same factory-function
+// shape as the telemetry worker above, so worker.ts can start it and
+// close it on shutdown like the rest.
+
+export function startMachineBillingSyncWorker() {
+  const worker = new Worker<MachineBillingSyncJobData>(
+    MACHINE_BILLING_SYNC_QUEUE_NAME,
+    async (job: Job<MachineBillingSyncJobData>) => {
+      const { dateFrom, dateTo } =
+        job.data.dateFrom && job.data.dateTo
+          ? { dateFrom: job.data.dateFrom, dateTo: job.data.dateTo }
+          : computeDailyLookbackWindow();
+
+      return runMachineBillingSync(dateFrom, dateTo);
+    },
+    {
+      connection: redisConnectionQueue,
+      concurrency: 1,
+    },
+  );
+
+  worker.on("completed", (job) => {
+    logger.info(`[machine-billing-sync] Job ${job.id} completed`);
+  });
+
+  worker.on("failed", (job, error) => {
+    logger.error(
+      `[machine-billing-sync] Job ${job?.id} failed: ${error.message}`,
     );
   });
 
