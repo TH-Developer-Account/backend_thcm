@@ -11,8 +11,10 @@ import {
   startMedicalClaimImportWorker,
   startEventReportGenerationWorker,
   startMachineTelemetrySyncWorker,
+  startMachineBillingSyncWorker,
 } from "./workers";
 import { registerMachineTelemetrySyncSchedule } from "@modules/machine-telemetry/machineTelemetry.queue";
+import { registerMachineBillingSyncSchedule } from "@modules/machine-billing/machineBilling.queue";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // worker.ts — separate process entry point
@@ -40,6 +42,7 @@ const workers = [
   startMedicalClaimImportWorker(),
   startEventReportGenerationWorker(),
   startMachineTelemetrySyncWorker(),
+  startMachineBillingSyncWorker(),
 ];
 
 console.info(`[Worker] ${workers.length} workers running`);
@@ -51,6 +54,15 @@ console.info(`[Worker] ${workers.length} workers running`);
 registerMachineTelemetrySyncSchedule().catch((error) => {
   console.error(
     "[Worker] Failed to register machine telemetry sync schedule:",
+    error,
+  );
+});
+
+// Registers the 2am-daily repeat rule for the GR + Invoice billing sync.
+// Same de-duplication guarantee as above — safe on every restart.
+registerMachineBillingSyncSchedule().catch((error) => {
+  console.error(
+    "[Worker] Failed to register machine billing sync schedule:",
     error,
   );
 });
