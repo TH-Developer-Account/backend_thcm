@@ -10,14 +10,13 @@
 // The PDF goes through the shared  GET /pdf/CPP_REQUEST/:id/url  endpoint and is unchanged.
 // Plant names -> SAP codes live in cpp.plants.ts (shared with the submit check).
 import type { Request, Response } from "express";
-import * as XLSX from "xlsx";
 
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
 import { downloadFromS3 } from "@shared/utils/aws-s3.services";
 
 import {
-	PART_SUMMARY_COLUMNS,
+	buildPartSummaryWorkbook,
 	type PartSummaryData,
 	type PartSummaryRow,
 } from "@modules/cpp/cpp.partSummary";
@@ -260,39 +259,12 @@ export const exportCppText = async (req: Request, res: Response) => {
 
 /* ── excel ────────────────────────────────────────────────────────────────── */
 
-/** Summary table only: group row, sub-header row, then the part rows. */
-const summaryTableSheet = (table: PartSummaryData): XLSX.WorkSheet => {
-	const columns = PART_SUMMARY_COLUMNS;
-	const groupRow = columns.map((c, i) =>
-		i === 0 || columns[i - 1].group !== c.group ? c.group : "",
-	);
-	const headerRow = columns.map((c) => c.header);
-	const dataRows = (table.rows as PartSummaryRow[]).map((r) =>
-		columns.map((c) => r[c.key] ?? null),
-	);
-
-	const merges: XLSX.Range[] = [];
-	let start = 0;
-	for (let i = 1; i <= columns.length; i += 1) {
-		if (i === columns.length || columns[i].group !== columns[start].group) {
-			if (i - 1 > start)
-				merges.push({ s: { r: 0, c: start }, e: { r: 0, c: i - 1 } });
-			start = i;
-		}
-	}
-
-	const ws = XLSX.utils.aoa_to_sheet([groupRow, headerRow, ...dataRows]);
-	ws["!merges"] = merges;
-	ws["!cols"] = columns.map(() => ({ wch: 16 }));
-	return ws;
-};
-
+/** Summary table only, locked: same layout as the blank template (see cpp.partSummary.ts). */
 export const exportCppExcel = async (req: Request, res: Response) => {
 	const { reference, summary } = await loadRows(String(req.params.id));
 
-	const wb = XLSX.utils.book_new();
-	XLSX.utils.book_append_sheet(wb, summaryTableSheet(summary), "Summary");
-	const out = XLSX.write(wb, { type: "buffer", bookType: "xlsx" }) as Buffer;
+	const wb = await buildPartSummaryWorkbook(summary.rows as PartSummaryRow[]);
+	const out = Buffer.from(await wb.xlsx.writeBuffer());
 
 	res
 		.status(200)

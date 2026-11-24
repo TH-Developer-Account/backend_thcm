@@ -449,7 +449,7 @@ export const getPartSummaryTemplate = async (
 				"Content-Disposition",
 				'attachment; filename="CPP-summary-sheet-template.xlsx"',
 			)
-			.send(buildPartSummaryTemplate());
+			.send(await buildPartSummaryTemplate());
 	} catch (error) {
 		next(error);
 	}
