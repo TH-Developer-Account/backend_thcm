@@ -87,9 +87,9 @@ const ZCHANGEINFO: TextColumn[] = [
 	{ header: "PurchaseOrgOptions", value: () => PURCHASE_ORG },
 	{ header: "Plant", value: (c) => c.row.plant },
 	{ header: "Purchasing group", value: (c) => c.plant.purchasingGroup },
+	{ header: "Price", value: (c) => priceText(c.row.price) },
 	{ header: "WEFrom", value: (c) => sapDate(c.row.validFrom) },
 	{ header: "", value: () => SAP_OPEN_END },
-	{ header: "Price", value: (c) => priceText(c.row.price) },
 	{ header: "CPP Reference No", value: (c) => c.reference },
 ];
 

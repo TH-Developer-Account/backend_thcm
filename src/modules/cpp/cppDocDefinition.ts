@@ -9,7 +9,12 @@ import type {
 
 import { LOGO_DATA_URI } from "@vendor-onboarding/vendorOnboardingLogo";
 
-import type { CppPdfData, CppSigner } from "./cppAssembler";
+import type {
+	CppPdfData,
+	CppSigner,
+	ImpactRow,
+	PlantImpact,
+} from "./cppAssembler";
 import type { CppPirRow, CppSummaryLine, CppSummaryRow } from "./cppPartRows";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -91,14 +96,17 @@ type Col = Content & { width?: number | string };
 /** pdfmake adds the cell padding on top of a fixed column width; take it off so
  *  the columns add up to exactly the width they were given. */
 const PAD_X = 4;
-const tw = (widths: number[]): number[] => widths.map((w) => Math.max(w - PAD_X, 1));
+const tw = (widths: number[]): number[] =>
+	widths.map((w) => Math.max(w - PAD_X, 1));
 
 const NONE: [boolean, boolean, boolean, boolean] = [false, false, false, false];
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
 const dmy = (d: Date | null | undefined, sep = "-"): string =>
-	d ? `${pad2(d.getDate())}${sep}${pad2(d.getMonth() + 1)}${sep}${d.getFullYear()}` : "";
+	d
+		? `${pad2(d.getDate())}${sep}${pad2(d.getMonth() + 1)}${sep}${d.getFullYear()}`
+		: "";
 
 const fmtNum = (n: number | null | undefined): string => {
 	if (n === null || n === undefined || !Number.isFinite(n)) return "";
@@ -180,12 +188,36 @@ const tick = (size = 6): ContentCanvas & { width?: number } => ({
 function labelWithArrow(label: string, o: Opts = {}): TableCell {
 	return {
 		columns: [
-			{ text: label, width: "*", bold: o.bold, fontSize: o.fs ?? FS, alignment: o.align ?? "center" },
+			{
+				text: label,
+				width: "*",
+				bold: o.bold,
+				fontSize: o.fs ?? FS,
+				alignment: o.align ?? "center",
+			},
 			{
 				width: 9,
 				canvas: [
-					{ type: "line", x1: 0, y1: 4, x2: 7.5, y2: 4, lineWidth: 0.7, lineColor: BLACK },
-					{ type: "polyline", closePath: false, lineWidth: 0.7, lineColor: BLACK, points: [{ x: 5, y: 1.8 }, { x: 7.8, y: 4 }, { x: 5, y: 6.2 }] },
+					{
+						type: "line",
+						x1: 0,
+						y1: 4,
+						x2: 7.5,
+						y2: 4,
+						lineWidth: 0.7,
+						lineColor: BLACK,
+					},
+					{
+						type: "polyline",
+						closePath: false,
+						lineWidth: 0.7,
+						lineColor: BLACK,
+						points: [
+							{ x: 5, y: 1.8 },
+							{ x: 7.8, y: 4 },
+							{ x: 5, y: 6.2 },
+						],
+					},
 				],
 				margin: [0, 1.2, 0, 0],
 			},
@@ -198,11 +230,22 @@ function labelWithArrow(label: string, o: Opts = {}): TableCell {
 }
 
 /** Label followed by an optional tick, as one cell. */
-function labelWithTick(label: string, ticked: boolean, o: Opts = {}): TableCell {
+function labelWithTick(
+	label: string,
+	ticked: boolean,
+	o: Opts = {},
+): TableCell {
 	return {
 		columns: [
 			{ text: label, width: "auto", fontSize: o.fs ?? FS, bold: o.bold },
-			...(ticked ? [{ ...tick(5.5), margin: [1, 0.5, 0, 0] as [number, number, number, number] }] : []),
+			...(ticked
+				? [
+						{
+							...tick(5.5),
+							margin: [1, 0.5, 0, 0] as [number, number, number, number],
+						},
+					]
+				: []),
 		],
 		columnGap: 0,
 		fillColor: o.fill,
@@ -212,12 +255,21 @@ function labelWithTick(label: string, ticked: boolean, o: Opts = {}): TableCell 
 }
 
 const grey = (title: string, width: number): Content => ({
-	table: { widths: tw([width]), body: [[c(title, { fs: 6.5, fill: GREY_BAR, border: NONE })]] },
+	table: {
+		widths: tw([width]),
+		body: [[c(title, { fs: 6.5, fill: GREY_BAR, border: NONE })]],
+	},
 	layout: NO_PAD_LAYOUT_WITH_TEXT_PAD(),
 });
 
 function NO_PAD_LAYOUT_WITH_TEXT_PAD() {
-	return { ...NO_PAD_LAYOUT, paddingLeft: () => 2, paddingRight: () => 2, paddingTop: () => 1.6, paddingBottom: () => 1.6 };
+	return {
+		...NO_PAD_LAYOUT,
+		paddingLeft: () => 2,
+		paddingRight: () => 2,
+		paddingTop: () => 1.6,
+		paddingBottom: () => 1.6,
+	};
 }
 
 const italicNote = (t: string, topMargin = 0): Content => ({
@@ -231,7 +283,10 @@ const italicNote = (t: string, topMargin = 0): Content => ({
 /** Vertical caption (e.g. "CPP Committee Approval") drawn as rotated SVG text. */
 function verticalLabel(label: string, height: number): Col {
 	const size = 4.6;
-	const safe = label.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+	const safe = label
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;");
 	return {
 		svg: `<svg xmlns="http://www.w3.org/2000/svg" width="8" height="${height}" viewBox="0 0 8 ${height}"><text transform="translate(6 ${height / 2}) rotate(-90)" text-anchor="middle" font-size="${size}" font-family="Helvetica" fill="${SOFT_TEXT}">${safe}</text></svg>`,
 		width: 8,
@@ -245,26 +300,51 @@ const statusLine = (s: CppSigner): string =>
 	s.status === "APPROVED" && s.actedAt ? `Approved ${dmy(s.actedAt, "/")}` : "";
 
 /** Names side by side, bottom-aligned like the paper form. */
-function signerRow(signers: CppSigner[], width: number, minHeight: number, perRow = 4): Col {
+function signerRow(
+	signers: CppSigner[],
+	width: number,
+	minHeight: number,
+	perRow = 4,
+): Col {
 	if (signers.length === 0) return { text: " ", margin: [0, minHeight, 0, 0] };
 	const rows: CppSigner[][] = [];
-	for (let i = 0; i < signers.length; i += perRow) rows.push(signers.slice(i, i + perRow));
+	for (let i = 0; i < signers.length; i += perRow)
+		rows.push(signers.slice(i, i + perRow));
 	return {
 		stack: rows.map((row, i) => ({
 			columns: row.map((s) => ({
 				width: width / perRow,
 				stack: [
-					{ text: s.name, bold: true, fontSize: 5.4, alignment: "center" as const },
+					{
+						text: s.name,
+						bold: true,
+						fontSize: 5.4,
+						alignment: "center" as const,
+					},
 					s.designation
-						? { text: s.designation, fontSize: 4.8, alignment: "center" as const }
+						? {
+								text: s.designation,
+								fontSize: 4.8,
+								alignment: "center" as const,
+							}
 						: { text: " ", fontSize: 4.8 },
 					statusLine(s)
-						? { text: statusLine(s), fontSize: 4.2, color: SOFT_TEXT, alignment: "center" as const }
+						? {
+								text: statusLine(s),
+								fontSize: 4.2,
+								color: SOFT_TEXT,
+								alignment: "center" as const,
+							}
 						: { text: " ", fontSize: 4.2 },
 				],
 			})),
 			columnGap: 0,
-			margin: [0, i === 0 ? minHeight : 4, 0, 0] as [number, number, number, number],
+			margin: [0, i === 0 ? minHeight : 4, 0, 0] as [
+				number,
+				number,
+				number,
+				number,
+			],
 		})),
 	};
 }
@@ -275,14 +355,43 @@ function headerBand(title: string, sub1: string, sub2: string): Col {
 	return {
 		columns: [
 			LOGO_DATA_URI
-				? { image: "logo", fit: [86, 40], width: 96, margin: [4, 3, 0, 0] as [number, number, number, number] }
-				: { text: "TATA HITACHI", bold: true, fontSize: 11, width: 96, margin: [4, 8, 0, 0] as [number, number, number, number] },
+				? {
+						image: "logo",
+						fit: [86, 40],
+						width: 96,
+						margin: [4, 3, 0, 0] as [number, number, number, number],
+					}
+				: {
+						text: "TATA HITACHI",
+						bold: true,
+						fontSize: 11,
+						width: 96,
+						margin: [4, 8, 0, 0] as [number, number, number, number],
+					},
 			{
 				width: "*",
 				stack: [
-					{ text: title, bold: true, italics: true, fontSize: 7.2, alignment: "right" },
-					{ text: sub1, bold: true, italics: true, fontSize: 7.2, alignment: "right" },
-					{ text: sub2, bold: true, italics: true, fontSize: 7.2, alignment: "right" },
+					{
+						text: title,
+						bold: true,
+						italics: true,
+						fontSize: 7.2,
+						alignment: "right",
+					},
+					{
+						text: sub1,
+						bold: true,
+						italics: true,
+						fontSize: 7.2,
+						alignment: "right",
+					},
+					{
+						text: sub2,
+						bold: true,
+						italics: true,
+						fontSize: 7.2,
+						alignment: "right",
+					},
 				],
 				margin: [0, 6, 6, 0] as [number, number, number, number],
 			},
@@ -292,12 +401,23 @@ function headerBand(title: string, sub1: string, sub2: string): Col {
 }
 
 const hRule = (width: number, y = 0): ContentCanvas => ({
-	canvas: [{ type: "line", x1: 0, y1: y, x2: width, y2: y, lineWidth: 0.9, lineColor: BLACK }],
+	canvas: [
+		{
+			type: "line",
+			x1: 0,
+			y1: y,
+			x2: width,
+			y2: y,
+			lineWidth: 0.9,
+			lineColor: BLACK,
+		},
+	],
 });
 
 /** Reason row + Approval Ref. */
 function reasonRow(d: CppPdfData): Col {
-	const eff = (name: string) => d.effects.some((e) => e.toLowerCase() === name.toLowerCase());
+	const eff = (name: string) =>
+		d.effects.some((e) => e.toLowerCase() === name.toLowerCase());
 	const q = eff("quality");
 	const co = eff("cost");
 	const de = eff("delivery");
@@ -311,10 +431,28 @@ function reasonRow(d: CppPdfData): Col {
 				table: {
 					widths: tw([158]),
 					heights: [24],
-					body: [[{ stack: [
-						{ text: "Reason for Price Update :", bold: true, fontSize: 6.6, alignment: "center" },
-						{ text: "(Please Select from Drop Down )", bold: true, fontSize: 6.6, alignment: "center" },
-					], fillColor: GREY_HEAD, margin: [0, 4, 0, 0] } as TableCell]],
+					body: [
+						[
+							{
+								stack: [
+									{
+										text: "Reason for Price Update :",
+										bold: true,
+										fontSize: 6.6,
+										alignment: "center",
+									},
+									{
+										text: "(Please Select from Drop Down )",
+										bold: true,
+										fontSize: 6.6,
+										alignment: "center",
+									},
+								],
+								fillColor: GREY_HEAD,
+								margin: [0, 4, 0, 0],
+							} as TableCell,
+						],
+					],
 				},
 				layout: FORM_LAYOUT,
 			},
@@ -323,7 +461,17 @@ function reasonRow(d: CppPdfData): Col {
 				table: {
 					widths: tw([150]),
 					heights: [24],
-					body: [[{ text: d.reason || " ", bold: true, fontSize: 7, alignment: "center", margin: [0, 8, 0, 0] } as TableCell]],
+					body: [
+						[
+							{
+								text: d.reason || " ",
+								bold: true,
+								fontSize: 7,
+								alignment: "center",
+								margin: [0, 8, 0, 0],
+							} as TableCell,
+						],
+					],
 				},
 				layout: FORM_LAYOUT,
 				margin: [4, 0, 0, 0] as [number, number, number, number],
@@ -333,10 +481,25 @@ function reasonRow(d: CppPdfData): Col {
 				table: {
 					widths: tw([178]),
 					heights: [24],
-					body: [[{ stack: [
-						{ text: `Effect: Quality ( ${mark(q)} )/ Cost ( ${mark(co)} )/ Delivery( ${mark(de)} )`, bold: true, fontSize: 7 },
-						{ text: "(Please Tick)- Only for Existing Materials", bold: true, fontSize: 5 },
-					], margin: [0, 3, 0, 0] } as TableCell]],
+					body: [
+						[
+							{
+								stack: [
+									{
+										text: `Effect: Quality ( ${mark(q)} )/ Cost ( ${mark(co)} )/ Delivery( ${mark(de)} )`,
+										bold: true,
+										fontSize: 7,
+									},
+									{
+										text: "(Please Tick)- Only for Existing Materials",
+										bold: true,
+										fontSize: 5,
+									},
+								],
+								margin: [0, 3, 0, 0],
+							} as TableCell,
+						],
+					],
 				},
 				layout: FORM_LAYOUT,
 				margin: [4, 0, 0, 0] as [number, number, number, number],
@@ -347,14 +510,38 @@ function reasonRow(d: CppPdfData): Col {
 				stack: [
 					{
 						columns: [
-							{ text: "Approval Ref. :", bold: true, fontSize: 7, width: 60, alignment: "right" },
-							{ text: d.referenceNumber, bold: true, fontSize: 6, width: "*", margin: [4, 0.6, 0, 0] as [number, number, number, number] },
+							{
+								text: "Approval Ref. :",
+								bold: true,
+								fontSize: 7,
+								width: 60,
+								alignment: "right",
+							},
+							{
+								text: d.referenceNumber,
+								bold: true,
+								fontSize: 6,
+								width: "*",
+								margin: [4, 0.6, 0, 0] as [number, number, number, number],
+							},
 						],
 					},
 					{
 						columns: [
-							{ text: "Date :", bold: true, fontSize: 7, width: 60, alignment: "right" },
-							{ text: dmy(d.date), bold: true, fontSize: 6, width: "*", margin: [4, 0.6, 0, 0] as [number, number, number, number] },
+							{
+								text: "Date :",
+								bold: true,
+								fontSize: 7,
+								width: 60,
+								alignment: "right",
+							},
+							{
+								text: dmy(d.date),
+								bold: true,
+								fontSize: 6,
+								width: "*",
+								margin: [4, 0.6, 0, 0] as [number, number, number, number],
+							},
 						],
 						margin: [0, 2, 0, 0] as [number, number, number, number],
 					},
@@ -375,19 +562,22 @@ function purchasingTable(d: CppPdfData): Col {
 	const label = (t: string, o: Opts = {}) => c(t, { bold: true, ...o });
 	const supplierRows: TableCell[][] = [
 		[
-			c("", { span: 3, border: NONE }), ...blanks(2),
+			c("", { span: 3, border: NONE }),
+			...blanks(2),
 			...spanned(4, label("Existing Supplier")),
 			...spanned(2, label("Other Supplier")),
 			...spanned(3, label("Recommended Supplier")),
 		],
 		[
-			c("", { span: 3, border: NONE }), ...blanks(2),
+			c("", { span: 3, border: NONE }),
+			...blanks(2),
 			...spanned(4, c(`Name :   ${s.existing.name}`)),
 			...spanned(2, c(`Name :   ${s.other.name}`)),
 			...spanned(3, c(`Name :   ${s.recommended.name}`)),
 		],
 		[
-			c("", { span: 3, border: NONE }), ...blanks(2),
+			c("", { span: 3, border: NONE }),
+			...blanks(2),
 			...spanned(4, c(`Code :   ${s.existing.code}`)),
 			...spanned(2, c(`Code :   ${s.other.code}`)),
 			...spanned(3, c(`Code :   ${s.recommended.code}`)),
@@ -406,8 +596,18 @@ function purchasingTable(d: CppPdfData): Col {
 	} as TableCell & { text: string };
 
 	const head1: TableCell[] = [
-		c("Part No.", { bold: true, align: "center", rowSpan: 2, margin: [0, 5, 0, 0] }),
-		c("Description", { bold: true, align: "center", rowSpan: 2, margin: [0, 5, 0, 0] }),
+		c("Part No.", {
+			bold: true,
+			align: "center",
+			rowSpan: 2,
+			margin: [0, 5, 0, 0],
+		}),
+		c("Description", {
+			bold: true,
+			align: "center",
+			rowSpan: 2,
+			margin: [0, 5, 0, 0],
+		}),
 		c("UOM", { bold: true, align: "center", rowSpan: 2, margin: [0, 5, 0, 0] }),
 		...spanned(2, c("Existing Price", { bold: true, align: "center" })),
 		...spanned(2, c("Quoted Price", { bold: true, align: "center" })),
@@ -415,7 +615,9 @@ function purchasingTable(d: CppPdfData): Col {
 		...spanned(3, c("Price Finalised", { bold: true, align: "center" })),
 	];
 	const head2: TableCell[] = [
-		{ text: "" }, { text: "" }, { text: "" },
+		{ text: "" },
+		{ text: "" },
+		{ text: "" },
 		c("Unit Rate in INR", { bold: true, align: "center", fs: 5.2 }),
 		c("w.e.f", { bold: true, align: "center", fs: 5.2 }),
 		c("Unit Rate in INR", { bold: true, align: "center", fs: 5.2 }),
@@ -427,14 +629,16 @@ function purchasingTable(d: CppPdfData): Col {
 		c("% Impact", { bold: true, align: "center", fs: 5.2 }),
 	];
 
-	// Part rows live in the uploaded Excel, so the form refers to the enclosure
-	// exactly like the paper original ("As per encl").
+	// Part rows live in the enclosure (the summary sheet), so the form refers to it
+	// exactly like the paper original: "As per encl" in every part cell.
 	const uomSet = new Set(
-		d.parts.summary.filter((l): l is CppSummaryRow => l.kind === "part").map((p) => p.uom).filter(Boolean),
+		d.parts.summary
+			.filter((l): l is CppSummaryRow => l.kind === "part")
+			.map((p) => p.uom)
+			.filter(Boolean),
 	);
 	const uom = uomSet.size === 1 ? [...uomSet][0] : "";
-	const hasParts = d.parts.summary.length > 0 || d.parts.pir.length > 0;
-	const encl = hasParts ? "As per encl" : "";
+	const encl = "As per encl";
 
 	const first: TableCell[] = [
 		c(encl),
@@ -442,7 +646,10 @@ function purchasingTable(d: CppPdfData): Col {
 		c(uom, { align: "center" }),
 		c(encl, { align: "center", fs: 5 }),
 		c(encl, { align: "center", fs: 5 }),
-		c(""), c(""), c(""), c(""),
+		c(""),
+		c(""),
+		c(""),
+		c(""),
 		...spanned(3, c(encl, { align: "center" })),
 	];
 	const body: TableCell[][] = [
@@ -474,10 +681,16 @@ function lowerLeftTables(): Col {
 				table: {
 					widths: tw(AMORT),
 					body: [
-						["Part No", "Price incl. Amort.", "Cutoff Date", "Amort. Qty.", "Price After Amort."].map((t) =>
-							c(t, { bold: true, align: "center", fs: 5.2 }),
-						),
-						emptyRow(5), emptyRow(5), emptyRow(5),
+						[
+							"Part No",
+							"Price incl. Amort.",
+							"Cutoff Date",
+							"Amort. Qty.",
+							"Price After Amort.",
+						].map((t) => c(t, { bold: true, align: "center", fs: 5.2 })),
+						emptyRow(5),
+						emptyRow(5),
+						emptyRow(5),
 					],
 				},
 				layout: FORM_LAYOUT,
@@ -492,10 +705,15 @@ function lowerLeftTables(): Col {
 				table: {
 					widths: tw(PM),
 					body: [
-						["Plant", "Model", "Impact in Rs. (With Amort.)", "Impact in Rs. (W/O Amort.)"].map((t) =>
-							c(t, { bold: true, align: "center", fs: 5.2 }),
-						),
-						emptyRow(4), emptyRow(4), emptyRow(4),
+						[
+							"Plant",
+							"Model",
+							"Impact in Rs. (With Amort.)",
+							"Impact in Rs. (W/O Amort.)",
+						].map((t) => c(t, { bold: true, align: "center", fs: 5.2 })),
+						emptyRow(4),
+						emptyRow(4),
+						emptyRow(4),
 					],
 				},
 				layout: FORM_LAYOUT,
@@ -510,11 +728,21 @@ function lowerLeftTables(): Col {
 				table: {
 					widths: tw(VOL),
 					body: [
-						[labelWithArrow("Plant", { bold: true }), c("DWD", { bold: true, align: "center" }), c("KGP", { bold: true, align: "center" }), c("SPARE", { bold: true, align: "center" })],
+						[
+							labelWithArrow("Plant", { bold: true }),
+							c("DWD", { bold: true, align: "center" }),
+							c("KGP", { bold: true, align: "center" }),
+							c("SPARE", { bold: true, align: "center" }),
+						],
 						[...spanned(4, c("For Actual", { bold: true, fill: GREY_HEAD }))],
 						[c("Rcvd Qty. (Till Date) = a", { fs: 5.4 }), c(""), c(""), c("")],
 						[c("Remaining Qty. = b", { fs: 5.4 }), c(""), c(""), c("")],
-						[...spanned(4, c("For Annualised", { bold: true, fill: GREY_HEAD }))],
+						[
+							...spanned(
+								4,
+								c("For Annualised", { bold: true, fill: GREY_HEAD }),
+							),
+						],
 						[c("Qty./mc x ABP No's = c", { fs: 5.4 }), c(""), c(""), c("")],
 					],
 				},
@@ -522,7 +750,17 @@ function lowerLeftTables(): Col {
 			},
 		],
 	};
-	return { columns: [amort, { width: g, text: "" }, perMachine, { width: g, text: "" }, volumes], columnGap: 0, margin: [0, 3, 0, 0] as [number, number, number, number] };
+	return {
+		columns: [
+			amort,
+			{ width: g, text: "" },
+			perMachine,
+			{ width: g, text: "" },
+			volumes,
+		],
+		columnGap: 0,
+		margin: [0, 3, 0, 0] as [number, number, number, number],
+	};
 }
 
 /* ---- financial impact (right) ---- */
@@ -531,14 +769,50 @@ const RIGHT_W = W - LEFT_W - 6 - 4; // outer padding (2 + 2)
 function financialBlock(d: CppPdfData): Col {
 	const wd = [30, 62, 34, 72, RIGHT_W - 30 - 62 - 34 - 72];
 	const b = { bold: true, align: "center" as const };
-	const rowLabel = (t: string) => c(t, { fs: 6.4, align: "center", margin: [0, 3.5, 0, 3.5] });
+	const rowLabel = (t: string) =>
+		c(t, { fs: 6.4, align: "center", margin: [0, 3.5, 0, 3.5] });
 	const impact = d.impact;
+	const plantImpactRow = (key: ImpactRow, label: string): TableCell[] => {
+		const p: PlantImpact = d.impactByPlant[key];
+		const n = {
+			fs: 6.4,
+			align: "right" as const,
+			margin: [0, 3.5, 0, 3.5] as [number, number, number, number],
+		};
+		return [
+			rowLabel(label),
+			c(fmtNum(p.actual), n),
+			c(fmtPct(p.actualPct, 1), n),
+			c(p.annual === null ? "" : fmtNum(p.annual), n),
+			c(fmtPct(p.annualPct), n),
+		];
+	};
 	const total: TableCell[] = [
 		c("Total", { bold: true, fs: 6.4, align: "center", margin: [0, 2, 0, 2] }),
-		c(fmtNum(impact.actual), { bold: true, fs: 6.6, align: "right", margin: [0, 2, 0, 2] }),
-		c(fmtPct(impact.actualPct, 1), { bold: true, fs: 6.4, align: "right", margin: [0, 2, 0, 2] }),
-		c(impact.annual === null ? "" : `Rs. ${fmtNum(impact.annual)}`, { bold: true, fs: 6.6, align: "right", margin: [0, 2, 0, 2] }),
-		c(fmtPct(impact.annualPct), { bold: true, fs: 6.4, align: "right", margin: [0, 2, 0, 2] }),
+		c(fmtNum(impact.actual), {
+			bold: true,
+			fs: 6.6,
+			align: "right",
+			margin: [0, 2, 0, 2],
+		}),
+		c(fmtPct(impact.actualPct, 1), {
+			bold: true,
+			fs: 6.4,
+			align: "right",
+			margin: [0, 2, 0, 2],
+		}),
+		c(impact.annual === null ? "" : `Rs. ${fmtNum(impact.annual)}`, {
+			bold: true,
+			fs: 6.6,
+			align: "right",
+			margin: [0, 2, 0, 2],
+		}),
+		c(fmtPct(impact.annualPct), {
+			bold: true,
+			fs: 6.4,
+			align: "right",
+			margin: [0, 2, 0, 2],
+		}),
 	];
 	return {
 		stack: [
@@ -549,11 +823,24 @@ function financialBlock(d: CppPdfData): Col {
 				table: {
 					widths: tw(wd),
 					body: [
-						[c("", { border: NONE, span: 1 }), ...spanned(2, c("Actual = [(a+ b)X Impact]", { ...b, fs: 5.6 })), ...spanned(2, c("Annual Impact = [ c X Impact]", { ...b, fs: 5.6 }))],
-						[c("", { border: NONE }), c("in INR", { ...b, fs: 5.4 }), c("in %", { ...b, fs: 5.4 }), c("in INR", { ...b, fs: 5.4 }), c("in %", { ...b, fs: 5.4 })],
-						[rowLabel("KGP"), c(""), c(""), c(""), c("")],
-						[rowLabel("DWD"), c(""), c(""), c(""), c("")],
-						[rowLabel("SPARE"), c(""), c(""), c(""), c("")],
+						[
+							c("", { border: NONE, span: 1 }),
+							...spanned(2, c("Actual = [(a+ b)X Impact]", { ...b, fs: 5.6 })),
+							...spanned(
+								2,
+								c("Annual Impact = [ c X Impact]", { ...b, fs: 5.6 }),
+							),
+						],
+						[
+							c("", { border: NONE }),
+							c("in INR", { ...b, fs: 5.4 }),
+							c("in %", { ...b, fs: 5.4 }),
+							c("in INR", { ...b, fs: 5.4 }),
+							c("in %", { ...b, fs: 5.4 }),
+						],
+						plantImpactRow("KGP", "KGP"),
+						plantImpactRow("DWD", "DWD"),
+						plantImpactRow("SPARE", "SPARE"),
 						total,
 					],
 				},
@@ -573,9 +860,25 @@ function otherDataBlock(): Col {
 				table: {
 					widths: tw(wd),
 					body: [
-						[...spanned(3, c("Price in Other Plant Location (if any)", { bold: true, italics: true, align: "center", fs: 6.2 }))],
-						[c("Plant", { fs: 6.2 }), c("Part Number", { fs: 6.2 }), c("Price", { fs: 6.2 })],
-						emptyRow(3), emptyRow(3), emptyRow(3),
+						[
+							...spanned(
+								3,
+								c("Price in Other Plant Location (if any)", {
+									bold: true,
+									italics: true,
+									align: "center",
+									fs: 6.2,
+								}),
+							),
+						],
+						[
+							c("Plant", { fs: 6.2 }),
+							c("Part Number", { fs: 6.2 }),
+							c("Price", { fs: 6.2 }),
+						],
+						emptyRow(3),
+						emptyRow(3),
+						emptyRow(3),
 					],
 				},
 				layout: FORM_LAYOUT,
@@ -590,18 +893,38 @@ const COL_L = 137;
 
 function leftColumnTop(d: CppPdfData): Col {
 	const plantRows: Array<[string, string]> = [
-		["DWD", "1006"], ["KGP", "3006"], ["KGP WH", "8445"], ["DWD WH", "8580"], ["NGP", "8400"],
+		["DWD", "1006"],
+		["KGP", "3006"],
+		["KGP WH", "8445"],
+		["DWD WH", "8580"],
+		["NGP", "8400"],
 	];
-	const chosen = new Set(d.applicablePlants.map((p) => p.toUpperCase().replace(/\s+/g, " ")));
+	const chosen = new Set(
+		d.applicablePlants.map((p) => p.toUpperCase().replace(/\s+/g, " ")),
+	);
 	const plantsTable: Col = {
 		table: {
 			widths: tw([30, 28, 33]),
 			body: plantRows.map(([name, code]) => {
 				const strong = name === "DWD" || name === "KGP";
 				return [
-					c(name, { bold: true, align: "center", fill: strong ? BLUE : undefined, fs: strong ? 6.4 : 5.2 }),
-					c(code, { bold: true, align: "center", fill: strong ? BLUE : undefined, fs: strong ? 6.4 : 5.2 }),
-					c(chosen.has(name) ? "Yes" : "No", { bold: true, align: "center", fs: 6.2 }),
+					c(name, {
+						bold: true,
+						align: "center",
+						fill: strong ? BLUE : undefined,
+						fs: strong ? 6.4 : 5.2,
+					}),
+					c(code, {
+						bold: true,
+						align: "center",
+						fill: strong ? BLUE : undefined,
+						fs: strong ? 6.4 : 5.2,
+					}),
+					c(chosen.has(name) ? "Yes" : "No", {
+						bold: true,
+						align: "center",
+						fs: 6.2,
+					}),
 				];
 			}),
 		},
@@ -626,7 +949,9 @@ function leftColumnTop(d: CppPdfData): Col {
 				],
 				[
 					labelWithTick("PB25  One Time", cond("PB25", "").on, { bold: true }),
-					labelWithTick("PB75  Provisional", cond("PB75", "").on, { bold: true }),
+					labelWithTick("PB75  Provisional", cond("PB75", "").on, {
+						bold: true,
+					}),
 				],
 			],
 		},
@@ -640,17 +965,26 @@ function leftColumnTop(d: CppPdfData): Col {
 				table: {
 					widths: tw([30, COL_L - 30]),
 					heights: [20],
-					body: [[
-						c("Models :", { bold: true, fs: 6.4, margin: [0, 6, 0, 0] }),
-						c(d.models.join("/"), { fs: 5.6, margin: [0, 1, 0, 0] }),
-					]],
+					body: [
+						[
+							c("Models :", { bold: true, fs: 6.4, margin: [0, 6, 0, 0] }),
+							c(d.models.join("/"), { fs: 5.6, margin: [0, 1, 0, 0] }),
+						],
+					],
 				},
 				layout: FORM_LAYOUT,
 			},
 			{
 				margin: [0, 4, 0, 0] as [number, number, number, number],
 				columns: [
-					{ width: 46, text: "Applicable Plant(s) :\n(Y/N)", bold: true, fontSize: 5.8, alignment: "center", margin: [0, 14, 0, 0] as [number, number, number, number] },
+					{
+						width: 46,
+						text: "Applicable Plant(s) :\n(Y/N)",
+						bold: true,
+						fontSize: 5.8,
+						alignment: "center",
+						margin: [0, 14, 0, 0] as [number, number, number, number],
+					},
 					{ width: 91, stack: [plantsTable] },
 				],
 				columnGap: 0,
@@ -658,14 +992,28 @@ function leftColumnTop(d: CppPdfData): Col {
 			{
 				margin: [0, 4, 0, 0] as [number, number, number, number],
 				columns: [
-					{ width: 44, text: "Price Type :", bold: true, fontSize: 6.4, margin: [0, 4, 0, 0] as [number, number, number, number] },
+					{
+						width: 44,
+						text: "Price Type :",
+						bold: true,
+						fontSize: 6.4,
+						margin: [0, 4, 0, 0] as [number, number, number, number],
+					},
 					{
 						width: COL_L - 44,
 						table: {
 							widths: tw([COL_L - 44]),
 							body: [
-								[labelWithTick("Standard", std, { fill: std ? BLUE : undefined })],
-								[labelWithTick("Subcontracting (MASOP)", sub, { fill: sub ? BLUE : undefined })],
+								[
+									labelWithTick("Standard", std, {
+										fill: std ? BLUE : undefined,
+									}),
+								],
+								[
+									labelWithTick("Subcontracting (MASOP)", sub, {
+										fill: sub ? BLUE : undefined,
+									}),
+								],
 							],
 						},
 						layout: FORM_LAYOUT,
@@ -676,7 +1024,12 @@ function leftColumnTop(d: CppPdfData): Col {
 			{
 				margin: [0, 5, 0, 0] as [number, number, number, number],
 				stack: [
-					{ text: "Pricing Condition :", bold: true, fontSize: 6.4, fillColor: GREY_BAR },
+					{
+						text: "Pricing Condition :",
+						bold: true,
+						fontSize: 6.4,
+						fillColor: GREY_BAR,
+					},
 					conditionTable,
 				],
 			},
@@ -703,7 +1056,10 @@ function leftColumnBottom(d: CppPdfData): Col {
 		table: {
 			widths: tw(lw),
 			body: [
-				[c("Inco Terms", { bold: true, fill: BLUE }), c(d.isSpare ? "DWD/KGP Warehouse" : "", { fill: BLUE })],
+				[
+					c("Inco Terms", { bold: true, fill: BLUE }),
+					c(d.isSpare ? "DWD/KGP Warehouse" : "", { fill: BLUE }),
+				],
 				[c("P&F (%age) :", { bold: true, fill: BLUE }), c("", { fill: BLUE })],
 				[c("Tax Code :", { bold: true, fill: BLUE }), c("", { fill: BLUE })],
 			],
@@ -740,14 +1096,36 @@ function justificationBlock(d: CppPdfData): Col {
 		width: MID_W,
 		stack: [
 			{
-				table: { widths: tw([MID_W]), body: [[c("Justification :", { bold: true, fs: 7, fill: GREY_BAR, border: NONE })]] },
+				table: {
+					widths: tw([MID_W]),
+					body: [
+						[
+							c("Justification :", {
+								bold: true,
+								fs: 7,
+								fill: GREY_BAR,
+								border: NONE,
+							}),
+						],
+					],
+				},
 				layout: NO_PAD_LAYOUT_WITH_TEXT_PAD(),
 			},
 			{
 				table: {
 					widths: tw([MID_W]),
 					heights: [BOX_H],
-					body: [[{ text: j.text || " ", italics: true, fontSize: j.fs, lineHeight: 1.18, margin: [2, 2, 2, 0] } as TableCell]],
+					body: [
+						[
+							{
+								text: j.text || " ",
+								italics: true,
+								fontSize: j.fs,
+								lineHeight: 1.18,
+								margin: [2, 2, 2, 0],
+							} as TableCell,
+						],
+					],
 				},
 				layout: FORM_LAYOUT,
 			},
@@ -761,15 +1139,34 @@ const COL_R = W - 4 - COL_L - MID_W - 8; // 4 = the 2 + 2 inner margin
 
 function trackerBlock(): Col {
 	const wd = [62, 56, 78, 66, 64, COL_R - 62 - 56 - 78 - 66 - 64 - 0];
-	const heads = ["Model", "Per Machine Impact", "Budgeted increase in Price (Per M/c – FY16)", "Status YTD ( FY19)", "Budgeted Material Cost", "Material Cost YTD"];
+	const heads = [
+		"Model",
+		"Per Machine Impact",
+		"Budgeted increase in Price (Per M/c – FY16)",
+		"Status YTD ( FY19)",
+		"Budgeted Material Cost",
+		"Material Cost YTD",
+	];
 	return {
 		stack: [
-			{ text: "Material Cost Tracker (All Value in Lakhs INR)", fontSize: 6.6, alignment: "center", margin: [0, 1, 0, 2] as [number, number, number, number] },
+			{
+				text: "Material Cost Tracker (All Value in Lakhs INR)",
+				fontSize: 6.6,
+				alignment: "center",
+				margin: [0, 1, 0, 2] as [number, number, number, number],
+			},
 			{
 				table: {
 					widths: tw(wd),
 					body: [
-						heads.map((h) => c(h, { bold: true, align: "center", fs: 5.6, margin: [0, 2, 0, 2] })),
+						heads.map((h) =>
+							c(h, {
+								bold: true,
+								align: "center",
+								fs: 5.6,
+								margin: [0, 2, 0, 2],
+							}),
+						),
 						...Array.from({ length: 6 }, () => emptyRow(6)),
 					],
 				},
@@ -781,18 +1178,26 @@ function trackerBlock(): Col {
 
 function initiatedByBlock(d: CppPdfData): Col {
 	const sigW = COL_R / 4;
-	const box = (title: string, signers: CppSigner[], widthTitleItalic = true): Col => ({
+	const box = (
+		title: string,
+		signers: CppSigner[],
+		widthTitleItalic = true,
+	): Col => ({
 		width: sigW,
 		table: {
 			widths: tw([sigW]),
 			heights: [54],
-			body: [[{
-				stack: [
-					{ text: title, italics: widthTitleItalic, fontSize: 6.2 },
-					signerRow(signers, sigW - 4, 14, 2),
+			body: [
+				[
+					{
+						stack: [
+							{ text: title, italics: widthTitleItalic, fontSize: 6.2 },
+							signerRow(signers, sigW - 4, 14, 2),
+						],
+						margin: [1, 1, 1, 0],
+					} as TableCell,
 				],
-				margin: [1, 1, 1, 0],
-			} as TableCell]],
+			],
 		},
 		layout: FORM_LAYOUT,
 	});
@@ -801,7 +1206,12 @@ function initiatedByBlock(d: CppPdfData): Col {
 		margin: [0, 5, 0, 0] as [number, number, number, number],
 		stack: [
 			{
-				table: { widths: tw([COL_R]), body: [[c("Initiated By :", { fs: 6.5, fill: GREY_BAR, border: NONE })]] },
+				table: {
+					widths: tw([COL_R]),
+					body: [
+						[c("Initiated By :", { fs: 6.5, fill: GREY_BAR, border: NONE })],
+					],
+				},
 				layout: NO_PAD_LAYOUT_WITH_TEXT_PAD(),
 			},
 			{
@@ -822,27 +1232,63 @@ function initiatedByBlock(d: CppPdfData): Col {
 function approvalBand(d: CppPdfData): Col {
 	const bandW = W - COL_L - 4 - 118 - 4;
 	const sectionH = 74;
-	const sections: Array<{ w: number; label: string; signers: CppSigner[]; perRow: number }> = [
-		{ w: 230, label: "CPP Committee Approval", signers: d.committee, perRow: 4 },
-		{ w: 76, label: "Approval from Alt Chairman", signers: d.altChairman, perRow: 1 },
-		{ w: 76, label: "Approval from CPP Chairman", signers: d.chairman, perRow: 1 },
-		{ w: 80, label: "Final Approval & Remarks", signers: d.managingDirector, perRow: 1 },
+	const sections: Array<{
+		w: number;
+		label: string;
+		signers: CppSigner[];
+		perRow: number;
+	}> = [
+		{
+			w: 230,
+			label: "CPP Committee Approval",
+			signers: d.committee,
+			perRow: 4,
+		},
+		{
+			w: 76,
+			label: "Approval from Alt Chairman",
+			signers: d.altChairman,
+			perRow: 1,
+		},
+		{
+			w: 76,
+			label: "Approval from CPP Chairman",
+			signers: d.chairman,
+			perRow: 1,
+		},
+		{
+			w: 80,
+			label: "Final Approval & Remarks",
+			signers: d.managingDirector,
+			perRow: 1,
+		},
 	];
 	const used = sum(sections.map((s) => s.w));
 	const feedingW = bandW - used;
 
 	// Price feeding is done by the SCM head: the last WF1 approver on the form.
-	const feeding = d.approvedBy.length ? [d.approvedBy[d.approvedBy.length - 1]] : [];
-	sections.push({ w: feedingW, label: "Price Feeding Approval", signers: feeding, perRow: 1 });
+	const feeding = d.approvedBy.length
+		? [d.approvedBy[d.approvedBy.length - 1]]
+		: [];
+	sections.push({
+		w: feedingW,
+		label: "Price Feeding Approval",
+		signers: feeding,
+		perRow: 1,
+	});
 
-	const cell = (s: (typeof sections)[number]): TableCell => ({
-		columns: [
-			{ width: 9, stack: [verticalLabel(s.label, 70)] },
-			{ width: s.w - 14, stack: [signerRow(s.signers, s.w - 14, 30, s.perRow)] },
-		],
-		columnGap: 0,
-		margin: [1, 2, 0, 0],
-	} as TableCell);
+	const cell = (s: (typeof sections)[number]): TableCell =>
+		({
+			columns: [
+				{ width: 9, stack: [verticalLabel(s.label, 70)] },
+				{
+					width: s.w - 14,
+					stack: [signerRow(s.signers, s.w - 14, 30, s.perRow)],
+				},
+			],
+			columnGap: 0,
+			margin: [1, 2, 0, 0],
+		}) as TableCell;
 
 	return {
 		width: bandW,
@@ -850,11 +1296,19 @@ function approvalBand(d: CppPdfData): Col {
 			{
 				table: {
 					widths: tw([80, 40, bandW - 120]),
-					body: [[
-						c("Approving Authority :", { bold: true, fs: 5.8 }),
-						c(d.approvingAuthority, { bold: true, italics: true, align: "center", fill: GREY_HEAD, fs: 6.4 }),
-						c("", { border: NONE }),
-					]],
+					body: [
+						[
+							c("Approving Authority :", { bold: true, fs: 5.8 }),
+							c(d.approvingAuthority, {
+								bold: true,
+								italics: true,
+								align: "center",
+								fill: GREY_HEAD,
+								fs: 6.4,
+							}),
+							c("", { border: NONE }),
+						],
+					],
 				},
 				layout: FORM_LAYOUT,
 			},
@@ -877,10 +1331,28 @@ function checklistBlock(d: CppPdfData): Col {
 		table: {
 			widths: tw(wd),
 			body: [
-				[c("Mandatory Check List", { bold: true, align: "center", fs: 6.6, border: [false, false, false, true] }), c("Yes/No/NA", { bold: true, align: "center", fs: 5.2, border: [false, false, false, true] })],
+				[
+					c("Mandatory Check List", {
+						bold: true,
+						align: "center",
+						fs: 6.6,
+						border: [false, false, false, true],
+					}),
+					c("Yes/No/NA", {
+						bold: true,
+						align: "center",
+						fs: 5.2,
+						border: [false, false, false, true],
+					}),
+				],
 				...d.checklist.map((i) => [
 					c(i.label, { fs: 6, border: [false, false, false, true] }),
-					c(i.attached ? "Yes" : "NA", { fill: BLUE, align: "center", fs: 5.2, border: [true, true, true, true] }),
+					c(i.value, {
+						fill: BLUE,
+						align: "center",
+						fs: 5.2,
+						border: [true, true, true, true],
+					}),
 				]),
 			],
 		},
@@ -891,25 +1363,50 @@ function checklistBlock(d: CppPdfData): Col {
 /* ---- bottom strip ---- */
 
 function bottomStrip(d: CppPdfData): Col {
-	const wd = [96, 24, 70, 24, 70, 24, 70, 34, 56, 36, 30, 68, 58, W - 96 - 24 - 70 - 24 - 70 - 24 - 70 - 34 - 56 - 36 - 30 - 68 - 58 - 4];
+	const wd = [
+		96,
+		24,
+		70,
+		24,
+		70,
+		24,
+		70,
+		34,
+		56,
+		36,
+		30,
+		68,
+		58,
+		W - 96 - 24 - 70 - 24 - 70 - 24 - 70 - 34 - 56 - 36 - 30 - 68 - 58 - 4,
+	];
 	const t = (s: string, o: Opts = {}) => c(s, { fs: 6.4, ...o });
 	return {
 		margin: [2, 4, 2, 0] as [number, number, number, number],
 		table: {
 			widths: tw(wd),
-			body: [[
-				t("Approval dates and references :", { fs: 5.4 }),
-				t("CPP"), t(d.cppDate ? dmy(d.cppDate, "/") : ""),
-				t("MDO"), t(d.mdDate ? dmy(d.mdDate, "/") : ""),
-				t("PFA"), t(""),
-				t("Price Feeding", { fs: 5.6 }),
-				t("Ref & Date", { italics: true, fs: 5, color: SOFT_TEXT }),
-				t("POSA Run", { fs: 5.6 }),
-				t("Yes", { align: "center" }),
-				t("PO applicable for PO/SA", { fs: 5.2 }),
-				t("As per annexure", { align: "center" }),
-				c("THCM Price Approval Format - Version 26 (200615)", { fs: 3.8, color: SOFT_TEXT, border: NONE, align: "right" }),
-			]],
+			body: [
+				[
+					t("Approval dates and references :", { fs: 5.4 }),
+					t("CPP"),
+					t(d.cppDate ? dmy(d.cppDate, "/") : ""),
+					t("MDO"),
+					t(d.mdDate ? dmy(d.mdDate, "/") : ""),
+					t("PFA"),
+					t(""),
+					t("Price Feeding", { fs: 5.6 }),
+					t("Ref & Date", { italics: true, fs: 5, color: SOFT_TEXT }),
+					t("POSA Run", { fs: 5.6 }),
+					t("Yes", { align: "center" }),
+					t("PO applicable for PO/SA", { fs: 5.2 }),
+					t("As per annexure", { align: "center" }),
+					c("THCM Price Approval Format - Version 26 (200615)", {
+						fs: 3.8,
+						color: SOFT_TEXT,
+						border: NONE,
+						align: "right",
+					}),
+				],
+			],
 		},
 		layout: FORM_LAYOUT,
 	};
@@ -917,43 +1414,78 @@ function bottomStrip(d: CppPdfData): Col {
 
 function buildForm(d: CppPdfData): Col {
 	const inner: Content[] = [
-		headerBand("DIRECT/ INDIRECT MATERIAL/ SPARE PARTS - PRICE APPROVAL", "Dharwad/ Kharagpur /Spare", "Format no-THX11-D07-F02 Ver 1.5"),
+		headerBand(
+			"DIRECT/ INDIRECT MATERIAL/ SPARE PARTS - PRICE APPROVAL",
+			"Dharwad/ Kharagpur /Spare",
+			"Format no-THX11-D07-F02 Ver 1.5",
+		),
 		hRule(W - 3),
 		reasonRow(d),
-		{ margin: [2, 0, 2, 0] as [number, number, number, number], columns: [
-			{ width: LEFT_W, stack: [grey("Purchasing Details :", LEFT_W), purchasingTable(d), lowerLeftTables()] },
-			{ width: 6, text: "" },
-			{ width: RIGHT_W, stack: [financialBlock(d), otherDataBlock()] },
-		], columnGap: 0 },
-		{ margin: [2, 6, 2, 0] as [number, number, number, number], columns: [
-			leftColumnTop(d),
-			{ width: 4, text: "" },
-			justificationBlock(d),
-			{ width: 4, text: "" },
-			{ width: COL_R, stack: [trackerBlock(), initiatedByBlock(d)] },
-		], columnGap: 0 },
-		{ margin: [2, 4, 2, 0] as [number, number, number, number], columns: [
-			leftColumnBottom(d),
-			{ width: 4, text: "" },
-			{ width: W - COL_L - 4 - 4, columns: [
-				approvalBand(d),
+		{
+			margin: [2, 0, 2, 0] as [number, number, number, number],
+			columns: [
+				{
+					width: LEFT_W,
+					stack: [
+						grey("Purchasing Details :", LEFT_W),
+						purchasingTable(d),
+						lowerLeftTables(),
+					],
+				},
+				{ width: 6, text: "" },
+				{ width: RIGHT_W, stack: [financialBlock(d), otherDataBlock()] },
+			],
+			columnGap: 0,
+		},
+		{
+			margin: [2, 6, 2, 0] as [number, number, number, number],
+			columns: [
+				leftColumnTop(d),
 				{ width: 4, text: "" },
-				checklistBlock(d),
-			], columnGap: 0 },
-		], columnGap: 0 },
+				justificationBlock(d),
+				{ width: 4, text: "" },
+				{ width: COL_R, stack: [trackerBlock(), initiatedByBlock(d)] },
+			],
+			columnGap: 0,
+		},
+		{
+			margin: [2, 4, 2, 0] as [number, number, number, number],
+			columns: [
+				leftColumnBottom(d),
+				{ width: 4, text: "" },
+				{
+					width: W - COL_L - 4 - 4,
+					columns: [approvalBand(d), { width: 4, text: "" }, checklistBlock(d)],
+					columnGap: 0,
+				},
+			],
+			columnGap: 0,
+		},
 		bottomStrip(d),
-		{ text: "for multiple pt. no's please refer to summary sheet", italics: true, fontSize: 4, color: SOFT_TEXT, alignment: "center", margin: [0, 1, 0, 2] },
+		{
+			text: "for multiple pt. no's please refer to summary sheet",
+			italics: true,
+			fontSize: 4,
+			color: SOFT_TEXT,
+			alignment: "center",
+			margin: [0, 1, 0, 2],
+		},
 	];
 
 	return {
-		table: { widths: [W], body: [[{ stack: inner, margin: [0, 0, 0, 0] } as TableCell]] },
+		table: {
+			widths: [W],
+			body: [[{ stack: inner, margin: [0, 0, 0, 0] } as TableCell]],
+		},
 		layout: OUTER_LAYOUT,
 	};
 }
 
 /* =============================== PAGE 2+ — F07 ============================== */
 
-const S_COLS = [20, 28, 100, 52, 126, 24, 42, 42, 36, 64, 46, 28, 46, 28, 28, 54, 32]; // = 796
+const S_COLS = [
+	20, 28, 100, 52, 126, 24, 42, 42, 36, 64, 46, 28, 46, 28, 28, 54, 32,
+]; // = 796
 const S_FS = 6.2;
 
 const sc = (text: string, o: Opts = {}) => c(text, { fs: S_FS, ...o });
@@ -984,13 +1516,26 @@ function pirAsSummary(rows: CppPirRow[]): CppSummaryLine[] {
 }
 
 function summarySheet(d: CppPdfData): Content[] {
-	const lines: CppSummaryLine[] = d.parts.summary.length > 0 ? d.parts.summary : pirAsSummary(d.parts.pir);
+	const lines: CppSummaryLine[] =
+		d.parts.summary.length > 0 ? d.parts.summary : pirAsSummary(d.parts.pir);
 	if (lines.length === 0) return [];
 
 	const plantMark = (name: string, label: string): Col => ({
 		columns: [
-			{ text: label, bold: d.applicablePlants.some((p) => p.toUpperCase() === name), fontSize: 6.6, width: "auto" },
-			...(d.applicablePlants.some((p) => p.toUpperCase() === name) ? [{ ...tick(5.5), margin: [1, 0.5, 0, 0] as [number, number, number, number] }] : []),
+			{
+				text: label,
+				bold: d.applicablePlants.some((p) => p.toUpperCase() === name),
+				fontSize: 6.6,
+				width: "auto",
+			},
+			...(d.applicablePlants.some((p) => p.toUpperCase() === name)
+				? [
+						{
+							...tick(5.5),
+							margin: [1, 0.5, 0, 0] as [number, number, number, number],
+						},
+					]
+				: []),
 		],
 		width: "auto",
 	});
@@ -1004,8 +1549,14 @@ function summarySheet(d: CppPdfData): Content[] {
 				table: {
 					widths: tw([60, infoLeftW - 60]),
 					body: [
-						[c("Supplier Name :", { bold: true, fs: 6.6 }), c(d.suppliers.recommended.name, { fs: 6.6 })],
-						[c("Supplier Code :", { bold: true, fs: 6.6 }), c(d.suppliers.recommended.code, { fs: 6.6 })],
+						[
+							c("Supplier Name :", { bold: true, fs: 6.6 }),
+							c(d.suppliers.recommended.name, { fs: 6.6 }),
+						],
+						[
+							c("Supplier Code :", { bold: true, fs: 6.6 }),
+							c(d.suppliers.recommended.code, { fs: 6.6 }),
+						],
 					],
 				},
 				layout: FORM_LAYOUT,
@@ -1016,13 +1567,29 @@ function summarySheet(d: CppPdfData): Content[] {
 				table: {
 					widths: tw([60, 190]),
 					body: [
-						[c("Plant :", { bold: true, fs: 6.6, border: [false, false, false, false] }), {
-							columns: [plantMark("DWD", "DWD"), { text: "  |  ", fontSize: 6.6, width: "auto" }, plantMark("KGP", "KGP"), { text: "  |  ", fontSize: 6.6, width: "auto" }, plantMark("SPARE", "SPARE")],
-							columnGap: 0,
-							alignment: "right",
-							border: [false, false, false, false],
-						} as TableCell],
-						[c("Approval Ref. :", { bold: true, fs: 6.6 }), c(d.referenceNumber, { fs: 6.6 })],
+						[
+							c("Plant :", {
+								bold: true,
+								fs: 6.6,
+								border: [false, false, false, false],
+							}),
+							{
+								columns: [
+									plantMark("DWD", "DWD"),
+									{ text: "  |  ", fontSize: 6.6, width: "auto" },
+									plantMark("KGP", "KGP"),
+									{ text: "  |  ", fontSize: 6.6, width: "auto" },
+									plantMark("SPARE", "SPARE"),
+								],
+								columnGap: 0,
+								alignment: "right",
+								border: [false, false, false, false],
+							} as TableCell,
+						],
+						[
+							c("Approval Ref. :", { bold: true, fs: 6.6 }),
+							c(d.referenceNumber, { fs: 6.6 }),
+						],
 					],
 				},
 				layout: FORM_LAYOUT,
@@ -1030,20 +1597,35 @@ function summarySheet(d: CppPdfData): Content[] {
 		],
 	};
 
-	const H = (t: string, o: Opts = {}) => sc(t, { bold: true, align: "center", fill: GREY_HEAD, ...o });
+	const H = (t: string, o: Opts = {}) =>
+		sc(t, { bold: true, align: "center", fill: GREY_HEAD, ...o });
 	const groupRow: TableCell[] = [
 		...[0, 1, 2, 3, 4, 5].map(() => sc("", { border: NONE })),
 		...spanned(3, H("Price Revision Data", { fill: undefined })),
-		sc("", { border: NONE }), sc("", { border: NONE }),
+		sc("", { border: NONE }),
+		sc("", { border: NONE }),
 		...spanned(2, H("For Retro. Price Impact", { fill: undefined })),
 		...spanned(3, H("For Annualised Impact", { fill: undefined })),
 		sc("", { border: NONE }),
 	];
 	const headRow: TableCell[] = [
-		H("Sl. No."), H("Plant"), H("Model"), H("Part No."), H("Description"), H("UOM"),
-		H("Existing Price\n(in INR)"), H("New Price w.e.f.\n(in INR)"), H("Difference\n(in INR)"),
-		H("Current PO applicable for PO/SA updation"), H("Effective Date"),
-		H("Rcvd Qty"), H("Actual Impact"), H("ABP Vol."), H("Qty per m/c"), H("Annualised Impact"), H("% Change"),
+		H("Sl. No."),
+		H("Plant"),
+		H("Model"),
+		H("Part No."),
+		H("Description"),
+		H("UOM"),
+		H("Existing Price\n(in INR)"),
+		H("New Price w.e.f.\n(in INR)"),
+		H("Difference\n(in INR)"),
+		H("Current PO applicable for PO/SA updation"),
+		H("Effective Date"),
+		H("Rcvd Qty"),
+		H("Actual Impact"),
+		H("ABP Vol."),
+		H("Qty per m/c"),
+		H("Annualised Impact"),
+		H("% Change"),
 	];
 
 	let serial = 0;
@@ -1094,28 +1676,90 @@ function summarySheet(d: CppPdfData): Content[] {
 	const totals: Col = {
 		margin: [0, 2, 0, 0] as [number, number, number, number],
 		table: {
-			widths: tw([lead, S_COLS[11] + 0, S_COLS[12], S_COLS[13] + S_COLS[14] - 0, S_COLS[15], S_COLS[16]].map((n, i) => (i === 3 ? S_COLS[13] + S_COLS[14] : n))),
-			body: [[
-				c("", { border: NONE }),
-				labelWithArrow("A", { bold: true, align: "right", border: NONE, fs: 6.6 }),
-				c(fmtNum(A), { bold: true, align: "right", fs: 6.6, border: [false, true, false, true] }),
-				labelWithArrow("B", { bold: true, align: "right", border: NONE, fs: 6.6 }),
-				c(fmtNum(B), { bold: true, align: "right", fs: 6.6, border: [false, true, false, true] }),
-				c("", { border: NONE }),
-			]],
+			widths: tw(
+				[
+					lead,
+					S_COLS[11] + 0,
+					S_COLS[12],
+					S_COLS[13] + S_COLS[14] - 0,
+					S_COLS[15],
+					S_COLS[16],
+				].map((n, i) => (i === 3 ? S_COLS[13] + S_COLS[14] : n)),
+			),
+			body: [
+				[
+					c("", { border: NONE }),
+					labelWithArrow("A", {
+						bold: true,
+						align: "right",
+						border: NONE,
+						fs: 6.6,
+					}),
+					c(fmtNum(A), {
+						bold: true,
+						align: "right",
+						fs: 6.6,
+						border: [false, true, false, true],
+					}),
+					labelWithArrow("B", {
+						bold: true,
+						align: "right",
+						border: NONE,
+						fs: 6.6,
+					}),
+					c(fmtNum(B), {
+						bold: true,
+						align: "right",
+						fs: 6.6,
+						border: [false, true, false, true],
+					}),
+					c("", { border: NONE }),
+				],
+			],
 		},
 		layout: { ...FORM_LAYOUT, hLineWidth: () => 1, vLineWidth: () => 0 },
 	};
 
 	const changeBox: Col = {
-		margin: [S_COLS.slice(0, 5).reduce((a, b) => a + b, 0) - 60, 4, 0, 0] as [number, number, number, number],
+		margin: [S_COLS.slice(0, 5).reduce((a, b) => a + b, 0) - 60, 4, 0, 0] as [
+			number,
+			number,
+			number,
+			number,
+		],
 		table: {
 			widths: tw([190, 54, 66]),
 			body: [
-				[c("", { border: NONE }), ...spanned(2, c("Current. Change", { bold: true, align: "center", fs: 6.2 }))],
-				[c("", { border: NONE }), c("in %age", { bold: true, fs: 6 }), c("in Value INR", { bold: true, fs: 6 })],
-				[c("Actual (only for retrospective change) (A)", { bold: true, align: "right", fs: 6.2 }), c(fmtPct(d.impact.actualPct), { align: "right", fs: 6.2 }), c(fmtNum(A), { align: "right", fs: 6.2 })],
-				[c("Annualised (based on ABP) (B)", { bold: true, align: "right", fs: 6.2 }), c(fmtPct(d.impact.annualPct), { align: "right", fs: 6.2 }), c(fmtNum(B), { align: "right", fs: 6.2 })],
+				[
+					c("", { border: NONE }),
+					...spanned(
+						2,
+						c("Current. Change", { bold: true, align: "center", fs: 6.2 }),
+					),
+				],
+				[
+					c("", { border: NONE }),
+					c("in %age", { bold: true, fs: 6 }),
+					c("in Value INR", { bold: true, fs: 6 }),
+				],
+				[
+					c("Actual (only for retrospective change) (A)", {
+						bold: true,
+						align: "right",
+						fs: 6.2,
+					}),
+					c(fmtPct(d.impact.actualPct), { align: "right", fs: 6.2 }),
+					c(fmtNum(A), { align: "right", fs: 6.2 }),
+				],
+				[
+					c("Annualised (based on ABP) (B)", {
+						bold: true,
+						align: "right",
+						fs: 6.2,
+					}),
+					c(fmtPct(d.impact.annualPct), { align: "right", fs: 6.2 }),
+					c(fmtNum(B), { align: "right", fs: 6.2 }),
+				],
 			],
 		},
 		layout: FORM_LAYOUT,
@@ -1128,7 +1772,17 @@ function summarySheet(d: CppPdfData): Content[] {
 			{ text: title, italics: true, fontSize: 6.2 },
 			{ text: " ", margin: [0, 8, 0, 0] },
 			...(s.length
-				? s.map((p) => ({ stack: [{ text: p.name, bold: true, italics: true, fontSize: 6 }, { text: p.designation ? `(${p.designation})` : " ", bold: true, italics: true, fontSize: 5.6 }] }))
+				? s.map((p) => ({
+						stack: [
+							{ text: p.name, bold: true, italics: true, fontSize: 6 },
+							{
+								text: p.designation ? `(${p.designation})` : " ",
+								bold: true,
+								italics: true,
+								fontSize: 5.6,
+							},
+						],
+					}))
 				: [{ text: " " }]),
 		],
 		margin: [left, 0, 0, 0] as [number, number, number, number],
@@ -1139,14 +1793,22 @@ function summarySheet(d: CppPdfData): Content[] {
 			sig("Prepared By", d.proposer ? [d.proposer] : [], 60),
 			sig("Checked By", d.checkedBy, 60),
 			sig("Reviewed By", d.recommendedBy, 40),
-			sig("Approved By", d.approvedBy.length ? [d.approvedBy[d.approvedBy.length - 1]] : [], 60),
+			sig(
+				"Approved By",
+				d.approvedBy.length ? [d.approvedBy[d.approvedBy.length - 1]] : [],
+				60,
+			),
 		],
 		columnGap: 0,
 	};
 
 	return [
 		{ text: "", pageBreak: "before" },
-		headerBand("Summary Sheet for Price Changes", "Format no.THX11-D07-F07 Ver 1.5", ""),
+		headerBand(
+			"Summary Sheet for Price Changes",
+			"Format no.THX11-D07-F07 Ver 1.5",
+			"",
+		),
 		hRule(W, 0),
 		info,
 		partTable,
@@ -1161,7 +1823,12 @@ export function buildCppDocDefinition(data: CppPdfData): TDocumentDefinitions {
 	return {
 		pageSize: "A4",
 		pageOrientation: "landscape",
-		pageMargins: [PAGE_MARGIN_X, PAGE_MARGIN_TOP, PAGE_MARGIN_X, PAGE_MARGIN_BOTTOM],
+		pageMargins: [
+			PAGE_MARGIN_X,
+			PAGE_MARGIN_TOP,
+			PAGE_MARGIN_X,
+			PAGE_MARGIN_BOTTOM,
+		],
 		styles: STYLES,
 		defaultStyle: DEFAULT_STYLE,
 		...(LOGO_DATA_URI ? { images: { logo: LOGO_DATA_URI } } : {}),
