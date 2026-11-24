@@ -1,13 +1,23 @@
 // ─────────────────────────────────────────────────────────────────────────────
+// This is the InSite sync path now (see machineTelemetrySync.service.ts):
+// one call per machine, same as always, just invoked for a smaller,
+// filtered set of serial numbers.
+//
 // Orchestrates the daily "ask C4C for every machine's lat/long/HMR" sync.
 // One call per machine (C4C has no confirmed bulk endpoint yet), with
 // bounded concurrency so we never spike outbound connections or the DB.
 //
-// Flow: fetch all machine serial numbers → call C4C for each, with limited
-// concurrency and per-call retry → batch-write the successes into
-// MachineTelemetry → log a summary. This is a full daily sync, so a machine
-// that fails today is retried automatically tomorrow — no same-day re-run
-// logic, per the agreed design.
+// Flow: split all machine serial numbers into fixed-size batches, then for
+// each batch in turn — call C4C per machine with limited concurrency and
+// per-call retry → attach each row's pincode (in-memory point-in-polygon;
+// dailyOperationHrs is forced to null here for now, see the TODO on
+// enrichRows below) → write that batch's successes into MachineTelemetry
+// before moving to the next batch → log a running total. Processing in
+// batches (see FETCH_WRITE_BATCH_SIZE below) means a crash or a batch-wide
+// failure only costs that batch, not the whole run, and progress is
+// visible and durable as it happens rather than all-or-nothing at the end.
+// This is a full daily sync, so a machine that fails today is retried
+// automatically tomorrow — no same-day re-run logic, per the agreed design.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { prisma } from "@shared/config/prisma";
@@ -15,6 +25,9 @@ import logger from "@shared/utils/logger";
 import { fetchOData, unwrapODataResults } from "@shared/utils/odata";
 import { mapWithConcurrency } from "./utils/concurrency";
 import { withRetry } from "./utils/withRetry";
+import { resolvePincodeFromBoundary } from "./utils/pincodeResolver";
+import { hasValidCoordinates } from "./utils/coordinates";
+import { chunk } from "./utils/chunk";
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -24,7 +37,17 @@ import { withRetry } from "./utils/withRetry";
 const CONCURRENT_C4C_CALLS = 5;
 const RETRY_ATTEMPTS = 3;
 const RETRY_DELAY_MS = 1000;
-const DB_WRITE_BATCH_SIZE = 500;
+
+// How many machines go through fetch → enrich → write as one unit before
+// the next batch starts. Deliberately separate from CONCURRENT_C4C_CALLS
+// (which only bounds in-flight HTTP calls within a batch): this number
+// bounds how much work is lost to a crash or a batch-wide failure, and
+// how long you wait before the first row lands in the DB. 500 was chosen
+// as a starting point that still gives ~19 incremental writes for the
+// full ~9,663-machine population instead of 1 (collect-everything) or
+// ~1,900 (one per HTTP call) — revisit if that balance feels wrong once
+// this runs against the real population a few times.
+const FETCH_WRITE_BATCH_SIZE = 500;
 
 const C4C_ENTITY_SET = "RPZB73EE6307DAE3DED5CAC90QueryResults";
 
@@ -35,7 +58,11 @@ const C4C_ENTITY_SET = "RPZB73EE6307DAE3DED5CAC90QueryResults";
 // payload, less load, matches the "optimized" requirement.
 //
 // TODO: once C4C confirms the HMR field name for this entity, add it here
-// and replace the `hmr: 0` fallback in mapC4CResultToTelemetryRow below.
+// and replace the `hmr: 0` fallback in mapC4CResultToTelemetryRow below —
+// AND, when you do, see the matching TODO on enrichRows() further down:
+// dailyOperationHrs is forced to null here specifically because this hmr
+// value isn't real yet, and that override needs to come out at the same
+// time or dailyOperationHrs will silently stay null forever.
 const C4C_SELECT_FIELDS = [
   "CUUID",
   "Cs1ANs6B8788AE5252FD8",
@@ -53,11 +80,18 @@ type TelemetryRow = {
   latitude: number;
   longitude: number;
   hmr: number;
+  dailyOperationHrs: number | null;
+  pincode: string | null;
+  operationDate: string | null;
   syncedAt: Date;
 };
 
+// dailyOperationHrs and pincode aren't known at per-machine-fetch time —
+// see enrichRows below, applied once to the whole batch.
+type RawTelemetryRow = Omit<TelemetryRow, "dailyOperationHrs" | "pincode">;
+
 type FetchOutcome =
-  | { status: "success"; row: TelemetryRow }
+  | { status: "success"; row: RawTelemetryRow }
   | { status: "failure"; serialNumber: string; reason: string };
 
 export type SyncSummary = {
@@ -104,14 +138,46 @@ function mapC4CResultToTelemetryRow(
   machineSerialNumber: string,
   result: C4CTelemetryResult,
   syncedAt: Date,
-): TelemetryRow {
+): RawTelemetryRow {
   return {
     machineSerialNumber,
     latitude: Number(result.Cs1ANs6B8788AE5252FD8),
     longitude: Number(result.Cs1ANs6E1FCA19B68687C),
     hmr: 0, // TODO: see C4C_SELECT_FIELDS comment above
+    operationDate: null, // C4C/InSite has no equivalent field — ConSite-only
     syncedAt,
   };
+}
+
+// ── Row enrichment (dailyOperationHrs + pincode) ────────────────────────────
+//
+// pincode resolution is pure/synchronous/in-memory, same as the ConSite
+// path. dailyOperationHrs is NOT computed here, unlike ConSite — see the
+// TODO below.
+//
+// TODO: dailyOperationHrs is forced to null for every C4C row, deliberately
+// NOT diffed from hmr. hmr is still a hardcoded 0 (see C4C_SELECT_FIELDS
+// comment above) — diffing a fake value against yesterday's fake value
+// would produce 0 - 0 = 0 every time, which reads as "this machine did
+// zero hours of work today," a specific, confident, WRONG claim — not
+// "we don't know yet," which null correctly conveys. Once C4C's real HMR
+// field is wired up, remove this override and restore the real diff:
+//   const previousHmrBySerial = await getPreviousHmrMap(
+//     rows.map((row) => row.machineSerialNumber),
+//   );
+//   dailyOperationHrs: computeDailyOperationHrs(
+//     row.hmr,
+//     previousHmrBySerial.get(row.machineSerialNumber) ?? null,
+//   ),
+// (getPreviousHmrMap isn't called at all right now — no point paying for
+// that query for a diff we're just going to discard.)
+
+async function enrichRows(rows: RawTelemetryRow[]): Promise<TelemetryRow[]> {
+  return rows.map((row) => ({
+    ...row,
+    dailyOperationHrs: null,
+    pincode: resolvePincodeFromBoundary(row.latitude, row.longitude),
+  }));
 }
 
 // ── Per-machine fetch, with retry ────────────────────────────────────────────
@@ -134,10 +200,22 @@ async function fetchOutcomeForMachine(
       };
     }
 
-    return {
-      status: "success",
-      row: mapC4CResultToTelemetryRow(serialNumber, result, syncedAt),
-    };
+    const row = mapC4CResultToTelemetryRow(serialNumber, result, syncedAt);
+
+    // Checked here, not left for enrichRows to discover — a NaN here
+    // would otherwise throw out of enrichRows' single batch .map() and
+    // take every other machine's already-fetched data down with it.
+    if (!hasValidCoordinates(row.latitude, row.longitude)) {
+      return {
+        status: "failure",
+        serialNumber,
+        reason:
+          `Invalid or missing latitude/longitude from C4C ` +
+          `(lat="${result.Cs1ANs6B8788AE5252FD8}", long="${result.Cs1ANs6E1FCA19B68687C}")`,
+      };
+    }
+
+    return { status: "success", row };
   } catch (error) {
     return {
       status: "failure",
@@ -153,26 +231,26 @@ export type SyncOptions = {
   machineSerialNumber?: string[];
 };
 
-export async function runC4CSync(
-  options: SyncOptions = {},
-): Promise<SyncSummary> {
-  const syncedAt = new Date(); // one timestamp for the whole run — see schema notes
-  const machines = await prisma.machine.findMany({
-    select: { machineSerialNumber: true },
-    where: options.machineSerialNumber
-      ? { machineSerialNumber: { in: options.machineSerialNumber } }
-      : undefined,
-  });
-
+// Fetches, enriches and writes one batch of serial numbers. Pulled out of
+// runC4CSync so the per-batch logic (and its own success/failure split)
+// isn't nested inside the batch-loop — runC4CSync just accumulates what
+// this returns.
+async function processBatch(
+  serialNumbers: string[],
+  syncedAt: Date,
+): Promise<{
+  succeededCount: number;
+  failures: { serialNumber: string; reason: string }[];
+}> {
   const outcomes = await mapWithConcurrency(
-    machines.map((machine) => machine.machineSerialNumber),
+    serialNumbers,
     CONCURRENT_C4C_CALLS,
     (serialNumber) => fetchOutcomeForMachine(serialNumber, syncedAt),
   );
 
-  const succeededRows = outcomes
+  const rawSucceededRows = outcomes
     .filter(
-      (outcome): outcome is { status: "success"; row: TelemetryRow } =>
+      (outcome): outcome is { status: "success"; row: RawTelemetryRow } =>
         outcome.status === "success",
     )
     .map((outcome) => outcome.row);
@@ -184,22 +262,69 @@ export async function runC4CSync(
       outcome.status === "failure",
   );
 
-  // DB writes are a separate pass over the already-collected results, not
-  // interleaved with the C4C calls above — avoids any shared-mutable-state
-  // race between concurrent fetches and a periodic flush.
-  for (
-    let offset = 0;
-    offset < succeededRows.length;
-    offset += DB_WRITE_BATCH_SIZE
-  ) {
-    await prisma.machineTelemetry.createMany({
-      data: succeededRows.slice(offset, offset + DB_WRITE_BATCH_SIZE),
-    });
+  const succeededRows = await enrichRows(rawSucceededRows);
+
+  if (succeededRows.length > 0) {
+    await prisma.machineTelemetry.createMany({ data: succeededRows });
   }
 
-  logger.info(
-    `[MachineTelemetrySync] ${succeededRows.length}/${machines.length} machines synced successfully.`,
-  );
+  return { succeededCount: succeededRows.length, failures };
+}
+
+export async function runC4CSync(
+  options: SyncOptions = {},
+): Promise<SyncSummary> {
+  const syncedAt = new Date(); // one timestamp for the whole run — see schema notes
+  const machines = await prisma.machine.findMany({
+    select: { machineSerialNumber: true },
+    where: options.machineSerialNumber
+      ? { machineSerialNumber: { in: options.machineSerialNumber } }
+      : undefined,
+  });
+  const serialNumbers = machines.map((machine) => machine.machineSerialNumber);
+  const batches = chunk(serialNumbers, FETCH_WRITE_BATCH_SIZE);
+
+  let succeededCount = 0;
+  const failures: { serialNumber: string; reason: string }[] = [];
+
+  // Each batch is fetched, enriched and written to the DB before the next
+  // one starts — so a crash, or a batch where every call fails, only
+  // costs this batch's machines instead of the entire run's progress,
+  // and rows from earlier batches are already durable in the DB.
+  //
+  // processBatch itself never rejects on a per-machine failure (those are
+  // already isolated inside it — see fetchOutcomeForMachine). The only way
+  // this call throws is a batch-wide failure: the createMany write itself
+  // failing (e.g. a dropped DB connection). Postgres rolls back a failed
+  // statement as a whole, so none of this batch's rows were written —
+  // every machine in it is treated the same as any other per-machine
+  // failure (logged, counted, retried tomorrow), and the loop moves on
+  // to the next batch instead of aborting the entire run.
+  for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+    const batch = batches[batchIndex];
+
+    try {
+      const result = await processBatch(batch, syncedAt);
+      succeededCount += result.succeededCount;
+      failures.push(...result.failures);
+
+      logger.info(
+        `[MachineTelemetrySync] Batch ${batchIndex + 1}/${batches.length}: ` +
+          `${result.succeededCount}/${batch.length} synced ` +
+          `(${succeededCount}/${serialNumbers.length} total so far).`,
+      );
+    } catch (error) {
+      const reason = `Batch write failed: ${(error as Error).message}`;
+      failures.push(...batch.map((serialNumber) => ({ serialNumber, reason })));
+
+      logger.error(
+        `[MachineTelemetrySync] Batch ${batchIndex + 1}/${batches.length} ` +
+          `failed entirely (${batch.length} machine(s) — ${reason}). ` +
+          `Continuing with the next batch.`,
+      );
+    }
+  }
+
   if (failures.length > 0) {
     logger.error(
       `[MachineTelemetrySync] ${failures.length} machine(s) failed: ` +
@@ -211,7 +336,7 @@ export async function runC4CSync(
 
   return {
     total: machines.length,
-    succeeded: succeededRows.length,
+    succeeded: succeededCount,
     failed: failures.length,
     failedSerialNumbers: failures.map((failure) => failure.serialNumber),
   };

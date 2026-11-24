@@ -30,12 +30,14 @@ export type MachineTelemetryAvgAggregateOutputType = {
   latitude: runtime.Decimal | null
   longitude: runtime.Decimal | null
   hmr: runtime.Decimal | null
+  dailyOperationHrs: runtime.Decimal | null
 }
 
 export type MachineTelemetrySumAggregateOutputType = {
   latitude: runtime.Decimal | null
   longitude: runtime.Decimal | null
   hmr: runtime.Decimal | null
+  dailyOperationHrs: runtime.Decimal | null
 }
 
 export type MachineTelemetryMinAggregateOutputType = {
@@ -44,7 +46,10 @@ export type MachineTelemetryMinAggregateOutputType = {
   latitude: runtime.Decimal | null
   longitude: runtime.Decimal | null
   hmr: runtime.Decimal | null
+  dailyOperationHrs: runtime.Decimal | null
+  pincode: string | null
   syncedAt: Date | null
+  operationDate: string | null
 }
 
 export type MachineTelemetryMaxAggregateOutputType = {
@@ -53,7 +58,10 @@ export type MachineTelemetryMaxAggregateOutputType = {
   latitude: runtime.Decimal | null
   longitude: runtime.Decimal | null
   hmr: runtime.Decimal | null
+  dailyOperationHrs: runtime.Decimal | null
+  pincode: string | null
   syncedAt: Date | null
+  operationDate: string | null
 }
 
 export type MachineTelemetryCountAggregateOutputType = {
@@ -62,7 +70,10 @@ export type MachineTelemetryCountAggregateOutputType = {
   latitude: number
   longitude: number
   hmr: number
+  dailyOperationHrs: number
+  pincode: number
   syncedAt: number
+  operationDate: number
   _all: number
 }
 
@@ -71,12 +82,14 @@ export type MachineTelemetryAvgAggregateInputType = {
   latitude?: true
   longitude?: true
   hmr?: true
+  dailyOperationHrs?: true
 }
 
 export type MachineTelemetrySumAggregateInputType = {
   latitude?: true
   longitude?: true
   hmr?: true
+  dailyOperationHrs?: true
 }
 
 export type MachineTelemetryMinAggregateInputType = {
@@ -85,7 +98,10 @@ export type MachineTelemetryMinAggregateInputType = {
   latitude?: true
   longitude?: true
   hmr?: true
+  dailyOperationHrs?: true
+  pincode?: true
   syncedAt?: true
+  operationDate?: true
 }
 
 export type MachineTelemetryMaxAggregateInputType = {
@@ -94,7 +110,10 @@ export type MachineTelemetryMaxAggregateInputType = {
   latitude?: true
   longitude?: true
   hmr?: true
+  dailyOperationHrs?: true
+  pincode?: true
   syncedAt?: true
+  operationDate?: true
 }
 
 export type MachineTelemetryCountAggregateInputType = {
@@ -103,7 +122,10 @@ export type MachineTelemetryCountAggregateInputType = {
   latitude?: true
   longitude?: true
   hmr?: true
+  dailyOperationHrs?: true
+  pincode?: true
   syncedAt?: true
+  operationDate?: true
   _all?: true
 }
 
@@ -199,7 +221,10 @@ export type MachineTelemetryGroupByOutputType = {
   latitude: runtime.Decimal
   longitude: runtime.Decimal
   hmr: runtime.Decimal
+  dailyOperationHrs: runtime.Decimal | null
+  pincode: string | null
   syncedAt: Date
+  operationDate: string | null
   _count: MachineTelemetryCountAggregateOutputType | null
   _avg: MachineTelemetryAvgAggregateOutputType | null
   _sum: MachineTelemetrySumAggregateOutputType | null
@@ -231,7 +256,10 @@ export type MachineTelemetryWhereInput = {
   latitude?: Prisma.DecimalFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: Prisma.DecimalFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: Prisma.DecimalNullableFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: Prisma.StringNullableFilter<"MachineTelemetry"> | string | null
   syncedAt?: Prisma.DateTimeFilter<"MachineTelemetry"> | Date | string
+  operationDate?: Prisma.StringNullableFilter<"MachineTelemetry"> | string | null
   machine?: Prisma.XOR<Prisma.MachineScalarRelationFilter, Prisma.MachineWhereInput>
 }
 
@@ -241,7 +269,10 @@ export type MachineTelemetryOrderByWithRelationInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   hmr?: Prisma.SortOrder
+  dailyOperationHrs?: Prisma.SortOrderInput | Prisma.SortOrder
+  pincode?: Prisma.SortOrderInput | Prisma.SortOrder
   syncedAt?: Prisma.SortOrder
+  operationDate?: Prisma.SortOrderInput | Prisma.SortOrder
   machine?: Prisma.MachineOrderByWithRelationInput
 }
 
@@ -254,7 +285,10 @@ export type MachineTelemetryWhereUniqueInput = Prisma.AtLeast<{
   latitude?: Prisma.DecimalFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: Prisma.DecimalFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: Prisma.DecimalNullableFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: Prisma.StringNullableFilter<"MachineTelemetry"> | string | null
   syncedAt?: Prisma.DateTimeFilter<"MachineTelemetry"> | Date | string
+  operationDate?: Prisma.StringNullableFilter<"MachineTelemetry"> | string | null
   machine?: Prisma.XOR<Prisma.MachineScalarRelationFilter, Prisma.MachineWhereInput>
 }, "id">
 
@@ -264,7 +298,10 @@ export type MachineTelemetryOrderByWithAggregationInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   hmr?: Prisma.SortOrder
+  dailyOperationHrs?: Prisma.SortOrderInput | Prisma.SortOrder
+  pincode?: Prisma.SortOrderInput | Prisma.SortOrder
   syncedAt?: Prisma.SortOrder
+  operationDate?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MachineTelemetryCountOrderByAggregateInput
   _avg?: Prisma.MachineTelemetryAvgOrderByAggregateInput
   _max?: Prisma.MachineTelemetryMaxOrderByAggregateInput
@@ -281,7 +318,10 @@ export type MachineTelemetryScalarWhereWithAggregatesInput = {
   latitude?: Prisma.DecimalWithAggregatesFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalWithAggregatesFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: Prisma.DecimalWithAggregatesFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: Prisma.DecimalNullableWithAggregatesFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: Prisma.StringNullableWithAggregatesFilter<"MachineTelemetry"> | string | null
   syncedAt?: Prisma.DateTimeWithAggregatesFilter<"MachineTelemetry"> | Date | string
+  operationDate?: Prisma.StringNullableWithAggregatesFilter<"MachineTelemetry"> | string | null
 }
 
 export type MachineTelemetryCreateInput = {
@@ -289,7 +329,10 @@ export type MachineTelemetryCreateInput = {
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: string | null
   syncedAt: Date | string
+  operationDate?: string | null
   machine: Prisma.MachineCreateNestedOneWithoutTelemetryInput
 }
 
@@ -299,7 +342,10 @@ export type MachineTelemetryUncheckedCreateInput = {
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: string | null
   syncedAt: Date | string
+  operationDate?: string | null
 }
 
 export type MachineTelemetryUpdateInput = {
@@ -307,7 +353,10 @@ export type MachineTelemetryUpdateInput = {
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   machine?: Prisma.MachineUpdateOneRequiredWithoutTelemetryNestedInput
 }
 
@@ -317,7 +366,10 @@ export type MachineTelemetryUncheckedUpdateInput = {
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MachineTelemetryCreateManyInput = {
@@ -326,7 +378,10 @@ export type MachineTelemetryCreateManyInput = {
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: string | null
   syncedAt: Date | string
+  operationDate?: string | null
 }
 
 export type MachineTelemetryUpdateManyMutationInput = {
@@ -334,7 +389,10 @@ export type MachineTelemetryUpdateManyMutationInput = {
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MachineTelemetryUncheckedUpdateManyInput = {
@@ -343,7 +401,10 @@ export type MachineTelemetryUncheckedUpdateManyInput = {
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MachineTelemetryListRelationFilter = {
@@ -362,13 +423,17 @@ export type MachineTelemetryCountOrderByAggregateInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   hmr?: Prisma.SortOrder
+  dailyOperationHrs?: Prisma.SortOrder
+  pincode?: Prisma.SortOrder
   syncedAt?: Prisma.SortOrder
+  operationDate?: Prisma.SortOrder
 }
 
 export type MachineTelemetryAvgOrderByAggregateInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   hmr?: Prisma.SortOrder
+  dailyOperationHrs?: Prisma.SortOrder
 }
 
 export type MachineTelemetryMaxOrderByAggregateInput = {
@@ -377,7 +442,10 @@ export type MachineTelemetryMaxOrderByAggregateInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   hmr?: Prisma.SortOrder
+  dailyOperationHrs?: Prisma.SortOrder
+  pincode?: Prisma.SortOrder
   syncedAt?: Prisma.SortOrder
+  operationDate?: Prisma.SortOrder
 }
 
 export type MachineTelemetryMinOrderByAggregateInput = {
@@ -386,13 +454,17 @@ export type MachineTelemetryMinOrderByAggregateInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   hmr?: Prisma.SortOrder
+  dailyOperationHrs?: Prisma.SortOrder
+  pincode?: Prisma.SortOrder
   syncedAt?: Prisma.SortOrder
+  operationDate?: Prisma.SortOrder
 }
 
 export type MachineTelemetrySumOrderByAggregateInput = {
   latitude?: Prisma.SortOrder
   longitude?: Prisma.SortOrder
   hmr?: Prisma.SortOrder
+  dailyOperationHrs?: Prisma.SortOrder
 }
 
 export type MachineTelemetryCreateNestedManyWithoutMachineInput = {
@@ -442,7 +514,10 @@ export type MachineTelemetryCreateWithoutMachineInput = {
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: string | null
   syncedAt: Date | string
+  operationDate?: string | null
 }
 
 export type MachineTelemetryUncheckedCreateWithoutMachineInput = {
@@ -450,7 +525,10 @@ export type MachineTelemetryUncheckedCreateWithoutMachineInput = {
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: string | null
   syncedAt: Date | string
+  operationDate?: string | null
 }
 
 export type MachineTelemetryCreateOrConnectWithoutMachineInput = {
@@ -488,7 +566,10 @@ export type MachineTelemetryScalarWhereInput = {
   latitude?: Prisma.DecimalFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: Prisma.DecimalFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: Prisma.DecimalNullableFilter<"MachineTelemetry"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: Prisma.StringNullableFilter<"MachineTelemetry"> | string | null
   syncedAt?: Prisma.DateTimeFilter<"MachineTelemetry"> | Date | string
+  operationDate?: Prisma.StringNullableFilter<"MachineTelemetry"> | string | null
 }
 
 export type MachineTelemetryCreateManyMachineInput = {
@@ -496,7 +577,10 @@ export type MachineTelemetryCreateManyMachineInput = {
   latitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude: runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: string | null
   syncedAt: Date | string
+  operationDate?: string | null
 }
 
 export type MachineTelemetryUpdateWithoutMachineInput = {
@@ -504,7 +588,10 @@ export type MachineTelemetryUpdateWithoutMachineInput = {
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MachineTelemetryUncheckedUpdateWithoutMachineInput = {
@@ -512,7 +599,10 @@ export type MachineTelemetryUncheckedUpdateWithoutMachineInput = {
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type MachineTelemetryUncheckedUpdateManyWithoutMachineInput = {
@@ -520,7 +610,10 @@ export type MachineTelemetryUncheckedUpdateManyWithoutMachineInput = {
   latitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   longitude?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   hmr?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  dailyOperationHrs?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pincode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   syncedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  operationDate?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -531,7 +624,10 @@ export type MachineTelemetrySelect<ExtArgs extends runtime.Types.Extensions.Inte
   latitude?: boolean
   longitude?: boolean
   hmr?: boolean
+  dailyOperationHrs?: boolean
+  pincode?: boolean
   syncedAt?: boolean
+  operationDate?: boolean
   machine?: boolean | Prisma.MachineDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["machineTelemetry"]>
 
@@ -541,7 +637,10 @@ export type MachineTelemetrySelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   latitude?: boolean
   longitude?: boolean
   hmr?: boolean
+  dailyOperationHrs?: boolean
+  pincode?: boolean
   syncedAt?: boolean
+  operationDate?: boolean
   machine?: boolean | Prisma.MachineDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["machineTelemetry"]>
 
@@ -551,7 +650,10 @@ export type MachineTelemetrySelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   latitude?: boolean
   longitude?: boolean
   hmr?: boolean
+  dailyOperationHrs?: boolean
+  pincode?: boolean
   syncedAt?: boolean
+  operationDate?: boolean
   machine?: boolean | Prisma.MachineDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["machineTelemetry"]>
 
@@ -561,10 +663,13 @@ export type MachineTelemetrySelectScalar = {
   latitude?: boolean
   longitude?: boolean
   hmr?: boolean
+  dailyOperationHrs?: boolean
+  pincode?: boolean
   syncedAt?: boolean
+  operationDate?: boolean
 }
 
-export type MachineTelemetryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "machineSerialNumber" | "latitude" | "longitude" | "hmr" | "syncedAt", ExtArgs["result"]["machineTelemetry"]>
+export type MachineTelemetryOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "machineSerialNumber" | "latitude" | "longitude" | "hmr" | "dailyOperationHrs" | "pincode" | "syncedAt" | "operationDate", ExtArgs["result"]["machineTelemetry"]>
 export type MachineTelemetryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   machine?: boolean | Prisma.MachineDefaultArgs<ExtArgs>
 }
@@ -586,7 +691,10 @@ export type $MachineTelemetryPayload<ExtArgs extends runtime.Types.Extensions.In
     latitude: runtime.Decimal
     longitude: runtime.Decimal
     hmr: runtime.Decimal
+    dailyOperationHrs: runtime.Decimal | null
+    pincode: string | null
     syncedAt: Date
+    operationDate: string | null
   }, ExtArgs["result"]["machineTelemetry"]>
   composites: {}
 }
@@ -1016,7 +1124,10 @@ export interface MachineTelemetryFieldRefs {
   readonly latitude: Prisma.FieldRef<"MachineTelemetry", 'Decimal'>
   readonly longitude: Prisma.FieldRef<"MachineTelemetry", 'Decimal'>
   readonly hmr: Prisma.FieldRef<"MachineTelemetry", 'Decimal'>
+  readonly dailyOperationHrs: Prisma.FieldRef<"MachineTelemetry", 'Decimal'>
+  readonly pincode: Prisma.FieldRef<"MachineTelemetry", 'String'>
   readonly syncedAt: Prisma.FieldRef<"MachineTelemetry", 'DateTime'>
+  readonly operationDate: Prisma.FieldRef<"MachineTelemetry", 'String'>
 }
     
 

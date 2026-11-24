@@ -1,7 +1,7 @@
-// Queue for the daily C4C telemetry sync. Same Queue/Worker split as every
-// other BullMQ job in this codebase (mail, exports, notifications) — the
-// one difference is this job is cron-scheduled (repeat), not
-// controller-triggered.
+// Queue for the daily telemetry sync (ConSite, formerly C4C). Same
+// Queue/Worker split as every other BullMQ job in this codebase (mail,
+// exports, notifications) — the one difference is this job is
+// cron-scheduled (repeat), not controller-triggered.
 
 import { Queue } from "bullmq";
 import { redisConnectionQueue } from "@shared/config/redis";
@@ -22,9 +22,10 @@ export const machineTelemetrySyncQueue = new Queue<MachineTelemetrySyncJobData>(
   {
     connection: redisConnectionQueue,
     defaultJobOptions: {
-      // The job itself isn't retried — runC4CSync already retries each
-      // machine individually, and a full re-run tomorrow is the correct
-      // behavior for anything that still fails (per the agreed design).
+      // The job itself isn't retried — runConSiteSync already retries each
+      // page call individually, and a full re-run tomorrow is the correct
+      // behavior for anything that still fails (per the agreed design,
+      // carried over unchanged from the C4C sync).
       attempts: 1,
       removeOnComplete: { age: 60 * 60 * 24 * 7 }, // 7 days of run history
       removeOnFail: { age: 60 * 60 * 24 * 30 },

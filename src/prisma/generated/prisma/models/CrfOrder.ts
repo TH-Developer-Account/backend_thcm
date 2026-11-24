@@ -46,6 +46,9 @@ export type CrfOrderMinAggregateOutputType = {
   cancelledAt: Date | null
   cancelledById: string | null
   cancelReason: string | null
+  trackingNumber: string | null
+  trackingUrl: string | null
+  trackingUpdatedAt: Date | null
   placedAt: Date | null
   created_at: Date | null
   updated_at: Date | null
@@ -61,6 +64,9 @@ export type CrfOrderMaxAggregateOutputType = {
   cancelledAt: Date | null
   cancelledById: string | null
   cancelReason: string | null
+  trackingNumber: string | null
+  trackingUrl: string | null
+  trackingUpdatedAt: Date | null
   placedAt: Date | null
   created_at: Date | null
   updated_at: Date | null
@@ -77,6 +83,9 @@ export type CrfOrderCountAggregateOutputType = {
   cancelledAt: number
   cancelledById: number
   cancelReason: number
+  trackingNumber: number
+  trackingUrl: number
+  trackingUpdatedAt: number
   placedAt: number
   created_at: number
   updated_at: number
@@ -104,6 +113,9 @@ export type CrfOrderMinAggregateInputType = {
   cancelledAt?: true
   cancelledById?: true
   cancelReason?: true
+  trackingNumber?: true
+  trackingUrl?: true
+  trackingUpdatedAt?: true
   placedAt?: true
   created_at?: true
   updated_at?: true
@@ -119,6 +131,9 @@ export type CrfOrderMaxAggregateInputType = {
   cancelledAt?: true
   cancelledById?: true
   cancelReason?: true
+  trackingNumber?: true
+  trackingUrl?: true
+  trackingUpdatedAt?: true
   placedAt?: true
   created_at?: true
   updated_at?: true
@@ -135,6 +150,9 @@ export type CrfOrderCountAggregateInputType = {
   cancelledAt?: true
   cancelledById?: true
   cancelReason?: true
+  trackingNumber?: true
+  trackingUrl?: true
+  trackingUpdatedAt?: true
   placedAt?: true
   created_at?: true
   updated_at?: true
@@ -238,6 +256,9 @@ export type CrfOrderGroupByOutputType = {
   cancelledAt: Date | null
   cancelledById: string | null
   cancelReason: string | null
+  trackingNumber: string | null
+  trackingUrl: string | null
+  trackingUpdatedAt: Date | null
   placedAt: Date
   created_at: Date
   updated_at: Date
@@ -277,6 +298,9 @@ export type CrfOrderWhereInput = {
   cancelledAt?: Prisma.DateTimeNullableFilter<"CrfOrder"> | Date | string | null
   cancelledById?: Prisma.StringNullableFilter<"CrfOrder"> | string | null
   cancelReason?: Prisma.StringNullableFilter<"CrfOrder"> | string | null
+  trackingNumber?: Prisma.StringNullableFilter<"CrfOrder"> | string | null
+  trackingUrl?: Prisma.StringNullableFilter<"CrfOrder"> | string | null
+  trackingUpdatedAt?: Prisma.DateTimeNullableFilter<"CrfOrder"> | Date | string | null
   placedAt?: Prisma.DateTimeFilter<"CrfOrder"> | Date | string
   created_at?: Prisma.DateTimeFilter<"CrfOrder"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"CrfOrder"> | Date | string
@@ -294,6 +318,9 @@ export type CrfOrderOrderByWithRelationInput = {
   cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelledById?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  trackingNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  trackingUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  trackingUpdatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   placedAt?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -314,6 +341,9 @@ export type CrfOrderWhereUniqueInput = Prisma.AtLeast<{
   cancelledAt?: Prisma.DateTimeNullableFilter<"CrfOrder"> | Date | string | null
   cancelledById?: Prisma.StringNullableFilter<"CrfOrder"> | string | null
   cancelReason?: Prisma.StringNullableFilter<"CrfOrder"> | string | null
+  trackingNumber?: Prisma.StringNullableFilter<"CrfOrder"> | string | null
+  trackingUrl?: Prisma.StringNullableFilter<"CrfOrder"> | string | null
+  trackingUpdatedAt?: Prisma.DateTimeNullableFilter<"CrfOrder"> | Date | string | null
   placedAt?: Prisma.DateTimeFilter<"CrfOrder"> | Date | string
   created_at?: Prisma.DateTimeFilter<"CrfOrder"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"CrfOrder"> | Date | string
@@ -331,6 +361,9 @@ export type CrfOrderOrderByWithAggregationInput = {
   cancelledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelledById?: Prisma.SortOrderInput | Prisma.SortOrder
   cancelReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  trackingNumber?: Prisma.SortOrderInput | Prisma.SortOrder
+  trackingUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  trackingUpdatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   placedAt?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -355,6 +388,9 @@ export type CrfOrderScalarWhereWithAggregatesInput = {
   cancelledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CrfOrder"> | Date | string | null
   cancelledById?: Prisma.StringNullableWithAggregatesFilter<"CrfOrder"> | string | null
   cancelReason?: Prisma.StringNullableWithAggregatesFilter<"CrfOrder"> | string | null
+  trackingNumber?: Prisma.StringNullableWithAggregatesFilter<"CrfOrder"> | string | null
+  trackingUrl?: Prisma.StringNullableWithAggregatesFilter<"CrfOrder"> | string | null
+  trackingUpdatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CrfOrder"> | Date | string | null
   placedAt?: Prisma.DateTimeWithAggregatesFilter<"CrfOrder"> | Date | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"CrfOrder"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"CrfOrder"> | Date | string
@@ -370,6 +406,9 @@ export type CrfOrderCreateInput = {
   cancelledAt?: Date | string | null
   cancelledById?: string | null
   cancelReason?: string | null
+  trackingNumber?: string | null
+  trackingUrl?: string | null
+  trackingUpdatedAt?: Date | string | null
   placedAt?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
@@ -387,6 +426,9 @@ export type CrfOrderUncheckedCreateInput = {
   cancelledAt?: Date | string | null
   cancelledById?: string | null
   cancelReason?: string | null
+  trackingNumber?: string | null
+  trackingUrl?: string | null
+  trackingUpdatedAt?: Date | string | null
   placedAt?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
@@ -402,6 +444,9 @@ export type CrfOrderUpdateInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   placedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -419,6 +464,9 @@ export type CrfOrderUncheckedUpdateInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   placedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -435,6 +483,9 @@ export type CrfOrderCreateManyInput = {
   cancelledAt?: Date | string | null
   cancelledById?: string | null
   cancelReason?: string | null
+  trackingNumber?: string | null
+  trackingUrl?: string | null
+  trackingUpdatedAt?: Date | string | null
   placedAt?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
@@ -450,6 +501,9 @@ export type CrfOrderUpdateManyMutationInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   placedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -466,6 +520,9 @@ export type CrfOrderUncheckedUpdateManyInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   placedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -487,6 +544,9 @@ export type CrfOrderCountOrderByAggregateInput = {
   cancelledAt?: Prisma.SortOrder
   cancelledById?: Prisma.SortOrder
   cancelReason?: Prisma.SortOrder
+  trackingNumber?: Prisma.SortOrder
+  trackingUrl?: Prisma.SortOrder
+  trackingUpdatedAt?: Prisma.SortOrder
   placedAt?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -507,6 +567,9 @@ export type CrfOrderMaxOrderByAggregateInput = {
   cancelledAt?: Prisma.SortOrder
   cancelledById?: Prisma.SortOrder
   cancelReason?: Prisma.SortOrder
+  trackingNumber?: Prisma.SortOrder
+  trackingUrl?: Prisma.SortOrder
+  trackingUpdatedAt?: Prisma.SortOrder
   placedAt?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -522,6 +585,9 @@ export type CrfOrderMinOrderByAggregateInput = {
   cancelledAt?: Prisma.SortOrder
   cancelledById?: Prisma.SortOrder
   cancelReason?: Prisma.SortOrder
+  trackingNumber?: Prisma.SortOrder
+  trackingUrl?: Prisma.SortOrder
+  trackingUpdatedAt?: Prisma.SortOrder
   placedAt?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -578,6 +644,9 @@ export type CrfOrderCreateWithoutCrfInput = {
   cancelledAt?: Date | string | null
   cancelledById?: string | null
   cancelReason?: string | null
+  trackingNumber?: string | null
+  trackingUrl?: string | null
+  trackingUpdatedAt?: Date | string | null
   placedAt?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
@@ -593,6 +662,9 @@ export type CrfOrderUncheckedCreateWithoutCrfInput = {
   cancelledAt?: Date | string | null
   cancelledById?: string | null
   cancelReason?: string | null
+  trackingNumber?: string | null
+  trackingUrl?: string | null
+  trackingUpdatedAt?: Date | string | null
   placedAt?: Date | string
   created_at?: Date | string
   updated_at?: Date | string
@@ -624,6 +696,9 @@ export type CrfOrderUpdateWithoutCrfInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   placedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -639,6 +714,9 @@ export type CrfOrderUncheckedUpdateWithoutCrfInput = {
   cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cancelledById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  trackingUpdatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   placedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -657,6 +735,9 @@ export type CrfOrderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   cancelledAt?: boolean
   cancelledById?: boolean
   cancelReason?: boolean
+  trackingNumber?: boolean
+  trackingUrl?: boolean
+  trackingUpdatedAt?: boolean
   placedAt?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -674,6 +755,9 @@ export type CrfOrderSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   cancelledAt?: boolean
   cancelledById?: boolean
   cancelReason?: boolean
+  trackingNumber?: boolean
+  trackingUrl?: boolean
+  trackingUpdatedAt?: boolean
   placedAt?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -691,6 +775,9 @@ export type CrfOrderSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   cancelledAt?: boolean
   cancelledById?: boolean
   cancelReason?: boolean
+  trackingNumber?: boolean
+  trackingUrl?: boolean
+  trackingUpdatedAt?: boolean
   placedAt?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -708,12 +795,15 @@ export type CrfOrderSelectScalar = {
   cancelledAt?: boolean
   cancelledById?: boolean
   cancelReason?: boolean
+  trackingNumber?: boolean
+  trackingUrl?: boolean
+  trackingUpdatedAt?: boolean
   placedAt?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type CrfOrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "crfId" | "shopifyOrderId" | "totalPrice" | "lines" | "debitNoteAmount" | "status" | "cancelledAt" | "cancelledById" | "cancelReason" | "placedAt" | "created_at" | "updated_at", ExtArgs["result"]["crfOrder"]>
+export type CrfOrderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "crfId" | "shopifyOrderId" | "totalPrice" | "lines" | "debitNoteAmount" | "status" | "cancelledAt" | "cancelledById" | "cancelReason" | "trackingNumber" | "trackingUrl" | "trackingUpdatedAt" | "placedAt" | "created_at" | "updated_at", ExtArgs["result"]["crfOrder"]>
 export type CrfOrderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   crf?: boolean | Prisma.CRFDefaultArgs<ExtArgs>
 }
@@ -740,6 +830,9 @@ export type $CrfOrderPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     cancelledAt: Date | null
     cancelledById: string | null
     cancelReason: string | null
+    trackingNumber: string | null
+    trackingUrl: string | null
+    trackingUpdatedAt: Date | null
     placedAt: Date
     created_at: Date
     updated_at: Date
@@ -1177,6 +1270,9 @@ export interface CrfOrderFieldRefs {
   readonly cancelledAt: Prisma.FieldRef<"CrfOrder", 'DateTime'>
   readonly cancelledById: Prisma.FieldRef<"CrfOrder", 'String'>
   readonly cancelReason: Prisma.FieldRef<"CrfOrder", 'String'>
+  readonly trackingNumber: Prisma.FieldRef<"CrfOrder", 'String'>
+  readonly trackingUrl: Prisma.FieldRef<"CrfOrder", 'String'>
+  readonly trackingUpdatedAt: Prisma.FieldRef<"CrfOrder", 'DateTime'>
   readonly placedAt: Prisma.FieldRef<"CrfOrder", 'DateTime'>
   readonly created_at: Prisma.FieldRef<"CrfOrder", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"CrfOrder", 'DateTime'>

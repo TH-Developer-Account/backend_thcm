@@ -7291,6 +7291,9 @@ export const CrfOrderScalarFieldEnum = {
   cancelledAt: 'cancelledAt',
   cancelledById: 'cancelledById',
   cancelReason: 'cancelReason',
+  trackingNumber: 'trackingNumber',
+  trackingUrl: 'trackingUrl',
+  trackingUpdatedAt: 'trackingUpdatedAt',
   placedAt: 'placedAt',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -8040,6 +8043,25 @@ export const MachineScalarFieldEnum = {
   id: 'id',
   machineSerialNumber: 'machineSerialNumber',
   customerId: 'customerId',
+  custCode: 'custCode',
+  modelName: 'modelName',
+  siteLocation: 'siteLocation',
+  isConsiteMachine: 'isConsiteMachine',
+  isKeyAccount: 'isKeyAccount',
+  mcDescription: 'mcDescription',
+  mcStatus: 'mcStatus',
+  warrantyStart: 'warrantyStart',
+  warrantyEnd: 'warrantyEnd',
+  masterWarranty: 'masterWarranty',
+  serviceDealerCode: 'serviceDealerCode',
+  purchaseOrderNo: 'purchaseOrderNo',
+  purchaseOrderDate: 'purchaseOrderDate',
+  goodsReceiptDate: 'goodsReceiptDate',
+  goodsReceiptValue: 'goodsReceiptValue',
+  plant: 'plant',
+  invoiceNo: 'invoiceNo',
+  invoiceDate: 'invoiceDate',
+  invoiceValue: 'invoiceValue',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -8053,7 +8075,10 @@ export const MachineTelemetryScalarFieldEnum = {
   latitude: 'latitude',
   longitude: 'longitude',
   hmr: 'hmr',
-  syncedAt: 'syncedAt'
+  dailyOperationHrs: 'dailyOperationHrs',
+  pincode: 'pincode',
+  syncedAt: 'syncedAt',
+  operationDate: 'operationDate'
 } as const
 
 export type MachineTelemetryScalarFieldEnum = (typeof MachineTelemetryScalarFieldEnum)[keyof typeof MachineTelemetryScalarFieldEnum]

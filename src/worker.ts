@@ -11,11 +11,11 @@ import {
   startMedicalClaimImportWorker,
   startEventReportGenerationWorker,
   startMachineTelemetrySyncWorker,
+  // startMachineBillingSyncWorker, — TEMPORARILY disabled, see note below
 } from "./workers";
-import {
-  machineTelemetrySyncQueue,
-  registerMachineTelemetrySyncSchedule,
-} from "@modules/machine-telemetry/machineTelemetry.queue";
+import { registerMachineTelemetrySyncSchedule } from "@modules/machine-telemetry/machineTelemetry.queue";
+// registerMachineBillingSyncSchedule import also disabled — see note below
+// import { registerMachineBillingSyncSchedule } from "@modules/machine-billing/machineBilling.queue";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // worker.ts — separate process entry point
@@ -33,6 +33,20 @@ import {
 
 console.info("[Worker] Starting workers...");
 
+// ─────────────────────────────────────────────────────────────────────────────
+// TEMPORARY — machine-billing sync worker is disabled below. SAP_TH_GR_BASE_URL
+// currently points at th-s4-qas-ad.tatahitachi.co.in (QA), which isn't
+// network-reachable from here (no VPN tunnel to that host), so every run just
+// throws ENOTFOUND. Disabling the Worker — not just the schedule registration
+// further down — because BullMQ's 2am repeatable job is already persisted in
+// Redis and will keep firing regardless of whether registerMachineBillingSyncSchedule()
+// is called again; only removing the Worker stops something from actually
+// picking up and executing those jobs. Jobs will queue up unprocessed at 2am
+// until this is reverted — harmless, they just sit there.
+// Revert: uncomment startMachineBillingSyncWorker() below, its import above,
+// and the registerMachineBillingSyncSchedule() block further down, once the
+// production SAP URL is in place.
+// ─────────────────────────────────────────────────────────────────────────────
 const workers = [
   startLeadImportWorker(),
   startLeadExportWorker(),
@@ -43,6 +57,7 @@ const workers = [
   startMedicalClaimImportWorker(),
   startEventReportGenerationWorker(),
   startMachineTelemetrySyncWorker(),
+  // startMachineBillingSyncWorker(),
 ];
 
 console.info(`[Worker] ${workers.length} workers running`);
@@ -58,25 +73,18 @@ registerMachineTelemetrySyncSchedule().catch((error) => {
   );
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TEMPORARY — manual test run through the real queue. Comment out the
-// enqueue call below (or this whole block) once testing is done; nothing
-// else needs to change to go back to pure production behavior, since the
-// 1am repeatable job above is untouched by this. Runs once per
-// worker-process start/restart, so restarting a few times while testing
-// will enqueue a few of these — harmless, but expect a few duplicate test
-// rows in MachineTelemetry as a result.
-// ─────────────────────────────────────────────────────────────────────────────
-const TEST_MACHINE_SERIAL_NUMBERS = [
-  "THEDCRL0C00003939",
-  "THEDCRL0C00003942",
-  "THEDCRL0C00003948",
-  "THEDCRL0C00003951",
-];
-
-machineTelemetrySyncQueue
-  .add("test-sync", { machineSerialNumbers: TEST_MACHINE_SERIAL_NUMBERS })
-  .catch((error) => console.error("[Worker] Test sync enqueue failed:", error));
+// Registers the 2am-daily repeat rule for the GR + Invoice billing sync.
+// Same de-duplication guarantee as above — safe on every restart.
+// TEMPORARILY disabled alongside the worker above — see the note on the
+// `workers` array. Not calling this again doesn't remove the schedule
+// that's already registered in Redis from before; it just avoids
+// re-confirming it while the worker that would consume it is also off.
+// registerMachineBillingSyncSchedule().catch((error) => {
+//   console.error(
+//     "[Worker] Failed to register machine billing sync schedule:",
+//     error,
+//   );
+// });
 
 // ── Graceful shutdown ─────────────────────────────────────────────────────────
 // On SIGTERM/SIGINT: stop accepting new jobs, wait for active jobs to finish,

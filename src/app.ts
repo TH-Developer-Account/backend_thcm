@@ -37,6 +37,8 @@ import cppRoutes from "@modules/cpp/cpp.routes";
 import errorHandler from "@shared/middleware/error.middleware";
 import ApiError from "@shared/utils/apiError";
 import { startJobs } from "@shared/jobs/scheduler";
+import { shopifyAuth } from "@kernel/auth/internalAuth.middleware";
+import { postShopifyOrderTracking } from "@modules/map/crf/crf-order.controller";
 
 const corsOptions = {
 	origin: process.env.FRONTEND_URL, // frontend URL
@@ -45,12 +47,26 @@ const corsOptions = {
 	credentials: true, // allow cookies / auth headers
 };
 
+const publicApiCors = cors({
+  origin: "https://www.brandshop.tatahitachi.co.in", // the one extra origin for this endpoint
+  methods: ["GET", "POST"],
+  credentials: true,
+});
+
 const app = express();
 
 //Middlewares
-app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
+
+app.use(
+  "/api/v1/crf/order/tracking",
+  publicApiCors,
+  shopifyAuth,
+  postShopifyOrderTracking,
+);
+
+app.use(cors(corsOptions));
 
 app.use("/api", healthRouter);
 app.use("/api/v1/auth", authRoutes);
