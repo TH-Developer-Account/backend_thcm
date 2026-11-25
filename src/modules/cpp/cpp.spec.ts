@@ -18,6 +18,7 @@ import {
 	parseDecimal,
 	parseSlotUpdates,
 	planReplaceUser,
+	resolveCppPendingOn,
 	rowsToSlotMap,
 	sanitizeSection,
 	toSectionList,
@@ -249,6 +250,14 @@ describe("cpp.sections", () => {
 		).toThrow();
 	});
 
+	it("keeps which summary-sheet part an approval value came from", () => {
+		const out = sanitizeSection("purchasing", {
+			approvalValues: { partValue: "4546", partValuePart: " SPARE::TC02959 ", amountPart: "" },
+		}) as { approvalValues: Record<string, string> };
+		expect(out.approvalValues.partValuePart).toBe("SPARE::TC02959");
+		expect(out.approvalValues.amountPart).toBe("");
+	});
+
 	it("only accepts the five SAP plant codes", () => {
 		const out = sanitizeSection("master", {
 			plantDetails: [{ code: "8580", name: "DWD WH", group: "SPARE", purchasingGroup: "S01", pfPct: "2" }],
@@ -358,6 +367,27 @@ describe("cpp.matrix.helper", () => {
 		];
 		expect(planReplaceUser(rows, "old", "new")).toEqual({ updates: ["1"], deletes: ["2"] });
 		expect(rowsToSlotMap(rows).get(slotKey("CHAIRMAN", "ALL"))).toEqual(["old", "new"]);
+	});
+});
+}
+
+/* ===== pending on ===== */
+{
+describe("resolveCppPendingOn", () => {
+	const approvers = { role: "APPROVER" as const, approvers: [{ id: "u1", name: "Test User" }] };
+
+	it("waits on the proposer for a draft or a clarification", () => {
+		expect(resolveCppPendingOn("DRAFT", undefined)).toEqual({ role: "PROPOSER" });
+		expect(resolveCppPendingOn("CLARIFICATION_REQUESTED", approvers)).toEqual({ role: "PROPOSER" });
+	});
+
+	it("uses the workflow while in approval or price feeding", () => {
+		expect(resolveCppPendingOn("IN_PROGRESS", approvers)).toBe(approvers);
+		expect(resolveCppPendingOn("PRICE_FEEDING", approvers)).toBe(approvers);
+	});
+
+	it("waits on nobody once completed", () => {
+		expect(resolveCppPendingOn("COMPLETED", approvers)).toEqual({ role: "NONE", outcome: "APPROVED" });
 	});
 });
 }

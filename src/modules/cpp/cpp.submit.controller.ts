@@ -89,8 +89,11 @@ const completenessProblems = (request: RequestRow): string[] => {
 	if (!str(basic.reason)) problems.push("Reason is required.");
 	if (!str(basic.justification)) problems.push("Justification is required.");
 	const recommended = asObject(asObject(purchasing.suppliers).recommended);
-	if (!str(recommended.name) && !str(recommended.code))
-		problems.push("A recommended supplier is required.");
+	if (!str(recommended.name))
+		problems.push("The recommended supplier name is required.");
+	// The SAP text files (ZINFOUPDATE_ME11 / ZCHANGEINFO) print it as the Vendor Code.
+	if (!str(recommended.code))
+		problems.push("The recommended supplier's vendor code is required.");
 
 	// Band values: only the ones the condition reads (derived columns on the row,
 	// filled by buildCppData from the Financial impact section on every save).

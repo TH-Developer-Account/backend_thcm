@@ -35,6 +35,7 @@ import {
 
 import { prisma } from "@shared/config/prisma";
 import { sendWorkflowMail } from "@mail/workFlowEmail.services";
+import type { PendingOn } from "@kernel/workflow/workflowSubject.helper";
 
 type RecommendedSupplier = { name?: string; code?: string };
 
@@ -238,6 +239,9 @@ const SPECS: Record<CppSectionKey, Spec> = {
 			partValue: { t: "decimal" },
 			variationPct: { t: "decimal" },
 			amount: { t: "decimal" },
+			// Summary-sheet part each value was picked from ("PLANT::PARTNO"), "" when typed.
+			partValuePart: text(80),
+			amountPart: text(80),
 		}),
 	}),
 	// "In case of Amortisation Only" — filled only for pricing condition PB50.
@@ -758,6 +762,8 @@ export const toCppListItem = (row: ListRow) => ({
 	submittedAt: row.submittedAt,
 	created_at: row.created_at,
 	updated_at: row.updated_at,
+	/** The proposer: the frontend permission check compares it with the signed-in user. */
+	initiatedById: row.initiatedById,
 });
 
 export type CppAttachmentWithUrl = RequestRow["attachments"][number] & {
@@ -779,15 +785,65 @@ export const toCppAttachment = (a: CppAttachmentWithUrl) => ({
 		: {}),
 });
 
+export type CppInitiator = {
+	id: string;
+	name: string | null;
+	email: string | null;
+};
+
+/** Rows read from the summary sheet at upload (parsedData.rows), [] when none. */
+const summaryPartsOf = (attachments: CppAttachmentWithUrl[]): unknown[] => {
+	const sheet = attachments.find((a) => a.type === "partSummary") as
+		| { parsedData?: unknown }
+		| undefined;
+	const parsed = sheet?.parsedData;
+	const rows = isObject(parsed) ? parsed.rows : null;
+	return Array.isArray(rows) ? rows : [];
+};
+
 export const toCppDetail = (
 	row: RequestRow,
 	attachments: CppAttachmentWithUrl[],
+	initiatedBy: CppInitiator | null = null,
 ) => ({
 	...toCppListItem(row),
 	/** Always every section, in tab order, every field present. */
 	sections: toSectionList(readStoredSections(row.sections)),
 	attachments: attachments.map(toCppAttachment),
+	/** Shown as "Proposed By" on the CPP document. */
+	initiatedBy,
+	/**
+	 * Summary sheet part rows, same keys as cpp.partSummary.ts
+	 * (slNo, plant, model, partNo, … newPrice, effectiveDate, rcvdQty, actualImpact,
+	 * abpVol, qtyPerMc, annualisedImpact, pctChange). Used by the CPP document's part
+	 * table and the part pickers in Purchasing details.
+	 */
+	parts: summaryPartsOf(attachments),
 });
+
+/* ------------------------------- pending on ------------------------------- */
+
+/**
+ * Who a CPP request waits on — same idea as resolveVendorOnboardingPendingOn /
+ * resolveMedicalClaimPendingOn in workflowSubject.helper.ts, kept here so the CPP
+ * module never has to change a kernel file.
+ *   DRAFT / CLARIFICATION_REQUESTED -> the proposer (submit / edit and resubmit)
+ *   COMPLETED                       -> nobody
+ *   anything else                   -> what the workflow says (pending approvers)
+ */
+export function resolveCppPendingOn(
+	status: string,
+	workflowBasedPendingOn: PendingOn | undefined,
+): PendingOn {
+	if (
+		status === CPP_STATUS.DRAFT ||
+		status === CPP_STATUS.CLARIFICATION_REQUESTED
+	)
+		return { role: "PROPOSER" };
+	if (status === CPP_STATUS.COMPLETED)
+		return { role: "NONE", outcome: "APPROVED" };
+	return workflowBasedPendingOn ?? { role: "PROPOSER" };
+}
 
 /* --------------------------------- listing -------------------------------- */
 

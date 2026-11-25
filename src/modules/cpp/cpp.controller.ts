@@ -21,7 +21,10 @@ import {
 	type CppAttachmentType,
 	scopesForRole,
 } from "./cpp.constants";
-import { getActiveWorkflowForSubject } from "@kernel/workflow/workflowSubject.helper";
+import {
+	getActiveWorkflowForSubject,
+	getPendingOnForMany,
+} from "@kernel/workflow/workflowSubject.helper";
 import {
 	type CppAttachmentWithUrl,
 	type SlotMap,
@@ -37,6 +40,7 @@ import {
 	parseSlotUpdates,
 	planReplaceUser,
 	resolveCppOrderBy,
+	resolveCppPendingOn,
 	rowsToSlotMap,
 	safeFileName,
 	toCppDetail,
@@ -98,15 +102,26 @@ const withSignedUrls = async <T extends { s3Key: string }>(
 		})),
 	);
 
+const fullName = (u: { first_name: string | null; last_name: string | null }) =>
+	[u.first_name, u.last_name].filter(Boolean).join(" ").trim() || null;
+
 const loadDetail = async (id: string) => {
 	const row = await prisma.cppRequest.findUnique({
 		where: { id },
 		include: { attachments: { orderBy: { uploadedAt: "asc" } } },
 	});
 	if (!row) throw new ApiError(404, "CPP request not found");
+	// The proposer, for "Proposed By" on the document (the request has no relation to User).
+	const initiator = await prisma.user.findUnique({
+		where: { id: row.initiatedById },
+		select: { id: true, first_name: true, last_name: true, email: true },
+	});
 	return toCppDetail(
 		row,
 		(await withSignedUrls(row.attachments)) as CppAttachmentWithUrl[],
+		initiator
+			? { id: initiator.id, name: fullName(initiator), email: initiator.email }
+			: null,
 	);
 };
 
@@ -267,9 +282,22 @@ export const listCppRequests = async (
 			prisma.cppRequest.count({ where }),
 		]);
 
+		// Who each row waits on — one batched query for the page, same as the
+		// vendor onboarding listing (getPendingOnForMany + a status resolver).
+		const pendingOnBySubjectId = await getPendingOnForMany(
+			"CPP_REQUEST",
+			rows.map((row) => row.id),
+		);
+
 		res.status(200).json({
 			success: true,
-			data: rows.map(toCppListItem),
+			data: rows.map((row) => ({
+				...toCppListItem(row),
+				pendingOn: resolveCppPendingOn(
+					row.status,
+					pendingOnBySubjectId[row.id],
+				),
+			})),
 			total,
 			page_index: params.pageIndex,
 			page_size: params.pageSize,
@@ -572,9 +600,6 @@ export const closeCppRequest = async (
 //   GET  /cpp/approval-matrix/chains    the 71 workflow chains (read-only preview)
 
 type PersonRow = { id: string; name: string | null; email: string | null };
-
-const fullName = (u: { first_name: string | null; last_name: string | null }) =>
-	[u.first_name, u.last_name].filter(Boolean).join(" ").trim() || null;
 
 const loadPeople = async (ids: string[]): Promise<Map<string, PersonRow>> => {
 	if (ids.length === 0) return new Map();
