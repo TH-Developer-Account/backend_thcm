@@ -63,7 +63,7 @@ app.use(express.json());
 // the handler behind it now serves both CRF and Handouts tracking
 // callbacks, picked by the `channel` field in the body.
 app.use(
-  "/api/v1/crf/order/tracking",
+  "/api/v1/shopify/order-tracking",
   publicApiCors,
   shopifyAuth,
   postShopifyOrderTracking,
