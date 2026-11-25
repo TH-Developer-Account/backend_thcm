@@ -471,24 +471,17 @@ export const resubmitHandout = async (
 // or dangling id is a configuration problem already logged at boot (see
 // handoutStatus.constants.ts), not a reason to break this read.
 
-const describeFixedRoleUser = async (
-  userId: string,
+type FixedRoleUser = {
+  first_name: string;
+  last_name: string;
+  email: string | null;
+  designation: { name: string } | null;
+};
+
+const describeFixedRoleUser = (
+  user: FixedRoleUser | undefined,
   fallbackName: string,
-): Promise<{ name: string; email: string; designation: string | null }> => {
-  if (!userId) {
-    return { name: fallbackName, email: "--", designation: null };
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      first_name: true,
-      last_name: true,
-      email: true,
-      designation: { select: { name: true } },
-    },
-  });
-
+): { name: string; email: string; designation: string | null } => {
   if (!user) {
     return { name: fallbackName, email: "--", designation: null };
   }
@@ -501,15 +494,48 @@ const describeFixedRoleUser = async (
 };
 
 export const getHandoutApprovalWorkflow = async () => {
-  const [approver, deliveryPerson] = await Promise.all([
-    describeFixedRoleUser(HANDOUT_APPROVER_USER_ID, "Marketing Head"),
-    describeFixedRoleUser(HANDOUT_DELIVERY_USER_ID, "Delivery Team"),
-  ]);
+  // Both roles resolved in a single round trip rather than one query per
+  // role — the two ids are known up front, so there's nothing to gain from
+  // querying them separately.
+  const roleUserIds = [
+    ...new Set(
+      [HANDOUT_APPROVER_USER_ID, HANDOUT_DELIVERY_USER_ID].filter(Boolean),
+    ),
+  ];
+
+  const users = roleUserIds.length
+    ? await prisma.user.findMany({
+        where: { id: { in: roleUserIds } },
+        select: {
+          id: true,
+          first_name: true,
+          last_name: true,
+          email: true,
+          designation: { select: { name: true } },
+        },
+      })
+    : [];
+
+  const usersById = new Map(users.map((user) => [user.id, user]));
 
   return {
     stages: [
-      { stageOrder: 1, stageName: "Approval", ...approver },
-      { stageOrder: 2, stageName: "Hand delivery", ...deliveryPerson },
+      {
+        stageOrder: 1,
+        stageName: "Approval",
+        ...describeFixedRoleUser(
+          usersById.get(HANDOUT_APPROVER_USER_ID),
+          "Marketing Head",
+        ),
+      },
+      {
+        stageOrder: 2,
+        stageName: "Hand delivery",
+        ...describeFixedRoleUser(
+          usersById.get(HANDOUT_DELIVERY_USER_ID),
+          "Delivery Team",
+        ),
+      },
     ],
   };
 };
