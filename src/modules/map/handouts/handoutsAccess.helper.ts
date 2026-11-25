@@ -1,18 +1,27 @@
 // handouts/handoutsAccess.helper.ts
 //
-// Mirrors modules/map/crf/crfAccess.helper.ts. The one structural difference:
-// CRF resolves "am I the approver?" from a dynamic workflow/Approval chain
-// because EPC approval routing is configurable. Handouts has a single fixed
-// approval stage with exactly one approver and one delivery person, each a
-// specific User id configured in the environment (see
-// handoutStatus.constants.ts) — not an RBAC-resolved group, and NOT
-// overridable by an app administrator: the two roles are meant to stay
-// strictly separate (an approver only approves/rejects/clarifies, a
-// delivery person only fulfils), so isAdmin never feeds isApprover or
-// isDeliveryTeam. HANDOUT_MODULE write access is checked separately, at the
-// route level in handouts.routes.ts: it gates who can touch the Handouts
-// API at all (raise/cancel/resubmit a request), not who the approver or
-// delivery person is. isAdmin still grants view access (assertHandoutAccess,
+// ✅ CHANGED — isApprover used to be a fixed, environment-configured User
+// id (HANDOUT_APPROVER_USER_ID), the same two-fixed-identity model the file
+// header below used to describe for both roles. It is now resolved from
+// the handout's own WorkflowInstance: whoever is a PENDING approver on the
+// active, IN_PROGRESS StageInstance. This is what lets approval move onto
+// the generic kernel/workflow engine (see handoutsDecision.services.ts) —
+// Handouts is configured with a single admin-owned WorkflowTemplate with
+// one stage, so in practice this resolves to the same small, fixed set of
+// people an env var used to name, just configured through the real
+// WorkflowTemplate UI instead of an environment variable.
+//
+// isDeliveryTeam is UNCHANGED — delivery stays a fixed, environment-
+// configured identity (HANDOUT_DELIVERY_USER_ID) on purpose: the generic
+// workflow kernel has no concept of a "delivery" stage, and genericizing
+// that role was explicitly scoped out. NOT overridable by an app
+// administrator either way — the roles stay strictly separate (an
+// approver only approves/rejects/clarifies, a delivery person only
+// fulfils), so isAdmin never feeds isApprover or isDeliveryTeam.
+// HANDOUT_MODULE write access is checked separately, at the route level in
+// handouts.routes.ts: it gates who can touch the Handouts API at all
+// (raise/cancel/resubmit a request), not who the approver or delivery
+// person is. isAdmin still grants view access (assertHandoutAccess,
 // canView below) so an admin can look up any request for support, but it
 // grants no act-as-approver or act-as-deliverer capability.
 
@@ -22,7 +31,6 @@ import { isAppAdministrator } from "@rbac/profile/accessPolicy";
 import type { AccessActor } from "@rbac/profile/access.types";
 import {
   HANDOUT_APP,
-  HANDOUT_APPROVER_USER_ID,
   HANDOUT_DELIVERY_USER_ID,
   HANDOUT_STATUS,
   type HandoutStatus,
@@ -53,33 +61,89 @@ const loadHandout = (handoutId: string) =>
     },
   });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// getActiveHandoutStage  ✅ NEW
+//
+// Single place that resolves a handout's active WorkflowInstance and its
+// current, IN_PROGRESS StageInstance (with approvals) — reused by isApprover
+// below, by handoutsDecision.services.ts's approve/reject (which need the
+// stageId to call the generic engine's approveStage/rejectStage), and by
+// handoutsNotify.helper.ts (which needs the pending approver ids to notify
+// the right people on RESUBMITTED/CANCELLED). One query shape, not
+// re-derived per caller.
+//
+// Returns null when there's no active workflow or no IN_PROGRESS stage on
+// it — a handout that's already APPROVED/REJECTED, or one whose workflow
+// assignment somehow failed, has neither, and every caller treats that as
+// "nobody is currently an approver on this handout" rather than throwing.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getActiveHandoutStage = async (handoutId: string) => {
+  const workflow = await prisma.workflowInstance.findFirst({
+    where: {
+      subjectType: "HANDOUT_REQUEST",
+      subjectId: handoutId,
+      isActive: true,
+    },
+    include: {
+      stages: {
+        where: { isCurrentIteration: true, status: "IN_PROGRESS" },
+        include: { approvals: true },
+      },
+    },
+  });
+
+  const stage = workflow?.stages[0] ?? null;
+  return { workflow, stage };
+};
+
 export type HandoutAccess = {
   handout: NonNullable<Awaited<ReturnType<typeof loadHandout>>>;
   isOwner: boolean;
   isApprover: boolean;
   isDeliveryTeam: boolean;
   isAdmin: boolean;
+  // The handout's currently IN_PROGRESS StageInstance id, and its active
+  // WorkflowInstance id, when they exist — exposed so approveHandout/
+  // rejectHandout don't have to re-resolve either via a second
+  // getActiveHandoutStage call.
+  activeStageId: string | null;
+  activeWorkflowId: string | null;
 };
 
 export const getHandoutAccess = async (
   actor: Actor,
   handoutId: string,
 ): Promise<HandoutAccess> => {
-  const handout = await loadHandout(handoutId);
+  const [handout, { workflow, stage }] = await Promise.all([
+    loadHandout(handoutId),
+    getActiveHandoutStage(handoutId),
+  ]);
   if (!handout) throw new ApiError(404, "Handout request not found");
 
   const isOwner = handout.requestedById === actor.id;
   const isAdmin = isAppAdministrator(actor, HANDOUT_APP);
 
-  // Two fixed, distinct individuals — see the file header. Deliberately NOT
-  // `|| isAdmin`: an app administrator can still view the request (isAdmin
-  // feeds assertHandoutAccess and canView below) but must not be able to
-  // act as the approver or the delivery person just by being an admin —
-  // the two roles stay strictly separate.
-  const isApprover = actor.id === HANDOUT_APPROVER_USER_ID;
+  // ✅ CHANGED — see file header. Deliberately NOT `|| isAdmin`: an app
+  // administrator can still view the request (isAdmin feeds
+  // assertHandoutAccess and canView below) but must not be able to act as
+  // the approver just by being an admin — the roles stay strictly separate.
+  const isApprover =
+    stage?.approvals.some(
+      (approval) =>
+        approval.approverId === actor.id && approval.status === "PENDING",
+    ) ?? false;
   const isDeliveryTeam = actor.id === HANDOUT_DELIVERY_USER_ID;
 
-  return { handout, isOwner, isApprover, isDeliveryTeam, isAdmin };
+  return {
+    handout,
+    isOwner,
+    isApprover,
+    isDeliveryTeam,
+    isAdmin,
+    activeStageId: stage?.id ?? null,
+    activeWorkflowId: workflow?.id ?? null,
+  };
 };
 
 export const assertHandoutAccess = (access: HandoutAccess): void => {

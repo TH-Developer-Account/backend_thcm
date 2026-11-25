@@ -1,3 +1,4 @@
+// Target: modules/map/handouts/handoutStatus.constants.ts
 // handouts/handoutStatus.constants.ts
 //
 // HandoutStatus and HandoutFulfillmentType are plain Prisma `String` columns,
@@ -103,8 +104,12 @@ export const assertValidHandoutTransition = (
 // shared constants file. These are duplicated here, not imported, as the
 // backend's own source of truth. Keep the values in lockstep with the
 // frontend file by hand if either side ever changes.
-
-export const HANDOUT_APP = "MAP";
+//
+// Handouts is its own top-level RBAC app now ("HANDOUT"), not a module
+// bolted onto "MAP" — see handouts.routes.ts's authorize() calls, which read
+// these two constants dynamically, so no route file needed editing for this
+// change.
+export const HANDOUT_APP = "HANDOUT";
 
 // Single RBAC module for the whole feature: read = view, write = raise,
 // approve AND deliver — requester/approver/delivery-team are not separately
@@ -120,7 +125,7 @@ export const HANDOUT_LIMITS = {
   MAX_ITEMS: 50,
 } as const;
 
-export const HANDOUTS_BASE_PATH = "/marketing/activity-planner/handouts";
+export const HANDOUTS_BASE_PATH = "/handouts";
 
 // ── Fixed approver / delivery-person identity ───────────────────────────────
 // Handouts has exactly one approver and one delivery person — not a dynamic

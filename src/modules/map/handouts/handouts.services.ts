@@ -4,14 +4,28 @@
 // resubmit. Decision actions (approve/reject/clarify/cancel/cannot-fulfil/
 // deliver) live in handoutsDecision.services.ts — same split CRF uses
 // between crf.services.ts and crf-order.services.ts.
+//
+// ✅ CHANGED — createHandout now assigns a real WorkflowInstance (via the
+// generic kernel/workflow engine's assignWorkflow) instead of leaving
+// Handouts with no workflow at all. listHandouts' `view=approve` scoping
+// moves off the fixed HANDOUT_APPROVER_USER_ID identity onto the same
+// "is this actor a pending approver on an active Handout workflow" check
+// handoutsAccess.helper.ts now uses for isApprover.
 
 import { prisma } from "@shared/config/prisma";
 import ApiError from "@shared/utils/apiError";
+// NOTE: same path-alias uncertainty flagged elsewhere in this pass — every
+// other import in this file is relative. Adjust to your real tsconfig
+// mapping for kernel/workflow.
 import {
+  assignWorkflow,
+  notifyStageApprovers,
+} from "@kernel/workflow/workflow.service";
+import {
+  HANDOUT_APP,
   HANDOUT_STATUS,
   HANDOUT_FULFILLMENT_TYPE,
   HANDOUT_LIMITS,
-  HANDOUT_APPROVER_USER_ID,
   HANDOUT_DELIVERY_USER_ID,
   isHandoutFulfillmentType,
   assertValidHandoutTransition,
@@ -20,15 +34,17 @@ import {
   getHandoutAccess,
   assertHandoutAccess,
   computeHandoutPermissions,
+  getActiveHandoutStage,
   type Actor,
 } from "./handoutsAccess.helper";
-import { safeNotifyHandoutEvent } from "./handoutsNotify.helper";
+import {
+  safeNotifyHandoutEvent,
+  getOwnerWorkspaceId,
+} from "./handoutsNotify.helper";
 
 // ActivityLog is written directly, the same way every call site in
 // crfOrder.services.ts does it — there is no logActivity() wrapper in this
-// codebase. workflowId/stageId are always null here: Handouts has no
-// WorkflowInstance behind it (see handoutsAccess.helper.ts's note on why
-// isApprover/isDeliveryTeam are plain RBAC checks, not a workflow lookup).
+// codebase.
 
 // ── Request-number generation ───────────────────────────────────────────────
 // Mirrors epcNumber.ts exactly: pure application-code composition of
@@ -145,43 +161,88 @@ export const createHandout = async (
 ) => {
   validateCreateInput(input);
 
+  // Resolved once, up front: both the workspace (assignWorkflow needs it)
+  // and the Handout app's own row id (assignWorkflow's `appId` — distinct
+  // from the HANDOUT_APP *key* string everything else in this module uses).
+  // No dedicated resolver exists for "App id by key" anywhere else in this
+  // codebase (crf-shop.routes.ts and this module both only ever use the
+  // key as a literal for RBAC calls, never the row id) — a one-off lookup
+  // here, not a new shared abstraction, per KISS: there is exactly one
+  // call site that needs it.
+  const [workspaceId, handoutApp] = await Promise.all([
+    getOwnerWorkspaceId(actor.id),
+    prisma.app.findUniqueOrThrow({
+      where: { key: HANDOUT_APP },
+      select: { id: true },
+    }),
+  ]);
+  if (!workspaceId) {
+    throw new ApiError(
+      409,
+      "Your account has no workspace membership — required to raise a handout request",
+    );
+  }
+
   const attempt = async (retried: boolean): Promise<string> => {
     const requestNumber = generateHandoutRequestNumber();
     try {
-      const handout = await prisma.handoutRequest.create({
-        data: {
-          requestNumber,
-          purpose: input.purpose.trim(),
-          requiredBy: new Date(input.requiredBy),
-          fulfillmentType: input.fulfillmentType,
-          deliverTo: input.deliverTo.trim(),
-          contactPhone: input.contactPhone.trim(),
-          remarks: input.remarks?.trim() || null,
-          status: HANDOUT_STATUS.PENDING_APPROVAL,
-          requestedById: actor.id,
-          addressLine1: input.shippingAddress?.line1,
-          addressLine2: input.shippingAddress?.line2,
-          addressLandmark: input.shippingAddress?.landmark,
-          addressCity: input.shippingAddress?.city,
-          addressDistrict: input.shippingAddress?.district,
-          addressState: input.shippingAddress?.state,
-          addressPincode: input.shippingAddress?.pincode,
-          addressCountry: input.shippingAddress?.country ?? "India",
-          addressGstin: input.shippingAddress?.gstin,
-          items: {
-            // No `amount` column on HandoutItem — quantity × rate is
-            // computed on read (getHandoutDetail), never stored.
-            create: input.items.map((item) => ({
-              sku: item.sku,
-              quantity: item.quantity,
-              title: item.title ?? item.sku,
-              variantTitle: item.variantTitle ?? null,
-              imageUrl: item.imageUrl ?? null,
-              rate: item.rate,
-            })),
+      // Create + workflow assignment in one transaction: a HandoutRequest
+      // row that exists with no WorkflowInstance behind it would have no
+      // approver at all (getHandoutAccess's isApprover resolves purely
+      // from the active workflow's current stage) — an inconsistent state
+      // worth paying one extra statement to make impossible, rather than
+      // the two-step "create, then assign" pattern the vendor-onboarding
+      // frontend uses for its own, multi-screen submission flow. Handout
+      // creation is a single backend call, so there's no equivalent
+      // intermediate screen that needs the record to exist before the
+      // workflow is ready.
+      const { handout } = await prisma.$transaction(async (tx) => {
+        const created = await tx.handoutRequest.create({
+          data: {
+            requestNumber,
+            purpose: input.purpose.trim(),
+            requiredBy: new Date(input.requiredBy),
+            fulfillmentType: input.fulfillmentType,
+            deliverTo: input.deliverTo.trim(),
+            contactPhone: input.contactPhone.trim(),
+            remarks: input.remarks?.trim() || null,
+            status: HANDOUT_STATUS.PENDING_APPROVAL,
+            requestedById: actor.id,
+            addressLine1: input.shippingAddress?.line1,
+            addressLine2: input.shippingAddress?.line2,
+            addressLandmark: input.shippingAddress?.landmark,
+            addressCity: input.shippingAddress?.city,
+            addressDistrict: input.shippingAddress?.district,
+            addressState: input.shippingAddress?.state,
+            addressPincode: input.shippingAddress?.pincode,
+            addressCountry: input.shippingAddress?.country ?? "India",
+            addressGstin: input.shippingAddress?.gstin,
+            items: {
+              // No `amount` column on HandoutItem — quantity × rate is
+              // computed on read (getHandoutDetail), never stored.
+              create: input.items.map((item) => ({
+                sku: item.sku,
+                quantity: item.quantity,
+                title: item.title ?? item.sku,
+                variantTitle: item.variantTitle ?? null,
+                imageUrl: item.imageUrl ?? null,
+                rate: item.rate,
+              })),
+            },
           },
-        },
+        });
+
+        await assignWorkflow(tx, {
+          subjectType: "HANDOUT_REQUEST",
+          subjectId: created.id,
+          workspaceId,
+          appId: handoutApp.id,
+          userId: actor.id,
+        });
+
+        return { handout: created };
       });
+
       return handout.id;
     } catch (error: any) {
       // Collision on the requestNumber unique constraint (two requests
@@ -207,7 +268,25 @@ export const createHandout = async (
     },
   });
 
-  await safeNotifyHandoutEvent({ handoutId, event: "SUBMITTED", actor });
+  // Approver notification now goes through the generic engine's own
+  // notifyStageApprovers — same call every other subject type's
+  // assignment uses — rather than Handout's own safeNotifyHandoutEvent
+  // SUBMITTED event, which this replaces (see handoutsNotify.helper.ts;
+  // the SUBMITTED event/copy has been removed there as now-dead code).
+  // Re-reading the stage here rather than threading it out of the
+  // transaction above keeps this one extra read outside the transaction,
+  // consistent with "notifications are always post-commit."
+  const { workflow, stage } = await getActiveHandoutStage(handoutId);
+  if (workflow && stage) {
+    await notifyStageApprovers({
+      workflowId: workflow.id,
+      subjectType: "HANDOUT_REQUEST",
+      subjectId: handoutId,
+      appId: handoutApp.id,
+      stageId: stage.id,
+      approverIds: stage.approvals.map((a) => a.approverId),
+    });
+  }
 
   return getHandoutDetail(actor, handoutId);
 };
@@ -227,16 +306,36 @@ export const listHandouts = async (actor: Actor, params: ListHandoutsInput) => {
 
   // The view decides the base scope. HANDOUT_MODULE write access (checked
   // at the route level via authorize()) only gates "can touch the Handouts
-  // API at all" — it says nothing about *which* person the fixed approver
-  // or delivery person is (see handoutsAccess.helper.ts). So "approve" and
-  // "deliver" must also be scoped to the one specific configured user, or
+  // API at all" — it says nothing about *which* person the approver or
+  // delivery person is (see handoutsAccess.helper.ts). So "approve" and
+  // "deliver" must also be scoped to whoever actually holds that role, or
   // anyone with write access would see every pending/approved request in
   // the system, not just the ones actually waiting on them.
   if (params.view === "mine") {
     where.requestedById = actor.id;
   } else if (params.view === "approve") {
-    if (actor.id !== HANDOUT_APPROVER_USER_ID) {
-      throw new ApiError(403, "You are not the configured handout approver");
+    // ✅ CHANGED — was a fixed HANDOUT_APPROVER_USER_ID identity check.
+    // "Approver" is now whoever is a PENDING approver on any currently
+    // active, IN_PROGRESS Handout workflow stage — resolved once here
+    // rather than per-row, since Handouts' single-template/single-stage
+    // setup means this is the same small approver set across every
+    // pending request today, not a per-request lookup.
+    const isCurrentApprover = await prisma.workflowInstance.findFirst({
+      where: {
+        subjectType: "HANDOUT_REQUEST",
+        isActive: true,
+        stages: {
+          some: {
+            isCurrentIteration: true,
+            status: "IN_PROGRESS",
+            approvals: { some: { approverId: actor.id, status: "PENDING" } },
+          },
+        },
+      },
+      select: { id: true },
+    });
+    if (!isCurrentApprover) {
+      throw new ApiError(403, "You are not a current handout approver");
     }
     where.status = HANDOUT_STATUS.PENDING_APPROVAL;
   } else if (params.view === "deliver") {
@@ -391,6 +490,13 @@ export const getHandoutDetail = async (actor: Actor, handoutId: string) => {
 // CLARIFICATION_REQUESTED -> PENDING_APPROVAL. Same body shape as create();
 // a full replace, not a partial patch, since the requester is expected to
 // have addressed whatever the approver asked about.
+//
+// UNCHANGED — resubmit stays a Handout-specific status flip and never
+// touches the WorkflowInstance (see handoutsDecision.services.ts's file
+// header): the same single stage that was assigned at creation time is
+// still sitting there IN_PROGRESS the whole time a handout is in
+// CLARIFICATION_REQUESTED, ready for the same approver to act on it again
+// once resubmitted — there is no "next iteration" to build.
 
 export const resubmitHandout = async (
   actor: Actor,

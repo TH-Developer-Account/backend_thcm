@@ -6,15 +6,25 @@
 // through the "safe" wrapper so a notification failure can never fail an
 // operation that already succeeded.
 //
-// Recipients are resolved by stage, not broadcast to both roles on every
-// event: the approver hears about a new/resubmitted/cancelled request (it's
-// their queue), the delivery person hears about an approval (it's now their
-// queue) — each told only when the ball is actually in their court. This
-// also replaces an earlier, unverified attempt to resolve "everyone with
-// HANDOUT module write access" by reconstructing the RBAC schema's
-// Profile/Module/AppAdministrator tables by hand; approver and delivery
-// person are now fixed, environment-configured ids (handoutStatus.constants.ts),
-// so there is no dynamic set to query here at all.
+// ✅ CHANGED — approval is now a generic-kernel event (approveStage/
+// rejectStage in workflow.service.ts), and that engine already sends its
+// own notification to the requester on both approve and reject. Firing
+// this module's notification for the SAME leg would double-notify the
+// requester, so:
+//   - SUBMITTED is removed entirely — notifyStageApprovers (the generic
+//     engine's own "a stage just activated" notify, called from
+//     handouts.services.ts's createHandout) now covers what this event
+//     used to do for the approver.
+//   - REJECTED is removed entirely — rejectStage's own notify covers it.
+//   - APPROVED keeps firing, but ONLY notifies the delivery person now
+//     (requestedById dropped from its recipient list below) — "it's now
+//     your queue" has no generic-engine equivalent at all, since the
+//     kernel has no concept of a delivery stage. The requester's "you've
+//     been approved" notice comes from approveStage's own notify.
+// RESUBMITTED and CANCELLED still need to reach the approver, but that's
+// no longer a fixed env-var identity — resolveRecipients now resolves it
+// from the handout's active workflow stage, the same way
+// handoutsAccess.helper.ts's isApprover does.
 
 import { prisma } from "@shared/config/prisma";
 import logger from "@shared/utils/logger";
@@ -22,13 +32,19 @@ import { notify } from "@kernel/notifications/notification.services";
 import { addMailJob } from "@kernel/mail/mail.service";
 import {
   HANDOUT_APP,
-  HANDOUT_APPROVER_USER_ID,
   HANDOUT_DELIVERY_USER_ID,
   HANDOUTS_BASE_PATH,
 } from "./handoutStatus.constants";
+import { getActiveHandoutStage } from "./handoutsAccess.helper";
 import type { Actor } from "./handoutsAccess.helper";
 
-const getOwnerWorkspaceId = async (userId: string): Promise<string | null> => {
+// Exported — reused by handouts.services.ts's createHandout, which also
+// needs the requester's workspaceId to call the generic engine's
+// assignWorkflow. One resolver, not two copies of the same WorkspaceUser
+// lookup.
+export const getOwnerWorkspaceId = async (
+  userId: string,
+): Promise<string | null> => {
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: { workspaceUsers: { select: { workspaceId: true }, take: 1 } },
@@ -37,10 +53,8 @@ const getOwnerWorkspaceId = async (userId: string): Promise<string | null> => {
 };
 
 export type HandoutNotifyEvent =
-  | "SUBMITTED"
   | "RESUBMITTED"
   | "APPROVED"
-  | "REJECTED"
   | "CLARIFICATION_REQUESTED"
   | "CANCELLED"
   | "CANNOT_FULFIL"
@@ -51,25 +65,15 @@ const EVENT_COPY: Record<
   HandoutNotifyEvent,
   { title: string; body: (comment?: string) => string }
 > = {
-  SUBMITTED: {
-    title: "New handout request submitted",
-    body: () => "A new handout request is waiting for your approval.",
-  },
   RESUBMITTED: {
     title: "Handout request resubmitted",
     body: () => "A handout request was updated and resubmitted for approval.",
   },
   APPROVED: {
-    title: "Handout request approved",
+    // Delivery-only now (see file header) — copy adjusted accordingly.
+    title: "Handout request approved — ready for delivery",
     body: () =>
-      "Your handout request has been approved and the order has been placed.",
-  },
-  REJECTED: {
-    title: "Handout request rejected",
-    body: (comment) =>
-      comment
-        ? `Your handout request was rejected: ${comment}`
-        : "Your handout request was rejected.",
+      "A handout request has been approved and the order has been placed. It's ready in your delivery queue.",
   },
   CLARIFICATION_REQUESTED: {
     title: "Clarification requested on your handout request",
@@ -104,29 +108,38 @@ const EVENT_COPY: Record<
 
 // Who gets notified, per event — strictly by stage: only whoever the ball
 // is actually with next (plus the requester, when there's something for
-// them to be told). Never both the approver and delivery person on the
-// same event.
-const resolveRecipients = (
+// them to be told that the generic engine doesn't already cover). Never
+// both the approver and delivery person on the same event.
+//
+// ✅ CHANGED — now async and takes handoutId, because RESUBMITTED/CANCELLED
+// resolve their recipient dynamically (whoever is a PENDING approver on
+// the active, IN_PROGRESS stage) instead of a fixed HANDOUT_APPROVER_USER_ID.
+const resolveRecipients = async (
+  handoutId: string,
   requestedById: string,
   event: HandoutNotifyEvent,
-): string[] => {
+): Promise<string[]> => {
   switch (event) {
-    case "SUBMITTED":
     case "RESUBMITTED":
-      // New/updated request — it's waiting in the approver's queue.
-      return [HANDOUT_APPROVER_USER_ID];
+    case "CANCELLED": {
+      // Resubmitted/cancelled requests go back to whoever is currently the
+      // pending approver on this handout's active stage — same resolution
+      // handoutsAccess.helper.ts's isApprover uses, so "who gets notified"
+      // and "who is allowed to act" never drift apart.
+      const { stage } = await getActiveHandoutStage(handoutId);
+      return (
+        stage?.approvals
+          .filter((approval) => approval.status === "PENDING")
+          .map((approval) => approval.approverId) ?? []
+      );
+    }
     case "APPROVED":
-      // Owner (order placed) + delivery person (it's now their queue).
-      // The approver's part is done — not notified again here.
-      return [requestedById, HANDOUT_DELIVERY_USER_ID];
-    case "REJECTED":
+      // Delivery person only — the requester's own "approved" notice now
+      // comes from the generic engine's approveStage, not from here.
+      return [HANDOUT_DELIVERY_USER_ID];
     case "CLARIFICATION_REQUESTED":
     case "CANNOT_FULFIL":
       return [requestedById];
-    case "CANCELLED":
-      // Requester cancelled it themselves — tell the approver so a
-      // pending item disappears from their queue with an explanation.
-      return [HANDOUT_APPROVER_USER_ID];
     case "DELIVERED":
       return [requestedById];
     case "TRACKING_UPDATED":
@@ -139,14 +152,14 @@ const resolveRecipients = (
 export const notifyHandoutEvent = async (params: {
   handoutId: string;
   event: HandoutNotifyEvent;
-  // Optional: every actor-driven decision (approve/reject/...) passes one,
+  // Optional: every actor-driven decision (clarify/cancel/...) passes one,
   // but it is never actually read in this function (recipients are
-  // resolved purely from the event + the request's own requestedById
-  // below) — it's only kept on the type for parity with the ActivityLog
-  // writes at each call site. TRACKING_UPDATED is system-triggered (the
-  // Shopify webhook, no MAP user behind it — same posture as
-  // crfOrder.services.ts's recordShopifyTracking), so it's the one caller
-  // with no actor to pass.
+  // resolved purely from the event + the request's own requestedById/
+  // active stage below) — it's only kept on the type for parity with the
+  // ActivityLog writes at each call site. TRACKING_UPDATED is
+  // system-triggered (the Shopify webhook, no MAP user behind it — same
+  // posture as crfOrder.services.ts's recordShopifyTracking), so it's the
+  // one caller with no actor to pass.
   actor?: Actor;
   comment?: string;
   // TRACKING_UPDATED-only — threaded straight into the email template's
@@ -170,7 +183,13 @@ export const notifyHandoutEvent = async (params: {
 
   const recipientIds = [
     ...new Set(
-      resolveRecipients(handout.requestedById, params.event).filter(Boolean),
+      (
+        await resolveRecipients(
+          params.handoutId,
+          handout.requestedById,
+          params.event,
+        )
+      ).filter(Boolean),
     ),
   ];
   if (recipientIds.length === 0) return;
