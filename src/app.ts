@@ -1,3 +1,4 @@
+// Target: app.ts
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -32,6 +33,10 @@ import bpRoutes from "@business-partner/businessPartner.routes";
 import healthRouter from "@kernel/health/health.routes";
 import machineStudyRoutes from "@map/reports/machineStudy.routes";
 import crfShopRoutes from "@modules/map/crf/crf-shop.routes";
+// Was never mounted — handouts.routes.ts existed but nothing in app.ts
+// registered it, so every /api/v1/handouts call 404'd at the catch-all
+// below regardless of auth or RBAC.
+import handoutsRoutes from "@modules/handouts/handouts.routes";
 import errorHandler from "@shared/middleware/error.middleware";
 import ApiError from "@shared/utils/apiError";
 import { startJobs } from "@shared/jobs/scheduler";
@@ -99,6 +104,7 @@ app.use("/api/v1/business-partner", bpRoutes);
 app.use("/api/v1/apps", appRoutes);
 app.use("/api/v1/machine-studies", machineStudyRoutes);
 app.use("/api/v1/crf-shop", crfShopRoutes);
+app.use("/api/v1/handouts", handoutsRoutes);
 
 // Scheduler
 startJobs();

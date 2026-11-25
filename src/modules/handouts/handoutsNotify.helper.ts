@@ -53,8 +53,10 @@ export const getOwnerWorkspaceId = async (
 };
 
 export type HandoutNotifyEvent =
+  | "SUBMITTED"
   | "RESUBMITTED"
   | "APPROVED"
+  | "REJECTED"
   | "CLARIFICATION_REQUESTED"
   | "CANCELLED"
   | "CANNOT_FULFIL"
@@ -65,6 +67,17 @@ const EVENT_COPY: Record<
   HandoutNotifyEvent,
   { title: string; body: (comment?: string) => string }
 > = {
+  SUBMITTED: {
+    title: "New handout request submitted",
+    body: () => "A new handout request is waiting for your approval.",
+  },
+  REJECTED: {
+    title: "Handout request rejected",
+    body: (comment) =>
+      comment
+        ? `Your handout request was rejected: ${comment}`
+        : "Your handout request was rejected.",
+  },
   RESUBMITTED: {
     title: "Handout request resubmitted",
     body: () => "A handout request was updated and resubmitted for approval.",

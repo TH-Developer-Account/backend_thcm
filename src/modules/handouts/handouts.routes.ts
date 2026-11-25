@@ -20,6 +20,7 @@ import { requireAuth, authorize } from "@auth/auth.middleware";
 import {
   postHandout,
   getHandouts,
+  getHandoutApprovalWorkflowMeta,
   getHandoutById,
   postHandoutResubmit,
   postHandoutApprove,
@@ -47,6 +48,15 @@ router.get(
   authorize(HANDOUT_APP, HANDOUT_MODULE, "read"),
   asyncHandler(getHandouts),
 );
+
+// NOTE: must be registered before GET "/:id" below — Express would
+// otherwise match "/approval-workflow" as the :id param.
+router.get(
+  "/approval-workflow",
+  authorize(HANDOUT_APP, HANDOUT_MODULE, "read"),
+  asyncHandler(getHandoutApprovalWorkflowMeta),
+);
+
 router.get(
   "/:id",
   authorize(HANDOUT_APP, HANDOUT_MODULE, "read"),

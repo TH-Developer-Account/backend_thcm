@@ -23,7 +23,7 @@ import { recordShopifyTracking } from "@map/crf/services/crfOrder.services";
 // is relative (./handoutStatus.constants etc.), so there's no existing
 // cross-module import of it to copy the alias from. Adjust this to whatever
 // your tsconfig actually maps the Handouts module to.
-import { recordHandoutShopifyTracking } from "@modules/map/handouts/handoutsTracking.services";
+import { recordHandoutShopifyTracking } from "@modules/handouts/handoutsTracking.services";
 
 export type ShopifyTrackingChannel = "MAP" | "HANDOUT";
 

@@ -27,7 +27,7 @@ import { runEventProposalFinalApprovalHooks } from "@map/crf/services/crfOrder.s
 // handoutsDecision.services.ts's own imports are all relative (there is no
 // existing cross-module import of this file to copy an alias from). Adjust
 // to whatever your tsconfig actually maps the Handouts module to.
-import { runHandoutFinalApprovalHook } from "@modules/map/handouts/handoutsDecision.services";
+import { runHandoutFinalApprovalHook } from "@modules/handouts/handoutsDecision.services";
 
 import {
   Prisma,
