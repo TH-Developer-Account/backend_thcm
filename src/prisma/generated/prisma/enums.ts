@@ -144,7 +144,8 @@ export type ImportExportStatus = (typeof ImportExportStatus)[keyof typeof Import
 export const WorkflowSubjectType = {
   EVENT_PROPOSAL: 'EVENT_PROPOSAL',
   VENDOR_ONBOARDING: 'VENDOR_ONBOARDING',
-  MEDICAL_CLAIM: 'MEDICAL_CLAIM'
+  MEDICAL_CLAIM: 'MEDICAL_CLAIM',
+  HANDOUT_REQUEST: 'HANDOUT_REQUEST'
 } as const
 
 export type WorkflowSubjectType = (typeof WorkflowSubjectType)[keyof typeof WorkflowSubjectType]

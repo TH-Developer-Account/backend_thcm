@@ -68,6 +68,14 @@ const ownerIdResolvers: Record<
     });
     return claim?.initiatedById ?? null;
   },
+
+  HANDOUT_REQUEST: async (subjectId) => {
+    const handout = await prisma.handoutRequest.findUnique({
+      where: { id: subjectId },
+      select: { requestedById: true },
+    });
+    return handout?.requestedById ?? null;
+  },
 };
 
 export async function getSubjectOwnerId(
@@ -112,6 +120,9 @@ const subjectResolvers: Record<
 
   MEDICAL_CLAIM: (subjectId) =>
     prisma.medicalClaim.findUnique({ where: { id: subjectId } }),
+
+  HANDOUT_REQUEST: (subjectId) =>
+    prisma.handoutRequest.findUnique({ where: { id: subjectId } }),
 };
 
 export async function findSubjectById(
@@ -165,6 +176,9 @@ const statusUpdaters: Record<
 
   MEDICAL_CLAIM: (tx, subjectId, status) =>
     tx.medicalClaim.update({ where: { id: subjectId }, data: { status } }),
+
+  HANDOUT_REQUEST: (tx, subjectId, status) =>
+    tx.handoutRequest.update({ where: { id: subjectId }, data: { status } }),
 };
 
 export async function updateSubjectStatus(
@@ -191,6 +205,7 @@ const clarifyResetStatus: Record<WorkflowSubjectType, string> = {
   EVENT_PROPOSAL: "PENDING",
   VENDOR_ONBOARDING: "IN_REVIEW",
   MEDICAL_CLAIM: "CLARIFICATION_REQUESTED",
+  HANDOUT_REQUEST: "CLARIFICATION_REQUESTED",
 };
 
 export function getClarifyResetStatus(
@@ -276,12 +291,14 @@ const resubmitActionBySubjectType: Record<WorkflowSubjectType, string> = {
   EVENT_PROPOSAL: "EPC_RESUBMITTED",
   VENDOR_ONBOARDING: "VENDOR_FORM_SUBMITTED",
   MEDICAL_CLAIM: "MEDICAL_CLAIM_RESUBMITTED",
+  HANDOUT_REQUEST: "HANDOUT_RESUBMITTED",
 };
 
 const resubmitStatusBySubjectType: Record<WorkflowSubjectType, string> = {
   EVENT_PROPOSAL: "Resubmitted",
   VENDOR_ONBOARDING: "IN_PROGRESS",
   MEDICAL_CLAIM: "IN_PROGRESS",
+  HANDOUT_REQUEST: "PENDING_APPROVAL",
 };
 
 export function getResubmitAction(subjectType: WorkflowSubjectType): string {

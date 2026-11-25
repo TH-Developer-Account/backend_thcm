@@ -132,6 +132,8 @@ export const templateMatchResolvers: Record<
       (t) => t.isActive === true && t.ownerType === "ADMIN",
     );
   },
+
+  HANDOUT_REQUEST: () => undefined,
 };
 
 export const forkTemplateForClarify = async (

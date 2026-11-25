@@ -420,6 +420,9 @@ export const ModelName = {
   CRF: 'CRF',
   CrfItem: 'CrfItem',
   CrfOrder: 'CrfOrder',
+  HandoutRequest: 'HandoutRequest',
+  HandoutItem: 'HandoutItem',
+  HandoutOrder: 'HandoutOrder',
   LineItem: 'LineItem',
   Comment: 'Comment',
   Operator: 'Operator',
@@ -459,7 +462,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "zone" | "branch" | "budgetMaster" | "eventName" | "division" | "designation" | "costCenter" | "productMaster" | "ePF" | "cRF" | "crfItem" | "crfOrder" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "gradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact" | "machineStudy" | "machineStudyCycle" | "machine" | "machineTelemetry"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "zone" | "branch" | "budgetMaster" | "eventName" | "division" | "designation" | "costCenter" | "productMaster" | "ePF" | "cRF" | "crfItem" | "crfOrder" | "handoutRequest" | "handoutItem" | "handoutOrder" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "gradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact" | "machineStudy" | "machineStudyCycle" | "machine" | "machineTelemetry"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3127,6 +3130,228 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    HandoutRequest: {
+      payload: Prisma.$HandoutRequestPayload<ExtArgs>
+      fields: Prisma.HandoutRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HandoutRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HandoutRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.HandoutRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HandoutRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutRequestPayload>
+        }
+        findMany: {
+          args: Prisma.HandoutRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutRequestPayload>[]
+        }
+        create: {
+          args: Prisma.HandoutRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutRequestPayload>
+        }
+        createMany: {
+          args: Prisma.HandoutRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HandoutRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.HandoutRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutRequestPayload>
+        }
+        update: {
+          args: Prisma.HandoutRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.HandoutRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HandoutRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HandoutRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.HandoutRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.HandoutRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHandoutRequest>
+        }
+        groupBy: {
+          args: Prisma.HandoutRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HandoutRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HandoutRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HandoutRequestCountAggregateOutputType> | number
+        }
+      }
+    }
+    HandoutItem: {
+      payload: Prisma.$HandoutItemPayload<ExtArgs>
+      fields: Prisma.HandoutItemFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HandoutItemFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutItemPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HandoutItemFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutItemPayload>
+        }
+        findFirst: {
+          args: Prisma.HandoutItemFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutItemPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HandoutItemFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutItemPayload>
+        }
+        findMany: {
+          args: Prisma.HandoutItemFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutItemPayload>[]
+        }
+        create: {
+          args: Prisma.HandoutItemCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutItemPayload>
+        }
+        createMany: {
+          args: Prisma.HandoutItemCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HandoutItemCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutItemPayload>[]
+        }
+        delete: {
+          args: Prisma.HandoutItemDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutItemPayload>
+        }
+        update: {
+          args: Prisma.HandoutItemUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutItemPayload>
+        }
+        deleteMany: {
+          args: Prisma.HandoutItemDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HandoutItemUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HandoutItemUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutItemPayload>[]
+        }
+        upsert: {
+          args: Prisma.HandoutItemUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutItemPayload>
+        }
+        aggregate: {
+          args: Prisma.HandoutItemAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHandoutItem>
+        }
+        groupBy: {
+          args: Prisma.HandoutItemGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HandoutItemGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HandoutItemCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HandoutItemCountAggregateOutputType> | number
+        }
+      }
+    }
+    HandoutOrder: {
+      payload: Prisma.$HandoutOrderPayload<ExtArgs>
+      fields: Prisma.HandoutOrderFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.HandoutOrderFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutOrderPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.HandoutOrderFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutOrderPayload>
+        }
+        findFirst: {
+          args: Prisma.HandoutOrderFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutOrderPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.HandoutOrderFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutOrderPayload>
+        }
+        findMany: {
+          args: Prisma.HandoutOrderFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutOrderPayload>[]
+        }
+        create: {
+          args: Prisma.HandoutOrderCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutOrderPayload>
+        }
+        createMany: {
+          args: Prisma.HandoutOrderCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.HandoutOrderCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutOrderPayload>[]
+        }
+        delete: {
+          args: Prisma.HandoutOrderDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutOrderPayload>
+        }
+        update: {
+          args: Prisma.HandoutOrderUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutOrderPayload>
+        }
+        deleteMany: {
+          args: Prisma.HandoutOrderDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.HandoutOrderUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.HandoutOrderUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutOrderPayload>[]
+        }
+        upsert: {
+          args: Prisma.HandoutOrderUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$HandoutOrderPayload>
+        }
+        aggregate: {
+          args: Prisma.HandoutOrderAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateHandoutOrder>
+        }
+        groupBy: {
+          args: Prisma.HandoutOrderGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HandoutOrderGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.HandoutOrderCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.HandoutOrderCountAggregateOutputType> | number
+        }
+      }
+    }
     LineItem: {
       payload: Prisma.$LineItemPayload<ExtArgs>
       fields: Prisma.LineItemFieldRefs
@@ -5501,6 +5726,73 @@ export const CrfOrderScalarFieldEnum = {
 export type CrfOrderScalarFieldEnum = (typeof CrfOrderScalarFieldEnum)[keyof typeof CrfOrderScalarFieldEnum]
 
 
+export const HandoutRequestScalarFieldEnum = {
+  id: 'id',
+  requestNumber: 'requestNumber',
+  status: 'status',
+  fulfillmentType: 'fulfillmentType',
+  purpose: 'purpose',
+  requiredBy: 'requiredBy',
+  deliverTo: 'deliverTo',
+  contactPhone: 'contactPhone',
+  remarks: 'remarks',
+  addressLine1: 'addressLine1',
+  addressLine2: 'addressLine2',
+  addressLandmark: 'addressLandmark',
+  addressCity: 'addressCity',
+  addressDistrict: 'addressDistrict',
+  addressState: 'addressState',
+  addressPincode: 'addressPincode',
+  addressCountry: 'addressCountry',
+  addressGstin: 'addressGstin',
+  requestedById: 'requestedById',
+  rejectionReason: 'rejectionReason',
+  clarificationReason: 'clarificationReason',
+  cannotFulfilReason: 'cannotFulfilReason',
+  cancellationReason: 'cancellationReason',
+  handedToName: 'handedToName',
+  deliveredOn: 'deliveredOn',
+  deliveryNote: 'deliveryNote',
+  deliveredById: 'deliveredById',
+  approvedAt: 'approvedAt',
+  closedAt: 'closedAt',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type HandoutRequestScalarFieldEnum = (typeof HandoutRequestScalarFieldEnum)[keyof typeof HandoutRequestScalarFieldEnum]
+
+
+export const HandoutItemScalarFieldEnum = {
+  id: 'id',
+  handoutId: 'handoutId',
+  sku: 'sku',
+  quantity: 'quantity',
+  title: 'title',
+  variantTitle: 'variantTitle',
+  imageUrl: 'imageUrl',
+  rate: 'rate',
+  created_at: 'created_at'
+} as const
+
+export type HandoutItemScalarFieldEnum = (typeof HandoutItemScalarFieldEnum)[keyof typeof HandoutItemScalarFieldEnum]
+
+
+export const HandoutOrderScalarFieldEnum = {
+  id: 'id',
+  handoutId: 'handoutId',
+  shopifyOrderId: 'shopifyOrderId',
+  totalPrice: 'totalPrice',
+  lines: 'lines',
+  trackingNumber: 'trackingNumber',
+  trackingUrl: 'trackingUrl',
+  trackingUpdatedAt: 'trackingUpdatedAt',
+  created_at: 'created_at'
+} as const
+
+export type HandoutOrderScalarFieldEnum = (typeof HandoutOrderScalarFieldEnum)[keyof typeof HandoutOrderScalarFieldEnum]
+
+
 export const LineItemScalarFieldEnum = {
   id: 'id',
   epfId: 'epfId',
@@ -6643,6 +6935,9 @@ export type GlobalOmitConfig = {
   cRF?: Prisma.CRFOmit
   crfItem?: Prisma.CrfItemOmit
   crfOrder?: Prisma.CrfOrderOmit
+  handoutRequest?: Prisma.HandoutRequestOmit
+  handoutItem?: Prisma.HandoutItemOmit
+  handoutOrder?: Prisma.HandoutOrderOmit
   lineItem?: Prisma.LineItemOmit
   comment?: Prisma.CommentOmit
   operator?: Prisma.OperatorOmit

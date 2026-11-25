@@ -36,7 +36,9 @@ import errorHandler from "@shared/middleware/error.middleware";
 import ApiError from "@shared/utils/apiError";
 import { startJobs } from "@shared/jobs/scheduler";
 import { shopifyAuth } from "@kernel/auth/internalAuth.middleware";
-import { postShopifyOrderTracking } from "@modules/map/crf/crf-order.controller";
+// Moved out of crf-order.controller.ts — this callback now serves both CRF
+// and Handouts, dispatched by `channel` (see shopifyTracking.controller.ts).
+import { postShopifyOrderTracking } from "@modules/map/shopifyTracking.controller";
 
 const corsOptions = {
   origin: process.env.FRONTEND_URL, // frontend URL
@@ -57,6 +59,9 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 
+// Same path as before — kept as-is for now (no THCM-side URL change);
+// the handler behind it now serves both CRF and Handouts tracking
+// callbacks, picked by the `channel` field in the body.
 app.use(
   "/api/v1/crf/order/tracking",
   publicApiCors,

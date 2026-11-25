@@ -107,6 +107,7 @@ enum WorkflowSubjectType {
   EVENT_PROPOSAL
   VENDOR_ONBOARDING
   MEDICAL_CLAIM
+  HANDOUT_REQUEST
 }
 
 enum NotificationType {
@@ -297,6 +298,8 @@ model User {
   // ── CRF × Shopify (souvenirs) ────────────────────────────────────────
   createdCrfs     CRF[] @relation("CrfCreatedBy")
   crfsAsRecipient CRF[] @relation("CrfRecipientUser")
+  handoutRequests   HandoutRequest[] @relation("HandoutRequestedBy")
+  handoutsDelivered HandoutRequest[] @relation("HandoutDeliveredBy")
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -1094,6 +1097,90 @@ model CrfOrder {
   placedAt   DateTime @default(now())
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+}
+
+model HandoutRequest {
+  id        String    @id @default(uuid())
+  requestNumber   String   @unique
+
+  // Plain strings, not Prisma enums — values maintained in a shared TS
+  // constants file (mirrors handouts.constants.ts's HANDOUT_STATUS_LABEL),
+  // validated at the service layer. Adding a new status/fulfillment type
+  // later is a code change, not a migration.
+  status          String   @default("PENDING_APPROVAL")
+  fulfillmentType String   @default("HAND_DELIVERY")
+
+  purpose         String
+  requiredBy      DateTime
+  deliverTo       String
+  contactPhone    String
+  remarks         String?
+
+  // Required only when fulfillmentType = "SHIPPED" (service-layer check).
+  addressLine1    String?
+  addressLine2    String?
+  addressLandmark String?
+  addressCity     String?
+  addressDistrict String?
+  addressState    String?
+  addressPincode  String?
+  addressCountry  String?
+  addressGstin    String?
+
+  requestedById   String
+  requestedBy     User     @relation("HandoutRequestedBy", fields: [requestedById], references: [id])
+
+  rejectionReason     String?
+  clarificationReason String?
+  cannotFulfilReason  String?
+  cancellationReason  String?
+
+  handedToName    String?
+  deliveredOn     DateTime?
+  deliveryNote    String?
+  deliveredById   String?
+  deliveredBy     User?    @relation("HandoutDeliveredBy", fields: [deliveredById], references: [id])
+
+  approvedAt      DateTime?
+  closedAt        DateTime?
+
+  items           HandoutItem[]
+  order           HandoutOrder?
+
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+}
+
+model HandoutItem {
+  id        String    @id @default(uuid())
+  handoutId    String
+  handout      HandoutRequest @relation(fields: [handoutId], references: [id], onDelete: Cascade)
+
+  sku          String
+  quantity     Int
+
+  title        String?
+  variantTitle String?
+  imageUrl     String?
+  rate         Decimal?       @db.Decimal(10, 2)
+
+  created_at   DateTime       @default(now())
+}
+
+model HandoutOrder {
+  id        String    @id @default(uuid())
+  handoutId      String         @unique
+  handout        HandoutRequest @relation(fields: [handoutId], references: [id])
+
+  shopifyOrderId String         @unique
+  totalPrice     Decimal        @db.Decimal(10, 2)
+  lines          Json
+
+  trackingNumber    String?
+  trackingUrl       String?
+  trackingUpdatedAt DateTime?
+
+  created_at     DateTime       @default(now())
 }
 
 model LineItem {
