@@ -1,7 +1,7 @@
 // src/helpers/workflowSubject.helper.ts
 //
 // WorkflowInstance and ActivityLog are generic — they route/log against a
-// `subjectType`   `subjectId` pair rather than an app-specific foreign key
+// `subjectType` + `subjectId` pair rather than an app-specific foreign key
 // (e.g. eventProposalId). This file is the single place that knows how to
 // turn that pair back into a real row.
 //
@@ -23,6 +23,11 @@ import ApiError from "@shared/utils/apiError";
 import { activeWorkflowInclude } from "@shared/utils/contants";
 import { notifyGuestOfClarification } from "@medi-claim/mediclaim.helper";
 import { runEventProposalFinalApprovalHooks } from "@map/crf/services/crfOrder.services";
+// NOTE: path alias guessed by analogy with the CRF import directly above —
+// handoutsDecision.services.ts's own imports are all relative (there is no
+// existing cross-module import of this file to copy an alias from). Adjust
+// to whatever your tsconfig actually maps the Handouts module to.
+import { runHandoutFinalApprovalHook } from "@modules/handouts/handoutsDecision.services";
 
 import {
   Prisma,
@@ -68,6 +73,14 @@ const ownerIdResolvers: Record<
     });
     return claim?.initiatedById ?? null;
   },
+
+  HANDOUT_REQUEST: async (subjectId) => {
+    const handout = await prisma.handoutRequest.findUnique({
+      where: { id: subjectId },
+      select: { requestedById: true },
+    });
+    return handout?.requestedById ?? null;
+  },
 };
 
 export async function getSubjectOwnerId(
@@ -91,7 +104,7 @@ export async function getSubjectOwnerId(
 // findSubjectById
 //
 // Returns the full subject record, loosely typed. Used by read endpoints
-// that flatten the subject   its active workflow into one response, the
+// that flatten the subject + its active workflow into one response, the
 // way getEventProposalById does today.
 //
 // Loosely typed by design (Promise<Record<string, unknown> | null>) per
@@ -112,6 +125,9 @@ const subjectResolvers: Record<
 
   MEDICAL_CLAIM: (subjectId) =>
     prisma.medicalClaim.findUnique({ where: { id: subjectId } }),
+
+  HANDOUT_REQUEST: (subjectId) =>
+    prisma.handoutRequest.findUnique({ where: { id: subjectId } }),
 };
 
 export async function findSubjectById(
@@ -165,6 +181,9 @@ const statusUpdaters: Record<
 
   MEDICAL_CLAIM: (tx, subjectId, status) =>
     tx.medicalClaim.update({ where: { id: subjectId }, data: { status } }),
+
+  HANDOUT_REQUEST: (tx, subjectId, status) =>
+    tx.handoutRequest.update({ where: { id: subjectId }, data: { status } }),
 };
 
 export async function updateSubjectStatus(
@@ -185,12 +204,19 @@ export async function updateSubjectStatus(
 // subject resets to a different "who does this go back to" status.
 // EVENT_PROPOSAL → PENDING (back to proposer)
 // VENDOR_ONBOARDING → IN_REVIEW (back to initiating employee, not the vendor)
+//
+// HANDOUT_REQUEST is listed here for completeness with the rest of this
+// file's registries, but clarify/resubmit for Handouts does not actually
+// run through clarifyStageController/activateFirstStageController — see
+// handoutsDecision.services.ts's header comment for why that stays a
+// Handout-specific side channel that never touches the WorkflowInstance.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const clarifyResetStatus: Record<WorkflowSubjectType, string> = {
   EVENT_PROPOSAL: "PENDING",
   VENDOR_ONBOARDING: "IN_REVIEW",
   MEDICAL_CLAIM: "CLARIFICATION_REQUESTED",
+  HANDOUT_REQUEST: "CLARIFICATION_REQUESTED",
 };
 
 export function getClarifyResetStatus(
@@ -238,6 +264,14 @@ export async function runPostClarifyHook(
 // as one entry here rather than this registry growing a second slot per
 // subject type.
 //
+// HANDOUT_REQUEST → runHandoutFinalApprovalHook (handoutsDecision.
+// services.ts): places the Shopify order for the now-approved handout and
+// stamps approvedAt. Handout's own approveHandout() already ran its stock
+// check and rejected the request down a CANNOT_FULFIL path BEFORE ever
+// calling the generic approveStage — so by the time this hook runs, stock
+// is known good and this is purely "place the order," not a second
+// shortfall check.
+//
 // Return type is Promise<Record<string, unknown>> rather than Promise<void>
 // — not every hook has something worth surfacing back to the approve
 // response (most subject types have no hook at all), but EVENT_PROPOSAL's
@@ -256,6 +290,7 @@ const postFinalApprovalHooks: Partial<
   >
 > = {
   EVENT_PROPOSAL: (subjectId) => runEventProposalFinalApprovalHooks(subjectId),
+  HANDOUT_REQUEST: (subjectId) => runHandoutFinalApprovalHook(subjectId),
 };
 
 export async function runPostFinalApprovalHook(
@@ -272,16 +307,25 @@ export async function runPostFinalApprovalHook(
 // resubmitting through activateFirstStageController would get EPC's
 // action name/status literal, which is wrong the moment a second subject
 // type uses the endpoint (as MEDICAL_CLAIM now does).
+//
+// HANDOUT_REQUEST's entries below are unused by activateFirstStageController
+// today (see the clarifyResetStatus note above) — kept for registry
+// completeness and because handoutsDecision.services.ts's own resubmit
+// already writes this same action/status pair by hand; if Handout's
+// clarify/resubmit is ever moved onto the generic controller, these are
+// already correct.
 const resubmitActionBySubjectType: Record<WorkflowSubjectType, string> = {
   EVENT_PROPOSAL: "EPC_RESUBMITTED",
   VENDOR_ONBOARDING: "VENDOR_FORM_SUBMITTED",
   MEDICAL_CLAIM: "MEDICAL_CLAIM_RESUBMITTED",
+  HANDOUT_REQUEST: "HANDOUT_RESUBMITTED",
 };
 
 const resubmitStatusBySubjectType: Record<WorkflowSubjectType, string> = {
   EVENT_PROPOSAL: "Resubmitted",
   VENDOR_ONBOARDING: "IN_PROGRESS",
   MEDICAL_CLAIM: "IN_PROGRESS",
+  HANDOUT_REQUEST: "PENDING_APPROVAL",
 };
 
 export function getResubmitAction(subjectType: WorkflowSubjectType): string {

@@ -73,7 +73,6 @@ export const ModelName = {
   Approval: 'Approval',
   WorkFlowTemplateUser: 'WorkFlowTemplateUser',
   ActivityLog: 'ActivityLog',
-  Department: 'Department',
   Vertical: 'Vertical',
   Zone: 'Zone',
   Branch: 'Branch',
@@ -87,6 +86,9 @@ export const ModelName = {
   CRF: 'CRF',
   CrfItem: 'CrfItem',
   CrfOrder: 'CrfOrder',
+  HandoutRequest: 'HandoutRequest',
+  HandoutItem: 'HandoutItem',
+  HandoutOrder: 'HandoutOrder',
   LineItem: 'LineItem',
   Comment: 'Comment',
   Operator: 'Operator',
@@ -453,23 +455,11 @@ export const ActivityLogScalarFieldEnum = {
 export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
 
 
-export const DepartmentScalarFieldEnum = {
-  id: 'id',
-  department_code: 'department_code',
-  department_name: 'department_name',
-  isActive: 'isActive',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type DepartmentScalarFieldEnum = (typeof DepartmentScalarFieldEnum)[keyof typeof DepartmentScalarFieldEnum]
-
-
 export const VerticalScalarFieldEnum = {
   id: 'id',
   name: 'name',
   code: 'code',
-  departmentId: 'departmentId',
+  divisionId: 'divisionId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -686,6 +676,73 @@ export const CrfOrderScalarFieldEnum = {
 } as const
 
 export type CrfOrderScalarFieldEnum = (typeof CrfOrderScalarFieldEnum)[keyof typeof CrfOrderScalarFieldEnum]
+
+
+export const HandoutRequestScalarFieldEnum = {
+  id: 'id',
+  requestNumber: 'requestNumber',
+  status: 'status',
+  fulfillmentType: 'fulfillmentType',
+  purpose: 'purpose',
+  requiredBy: 'requiredBy',
+  deliverTo: 'deliverTo',
+  contactPhone: 'contactPhone',
+  remarks: 'remarks',
+  addressLine1: 'addressLine1',
+  addressLine2: 'addressLine2',
+  addressLandmark: 'addressLandmark',
+  addressCity: 'addressCity',
+  addressDistrict: 'addressDistrict',
+  addressState: 'addressState',
+  addressPincode: 'addressPincode',
+  addressCountry: 'addressCountry',
+  addressGstin: 'addressGstin',
+  requestedById: 'requestedById',
+  rejectionReason: 'rejectionReason',
+  clarificationReason: 'clarificationReason',
+  cannotFulfilReason: 'cannotFulfilReason',
+  cancellationReason: 'cancellationReason',
+  handedToName: 'handedToName',
+  deliveredOn: 'deliveredOn',
+  deliveryNote: 'deliveryNote',
+  deliveredById: 'deliveredById',
+  approvedAt: 'approvedAt',
+  closedAt: 'closedAt',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type HandoutRequestScalarFieldEnum = (typeof HandoutRequestScalarFieldEnum)[keyof typeof HandoutRequestScalarFieldEnum]
+
+
+export const HandoutItemScalarFieldEnum = {
+  id: 'id',
+  handoutId: 'handoutId',
+  sku: 'sku',
+  quantity: 'quantity',
+  title: 'title',
+  variantTitle: 'variantTitle',
+  imageUrl: 'imageUrl',
+  rate: 'rate',
+  created_at: 'created_at'
+} as const
+
+export type HandoutItemScalarFieldEnum = (typeof HandoutItemScalarFieldEnum)[keyof typeof HandoutItemScalarFieldEnum]
+
+
+export const HandoutOrderScalarFieldEnum = {
+  id: 'id',
+  handoutId: 'handoutId',
+  shopifyOrderId: 'shopifyOrderId',
+  totalPrice: 'totalPrice',
+  lines: 'lines',
+  trackingNumber: 'trackingNumber',
+  trackingUrl: 'trackingUrl',
+  trackingUpdatedAt: 'trackingUpdatedAt',
+  created_at: 'created_at'
+} as const
+
+export type HandoutOrderScalarFieldEnum = (typeof HandoutOrderScalarFieldEnum)[keyof typeof HandoutOrderScalarFieldEnum]
 
 
 export const LineItemScalarFieldEnum = {

@@ -924,6 +924,10 @@ async function executeOrderPlacement(
     phone: crf.recipientPhone,
     mapNo: crf.epcId ?? undefined,
     channel: "MAP",
+    // CRF orders are always a real shipment — THCM's tracking webhook will
+    // always carry trackingId/trackingUrl for these (see handleCrfTracking
+    // in modules/map/shopifyTracking.controller.ts).
+    isShipping: true,
     shippingAddress: {
       country: crf.addressCountry ?? "India",
       province: crf.addressState,

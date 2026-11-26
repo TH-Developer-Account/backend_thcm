@@ -83,7 +83,10 @@ export interface EpcPdfData {
     stageName: string | null;
   }>;
   activityLog: Array<{
-    action: string;
+    // ActivityLog.action is nullable in schema.prisma (pre-existing — every
+    // log row this app creates sets it, but the column itself allows null,
+    // and Prisma's generated type follows the column, not app convention).
+    action: string | null;
     actorName: string;
     createdAt: Date;
     stageName: string | null;
@@ -118,7 +121,11 @@ export async function assembleEpcPdfData(epcId: string): Promise<EpcPdfData> {
   const epc = await prisma.eventProposal.findUnique({
     where: { id: epcId },
     include: {
-      department: { select: { department_name: true } },
+      // `department` relation now resolves to a Division row (Division took
+      // over Department's org-unit-master role everywhere; the EventProposal
+      // field/FK name itself was kept as-is — repoint, not rename). Division
+      // has no `department_name` column, only `name` — see schema.prisma.
+      department: { select: { name: true } },
       vertical: { select: { name: true } },
       region: { select: { region_name: true } },
       branch: { select: { branch_name: true } },
@@ -230,7 +237,7 @@ export async function assembleEpcPdfData(epcId: string): Promise<EpcPdfData> {
       location: epc.location,
       eventObjective: epc.event_objective,
       status: epc.status,
-      department: epc.department?.department_name ?? null,
+      department: epc.department?.name ?? null,
       vertical: epc.vertical?.name ?? null,
       region: epc.region?.region_name ?? null,
       branch: epc.branch?.branch_name ?? null,

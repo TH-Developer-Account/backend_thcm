@@ -312,6 +312,13 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
    *   Lets us derive sourceType/dualVariant per row after the query
    *   (see attachSourceType below) without a second round-trip per EPC.
    *   `en` is already joined for event_name, so this is free.
+   *
+   * ✅ Department JOIN removed — the Department table has been dropped
+   *   (Division took over as the org-unit master; ep.department_id is now
+   *   a repointed FK to Division, not renamed). The join was never actually
+   *   used: no `d.*` column appears in SELECT/WHERE/ORDER BY above, so it
+   *   was dead weight even before the table went away — removing it rather
+   *   than repointing it to "Division" avoids adding an unused join back.
    * ───────────────────────────────────────────────────────────── */
   const dataPromise = prisma.$queryRaw<RawEventProposalRow[]>(Prisma.sql`
     SELECT
@@ -343,8 +350,6 @@ export async function searchEventProposals(filters: SearchEventProposalInput) {
     FROM "EventProposal" ep
     LEFT JOIN "EventName" en
       ON ep.event_name_id = en.id
-    LEFT JOIN "Department" d
-      ON ep.department_id = d.id
     LEFT JOIN "User" us
       ON ep.created_by_id = us.id
     LEFT JOIN "EPF" epf

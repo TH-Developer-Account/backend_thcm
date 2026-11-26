@@ -60,7 +60,10 @@ function extractEpcRow(epc: EpcWithRelations): XlsxRow {
     Location: epc.location,
     "From Date": epc.event_from_date.toISOString().slice(0, 10),
     "To Date": epc.event_to_date.toISOString().slice(0, 10),
-    Department: epc.department.department_name,
+    // `department` relation now resolves to a Division row (field/FK name
+    // kept as-is — repoint, not rename); Division's name-like column is
+    // `name`, not `department_name`. See epcAssembler.ts for the same note.
+    Department: epc.department.name,
     Region: epc.region.region_name,
     Branch: epc.branch.branch_name,
     Vertical: epc.vertical.name,
@@ -121,7 +124,7 @@ function extractWorkflowRows(
           "Stage Name": stage.stageName ?? "",
           Strategy: stage.strategy,
           "Approver Name": `${approval.approver.first_name} ${approval.approver.last_name}`,
-          "Approver Email": approval.approver.email,
+          "Approver Email": approval.approver.email ?? "",
           "Approval Status": approval.status,
           "Acted At": approval.actedAt?.toISOString() ?? "",
           Reason: approval.reason ?? "",
@@ -162,7 +165,9 @@ async function fetchEpcBatch(filters: EpcExportFilters, cursor?: string) {
       event_to_date: true,
       created_at: true,
       event_name: { select: { title: true } },
-      department: { select: { department_name: true } },
+      // See the comment on `Department:` in extractEpcRow above — Division,
+      // not Department, so `name` rather than `department_name`.
+      department: { select: { name: true } },
       region: { select: { region_name: true } },
       branch: { select: { branch_name: true } },
       vertical: { select: { name: true } },
@@ -215,7 +220,10 @@ type WorkflowForExport = {
       status: string;
       actedAt: Date | null;
       reason: string | null;
-      approver: { first_name: string; last_name: string; email: string };
+      // User.email is nullable in schema.prisma (pre-existing — see the
+      // model's own "was: String @unique" comment), so this follows the
+      // actual Prisma select type rather than assuming every approver has one.
+      approver: { first_name: string; last_name: string; email: string | null };
     }[];
   }[];
 };
