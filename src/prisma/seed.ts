@@ -104,7 +104,9 @@ async function main() {
   // region and User's zone are the same concept, unified into one master).
   await prisma.zone.deleteMany();
   await prisma.vertical.deleteMany();
-  await prisma.department.deleteMany();
+  // Department was removed — Division is the single org-unit master now
+  // (see schema.prisma's Division/Vertical model comments).
+  await prisma.division.deleteMany();
   await prisma.budgetMaster.deleteMany();
   await prisma.eventName.deleteMany();
   await prisma.user.deleteMany();
@@ -172,7 +174,10 @@ async function main() {
   await createSampleProfiles(workspace.id);
   console.log("✅ Sample Viewer / Editor profiles created for every app");
 
-  const departments = await Promise.all(
+  // Division is the single org-unit master (Department was removed — see
+  // schema.prisma). It only has a `name` column, no code, so there's no
+  // department_code equivalent to seed here anymore.
+  const divisions = await Promise.all(
     [
       "Marketing",
       "Service",
@@ -180,27 +185,18 @@ async function main() {
       "Parts",
       "Sales",
       "Manufacturing and Plant Administration",
-    ].map((name) =>
-      prisma.department.create({
-        data: {
-          department_code: name.slice(0, 3).toUpperCase(),
-          department_name: name,
-        },
-      }),
-    ),
+    ].map((name) => prisma.division.create({ data: { name } })),
   );
 
   for (const item of verticalsData) {
-    const dept = departments.find(
-      (d) => d.department_name === item.departmentName,
-    );
-    if (!dept) continue;
+    const division = divisions.find((d) => d.name === item.departmentName);
+    if (!division) continue;
 
     await prisma.vertical.createMany({
       data: item.verticals.map((v) => ({
         name: v,
         code: v.slice(0, 3).toUpperCase(),
-        departmentId: dept.id,
+        divisionId: division.id,
       })),
     });
   }
