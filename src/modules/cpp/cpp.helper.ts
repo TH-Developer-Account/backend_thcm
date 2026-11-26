@@ -239,9 +239,11 @@ const SPECS: Record<CppSectionKey, Spec> = {
 			partValue: { t: "decimal" },
 			variationPct: { t: "decimal" },
 			amount: { t: "decimal" },
-			// Summary-sheet part each value was picked from ("PLANT::PARTNO"), "" when typed.
 			partValuePart: text(80),
 			amountPart: text(80),
+			// Approval-matrix ranges picked in Purchasing details (band keys, e.g. "1000000_20000000").
+			partBand: text(40),
+			amountBand: text(40),
 		}),
 	}),
 	// "In case of Amortisation Only" — filled only for pricing condition PB50.
@@ -308,7 +310,9 @@ const SPECS: Record<CppSectionKey, Spec> = {
 		remarks: text(2000),
 		// Mandatory Check List: Yes / No / NA per row.
 		checklist: obj(
-			Object.fromEntries(MANDATORY_CHECKLIST.map((key) => [key, checklistAnswer])),
+			Object.fromEntries(
+				MANDATORY_CHECKLIST.map((key) => [key, checklistAnswer]),
+			),
 		),
 		// "Price in Other Plant Location (if any)".
 		plantPrices: tableRows(CPP_MAX_TABLE_ROWS, {
@@ -781,7 +785,11 @@ export const toCppAttachment = (a: CppAttachmentWithUrl) => ({
 	uploadedAt: a.uploadedAt,
 	url: a.url ?? undefined,
 	...(a.type === "partSummary"
-		? { partRowCount: parsedRowCount((a as { parsedData?: unknown }).parsedData) }
+		? {
+				partRowCount: parsedRowCount(
+					(a as { parsedData?: unknown }).parsedData,
+				),
+			}
 		: {}),
 });
 

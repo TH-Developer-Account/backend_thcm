@@ -475,7 +475,7 @@ export const getPartSummaryTemplate = async (
 			)
 			.setHeader(
 				"Content-Disposition",
-				'attachment; filename="CPP-summary-sheet-template.xlsx"',
+				'attachment; filename="CPP_price-changes_template.xlsx"',
 			)
 			.send(await buildPartSummaryTemplate());
 	} catch (error) {

@@ -3,6 +3,8 @@
 // Pure: no DB, no Express. The controller loads the rows and feeds them in.
 //
 //  - Band:   the request's values pick exactly one rule (e.g. FTR-M-02).
+//            New requests pick RANGES in the form (partBand / amountBand); requests
+//            saved before that still route on their typed numbers.
 //  - Chain:  that rule's steps name ROLES; the matrix says who sits in each role.
 //  - Result: every problem is collected, so the admin can fix them in one go.
 import { getRole, slotKey } from "./cpp.constants";
@@ -39,12 +41,19 @@ export type PlanInput = {
 	category: string;
 	plant: string;
 	condition: string;
-	/** Decimal strings from the request row (or null). */
+	/** Decimal strings from the request row (or null). Older requests only. */
 	maxPartValue: string | null;
 	maxVariationPct: string | null;
 	annualisedValue: string | null;
 	annualisedImpact: string | null;
 	actualImpact: string | null;
+	/**
+	 * Ranges picked in Purchasing details (frontend utils/cpp.bands.ts), as band
+	 * keys: "_10000", "10000_100000", "1000000_20000000", "20000000_".
+	 * When amountBand is set these decide the rule and the numbers are ignored.
+	 */
+	partBand?: string | null;
+	amountBand?: string | null;
 	slots: SlotMap;
 };
 
@@ -62,6 +71,14 @@ export type PlanResult =
 			warnings: string[];
 	  }
 	| { ok: false; problems: string[] };
+
+/**
+ * Range key shared with the frontend dropdowns (utils/cpp.bands.ts):
+ * `${gt}_${lte}`, an open side left empty. Both sides build it from the same
+ * grid numbers, so a picked option matches exactly one grid cell.
+ */
+export const bandKey = (band: Band): string =>
+	`${band.gt ?? ""}_${band.lte ?? ""}`;
 
 const inBand = (value: number, band: Band): boolean =>
 	(band.gt === undefined || value > band.gt) &&
@@ -83,12 +100,48 @@ const amountOf = (def: ConditionDef, input: PlanInput): number | null =>
 				: input.actualImpact,
 	);
 
-/** Picks the band (rule id) from the request's values. Upper bound belongs to the lower band (Q6). */
+/**
+ * Picks the band (rule id). Picked ranges win; otherwise the request's numbers
+ * are matched. Upper bound belongs to the lower band (Q6).
+ */
 export function pickRule(
 	input: PlanInput,
 	block: CppBlock,
 	def: ConditionDef,
 ): { ruleId: string; label: string; level: string } | { problem: string } {
+	const grid = block === "SPARES" && def.spareGrid ? def.spareGrid : def.grid;
+	const letter = block === "SPARES" ? "S" : "M";
+	const ruleOf = (index: number) => ({
+		ruleId: `${def.ruleIdPrefix}-${letter}-${String(index + 1).padStart(2, "0")}`,
+		label: grid[index].label,
+		level: grid[index].level,
+	});
+
+	/* ---- ranges picked in the form ---- */
+	const amountBand = input.amountBand?.trim() || "";
+	const partBand = input.partBand?.trim() || "";
+	if (amountBand) {
+		if (def.partBasis && !partBand)
+			return {
+				problem:
+					def.partBasis === "PART_VALUE"
+						? "The highest value per part range is missing."
+						: "The price variation % range is missing.",
+			};
+		const index = grid.findIndex(
+			(cell) =>
+				bandKey(cell.amount) === amountBand &&
+				(!cell.part || bandKey(cell.part) === partBand),
+		);
+		if (index < 0)
+			return {
+				problem:
+					"The selected ranges do not match an approval band for this condition. Pick them again on Purchasing details.",
+			};
+		return ruleOf(index);
+	}
+
+	/* ---- typed numbers (requests saved before the ranges) ---- */
 	const amount = amountOf(def, input);
 	if (amount === null || amount <= 0)
 		return {
@@ -110,8 +163,6 @@ export function pickRule(
 					: "The price variation % is missing.",
 		};
 
-	const grid = block === "SPARES" && def.spareGrid ? def.spareGrid : def.grid;
-	const letter = block === "SPARES" ? "S" : "M";
 	const index = grid.findIndex(
 		(cell) =>
 			inBand(amount, cell.amount) &&
@@ -123,11 +174,7 @@ export function pickRule(
 				"No approval band matches these values (check the amount and part value).",
 		};
 
-	return {
-		ruleId: `${def.ruleIdPrefix}-${letter}-${String(index + 1).padStart(2, "0")}`,
-		label: grid[index].label,
-		level: grid[index].level,
-	};
+	return ruleOf(index);
 }
 
 const usersFor = (

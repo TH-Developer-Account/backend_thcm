@@ -73,6 +73,21 @@ const AMOUNT_LABEL = {
 	ACTUAL_IMPACT: "actual impact",
 } as const;
 
+/** One saved section's data ({} when absent). */
+const sectionDataOf = (sections: unknown, key: string) => {
+	const list = Array.isArray(sections) ? sections : [];
+	return asObject(asObject(list.find((s) => asObject(s).key === key)).data);
+};
+
+/**
+ * Ranges picked in Purchasing details (approval-matrix dropdowns), as band keys.
+ * "" when not picked (requests saved before the dropdowns route on numbers).
+ */
+const approvalBandsOf = (sections: unknown) => {
+	const values = asObject(sectionDataOf(sections, "purchasing").approvalValues);
+	return { partBand: str(values.partBand), amountBand: str(values.amountBand) };
+};
+
 /** What must be filled before a request can enter approval. */
 const completenessProblems = (request: RequestRow): string[] => {
 	const problems: string[] = [];
@@ -80,11 +95,8 @@ const completenessProblems = (request: RequestRow): string[] => {
 	if (!request.plant) problems.push(`Plant is required. ${ROUTING}`);
 	if (!request.condition) problems.push(`Condition is required. ${ROUTING}`);
 
-	const sections = Array.isArray(request.sections) ? request.sections : [];
-	const data = (key: string) =>
-		asObject(asObject(sections.find((s) => asObject(s).key === key)).data);
-	const basic = data("basic");
-	const purchasing = data("purchasing");
+	const basic = sectionDataOf(request.sections, "basic");
+	const purchasing = sectionDataOf(request.sections, "purchasing");
 
 	if (!str(basic.reason)) problems.push("Reason is required.");
 	if (!str(basic.justification)) problems.push("Justification is required.");
@@ -95,25 +107,37 @@ const completenessProblems = (request: RequestRow): string[] => {
 	if (!str(recommended.code))
 		problems.push("The recommended supplier's vendor code is required.");
 
-	// Band values: only the ones the condition reads (derived columns on the row,
-	// filled by buildCppData from the Financial impact section on every save).
+	// Band values: the picked range, or (older requests) the derived number columns.
 	const def = request.condition
 		? getConditionDef(request.condition)
 		: undefined;
 	if (def) {
-		if (def.partBasis === "PART_VALUE" && !positive(request.maxPartValue))
-			problems.push(`The highest value per part is required. ${ROUTING}`);
-		if (def.partBasis === "VARIATION_PCT" && !positive(request.maxVariationPct))
-			problems.push(`The highest price variation % is required. ${ROUTING}`);
+		const bands = approvalBandsOf(request.sections);
+		if (
+			def.partBasis === "PART_VALUE" &&
+			!bands.partBand &&
+			!positive(request.maxPartValue)
+		)
+			problems.push(
+				`Select the highest value per part range on Purchasing details. ${ROUTING}`,
+			);
+		if (
+			def.partBasis === "VARIATION_PCT" &&
+			!bands.partBand &&
+			!positive(request.maxVariationPct)
+		)
+			problems.push(
+				`Select the highest price variation % range on Purchasing details. ${ROUTING}`,
+			);
 		const amount =
 			def.amountBasis === "ANNUALISED_VALUE"
 				? request.annualisedValue
 				: def.amountBasis === "ANNUALISED_IMPACT"
 					? request.annualisedImpact
 					: request.actualImpact;
-		if (!positive(amount))
+		if (!bands.amountBand && !positive(amount))
 			problems.push(
-				`The ${AMOUNT_LABEL[def.amountBasis]} total on the Financial impact step is required and cannot be 0. ${ROUTING}`,
+				`Select the ${AMOUNT_LABEL[def.amountBasis]} range on Purchasing details. ${ROUTING}`,
 			);
 	}
 	return problems;
@@ -125,10 +149,7 @@ const completenessProblems = (request: RequestRow): string[] => {
 const masterPlantsOf = (
 	sections: unknown,
 ): { code: string; purchasingGroup: string; taxCode: string }[] => {
-	const list = Array.isArray(sections) ? sections : [];
-	const master = asObject(
-		asObject(list.find((s) => asObject(s).key === "master")).data,
-	);
+	const master = sectionDataOf(sections, "master");
 	const plants = Array.isArray(master.plantDetails) ? master.plantDetails : [];
 	return plants.map((p) => {
 		const r = asObject(p);
@@ -223,6 +244,8 @@ const planFor = async (
 		annualisedValue: text(request.annualisedValue),
 		annualisedImpact: text(request.annualisedImpact),
 		actualImpact: text(request.actualImpact),
+		// Picked ranges win over the numbers (see pickRule).
+		...approvalBandsOf(request.sections),
 		slots: rowsToSlotMap(rows),
 	});
 };
@@ -514,7 +537,7 @@ export const submitCppRequest = async (
 // POST /cpp/:id/resubmit — after an approver asked for a clarification, the proposer
 // edits the request (every tab) and sends it again. The SAME workflow instance restarts
 // at stage 1 of the same iteration the clarification drafted. The stages are rebuilt from the
-// template of the CURRENT band, so a changed category / plant / condition / amount (or a
+// template of the CURRENT band, so a changed category / plant / condition / range (or a
 // changed approval matrix) lands on the right approvers. Nothing is approved twice.
 export const resubmitCppRequest = async (
 	req: Request,
