@@ -8,7 +8,12 @@
  * Columns (by fixed index, same "don't trust headers" convention as
  * importUserMaster.ts): Personnel Number, Name, Gender, Cost Center,
  * Cost Center Name, Grade, Designation, Division, Location, Manager ID,
- * Email ID.
+ * Email ID, Vertical.
+ *
+ * Vertical (index 11) is new as of the 2026-11 EOR export — older exports
+ * only had 11 columns and no Vertical at all. toNullableString(cols[11])
+ * degrades to undefined on a row from an old-shaped export, same as any
+ * other missing cell, so this doesn't break reading older files.
  *
  * Extracted as its own module (rather than living inside one script) once
  * a second script (backfillHrMasters.ts, alongside updateUserHrData.ts)
@@ -30,6 +35,7 @@ export interface EorRecord {
   costCenterCode: string | undefined;
   costCenterName: string | undefined;
   location: string | undefined;
+  vertical: string | undefined;
 }
 
 export function parseEorRows(filePath: string): EorRecord[] {
@@ -49,6 +55,7 @@ export function parseEorRows(filePath: string): EorRecord[] {
       division: toNullableString(cols[7]),
       location: toNullableString(cols[8]),
       email: toNullableString(cols[10])?.toLowerCase(),
+      vertical: toNullableString(cols[11]),
     };
   });
 }

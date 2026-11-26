@@ -183,6 +183,8 @@ export type DivisionWhereInput = {
   created_at?: Prisma.DateTimeFilter<"Division"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Division"> | Date | string
   users?: Prisma.UserListRelationFilter
+  verticals?: Prisma.VerticalListRelationFilter
+  event_proposals?: Prisma.EventProposalListRelationFilter
 }
 
 export type DivisionOrderByWithRelationInput = {
@@ -192,6 +194,8 @@ export type DivisionOrderByWithRelationInput = {
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   users?: Prisma.UserOrderByRelationAggregateInput
+  verticals?: Prisma.VerticalOrderByRelationAggregateInput
+  event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
 }
 
 export type DivisionWhereUniqueInput = Prisma.AtLeast<{
@@ -204,6 +208,8 @@ export type DivisionWhereUniqueInput = Prisma.AtLeast<{
   created_at?: Prisma.DateTimeFilter<"Division"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Division"> | Date | string
   users?: Prisma.UserListRelationFilter
+  verticals?: Prisma.VerticalListRelationFilter
+  event_proposals?: Prisma.EventProposalListRelationFilter
 }, "id" | "name">
 
 export type DivisionOrderByWithAggregationInput = {
@@ -235,6 +241,8 @@ export type DivisionCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.UserCreateNestedManyWithoutDivisionInput
+  verticals?: Prisma.VerticalCreateNestedManyWithoutDivisionInput
+  event_proposals?: Prisma.EventProposalCreateNestedManyWithoutDepartmentInput
 }
 
 export type DivisionUncheckedCreateInput = {
@@ -244,6 +252,8 @@ export type DivisionUncheckedCreateInput = {
   created_at?: Date | string
   updated_at?: Date | string
   users?: Prisma.UserUncheckedCreateNestedManyWithoutDivisionInput
+  verticals?: Prisma.VerticalUncheckedCreateNestedManyWithoutDivisionInput
+  event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DivisionUpdateInput = {
@@ -253,6 +263,8 @@ export type DivisionUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUpdateManyWithoutDivisionNestedInput
+  verticals?: Prisma.VerticalUpdateManyWithoutDivisionNestedInput
+  event_proposals?: Prisma.EventProposalUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DivisionUncheckedUpdateInput = {
@@ -262,6 +274,8 @@ export type DivisionUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   users?: Prisma.UserUncheckedUpdateManyWithoutDivisionNestedInput
+  verticals?: Prisma.VerticalUncheckedUpdateManyWithoutDivisionNestedInput
+  event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DivisionCreateManyInput = {
@@ -291,6 +305,11 @@ export type DivisionUncheckedUpdateManyInput = {
 export type DivisionNullableScalarRelationFilter = {
   is?: Prisma.DivisionWhereInput | null
   isNot?: Prisma.DivisionWhereInput | null
+}
+
+export type DivisionScalarRelationFilter = {
+  is?: Prisma.DivisionWhereInput
+  isNot?: Prisma.DivisionWhereInput
 }
 
 export type DivisionCountOrderByAggregateInput = {
@@ -333,12 +352,42 @@ export type DivisionUpdateOneWithoutUsersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DivisionUpdateToOneWithWhereWithoutUsersInput, Prisma.DivisionUpdateWithoutUsersInput>, Prisma.DivisionUncheckedUpdateWithoutUsersInput>
 }
 
+export type DivisionCreateNestedOneWithoutEvent_proposalsInput = {
+  create?: Prisma.XOR<Prisma.DivisionCreateWithoutEvent_proposalsInput, Prisma.DivisionUncheckedCreateWithoutEvent_proposalsInput>
+  connectOrCreate?: Prisma.DivisionCreateOrConnectWithoutEvent_proposalsInput
+  connect?: Prisma.DivisionWhereUniqueInput
+}
+
+export type DivisionUpdateOneRequiredWithoutEvent_proposalsNestedInput = {
+  create?: Prisma.XOR<Prisma.DivisionCreateWithoutEvent_proposalsInput, Prisma.DivisionUncheckedCreateWithoutEvent_proposalsInput>
+  connectOrCreate?: Prisma.DivisionCreateOrConnectWithoutEvent_proposalsInput
+  upsert?: Prisma.DivisionUpsertWithoutEvent_proposalsInput
+  connect?: Prisma.DivisionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DivisionUpdateToOneWithWhereWithoutEvent_proposalsInput, Prisma.DivisionUpdateWithoutEvent_proposalsInput>, Prisma.DivisionUncheckedUpdateWithoutEvent_proposalsInput>
+}
+
+export type DivisionCreateNestedOneWithoutVerticalsInput = {
+  create?: Prisma.XOR<Prisma.DivisionCreateWithoutVerticalsInput, Prisma.DivisionUncheckedCreateWithoutVerticalsInput>
+  connectOrCreate?: Prisma.DivisionCreateOrConnectWithoutVerticalsInput
+  connect?: Prisma.DivisionWhereUniqueInput
+}
+
+export type DivisionUpdateOneRequiredWithoutVerticalsNestedInput = {
+  create?: Prisma.XOR<Prisma.DivisionCreateWithoutVerticalsInput, Prisma.DivisionUncheckedCreateWithoutVerticalsInput>
+  connectOrCreate?: Prisma.DivisionCreateOrConnectWithoutVerticalsInput
+  upsert?: Prisma.DivisionUpsertWithoutVerticalsInput
+  connect?: Prisma.DivisionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DivisionUpdateToOneWithWhereWithoutVerticalsInput, Prisma.DivisionUpdateWithoutVerticalsInput>, Prisma.DivisionUncheckedUpdateWithoutVerticalsInput>
+}
+
 export type DivisionCreateWithoutUsersInput = {
   id?: string
   name: string
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  verticals?: Prisma.VerticalCreateNestedManyWithoutDivisionInput
+  event_proposals?: Prisma.EventProposalCreateNestedManyWithoutDepartmentInput
 }
 
 export type DivisionUncheckedCreateWithoutUsersInput = {
@@ -347,6 +396,8 @@ export type DivisionUncheckedCreateWithoutUsersInput = {
   isActive?: boolean
   created_at?: Date | string
   updated_at?: Date | string
+  verticals?: Prisma.VerticalUncheckedCreateNestedManyWithoutDivisionInput
+  event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutDepartmentInput
 }
 
 export type DivisionCreateOrConnectWithoutUsersInput = {
@@ -371,6 +422,8 @@ export type DivisionUpdateWithoutUsersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  verticals?: Prisma.VerticalUpdateManyWithoutDivisionNestedInput
+  event_proposals?: Prisma.EventProposalUpdateManyWithoutDepartmentNestedInput
 }
 
 export type DivisionUncheckedUpdateWithoutUsersInput = {
@@ -379,6 +432,120 @@ export type DivisionUncheckedUpdateWithoutUsersInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  verticals?: Prisma.VerticalUncheckedUpdateManyWithoutDivisionNestedInput
+  event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutDepartmentNestedInput
+}
+
+export type DivisionCreateWithoutEvent_proposalsInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutDivisionInput
+  verticals?: Prisma.VerticalCreateNestedManyWithoutDivisionInput
+}
+
+export type DivisionUncheckedCreateWithoutEvent_proposalsInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutDivisionInput
+  verticals?: Prisma.VerticalUncheckedCreateNestedManyWithoutDivisionInput
+}
+
+export type DivisionCreateOrConnectWithoutEvent_proposalsInput = {
+  where: Prisma.DivisionWhereUniqueInput
+  create: Prisma.XOR<Prisma.DivisionCreateWithoutEvent_proposalsInput, Prisma.DivisionUncheckedCreateWithoutEvent_proposalsInput>
+}
+
+export type DivisionUpsertWithoutEvent_proposalsInput = {
+  update: Prisma.XOR<Prisma.DivisionUpdateWithoutEvent_proposalsInput, Prisma.DivisionUncheckedUpdateWithoutEvent_proposalsInput>
+  create: Prisma.XOR<Prisma.DivisionCreateWithoutEvent_proposalsInput, Prisma.DivisionUncheckedCreateWithoutEvent_proposalsInput>
+  where?: Prisma.DivisionWhereInput
+}
+
+export type DivisionUpdateToOneWithWhereWithoutEvent_proposalsInput = {
+  where?: Prisma.DivisionWhereInput
+  data: Prisma.XOR<Prisma.DivisionUpdateWithoutEvent_proposalsInput, Prisma.DivisionUncheckedUpdateWithoutEvent_proposalsInput>
+}
+
+export type DivisionUpdateWithoutEvent_proposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutDivisionNestedInput
+  verticals?: Prisma.VerticalUpdateManyWithoutDivisionNestedInput
+}
+
+export type DivisionUncheckedUpdateWithoutEvent_proposalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutDivisionNestedInput
+  verticals?: Prisma.VerticalUncheckedUpdateManyWithoutDivisionNestedInput
+}
+
+export type DivisionCreateWithoutVerticalsInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  users?: Prisma.UserCreateNestedManyWithoutDivisionInput
+  event_proposals?: Prisma.EventProposalCreateNestedManyWithoutDepartmentInput
+}
+
+export type DivisionUncheckedCreateWithoutVerticalsInput = {
+  id?: string
+  name: string
+  isActive?: boolean
+  created_at?: Date | string
+  updated_at?: Date | string
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutDivisionInput
+  event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutDepartmentInput
+}
+
+export type DivisionCreateOrConnectWithoutVerticalsInput = {
+  where: Prisma.DivisionWhereUniqueInput
+  create: Prisma.XOR<Prisma.DivisionCreateWithoutVerticalsInput, Prisma.DivisionUncheckedCreateWithoutVerticalsInput>
+}
+
+export type DivisionUpsertWithoutVerticalsInput = {
+  update: Prisma.XOR<Prisma.DivisionUpdateWithoutVerticalsInput, Prisma.DivisionUncheckedUpdateWithoutVerticalsInput>
+  create: Prisma.XOR<Prisma.DivisionCreateWithoutVerticalsInput, Prisma.DivisionUncheckedCreateWithoutVerticalsInput>
+  where?: Prisma.DivisionWhereInput
+}
+
+export type DivisionUpdateToOneWithWhereWithoutVerticalsInput = {
+  where?: Prisma.DivisionWhereInput
+  data: Prisma.XOR<Prisma.DivisionUpdateWithoutVerticalsInput, Prisma.DivisionUncheckedUpdateWithoutVerticalsInput>
+}
+
+export type DivisionUpdateWithoutVerticalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUpdateManyWithoutDivisionNestedInput
+  event_proposals?: Prisma.EventProposalUpdateManyWithoutDepartmentNestedInput
+}
+
+export type DivisionUncheckedUpdateWithoutVerticalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  users?: Prisma.UserUncheckedUpdateManyWithoutDivisionNestedInput
+  event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutDepartmentNestedInput
 }
 
 
@@ -388,10 +555,14 @@ export type DivisionUncheckedUpdateWithoutUsersInput = {
 
 export type DivisionCountOutputType = {
   users: number
+  verticals: number
+  event_proposals: number
 }
 
 export type DivisionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | DivisionCountOutputTypeCountUsersArgs
+  verticals?: boolean | DivisionCountOutputTypeCountVerticalsArgs
+  event_proposals?: boolean | DivisionCountOutputTypeCountEvent_proposalsArgs
 }
 
 /**
@@ -411,6 +582,20 @@ export type DivisionCountOutputTypeCountUsersArgs<ExtArgs extends runtime.Types.
   where?: Prisma.UserWhereInput
 }
 
+/**
+ * DivisionCountOutputType without action
+ */
+export type DivisionCountOutputTypeCountVerticalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VerticalWhereInput
+}
+
+/**
+ * DivisionCountOutputType without action
+ */
+export type DivisionCountOutputTypeCountEvent_proposalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventProposalWhereInput
+}
+
 
 export type DivisionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -419,6 +604,8 @@ export type DivisionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   created_at?: boolean
   updated_at?: boolean
   users?: boolean | Prisma.Division$usersArgs<ExtArgs>
+  verticals?: boolean | Prisma.Division$verticalsArgs<ExtArgs>
+  event_proposals?: boolean | Prisma.Division$event_proposalsArgs<ExtArgs>
   _count?: boolean | Prisma.DivisionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["division"]>
 
@@ -449,6 +636,8 @@ export type DivisionSelectScalar = {
 export type DivisionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "isActive" | "created_at" | "updated_at", ExtArgs["result"]["division"]>
 export type DivisionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   users?: boolean | Prisma.Division$usersArgs<ExtArgs>
+  verticals?: boolean | Prisma.Division$verticalsArgs<ExtArgs>
+  event_proposals?: boolean | Prisma.Division$event_proposalsArgs<ExtArgs>
   _count?: boolean | Prisma.DivisionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DivisionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -458,6 +647,8 @@ export type $DivisionPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "Division"
   objects: {
     users: Prisma.$UserPayload<ExtArgs>[]
+    verticals: Prisma.$VerticalPayload<ExtArgs>[]
+    event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -860,6 +1051,8 @@ readonly fields: DivisionFieldRefs;
 export interface Prisma__DivisionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   users<T extends Prisma.Division$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Division$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  verticals<T extends Prisma.Division$verticalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Division$verticalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerticalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  event_proposals<T extends Prisma.Division$event_proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Division$event_proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1308,6 +1501,54 @@ export type Division$usersArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.UserScalarFieldEnum | Prisma.UserScalarFieldEnum[]
+}
+
+/**
+ * Division.verticals
+ */
+export type Division$verticalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Vertical
+   */
+  select?: Prisma.VerticalSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Vertical
+   */
+  omit?: Prisma.VerticalOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VerticalInclude<ExtArgs> | null
+  where?: Prisma.VerticalWhereInput
+  orderBy?: Prisma.VerticalOrderByWithRelationInput | Prisma.VerticalOrderByWithRelationInput[]
+  cursor?: Prisma.VerticalWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VerticalScalarFieldEnum | Prisma.VerticalScalarFieldEnum[]
+}
+
+/**
+ * Division.event_proposals
+ */
+export type Division$event_proposalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventProposal
+   */
+  select?: Prisma.EventProposalSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EventProposal
+   */
+  omit?: Prisma.EventProposalOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventProposalInclude<ExtArgs> | null
+  where?: Prisma.EventProposalWhereInput
+  orderBy?: Prisma.EventProposalOrderByWithRelationInput | Prisma.EventProposalOrderByWithRelationInput[]
+  cursor?: Prisma.EventProposalWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventProposalScalarFieldEnum | Prisma.EventProposalScalarFieldEnum[]
 }
 
 /**

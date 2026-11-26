@@ -73,7 +73,6 @@ export const ModelName = {
   Approval: 'Approval',
   WorkFlowTemplateUser: 'WorkFlowTemplateUser',
   ActivityLog: 'ActivityLog',
-  Department: 'Department',
   Vertical: 'Vertical',
   Zone: 'Zone',
   Branch: 'Branch',
@@ -456,23 +455,11 @@ export const ActivityLogScalarFieldEnum = {
 export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
 
 
-export const DepartmentScalarFieldEnum = {
-  id: 'id',
-  department_code: 'department_code',
-  department_name: 'department_name',
-  isActive: 'isActive',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type DepartmentScalarFieldEnum = (typeof DepartmentScalarFieldEnum)[keyof typeof DepartmentScalarFieldEnum]
-
-
 export const VerticalScalarFieldEnum = {
   id: 'id',
   name: 'name',
   code: 'code',
-  departmentId: 'departmentId',
+  divisionId: 'divisionId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

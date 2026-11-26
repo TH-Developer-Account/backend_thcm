@@ -150,11 +150,6 @@ export type WorkFlowTemplateUser = Prisma.WorkFlowTemplateUserModel
  */
 export type ActivityLog = Prisma.ActivityLogModel
 /**
- * Model Department
- * 
- */
-export type Department = Prisma.DepartmentModel
-/**
  * Model Vertical
  * 
  */

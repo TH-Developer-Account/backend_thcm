@@ -28,7 +28,7 @@ export type VerticalMinAggregateOutputType = {
   id: string | null
   name: string | null
   code: string | null
-  departmentId: string | null
+  divisionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -37,7 +37,7 @@ export type VerticalMaxAggregateOutputType = {
   id: string | null
   name: string | null
   code: string | null
-  departmentId: string | null
+  divisionId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -46,7 +46,7 @@ export type VerticalCountAggregateOutputType = {
   id: number
   name: number
   code: number
-  departmentId: number
+  divisionId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -57,7 +57,7 @@ export type VerticalMinAggregateInputType = {
   id?: true
   name?: true
   code?: true
-  departmentId?: true
+  divisionId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -66,7 +66,7 @@ export type VerticalMaxAggregateInputType = {
   id?: true
   name?: true
   code?: true
-  departmentId?: true
+  divisionId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -75,7 +75,7 @@ export type VerticalCountAggregateInputType = {
   id?: true
   name?: true
   code?: true
-  departmentId?: true
+  divisionId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -156,8 +156,8 @@ export type VerticalGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type VerticalGroupByOutputType = {
   id: string
   name: string
-  code: string
-  departmentId: string
+  code: string | null
+  divisionId: string
   createdAt: Date
   updatedAt: Date
   _count: VerticalCountAggregateOutputType | null
@@ -186,44 +186,45 @@ export type VerticalWhereInput = {
   NOT?: Prisma.VerticalWhereInput | Prisma.VerticalWhereInput[]
   id?: Prisma.StringFilter<"Vertical"> | string
   name?: Prisma.StringFilter<"Vertical"> | string
-  code?: Prisma.StringFilter<"Vertical"> | string
-  departmentId?: Prisma.StringFilter<"Vertical"> | string
+  code?: Prisma.StringNullableFilter<"Vertical"> | string | null
+  divisionId?: Prisma.StringFilter<"Vertical"> | string
   createdAt?: Prisma.DateTimeFilter<"Vertical"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vertical"> | Date | string
-  department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
+  division?: Prisma.XOR<Prisma.DivisionScalarRelationFilter, Prisma.DivisionWhereInput>
   event_proposals?: Prisma.EventProposalListRelationFilter
 }
 
 export type VerticalOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  code?: Prisma.SortOrder
-  departmentId?: Prisma.SortOrder
+  code?: Prisma.SortOrderInput | Prisma.SortOrder
+  divisionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
-  department?: Prisma.DepartmentOrderByWithRelationInput
+  division?: Prisma.DivisionOrderByWithRelationInput
   event_proposals?: Prisma.EventProposalOrderByRelationAggregateInput
 }
 
 export type VerticalWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  name_divisionId?: Prisma.VerticalNameDivisionIdCompoundUniqueInput
   AND?: Prisma.VerticalWhereInput | Prisma.VerticalWhereInput[]
   OR?: Prisma.VerticalWhereInput[]
   NOT?: Prisma.VerticalWhereInput | Prisma.VerticalWhereInput[]
   name?: Prisma.StringFilter<"Vertical"> | string
-  code?: Prisma.StringFilter<"Vertical"> | string
-  departmentId?: Prisma.StringFilter<"Vertical"> | string
+  code?: Prisma.StringNullableFilter<"Vertical"> | string | null
+  divisionId?: Prisma.StringFilter<"Vertical"> | string
   createdAt?: Prisma.DateTimeFilter<"Vertical"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vertical"> | Date | string
-  department?: Prisma.XOR<Prisma.DepartmentScalarRelationFilter, Prisma.DepartmentWhereInput>
+  division?: Prisma.XOR<Prisma.DivisionScalarRelationFilter, Prisma.DivisionWhereInput>
   event_proposals?: Prisma.EventProposalListRelationFilter
-}, "id">
+}, "id" | "name_divisionId">
 
 export type VerticalOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  code?: Prisma.SortOrder
-  departmentId?: Prisma.SortOrder
+  code?: Prisma.SortOrderInput | Prisma.SortOrder
+  divisionId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.VerticalCountOrderByAggregateInput
@@ -237,8 +238,8 @@ export type VerticalScalarWhereWithAggregatesInput = {
   NOT?: Prisma.VerticalScalarWhereWithAggregatesInput | Prisma.VerticalScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Vertical"> | string
   name?: Prisma.StringWithAggregatesFilter<"Vertical"> | string
-  code?: Prisma.StringWithAggregatesFilter<"Vertical"> | string
-  departmentId?: Prisma.StringWithAggregatesFilter<"Vertical"> | string
+  code?: Prisma.StringNullableWithAggregatesFilter<"Vertical"> | string | null
+  divisionId?: Prisma.StringWithAggregatesFilter<"Vertical"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Vertical"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Vertical"> | Date | string
 }
@@ -246,18 +247,18 @@ export type VerticalScalarWhereWithAggregatesInput = {
 export type VerticalCreateInput = {
   id?: string
   name: string
-  code: string
+  code?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  department: Prisma.DepartmentCreateNestedOneWithoutVerticalsInput
+  division: Prisma.DivisionCreateNestedOneWithoutVerticalsInput
   event_proposals?: Prisma.EventProposalCreateNestedManyWithoutVerticalInput
 }
 
 export type VerticalUncheckedCreateInput = {
   id?: string
   name: string
-  code: string
-  departmentId: string
+  code?: string | null
+  divisionId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutVerticalInput
@@ -266,18 +267,18 @@ export type VerticalUncheckedCreateInput = {
 export type VerticalUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  department?: Prisma.DepartmentUpdateOneRequiredWithoutVerticalsNestedInput
+  division?: Prisma.DivisionUpdateOneRequiredWithoutVerticalsNestedInput
   event_proposals?: Prisma.EventProposalUpdateManyWithoutVerticalNestedInput
 }
 
 export type VerticalUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  divisionId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutVerticalNestedInput
@@ -286,8 +287,8 @@ export type VerticalUncheckedUpdateInput = {
 export type VerticalCreateManyInput = {
   id?: string
   name: string
-  code: string
-  departmentId: string
+  code?: string | null
+  divisionId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -295,7 +296,7 @@ export type VerticalCreateManyInput = {
 export type VerticalUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -303,8 +304,8 @@ export type VerticalUpdateManyMutationInput = {
 export type VerticalUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  divisionId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -312,6 +313,38 @@ export type VerticalUncheckedUpdateManyInput = {
 export type VerticalScalarRelationFilter = {
   is?: Prisma.VerticalWhereInput
   isNot?: Prisma.VerticalWhereInput
+}
+
+export type VerticalNameDivisionIdCompoundUniqueInput = {
+  name: string
+  divisionId: string
+}
+
+export type VerticalCountOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  divisionId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type VerticalMaxOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  divisionId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
+}
+
+export type VerticalMinOrderByAggregateInput = {
+  id?: Prisma.SortOrder
+  name?: Prisma.SortOrder
+  code?: Prisma.SortOrder
+  divisionId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  updatedAt?: Prisma.SortOrder
 }
 
 export type VerticalListRelationFilter = {
@@ -322,33 +355,6 @@ export type VerticalListRelationFilter = {
 
 export type VerticalOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
-}
-
-export type VerticalCountOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  code?: Prisma.SortOrder
-  departmentId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-}
-
-export type VerticalMaxOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  code?: Prisma.SortOrder
-  departmentId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
-}
-
-export type VerticalMinOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  code?: Prisma.SortOrder
-  departmentId?: Prisma.SortOrder
-  createdAt?: Prisma.SortOrder
-  updatedAt?: Prisma.SortOrder
 }
 
 export type VerticalCreateNestedOneWithoutEvent_proposalsInput = {
@@ -365,62 +371,62 @@ export type VerticalUpdateOneRequiredWithoutEvent_proposalsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.VerticalUpdateToOneWithWhereWithoutEvent_proposalsInput, Prisma.VerticalUpdateWithoutEvent_proposalsInput>, Prisma.VerticalUncheckedUpdateWithoutEvent_proposalsInput>
 }
 
-export type VerticalCreateNestedManyWithoutDepartmentInput = {
-  create?: Prisma.XOR<Prisma.VerticalCreateWithoutDepartmentInput, Prisma.VerticalUncheckedCreateWithoutDepartmentInput> | Prisma.VerticalCreateWithoutDepartmentInput[] | Prisma.VerticalUncheckedCreateWithoutDepartmentInput[]
-  connectOrCreate?: Prisma.VerticalCreateOrConnectWithoutDepartmentInput | Prisma.VerticalCreateOrConnectWithoutDepartmentInput[]
-  createMany?: Prisma.VerticalCreateManyDepartmentInputEnvelope
+export type VerticalCreateNestedManyWithoutDivisionInput = {
+  create?: Prisma.XOR<Prisma.VerticalCreateWithoutDivisionInput, Prisma.VerticalUncheckedCreateWithoutDivisionInput> | Prisma.VerticalCreateWithoutDivisionInput[] | Prisma.VerticalUncheckedCreateWithoutDivisionInput[]
+  connectOrCreate?: Prisma.VerticalCreateOrConnectWithoutDivisionInput | Prisma.VerticalCreateOrConnectWithoutDivisionInput[]
+  createMany?: Prisma.VerticalCreateManyDivisionInputEnvelope
   connect?: Prisma.VerticalWhereUniqueInput | Prisma.VerticalWhereUniqueInput[]
 }
 
-export type VerticalUncheckedCreateNestedManyWithoutDepartmentInput = {
-  create?: Prisma.XOR<Prisma.VerticalCreateWithoutDepartmentInput, Prisma.VerticalUncheckedCreateWithoutDepartmentInput> | Prisma.VerticalCreateWithoutDepartmentInput[] | Prisma.VerticalUncheckedCreateWithoutDepartmentInput[]
-  connectOrCreate?: Prisma.VerticalCreateOrConnectWithoutDepartmentInput | Prisma.VerticalCreateOrConnectWithoutDepartmentInput[]
-  createMany?: Prisma.VerticalCreateManyDepartmentInputEnvelope
+export type VerticalUncheckedCreateNestedManyWithoutDivisionInput = {
+  create?: Prisma.XOR<Prisma.VerticalCreateWithoutDivisionInput, Prisma.VerticalUncheckedCreateWithoutDivisionInput> | Prisma.VerticalCreateWithoutDivisionInput[] | Prisma.VerticalUncheckedCreateWithoutDivisionInput[]
+  connectOrCreate?: Prisma.VerticalCreateOrConnectWithoutDivisionInput | Prisma.VerticalCreateOrConnectWithoutDivisionInput[]
+  createMany?: Prisma.VerticalCreateManyDivisionInputEnvelope
   connect?: Prisma.VerticalWhereUniqueInput | Prisma.VerticalWhereUniqueInput[]
 }
 
-export type VerticalUpdateManyWithoutDepartmentNestedInput = {
-  create?: Prisma.XOR<Prisma.VerticalCreateWithoutDepartmentInput, Prisma.VerticalUncheckedCreateWithoutDepartmentInput> | Prisma.VerticalCreateWithoutDepartmentInput[] | Prisma.VerticalUncheckedCreateWithoutDepartmentInput[]
-  connectOrCreate?: Prisma.VerticalCreateOrConnectWithoutDepartmentInput | Prisma.VerticalCreateOrConnectWithoutDepartmentInput[]
-  upsert?: Prisma.VerticalUpsertWithWhereUniqueWithoutDepartmentInput | Prisma.VerticalUpsertWithWhereUniqueWithoutDepartmentInput[]
-  createMany?: Prisma.VerticalCreateManyDepartmentInputEnvelope
+export type VerticalUpdateManyWithoutDivisionNestedInput = {
+  create?: Prisma.XOR<Prisma.VerticalCreateWithoutDivisionInput, Prisma.VerticalUncheckedCreateWithoutDivisionInput> | Prisma.VerticalCreateWithoutDivisionInput[] | Prisma.VerticalUncheckedCreateWithoutDivisionInput[]
+  connectOrCreate?: Prisma.VerticalCreateOrConnectWithoutDivisionInput | Prisma.VerticalCreateOrConnectWithoutDivisionInput[]
+  upsert?: Prisma.VerticalUpsertWithWhereUniqueWithoutDivisionInput | Prisma.VerticalUpsertWithWhereUniqueWithoutDivisionInput[]
+  createMany?: Prisma.VerticalCreateManyDivisionInputEnvelope
   set?: Prisma.VerticalWhereUniqueInput | Prisma.VerticalWhereUniqueInput[]
   disconnect?: Prisma.VerticalWhereUniqueInput | Prisma.VerticalWhereUniqueInput[]
   delete?: Prisma.VerticalWhereUniqueInput | Prisma.VerticalWhereUniqueInput[]
   connect?: Prisma.VerticalWhereUniqueInput | Prisma.VerticalWhereUniqueInput[]
-  update?: Prisma.VerticalUpdateWithWhereUniqueWithoutDepartmentInput | Prisma.VerticalUpdateWithWhereUniqueWithoutDepartmentInput[]
-  updateMany?: Prisma.VerticalUpdateManyWithWhereWithoutDepartmentInput | Prisma.VerticalUpdateManyWithWhereWithoutDepartmentInput[]
+  update?: Prisma.VerticalUpdateWithWhereUniqueWithoutDivisionInput | Prisma.VerticalUpdateWithWhereUniqueWithoutDivisionInput[]
+  updateMany?: Prisma.VerticalUpdateManyWithWhereWithoutDivisionInput | Prisma.VerticalUpdateManyWithWhereWithoutDivisionInput[]
   deleteMany?: Prisma.VerticalScalarWhereInput | Prisma.VerticalScalarWhereInput[]
 }
 
-export type VerticalUncheckedUpdateManyWithoutDepartmentNestedInput = {
-  create?: Prisma.XOR<Prisma.VerticalCreateWithoutDepartmentInput, Prisma.VerticalUncheckedCreateWithoutDepartmentInput> | Prisma.VerticalCreateWithoutDepartmentInput[] | Prisma.VerticalUncheckedCreateWithoutDepartmentInput[]
-  connectOrCreate?: Prisma.VerticalCreateOrConnectWithoutDepartmentInput | Prisma.VerticalCreateOrConnectWithoutDepartmentInput[]
-  upsert?: Prisma.VerticalUpsertWithWhereUniqueWithoutDepartmentInput | Prisma.VerticalUpsertWithWhereUniqueWithoutDepartmentInput[]
-  createMany?: Prisma.VerticalCreateManyDepartmentInputEnvelope
+export type VerticalUncheckedUpdateManyWithoutDivisionNestedInput = {
+  create?: Prisma.XOR<Prisma.VerticalCreateWithoutDivisionInput, Prisma.VerticalUncheckedCreateWithoutDivisionInput> | Prisma.VerticalCreateWithoutDivisionInput[] | Prisma.VerticalUncheckedCreateWithoutDivisionInput[]
+  connectOrCreate?: Prisma.VerticalCreateOrConnectWithoutDivisionInput | Prisma.VerticalCreateOrConnectWithoutDivisionInput[]
+  upsert?: Prisma.VerticalUpsertWithWhereUniqueWithoutDivisionInput | Prisma.VerticalUpsertWithWhereUniqueWithoutDivisionInput[]
+  createMany?: Prisma.VerticalCreateManyDivisionInputEnvelope
   set?: Prisma.VerticalWhereUniqueInput | Prisma.VerticalWhereUniqueInput[]
   disconnect?: Prisma.VerticalWhereUniqueInput | Prisma.VerticalWhereUniqueInput[]
   delete?: Prisma.VerticalWhereUniqueInput | Prisma.VerticalWhereUniqueInput[]
   connect?: Prisma.VerticalWhereUniqueInput | Prisma.VerticalWhereUniqueInput[]
-  update?: Prisma.VerticalUpdateWithWhereUniqueWithoutDepartmentInput | Prisma.VerticalUpdateWithWhereUniqueWithoutDepartmentInput[]
-  updateMany?: Prisma.VerticalUpdateManyWithWhereWithoutDepartmentInput | Prisma.VerticalUpdateManyWithWhereWithoutDepartmentInput[]
+  update?: Prisma.VerticalUpdateWithWhereUniqueWithoutDivisionInput | Prisma.VerticalUpdateWithWhereUniqueWithoutDivisionInput[]
+  updateMany?: Prisma.VerticalUpdateManyWithWhereWithoutDivisionInput | Prisma.VerticalUpdateManyWithWhereWithoutDivisionInput[]
   deleteMany?: Prisma.VerticalScalarWhereInput | Prisma.VerticalScalarWhereInput[]
 }
 
 export type VerticalCreateWithoutEvent_proposalsInput = {
   id?: string
   name: string
-  code: string
+  code?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
-  department: Prisma.DepartmentCreateNestedOneWithoutVerticalsInput
+  division: Prisma.DivisionCreateNestedOneWithoutVerticalsInput
 }
 
 export type VerticalUncheckedCreateWithoutEvent_proposalsInput = {
   id?: string
   name: string
-  code: string
-  departmentId: string
+  code?: string | null
+  divisionId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -444,63 +450,63 @@ export type VerticalUpdateToOneWithWhereWithoutEvent_proposalsInput = {
 export type VerticalUpdateWithoutEvent_proposalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  department?: Prisma.DepartmentUpdateOneRequiredWithoutVerticalsNestedInput
+  division?: Prisma.DivisionUpdateOneRequiredWithoutVerticalsNestedInput
 }
 
 export type VerticalUncheckedUpdateWithoutEvent_proposalsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
-  departmentId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  divisionId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
-export type VerticalCreateWithoutDepartmentInput = {
+export type VerticalCreateWithoutDivisionInput = {
   id?: string
   name: string
-  code: string
+  code?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   event_proposals?: Prisma.EventProposalCreateNestedManyWithoutVerticalInput
 }
 
-export type VerticalUncheckedCreateWithoutDepartmentInput = {
+export type VerticalUncheckedCreateWithoutDivisionInput = {
   id?: string
   name: string
-  code: string
+  code?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   event_proposals?: Prisma.EventProposalUncheckedCreateNestedManyWithoutVerticalInput
 }
 
-export type VerticalCreateOrConnectWithoutDepartmentInput = {
+export type VerticalCreateOrConnectWithoutDivisionInput = {
   where: Prisma.VerticalWhereUniqueInput
-  create: Prisma.XOR<Prisma.VerticalCreateWithoutDepartmentInput, Prisma.VerticalUncheckedCreateWithoutDepartmentInput>
+  create: Prisma.XOR<Prisma.VerticalCreateWithoutDivisionInput, Prisma.VerticalUncheckedCreateWithoutDivisionInput>
 }
 
-export type VerticalCreateManyDepartmentInputEnvelope = {
-  data: Prisma.VerticalCreateManyDepartmentInput | Prisma.VerticalCreateManyDepartmentInput[]
+export type VerticalCreateManyDivisionInputEnvelope = {
+  data: Prisma.VerticalCreateManyDivisionInput | Prisma.VerticalCreateManyDivisionInput[]
   skipDuplicates?: boolean
 }
 
-export type VerticalUpsertWithWhereUniqueWithoutDepartmentInput = {
+export type VerticalUpsertWithWhereUniqueWithoutDivisionInput = {
   where: Prisma.VerticalWhereUniqueInput
-  update: Prisma.XOR<Prisma.VerticalUpdateWithoutDepartmentInput, Prisma.VerticalUncheckedUpdateWithoutDepartmentInput>
-  create: Prisma.XOR<Prisma.VerticalCreateWithoutDepartmentInput, Prisma.VerticalUncheckedCreateWithoutDepartmentInput>
+  update: Prisma.XOR<Prisma.VerticalUpdateWithoutDivisionInput, Prisma.VerticalUncheckedUpdateWithoutDivisionInput>
+  create: Prisma.XOR<Prisma.VerticalCreateWithoutDivisionInput, Prisma.VerticalUncheckedCreateWithoutDivisionInput>
 }
 
-export type VerticalUpdateWithWhereUniqueWithoutDepartmentInput = {
+export type VerticalUpdateWithWhereUniqueWithoutDivisionInput = {
   where: Prisma.VerticalWhereUniqueInput
-  data: Prisma.XOR<Prisma.VerticalUpdateWithoutDepartmentInput, Prisma.VerticalUncheckedUpdateWithoutDepartmentInput>
+  data: Prisma.XOR<Prisma.VerticalUpdateWithoutDivisionInput, Prisma.VerticalUncheckedUpdateWithoutDivisionInput>
 }
 
-export type VerticalUpdateManyWithWhereWithoutDepartmentInput = {
+export type VerticalUpdateManyWithWhereWithoutDivisionInput = {
   where: Prisma.VerticalScalarWhereInput
-  data: Prisma.XOR<Prisma.VerticalUpdateManyMutationInput, Prisma.VerticalUncheckedUpdateManyWithoutDepartmentInput>
+  data: Prisma.XOR<Prisma.VerticalUpdateManyMutationInput, Prisma.VerticalUncheckedUpdateManyWithoutDivisionInput>
 }
 
 export type VerticalScalarWhereInput = {
@@ -509,42 +515,42 @@ export type VerticalScalarWhereInput = {
   NOT?: Prisma.VerticalScalarWhereInput | Prisma.VerticalScalarWhereInput[]
   id?: Prisma.StringFilter<"Vertical"> | string
   name?: Prisma.StringFilter<"Vertical"> | string
-  code?: Prisma.StringFilter<"Vertical"> | string
-  departmentId?: Prisma.StringFilter<"Vertical"> | string
+  code?: Prisma.StringNullableFilter<"Vertical"> | string | null
+  divisionId?: Prisma.StringFilter<"Vertical"> | string
   createdAt?: Prisma.DateTimeFilter<"Vertical"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Vertical"> | Date | string
 }
 
-export type VerticalCreateManyDepartmentInput = {
+export type VerticalCreateManyDivisionInput = {
   id?: string
   name: string
-  code: string
+  code?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
-export type VerticalUpdateWithoutDepartmentInput = {
+export type VerticalUpdateWithoutDivisionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUpdateManyWithoutVerticalNestedInput
 }
 
-export type VerticalUncheckedUpdateWithoutDepartmentInput = {
+export type VerticalUncheckedUpdateWithoutDivisionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   event_proposals?: Prisma.EventProposalUncheckedUpdateManyWithoutVerticalNestedInput
 }
 
-export type VerticalUncheckedUpdateManyWithoutDepartmentInput = {
+export type VerticalUncheckedUpdateManyWithoutDivisionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  code?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -584,10 +590,10 @@ export type VerticalSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   name?: boolean
   code?: boolean
-  departmentId?: boolean
+  divisionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
+  division?: boolean | Prisma.DivisionDefaultArgs<ExtArgs>
   event_proposals?: boolean | Prisma.Vertical$event_proposalsArgs<ExtArgs>
   _count?: boolean | Prisma.VerticalCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vertical"]>
@@ -596,55 +602,55 @@ export type VerticalSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   name?: boolean
   code?: boolean
-  departmentId?: boolean
+  divisionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
+  division?: boolean | Prisma.DivisionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vertical"]>
 
 export type VerticalSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   code?: boolean
-  departmentId?: boolean
+  divisionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
-  department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
+  division?: boolean | Prisma.DivisionDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vertical"]>
 
 export type VerticalSelectScalar = {
   id?: boolean
   name?: boolean
   code?: boolean
-  departmentId?: boolean
+  divisionId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VerticalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "code" | "departmentId" | "createdAt" | "updatedAt", ExtArgs["result"]["vertical"]>
+export type VerticalOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "code" | "divisionId" | "createdAt" | "updatedAt", ExtArgs["result"]["vertical"]>
 export type VerticalInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
+  division?: boolean | Prisma.DivisionDefaultArgs<ExtArgs>
   event_proposals?: boolean | Prisma.Vertical$event_proposalsArgs<ExtArgs>
   _count?: boolean | Prisma.VerticalCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type VerticalIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
+  division?: boolean | Prisma.DivisionDefaultArgs<ExtArgs>
 }
 export type VerticalIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  department?: boolean | Prisma.DepartmentDefaultArgs<ExtArgs>
+  division?: boolean | Prisma.DivisionDefaultArgs<ExtArgs>
 }
 
 export type $VerticalPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Vertical"
   objects: {
-    department: Prisma.$DepartmentPayload<ExtArgs>
+    division: Prisma.$DivisionPayload<ExtArgs>
     event_proposals: Prisma.$EventProposalPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
-    code: string
-    departmentId: string
+    code: string | null
+    divisionId: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["vertical"]>
@@ -1041,7 +1047,7 @@ readonly fields: VerticalFieldRefs;
  */
 export interface Prisma__VerticalClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  department<T extends Prisma.DepartmentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DepartmentDefaultArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  division<T extends Prisma.DivisionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DivisionDefaultArgs<ExtArgs>>): Prisma.Prisma__DivisionClient<runtime.Types.Result.GetResult<Prisma.$DivisionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   event_proposals<T extends Prisma.Vertical$event_proposalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Vertical$event_proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1075,7 +1081,7 @@ export interface VerticalFieldRefs {
   readonly id: Prisma.FieldRef<"Vertical", 'String'>
   readonly name: Prisma.FieldRef<"Vertical", 'String'>
   readonly code: Prisma.FieldRef<"Vertical", 'String'>
-  readonly departmentId: Prisma.FieldRef<"Vertical", 'String'>
+  readonly divisionId: Prisma.FieldRef<"Vertical", 'String'>
   readonly createdAt: Prisma.FieldRef<"Vertical", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Vertical", 'DateTime'>
 }

@@ -536,7 +536,11 @@ model EventProposal {
   deviationDocS3Key String?
   locationMeta     Json?
 
-  department    Department   @relation(fields: [department_id], references: [id])
+  // NOTE: department_id/department are the original EPC field names, kept
+  // as-is (repoint, not rename — see decisions-and-learnings.md) even
+  // though the FK target is now Division, not the removed Department
+  // model. Division is the org unit for both HR and EPC purposes now.
+  department    Division     @relation(fields: [department_id], references: [id])
   vertical      Vertical     @relation(fields: [vertical_id], references: [id])
   region        Zone         @relation(fields: [region_id], references: [id])
   branch        Branch       @relation(fields: [branch_id], references: [id])
@@ -756,26 +760,28 @@ model ActivityLog {
 // OTHER MODELS
 // ─────────────────────────────────────────────
 
-model Department {
-  id              String          @id @default(uuid())
-  department_code String          @unique
-  department_name String
-  isActive        Boolean         @default(true)
-  event_proposals EventProposal[]
-  verticals       Vertical[]
-  created_at      DateTime        @default(now())
-  updated_at      DateTime        @updatedAt
-}
-
+// Department (department_code/department_name) was removed — Division is
+// now the single org-unit master for both HR (User) and EPC
+// (EventProposal) purposes. Vertical moved from a Department FK to a
+// Division FK (below) as part of the same change; see
+// decisions-and-learnings.md.
 model Vertical {
   id              String          @id @default(uuid())
   name            String
-  code            String
-  departmentId    String
-  department      Department      @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  // EOR carries no Vertical code (unlike Department's, which was always
+  // admin-assigned) — nullable, unlike the old Department-scoped code.
+  code            String?
+  divisionId      String
+  division        Division        @relation(fields: [divisionId], references: [id], onDelete: Cascade)
   event_proposals EventProposal[]
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
+
+  // Same Vertical name recurs under more than one Division in EOR (e.g.
+  // "ASSEMBLY" under both PRODUCTION - DHARWAD and PRODUCTION - KHARAGPUR)
+  // — composite uniqueness lets each Division hold its own row for that
+  // name instead of colliding on a bare name-unique constraint.
+  @@unique([name, divisionId])
 }
 
 // Zone: unifies what used to be two separate concepts — EventProposal's
@@ -837,6 +843,11 @@ model EventName {
 // (see User model above) — populated by scripts/backfillHrMasters.ts from
 // EOR data, so Masters admin UI has a governed list to show/manage.
 //
+// Vertical (see its model above, near EventProposal) is backfilled from
+// the same EOR run and belongs conceptually to this group too, keyed off
+// Division rather than User directly — User.vertical stays plain free
+// text (see the User model comment), it is NOT an FK into Vertical.
+//
 // User.location is intentionally NOT one of these — it's plain free text
 // on User directly (see the User model comment) rather than a master-
 // backed FK, since real-world location values vary too much to constrain
@@ -851,6 +862,11 @@ model Division {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   users      User[]
+  // Added when Department was removed: Division now backs both the HR
+  // Vertical master and EPC's EventProposal.department_id (repointed, not
+  // renamed — see the Vertical model and EventProposal comments above).
+  verticals       Vertical[]
+  event_proposals EventProposal[]
 }
 
 model Designation {

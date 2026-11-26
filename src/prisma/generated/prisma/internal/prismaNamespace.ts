@@ -406,7 +406,6 @@ export const ModelName = {
   Approval: 'Approval',
   WorkFlowTemplateUser: 'WorkFlowTemplateUser',
   ActivityLog: 'ActivityLog',
-  Department: 'Department',
   Vertical: 'Vertical',
   Zone: 'Zone',
   Branch: 'Branch',
@@ -462,7 +461,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "department" | "vertical" | "zone" | "branch" | "budgetMaster" | "eventName" | "division" | "designation" | "costCenter" | "productMaster" | "ePF" | "cRF" | "crfItem" | "crfOrder" | "handoutRequest" | "handoutItem" | "handoutOrder" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "gradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact" | "machineStudy" | "machineStudyCycle" | "machine" | "machineTelemetry"
+    modelProps: "user" | "passwordResetToken" | "refreshToken" | "dailyVisitors" | "workspace" | "workspaceUser" | "app" | "workspaceApp" | "module" | "appAdministrator" | "profile" | "profilePermission" | "userProfile" | "eventProposal" | "workflowTemplate" | "templateStage" | "templateApprover" | "workflowInstance" | "stageInstance" | "approval" | "workFlowTemplateUser" | "activityLog" | "vertical" | "zone" | "branch" | "budgetMaster" | "eventName" | "division" | "designation" | "costCenter" | "productMaster" | "ePF" | "cRF" | "crfItem" | "crfOrder" | "handoutRequest" | "handoutItem" | "handoutOrder" | "lineItem" | "comment" | "operator" | "lead" | "pincode" | "eventReport" | "eventReportImage" | "importExportLog" | "notification" | "pushSubscription" | "vendorOnboarding" | "vendorOnboardingDocument" | "accessToken" | "medicalClaim" | "medicalClaimBill" | "gradeEligibility" | "guest" | "businessPartner" | "businessPartnerAddress" | "businessPartnerContact" | "machineStudy" | "machineStudyCycle" | "machine" | "machineTelemetry"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2091,80 +2090,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.ActivityLogCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.ActivityLogCountAggregateOutputType> | number
-        }
-      }
-    }
-    Department: {
-      payload: Prisma.$DepartmentPayload<ExtArgs>
-      fields: Prisma.DepartmentFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.DepartmentFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.DepartmentFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentPayload>
-        }
-        findFirst: {
-          args: Prisma.DepartmentFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.DepartmentFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentPayload>
-        }
-        findMany: {
-          args: Prisma.DepartmentFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentPayload>[]
-        }
-        create: {
-          args: Prisma.DepartmentCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentPayload>
-        }
-        createMany: {
-          args: Prisma.DepartmentCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.DepartmentCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentPayload>[]
-        }
-        delete: {
-          args: Prisma.DepartmentDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentPayload>
-        }
-        update: {
-          args: Prisma.DepartmentUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentPayload>
-        }
-        deleteMany: {
-          args: Prisma.DepartmentDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.DepartmentUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.DepartmentUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentPayload>[]
-        }
-        upsert: {
-          args: Prisma.DepartmentUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$DepartmentPayload>
-        }
-        aggregate: {
-          args: Prisma.DepartmentAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateDepartment>
-        }
-        groupBy: {
-          args: Prisma.DepartmentGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.DepartmentGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.DepartmentCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.DepartmentCountAggregateOutputType> | number
         }
       }
     }
@@ -5491,23 +5416,11 @@ export const ActivityLogScalarFieldEnum = {
 export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
 
 
-export const DepartmentScalarFieldEnum = {
-  id: 'id',
-  department_code: 'department_code',
-  department_name: 'department_name',
-  isActive: 'isActive',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-} as const
-
-export type DepartmentScalarFieldEnum = (typeof DepartmentScalarFieldEnum)[keyof typeof DepartmentScalarFieldEnum]
-
-
 export const VerticalScalarFieldEnum = {
   id: 'id',
   name: 'name',
   code: 'code',
-  departmentId: 'departmentId',
+  divisionId: 'divisionId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -6921,7 +6834,6 @@ export type GlobalOmitConfig = {
   approval?: Prisma.ApprovalOmit
   workFlowTemplateUser?: Prisma.WorkFlowTemplateUserOmit
   activityLog?: Prisma.ActivityLogOmit
-  department?: Prisma.DepartmentOmit
   vertical?: Prisma.VerticalOmit
   zone?: Prisma.ZoneOmit
   branch?: Prisma.BranchOmit
