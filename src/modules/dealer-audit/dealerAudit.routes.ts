@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import multer from "multer";
 import asyncHandler from "@shared/middleware/async.middleware";
 import { requireAuth, authorize } from "@kernel/auth/auth.middleware";
@@ -10,6 +10,9 @@ import {
 	updateChecklistTemplateDraft,
 	createTemplateDraftVersion,
 	publishChecklistTemplate,
+	archiveChecklistTemplate,
+	deleteChecklistTemplate,
+	uploadChecklistReferencePhoto,
 
 	// ── Internal staff surface: Admin/Reviewer view any instance, Reviewer acts ──
 	triggerDealerAuditInstance,
@@ -20,7 +23,6 @@ import {
 	generateAndSendDealerAuditReport,
 
 	// ── Dealer surface: own instances only ──
-	listMyDealerAuditInstances,
 	getMyDealerAuditInstanceById,
 	saveMyDealerAuditResponses,
 	submitMyDealerAuditInstance,
@@ -32,7 +34,15 @@ import {
 	launchDealerAuditCycle,
 	listReviewerOptions,
 	listDealerOptions,
+	// ── Audit list + tracker ──
+	listAudits,
+	listMyAudits,
+	getTrackerSummary,
+	// ── One audit ──
+	getAudit,
+	getAuditChecklist,
 } from "./dealerAuditCycle.controller";
+import { isDealerUser } from "./dealerAuditCycle.service";
 
 const router = Router();
 export const APP_KEY = "DEALER_AUDIT";
@@ -41,6 +51,15 @@ const MODULE_REVIEW = "DEALER_AUDIT_REVIEW";
 const MODULE_DEALER = "DEALER_AUDIT_DEALER";
 
 const upload = multer({ storage: multer.memoryStorage() });
+
+// Lets one URL serve two audiences: a dealer login continues on this route,
+// everyone else skips to the next matching route.
+const dealerOnly = asyncHandler(
+	async (req: Request, _res: Response, next: NextFunction) => {
+		const isDealer = req.user?.id ? await isDealerUser(req.user.id) : false;
+		next(isDealer ? undefined : "route");
+	},
+);
 
 // ── Dealer surface (own instances only) ──
 //
@@ -59,7 +78,7 @@ router.get(
 	"/mine",
 	requireAuth,
 	authorize(APP_KEY, MODULE_DEALER, "read"),
-	asyncHandler(listMyDealerAuditInstances),
+	asyncHandler(listMyAudits),
 );
 router.get(
 	"/mine/:id",
@@ -93,6 +112,55 @@ router.post(
 	asyncHandler(uploadMyDealerAuditItemEvidence),
 );
 
+// ── Audit list (shared URL) ──
+// Dealer logins only ever get their own dealership's audits, even if their
+// profile was given admin access by mistake. Order matters.
+router.get(
+	"/audits",
+	requireAuth,
+	dealerOnly,
+	authorize(APP_KEY, MODULE_DEALER, "read"),
+	asyncHandler(listMyAudits),
+);
+router.get(
+	"/audits",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	asyncHandler(listAudits),
+);
+router.get(
+	"/audits/:id",
+	requireAuth,
+	dealerOnly,
+	authorize(APP_KEY, MODULE_DEALER, "read"),
+	asyncHandler(getAudit),
+);
+router.get(
+	"/audits/:id",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	asyncHandler(getAudit),
+);
+router.get(
+	"/audits/:id/checklist",
+	requireAuth,
+	dealerOnly,
+	authorize(APP_KEY, MODULE_DEALER, "read"),
+	asyncHandler(getAuditChecklist),
+);
+router.get(
+	"/audits/:id/checklist",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	asyncHandler(getAuditChecklist),
+);
+router.get(
+	"/tracker/summary",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	asyncHandler(getTrackerSummary),
+);
+
 // ── Internal staff surface ──
 // Admin: templates, cycles, and instance listing/viewing.
 // Reviewer: the two review-action routes, plus a read grant on
@@ -124,6 +192,14 @@ router.get(
 	asyncHandler(listDealerOptions),
 );
 
+// ── Templates (Admin) ──
+router.post(
+	"/templates/reference-photos",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	upload.single("file"),
+	asyncHandler(uploadChecklistReferencePhoto),
+);
 router.post(
 	"/templates",
 	requireAuth,
@@ -160,7 +236,20 @@ router.post(
 	authorize(APP_KEY, MODULE_ADMIN, "write"),
 	asyncHandler(publishChecklistTemplate),
 );
+router.post(
+	"/templates/:id/archive",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	asyncHandler(archiveChecklistTemplate),
+);
+router.delete(
+	"/templates/:id",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	asyncHandler(deleteChecklistTemplate),
+);
 
+// ── Instances ──
 router.post(
 	"/instances",
 	requireAuth,
