@@ -1,14 +1,21 @@
-/* ===== constants ===== */
-// cpp.constants.ts — keys and allow-lists shared by the CPP controller + helper.
+// cpp.constants.ts — keys, statuses, allow-lists, roles and SAP plant data shared by
+// every CPP file. No logic beyond tiny lookups. (cpp.plants.ts was merged in here.)
+
+/* ===== keys ===== */
 
 export const CPP_APP_KEY = "CPP";
 export const CPP_MODULE = "CPP_REQUEST";
 
+/** WorkflowInstance / AccessToken / ActivityLog subjectType of a CPP request. */
+export const CPP_SUBJECT_TYPE = "CPP_REQUEST";
+
 /** ActivityLog.subjectType (WorkflowSubjectType enum). Matrix audit rows use it too, tagged by metadata.target. */
-export const CPP_LOG_SUBJECT = { REQUEST: "CPP_REQUEST" } as const;
+export const CPP_LOG_SUBJECT = { REQUEST: CPP_SUBJECT_TYPE } as const;
 export const CPP_MATRIX_LOG_TARGET = "APPROVAL_MATRIX";
 /** Admin screen that assigns people to approval roles (seed it like CPP_REQUEST). */
 export const CPP_MATRIX_MODULE = "CPP_APPROVAL_MATRIX";
+
+/* ===== status ===== */
 
 /**
  * DRAFT -> IN_PROGRESS (WF 1, then WF 2 if the band needs the committee)
@@ -29,11 +36,9 @@ export const CPP_STATUS = {
  * never a typed string literal.
  */
 export type CppStatusValue = (typeof CPP_STATUS)[keyof typeof CPP_STATUS];
-export const CPP_STATUSES: readonly CppStatusValue[] =
-	Object.values(CPP_STATUS);
+export const CPP_STATUSES: readonly CppStatusValue[] = Object.values(CPP_STATUS);
 export const isCppStatus = (value: unknown): value is CppStatusValue =>
-	typeof value === "string" &&
-	(CPP_STATUSES as readonly string[]).includes(value);
+	typeof value === "string" && (CPP_STATUSES as readonly string[]).includes(value);
 
 /** Statuses a requester may still edit. */
 export const CPP_EDITABLE_STATUSES: readonly CppStatusValue[] = [
@@ -41,11 +46,46 @@ export const CPP_EDITABLE_STATUSES: readonly CppStatusValue[] = [
 	CPP_STATUS.CLARIFICATION_REQUESTED,
 ];
 
+/* ===== form allow-lists ===== */
+
 export const CPP_MATERIAL_TYPES = ["Direct", "Indirect"] as const;
 export const CPP_PRICE_TYPES = ["STANDARD", "SUBCONTRACTING"] as const;
 export const CPP_EFFECTS = ["Quality", "Cost", "Delivery"] as const;
 /** "Applicable plants" on the form (different from the routing plant). */
 export const CPP_APPLICABLE_PLANTS = ["DWD", "KGP", "SPARE"] as const;
+
+/* ===== SAP plants ===== */
+
+/* ── EDIT HERE: summary-sheet plant names -> SAP plant codes ───────────────── */
+export const PLANT_CODE_BY_NAME: Record<string, string> = {
+	DWD: "1006",
+	KGP: "3006",
+	"KGP WH": "8445",
+	"DWD WH": "8580",
+	NGP: "8400",
+};
+/* ───────────────────────────────────────────────────────────────────────────── */
+
+/** SAP plant codes from "Applicable Plant(s)" in the CPP format (Master Data rows). */
+export const CPP_LOCATION_CODES = Object.values(PLANT_CODE_BY_NAME);
+
+/** "1006" stays "1006"; "DWD" -> "1006". Null when the name is not a known plant. */
+export const plantCodeOf = (value: string): string | null => {
+	const v = value.trim().toUpperCase().replace(/\s+/g, " ");
+	if (/^\d{4}$/.test(v)) return v;
+	return PLANT_CODE_BY_NAME[v] ?? null;
+};
+
+/* ── EDIT HERE: SAP purchasing organisation per plant ─────────────────────────
+ * Direct procurement (CPP notes §2.6): plant 8400 (NGP / NUP) -> P506, all others -> P501. */
+const PURCHASE_ORG_BY_PLANT_CODE: Record<string, string> = { "8400": "P506" };
+const DEFAULT_PURCHASE_ORG = "P501";
+/* ───────────────────────────────────────────────────────────────────────────── */
+
+export const purchaseOrgForPlant = (plantCode: string): string =>
+	PURCHASE_ORG_BY_PLANT_CODE[plantCode] ?? DEFAULT_PURCHASE_ORG;
+
+/* ===== attachments ===== */
 
 /**
  * Attachment slots. "purchasingFile" is the Excel (Purchase Info Record) that
@@ -70,6 +110,8 @@ export const CPP_ATTACHMENT_TYPES = [
 export type CppAttachmentType = (typeof CPP_ATTACHMENT_TYPES)[number];
 
 export const CPP_MAX_FILE_SIZE = 10 * 1024 * 1024; // matches the frontend 10 MB limit
+/** Never download an upload bigger than this just to read part rows from it. */
+export const CPP_MAX_PARSE_BYTES = 8 * 1024 * 1024;
 
 const SPREADSHEET_MIME = [
 	"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -87,44 +129,25 @@ const DOCUMENT_MIME = [
 	"application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 	...SPREADSHEET_MIME,
 ];
-const DOCUMENT_EXT = [
-	"pdf",
-	"jpg",
-	"jpeg",
-	"png",
-	"doc",
-	"docx",
-	...SPREADSHEET_EXT,
-];
+const DOCUMENT_EXT = ["pdf", "jpg", "jpeg", "png", "doc", "docx", ...SPREADSHEET_EXT];
 
-export const CPP_FILE_RULES: Record<
-	CppAttachmentType,
-	{ mime: string[]; ext: string[]; label: string }
-> = {
-	purchasingFile: {
-		mime: SPREADSHEET_MIME,
-		ext: SPREADSHEET_EXT,
-		label: "XLSX, XLS or CSV",
-	},
+type FileRule = { mime: string[]; ext: string[]; label: string };
+
+export const CPP_FILE_RULES: Record<CppAttachmentType, FileRule> = {
+	purchasingFile: { mime: SPREADSHEET_MIME, ext: SPREADSHEET_EXT, label: "XLSX, XLS or CSV" },
 	partSummary: {
 		mime: SPREADSHEET_MIME,
 		ext: SPREADSHEET_EXT,
 		label: "XLSX, XLS or CSV (use the summary sheet template)",
 	},
 	...Object.fromEntries(
-		CPP_ATTACHMENT_TYPES.filter((t) => t !== "purchasingFile" && t !== "partSummary").map((t) => [
-			t,
-			{
-				mime: DOCUMENT_MIME,
-				ext: DOCUMENT_EXT,
-				label: "PDF, image, Word or Excel",
-			},
-		]),
+		CPP_ATTACHMENT_TYPES.filter((t) => t !== "purchasingFile" && t !== "partSummary").map(
+			(t) => [t, { mime: DOCUMENT_MIME, ext: DOCUMENT_EXT, label: "PDF, image, Word or Excel" }],
+		),
 	),
-} as Record<
-	CppAttachmentType,
-	{ mime: string[]; ext: string[]; label: string }
->;
+} as Record<CppAttachmentType, FileRule>;
+
+/* ===== listing ===== */
 
 export const CPP_LISTING_SORT_FIELDS = [
 	"created_at",
@@ -144,11 +167,11 @@ export const CPP_MAX_PAGE_SIZE = 100;
 export const CPP_DEFAULT_PAGE_SIZE = 25;
 
 /* ===== roles ===== */
-// cpp.roles.ts — the approver "slots" an admin fills in the approval matrix.
-// A slot is a role (e.g. HEAD_SCM) and a scope: plant-specific roles need one
-// assignment per plant (KGP, DWD); the rest have a single ALL assignment.
-// The routing rules (cpp.chains.ts) only ever name roles, never people, so
-// changing who sits in a role never touches the rules.
+// The approver "slots" an admin fills in the approval matrix. A slot is a role
+// (e.g. HEAD_SCM) and a scope: plant-specific roles need one assignment per plant
+// (KGP, DWD); the rest have a single ALL assignment. The routing rules
+// (cpp.chains.data.ts) only ever name roles, never people, so changing who sits in
+// a role never touches the rules.
 
 export const CPP_SLOT_SCOPES = ["ALL", "KGP", "DWD"] as const;
 export type CppSlotScope = (typeof CPP_SLOT_SCOPES)[number];
@@ -163,7 +186,8 @@ export type CppRoleGroup =
 	| "CPP committee"
 	| "Chairmen"
 	| "Managing Director"
-	| "Observers";
+	| "Observers"
+	| "TCS";
 
 export type CppRoleDef = {
 	key: string;
@@ -175,8 +199,13 @@ export type CppRoleDef = {
 	assignable: boolean;
 	/** Observers see requests but never act on them. */
 	observer?: boolean;
+	/** Gets the approved-request mail (TCS). Not an approval stage. */
+	recipient?: boolean;
 	note?: string;
 };
+
+/** The TCS role: who gets the approved mail with the PDF and the SAP text files. */
+export const CPP_TCS_ROLE_KEY = "TCS";
 
 export const CPP_ROLES: CppRoleDef[] = [
 	{
@@ -188,34 +217,10 @@ export const CPP_ROLES: CppRoleDef[] = [
 		note: "The person who creates the request.",
 	},
 
-	{
-		key: "CATEGORY_HEAD",
-		label: "Category Head KGP/DWD",
-		group: "Recommenders",
-		scope: "PLANT",
-		assignable: true,
-	},
-	{
-		key: "CATEGORY_HEAD_STEEL",
-		label: "Category Head for Steel KGP/DWD",
-		group: "Recommenders",
-		scope: "PLANT",
-		assignable: true,
-	},
-	{
-		key: "INDIRECT_HEAD",
-		label: "Indirect Head KGP/DWD",
-		group: "Recommenders",
-		scope: "PLANT",
-		assignable: true,
-	},
-	{
-		key: "HEAD_COMP_DEV",
-		label: "Head Component Development KGP/DWD",
-		group: "Recommenders",
-		scope: "PLANT",
-		assignable: true,
-	},
+	{ key: "CATEGORY_HEAD", label: "Category Head KGP/DWD", group: "Recommenders", scope: "PLANT", assignable: true },
+	{ key: "CATEGORY_HEAD_STEEL", label: "Category Head for Steel KGP/DWD", group: "Recommenders", scope: "PLANT", assignable: true },
+	{ key: "INDIRECT_HEAD", label: "Indirect Head KGP/DWD", group: "Recommenders", scope: "PLANT", assignable: true },
+	{ key: "HEAD_COMP_DEV", label: "Head Component Development KGP/DWD", group: "Recommenders", scope: "PLANT", assignable: true },
 	{
 		key: "VERTICAL_HEAD_PROPRIETARY_IMPORTS",
 		label: "Vertical Head Proprietary & Imports",
@@ -233,21 +238,9 @@ export const CPP_ROLES: CppRoleDef[] = [
 		note: "Second recommender for Import HCM / NON HCM (open question Q11).",
 	},
 
-	{
-		key: "COST_CONTROLLER",
-		label: "Cost Controller",
-		group: "Checker",
-		scope: "ALL",
-		assignable: true,
-	},
+	{ key: "COST_CONTROLLER", label: "Cost Controller", group: "Checker", scope: "ALL", assignable: true },
 
-	{
-		key: "HEAD_SCM",
-		label: "Head SCM KGP / Head SCM DWD",
-		group: "Approvers",
-		scope: "PLANT",
-		assignable: true,
-	},
+	{ key: "HEAD_SCM", label: "Head SCM KGP / Head SCM DWD", group: "Approvers", scope: "PLANT", assignable: true },
 	{
 		key: "HEAD_SCM_KGP_PLANT_IMPORTS",
 		label: "Head - SCM KGP Plant & Imports",
@@ -256,20 +249,8 @@ export const CPP_ROLES: CppRoleDef[] = [
 		assignable: true,
 		note: "Import NON HCM goes here after the Cost Controller (open question Q13).",
 	},
-	{
-		key: "DESIGN_HEAD",
-		label: "Design Head KGP/DWD",
-		group: "Approvers",
-		scope: "PLANT",
-		assignable: true,
-	},
-	{
-		key: "PLANT_HEAD",
-		label: "Plant Head KGP/DWD",
-		group: "Approvers",
-		scope: "PLANT",
-		assignable: true,
-	},
+	{ key: "DESIGN_HEAD", label: "Design Head KGP/DWD", group: "Approvers", scope: "PLANT", assignable: true },
+	{ key: "PLANT_HEAD", label: "Plant Head KGP/DWD", group: "Approvers", scope: "PLANT", assignable: true },
 	{
 		key: "SCM_HEAD",
 		label: "SCM Head",
@@ -279,27 +260,9 @@ export const CPP_ROLES: CppRoleDef[] = [
 		note: "Also does the final price-feeding task.",
 	},
 
-	{
-		key: "CATEGORY_HEAD_SPARES_SOURCING",
-		label: "Category Head Spares Sourcing",
-		group: "Spares",
-		scope: "ALL",
-		assignable: true,
-	},
-	{
-		key: "HEAD_SPARE_PARTS",
-		label: "Head Spare Parts",
-		group: "Spares",
-		scope: "ALL",
-		assignable: true,
-	},
-	{
-		key: "SPARES_HEAD",
-		label: "Spares Head",
-		group: "Spares",
-		scope: "ALL",
-		assignable: true,
-	},
+	{ key: "CATEGORY_HEAD_SPARES_SOURCING", label: "Category Head Spares Sourcing", group: "Spares", scope: "ALL", assignable: true },
+	{ key: "HEAD_SPARE_PARTS", label: "Head Spare Parts", group: "Spares", scope: "ALL", assignable: true },
+	{ key: "SPARES_HEAD", label: "Spares Head", group: "Spares", scope: "ALL", assignable: true },
 
 	...[1, 2, 3, 4, 5, 6, 7].map(
 		(n): CppRoleDef => ({
@@ -320,20 +283,8 @@ export const CPP_ROLES: CppRoleDef[] = [
 		assignable: true,
 		note: "Parallel with the Chairman: either one can approve.",
 	},
-	{
-		key: "CHAIRMAN",
-		label: "Chairman - CPP",
-		group: "Chairmen",
-		scope: "ALL",
-		assignable: true,
-	},
-	{
-		key: "MD_THCM",
-		label: "Managing Director (MD) - THCM",
-		group: "Managing Director",
-		scope: "ALL",
-		assignable: true,
-	},
+	{ key: "CHAIRMAN", label: "Chairman - CPP", group: "Chairmen", scope: "ALL", assignable: true },
+	{ key: "MD_THCM", label: "Managing Director (MD) - THCM", group: "Managing Director", scope: "ALL", assignable: true },
 
 	{
 		key: "OBSERVER",
@@ -344,12 +295,21 @@ export const CPP_ROLES: CppRoleDef[] = [
 		observer: true,
 		note: "Can open every CPP request, cannot approve or comment as an approver.",
 	},
+
+	{
+		key: CPP_TCS_ROLE_KEY,
+		label: "TCS (SAP upload team)",
+		group: "TCS",
+		scope: "ALL",
+		assignable: true,
+		recipient: true,
+		note: "Everyone here gets the approved-request mail with the PDF and both SAP text files. The proposer is copied.",
+	},
 ];
 
 const ROLE_MAP = new Map(CPP_ROLES.map((role) => [role.key, role]));
 
-export const getRole = (key: string): CppRoleDef | undefined =>
-	ROLE_MAP.get(key);
+export const getRole = (key: string): CppRoleDef | undefined => ROLE_MAP.get(key);
 
 export const CPP_ROLE_KEYS = CPP_ROLES.map((role) => role.key);
 
@@ -360,8 +320,7 @@ export const scopesForRole = (role: CppRoleDef): CppSlotScope[] =>
 /** Roles the admin can assign (everything except the requester). */
 export const ASSIGNABLE_ROLES = CPP_ROLES.filter((role) => role.assignable);
 
-export const slotKey = (roleKey: string, scope: string) =>
-	`${roleKey}:${scope}`;
+export const slotKey = (roleKey: string, scope: string) => `${roleKey}:${scope}`;
 
 export const isValidSlot = (roleKey: string, scope: string): boolean => {
 	const role = getRole(roleKey);

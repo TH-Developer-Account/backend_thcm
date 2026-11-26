@@ -12,27 +12,29 @@ import {
 	CPP_MODULE,
 } from "./cpp.constants";
 import {
+	closeCppRequest,
 	createCppRequest,
 	deleteCppAttachment,
 	deleteCppDraft,
+	downloadCppExcel,
+	downloadCppText,
+	downloadCppTextByToken,
 	getApprovalChains,
 	getApprovalMatrix,
 	getCppRequestById,
 	getPartSummaryTemplate,
 	listCppRequests,
+	previewCppApproval,
+	redirectToCppPdf,
 	replaceMatrixUser,
+	resubmitCppRequest,
 	saveApprovalMatrix,
 	searchMatrixUsers,
+	submitCppRequest,
 	syncApprovalTemplates,
 	updateCppRequest,
 	uploadCppAttachment,
 } from "./cpp.controller";
-import { exportCppExcel, exportCppText } from "./cpp.export.controller";
-import {
-	previewCppApproval,
-	resubmitCppRequest,
-	submitCppRequest,
-} from "./cpp.submit.controller";
 
 const router = Router();
 
@@ -80,6 +82,11 @@ router.get(
 	authorize(CPP_APP_KEY, CPP_MATRIX_MODULE, "read"),
 	asyncHandler(getApprovalChains),
 );
+
+/* Public PDF view (no login). The token comes from the approved mail, like the
+ * vendor onboarding /public/pdf/:token route. */
+router.get("/public/pdf/:token", asyncHandler(redirectToCppPdf));
+router.get("/public/text/:token", asyncHandler(downloadCppTextByToken));
 
 /* Requests */
 // Above "/:id" so "part-summary-template" is not read as a request id.
@@ -141,18 +148,26 @@ router.post(
 	asyncHandler(resubmitCppRequest),
 );
 
+/* TCS closes the request once the SAP update is done (the handler checks who may; "read" so TCS users without write access can close). */
+router.post(
+	"/:id/close",
+	requireAuth,
+	authorize(CPP_APP_KEY, CPP_MODULE, "read"),
+	asyncHandler(closeCppRequest),
+);
+
 /* Export */
 router.get(
 	"/:id/export/excel",
 	requireAuth,
 	authorize(CPP_APP_KEY, CPP_MODULE, "read"),
-	asyncHandler(exportCppExcel),
+	asyncHandler(downloadCppExcel),
 );
 router.get(
 	"/:id/export/text",
 	requireAuth,
 	authorize(CPP_APP_KEY, CPP_MODULE, "read"),
-	asyncHandler(exportCppText),
+	asyncHandler(downloadCppText),
 );
 
 /* Attachments */

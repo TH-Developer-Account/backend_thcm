@@ -1,4 +1,19 @@
+// cpp.helper.ts — CPP logic: no req/res, no Prisma client, no S3. All pure
+// except the one mail re-export below. Unit tested on its own (cpp.spec.ts).
+//
+//   sections        validate / merge / read the per-tab JSON sections
+//   section readers the few values other files read out of the sections
+//   payload         request body -> Prisma data (derived listing + band columns)
+//   submit checks   what must be filled before a request enters approval
+//   responses       list item / detail shapes, pending-on
+//   listing         tab / paging / search / sort
+//   files           file-name helpers
+//   matrix          coverage checks, save validation, replace-user plan
+//
+// Shapes the PDF / export read from the uploaded Excel live in cpp.sheet.ts.
 import ApiError from "@shared/utils/apiError";
+import { type Prisma } from "../../prisma/generated/prisma/client";
+import type { PendingOn } from "@kernel/workflow/workflowSubject.helper";
 
 import {
 	ASSIGNABLE_ROLES,
@@ -6,18 +21,19 @@ import {
 	CPP_DEFAULT_PAGE_SIZE,
 	CPP_EFFECTS,
 	CPP_LISTING_SORT_FIELDS,
+	CPP_LOCATION_CODES,
 	CPP_MAX_PAGE_SIZE,
 	CPP_PRICE_TYPES,
 	CPP_SLOT_SCOPES,
 	CPP_STATUS,
-	CPP_STATUSES,
+	CPP_TCS_ROLE_KEY,
 	getRole,
 	isCppStatus,
 	isValidSlot,
+	plantCodeOf,
 	scopesForRole,
 	slotKey,
 } from "./cpp.constants";
-import { type Prisma } from "../../prisma/generated/prisma/client";
 import {
 	CPP_CATEGORIES,
 	CPP_CONDITION_CODES,
@@ -26,101 +42,46 @@ import {
 	resolveCombination,
 	roleUsage,
 } from "./cpp.rules";
-// cpp/cpp.helper.ts
-//
-// CPP mail, kept in one helper the same way mediclaim.helper.ts keeps its
-// guest mails. Called from workflowSubject.helper.ts's postFinalApprovalHooks,
-// which runs after the approval transaction has committed, so this takes no
-// tx and reads through the shared prisma client.
+import { readStoredPartSummary, type PartSummaryRow } from "./cpp.sheet";
 
-import { prisma } from "@shared/config/prisma";
-import { sendWorkflowMail } from "@mail/workFlowEmail.services";
-import type { PendingOn } from "@kernel/workflow/workflowSubject.helper";
+// The approved mail lives in cpp.mail.ts. Re-exported so the kernel final-approval
+// hook (workflowSubject.helper.ts) keeps working whether it imports the mail
+// function from cpp.helper or from cpp.mail. Same as before the refactor.
+export { notifyCppApproved, sendCppApprovedMail } from "./cpp.mail";
 
-type RecommendedSupplier = { name?: string; code?: string };
+type Json = Record<string, unknown>;
 
-// sections is a JSON array of { key, data }; supplier lives at
-// purchasing → suppliers.recommended (see cpp.submit.controller.ts).
-function getRecommendedSupplier(
-	sections: unknown,
-): RecommendedSupplier | undefined {
-	const list = sections as { key: string; data: unknown }[] | null;
-	const purchasing = list?.find((s) => s.key === "purchasing")?.data as
-		| { suppliers?: { recommended?: RecommendedSupplier } }
-		| undefined;
-	return purchasing?.suppliers?.recommended;
-}
+/* ===== small readers (shared by every CPP file) ===== */
 
-/**
- * Approved mail: TCS gets it, the proposer is CC'd (sendWorkflowMail adds the
- * initiator as CC), and every generated file is attached.
- *
- * TODO (attachments): the PDF / Excel / text exports and the uploaded
- * cpp.attachments are not attached yet. MailJobPayload has no attachments
- * field. Add it in mail.queue.ts, then build the files here.
- */
-export async function notifyCppApproved(requestId: string): Promise<void> {
-	const to = process.env.CPP_TCS_EMAIL;
-	if (!to) {
-		console.warn("[cpp] CPP_TCS_EMAIL is not set; approved mail not sent");
-		return;
-	}
+export const isObject = (v: unknown): v is Json =>
+	typeof v === "object" && v !== null && !Array.isArray(v);
 
-	const cpp = await prisma.cppRequest.findUnique({
-		where: { id: requestId },
-		select: {
-			id: true,
-			referenceNumber: true,
-			category: true,
-			plant: true,
-			condition: true,
-			initiatedById: true,
-			sections: true,
-			attachments: {
-				orderBy: { uploadedAt: "asc" },
-				select: { fileName: true },
-			},
-		},
-	});
-	if (!cpp) return;
+/** Plain object or {}. */
+export const asObject = (value: unknown): Json => (isObject(value) ? value : {});
 
-	const proposer = await prisma.user.findUnique({
-		where: { id: cpp.initiatedById },
-		select: { first_name: true, last_name: true },
-	});
-	const supplier = getRecommendedSupplier(cpp.sections);
+/** Trimmed text of a string / number / boolean; "" for anything else. */
+export const str = (value: unknown): string =>
+	typeof value === "string"
+		? value.trim()
+		: typeof value === "number" || typeof value === "boolean"
+			? String(value)
+			: "";
 
-	await sendWorkflowMail(
-		{
-			to,
-			subject: `CPP ${cpp.referenceNumber} approved`,
-			templateName: "cpp-approved",
-			templateData: {
-				referenceNo: cpp.referenceNumber,
-				category: cpp.category,
-				plant: cpp.plant,
-				condition: cpp.condition,
-				supplierName: supplier?.name ?? "",
-				supplierCode: supplier?.code ?? "",
-				proposerName: proposer
-					? `${proposer.first_name} ${proposer.last_name}`
-					: "",
-				approvedOn: new Date().toLocaleDateString("en-IN"),
-				recipientName: "Team",
-				attachments: cpp.attachments.map((a) => a.fileName),
-				dashboardUrl: `${process.env.FRONTEND_URL}/cpp/${cpp.id}`,
-			},
-		},
-		cpp.initiatedById,
-	);
-}
+export const fullName = (u: {
+	first_name: string | null;
+	last_name: string | null;
+}): string => [u.first_name, u.last_name].filter(Boolean).join(" ").trim();
+
+const has = (obj: Json, key: string) =>
+	Object.prototype.hasOwnProperty.call(obj, key);
+
 /* ===== sections ===== */
-// cpp.sections.ts — a CPP request is saved as an array of sections, one per
-// wizard tab:   [{ key: "basic", label: "Basic details", data: { … } }, …]
-// Same idea as the attachments list (label + data). The server owns the shape:
-// unknown keys are dropped, types and lengths are checked, and an empty section
-// always comes back with every field present, so the UI never meets `undefined`.
-// Files are NOT part of the sections — they are separate uploads (cpp_attachment).
+// A CPP request is saved as an array of sections, one per wizard tab:
+//   [{ key: "basic", label: "Basic details", data: { … } }, …]
+// The server owns the shape: unknown keys are dropped, types and lengths are
+// checked, and an empty section always comes back with every field present, so
+// the UI never meets `undefined`. Files are NOT part of the sections — they are
+// separate uploads (cpp_attachment).
 //
 // Requests saved before a section existed ("financial", "amortisation",
 // "volumes") get it back empty (defaultSectionData), so no migration is needed.
@@ -166,15 +127,6 @@ const tableRows = (max: number, fields: Record<string, Spec>): Spec => ({
 });
 const decimal: Spec = { t: "decimal" };
 
-/** SAP plant codes from "Applicable Plant(s)" in the CPP format. */
-export const CPP_LOCATION_CODES = [
-	"1006", // DWD
-	"3006", // KGP
-	"8445", // KGP WH
-	"8580", // DWD WH
-	"8400", // NGP
-] as const;
-
 /** Same cap as the form (CPP_MAX_TABLE_ROWS). */
 const CPP_MAX_TABLE_ROWS = 20;
 
@@ -189,18 +141,14 @@ const supplier = obj({
 export const CPP_FINANCIAL_PLANTS = ["KGP", "DWD", "SPARE"] as const;
 
 /** "Volumes Taken For Calculation": a / b for actual, c for annualised. */
-const volume = obj({
-	received: decimal,
-	remaining: decimal,
-	annual: decimal,
-});
+const volume = obj({ received: decimal, remaining: decimal, annual: decimal });
 
 /** One plant row: +ve = price increase, -ve = price decrease. */
 const financialRow = obj({
-	actualInr: { t: "decimal" },
-	actualPct: { t: "decimal" },
-	annualisedInr: { t: "decimal" },
-	annualisedPct: { t: "decimal" },
+	actualInr: decimal,
+	actualPct: decimal,
+	annualisedInr: decimal,
+	annualisedPct: decimal,
 });
 
 /** Mandatory Check List answers (CPP_CHECKLIST on the frontend). */
@@ -230,18 +178,18 @@ const SPECS: Record<CppSectionKey, Spec> = {
 		}),
 	}),
 	purchasing: obj({
-		suppliers: obj({
-			existing: supplier,
-			other: supplier,
-			recommended: supplier,
-		}),
+		suppliers: obj({ existing: supplier, other: supplier, recommended: supplier }),
 		approvalValues: obj({
-			partValue: { t: "decimal" },
-			variationPct: { t: "decimal" },
-			amount: { t: "decimal" },
+			partValue: decimal,
+			variationPct: decimal,
+			amount: decimal,
+			// Summary-sheet part each value was picked from ("PLANT::PARTNO"), "" when typed.
 			partValuePart: text(80),
 			amountPart: text(80),
-			// Approval-matrix ranges picked in Purchasing details (band keys, e.g. "1000000_20000000").
+			// Ranges picked in the approval dropdowns (frontend utils/cpp.bands.ts), as band
+			// keys like "10000_100000". They decide the band (see pickRule in cpp.workflow.ts).
+			// FIX: these two were missing here, so the sanitizer dropped them and every
+			// request routed on the typed numbers instead of the picked ranges.
 			partBand: text(40),
 			amountBand: text(40),
 		}),
@@ -275,13 +223,9 @@ const SPECS: Record<CppSectionKey, Spec> = {
 		}),
 	}),
 	financial: obj({
-		plants: obj({
-			KGP: financialRow,
-			DWD: financialRow,
-			SPARE: financialRow,
-		}),
-		totalActualPct: { t: "decimal" },
-		totalAnnualisedPct: { t: "decimal" },
+		plants: obj({ KGP: financialRow, DWD: financialRow, SPARE: financialRow }),
+		totalActualPct: decimal,
+		totalAnnualisedPct: decimal,
 	}),
 	master: obj({
 		materialGroup: text(80),
@@ -293,7 +237,7 @@ const SPECS: Record<CppSectionKey, Spec> = {
 		validFrom: { t: "date" },
 		updateSourceList: text(10),
 		note: text(1000),
-		// Applicable plant / spare codes only. Code + purchasing group feed the
+		// Applicable plant / spare codes only. Code + purchasing group + tax code feed the
 		// TCS text files (ZINFOUPDATE_ME11, ZCHANGEINFO).
 		plantDetails: tableRows(CPP_LOCATION_CODES.length, {
 			code: { t: "oneOf", allowed: CPP_LOCATION_CODES },
@@ -309,11 +253,7 @@ const SPECS: Record<CppSectionKey, Spec> = {
 	other: obj({
 		remarks: text(2000),
 		// Mandatory Check List: Yes / No / NA per row.
-		checklist: obj(
-			Object.fromEntries(
-				MANDATORY_CHECKLIST.map((key) => [key, checklistAnswer]),
-			),
-		),
+		checklist: obj(Object.fromEntries(MANDATORY_CHECKLIST.map((key) => [key, checklistAnswer]))),
 		// "Price in Other Plant Location (if any)".
 		plantPrices: tableRows(CPP_MAX_TABLE_ROWS, {
 			plant: text(20),
@@ -327,14 +267,10 @@ const clean = (value: unknown, spec: Spec, path: string): unknown => {
 	switch (spec.t) {
 		case "text": {
 			if (value === undefined || value === null) return "";
-			if (typeof value !== "string")
-				throw new ApiError(400, `${path} must be text`);
+			if (typeof value !== "string") throw new ApiError(400, `${path} must be text`);
 			const out = value.trim();
 			if (out.length > spec.max)
-				throw new ApiError(
-					400,
-					`${path} is too long (max ${spec.max} characters)`,
-				);
+				throw new ApiError(400, `${path} is too long (max ${spec.max} characters)`);
 			return out;
 		}
 		case "date": {
@@ -349,12 +285,7 @@ const clean = (value: unknown, spec: Spec, path: string): unknown => {
 		}
 		case "decimal": {
 			if (value === undefined || value === null || value === "") return "";
-			const raw = String(value).replace(/[,\s₹]/g, "");
-			if (!/^-?\d+(\.\d+)?$/.test(raw))
-				throw new ApiError(400, `${path} must be a number`);
-			if (Math.abs(Number(raw)) > 99_999_999_999_999)
-				throw new ApiError(400, `${path} is too large`);
-			return raw;
+			return parseDecimal(value, path) ?? "";
 		}
 		case "bool":
 			return value === true;
@@ -369,19 +300,11 @@ const clean = (value: unknown, spec: Spec, path: string): unknown => {
 		}
 		case "list": {
 			if (value === undefined || value === null) return [];
-			if (!Array.isArray(value))
-				throw new ApiError(400, `${path} must be a list`);
+			if (!Array.isArray(value)) throw new ApiError(400, `${path} must be a list`);
 			if (value.length > spec.max)
-				throw new ApiError(
-					400,
-					`${path} has too many entries (max ${spec.max})`,
-				);
+				throw new ApiError(400, `${path} has too many entries (max ${spec.max})`);
 			const items = value.map((item) => {
-				if (
-					typeof item !== "string" ||
-					item.trim() === "" ||
-					item.length > spec.item
-				)
+				if (typeof item !== "string" || item.trim() === "" || item.length > spec.item)
 					throw new ApiError(400, `${path} contains an invalid value`);
 				if (spec.allowed && !spec.allowed.includes(item))
 					throw new ApiError(400, `${path} has an invalid value "${item}"`);
@@ -391,14 +314,12 @@ const clean = (value: unknown, spec: Spec, path: string): unknown => {
 		}
 		case "rows": {
 			if (value === undefined || value === null) return [];
-			if (!Array.isArray(value))
-				throw new ApiError(400, `${path} must be a list`);
+			if (!Array.isArray(value)) throw new ApiError(400, `${path} must be a list`);
 			if (value.length > spec.max)
 				throw new ApiError(400, `${path} has too many rows (max ${spec.max})`);
 			const rowSpec = obj(spec.fields);
 			return value.map((row, index) => {
-				if (!isObject(row))
-					throw new ApiError(400, `${path}[${index}] must be an object`);
+				if (!isObject(row)) throw new ApiError(400, `${path}[${index}] must be an object`);
 				return clean(row, rowSpec, `${path}[${index}]`);
 			});
 		}
@@ -417,31 +338,21 @@ const clean = (value: unknown, spec: Spec, path: string): unknown => {
 };
 
 /** Validates one section and returns it with every field present. */
-export const sanitizeSection = (
-	key: CppSectionKey,
-	data: unknown,
-): Record<string, unknown> =>
-	clean(data, SPECS[key], `sections.${key}`) as Record<string, unknown>;
+export const sanitizeSection = (key: CppSectionKey, data: unknown): Json =>
+	clean(data, SPECS[key], `sections.${key}`) as Json;
 
-export const defaultSectionData = (key: CppSectionKey) =>
-	sanitizeSection(key, {});
+export const defaultSectionData = (key: CppSectionKey) => sanitizeSection(key, {});
 
-export type CppSection = {
-	key: CppSectionKey;
-	label: string;
-	data: Record<string, unknown>;
-};
+export type CppSection = { key: CppSectionKey; label: string; data: Json };
+type SectionMap = Partial<Record<CppSectionKey, Json>>;
 
 /** Request body → validated map. Sections not sent are simply absent. */
-export const parseIncomingSections = (
-	value: unknown,
-): Partial<Record<CppSectionKey, Record<string, unknown>>> => {
+export const parseIncomingSections = (value: unknown): SectionMap => {
 	if (!Array.isArray(value))
 		throw new ApiError(400, "sections must be a list of { key, data }");
-	const out: Partial<Record<CppSectionKey, Record<string, unknown>>> = {};
+	const out: SectionMap = {};
 	for (const entry of value) {
-		if (!isObject(entry))
-			throw new ApiError(400, "Every section must be an object");
+		if (!isObject(entry)) throw new ApiError(400, "Every section must be an object");
 		const key = entry.key as CppSectionKey;
 		if (!(CPP_SECTION_KEYS as readonly string[]).includes(key))
 			throw new ApiError(400, `Unknown section "${String(entry.key)}"`);
@@ -452,10 +363,8 @@ export const parseIncomingSections = (
 };
 
 /** What is stored in the JSON column → a map by key (ignores anything malformed). */
-export const readStoredSections = (
-	stored: unknown,
-): Partial<Record<CppSectionKey, Record<string, unknown>>> => {
-	const out: Partial<Record<CppSectionKey, Record<string, unknown>>> = {};
+export const readStoredSections = (stored: unknown): SectionMap => {
+	const out: SectionMap = {};
 	if (!Array.isArray(stored)) return out;
 	for (const entry of stored) {
 		if (
@@ -472,32 +381,45 @@ export const readStoredSections = (
  * Map → the array that is stored and returned (canonical order, labels from here).
  * Requests saved before a section existed (e.g. "financial") get it with defaults.
  */
-export const toSectionList = (
-	map: Partial<Record<CppSectionKey, Record<string, unknown>>>,
-): CppSection[] =>
+export const toSectionList = (map: SectionMap): CppSection[] =>
 	CPP_SECTION_KEYS.map((key) => ({
 		key,
 		label: CPP_SECTION_LABELS[key],
 		data: map[key] ?? defaultSectionData(key),
 	}));
 
-/* ===== helper ===== */
-// cpp.helper.ts — payload parsing, reference numbers, response mapping, listing.
-// No req/res in here, so it can be unit tested on its own.
-//
-// Save payload (POST /cpp, PUT /cpp/:id):
-//   {
-//     category?, plant?, condition?,             // routing — real columns
-//     sections?: [{ key, label?, data }]         // one per tab, see cpp.sections.ts
-//   }
-// Only what is sent changes: a missing key is untouched, a section sent again
-// replaces that whole section. Listing / routing columns are DERIVED here from
-// the sections, never taken from the client.
+/* ===== section readers ===== */
+// The handful of values the submit check, the SAP export, the mail and the PDF read
+// out of the stored sections. Previously each of those files had its own copy.
 
-type Tx = Prisma.TransactionClient;
-type Json = Record<string, unknown>;
+/** One stored section's data, {} when absent. */
+export const sectionDataOf = (sections: unknown, key: CppSectionKey): Json =>
+	readStoredSections(sections)[key] ?? {};
 
-/* ---------------------------- reference number ---------------------------- */
+/** Purchasing → suppliers.recommended (name + vendor code). */
+export const recommendedSupplierOf = (sections: unknown): { name: string; code: string } => {
+	const recommended = asObject(asObject(sectionDataOf(sections, "purchasing").suppliers).recommended);
+	return { name: str(recommended.name), code: str(recommended.code) };
+};
+
+export type MasterPlant = { code: string; purchasingGroup: string; taxCode: string };
+
+/** Master Data → plantDetails rows (what the SAP text files need per plant). */
+export const masterPlantsOf = (sections: unknown): MasterPlant[] => {
+	const rows = sectionDataOf(sections, "master").plantDetails;
+	return (Array.isArray(rows) ? rows : []).map((p) => {
+		const r = asObject(p);
+		return { code: str(r.code), purchasingGroup: str(r.purchasingGroup), taxCode: str(r.taxCode) };
+	});
+};
+
+/** Ranges picked in Purchasing details, "" when not picked (older requests route on numbers). */
+export const approvalBandsOf = (sections: unknown): { partBand: string; amountBand: string } => {
+	const values = asObject(sectionDataOf(sections, "purchasing").approvalValues);
+	return { partBand: str(values.partBand), amountBand: str(values.amountBand) };
+};
+
+/* ===== reference number ===== */
 
 /**
  * "WS" + ddMMyyHHmmss + milliseconds (IST), e.g. WS191126154912347.
@@ -524,18 +446,21 @@ const getCppReferenceDateParts = (date: Date): Record<string, string> => {
 
 export function generateCppReferenceNumber(): string {
 	const now = new Date();
-	const { day, month, year, hour, minute, second } =
-		getCppReferenceDateParts(now);
+	const { day, month, year, hour, minute, second } = getCppReferenceDateParts(now);
 	const ms = String(now.getMilliseconds()).padStart(3, "0");
 	return `WS${day}${month}${year}${hour}${minute}${second}${ms}`;
 }
 
-/* ------------------------------ small parsers ----------------------------- */
+/** The SAP "source" field is the number only: WS5792955058 -> 5792955058. */
+export const sapReferenceOf = (referenceNumber: string): string =>
+	referenceNumber.replace(/^WS/i, "");
 
-const has = (obj: Json, key: string) =>
-	Object.prototype.hasOwnProperty.call(obj, key);
-const isObject = (v: unknown): v is Json =>
-	typeof v === "object" && v !== null && !Array.isArray(v);
+/* ===== payload ===== */
+// Save payload (POST /cpp, PUT /cpp/:id):
+//   { category?, plant?, condition?, sections?: [{ key, label?, data }] }
+// Only what is sent changes: a missing key is untouched, a section sent again
+// replaces that whole section. Listing / routing columns are DERIVED here from
+// the sections, never taken from the client.
 
 /** undefined -> untouched; null / "" -> clear. */
 const parseOneOf = <T extends readonly string[]>(
@@ -544,10 +469,7 @@ const parseOneOf = <T extends readonly string[]>(
 	allowed: T,
 ): T[number] | null => {
 	if (value === null || value === "") return null;
-	if (
-		typeof value !== "string" ||
-		!(allowed as readonly string[]).includes(value)
-	)
+	if (typeof value !== "string" || !(allowed as readonly string[]).includes(value))
 		throw new ApiError(400, `${field} must be one of: ${allowed.join(", ")}`);
 	return value as T[number];
 };
@@ -556,17 +478,11 @@ const parseOneOf = <T extends readonly string[]>(
 export const parseDecimal = (value: unknown, field: string): string | null => {
 	if (value === null || value === undefined || value === "") return null;
 	const raw =
-		typeof value === "number"
-			? String(value)
-			: String(value).replace(/[,\s₹]/g, "");
-	if (!/^-?\d+(\.\d+)?$/.test(raw))
-		throw new ApiError(400, `${field} must be a number`);
-	if (Math.abs(Number(raw)) > 99_999_999_999_999)
-		throw new ApiError(400, `${field} is too large`);
+		typeof value === "number" ? String(value) : String(value).replace(/[,\s₹]/g, "");
+	if (!/^-?\d+(\.\d+)?$/.test(raw)) throw new ApiError(400, `${field} must be a number`);
+	if (Math.abs(Number(raw)) > 99_999_999_999_999) throw new ApiError(400, `${field} is too large`);
 	return raw;
 };
-
-/* --------------------------------- payload -------------------------------- */
 
 /** Values already stored, needed so an update can merge instead of overwrite. */
 export type CppStoredRequest = {
@@ -576,10 +492,7 @@ export type CppStoredRequest = {
 	sections: unknown;
 };
 
-const str = (value: unknown): string | null => {
-	const text = typeof value === "string" ? value.trim() : "";
-	return text === "" ? null : text;
-};
+const strOrNull = (value: unknown): string | null => str(value) || null;
 
 /**
  * Turns a request body into Prisma data. Drafts are deliberately lenient:
@@ -589,74 +502,49 @@ export function buildCppData(
 	bodyInput: unknown,
 	stored?: CppStoredRequest,
 ): Prisma.CppRequestUncheckedUpdateManyInput {
-	if (!isObject(bodyInput))
-		throw new ApiError(400, "Request body must be a JSON object");
+	if (!isObject(bodyInput)) throw new ApiError(400, "Request body must be a JSON object");
 	const body = bodyInput;
 	const data: Prisma.CppRequestUncheckedUpdateManyInput = {};
 
-	if (has(body, "category"))
-		data.category = parseOneOf(body.category, "category", CPP_CATEGORIES);
-	if (has(body, "plant"))
-		data.plant = parseOneOf(body.plant, "plant", CPP_PLANTS);
+	if (has(body, "category")) data.category = parseOneOf(body.category, "category", CPP_CATEGORIES);
+	if (has(body, "plant")) data.plant = parseOneOf(body.plant, "plant", CPP_PLANTS);
 	if (has(body, "condition"))
-		data.condition = parseOneOf(
-			body.condition,
-			"condition",
-			CPP_CONDITION_CODES,
-		);
+		data.condition = parseOneOf(body.condition, "condition", CPP_CONDITION_CODES);
 
 	/* routing combination — checked against what the row WILL contain */
-	const category = (
-		has(body, "category") ? data.category : stored?.category
-	) as string | null;
-	const plant = (has(body, "plant") ? data.plant : stored?.plant) as
-		| string
-		| null;
-	const condition = (
-		has(body, "condition") ? data.condition : stored?.condition
-	) as string | null;
+	const category = (has(body, "category") ? data.category : stored?.category) as string | null;
+	const plant = (has(body, "plant") ? data.plant : stored?.plant) as string | null;
+	const condition = (has(body, "condition") ? data.condition : stored?.condition) as string | null;
 	assertValidCombination({ category, plant, condition });
 
 	/* sections — merged by key so one tab never wipes another */
 	const sections = readStoredSections(stored?.sections);
-	const incoming = has(body, "sections")
-		? parseIncomingSections(body.sections)
-		: {};
-	for (const key of Object.keys(incoming) as CppSectionKey[])
-		sections[key] = incoming[key];
+	const incoming = has(body, "sections") ? parseIncomingSections(body.sections) : {};
+	for (const key of Object.keys(incoming) as CppSectionKey[]) sections[key] = incoming[key];
 	const sectionsTouched = Object.keys(incoming).length > 0;
-	if (sectionsTouched)
-		data.sections = toSectionList(sections) as unknown as Prisma.InputJsonValue;
+	if (sectionsTouched) data.sections = toSectionList(sections) as unknown as Prisma.InputJsonValue;
 
 	/* derived columns (search + routing) */
 	if (sectionsTouched) {
 		const basic = sections.basic ?? {};
-		const suppliers = isObject((sections.purchasing ?? {}).suppliers)
-			? ((sections.purchasing as Json).suppliers as Json)
-			: {};
-		const recommended = isObject(suppliers.recommended)
-			? suppliers.recommended
-			: {};
-		data.reasonCode = str(basic.reason);
-		data.supplierName = str(recommended.name);
-		data.supplierCode = str(recommended.code);
+		const recommended = asObject(asObject((sections.purchasing ?? {}).suppliers).recommended);
+		data.reasonCode = strOrNull(basic.reason);
+		data.supplierName = strOrNull(recommended.name);
+		data.supplierCode = strOrNull(recommended.code);
 	}
 	if (has(body, "category") || has(body, "plant"))
 		data.isSpare = category === "SPARES" || plant === "Spares";
 	if (sectionsTouched || has(body, "condition")) {
-		const purchasing = sections.purchasing ?? {};
-		const values = isObject(purchasing.approvalValues)
-			? (purchasing.approvalValues as Record<string, string | null>)
-			: {};
+		const values = asObject((sections.purchasing ?? {}).approvalValues) as Record<
+			string,
+			string | null
+		>;
 		// The financial table wins over a typed amount, so the band always
 		// matches the financial impact the approvers see.
 		const fromTable = financialAmount(condition, sections.financial);
 		Object.assign(
 			data,
-			deriveBandColumns(
-				condition,
-				fromTable === null ? values : { ...values, amount: fromTable },
-			),
+			deriveBandColumns(condition, fromTable === null ? values : { ...values, amount: fromTable }),
 		);
 	}
 	return data;
@@ -672,11 +560,7 @@ export function assertValidCombination(input: {
 	// Early drafts are partial: only check once category and condition are both set.
 	if (!category || !condition) return;
 	// Plant may still be empty; a neutral plant tests the category/condition pair.
-	const result = resolveCombination({
-		category,
-		plant: plant ?? "KGP",
-		condition,
-	});
+	const result = resolveCombination({ category, plant: plant ?? "KGP", condition });
 	if (result.ok === false) throw new ApiError(400, result.reason);
 }
 
@@ -686,14 +570,10 @@ export function assertValidCombination(input: {
  * totals are price decreases; bands are absolute (Q5). null = the table has no
  * value in that column (old requests fall back to approvalValues.amount).
  */
-export function financialAmount(
-	condition: string | null,
-	financial: unknown,
-): string | null {
+export function financialAmount(condition: string | null, financial: unknown): string | null {
 	const def = condition ? getConditionDef(condition) : undefined;
 	if (!def || !isObject(financial) || !isObject(financial.plants)) return null;
-	const key =
-		def.amountBasis === "ACTUAL_IMPACT" ? "actualInr" : "annualisedInr";
+	const key = def.amountBasis === "ACTUAL_IMPACT" ? "actualInr" : "annualisedInr";
 	let found = false;
 	let sum = 0;
 	for (const plant of CPP_FINANCIAL_PLANTS) {
@@ -724,15 +604,10 @@ export function deriveBandColumns(
 		actualImpact: null,
 	};
 	if (!def) return out;
-	const num = (value: string | null | undefined, field: string) =>
-		parseDecimal(value ?? null, field);
-	if (def.partBasis === "PART_VALUE")
-		out.maxPartValue = num(values.partValue, "approvalValues.partValue");
+	const num = (value: string | null | undefined, field: string) => parseDecimal(value ?? null, field);
+	if (def.partBasis === "PART_VALUE") out.maxPartValue = num(values.partValue, "approvalValues.partValue");
 	if (def.partBasis === "VARIATION_PCT")
-		out.maxVariationPct = num(
-			values.variationPct,
-			"approvalValues.variationPct",
-		);
+		out.maxVariationPct = num(values.variationPct, "approvalValues.variationPct");
 	const amount = num(values.amount, "approvalValues.amount");
 	if (def.amountBasis === "ANNUALISED_VALUE") out.annualisedValue = amount;
 	if (def.amountBasis === "ANNUALISED_IMPACT") out.annualisedImpact = amount;
@@ -740,11 +615,120 @@ export function deriveBandColumns(
 	return out;
 }
 
-/* -------------------------------- responses ------------------------------- */
+/* ===== submit checks ===== */
+// Pure halves of the submit / resubmit / preview checks. The service loads the row
+// and the stored summary-sheet rows and hands them in.
 
-type RequestRow = Prisma.CppRequestGetPayload<{
-	include: { attachments: true };
-}>;
+/** The request columns the checks read (Prisma Decimal, number, string or null). */
+export type CppRoutingRow = {
+	category: string | null;
+	plant: string | null;
+	condition: string | null;
+	sections: unknown;
+	maxPartValue: unknown;
+	maxVariationPct: unknown;
+	annualisedValue: unknown;
+	annualisedImpact: unknown;
+	actualImpact: unknown;
+};
+
+const ROUTING = "It decides the approval workflow.";
+
+const AMOUNT_LABEL = {
+	ANNUALISED_VALUE: "annualised value",
+	ANNUALISED_IMPACT: "annualised impact",
+	ACTUAL_IMPACT: "actual impact",
+} as const;
+
+/** Works for Prisma Decimal, number, string or null. */
+const positive = (value: unknown): boolean => {
+	if (value === null || value === undefined || value === "") return false;
+	const n = Number(String(value));
+	return Number.isFinite(n) && n > 0;
+};
+
+/** What must be filled before a request can enter approval. */
+export function completenessProblems(request: CppRoutingRow): string[] {
+	const problems: string[] = [];
+	if (!request.category) problems.push(`Category is required. ${ROUTING}`);
+	if (!request.plant) problems.push(`Plant is required. ${ROUTING}`);
+	if (!request.condition) problems.push(`Condition is required. ${ROUTING}`);
+
+	const basic = sectionDataOf(request.sections, "basic");
+	if (!str(basic.reason)) problems.push("Reason is required.");
+	if (!str(basic.justification)) problems.push("Justification is required.");
+
+	const recommended = recommendedSupplierOf(request.sections);
+	if (!recommended.name) problems.push("The recommended supplier name is required.");
+	// The SAP text files (ZINFOUPDATE_ME11 / ZCHANGEINFO) print it as the Vendor Code.
+	if (!recommended.code) problems.push("The recommended supplier's vendor code is required.");
+
+	// Band values: the picked range, or (older requests) the derived number columns.
+	const def = request.condition ? getConditionDef(request.condition) : undefined;
+	if (def) {
+		const bands = approvalBandsOf(request.sections);
+		if (def.partBasis === "PART_VALUE" && !bands.partBand && !positive(request.maxPartValue))
+			problems.push(`Select the highest value per part range on Purchasing details. ${ROUTING}`);
+		if (def.partBasis === "VARIATION_PCT" && !bands.partBand && !positive(request.maxVariationPct))
+			problems.push(`Select the highest price variation % range on Purchasing details. ${ROUTING}`);
+		const amount =
+			def.amountBasis === "ANNUALISED_VALUE"
+				? request.annualisedValue
+				: def.amountBasis === "ANNUALISED_IMPACT"
+					? request.annualisedImpact
+					: request.actualImpact;
+		if (!bands.amountBand && !positive(amount))
+			problems.push(
+				`Select the ${AMOUNT_LABEL[def.amountBasis]} range on Purchasing details. ${ROUTING}`,
+			);
+	}
+	return problems;
+}
+
+/**
+ * Every plant on the uploaded summary sheet must have a Master Data row with a
+ * purchasing group and a tax code, or the TCS text files cannot be exported.
+ * Checked at submit so the proposer finds out now, not after approval.
+ */
+export function summaryPlantProblems(rows: PartSummaryRow[], sections: unknown): string[] {
+	if (rows.length === 0) return ["Upload the summary sheet (part info) before submitting."];
+
+	const plants = masterPlantsOf(sections);
+	const unknownNames = new Set<string>();
+	const notSelected = new Set<string>();
+	const incomplete = new Set<string>();
+
+	for (const r of rows) {
+		const raw = String(r.plant ?? "").trim();
+		const code = plantCodeOf(raw);
+		if (!code) {
+			unknownNames.add(raw || "(blank)");
+			continue;
+		}
+		const plant = plants.find((p) => p.code === code);
+		if (!plant) notSelected.add(`${raw} (${code})`);
+		else if (!plant.purchasingGroup || !plant.taxCode) incomplete.add(`${raw} (${code})`);
+	}
+
+	const problems: string[] = [];
+	if (unknownNames.size)
+		problems.push(
+			`The summary sheet has plant(s) that are not known SAP plants: ${[...unknownNames].join(", ")}.`,
+		);
+	if (notSelected.size)
+		problems.push(
+			`Plant(s) ${[...notSelected].join(", ")} are on the summary sheet but not selected as applicable in Master Data.`,
+		);
+	if (incomplete.size)
+		problems.push(
+			`Master Data needs a purchasing group and tax code for plant(s) ${[...incomplete].join(", ")}.`,
+		);
+	return problems;
+}
+
+/* ===== responses ===== */
+
+type RequestRow = Prisma.CppRequestGetPayload<{ include: { attachments: true } }>;
 type ListRow = Prisma.CppRequestGetPayload<Record<string, never>>;
 
 export const toCppListItem = (row: ListRow) => ({
@@ -770,13 +754,7 @@ export const toCppListItem = (row: ListRow) => ({
 	initiatedById: row.initiatedById,
 });
 
-export type CppAttachmentWithUrl = RequestRow["attachments"][number] & {
-	url: string | null;
-};
-
-/** Rows read from the summary sheet at upload; 0 for every other file. */
-const parsedRowCount = (value: unknown): number =>
-	isObject(value) && Array.isArray(value.rows) ? value.rows.length : 0;
+export type CppAttachmentWithUrl = RequestRow["attachments"][number] & { url: string | null };
 
 export const toCppAttachment = (a: CppAttachmentWithUrl) => ({
 	id: a.id,
@@ -784,35 +762,18 @@ export const toCppAttachment = (a: CppAttachmentWithUrl) => ({
 	fileName: a.fileName,
 	uploadedAt: a.uploadedAt,
 	url: a.url ?? undefined,
+	// Rows read from the summary sheet at upload; only reported for that slot.
 	...(a.type === "partSummary"
-		? {
-				partRowCount: parsedRowCount(
-					(a as { parsedData?: unknown }).parsedData,
-				),
-			}
+		? { partRowCount: readStoredPartSummary((a as { parsedData?: unknown }).parsedData).length }
 		: {}),
 });
 
-export type CppInitiator = {
-	id: string;
-	name: string | null;
-	email: string | null;
-};
-
-/** Rows read from the summary sheet at upload (parsedData.rows), [] when none. */
-const summaryPartsOf = (attachments: CppAttachmentWithUrl[]): unknown[] => {
-	const sheet = attachments.find((a) => a.type === "partSummary") as
-		| { parsedData?: unknown }
-		| undefined;
-	const parsed = sheet?.parsedData;
-	const rows = isObject(parsed) ? parsed.rows : null;
-	return Array.isArray(rows) ? rows : [];
-};
+export type CppPerson = { id: string; name: string | null; email: string | null };
 
 export const toCppDetail = (
 	row: RequestRow,
 	attachments: CppAttachmentWithUrl[],
-	initiatedBy: CppInitiator | null = null,
+	initiatedBy: CppPerson | null = null,
 ) => ({
 	...toCppListItem(row),
 	/** Always every section, in tab order, every field present. */
@@ -821,20 +782,20 @@ export const toCppDetail = (
 	/** Shown as "Proposed By" on the CPP document. */
 	initiatedBy,
 	/**
-	 * Summary sheet part rows, same keys as cpp.partSummary.ts
-	 * (slNo, plant, model, partNo, … newPrice, effectiveDate, rcvdQty, actualImpact,
-	 * abpVol, qtyPerMc, annualisedImpact, pctChange). Used by the CPP document's part
-	 * table and the part pickers in Purchasing details.
+	 * Summary sheet part rows, same keys as PART_SUMMARY_COLUMNS in cpp.sheet.ts.
+	 * Used by the CPP document's part table and the part pickers in Purchasing details.
 	 */
-	parts: summaryPartsOf(attachments),
+	parts: readStoredPartSummary(
+		(attachments.find((a) => a.type === "partSummary") as { parsedData?: unknown } | undefined)
+			?.parsedData,
+	),
 });
 
-/* ------------------------------- pending on ------------------------------- */
+/* ===== pending on ===== */
 
 /**
- * Who a CPP request waits on — same idea as resolveVendorOnboardingPendingOn /
- * resolveMedicalClaimPendingOn in workflowSubject.helper.ts, kept here so the CPP
- * module never has to change a kernel file.
+ * Who a CPP request waits on — same idea as resolveVendorOnboardingPendingOn in
+ * workflowSubject.helper.ts, kept here so the CPP module never changes a kernel file.
  *   DRAFT / CLARIFICATION_REQUESTED -> the proposer (submit / edit and resubmit)
  *   COMPLETED                       -> nobody
  *   anything else                   -> what the workflow says (pending approvers)
@@ -843,23 +804,15 @@ export function resolveCppPendingOn(
 	status: string,
 	workflowBasedPendingOn: PendingOn | undefined,
 ): PendingOn {
-	if (
-		status === CPP_STATUS.DRAFT ||
-		status === CPP_STATUS.CLARIFICATION_REQUESTED
-	)
+	if (status === CPP_STATUS.DRAFT || status === CPP_STATUS.CLARIFICATION_REQUESTED)
 		return { role: "PROPOSER" };
-	if (status === CPP_STATUS.COMPLETED)
-		return { role: "NONE", outcome: "APPROVED" };
+	if (status === CPP_STATUS.COMPLETED) return { role: "NONE", outcome: "APPROVED" };
 	return workflowBasedPendingOn ?? { role: "PROPOSER" };
 }
 
-/* --------------------------------- listing -------------------------------- */
+/* ===== listing ===== */
 
-export type CppListingTab =
-	| "myRequests"
-	| "drafts"
-	| "pendingOnMe"
-	| "approvedByMe";
+export type CppListingTab = "myRequests" | "drafts" | "pendingOnMe" | "approvedByMe";
 
 const CPP_LISTING_TABS: readonly CppListingTab[] = [
 	"myRequests",
@@ -869,37 +822,24 @@ const CPP_LISTING_TABS: readonly CppListingTab[] = [
 ];
 
 /** The two tabs that list other people's requests because I am an approver on them. */
-export const isCppApprovalTab = (
-	tab: CppListingTab,
-): tab is "pendingOnMe" | "approvedByMe" =>
+export const isCppApprovalTab = (tab: CppListingTab): tab is "pendingOnMe" | "approvedByMe" =>
 	tab === "pendingOnMe" || tab === "approvedByMe";
 
 export function parseCppListingParams(query: Record<string, unknown>) {
-	const pageIndex = Math.max(
-		0,
-		Number.parseInt(String(query.page_index ?? "0"), 10) || 0,
-	);
-	const requested = Number.parseInt(
-		String(query.page_size ?? CPP_DEFAULT_PAGE_SIZE),
-		10,
-	);
+	const pageIndex = Math.max(0, Number.parseInt(String(query.page_index ?? "0"), 10) || 0);
+	const requested = Number.parseInt(String(query.page_size ?? CPP_DEFAULT_PAGE_SIZE), 10);
 	const pageSize = Math.min(
 		CPP_MAX_PAGE_SIZE,
-		Number.isFinite(requested) && requested > 0
-			? requested
-			: CPP_DEFAULT_PAGE_SIZE,
+		Number.isFinite(requested) && requested > 0 ? requested : CPP_DEFAULT_PAGE_SIZE,
 	);
-	const tab: CppListingTab = (CPP_LISTING_TABS as readonly unknown[]).includes(
-		query.tab,
-	)
+	const tab: CppListingTab = (CPP_LISTING_TABS as readonly unknown[]).includes(query.tab)
 		? (query.tab as CppListingTab)
 		: "myRequests";
 	return {
 		tab,
 		pageIndex,
 		pageSize,
-		search:
-			typeof query.search === "string" ? query.search.trim().slice(0, 100) : "",
+		search: typeof query.search === "string" ? query.search.trim().slice(0, 100) : "",
 		status: typeof query.status === "string" ? query.status : undefined,
 	};
 }
@@ -908,7 +848,7 @@ export function buildCppWhere(
 	workspaceId: string,
 	userId: string,
 	params: ReturnType<typeof parseCppListingParams>,
-	/** For the approver tabs: ids of the requests I am an approver on (see resolveApprovalSubjectIds). */
+	/** For the approver tabs: ids of the requests I am an approver on. */
 	approvalSubjectIds: string[] = [],
 ): Prisma.CppRequestWhereInput {
 	const approvalTab = isCppApprovalTab(params.tab);
@@ -946,16 +886,15 @@ export function resolveCppOrderBy(
 	sortBy: unknown,
 	sortOrder: unknown,
 ): Prisma.CppRequestOrderByWithRelationInput {
-	const field = (CPP_LISTING_SORT_FIELDS as readonly string[]).includes(
-		String(sortBy),
-	)
+	const field = (CPP_LISTING_SORT_FIELDS as readonly string[]).includes(String(sortBy))
 		? String(sortBy)
 		: "updated_at";
 	return { [field]: sortOrder === "asc" ? "asc" : "desc" };
 }
 
-/* ---------------------------------- files --------------------------------- */
+/* ===== files ===== */
 
+/** Safe for S3 keys and download file names. */
 export const safeFileName = (name: string): string =>
 	name
 		.replace(/[^\w.\-]+/g, "_")
@@ -965,10 +904,9 @@ export const safeFileName = (name: string): string =>
 export const fileExtension = (name: string): string =>
 	name.includes(".") ? (name.split(".").pop() ?? "").toLowerCase() : "";
 
-/* ===== matrix.helper ===== */
-// cpp.matrix.helper.ts — pure logic behind the admin approval-matrix screen:
-// coverage check, "does this save make things worse", and "replace user everywhere".
-// No database in here, so it is unit tested on its own.
+/* ===== matrix ===== */
+// Pure logic behind the admin approval-matrix screen: coverage check,
+// "does this save make things worse", and "replace user everywhere".
 
 /** slotKey(roleKey, scope) -> user ids in that slot. */
 export type SlotMap = Map<string, string[]>;
@@ -986,6 +924,7 @@ const COMMITTEE_MIN = 3;
 /**
  * An empty slot that a workflow needs is an ERROR: the request would have nobody
  * to go to. Committee: at least 3 of 7 must be filled (3 approvals are required).
+ * An empty TCS role is only a WARNING: approvals still run, the mail is skipped.
  */
 export function computeCoverage(slots: SlotMap): CoverageIssue[] {
 	const usage = roleUsage();
@@ -994,7 +933,7 @@ export function computeCoverage(slots: SlotMap): CoverageIssue[] {
 		(slots.get(slotKey(roleKey, scope)) ?? []).length > 0;
 
 	for (const role of ASSIGNABLE_ROLES) {
-		if (role.observer || COMMITTEE_KEYS.includes(role.key)) continue;
+		if (role.observer || role.recipient || COMMITTEE_KEYS.includes(role.key)) continue;
 		const used = usage.get(role.key) ?? 0;
 		if (used === 0) continue;
 		for (const scope of scopesForRole(role)) {
@@ -1011,9 +950,7 @@ export function computeCoverage(slots: SlotMap): CoverageIssue[] {
 		}
 	}
 
-	const filledCommittee = COMMITTEE_KEYS.filter((key) =>
-		filled(key, "ALL"),
-	).length;
+	const filledCommittee = COMMITTEE_KEYS.filter((key) => filled(key, "ALL")).length;
 	if (filledCommittee < COMMITTEE_MIN)
 		issues.push({
 			roleKey: "COMMITTEE_1",
@@ -1028,25 +965,27 @@ export function computeCoverage(slots: SlotMap): CoverageIssue[] {
 			severity: "warning",
 			message: `${filledCommittee} of 7 committee seats are filled.`,
 		});
+
+	if (!filled(CPP_TCS_ROLE_KEY, "ALL"))
+		issues.push({
+			roleKey: CPP_TCS_ROLE_KEY,
+			scope: "ALL",
+			severity: "warning",
+			message: "Nobody is assigned to TCS, so no mail is sent when a CPP request is approved.",
+		});
 	return issues;
 }
 
-const issueId = (issue: CoverageIssue) =>
-	`${issue.roleKey}:${issue.scope}:${issue.severity}`;
+const issueId = (issue: CoverageIssue) => `${issue.roleKey}:${issue.scope}:${issue.severity}`;
 
 /** Errors that exist after a change but not before it — those block the save. */
-export function newCoverageErrors(
-	before: SlotMap,
-	after: SlotMap,
-): CoverageIssue[] {
+export function newCoverageErrors(before: SlotMap, after: SlotMap): CoverageIssue[] {
 	const existing = new Set(
 		computeCoverage(before)
 			.filter((i) => i.severity === "error")
 			.map(issueId),
 	);
-	return computeCoverage(after).filter(
-		(i) => i.severity === "error" && !existing.has(issueId(i)),
-	);
+	return computeCoverage(after).filter((i) => i.severity === "error" && !existing.has(issueId(i)));
 }
 
 export type SlotUpdate = { roleKey: string; scope: string; userIds: string[] };
@@ -1059,28 +998,14 @@ export function parseSlotUpdates(value: unknown): SlotUpdate[] {
 	const seen = new Set<string>();
 	return value.map((entry, index) => {
 		const item = entry as Partial<SlotUpdate> | null;
-		if (!item || typeof item !== "object")
-			throw new Error(`assignments[${index}] must be an object`);
+		if (!item || typeof item !== "object") throw new Error(`assignments[${index}] must be an object`);
 		const { roleKey, scope, userIds } = item;
-		if (
-			typeof roleKey !== "string" ||
-			typeof scope !== "string" ||
-			!isValidSlot(roleKey, scope)
-		)
+		if (typeof roleKey !== "string" || typeof scope !== "string" || !isValidSlot(roleKey, scope))
 			throw new Error(`assignments[${index}] is not a valid role / scope`);
-		if (!(CPP_SLOT_SCOPES as readonly string[]).includes(scope))
-			throw new Error(`Unknown scope ${scope}`);
-		if (
-			!Array.isArray(userIds) ||
-			userIds.some((id) => typeof id !== "string" || !id)
-		)
-			throw new Error(
-				`assignments[${index}].userIds must be a list of user ids`,
-			);
-		if (userIds.length > 50)
-			throw new Error(
-				`${getRole(roleKey)?.label ?? roleKey} has too many people`,
-			);
+		if (!(CPP_SLOT_SCOPES as readonly string[]).includes(scope)) throw new Error(`Unknown scope ${scope}`);
+		if (!Array.isArray(userIds) || userIds.some((id) => typeof id !== "string" || !id))
+			throw new Error(`assignments[${index}].userIds must be a list of user ids`);
+		if (userIds.length > 50) throw new Error(`${getRole(roleKey)?.label ?? roleKey} has too many people`);
 		const key = slotKey(roleKey, scope);
 		if (seen.has(key)) throw new Error(`Slot ${key} was sent twice`);
 		seen.add(key);
@@ -1088,44 +1013,26 @@ export function parseSlotUpdates(value: unknown): SlotUpdate[] {
 	});
 }
 
-export type AssignmentRow = {
-	id: string;
-	roleKey: string;
-	scope: string;
-	userId: string;
-};
+export type AssignmentRow = { id: string; roleKey: string; scope: string; userId: string };
 
 /**
  * "Replace user everywhere": rows held by `fromUserId` move to `toUserId`.
  * Where `toUserId` already sits in the same slot the old row is deleted instead
  * (the unique key would otherwise be violated).
  */
-export function planReplaceUser(
-	rows: AssignmentRow[],
-	fromUserId: string,
-	toUserId: string,
-) {
+export function planReplaceUser(rows: AssignmentRow[], fromUserId: string, toUserId: string) {
 	const toSlots = new Set(
-		rows
-			.filter((r) => r.userId === toUserId)
-			.map((r) => slotKey(r.roleKey, r.scope)),
+		rows.filter((r) => r.userId === toUserId).map((r) => slotKey(r.roleKey, r.scope)),
 	);
 	const updates: string[] = [];
 	const deletes: string[] = [];
 	for (const row of rows.filter((r) => r.userId === fromUserId))
-		(toSlots.has(slotKey(row.roleKey, row.scope)) ? deletes : updates).push(
-			row.id,
-		);
+		(toSlots.has(slotKey(row.roleKey, row.scope)) ? deletes : updates).push(row.id);
 	return { updates, deletes };
 }
 
 export const rowsToSlotMap = (
-	rows: Array<{
-		roleKey: string;
-		scope: string;
-		userId: string;
-		position?: number;
-	}>,
+	rows: Array<{ roleKey: string; scope: string; userId: string; position?: number }>,
 ): SlotMap => {
 	const map: SlotMap = new Map();
 	[...rows]

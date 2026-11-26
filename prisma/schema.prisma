@@ -57,6 +57,7 @@ enum WorkflowType {
 enum AccessTokenSubjectType {
   VENDOR_ONBOARDING
   MEDICAL_CLAIM
+  CPP_REQUEST
 }
 
 

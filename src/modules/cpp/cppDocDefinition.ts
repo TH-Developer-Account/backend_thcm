@@ -9,13 +9,16 @@ import type {
 
 import { LOGO_DATA_URI } from "@vendor-onboarding/vendorOnboardingLogo";
 
-import type {
-	CppPdfData,
-	CppSigner,
-	ImpactRow,
-	PlantImpact,
+import {
+	statusLabel,
+	type CppPdfData,
+	type CppSigner,
+	type CppWorkflowRow,
+	type FinancialRow,
+	type ImpactRow,
+	type TextRow,
 } from "./cppAssembler";
-import type { CppPirRow, CppSummaryLine, CppSummaryRow } from "./cppPartRows";
+import type { CppPirRow, CppSummaryLine, CppSummaryRow } from "./cpp.sheet";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CPP — DOC DEFINITION (A4 landscape)
@@ -24,10 +27,12 @@ import type { CppPirRow, CppSummaryLine, CppSummaryRow } from "./cppPartRows";
 //         Spare Parts – Price Approval"   (the form)
 // Page 2+ Format no. THX11-D07-F07 Ver 1.5  "Summary Sheet for Price Changes"
 //         (only when the uploaded Excel has part rows)
+// Last    Approval workflow + audit trail, as tables.
 // Supplier annexures (uploaded PDFs / images) are appended by the PDF service.
 //
-// Everything printed comes from CppPdfData. Cells the data cannot fill stay
-// blank, exactly like an unsigned paper form — nothing is invented.
+// Everything printed comes from CppPdfData, which reads the same saved
+// sections as the on-screen sheet (CppPdfView.tsx). Cells the data cannot fill
+// stay blank, exactly like an unsigned paper form — nothing is invented.
 // ─────────────────────────────────────────────────────────────────────────────
 
 /* --------------------------- layout constants (pt) -------------------------- */
@@ -46,7 +51,6 @@ const SOFT_TEXT = "#7F7F7F";
 const LINE = 0.5;
 
 const FS = 6; // base font size of the form
-const FS_BIG = 7;
 
 const FORM_LAYOUT = {
 	hLineWidth: () => LINE,
@@ -108,6 +112,25 @@ const dmy = (d: Date | null | undefined, sep = "-"): string =>
 		? `${pad2(d.getDate())}${sep}${pad2(d.getMonth() + 1)}${sep}${d.getFullYear()}`
 		: "";
 
+/** "2026-11-26" -> "26-11-2026"; anything else is printed as saved. */
+const isoToDmy = (value: string): string => {
+	const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(value);
+	return m ? `${m[3]}-${m[2]}-${m[1]}` : value;
+};
+
+/** Date + time in India time, whatever the server's time zone. */
+const IST = new Intl.DateTimeFormat("en-GB", {
+	timeZone: "Asia/Kolkata",
+	day: "2-digit",
+	month: "2-digit",
+	year: "numeric",
+	hour: "2-digit",
+	minute: "2-digit",
+	hour12: false,
+});
+const istDateTime = (d: Date | null | undefined): string =>
+	d ? IST.format(d).replace(",", "") : "";
+
 const fmtNum = (n: number | null | undefined): string => {
 	if (n === null || n === undefined || !Number.isFinite(n)) return "";
 	return n.toLocaleString("en-IN", {
@@ -116,10 +139,29 @@ const fmtNum = (n: number | null | undefined): string => {
 	});
 };
 
+/** A saved number string with Indian grouping; anything else as typed. */
+const fmtText = (value: string | undefined): string => {
+	const s = (value ?? "").trim();
+	if (!s) return "";
+	const n = Number(s);
+	return Number.isFinite(n) ? fmtNum(n) : s;
+};
+
+/** Fraction -> "5.00%". */
 const fmtPct = (fraction: number | null | undefined, dp = 2): string =>
 	fraction === null || fraction === undefined || !Number.isFinite(fraction)
 		? ""
 		: `${(fraction * 100).toFixed(dp)}%`;
+
+/** Percent units (5 = 5 %) -> "5.00%". */
+const fmtPercent = (value: number | null | undefined, dp = 2): string =>
+	value === null || value === undefined || !Number.isFinite(value)
+		? ""
+		: `${value.toFixed(dp)}%`;
+
+/** Keeps a cell on one line: long text is cut with an ellipsis. */
+const clip = (text: string, max: number): string =>
+	text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
 
 type Opts = Partial<{
 	fs: number;
@@ -165,6 +207,35 @@ const emptyRow = (cols: number, o: Opts = {}): TableCell[] =>
 	Array.from({ length: cols }, () => c("", o));
 
 const sum = (widths: number[]) => widths.reduce((a, b) => a + b, 0);
+
+/**
+ * Rows for a small fixed-height box on page 1: the saved rows, padded with
+ * empty rows to `min`, at most `max` (the last row then says how many more).
+ */
+function boxRows(
+	rows: TextRow[],
+	cols: number,
+	min: number,
+	max: number,
+	toCells: (row: TextRow) => TableCell[],
+	fs = 5.4,
+): TableCell[][] {
+	const shown = rows.length > max ? rows.slice(0, max - 1) : rows;
+	const out = shown.map(toCells);
+	if (rows.length > max)
+		out.push([
+			...spanned(
+				cols,
+				c(`+ ${rows.length - shown.length} more (see the CPP request)`, {
+					italics: true,
+					color: SOFT_TEXT,
+					fs,
+				}),
+			),
+		]);
+	while (out.length < min) out.push(emptyRow(cols));
+	return out;
+}
 
 /** A tick drawn as a vector, so it does not depend on the font's glyphs. */
 const tick = (size = 6): ContentCanvas & { width?: number } => ({
@@ -254,10 +325,10 @@ function labelWithTick(
 	} as TableCell;
 }
 
-const grey = (title: string, width: number): Content => ({
+const grey = (title: string, width: number, fs = 6.5): Content => ({
 	table: {
 		widths: tw([width]),
-		body: [[c(title, { fs: 6.5, fill: GREY_BAR, border: NONE })]],
+		body: [[c(title, { fs, fill: GREY_BAR, border: NONE })]],
 	},
 	layout: NO_PAD_LAYOUT_WITH_TEXT_PAD(),
 });
@@ -583,9 +654,13 @@ function purchasingTable(d: CppPdfData): Col {
 			...spanned(3, c(`Code :   ${s.recommended.code}`)),
 		],
 	];
-	// the "for more than 5 parts" note sits in the empty top-left area
+	// The "more than 5 parts" note sits in the empty top-left area, like the paper form.
+	const note =
+		d.partCount > d.formParts.length
+			? `Showing ${d.formParts.length} of ${d.partCount} parts, please see the summary sheet`
+			: "For more than 5 parts, please use summary sheet";
 	(supplierRows[1][0] as TableCell & { text: string }) = {
-		text: "For more than 5 parts, please use summary sheet",
+		text: note,
 		italics: true,
 		fontSize: 5.4,
 		color: SOFT_TEXT,
@@ -629,49 +704,41 @@ function purchasingTable(d: CppPdfData): Col {
 		c("% Impact", { bold: true, align: "center", fs: 5.2 }),
 	];
 
-	// Part rows live in the enclosure (the summary sheet), so the form refers to it
-	// exactly like the paper original: "As per encl" in every part cell.
-	const uomSet = new Set(
-		d.parts.summary
-			.filter((l): l is CppSummaryRow => l.kind === "part")
-			.map((p) => p.uom)
-			.filter(Boolean),
-	);
-	const uom = uomSet.size === 1 ? [...uomSet][0] : "";
-	const encl = "As per encl";
-
-	const first: TableCell[] = [
-		c(encl),
-		c(""),
-		c(uom, { align: "center" }),
-		c(encl, { align: "center", fs: 5 }),
-		c(encl, { align: "center", fs: 5 }),
+	// The first five summary-sheet parts, as on the view. One line each: the
+	// full description is on the summary sheet.
+	const partRows: TableCell[][] = d.formParts.map((p) => [
+		c(clip(p.partNo, 16), { fs: 5.4 }),
+		c(clip(p.description, 24), { fs: 5 }),
+		c(p.uom, { align: "center", fs: 5.4 }),
+		c(fmtNum(p.existingPrice), { align: "right", fs: 5.4 }),
 		c(""),
 		c(""),
 		c(""),
 		c(""),
-		...spanned(3, c(encl, { align: "center" })),
-	];
-	const body: TableCell[][] = [
-		...supplierRows,
-		head1,
-		head2,
-		first,
-		...Array.from({ length: 4 }, () => emptyRow(PART_COLS.length)),
-	];
+		c(""),
+		c(fmtNum(p.newPrice), { align: "right", fs: 5.4 }),
+		c(clip(p.effectiveDate, 11), { align: "center", fs: 5 }),
+		c(fmtPct(p.pctChange, 1), { align: "right", fs: 5.2 }),
+	]);
+	while (partRows.length < 5) partRows.push(emptyRow(PART_COLS.length));
 
 	return {
-		table: { widths: tw(PART_COLS), body },
+		table: {
+			widths: tw(PART_COLS),
+			body: [...supplierRows, head1, head2, ...partRows],
+		},
 		layout: FORM_LAYOUT,
 	};
 }
 
-function lowerLeftTables(): Col {
+function lowerLeftTables(d: CppPdfData): Col {
 	const AMORT = [40, 30, 38, 26, 34]; // 168
 	const PM = [34, 34, 36, 36]; // 140
 	const VOL = [100, 46, 46, 46]; // 238
 	const gap = LEFT_W - sum(AMORT) - sum(PM) - sum(VOL);
 	const g = gap / 2;
+	const cell = (t: string, align: Opts["align"] = "right") =>
+		c(t, { fs: 5.4, align });
 
 	const amort: Col = {
 		width: sum(AMORT),
@@ -688,9 +755,13 @@ function lowerLeftTables(): Col {
 							"Amort. Qty.",
 							"Price After Amort.",
 						].map((t) => c(t, { bold: true, align: "center", fs: 5.2 })),
-						emptyRow(5),
-						emptyRow(5),
-						emptyRow(5),
+						...boxRows(d.amortisation, 5, 3, 5, (r) => [
+							cell(clip(r.partNo, 14), "left"),
+							cell(fmtText(r.priceInclAmort)),
+							cell(isoToDmy(r.cutoffDate), "center"),
+							cell(fmtText(r.amortQty)),
+							cell(fmtText(r.priceAfterAmort)),
+						]),
 					],
 				},
 				layout: FORM_LAYOUT,
@@ -711,15 +782,23 @@ function lowerLeftTables(): Col {
 							"Impact in Rs. (With Amort.)",
 							"Impact in Rs. (W/O Amort.)",
 						].map((t) => c(t, { bold: true, align: "center", fs: 5.2 })),
-						emptyRow(4),
-						emptyRow(4),
-						emptyRow(4),
+						...boxRows(d.perMachine, 4, 3, 5, (r) => [
+							cell(r.plant, "center"),
+							cell(clip(r.model, 12), "left"),
+							cell(fmtText(r.withAmort)),
+							cell(fmtText(r.withoutAmort)),
+						]),
 					],
 				},
 				layout: FORM_LAYOUT,
 			},
 		],
 	};
+	const v = d.volumes;
+	const volCells = (pick: (p: ImpactRow) => string) =>
+		(["DWD", "KGP", "SPARE"] as ImpactRow[]).map((p) =>
+			c(fmtText(pick(p)), { fs: 5.4, align: "right" }),
+		);
 	const volumes: Col = {
 		width: sum(VOL),
 		stack: [
@@ -735,15 +814,24 @@ function lowerLeftTables(): Col {
 							c("SPARE", { bold: true, align: "center" }),
 						],
 						[...spanned(4, c("For Actual", { bold: true, fill: GREY_HEAD }))],
-						[c("Rcvd Qty. (Till Date) = a", { fs: 5.4 }), c(""), c(""), c("")],
-						[c("Remaining Qty. = b", { fs: 5.4 }), c(""), c(""), c("")],
+						[
+							c("Rcvd Qty. (Till Date) = a", { fs: 5.4 }),
+							...volCells((p) => v[p].received),
+						],
+						[
+							c("Remaining Qty. = b", { fs: 5.4 }),
+							...volCells((p) => v[p].remaining),
+						],
 						[
 							...spanned(
 								4,
 								c("For Annualised", { bold: true, fill: GREY_HEAD }),
 							),
 						],
-						[c("Qty./mc x ABP No's = c", { fs: 5.4 }), c(""), c(""), c("")],
+						[
+							c("Qty./mc x ABP No's = c", { fs: 5.4 }),
+							...volCells((p) => v[p].annual),
+						],
 					],
 				},
 				layout: FORM_LAYOUT,
@@ -771,48 +859,30 @@ function financialBlock(d: CppPdfData): Col {
 	const b = { bold: true, align: "center" as const };
 	const rowLabel = (t: string) =>
 		c(t, { fs: 6.4, align: "center", margin: [0, 3.5, 0, 3.5] });
-	const impact = d.impact;
-	const plantImpactRow = (key: ImpactRow, label: string): TableCell[] => {
-		const p: PlantImpact = d.impactByPlant[key];
+	const plantRow = (key: ImpactRow): TableCell[] => {
+		const p: FinancialRow = d.financial[key];
 		const n = {
 			fs: 6.4,
 			align: "right" as const,
 			margin: [0, 3.5, 0, 3.5] as [number, number, number, number],
 		};
 		return [
-			rowLabel(label),
+			rowLabel(key),
 			c(fmtNum(p.actual), n),
-			c(fmtPct(p.actualPct, 1), n),
-			c(p.annual === null ? "" : fmtNum(p.annual), n),
-			c(fmtPct(p.annualPct), n),
+			c(fmtPercent(p.actualPct), n),
+			c(fmtNum(p.annual), n),
+			c(fmtPercent(p.annualPct), n),
 		];
 	};
+	const t = d.financialTotal;
+	const totalCell = (text: string, fs = 6.4) =>
+		c(text, { bold: true, fs, align: "right", margin: [0, 2, 0, 2] });
 	const total: TableCell[] = [
 		c("Total", { bold: true, fs: 6.4, align: "center", margin: [0, 2, 0, 2] }),
-		c(fmtNum(impact.actual), {
-			bold: true,
-			fs: 6.6,
-			align: "right",
-			margin: [0, 2, 0, 2],
-		}),
-		c(fmtPct(impact.actualPct, 1), {
-			bold: true,
-			fs: 6.4,
-			align: "right",
-			margin: [0, 2, 0, 2],
-		}),
-		c(impact.annual === null ? "" : `Rs. ${fmtNum(impact.annual)}`, {
-			bold: true,
-			fs: 6.6,
-			align: "right",
-			margin: [0, 2, 0, 2],
-		}),
-		c(fmtPct(impact.annualPct), {
-			bold: true,
-			fs: 6.4,
-			align: "right",
-			margin: [0, 2, 0, 2],
-		}),
+		totalCell(fmtNum(t.actual), 6.6),
+		totalCell(fmtPercent(t.actualPct)),
+		totalCell(t.annual === null ? "" : `Rs. ${fmtNum(t.annual)}`, 6.6),
+		totalCell(fmtPercent(t.annualPct)),
 	];
 	return {
 		stack: [
@@ -838,9 +908,9 @@ function financialBlock(d: CppPdfData): Col {
 							c("in INR", { ...b, fs: 5.4 }),
 							c("in %", { ...b, fs: 5.4 }),
 						],
-						plantImpactRow("KGP", "KGP"),
-						plantImpactRow("DWD", "DWD"),
-						plantImpactRow("SPARE", "SPARE"),
+						plantRow("KGP"),
+						plantRow("DWD"),
+						plantRow("SPARE"),
 						total,
 					],
 				},
@@ -850,8 +920,8 @@ function financialBlock(d: CppPdfData): Col {
 	};
 }
 
-function otherDataBlock(): Col {
-	const wd = [55, 90, RIGHT_W - 55 - 90 - 0];
+function otherDataBlock(d: CppPdfData): Col {
+	const wd = [55, 90, RIGHT_W - 55 - 90];
 	return {
 		margin: [0, 6, 0, 0] as [number, number, number, number],
 		stack: [
@@ -876,9 +946,18 @@ function otherDataBlock(): Col {
 							c("Part Number", { fs: 6.2 }),
 							c("Price", { fs: 6.2 }),
 						],
-						emptyRow(3),
-						emptyRow(3),
-						emptyRow(3),
+						...boxRows(
+							d.plantPrices,
+							3,
+							3,
+							4,
+							(r) => [
+								c(r.plant, { fs: 6 }),
+								c(clip(r.partNumber, 20), { fs: 6 }),
+								c(fmtText(r.price), { fs: 6, align: "right" }),
+							],
+							6,
+						),
 					],
 				},
 				layout: FORM_LAYOUT,
@@ -899,9 +978,14 @@ function leftColumnTop(d: CppPdfData): Col {
 		["DWD WH", "8580"],
 		["NGP", "8400"],
 	];
-	const chosen = new Set(
+	// Applicable = the plant / warehouse rows saved on the Master data tab (as on
+	// the view). Requests saved before that use the plant names of step 1.
+	const codes = new Set(d.applicableCodes);
+	const names = new Set(
 		d.applicablePlants.map((p) => p.toUpperCase().replace(/\s+/g, " ")),
 	);
+	const isApplicable = (name: string, code: string) =>
+		codes.size > 0 ? codes.has(code) : names.has(name);
 	const plantsTable: Col = {
 		table: {
 			widths: tw([30, 28, 33]),
@@ -920,7 +1004,7 @@ function leftColumnTop(d: CppPdfData): Col {
 						fill: strong ? BLUE : undefined,
 						fs: strong ? 6.4 : 5.2,
 					}),
-					c(chosen.has(name) ? "Yes" : "No", {
+					c(isApplicable(name, code) ? "Yes" : "No", {
 						bold: true,
 						align: "center",
 						fs: 6.2,
@@ -933,25 +1017,18 @@ function leftColumnTop(d: CppPdfData): Col {
 
 	const std = d.priceType === "STANDARD" || d.priceType === "";
 	const sub = d.priceType === "SUBCONTRACTING";
-
-	const cond = (code: string, name: string) => ({
-		code,
-		name,
-		on: d.pricingCondition.toUpperCase() === code,
-	});
+	const on = (code: string) => d.pricingCondition.toUpperCase() === code;
 	const conditionTable: Col = {
 		table: {
-			widths: tw([38, 0, 0].length ? [60, 74] : []),
+			widths: tw([60, 74]),
 			body: [
 				[
-					labelWithTick("PB00  Regular", cond("PB00", "").on, { bold: true }),
-					labelWithTick("PB50  Amortised", cond("PB50", "").on, { bold: true }),
+					labelWithTick("PB00  Regular", on("PB00"), { bold: true }),
+					labelWithTick("PB50  Amortised", on("PB50"), { bold: true }),
 				],
 				[
-					labelWithTick("PB25  One Time", cond("PB25", "").on, { bold: true }),
-					labelWithTick("PB75  Provisional", cond("PB75", "").on, {
-						bold: true,
-					}),
+					labelWithTick("PB25  One Time", on("PB25"), { bold: true }),
+					labelWithTick("PB75  Provisional", on("PB75"), { bold: true }),
 				],
 			],
 		},
@@ -1039,6 +1116,7 @@ function leftColumnTop(d: CppPdfData): Col {
 
 function leftColumnBottom(d: CppPdfData): Col {
 	const m = d.master;
+	const sp = d.spares;
 	const lw = [46, COL_L - 46];
 	const forPlants: Col = {
 		table: {
@@ -1052,16 +1130,21 @@ function leftColumnBottom(d: CppPdfData): Col {
 		},
 		layout: FORM_LAYOUT,
 	};
+	const pf =
+		sp.pfPct && /^-?\d+(\.\d+)?$/.test(sp.pfPct) ? `${sp.pfPct}%` : sp.pfPct;
 	const forSpares: Col = {
 		table: {
 			widths: tw(lw),
 			body: [
 				[
 					c("Inco Terms", { bold: true, fill: BLUE }),
-					c(d.isSpare ? "DWD/KGP Warehouse" : "", { fill: BLUE }),
+					c(sp.incoTerms, { fill: BLUE }),
 				],
-				[c("P&F (%age) :", { bold: true, fill: BLUE }), c("", { fill: BLUE })],
-				[c("Tax Code :", { bold: true, fill: BLUE }), c("", { fill: BLUE })],
+				[c("P&F (%age) :", { bold: true, fill: BLUE }), c(pf, { fill: BLUE })],
+				[
+					c("Tax Code :", { bold: true, fill: BLUE }),
+					c(sp.taxCode, { fill: BLUE }),
+				],
 			],
 		},
 		layout: FORM_LAYOUT,
@@ -1077,18 +1160,20 @@ function leftColumnBottom(d: CppPdfData): Col {
 	};
 }
 
-/* ---- justification ---- */
+/* ---- justification: the widest box in the middle band ---- */
 
+const MID_W = 300;
+const BOX_H = 186;
+
+/** Bigger text for short justifications; the 2000-character maximum still fits. */
 function fitJustification(text: string): { text: string; fs: number } {
 	const t = text.replace(/\r\n/g, "\n").trim();
-	if (t.length <= 650) return { text: t, fs: 8.4 };
-	if (t.length <= 1050) return { text: t, fs: 7 };
-	if (t.length <= 1750) return { text: t, fs: 6 };
-	return { text: `${t.slice(0, 1700).trimEnd()} …`, fs: 6 };
+	if (t.length <= 1000) return { text: t, fs: 8.4 };
+	if (t.length <= 1500) return { text: t, fs: 7.2 };
+	if (t.length <= 2200) return { text: t, fs: 6.2 };
+	if (t.length <= 2700) return { text: t, fs: 5.6 };
+	return { text: `${t.slice(0, 2650).trimEnd()} …`, fs: 5.6 };
 }
-
-const MID_W = 210;
-const BOX_H = 150;
 
 function justificationBlock(d: CppPdfData): Col {
 	const j = fitJustification(d.justification);
@@ -1122,7 +1207,7 @@ function justificationBlock(d: CppPdfData): Col {
 								italics: true,
 								fontSize: j.fs,
 								lineHeight: 1.18,
-								margin: [2, 2, 2, 0],
+								margin: [3, 3, 3, 0],
 							} as TableCell,
 						],
 					],
@@ -1137,8 +1222,9 @@ function justificationBlock(d: CppPdfData): Col {
 
 const COL_R = W - 4 - COL_L - MID_W - 8; // 4 = the 2 + 2 inner margin
 
-function trackerBlock(): Col {
-	const wd = [62, 56, 78, 66, 64, COL_R - 62 - 56 - 78 - 66 - 64 - 0];
+function trackerBlock(d: CppPdfData): Col {
+	const fixed = [50, 46, 64, 56, 56];
+	const wd = [...fixed, COL_R - sum(fixed)];
 	const heads = [
 		"Model",
 		"Per Machine Impact",
@@ -1147,6 +1233,7 @@ function trackerBlock(): Col {
 		"Budgeted Material Cost",
 		"Material Cost YTD",
 	];
+	const n = (t: string) => c(fmtText(t), { fs: 5.4, align: "right" });
 	return {
 		stack: [
 			{
@@ -1163,11 +1250,18 @@ function trackerBlock(): Col {
 							c(h, {
 								bold: true,
 								align: "center",
-								fs: 5.6,
-								margin: [0, 2, 0, 2],
+								fs: 5.2,
+								margin: [0, 1, 0, 1],
 							}),
 						),
-						...Array.from({ length: 6 }, () => emptyRow(6)),
+						...boxRows(d.costTracker, 6, 5, 6, (r) => [
+							c(clip(r.model, 14), { fs: 5.4 }),
+							n(r.perMachineImpact),
+							n(r.budgetedIncrease),
+							n(r.statusYtd),
+							n(r.budgetedMaterialCost),
+							n(r.materialCostYtd),
+						]),
 					],
 				},
 				layout: FORM_LAYOUT,
@@ -1178,11 +1272,7 @@ function trackerBlock(): Col {
 
 function initiatedByBlock(d: CppPdfData): Col {
 	const sigW = COL_R / 4;
-	const box = (
-		title: string,
-		signers: CppSigner[],
-		widthTitleItalic = true,
-	): Col => ({
+	const box = (title: string, signers: CppSigner[]): Col => ({
 		width: sigW,
 		table: {
 			widths: tw([sigW]),
@@ -1191,7 +1281,7 @@ function initiatedByBlock(d: CppPdfData): Col {
 				[
 					{
 						stack: [
-							{ text: title, italics: widthTitleItalic, fontSize: 6.2 },
+							{ text: title, italics: true, fontSize: 6.2 },
 							signerRow(signers, sigW - 4, 14, 2),
 						],
 						margin: [1, 1, 1, 0],
@@ -1295,7 +1385,7 @@ function approvalBand(d: CppPdfData): Col {
 		stack: [
 			{
 				table: {
-					widths: tw([80, 40, bandW - 120]),
+					widths: tw([80, 120, bandW - 200]),
 					body: [
 						[
 							c("Approving Authority :", { bold: true, fs: 5.8 }),
@@ -1429,11 +1519,11 @@ function buildForm(d: CppPdfData): Col {
 					stack: [
 						grey("Purchasing Details :", LEFT_W),
 						purchasingTable(d),
-						lowerLeftTables(),
+						lowerLeftTables(d),
 					],
 				},
 				{ width: 6, text: "" },
-				{ width: RIGHT_W, stack: [financialBlock(d), otherDataBlock()] },
+				{ width: RIGHT_W, stack: [financialBlock(d), otherDataBlock(d)] },
 			],
 			columnGap: 0,
 		},
@@ -1444,7 +1534,7 @@ function buildForm(d: CppPdfData): Col {
 				{ width: 4, text: "" },
 				justificationBlock(d),
 				{ width: 4, text: "" },
-				{ width: COL_R, stack: [trackerBlock(), initiatedByBlock(d)] },
+				{ width: COL_R, stack: [trackerBlock(d), initiatedByBlock(d)] },
 			],
 			columnGap: 0,
 		},
@@ -1676,16 +1766,14 @@ function summarySheet(d: CppPdfData): Content[] {
 	const totals: Col = {
 		margin: [0, 2, 0, 0] as [number, number, number, number],
 		table: {
-			widths: tw(
-				[
-					lead,
-					S_COLS[11] + 0,
-					S_COLS[12],
-					S_COLS[13] + S_COLS[14] - 0,
-					S_COLS[15],
-					S_COLS[16],
-				].map((n, i) => (i === 3 ? S_COLS[13] + S_COLS[14] : n)),
-			),
+			widths: tw([
+				lead,
+				S_COLS[11],
+				S_COLS[12],
+				S_COLS[13] + S_COLS[14],
+				S_COLS[15],
+				S_COLS[16],
+			]),
 			body: [
 				[
 					c("", { border: NONE }),
@@ -1766,7 +1854,6 @@ function summarySheet(d: CppPdfData): Content[] {
 	};
 
 	const sig = (title: string, s: CppSigner[], left: number): Col => ({
-		absolutePosition: undefined,
 		width: 150,
 		stack: [
 			{ text: title, italics: true, fontSize: 6.2 },
@@ -1817,6 +1904,156 @@ function summarySheet(d: CppPdfData): Content[] {
 	];
 }
 
+/* ===================== LAST PAGES — WORKFLOW + AUDIT TRAIL ==================== */
+
+const A_FS = 7;
+const TABLE_LAYOUT = {
+	...FORM_LAYOUT,
+	paddingLeft: () => 3,
+	paddingRight: () => 3,
+	paddingTop: () => 2,
+	paddingBottom: () => 2,
+};
+
+/** Like tw(), for TABLE_LAYOUT's wider cell padding (3 + 3). */
+const tw6 = (widths: number[]): number[] =>
+	widths.map((w) => Math.max(w - 6, 1));
+
+const ac = (text: string, o: Opts = {}) => c(text, { fs: A_FS, ...o });
+const ah = (text: string) =>
+	ac(text, { bold: true, fill: GREY_HEAD, align: "center" });
+
+const PHASE_LABEL: Record<CppWorkflowRow["phase"], string> = {
+	WF1: "WF1 · Plant / SCM",
+	WF2: "WF2 · CPP committee",
+};
+
+/** What a row's status means for the reader, using the stage status too. */
+function approvalStatusText(row: CppWorkflowRow): string {
+	const approval = row.status.toUpperCase();
+	const stage = row.stageStatus.toUpperCase();
+	if (approval === "PENDING") {
+		if (stage === "APPROVED") return "Not needed";
+		if (stage === "IN_PROGRESS") return "Pending";
+		return "Not started";
+	}
+	return statusLabel(approval);
+}
+
+function workflowTable(d: CppPdfData): Content {
+	// # | Workflow | Stage | Approver | Designation | Email | Status | Acted on
+	const widths = [22, 78, 200, 120, 112, 140, 62, 64]; // = 798
+	const body: TableCell[][] = [
+		[
+			ah("#"),
+			ah("Workflow"),
+			ah("Stage"),
+			ah("Approver"),
+			ah("Designation"),
+			ah("Email"),
+			ah("Status"),
+			ah("Acted on"),
+		],
+	];
+	if (d.workflowRows.length === 0) {
+		body.push([
+			...spanned(
+				widths.length,
+				ac("No approval workflow has started for this request yet.", {
+					italics: true,
+					color: SOFT_TEXT,
+					align: "center",
+				}),
+			),
+		]);
+	} else {
+		let lastStage = -1;
+		d.workflowRows.forEach((r) => {
+			const firstOfStage = r.stageOrder !== lastStage;
+			lastStage = r.stageOrder;
+			// The stage is printed once; its other approvers follow on plain rows.
+			body.push([
+				ac(firstOfStage ? String(r.stageOrder) : "", { align: "center" }),
+				ac(firstOfStage ? PHASE_LABEL[r.phase] : ""),
+				ac(firstOfStage ? r.stageName : "", { bold: firstOfStage }),
+				ac(r.approver),
+				ac(r.designation),
+				ac(r.email),
+				ac(approvalStatusText(r), { align: "center" }),
+				ac(istDateTime(r.actedAt), { align: "center" }),
+			]);
+		});
+	}
+	return {
+		table: { headerRows: 1, dontBreakRows: true, widths: tw6(widths), body },
+		layout: TABLE_LAYOUT,
+	};
+}
+
+function auditTable(d: CppPdfData): Content {
+	// # | Date & time | Action | By | Stage | Remarks
+	const widths = [22, 80, 130, 130, 180, 256]; // = 798
+	const body: TableCell[][] = [
+		[
+			ah("#"),
+			ah("Date & time (IST)"),
+			ah("Action"),
+			ah("By"),
+			ah("Stage"),
+			ah("Remarks"),
+		],
+	];
+	if (d.auditTrail.length === 0) {
+		body.push([
+			...spanned(
+				widths.length,
+				ac("No activity recorded yet.", {
+					italics: true,
+					color: SOFT_TEXT,
+					align: "center",
+				}),
+			),
+		]);
+	} else {
+		d.auditTrail.forEach((r, i) => {
+			body.push([
+				ac(String(i + 1), { align: "center" }),
+				ac(istDateTime(r.at), { align: "center" }),
+				ac(r.action),
+				ac(r.by),
+				ac(r.stage),
+				ac(r.remarks),
+			]);
+		});
+	}
+	return {
+		table: { headerRows: 1, dontBreakRows: true, widths: tw6(widths), body },
+		layout: TABLE_LAYOUT,
+	};
+}
+
+function workflowAndAudit(d: CppPdfData): Content[] {
+	return [
+		{ text: "", pageBreak: "before" },
+		headerBand(
+			"Approval Workflow & Audit Trail",
+			`Approval Ref. : ${d.referenceNumber}`,
+			`Generated on ${istDateTime(d.generatedAt)} IST`,
+		),
+		hRule(W, 0),
+		{
+			margin: [0, 6, 0, 3] as [number, number, number, number],
+			...(grey("Approval Workflow", W, 7.5) as object),
+		} as Content,
+		workflowTable(d),
+		{
+			margin: [0, 12, 0, 3] as [number, number, number, number],
+			...(grey("Audit Trail", W, 7.5) as object),
+		} as Content,
+		auditTable(d),
+	];
+}
+
 /* ================================== builder ================================== */
 
 export function buildCppDocDefinition(data: CppPdfData): TDocumentDefinitions {
@@ -1836,6 +2073,10 @@ export function buildCppDocDefinition(data: CppPdfData): TDocumentDefinitions {
 			title: `CPP ${data.referenceNumber}`,
 			subject: "Direct / Indirect Material / Spare Parts - Price Approval",
 		},
-		content: [buildForm(data), ...summarySheet(data)],
+		content: [
+			buildForm(data),
+			...summarySheet(data),
+			...workflowAndAudit(data),
+		],
 	};
 }

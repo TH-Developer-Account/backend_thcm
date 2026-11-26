@@ -74,7 +74,8 @@ export type WorkflowType = (typeof WorkflowType)[keyof typeof WorkflowType]
 
 export const AccessTokenSubjectType = {
   VENDOR_ONBOARDING: 'VENDOR_ONBOARDING',
-  MEDICAL_CLAIM: 'MEDICAL_CLAIM'
+  MEDICAL_CLAIM: 'MEDICAL_CLAIM',
+  CPP_REQUEST: 'CPP_REQUEST'
 } as const
 
 export type AccessTokenSubjectType = (typeof AccessTokenSubjectType)[keyof typeof AccessTokenSubjectType]

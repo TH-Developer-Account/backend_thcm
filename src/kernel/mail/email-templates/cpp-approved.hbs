@@ -1,207 +1,256 @@
 <html lang="en">
 	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>CPP {{referenceNo}} approved</title>
 	</head>
-	<body style="margin:0; padding:0; background-color:#f4f5f7;">
+	<!--
+	cpp-approved — sent to the TCS users of the CPP approval matrix when a CPP
+	request is fully approved. The proposer is in CC.
+	Data: recipientName, referenceNo, category, plant, condition, supplierName,
+	supplierCode, proposerName, approvedOn, files[{name, description, sha256}],
+	hasChecksums, problems[], dashboardUrl.
+-->
+	<body
+		style="margin:0; padding:0; background-color:#f4f5f7; font-family:Arial, Helvetica, sans-serif; color:#1f2937;"
+	>
 		<table
 			role="presentation"
 			width="100%"
-			cellpadding="0"
 			cellspacing="0"
-			style="background-color:#f4f5f7; padding:24px 0;"
+			cellpadding="0"
+			border="0"
+			style="background-color:#f4f5f7;"
 		>
-			<tr><td align="center">
+			<tr>
+				<td align="center" style="padding:24px 12px;">
 					<table
 						role="presentation"
 						width="600"
-						cellpadding="0"
 						cellspacing="0"
-						style="width:600px; max-width:600px; background-color:#ffffff; border:1px solid #e5e7eb; border-radius:6px;"
+						cellpadding="0"
+						border="0"
+						style="width:600px; max-width:600px; background-color:#ffffff; border:1px solid #e5e7eb; border-radius:8px;"
 					>
 
 						<!-- Header -->
 						<tr>
-							<td style="padding:20px 24px; border-bottom:1px solid #e5e7eb;">
-								{{#if logoUrl}}<img
-										src="{{logoUrl}}"
-										alt="Tata Hitachi"
-										height="32"
-										style="display:block; height:32px;"
-									/>{{/if}}
+							<td
+								style="padding:18px 24px; background-color:#ea580c; border-radius:8px 8px 0 0;"
+							>
+								<span
+									style="font-size:18px; font-weight:bold; color:#ffffff; letter-spacing:0.5px;"
+								>TATA HITACHI</span>
+								<span
+									style="display:block; font-size:12px; color:#ffedd5; margin-top:2px;"
+								>Contract Price Procurement (CPP)</span>
+							</td>
+						</tr>
+
+						<!-- Title -->
+						<tr>
+							<td style="padding:24px 24px 8px 24px;">
 								<p
-									style="margin:12px 0 0 0; font-family:Arial,Helvetica,sans-serif; font-size:16px; font-weight:bold; color:#000000;"
-								>CPP approved</p>
+									style="margin:0 0 6px 0; font-size:13px; color:#16a34a; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;"
+								>Approved</p>
+								<h1
+									style="margin:0; font-size:20px; line-height:28px; color:#111827;"
+								>CPP request {{referenceNo}} is ready for SAP upload</h1>
 							</td>
 						</tr>
 
 						<!-- Body -->
 						<tr>
-							<td style="padding:24px; font-family:Arial,Helvetica,sans-serif;">
-								<p
-									style="margin:0 0 16px 0; font-size:14px; line-height:21px; color:#000000;"
-								>Dear {{recipientName}},</p>
-								<p
-									style="margin:0 0 16px 0; font-size:14px; line-height:21px; color:#000000;"
-								>The CPP request below has been
-									<strong>fully approved</strong>. The approved request and its
-									supporting files are attached to this mail for your SAP
-									update.</p>
+							<td
+								style="padding:8px 24px 0 24px; font-size:14px; line-height:22px;"
+							>
+								<p style="margin:0 0 12px 0;">Dear {{recipientName}},</p>
+								<p style="margin:0 0 16px 0;">
+									The CPP request below has completed all approvals. The
+									approved price approval PDF and the two SAP upload files are
+									attached. Please complete the SAP upload and close the request
+									in the app.
+								</p>
+							</td>
+						</tr>
 
+						<!-- Request details -->
+						<tr>
+							<td style="padding:0 24px;">
 								<table
 									role="presentation"
 									width="100%"
-									cellpadding="0"
 									cellspacing="0"
-									style="width:100%; border-collapse:collapse; border:1px solid #e5e7eb; font-size:13px; line-height:19px;"
+									cellpadding="0"
+									border="0"
+									style="border:1px solid #e5e7eb; border-radius:6px; font-size:13px;"
 								>
 									<tr>
 										<td
-											width="34%"
-											valign="top"
-											style="width:34%; padding:10px 12px; background-color:#f9fafb; color:#000000; font-weight:bold; vertical-align:top;"
-										>Reference No.</td>
+											style="padding:8px 12px; width:42%; background-color:#f9fafb; color:#6b7280; border-bottom:1px solid #e5e7eb;"
+										>Approval reference</td>
 										<td
-											width="66%"
-											valign="top"
-											style="width:66%; padding:10px 12px; color:#000000; vertical-align:top; word-break:break-word;"
+											style="padding:8px 12px; font-weight:bold; border-bottom:1px solid #e5e7eb;"
 										>{{referenceNo}}</td>
 									</tr>
 									<tr>
 										<td
-											valign="top"
-											style="padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;"
-										>Category</td>
+											style="padding:8px 12px; background-color:#f9fafb; color:#6b7280; border-bottom:1px solid #e5e7eb;"
+										>Approved on</td>
 										<td
-											valign="top"
-											style="padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top; word-break:break-word;"
-										>{{category}}</td>
+											style="padding:8px 12px; border-bottom:1px solid #e5e7eb;"
+										>{{approvedOn}}</td>
 									</tr>
 									<tr>
 										<td
-											valign="top"
-											style="padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;"
-										>Plant</td>
+											style="padding:8px 12px; background-color:#f9fafb; color:#6b7280; border-bottom:1px solid #e5e7eb;"
+										>Supplier</td>
 										<td
-											valign="top"
-											style="padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top; word-break:break-word;"
-										>{{plant}}</td>
-									</tr>
-									<tr>
-										<td
-											valign="top"
-											style="padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;"
-										>Condition</td>
-										<td
-											valign="top"
-											style="padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top; word-break:break-word;"
-										>{{condition}}</td>
-									</tr>
-									<tr>
-										<td
-											valign="top"
-											style="padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;"
-										>Recommended supplier</td>
-										<td
-											valign="top"
-											style="padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top; word-break:break-word;"
+											style="padding:8px 12px; border-bottom:1px solid #e5e7eb;"
 										>{{supplierName}}{{#if supplierCode}}
 												({{supplierCode}}){{/if}}</td>
 									</tr>
 									<tr>
 										<td
-											valign="top"
-											style="padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;"
+											style="padding:8px 12px; background-color:#f9fafb; color:#6b7280; border-bottom:1px solid #e5e7eb;"
+										>Category / Plant</td>
+										<td
+											style="padding:8px 12px; border-bottom:1px solid #e5e7eb;"
+										>{{category}} / {{plant}}</td>
+									</tr>
+									<tr>
+										<td
+											style="padding:8px 12px; background-color:#f9fafb; color:#6b7280; border-bottom:1px solid #e5e7eb;"
+										>Condition</td>
+										<td
+											style="padding:8px 12px; border-bottom:1px solid #e5e7eb;"
+										>{{condition}}</td>
+									</tr>
+									<tr>
+										<td
+											style="padding:8px 12px; background-color:#f9fafb; color:#6b7280;"
 										>Proposed by</td>
-										<td
-											valign="top"
-											style="padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top; word-break:break-word;"
-										>{{proposerName}}</td>
-									</tr>
-									<tr>
-										<td
-											valign="top"
-											style="padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;"
-										>Approved on</td>
-										<td
-											valign="top"
-											style="padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top; word-break:break-word;"
-										>{{approvedOn}}</td>
-									</tr>
-									<tr>
-										<td
-											valign="top"
-											style="padding:10px 12px; background-color:#f9fafb; border-top:1px solid #e5e7eb; color:#000000; font-weight:bold; vertical-align:top;"
-										>Status</td>
-										<td
-											valign="top"
-											style="padding:10px 12px; border-top:1px solid #e5e7eb; color:#000000; vertical-align:top;"
-										><table
-												role="presentation"
-												cellpadding="0"
-												cellspacing="0"
-											><tr><td
-														style="padding:2px 8px; background-color:#f0fdf4; border:1px solid #86efac; border-radius:3px; color:#166534; font-size:12px; line-height:18px; font-weight:bold; white-space:nowrap;"
-													>&#10003; Approved</td></tr></table></td>
+										<td style="padding:8px 12px;">{{proposerName}}</td>
 									</tr>
 								</table>
+							</td>
+						</tr>
 
+						<!-- Attachments -->
+						<tr>
+							<td style="padding:20px 24px 0 24px;">
 								<p
-									style="margin:20px 0 8px 0; font-size:14px; line-height:21px; color:#000000; font-weight:bold;"
+									style="margin:0 0 8px 0; font-size:14px; font-weight:bold; color:#111827;"
 								>Attached files</p>
-								<ul
-									style="margin:0 0 16px 0; padding-left:20px; font-size:13px; line-height:20px; color:#000000;"
-								>
-									{{#each attachments}}<li>{{this}}</li>{{/each}}
-								</ul>
-
 								<table
 									role="presentation"
 									width="100%"
-									cellpadding="0"
 									cellspacing="0"
-									style="width:100%; margin-top:20px;"
-								><tr><td align="left">
-											<!--[if mso]>
-        <table role="presentation" cellpadding="0" cellspacing="0"><tr>
-          <td align="center" bgcolor="#f36f21" style="background-color:#f36f21; padding:12px 24px; mso-padding-alt:12px 24px;">
-            <a href="{{dashboardUrl}}" target="_blank" style="color:#ffffff; font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:bold; text-decoration:none; display:inline-block;">View CPP Request</a>
-          </td>
-        </tr></table>
-        <![endif]-->
-											<!--[if !mso]><!-- -->
-											<a
-												href="{{dashboardUrl}}"
-												target="_blank"
-												rel="noopener noreferrer"
-												style="display:block; width:100%; box-sizing:border-box; background-color:#f36f21; border-radius:4px; color:#ffffff; font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:bold; line-height:44px; padding:0 16px; text-align:center; text-decoration:none;"
-											>View CPP Request</a>
-											<!--<![endif]-->
-										</td></tr></table>
-								<p
-									style="margin:12px 0 0 0; font-size:11px; line-height:17px; color:#4b5563;"
-								>If the button does not work, copy and paste this link into your
-									browser:<br />
+									cellpadding="0"
+									border="0"
+									style="border:1px solid #e5e7eb; border-radius:6px; font-size:13px;"
+								>
+									{{#each files}}
+										<tr>
+											<td
+												style="padding:8px 12px; border-bottom:1px solid #e5e7eb;"
+											>
+												<span
+													style="font-weight:bold; color:#111827;"
+												>{{this.name}}</span><br />
+												<span style="color:#6b7280;">{{this.description}}</span>
+												{{#if this.sha256}}
+													<br /><span
+														style="font-family:'Courier New', Courier, monospace; font-size:11px; color:#6b7280; word-break:break-all;"
+													>SHA-256: {{this.sha256}}</span>
+												{{/if}}
+											</td>
+										</tr>
+									{{else}}
+										<tr>
+											<td style="padding:8px 12px; color:#6b7280;">No files
+												could be attached. Download them from the CPP request.</td>
+										</tr>
+									{{/each}}
+								</table>
+								{{#if hasChecksums}}
+									<p
+										style="margin:8px 0 0 0; font-size:12px; line-height:18px; color:#6b7280;"
+									>
+										The SHA-256 value is the fingerprint of each text file as it
+										was generated. If a file's fingerprint no longer matches, it
+										has been changed after it left the system.
+									</p>
+								{{/if}}
+							</td>
+						</tr>
+
+						{{#if problems.length}}
+							<!-- Problems -->
+							<tr>
+								<td style="padding:16px 24px 0 24px;">
+									<table
+										role="presentation"
+										width="100%"
+										cellspacing="0"
+										cellpadding="0"
+										border="0"
+										style="background-color:#fef3c7; border:1px solid #fcd34d; border-radius:6px; font-size:13px;"
+									>
+										<tr>
+											<td style="padding:10px 12px; color:#92400e;">
+												{{#each problems}}<p
+														style="margin:0 0 4px 0;"
+													>{{this}}</p>{{/each}}
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						{{/if}}
+
+						<!-- Button -->
+						<tr>
+							<td align="left" style="padding:24px;">
+								{{#if pdfViewUrl}}
 									<a
-										href="{{dashboardUrl}}"
-										style="color:#f36f21; word-break:break-all;"
-									>{{dashboardUrl}}</a></p>
+										href="{{pdfViewUrl}}"
+										style="display:inline-block; padding:10px 20px; background-color:#ea580c; color:#ffffff; font-size:14px; font-weight:bold; text-decoration:none; border-radius:6px;"
+									>Download PDF</a>
+									&nbsp;
+								{{/if}}
+								{{#if me11Url}}
+									<a
+										href="{{me11Url}}"
+										style="display:inline-block; padding:10px 20px; background-color:#ffffff; color:#ea580c; font-size:14px; font-weight:bold; text-decoration:none; border-radius:6px; border:1px solid #ea580c;"
+									>Download ZINFOUPDATE_ME11</a>
+									&nbsp;
+								{{/if}}
+								{{#if changeInfoUrl}}
+									<a
+										href="{{changeInfoUrl}}"
+										style="display:inline-block; padding:10px 20px; background-color:#ffffff; color:#ea580c; font-size:14px; font-weight:bold; text-decoration:none; border-radius:6px; border:1px solid #ea580c;"
+									>Download ZCHANGEINFO</a>
+								{{/if}}
+								<a
+									href="{{dashboardUrl}}"
+									style="display:inline-block; padding:10px 20px; background-color:#ffffff; color:#ea580c; font-size:14px; font-weight:bold; text-decoration:none; border-radius:6px; border:1px solid #ea580c;"
+								>Open the CPP request</a>
 							</td>
 						</tr>
 
 						<!-- Footer -->
 						<tr>
 							<td
-								style="padding:12px 24px; border-top:1px solid #e5e7eb; background-color:#fafafa; font-family:Arial,Helvetica,sans-serif;"
+								style="padding:16px 24px; border-top:1px solid #e5e7eb; font-size:12px; line-height:18px; color:#9ca3af;"
 							>
-								<p
-									style="margin:0; font-size:11px; line-height:17px; color:#000000;"
-								>This is an automated message. Please do not reply.</p>
+								This is an automated message from the THCM CPP module. Please do
+								not reply to this email.
 							</td>
 						</tr>
 					</table>
-				</td></tr>
+				</td>
+			</tr>
 		</table>
 	</body>
 </html>
