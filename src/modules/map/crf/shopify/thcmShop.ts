@@ -152,6 +152,15 @@ export type ThcmCreateOrderRequest = {
   phone?: string;
   mapNo?: string;
   channel?: string;
+  /**
+   * Whether this order has a courier shipment to track. CRF orders are
+   * always a real shipment (always true). Handouts orders vary by
+   * fulfillmentType — true for SHIPPED, false for HAND_DELIVERY (picked up
+   * in person, nothing for THCM/Shopify to ship or track). Drives whether
+   * THCM's later tracking webhook will carry trackingId/trackingUrl — see
+   * ShopifyTrackingWebhookPayload in modules/map/shopifyTracking.types.ts.
+   */
+  isShipping?: boolean;
   shippingAddress: ThcmShippingAddress;
 };
 

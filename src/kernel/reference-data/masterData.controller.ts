@@ -32,8 +32,13 @@ const formatOptions = <T>(
 // "userRegion"/Locations is also absent — User.location went back to being
 // plain free text (not a master-backed FK), so there's no Locations master
 // screen or model to manage here anymore. See decisions-and-learnings.md.
+//
+// "department" is also absent — Department was removed outright (full
+// removal, not a merge like Region/Zone): Division is now the single
+// org-unit master for both HR and EPC purposes, and Vertical is scoped
+// under Division instead. See decisions-and-learnings.md and schema.prisma's
+// Vertical/Division model comments.
 const MODEL_MAP: Record<string, any> = {
-  department: prisma.department,
   branch: prisma.branch,
   eventName: prisma.eventName,
   budgetMaster: prisma.budgetMaster,
@@ -41,12 +46,13 @@ const MODEL_MAP: Record<string, any> = {
   designation: prisma.designation,
   costCenter: prisma.costCenter,
   zone: prisma.zone,
+  vertical: prisma.vertical,
+  gradeEligibility: prisma.gradeEligibility,
 };
 
 export const getMasterData = async (req: Request, res: Response) => {
   try {
     const [
-      departments,
       verticals,
       zones,
       branches,
@@ -55,24 +61,14 @@ export const getMasterData = async (req: Request, res: Response) => {
       divisions,
       designations,
       costCenters,
+      gradeEligibilities,
     ] = await Promise.all([
-      prisma.department.findMany({
-        // where: { status: "active" },
-        select: {
-          id: true,
-          department_name: true,
-          department_code: true,
-        },
-        // where: { status: "active" },
-        orderBy: { department_name: "asc" },
-      }),
-
       prisma.vertical.findMany({
         // where: { status: "active" },
         select: {
           id: true,
           name: true,
-          departmentId: true,
+          divisionId: true,
           code: true,
         },
         // where: { status: "active" },
@@ -138,6 +134,15 @@ export const getMasterData = async (req: Request, res: Response) => {
         select: { id: true, code: true, name: true },
         orderBy: { code: "asc" },
       }),
+
+      // Grade Eligibility has no isActive/status column (see schema.prisma) —
+      // every row is shown; the Masters admin screen is the only place that
+      // edits annualCap once updateUserHrData.ts has seeded a grade with
+      // annualCap = null.
+      prisma.gradeEligibility.findMany({
+        select: { id: true, grade: true, annualCap: true },
+        orderBy: { grade: "asc" },
+      }),
     ]);
 
     const zoneOptions = formatOptions(zones, {
@@ -146,10 +151,6 @@ export const getMasterData = async (req: Request, res: Response) => {
     });
 
     res.json({
-      departments: formatOptions(departments, {
-        label: (d) => d.department_name,
-        extra: (d) => ({ code: d.department_code }),
-      }),
       // Bridge: other-module consumers (e.g. EPCTopbar) still read
       // `data.regions` — kept pointed at the same Zone data as `zones` below
       // rather than duplicating the query.
@@ -161,17 +162,32 @@ export const getMasterData = async (req: Request, res: Response) => {
       eventNames: formatOptions(eventNames, {
         label: (e) => e.title,
       }),
+      // ✅ FIX (production bug — Vertical's reference-number segment showing
+      // the literal text "null"): these two blocks used to build
+      // `label`/`description`/`code` with a template literal —
+      // `` `${b.code}` `` — which coerces a nullable DB value straight into
+      // the 4-character string "null" instead of leaving it empty.
+      // BudgetMaster.code is required so this never actually bit there, but
+      // Vertical.code is optional (EOR supplies none for most verticals), so
+      // this was really sending `code: "null"` to the browser — a truthy,
+      // non-empty string that every downstream null-check (e.g.
+      // epcNumber.ts's getCode) correctly treated as "this option has a real
+      // code" and used verbatim. Passing the values through directly
+      // (undefined when absent) instead of string-interpolating them fixes
+      // it at the source, rather than re-guarding every consumer — the same
+      // defensive pattern already written into masters.config.ts's `text()`
+      // helper for this exact failure mode exists because of this bug.
       budgetMasters: budgetMasters.map((b) => ({
         value: b.id,
-        label: `${b.code}`,
-        description: `${b.id_desc}`,
+        label: b.code,
+        description: b.id_desc ?? undefined,
         budgetAmount: b.value,
       })),
       vertical: verticals.map((b) => ({
         value: b.id,
-        label: `${b.name}`,
-        code: `${b.code}`,
-        department: b.departmentId,
+        label: b.name,
+        code: b.code ?? undefined,
+        divisionId: b.divisionId,
       })),
       divisions: formatOptions(divisions, {
         label: (d) => d.name,
@@ -184,6 +200,16 @@ export const getMasterData = async (req: Request, res: Response) => {
         extra: (c) => ({ code: c.code }),
       }),
       zones: zoneOptions,
+      // Grade Eligibility: `label` is the grade itself (User.grade is plain
+      // text matching this, not an FK — see schema.prisma's User model), and
+      // `annualCap` is its yearly cap. Consumed by the Masters admin screen
+      // (masters.config.ts's gradeEligibility def) and by CreateUserForm.tsx's
+      // Grade picker, which used to hardcode a local GRADE_OPTIONS constant
+      // instead of reading this feed.
+      gradeEligibilities: formatOptions(gradeEligibilities, {
+        label: (g) => g.grade,
+        extra: (g) => ({ annualCap: g.annualCap }),
+      }),
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch master data" });

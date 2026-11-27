@@ -1,3 +1,4 @@
+// Target: app.ts
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -34,11 +35,17 @@ import dealerAuditRoutes from "@dealerAudit/dealerAudit.routes";
 import machineStudyRoutes from "@map/reports/machineStudy.routes";
 import crfShopRoutes from "@modules/map/crf/crf-shop.routes";
 import cppRoutes from "@modules/cpp/cpp.routes";
+// Was never mounted — handouts.routes.ts existed but nothing in app.ts
+// registered it, so every /api/v1/handouts call 404'd at the catch-all
+// below regardless of auth or RBAC.
+import handoutsRoutes from "@modules/handouts/handouts.routes";
 import errorHandler from "@shared/middleware/error.middleware";
 import ApiError from "@shared/utils/apiError";
 import { startJobs } from "@shared/jobs/scheduler";
 import { shopifyAuth } from "@kernel/auth/internalAuth.middleware";
-import { postShopifyOrderTracking } from "@modules/map/crf/crf-order.controller";
+// Moved out of crf-order.controller.ts — this callback now serves both CRF
+// and Handouts, dispatched by `channel` (see shopifyTracking.controller.ts).
+import { postShopifyOrderTracking } from "@modules/map/shopifyTracking.controller";
 
 const corsOptions = {
 	origin: process.env.FRONTEND_URL, // frontend URL
@@ -48,9 +55,9 @@ const corsOptions = {
 };
 
 const publicApiCors = cors({
-  origin: "https://www.brandshop.tatahitachi.co.in", // the one extra origin for this endpoint
-  methods: ["GET", "POST"],
-  credentials: true,
+	origin: "https://www.brandshop.tatahitachi.co.in", // the one extra origin for this endpoint
+	methods: ["GET", "POST"],
+	credentials: true,
 });
 
 const app = express();
@@ -59,11 +66,14 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 
+// Same path as before — kept as-is for now (no THCM-side URL change);
+// the handler behind it now serves both CRF and Handouts tracking
+// callbacks, picked by the `channel` field in the body.
 app.use(
-  "/api/v1/crf/order/tracking",
-  publicApiCors,
-  shopifyAuth,
-  postShopifyOrderTracking,
+	"/api/v1/shopify/order-tracking",
+	publicApiCors,
+	shopifyAuth,
+	postShopifyOrderTracking,
 );
 
 app.use(cors(corsOptions));
@@ -97,6 +107,7 @@ app.use("/api/v1/apps", appRoutes);
 app.use("/api/v1/machine-studies", machineStudyRoutes);
 app.use("/api/v1/crf-shop", crfShopRoutes);
 app.use("/api/v1/dealer-audit", dealerAuditRoutes);
+app.use("/api/v1/handouts", handoutsRoutes);
 
 app.use("/api/v1/cpp", cppRoutes);
 // Scheduler

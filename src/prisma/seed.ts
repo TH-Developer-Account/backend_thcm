@@ -69,9 +69,6 @@ async function main() {
 	await prisma.vendorOnboarding.deleteMany();
 	await prisma.medicalClaim.deleteMany();
 	await prisma.medicalClaimBill.deleteMany();
-	await prisma.cppAttachment.deleteMany();
-	await prisma.cppRequest.deleteMany();
-	await prisma.cppSlotAssignment.deleteMany();
 	await prisma.approval.deleteMany();
 	await prisma.stageInstance.deleteMany();
 	await prisma.workflowInstance.deleteMany();
@@ -107,7 +104,9 @@ async function main() {
 	// region and User's zone are the same concept, unified into one master).
 	await prisma.zone.deleteMany();
 	await prisma.vertical.deleteMany();
-	await prisma.department.deleteMany();
+	// Department was removed — Division is the single org-unit master now
+	// (see schema.prisma's Division/Vertical model comments).
+	await prisma.division.deleteMany();
 	await prisma.budgetMaster.deleteMany();
 	await prisma.eventName.deleteMany();
 	await prisma.user.deleteMany();
@@ -135,16 +134,12 @@ async function main() {
 	const mediclaimApp = await prisma.app.create({
 		data: { key: "MEDICAL_CLAIM", name: MEDICAL_CLAIM },
 	});
-	const cppApp = await prisma.app.create({
-		data: { key: "CPP", name: "Contract Price Procurement" },
-	});
 
 	await prisma.workspaceApp.createMany({
 		data: [
 			{ workspaceId: workspace.id, appId: mapApp.id },
 			{ workspaceId: workspace.id, appId: vendorApp.id },
 			{ workspaceId: workspace.id, appId: mediclaimApp.id },
-			{ workspaceId: workspace.id, appId: cppApp.id },
 		],
 	});
 	console.log("✅ Apps enabled: MAP, Vendor Onboarding");
@@ -174,25 +169,15 @@ async function main() {
 		},
 	});
 
-	await prisma.module.create({
-		data: { key: "CPP_REQUEST", name: "CPP Request", appId: cppApp.id },
-	});
-	await prisma.module.create({
-		data: {
-			key: "CPP_APPROVAL_MATRIX",
-			name: "CPP Approval Matrix",
-			appId: cppApp.id,
-		},
-	});
-
-	console.log(
-		"✅ Modules created for MAP, Vendor Onboarding, Medical Claim and CPP",
-	);
+	console.log("✅ Modules created for MAP and Vendor Onboarding");
 
 	await createSampleProfiles(workspace.id);
 	console.log("✅ Sample Viewer / Editor profiles created for every app");
 
-	const departments = await Promise.all(
+	// Division is the single org-unit master (Department was removed — see
+	// schema.prisma). It only has a `name` column, no code, so there's no
+	// department_code equivalent to seed here anymore.
+	const divisions = await Promise.all(
 		[
 			"Marketing",
 			"Service",
@@ -200,27 +185,18 @@ async function main() {
 			"Parts",
 			"Sales",
 			"Manufacturing and Plant Administration",
-		].map((name) =>
-			prisma.department.create({
-				data: {
-					department_code: name.slice(0, 3).toUpperCase(),
-					department_name: name,
-				},
-			}),
-		),
+		].map((name) => prisma.division.create({ data: { name } })),
 	);
 
 	for (const item of verticalsData) {
-		const dept = departments.find(
-			(d) => d.department_name === item.departmentName,
-		);
-		if (!dept) continue;
+		const division = divisions.find((d) => d.name === item.departmentName);
+		if (!division) continue;
 
 		await prisma.vertical.createMany({
 			data: item.verticals.map((v) => ({
 				name: v,
 				code: v.slice(0, 3).toUpperCase(),
-				departmentId: dept.id,
+				divisionId: division.id,
 			})),
 		});
 	}

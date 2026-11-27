@@ -24,6 +24,11 @@ import { activeWorkflowInclude } from "@shared/utils/contants";
 import { notifyGuestOfClarification } from "@medi-claim/mediclaim.helper";
 import { runEventProposalFinalApprovalHooks } from "@map/crf/services/crfOrder.services";
 import { notifyCppApproved } from "@cpp/cpp.helper";
+// NOTE: path alias guessed by analogy with the CRF import directly above —
+// handoutsDecision.services.ts's own imports are all relative (there is no
+// existing cross-module import of this file to copy an alias from). Adjust
+// to whatever your tsconfig actually maps the Handouts module to.
+import { runHandoutFinalApprovalHook } from "@modules/handouts/handoutsDecision.services";
 
 import {
 	Prisma,
@@ -120,6 +125,13 @@ const ownerIdResolvers: Record<
 		});
 		return row?.initiatedById ?? null;
 	},
+	HANDOUT_REQUEST: async (subjectId) => {
+		const handout = await prisma.handoutRequest.findUnique({
+			where: { id: subjectId },
+			select: { requestedById: true },
+		});
+		return handout?.requestedById ?? null;
+	},
 };
 
 export async function getSubjectOwnerId(
@@ -173,6 +185,9 @@ const subjectResolvers: Record<
 
 	CPP_REQUEST: (subjectId) =>
 		prisma.cppRequest.findUnique({ where: { id: subjectId } }),
+
+	HANDOUT_REQUEST: (subjectId) =>
+		prisma.handoutRequest.findUnique({ where: { id: subjectId } }),
 };
 
 export async function findSubjectById(
@@ -237,6 +252,9 @@ const statusUpdaters: Record<
 
 	CPP_REQUEST: (tx, subjectId, status) =>
 		tx.cppRequest.update({ where: { id: subjectId }, data: { status } }),
+
+	HANDOUT_REQUEST: (tx, subjectId, status) =>
+		tx.handoutRequest.update({ where: { id: subjectId }, data: { status } }),
 };
 
 export async function updateSubjectStatus(
@@ -285,6 +303,7 @@ const clarifyResetStatus: Record<WorkflowSubjectType, string> = {
 	DEALER_AUDIT_INSTANCE: "PENDING",
 	FACTORY_AUDIT_INSTANCE: "PENDING", // UNVERIFIED — see comment above
 	CPP_REQUEST: "CLARIFICATION_REQUESTED",
+	HANDOUT_REQUEST: "CLARIFICATION_REQUESTED",
 };
 
 export function getClarifyResetStatus(
@@ -395,6 +414,14 @@ export async function runPreApprovalValidation(
 // as one entry here rather than this registry growing a second slot per
 // subject type.
 //
+// HANDOUT_REQUEST → runHandoutFinalApprovalHook (handoutsDecision.
+// services.ts): places the Shopify order for the now-approved handout and
+// stamps approvedAt. Handout's own approveHandout() already ran its stock
+// check and rejected the request down a CANNOT_FULFIL path BEFORE ever
+// calling the generic approveStage — so by the time this hook runs, stock
+// is known good and this is purely "place the order," not a second
+// shortfall check.
+//
 // Return type is Promise<Record<string, unknown>> rather than Promise<void>
 // — not every hook has something worth surfacing back to the approve
 // response (most subject types have no hook at all), but EVENT_PROPOSAL's
@@ -418,6 +445,7 @@ const postFinalApprovalHooks: Partial<
 		await notifyCppApproved(subjectId);
 		return {};
 	},
+	HANDOUT_REQUEST: (subjectId) => runHandoutFinalApprovalHook(subjectId),
 };
 
 export async function runPostFinalApprovalHook(
@@ -445,6 +473,7 @@ const resubmitActionBySubjectType: Record<WorkflowSubjectType, string> = {
 	DEALER_AUDIT_INSTANCE: "DEALER_AUDIT_RESUBMITTED",
 	FACTORY_AUDIT_INSTANCE: "FACTORY_AUDIT_RESUBMITTED", // UNVERIFIED PLACEHOLDER — see note above
 	CPP_REQUEST: "CPP_RESUBMITTED",
+	HANDOUT_REQUEST: "HANDOUT_RESUBMITTED",
 };
 
 const resubmitStatusBySubjectType: Record<WorkflowSubjectType, string> = {
@@ -454,6 +483,7 @@ const resubmitStatusBySubjectType: Record<WorkflowSubjectType, string> = {
 	DEALER_AUDIT_INSTANCE: "IN_PROGRESS",
 	FACTORY_AUDIT_INSTANCE: "IN_PROGRESS", // UNVERIFIED — see note above
 	CPP_REQUEST: "IN_PROGRESS",
+	HANDOUT_REQUEST: "PENDING_APPROVAL",
 };
 
 export function getResubmitAction(subjectType: WorkflowSubjectType): string {

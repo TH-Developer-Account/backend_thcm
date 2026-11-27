@@ -9,7 +9,6 @@ import {
 import {
   cancelOrder,
   placeOrder,
-  recordShopifyTracking,
   retryOrder,
   retryStockCheck,
   swapSouvenirLines,
@@ -22,10 +21,16 @@ import type { ShopifyCrfItemInput } from "@map/crf/services/crf.services";
  * Thin request/response adapter over crfDispatchDetails.service.ts and
  * crfOrder.service.ts — the post-approval half of a CRF's lifecycle
  * (dispatch details, souvenir swap on shortfall, placing/retrying/
- * cancelling the Shopify order, retrying a failed stock check, and now the
- * inbound tracking callback). Same shape convention as crf.controller.ts:
- * every response is { success: true, data }, and every ownership/status
- * rule lives in the service layer, not here.
+ * cancelling the Shopify order, retrying a failed stock check). Same shape
+ * convention as crf.controller.ts: every response is { success: true, data },
+ * and every ownership/status rule lives in the service layer, not here.
+ *
+ * The inbound Shopify tracking callback (POST /crf/order/tracking) used to
+ * live here as postShopifyOrderTracking, but it now serves both CRF and
+ * Handouts — it has moved to modules/map/shopifyTracking.controller.ts
+ * (a thin dispatcher on `channel`) so this CRF-named file doesn't end up
+ * importing a Handouts service. recordShopifyTracking (crfOrder.services.ts)
+ * is unchanged; only its caller moved.
  *
  * There is deliberately no "get order" handler here — GET /crf/:crfId
  * (crf.controller.ts → crf.service.ts's getCrfDetail) already returns
@@ -162,58 +167,6 @@ export const postCrfStockCheckRetry = async (
     if (!crfId) throw new ApiError(400, "crfId is required");
 
     const result = await retryStockCheck(actor, crfId as string);
-    res.status(200).json({ success: true, data: result });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// POST /crf/order/tracking — the Shopify/THCM-side tracking callback.
-// shopifyAuth-guarded (no requireAuth, no req.user — there is no MAP actor
-// behind this request), so this does NOT go through requireActor. Looked
-// up by shopifyOrderId; epcId is a cross-check only — see
-// recordShopifyTracking's own comment for why.
-//
-// Body is validated here with an explicit whitelist (not a raw pass-
-// through of req.body) before it ever reaches the service layer.
-// ─────────────────────────────────────────────────────────────────────────────
-export const postShopifyOrderTracking = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { orderId, epcId, trackingId, trackingUrl } = req.body as Record<
-      string,
-      unknown
-    >;
-
-    const missing = (
-      [
-        ["orderId", orderId],
-        ["epcId", epcId],
-        ["trackingId", trackingId],
-        ["trackingUrl", trackingUrl],
-      ] as const
-    )
-      .filter(([, value]) => typeof value !== "string" || !value.trim())
-      .map(([field]) => field);
-
-    if (missing.length > 0) {
-      throw new ApiError(
-        400,
-        `Missing or invalid field(s): ${missing.join(", ")}`,
-      );
-    }
-
-    const result = await recordShopifyTracking({
-      orderId: (orderId as string).trim(),
-      epcId: (epcId as string).trim(),
-      trackingId: (trackingId as string).trim(),
-      trackingUrl: (trackingUrl as string).trim(),
-    });
-
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     next(error);

@@ -71,6 +71,9 @@ export const evaluateZone = (
 //                      against template.metaData_1. See the zone-matching
 //                      note below.
 // VENDOR_ONBOARDING → STUB: first active template, no criteria yet
+// HANDOUT_REQUEST   → single admin-configured template, single stage (see
+//                      below) — the only shape this app's approval needs
+//                      today.
 // ─────────────────────────────────────────────────────────────────────────────
 
 type CandidateTemplate = Prisma.WorkflowTemplateGetPayload<{
@@ -144,6 +147,27 @@ export const templateMatchResolvers: Record<
 	// CPP routes through its own role-based chains, not a WorkflowTemplate.
 	// Placeholder so the Record type compiles until CPP submit is built.
 	CPP_REQUEST: (templates) =>
+		templates.find((t) => t.isActive === true && t.ownerType === "ADMIN"),
+
+	// ✅ CHANGED — was `() => undefined` (a deliberate stub that made
+	// assignWorkflow fail every time, by design, until this was scoped).
+	//
+	// Handouts only ever needs one approval stage with a fixed, admin-
+	// configured approver set — "parity with today's single fixed
+	// approver," just resolved through a real WorkflowTemplate instead of
+	// an env var. No per-request criteria (budget, zone, etc.) factor into
+	// which template a handout gets, because there is only ever meant to be
+	// one: the workspace's single ADMIN-owned template for the HANDOUT app.
+	// Same shape as MEDICAL_CLAIM's resolver above — criteria is accepted
+	// but intentionally unused, not dropped from the signature, so this
+	// slots into the same Record<WorkflowSubjectType, ...> shape as every
+	// other entry without a special case in the caller.
+	//
+	// If a workspace ever needs more than one Handout template (e.g. a
+	// second approval tier), this is the one place that would grow a real
+	// criteria-based rule — same extension point every other subject type
+	// already uses.
+	HANDOUT_REQUEST: (templates) =>
 		templates.find((t) => t.isActive === true && t.ownerType === "ADMIN"),
 };
 

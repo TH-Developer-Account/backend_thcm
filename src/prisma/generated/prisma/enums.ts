@@ -157,7 +157,8 @@ export const WorkflowSubjectType = {
   MEDICAL_CLAIM: 'MEDICAL_CLAIM',
   DEALER_AUDIT_INSTANCE: 'DEALER_AUDIT_INSTANCE',
   FACTORY_AUDIT_INSTANCE: 'FACTORY_AUDIT_INSTANCE',
-  CPP_REQUEST: 'CPP_REQUEST'
+  CPP_REQUEST: 'CPP_REQUEST',
+  HANDOUT_REQUEST: 'HANDOUT_REQUEST'
 } as const
 
 export type WorkflowSubjectType = (typeof WorkflowSubjectType)[keyof typeof WorkflowSubjectType]

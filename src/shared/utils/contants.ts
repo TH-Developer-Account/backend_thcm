@@ -21,7 +21,11 @@ export const epcFullInfoSelect = {
   department: {
     select: {
       id: true,
-      department_name: true,
+      // `department` relation now resolves to a Division row (Division took
+      // over Department's org-unit-master role everywhere; the EventProposal
+      // field/FK name itself was kept as-is — repoint, not rename). Division
+      // has no `department_name` column, only `name` — see schema.prisma.
+      name: true,
     },
   },
   vertical: {

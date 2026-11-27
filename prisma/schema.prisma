@@ -3,7 +3,6 @@ generator client {
   output   = "../src/prisma/generated/prisma"
 }
 
-
 datasource db {
   provider = "postgresql"
 }
@@ -59,7 +58,6 @@ enum AccessTokenSubjectType {
   MEDICAL_CLAIM
   CPP_REQUEST
 }
-
 
 enum ProductType {
   EPF
@@ -117,6 +115,7 @@ enum WorkflowSubjectType {
   DEALER_AUDIT_INSTANCE
   FACTORY_AUDIT_INSTANCE
   CPP_REQUEST
+  HANDOUT_REQUEST
 }
 
 enum EvidenceSubjectType {
@@ -168,10 +167,10 @@ enum AssignmentStatus {
 }
 
 enum NotificationType {
-  APPROVAL_PENDING   // a workflow stage now requires this user's approval
-  APPROVAL_DECISION  // an approval/rejection/clarify happened on something this user owns
-  REPORT_STATUS      // event report validated/rejected/clarification requested
-  GENERIC            // catch-all for future apps that don't fit the above
+  APPROVAL_PENDING // a workflow stage now requires this user's approval
+  APPROVAL_DECISION // an approval/rejection/clarify happened on something this user owns
+  REPORT_STATUS // event report validated/rejected/clarification requested
+  GENERIC // catch-all for future apps that don't fit the above
 }
 
 enum ClaimCover {
@@ -225,18 +224,18 @@ enum FuelType {
 // ─────────────────────────────────────────────
 
 enum CrfStatus {
-  OPEN                // editable while EPC is draft/clarification
-  APPROVED            // EPC approved, stock confirmed, awaiting recipient/address + Place order
-  STOCK_SHORTFALL     // EPC approved, some souvenir lines short — proposer must swap or accept partial
-  STOCK_CHECK_FAILED  // EPC approved, but the post-approval Shopify stock check couldn't reach the
-                      // store (THCM Shop down/unreachable) — never got to APPROVED/STOCK_SHORTFALL.
-                      // Owner or admin can retry the check once the store is back (see
-                      // crfOrder.service.ts's retryStockCheck). Distinct from ORDER_FAILED below:
-                      // this is a failure to CHECK stock, not a failure to PLACE an already-confirmed order.
-  ORDER_FAILED        // Create Order call failed (address/integration) — admin can retry
-  ORDERED             // Shopify order placed
-  CANCELLED           // EPC rejected, or order cancelled
-  CLOSED              // ORDERED + every manual (printed material/artwork) line delivered
+  OPEN // editable while EPC is draft/clarification
+  APPROVED // EPC approved, stock confirmed, awaiting recipient/address + Place order
+  STOCK_SHORTFALL // EPC approved, some souvenir lines short — proposer must swap or accept partial
+  STOCK_CHECK_FAILED // EPC approved, but the post-approval Shopify stock check couldn't reach the
+  // store (THCM Shop down/unreachable) — never got to APPROVED/STOCK_SHORTFALL.
+  // Owner or admin can retry the check once the store is back (see
+  // crfOrder.service.ts's retryStockCheck). Distinct from ORDER_FAILED below:
+  // this is a failure to CHECK stock, not a failure to PLACE an already-confirmed order.
+  ORDER_FAILED // Create Order call failed (address/integration) — admin can retry
+  ORDERED // Shopify order placed
+  CANCELLED // EPC rejected, or order cancelled
+  CLOSED // ORDERED + every manual (printed material/artwork) line delivered
 }
 
 enum CrfRecipientType {
@@ -253,16 +252,16 @@ enum CrfAddressSource {
 }
 
 enum CrfItemSource {
-  CATALOG   // internal ProductMaster — printed material / artwork
-  SHOPIFY   // live Shopify catalog — souvenirs
+  CATALOG // internal ProductMaster — printed material / artwork
+  SHOPIFY // live Shopify catalog — souvenirs
 }
 
 enum CrfItemStatus {
-  REQUESTED      // part of current order intent
-  OUT_OF_STOCK   // short at last check, proposer must decide
-  REMOVED        // proposer manually dropped it (swap)
-  ORDERED        // included in the placed Shopify order
-  DEBITED        // dropped via accept-partial; its value is in CrfOrder.debitNoteAmount
+  REQUESTED // part of current order intent
+  OUT_OF_STOCK // short at last check, proposer must decide
+  REMOVED // proposer manually dropped it (swap)
+  ORDERED // included in the placed Shopify order
+  DEBITED // dropped via accept-partial; its value is in CrfOrder.debitNoteAmount
 }
 
 enum CrfOrderStatus {
@@ -275,29 +274,29 @@ enum CrfOrderStatus {
 // ─────────────────────────────────────────────
 
 model User {
-  id                    String               @id @default(uuid())
-  first_name            String               @db.VarChar(50)
-  last_name             String               @db.VarChar(50)
-  email                 String?              @unique @db.VarChar(100)   // was: String @unique
-  phone_number          String?              @unique @db.VarChar(15)    // was: String @unique
-  password              String               @db.VarChar(255)
-  is_active             Boolean              @default(true)
-  is_default_login      Boolean              @default(true)
+  id               String  @id @default(uuid())
+  first_name       String  @db.VarChar(50)
+  last_name        String  @db.VarChar(50)
+  email            String? @unique @db.VarChar(100) // was: String @unique
+  phone_number     String? @unique @db.VarChar(15) // was: String @unique
+  password         String  @db.VarChar(255)
+  is_active        Boolean @default(true)
+  is_default_login Boolean @default(true)
 
   // ── HR / org master fields (new) ──────────────────────────────────────
-  employeeCode     String?
-  bydId            String?
-  s4Id             String?
-  tallyId          String?
-  c4cId            String?
-  address          String?
-  branchId         String?
-  branch           Branch?       @relation(fields: [branchId], references: [id])
-  department       String?
-  role             String?
-  vertical         String?
-  managerCode1     String?
-  managerCode2     String?
+  employeeCode String?
+  bydId        String?
+  s4Id         String?
+  tallyId      String?
+  c4cId        String?
+  address      String?
+  branchId     String?
+  branch       Branch? @relation(fields: [branchId], references: [id])
+  department   String?
+  role         String?
+  vertical     String?
+  managerCode1 String?
+  managerCode2 String?
 
   // ── HR org fields ──────────────────────────────────────────────────────
   // location: what the old `region` column actually held — EOR's
@@ -305,19 +304,19 @@ model User {
   // master-backed FK (unlike designation/division/costCenter below) —
   // real-world location values vary too much to constrain to a fixed
   // list; see decisions-and-learnings.md.
-  location      String?
-  designationId String?
-  designation   Designation?  @relation(fields: [designationId], references: [id])
-  divisionId    String?
-  division      Division?     @relation(fields: [divisionId], references: [id])
-  costCenterId  String?
-  costCenter    CostCenter?   @relation(fields: [costCenterId], references: [id])
+  location         String?
+  designationId    String?
+  designation      Designation? @relation(fields: [designationId], references: [id])
+  divisionId       String?
+  division         Division?    @relation(fields: [divisionId], references: [id])
+  costCenterId     String?
+  costCenter       CostCenter?  @relation(fields: [costCenterId], references: [id])
   // zones: many-to-many — one user (e.g. a regional manager) can cover
   // more than one zone. Zone is also EventProposal's former "Region"
   // master, unified into one table since the two concepts are the same
   // thing (see the Zone model below).
-  zones         Zone[]
-  isDefaultContact Boolean             @default(false)
+  zones            Zone[]
+  isDefaultContact Boolean      @default(false)
   userType         String? // reuses the existing THCM/DEALER/CUSTOMER enum — nullable since not every User is one of these
   joinedOn         DateTime?
   grade            String?
@@ -328,40 +327,42 @@ model User {
   businessPartner   BusinessPartner? @relation(fields: [businessPartnerId], references: [id])
 
   // ── existing relations below, unchanged ─────────────────────────────
-  refresh_tokens        RefreshToken[]
-  password_reset_tokens PasswordResetToken[]
-  workspaceUsers WorkspaceUser[]
-  userProfiles         UserProfile[]      @relation("UserProfileHolder")
-  assignedUserProfiles UserProfile[]      @relation("UserProfileAssigner")
-  administeredApps         AppAdministrator[] @relation("AdministeredApps")
-  grantedAppAdministrators AppAdministrator[] @relation("GrantedAppAdministrators")
-  notifications     Notification[]
-  pushSubscriptions PushSubscription[]
-  created_event_proposals EventProposal[] @relation("EventCreatedBy")
-  updated_event_proposals EventProposal[] @relation("EventUpdatedBy")
-  created_workflow WorkflowTemplate[] @relation("WorkFlowCreatedBy")
-  updated_workflow WorkflowTemplate[] @relation("WorkFlowUpdatedBy")
-  initiated_vendor_onboardings VendorOnboarding[] @relation("VendorOnboardingInitiatedBy")
-  initiated_medical_claims MedicalClaim[] @relation("MedicalClaimInitiatedBy")
-  dealerAuditResponses  AuditItemResponse[] @relation("DealerAuditItemRespondedBy")
-  approvals         Approval[]
-  templateApprovals TemplateApprover[]
-  workFlowUsers     WorkFlowTemplateUser[]
-  comments          Comment[]
-  reportValidations EventReport[] @relation("ReportValidator")
-  activityLogs   ActivityLog[]
-  importExportLogs ImportExportLog[]
-  businessPartnerContact BusinessPartnerContact[]
-  uploadedEvidence              Evidence[]                                                         
-  factoryAuditRoundsTriggered   AuditRound[]              @relation("FactoryAuditRoundTriggeredBy") 
-  factoryAuditAssignments       AuditAssignment[]         @relation("FactoryAuditAssignmentAuditor")
-  factoryCheckpointReviews      AuditCheckpointResult[]   @relation("FactoryAuditCheckpointReviewer")
-  factoryAuditInstancesCreated  FactoryAuditInstance[]    @relation("FactoryAuditInstanceCreatedBy")
-  dealerAuditCyclesCreated DealerAuditCycle[]    @relation("DealerAuditCycleCreator")
-  dealerAuditsToReview     DealerAuditInstance[] @relation("DealerAuditReviewer")
+  refresh_tokens               RefreshToken[]
+  password_reset_tokens        PasswordResetToken[]
+  workspaceUsers               WorkspaceUser[]
+  userProfiles                 UserProfile[]            @relation("UserProfileHolder")
+  assignedUserProfiles         UserProfile[]            @relation("UserProfileAssigner")
+  administeredApps             AppAdministrator[]       @relation("AdministeredApps")
+  grantedAppAdministrators     AppAdministrator[]       @relation("GrantedAppAdministrators")
+  notifications                Notification[]
+  pushSubscriptions            PushSubscription[]
+  created_event_proposals      EventProposal[]          @relation("EventCreatedBy")
+  updated_event_proposals      EventProposal[]          @relation("EventUpdatedBy")
+  created_workflow             WorkflowTemplate[]       @relation("WorkFlowCreatedBy")
+  updated_workflow             WorkflowTemplate[]       @relation("WorkFlowUpdatedBy")
+  initiated_vendor_onboardings VendorOnboarding[]       @relation("VendorOnboardingInitiatedBy")
+  initiated_medical_claims     MedicalClaim[]           @relation("MedicalClaimInitiatedBy")
+  dealerAuditResponses         AuditItemResponse[]      @relation("DealerAuditItemRespondedBy")
+  approvals                    Approval[]
+  templateApprovals            TemplateApprover[]
+  workFlowUsers                WorkFlowTemplateUser[]
+  comments                     Comment[]
+  reportValidations            EventReport[]            @relation("ReportValidator")
+  activityLogs                 ActivityLog[]
+  importExportLogs             ImportExportLog[]
+  businessPartnerContact       BusinessPartnerContact[]
+  uploadedEvidence             Evidence[]
+  factoryAuditRoundsTriggered  AuditRound[]             @relation("FactoryAuditRoundTriggeredBy")
+  factoryAuditAssignments      AuditAssignment[]        @relation("FactoryAuditAssignmentAuditor")
+  factoryCheckpointReviews     AuditCheckpointResult[]  @relation("FactoryAuditCheckpointReviewer")
+  factoryAuditInstancesCreated FactoryAuditInstance[]   @relation("FactoryAuditInstanceCreatedBy")
+  dealerAuditCyclesCreated     DealerAuditCycle[]       @relation("DealerAuditCycleCreator")
+  dealerAuditsToReview         DealerAuditInstance[]    @relation("DealerAuditReviewer")
   // ── CRF × Shopify (souvenirs) ────────────────────────────────────────
-  createdCrfs     CRF[] @relation("CrfCreatedBy")
-  crfsAsRecipient CRF[] @relation("CrfRecipientUser")
+  createdCrfs                  CRF[]                    @relation("CrfCreatedBy")
+  crfsAsRecipient              CRF[]                    @relation("CrfRecipientUser")
+  handoutRequests              HandoutRequest[]         @relation("HandoutRequestedBy")
+  handoutsDelivered            HandoutRequest[]         @relation("HandoutDeliveredBy")
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -417,12 +418,12 @@ model Workspace {
   userProfiles      UserProfile[]
   appAdministrators AppAdministrator[]
   vendorOnboardings VendorOnboarding[]
-  medicalClaims MedicalClaim[]
+  medicalClaims     MedicalClaim[]
 
   workflowTemplates WorkflowTemplate[]
   workflows         WorkflowInstance[]
   importExportLogs  ImportExportLog[]
-  notifications Notification[]
+  notifications     Notification[]
 
   created_at DateTime @default(now()) @db.Timestamp(6)
   updated_at DateTime @default(now()) @db.Timestamp(6)
@@ -583,22 +584,26 @@ model EventProposal {
   event_objective   String
   status            String   @default("PENDING")
 
-  created_by_id    String
-  updated_by_id    String
-  department_id    String
-  region_id        String
-  branch_id        String
-  event_scale      Int
-  budget_master_id String
-  event_name_id    String
-  vertical_id      String
-  deviationReason String?
-  deviationAmount Decimal? @db.Decimal(12, 2)
-  deviationDocUrl String?
+  created_by_id     String
+  updated_by_id     String
+  department_id     String
+  region_id         String
+  branch_id         String
+  event_scale       Int
+  budget_master_id  String
+  event_name_id     String
+  vertical_id       String
+  deviationReason   String?
+  deviationAmount   Decimal? @db.Decimal(12, 2)
+  deviationDocUrl   String?
   deviationDocS3Key String?
-  locationMeta     Json?
+  locationMeta      Json?
 
-  department    Department   @relation(fields: [department_id], references: [id])
+  // NOTE: department_id/department are the original EPC field names, kept
+  // as-is (repoint, not rename — see decisions-and-learnings.md) even
+  // though the FK target is now Division, not the removed Department
+  // model. Division is the org unit for both HR and EPC purposes now.
+  department    Division     @relation(fields: [department_id], references: [id])
   vertical      Vertical     @relation(fields: [vertical_id], references: [id])
   region        Zone         @relation(fields: [region_id], references: [id])
   branch        Branch       @relation(fields: [branch_id], references: [id])
@@ -607,13 +612,13 @@ model EventProposal {
   created_by    User         @relation("EventCreatedBy", fields: [created_by_id], references: [id])
   updated_by    User         @relation("EventUpdatedBy", fields: [updated_by_id], references: [id])
 
-  epf EPF?
-  crf CRF?
+  epf    EPF?
+  crf    CRF?
   report EventReport?
 
-  leads     Lead[]
+  leads            Lead[]
   importExportLogs ImportExportLog[]
-  machineStudies MachineStudy[]
+  machineStudies   MachineStudy[]
 
   search_vector Unsupported("tsvector")?
   created_at    DateTime                 @default(now())
@@ -625,15 +630,15 @@ model EventProposal {
 // ─────────────────────────────────────────────
 
 model WorkflowTemplate {
-  id          String  @id @default(uuid())
+  id          String @id @default(uuid())
   name        String
   description String
 
   workspaceId String
-  isActive    Boolean @default(true)
+  isActive    Boolean           @default(true)
   appId       String
-  ownerType  TemplateOwnerType @default(ADMIN)
-  isReusable Boolean           @default(true)
+  ownerType   TemplateOwnerType @default(ADMIN)
+  isReusable  Boolean           @default(true)
   metaData_1  String
   metaData_2  String
   metaData_3  String
@@ -647,10 +652,10 @@ model WorkflowTemplate {
   workflowInstances WorkflowInstance[]
   workFlowUsers     WorkFlowTemplateUser[]
 
-  app        App              @relation(fields: [appId], references: [id])
-  workspace  Workspace        @relation(fields: [workspaceId], references: [id])
-  created_by User             @relation("WorkFlowCreatedBy", fields: [created_by_id], references: [id])
-  updated_by User             @relation("WorkFlowUpdatedBy", fields: [updated_by_id], references: [id])
+  app        App       @relation(fields: [appId], references: [id])
+  workspace  Workspace @relation(fields: [workspaceId], references: [id])
+  created_by User      @relation("WorkFlowCreatedBy", fields: [created_by_id], references: [id])
+  updated_by User      @relation("WorkFlowUpdatedBy", fields: [updated_by_id], references: [id])
 
   @@index([ownerType])
   @@index([isReusable])
@@ -664,16 +669,16 @@ model TemplateStage {
   strategy     StrategyType
   minApprovals Int?
 
-  template  WorkflowTemplate  @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  template  WorkflowTemplate   @relation(fields: [templateId], references: [id], onDelete: Cascade)
   approvers TemplateApprover[]
 
   @@unique([templateId, stageOrder])
 }
 
 model TemplateApprover {
-  id      String @id @default(uuid())
-  stageId String
-  userId  String
+  id                 String  @id @default(uuid())
+  stageId            String
+  userId             String
   isExternalApprover Boolean @default(false)
 
   stage TemplateStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
@@ -687,17 +692,17 @@ model TemplateApprover {
 // ─────────────────────────────────────────────
 
 model WorkflowInstance {
-  id              String @id @default(uuid())
-  templateId      String
-  workspaceId     String
-  iteration       Int    @default(1)
-  isActive        Boolean      @default(true)
-  workflowType    WorkflowType @default(STANDARD)
-  status          WorkflowStatus @default(IN_PROGRESS)
-  currentStage    Int
-  appId       String
-  subjectType WorkflowSubjectType
-  subjectId   String
+  id           String              @id @default(uuid())
+  templateId   String
+  workspaceId  String
+  iteration    Int                 @default(1)
+  isActive     Boolean             @default(true)
+  workflowType WorkflowType        @default(STANDARD)
+  status       WorkflowStatus      @default(IN_PROGRESS)
+  currentStage Int
+  appId        String
+  subjectType  WorkflowSubjectType
+  subjectId    String
 
   template  WorkflowTemplate @relation(fields: [templateId], references: [id])
   workspace Workspace        @relation(fields: [workspaceId], references: [id])
@@ -705,7 +710,7 @@ model WorkflowInstance {
   comments  Comment[]
 
   // ✅ Back-relation for ActivityLog.workflow
-  activityLogs   ActivityLog[]
+  activityLogs                 ActivityLog[]
   factoryClassificationHistory VendorClassificationHistory[]
 
   created_at DateTime @default(now())
@@ -734,20 +739,20 @@ model StageInstance {
 
   // ✅ Back-relation for ActivityLog.stage
   // nullable because DEVIATION audit rows have no specific triggering stage
-  activityLogs   ActivityLog[]
+  activityLogs ActivityLog[]
 
   @@unique([workflowId, stageOrder, iteration])
   @@index([workflowId, isCurrentIteration])
 }
 
 model Approval {
-  id         String         @id @default(uuid())
-  stageId    String
-  approverId String
-  status     ApprovalStatus @default(PENDING)
-  actedAt    DateTime?
-  reason     String?
-  isExternalApprover Boolean @default(false)
+  id                 String         @id @default(uuid())
+  stageId            String
+  approverId         String
+  status             ApprovalStatus @default(PENDING)
+  actedAt            DateTime?
+  reason             String?
+  isExternalApprover Boolean        @default(false)
 
   stage    StageInstance @relation(fields: [stageId], references: [id], onDelete: Cascade)
   approver User          @relation(fields: [approverId], references: [id])
@@ -757,11 +762,11 @@ model Approval {
 }
 
 model WorkFlowTemplateUser {
-  id         String   @id @default(uuid())
-  templateId String
-  userId     String
-  created_at DateTime @default(now())
-  isFallbackApprover Boolean @default(false)
+  id                 String   @id @default(uuid())
+  templateId         String
+  userId             String
+  created_at         DateTime @default(now())
+  isFallbackApprover Boolean  @default(false)
 
   template WorkflowTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
   user     User             @relation(fields: [userId], references: [id])
@@ -794,14 +799,14 @@ model WorkFlowTemplateUser {
 // ─────────────────────────────────────────────
 
 model ActivityLog {
-  id           String         @id @default(uuid())
+  id           String              @id @default(uuid())
   actorId      String?
   actorGuestId String?
   action       String?
   workflowId   String?
   stageId      String?
   metadata     Json?
-  createdAt    DateTime       @default(now())
+  createdAt    DateTime            @default(now())
   subjectType  WorkflowSubjectType
   subjectId    String
 
@@ -820,26 +825,28 @@ model ActivityLog {
 // OTHER MODELS
 // ─────────────────────────────────────────────
 
-model Department {
-  id              String          @id @default(uuid())
-  department_code String          @unique
-  department_name String
-  isActive        Boolean         @default(true)
-  event_proposals EventProposal[]
-  verticals       Vertical[]
-  created_at      DateTime        @default(now())
-  updated_at      DateTime        @updatedAt
-}
-
+// Department (department_code/department_name) was removed — Division is
+// now the single org-unit master for both HR (User) and EPC
+// (EventProposal) purposes. Vertical moved from a Department FK to a
+// Division FK (below) as part of the same change; see
+// decisions-and-learnings.md.
 model Vertical {
   id              String          @id @default(uuid())
   name            String
-  code            String
-  departmentId    String
-  department      Department      @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  // EOR carries no Vertical code (unlike Department's, which was always
+  // admin-assigned) — nullable, unlike the old Department-scoped code.
+  code            String?
+  divisionId      String
+  division        Division        @relation(fields: [divisionId], references: [id], onDelete: Cascade)
   event_proposals EventProposal[]
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
+
+  // Same Vertical name recurs under more than one Division in EOR (e.g.
+  // "ASSEMBLY" under both PRODUCTION - DHARWAD and PRODUCTION - KHARAGPUR)
+  // — composite uniqueness lets each Division hold its own row for that
+  // name instead of colliding on a bare name-unique constraint.
+  @@unique([name, divisionId])
 }
 
 // Zone: unifies what used to be two separate concepts — EventProposal's
@@ -888,10 +895,10 @@ model BudgetMaster {
 }
 
 model EventName {
-  id     String          @id @default(uuid())
-  title  String
-  reportTemplateKey String? @unique
-  events EventProposal[]
+  id                String          @id @default(uuid())
+  title             String
+  reportTemplateKey String?         @unique
+  events            EventProposal[]
 }
 
 // ─────────────────────────────────────────────
@@ -901,6 +908,11 @@ model EventName {
 // (see User model above) — populated by scripts/backfillHrMasters.ts from
 // EOR data, so Masters admin UI has a governed list to show/manage.
 //
+// Vertical (see its model above, near EventProposal) is backfilled from
+// the same EOR run and belongs conceptually to this group too, keyed off
+// Division rather than User directly — User.vertical stays plain free
+// text (see the User model comment), it is NOT an FK into Vertical.
+//
 // User.location is intentionally NOT one of these — it's plain free text
 // on User directly (see the User model comment) rather than a master-
 // backed FK, since real-world location values vary too much to constrain
@@ -909,12 +921,17 @@ model EventName {
 // ─────────────────────────────────────────────
 
 model Division {
-  id         String   @id @default(uuid())
-  name       String   @unique
-  isActive   Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  users      User[]
+  id              String          @id @default(uuid())
+  name            String          @unique
+  isActive        Boolean         @default(true)
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+  users           User[]
+  // Added when Department was removed: Division now backs both the HR
+  // Vertical master and EPC's EventProposal.department_id (repointed, not
+  // renamed — see the Vertical model and EventProposal comments above).
+  verticals       Vertical[]
+  event_proposals EventProposal[]
 }
 
 model Designation {
@@ -935,6 +952,7 @@ model CostCenter {
   updated_at DateTime @updatedAt
   users      User[]
 }
+
 model ProductMaster {
   id          String          @id @default(uuid())
   productType ProductType
@@ -942,7 +960,7 @@ model ProductMaster {
   partNumber  String          @unique
   name        String
   description String?
-  unitRate    Decimal?         @db.Decimal(10, 2)
+  unitRate    Decimal?        @db.Decimal(10, 2)
   isActive    Boolean         @default(true)
   created_at  DateTime        @default(now())
   updated_at  DateTime        @updatedAt
@@ -952,8 +970,8 @@ model ProductMaster {
 }
 
 model EPF {
-  id    String  @id @default(uuid())
-  epcId String  @unique
+  id     String  @id @default(uuid())
+  epcId  String  @unique
   status String?
 
   epc EventProposal @relation(fields: [epcId], references: [id], onDelete: Cascade)
@@ -1031,21 +1049,21 @@ model EPF {
 model CRF {
   id        String    @id @default(uuid())
   epcId     String    @unique
-  crfNumber String?   @unique          // "CRF-2026-0042" — proposal_number with EPC→CRF swap, set at creation
+  crfNumber String?   @unique // "CRF-2026-0042" — proposal_number with EPC→CRF swap, set at creation
   status    CrfStatus @default(OPEN)
 
   // Recipient — collected post-approval, alongside addresses (not during drafting)
-  recipientType          CrfRecipientType?
-  recipientName          String?
-  recipientPhone         String?
-  recipientEmail         String?
-  recipientOrganisation  String?
-  recipientUserId        String?
-  recipientUser           User?                   @relation("CrfRecipientUser", fields: [recipientUserId], references: [id])
-  recipientContactId      String?
-  recipientContact        BusinessPartnerContact? @relation(fields: [recipientContactId], references: [id])
-  deliveryInstructions    String?
-  requiredByDate          DateTime?
+  recipientType         CrfRecipientType?
+  recipientName         String?
+  recipientPhone        String?
+  recipientEmail        String?
+  recipientOrganisation String?
+  recipientUserId       String?
+  recipientUser         User?                   @relation("CrfRecipientUser", fields: [recipientUserId], references: [id])
+  recipientContactId    String?
+  recipientContact      BusinessPartnerContact? @relation(fields: [recipientContactId], references: [id])
+  deliveryInstructions  String?
+  requiredByDate        DateTime?
 
   // Shipping address — collected post-approval alongside the recipient
   // fields above, in the same dispatch-details step. Inlined directly onto
@@ -1054,23 +1072,23 @@ model CRF {
   // `type` discriminator would exist to serve a distinction that no
   // longer exists. Only sent to THCM as `shippingAddress` on Create Order
   // — THCM's API has no billing-address concept at all.
-  addressSourceType CrfAddressSource @default(MANUAL)
-  addressSourceId   String?          // e.g. BusinessPartnerAddress.id it was prefilled from
-  addressCompany    String?
-  addressLine1      String?
-  addressLine2      String?
-  addressLandmark   String?
-  addressCity       String?
-  addressDistrict   String?
-  addressState      String?
-  addressPincode    String?          @db.VarChar(6)
-  addressCountry    String?          @default("India")
-  addressGstin      String?          @db.VarChar(15)
+  addressSourceType  CrfAddressSource @default(MANUAL)
+  addressSourceId    String? // e.g. BusinessPartnerAddress.id it was prefilled from
+  addressCompany     String?
+  addressLine1       String?
+  addressLine2       String?
+  addressLandmark    String?
+  addressCity        String?
+  addressDistrict    String?
+  addressState       String?
+  addressPincode     String?          @db.VarChar(6)
+  addressCountry     String?          @default("India")
+  addressGstin       String?          @db.VarChar(15)
   addressValidatedAt DateTime?
 
-  souvenirTotalAtApproval Decimal?  @db.Decimal(12, 2)  // frozen approval-time snapshot of ALL souvenir value (in-stock + short); historical only, no longer used as the swap cap — see shortfallAmount
-  shortfallAmount         Decimal?  @db.Decimal(12, 2)  // frozen value of the CURRENT OUT_OF_STOCK lines; the real swap budget; null when not in shortfall
-  pendingDebitAmount      Decimal?  @db.Decimal(12, 2)  // leftover from an under-spent swap, carried forward and billed at order placement
+  souvenirTotalAtApproval Decimal?  @db.Decimal(12, 2) // frozen approval-time snapshot of ALL souvenir value (in-stock + short); historical only, no longer used as the swap cap — see shortfallAmount
+  shortfallAmount         Decimal?  @db.Decimal(12, 2) // frozen value of the CURRENT OUT_OF_STOCK lines; the real swap budget; null when not in shortfall
+  pendingDebitAmount      Decimal?  @db.Decimal(12, 2) // leftover from an under-spent swap, carried forward and billed at order placement
   approvedAt              DateTime?
   itemsChangedAt          DateTime?
   closedAt                DateTime?
@@ -1084,7 +1102,7 @@ model CRF {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  lineItems LineItem[]    // kept through the migration window — see migration notes, dropped in the contract step
+  lineItems LineItem[] // kept through the migration window — see migration notes, dropped in the contract step
   items     CrfItem[]
   order     CrfOrder?
 
@@ -1096,9 +1114,9 @@ model CrfItem {
   crfId String
   crf   CRF    @relation(fields: [crfId], references: [id], onDelete: Cascade)
 
-  category  ProductCategory   // PRINTED_MATERIAL | SOUVENIR | ARTWORK
+  category  ProductCategory // PRINTED_MATERIAL | SOUVENIR | ARTWORK
   source    CrfItemSource
-  sortOrder Int               @default(0)
+  sortOrder Int             @default(0)
 
   // CATALOG lines (printed material / artwork) — same shape as today's LineItem.
   // `amount`/`rate` are shared with SHOPIFY lines below: CATALOG rows get
@@ -1122,16 +1140,16 @@ model CrfItem {
   // each time (see backfillSouvenirDisplayFields, core/mapper.ts).
   sku          String?
   requestedQty Int?
-  title        String?  // product title at request time, e.g. "Tata Hitachi Cap"
-  variantTitle String?  // e.g. "M / Orange" — null for single-variant products
+  title        String? // product title at request time, e.g. "Tata Hitachi Cap"
+  variantTitle String? // e.g. "M / Orange" — null for single-variant products
   imageUrl     String?
 
-  qtyAtApproval Int?   // frozen at EPC final approval
+  qtyAtApproval Int? // frozen at EPC final approval
 
   status        CrfItemStatus @default(REQUESTED)
   removedAt     DateTime?
   removedById   String?
-  deliveredAt   DateTime?     // manual mark, PRINTED_MATERIAL / ARTWORK only
+  deliveredAt   DateTime? // manual mark, PRINTED_MATERIAL / ARTWORK only
   deliveredById String?
 
   created_at DateTime @default(now())
@@ -1147,13 +1165,13 @@ model CrfOrder {
 
   shopifyOrderId  String   @unique
   totalPrice      Decimal  @db.Decimal(12, 2)
-  lines           Json                              // Shopify-confirmed snapshot: [{ sku, title, quantity, unitPrice, lineTotal }]
-  debitNoteAmount Decimal? @db.Decimal(12, 2)        // set on the accept-partial path, and/or folded in from CRF.pendingDebitAmount at placement
+  lines           Json // Shopify-confirmed snapshot: [{ sku, title, quantity, unitPrice, lineTotal }]
+  debitNoteAmount Decimal? @db.Decimal(12, 2) // set on the accept-partial path, and/or folded in from CRF.pendingDebitAmount at placement
 
-  status        CrfOrderStatus @default(ACTIVE)
-  cancelledAt   DateTime?
-  cancelledById String?
-  cancelReason  String?
+  status            CrfOrderStatus @default(ACTIVE)
+  cancelledAt       DateTime?
+  cancelledById     String?
+  cancelReason      String?
   trackingNumber    String?
   trackingUrl       String?
   trackingUpdatedAt DateTime?
@@ -1161,6 +1179,90 @@ model CrfOrder {
   placedAt   DateTime @default(now())
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+}
+
+model HandoutRequest {
+  id            String @id @default(uuid())
+  requestNumber String @unique
+
+  // Plain strings, not Prisma enums — values maintained in a shared TS
+  // constants file (mirrors handouts.constants.ts's HANDOUT_STATUS_LABEL),
+  // validated at the service layer. Adding a new status/fulfillment type
+  // later is a code change, not a migration.
+  status          String @default("PENDING_APPROVAL")
+  fulfillmentType String @default("HAND_DELIVERY")
+
+  purpose      String
+  requiredBy   DateTime
+  deliverTo    String
+  contactPhone String
+  remarks      String?
+
+  // Required only when fulfillmentType = "SHIPPED" (service-layer check).
+  addressLine1    String?
+  addressLine2    String?
+  addressLandmark String?
+  addressCity     String?
+  addressDistrict String?
+  addressState    String?
+  addressPincode  String?
+  addressCountry  String?
+  addressGstin    String?
+
+  requestedById String
+  requestedBy   User   @relation("HandoutRequestedBy", fields: [requestedById], references: [id])
+
+  rejectionReason     String?
+  clarificationReason String?
+  cannotFulfilReason  String?
+  cancellationReason  String?
+
+  handedToName  String?
+  deliveredOn   DateTime?
+  deliveryNote  String?
+  deliveredById String?
+  deliveredBy   User?     @relation("HandoutDeliveredBy", fields: [deliveredById], references: [id])
+
+  approvedAt DateTime?
+  closedAt   DateTime?
+
+  items HandoutItem[]
+  order HandoutOrder?
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model HandoutItem {
+  id        String         @id @default(uuid())
+  handoutId String
+  handout   HandoutRequest @relation(fields: [handoutId], references: [id], onDelete: Cascade)
+
+  sku      String
+  quantity Int
+
+  title        String?
+  variantTitle String?
+  imageUrl     String?
+  rate         Decimal? @db.Decimal(10, 2)
+
+  created_at DateTime @default(now())
+}
+
+model HandoutOrder {
+  id        String         @id @default(uuid())
+  handoutId String         @unique
+  handout   HandoutRequest @relation(fields: [handoutId], references: [id])
+
+  shopifyOrderId String  @unique
+  totalPrice     Decimal @db.Decimal(10, 2)
+  lines          Json
+
+  trackingNumber    String?
+  trackingUrl       String?
+  trackingUpdatedAt DateTime?
+
+  created_at DateTime @default(now())
 }
 
 model LineItem {
@@ -1212,68 +1314,67 @@ model Comment {
   type       String   @default("COMMENT")
   workflowId String?
 
-  user     User     @relation(fields: [userId], references: [id])
-  approval Approval? @relation(fields: [approvalId], references: [id], onDelete: Cascade)
-  workflow   WorkflowInstance? @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-
+  user     User              @relation(fields: [userId], references: [id])
+  approval Approval?         @relation(fields: [approvalId], references: [id], onDelete: Cascade)
+  workflow WorkflowInstance? @relation(fields: [workflowId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
 
 model Operator {
-  id             Int               @id @default(autoincrement())
-  name           String
-  phone          String            @unique
-  machineSerial  String
-  operatorType   String
-  submittedBy    String
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+  id            Int      @id @default(autoincrement())
+  name          String
+  phone         String   @unique
+  machineSerial String
+  operatorType  String
+  submittedBy   String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  @@index([machineSerial])         // look up operators by machine quickly
-  @@index([submittedBy])           // look up all registrations a dealer submitted
+  @@index([machineSerial]) // look up operators by machine quickly
+  @@index([submittedBy]) // look up all registrations a dealer submitted
 }
 
 model Lead {
-  id             String   @id @default(uuid())
-  epcId          String
+  id    String @id @default(uuid())
+  epcId String
 
-  name           String   @db.VarChar(100)
-  companyName    String?  @db.VarChar(150)
-  phone          String?  @db.VarChar(15)
-  email          String?  @db.VarChar(100)
+  name        String  @db.VarChar(100)
+  companyName String? @db.VarChar(150)
+  phone       String? @db.VarChar(15)
+  email       String? @db.VarChar(100)
 
-  dealership     String?  @db.VarChar(150)
+  dealership String? @db.VarChar(150)
 
   participantType   ParticipantType?
   participantStatus ParticipantStatus?
 
-  machineModel   String?  @db.VarChar(150)
-  machineSerial  String?  @db.VarChar(100)
+  machineModel  String? @db.VarChar(150)
+  machineSerial String? @db.VarChar(100)
 
   valueOfServiceOffers Decimal? @db.Decimal(12, 2)
   valueOfPartsOffers   Decimal? @db.Decimal(12, 2)
   valueOfPartsBilled   Decimal? @db.Decimal(12, 2)
 
-  notes          String?
-  eventDate      DateTime?
-  location       String?
-  district       String?
-  state          String?
+  notes     String?
+  eventDate DateTime?
+  location  String?
+  district  String?
+  state     String?
 
-  epc            EventProposal @relation(fields: [epcId], references: [id])
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
+  epc        EventProposal @relation(fields: [epcId], references: [id])
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
 
   @@index([epcId])
   @@index([participantStatus])
 }
 
 model Pincode {
-  id           String  @id @default(uuid())
+  id           String @id @default(uuid())
   pincode      String
   officeName   String
-  officeType   String  // BO | SO | HO
+  officeType   String // BO | SO | HO
   delivery     String
   district     String
   stateName    String
@@ -1287,9 +1388,9 @@ model Pincode {
   // Populated and kept fresh by trigger: pincode_search_vector_update
   searchVector Unsupported("tsvector")?
 
-  @@index([pincode])           // fast exact pincode lookups
-  @@index([stateName])         // reporting: group by state
-  @@index([district])          // reporting: group by district
+  @@index([pincode]) // fast exact pincode lookups
+  @@index([stateName]) // reporting: group by state
+  @@index([district]) // reporting: group by district
 }
 
 // ─────────────────────────────────────────────
@@ -1306,23 +1407,23 @@ model Pincode {
 // ─────────────────────────────────────────────
 
 model EventReport {
-  id                  String       @id @default(uuid())
-  epcId               String       @unique
-  status              ReportStatus @default(GENERATING)
+  id     String       @id @default(uuid())
+  epcId  String       @unique
+  status ReportStatus @default(GENERATING)
 
-  eventHighlights     String?
+  eventHighlights String?
 
-  computedOutcomes    Json?
+  computedOutcomes Json?
 
   rejectionReason     String?
   clarificationReason String?
   generationError     String?
 
-  submittedAt         DateTime  @default(now())
-  resubmittedAt       DateTime?
-  validatedAt         DateTime?
-  validatorId         String
-  pdfS3Key            String?
+  submittedAt   DateTime  @default(now())
+  resubmittedAt DateTime?
+  validatedAt   DateTime?
+  validatorId   String
+  pdfS3Key      String?
 
   epc       EventProposal      @relation(fields: [epcId], references: [id], onDelete: Cascade)
   validator User               @relation("ReportValidator", fields: [validatorId], references: [id])
@@ -1379,21 +1480,21 @@ model EventReportImage {
 // ─────────────────────────────────────────────
 
 model ImportExportLog {
-  id               String             @id @default(uuid())
-  type             ImportExportType
-  status           ImportExportStatus @default(PENDING)
-  triggeredById    String
-  workspaceId      String
-  epcId            String?            // null for EPC_EXPORT
-  jobId            String             // BullMQ job ID
-  totalRecords     Int?               // null until job completes
-  successRecords   Int?
-  failedRecords    Int?
-  fileS3Key        String?            // output file key
-  errorFileS3Key   String?            // failed-rows XLSX key (LEAD_IMPORT only)
-  failureReason    String?            // top-level job failure message
-  created_at       DateTime           @default(now())
-  updated_at       DateTime           @updatedAt
+  id             String             @id @default(uuid())
+  type           ImportExportType
+  status         ImportExportStatus @default(PENDING)
+  triggeredById  String
+  workspaceId    String
+  epcId          String? // null for EPC_EXPORT
+  jobId          String // BullMQ job ID
+  totalRecords   Int? // null until job completes
+  successRecords Int?
+  failedRecords  Int?
+  fileS3Key      String? // output file key
+  errorFileS3Key String? // failed-rows XLSX key (LEAD_IMPORT only)
+  failureReason  String? // top-level job failure message
+  created_at     DateTime           @default(now())
+  updated_at     DateTime           @updatedAt
 
   triggeredBy User           @relation(fields: [triggeredById], references: [id])
   workspace   Workspace      @relation(fields: [workspaceId], references: [id])
@@ -1420,17 +1521,17 @@ model ImportExportLog {
 // ─────────────────────────────────────────────
 
 model Notification {
-  id          String            @id @default(uuid())
+  id          String    @id @default(uuid())
   workspaceId String
   recipientId String
   type        String
   title       String
   body        String
-  link        String?           // deep link, e.g. /map/epc/:id
-  metadata    Json?             // { appKey, epcId, ... } — typed in app layer
-  isRead      Boolean           @default(false)
+  link        String? // deep link, e.g. /map/epc/:id
+  metadata    Json? // { appKey, epcId, ... } — typed in app layer
+  isRead      Boolean   @default(false)
   readAt      DateTime?
-  createdAt   DateTime          @default(now())
+  createdAt   DateTime  @default(now())
 
   recipient User      @relation(fields: [recipientId], references: [id])
   workspace Workspace @relation(fields: [workspaceId], references: [id])
@@ -1475,33 +1576,33 @@ model PushSubscription {
 // ─────────────────────────────────────────────
 
 model VendorOnboarding {
-  id            String   @id @default(uuid())
+  id              String @id @default(uuid())
   referenceNumber String @unique
-  workspaceId   String
-  initiatedById String
-  status        String   @default("AWAITING_VENDOR")
+  workspaceId     String
+  initiatedById   String
+  status          String @default("AWAITING_VENDOR")
 
   // ── Vendor-filled (Phase 1) ──
   vendorReferenceName String?
-  vendorName        String?
-  state             String?
-  city              String?
-  pinCode           String?
-  address           String?
-  mobile            String?
-  email             String?
-  msmeVendor        Boolean?
-  bankName          String?
-  bankBranch        String?
-  ifscCode          String?
-  bankAddress       String?
-  accountNumber     String?
-  gstin             String?
-  pan               String?
-  entityRegNo       String?
-  dpdpConsentedAt   DateTime?
-  dpdpConsentIp     String?
-  vendorSubmittedAt DateTime?
+  vendorName          String?
+  state               String?
+  city                String?
+  pinCode             String?
+  address             String?
+  mobile              String?
+  email               String?
+  msmeVendor          Boolean?
+  bankName            String?
+  bankBranch          String?
+  ifscCode            String?
+  bankAddress         String?
+  accountNumber       String?
+  gstin               String?
+  pan                 String?
+  entityRegNo         String?
+  dpdpConsentedAt     DateTime?
+  dpdpConsentIp       String?
+  vendorSubmittedAt   DateTime?
 
   // ── Employee-filled (after vendor submission, before approval) ──
   vendorCode                String?
@@ -1522,12 +1623,12 @@ model VendorOnboarding {
   onboardingReason          String?
   guestId                   String?
 
-   gstApplicability           Boolean? // true = applicable, false = N/A, null = not chosen (treated as applicable)
-   incorporationApplicability Boolean? // same meaning as above
+  gstApplicability           Boolean? // true = applicable, false = N/A, null = not chosen (treated as applicable)
+  incorporationApplicability Boolean? // same meaning as above
 
   workspace   Workspace                  @relation(fields: [workspaceId], references: [id])
   initiatedBy User                       @relation("VendorOnboardingInitiatedBy", fields: [initiatedById], references: [id])
-  guest   Guest? @relation(fields: [guestId], references: [id])
+  guest       Guest?                     @relation(fields: [guestId], references: [id])
   documents   VendorOnboardingDocument[]
 
   created_at DateTime @default(now())
@@ -1539,8 +1640,8 @@ model VendorOnboarding {
 model VendorOnboardingDocument {
   id           String   @id @default(uuid())
   onboardingId String
-  documentType String   // GST_CERTIFICATE | PAN_DOCUMENT | CANCELLED_CHEQUE
-                         // | INCORPORATION_CERTIFICATE | MSME_CERTIFICATE | NDA_CERTIFICATE
+  documentType String // GST_CERTIFICATE | PAN_DOCUMENT | CANCELLED_CHEQUE
+  // | INCORPORATION_CERTIFICATE | MSME_CERTIFICATE | NDA_CERTIFICATE
   s3Key        String
   uploadedAt   DateTime @default(now())
 
@@ -1550,21 +1651,18 @@ model VendorOnboardingDocument {
   @@index([onboardingId])
 }
 
-model AccessToken  {
-  id           String    @id @default(uuid())
-  subjectType  AccessTokenSubjectType
-  subjectId    String
-  token        String    @unique
-  used         Boolean   @default(false)
-  purpose      String
-  usedAt       DateTime?
-  created_at   DateTime  @default(now())
+model AccessToken {
+  id          String                 @id @default(uuid())
+  subjectType AccessTokenSubjectType
+  subjectId   String
+  token       String                 @unique
+  used        Boolean                @default(false)
+  purpose     String
+  usedAt      DateTime?
+  created_at  DateTime               @default(now())
 
-
- @@index([subjectType, subjectId])
+  @@index([subjectType, subjectId])
 }
-
-
 
 // MEDICAL CLAIM
 //
@@ -1578,15 +1676,15 @@ model AccessToken  {
 // ─────────────────────────────────────────────
 
 model MedicalClaim {
-  id              String   @id @default(uuid())
-  referenceNumber String   @unique
+  id              String  @id @default(uuid())
+  referenceNumber String  @unique
   workspaceId     String
   initiatedById   String
   guestId         String?
-  status          String   @default("AWAITING_EX_EMPLOYEE")
+  status          String  @default("AWAITING_EX_EMPLOYEE")
   mobile          String?
   email           String?
-  createdByGuest  Boolean  @default(false) // true = made by the retiree, not by HR
+  createdByGuest  Boolean @default(false) // true = made by the retiree, not by HR
 
   // ── Ex-employee-filled ──
   ticketNumber        String?
@@ -1596,14 +1694,14 @@ model MedicalClaim {
   patientName         String?
   claimCover          ClaimCover?
   spouseName          String?
-  medicalAdvanceTaken Decimal? @db.Decimal(12, 2)
+  medicalAdvanceTaken Decimal?    @db.Decimal(12, 2)
 
   // ── Computed server-side at submission — never trust client input ──
-  eligibleAmount                 Decimal? @db.Decimal(12, 2) // grade cap, looked up at submit time
-  alreadySettled                 Decimal? @db.Decimal(12, 2) // sum of this guest's approved claims this calendar year
-  totalClaimed                   Decimal? @db.Decimal(12, 2) // sum of MedicalClaimBill.amount, stored for audit
-  hospitalisationEligibleAmount  Decimal? @db.Decimal(12, 2)
-  hospitalisationAlreadySettled  Decimal? @db.Decimal(12, 2)
+  eligibleAmount                Decimal? @db.Decimal(12, 2) // grade cap, looked up at submit time
+  alreadySettled                Decimal? @db.Decimal(12, 2) // sum of this guest's approved claims this calendar year
+  totalClaimed                  Decimal? @db.Decimal(12, 2) // sum of MedicalClaimBill.amount, stored for audit
+  hospitalisationEligibleAmount Decimal? @db.Decimal(12, 2)
+  hospitalisationAlreadySettled Decimal? @db.Decimal(12, 2)
 
   declarationAcceptedAt DateTime?
   signatureName         String?
@@ -1626,17 +1724,17 @@ model MedicalClaim {
 }
 
 model MedicalClaimBill {
-  id        String    @id @default(uuid())
-  claimId   String
-  claimHead ClaimHead
-  billNo    String?
-  billName  String?
-  billDate  DateTime?
-  amount    Decimal   @db.Decimal(12, 2)
-  approvedClaimAmount    Decimal?   @db.Decimal(12, 2)
-  remarks   String?
-  approved  Boolean   @default(false)
-  s3Key     String?   // presigned at read time, same convention as every other attachment
+  id                  String    @id @default(uuid())
+  claimId             String
+  claimHead           ClaimHead
+  billNo              String?
+  billName            String?
+  billDate            DateTime?
+  amount              Decimal   @db.Decimal(12, 2)
+  approvedClaimAmount Decimal?  @db.Decimal(12, 2)
+  remarks             String?
+  approved            Boolean   @default(false)
+  s3Key               String? // presigned at read time, same convention as every other attachment
 
   claim MedicalClaim @relation(fields: [claimId], references: [id], onDelete: Cascade)
 
@@ -1651,9 +1749,9 @@ model MedicalClaimBill {
 // set", to be filled in manually. A claim submission against a grade with
 // annualCap = null should be treated as "not eligible yet", not as 0.
 model GradeEligibility {
-  id         String   @id @default(uuid())
-  grade      String   @unique
-  annualCap  Decimal? @db.Decimal(12, 2)
+  id        String   @id @default(uuid())
+  grade     String   @unique
+  annualCap Decimal? @db.Decimal(12, 2)
 }
 
 model Guest {
@@ -1661,12 +1759,12 @@ model Guest {
   mobile    String?  @unique
   email     String?  @unique
   password  String?
-  name String?
+  name      String?
   createdAt DateTime @default(now())
 
   vendorOnboardings VendorOnboarding[]
-  medicalClaims MedicalClaim[]
-  activityLogs ActivityLog[]
+  medicalClaims     MedicalClaim[]
+  activityLogs      ActivityLog[]
 
   @@index([mobile])
   @@index([email])
@@ -1680,53 +1778,53 @@ enum BusinessPartnerOfficeType {
   HEAD_OFFICE
   BRANCH_OFFICE
 }
+
 model BusinessPartner {
-  id             String @id @default(uuid())
+  id String @id @default(uuid())
 
   // External system references (source-of-truth IDs from S4/BYD/C4C/etc.)
-  internalId     String? @unique
-  vendorId       String?
-  bpId           String?
-  s4Id           String?
-  bydId          String?
-  c4cId          String?
+  internalId String? @unique
+  vendorId   String?
+  bpId       String?
+  s4Id       String?
+  bydId      String?
+  c4cId      String?
 
-  bpName         String
-  bpShortName    String?
-  isKeyAccount   Boolean @default(false)
+  bpName       String
+  bpShortName  String?
+  isKeyAccount Boolean @default(false)
 
   gst            String?
   panNumber      String?
   legalTradeName String?
 
-  officeType     BusinessPartnerOfficeType
-  bpType         String?
-  entityType     String? // e.g. Proprietary, Pvt Ltd — free text until the value set is confirmed
+  officeType BusinessPartnerOfficeType
+  bpType     String?
+  entityType String? // e.g. Proprietary, Pvt Ltd — free text until the value set is confirmed
 
-  vendorCode     String?
-  isActive       Boolean   @default(true)
-  joinedOn       DateTime?
+  vendorCode String?
+  isActive   Boolean   @default(true)
+  joinedOn   DateTime?
 
   // Self-referencing HO → Branch hierarchy
-  parentId       String?
-  parent         BusinessPartner?  @relation("BusinessPartnerHierarchy", fields: [parentId], references: [id])
-  branches       BusinessPartner[] @relation("BusinessPartnerHierarchy")
-  dealerAuditInstances DealerAuditInstance[]          
+  parentId             String?
+  parent               BusinessPartner?      @relation("BusinessPartnerHierarchy", fields: [parentId], references: [id])
+  branches             BusinessPartner[]     @relation("BusinessPartnerHierarchy")
+  dealerAuditInstances DealerAuditInstance[]
 
+  addresses BusinessPartnerAddress[]
+  contacts  BusinessPartnerContact[]
+  users     User[]
 
-  addresses      BusinessPartnerAddress[]
-  contacts       BusinessPartnerContact[]
-  users          User[]
-
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // GST is intentionally denormalized: a BRANCH_OFFICE row stores a copy of its HO's GST
+  // rather than a unique constraint. Populated by the service layer at branch-creation time
+  // (copy parent.gst → child.gst), not enforced by the DB. No uniqueness constraint on gst.
 
   @@index([parentId])
   @@index([bpType])
   @@index([gst])
-  // GST is intentionally denormalized: a BRANCH_OFFICE row stores a copy of its HO's GST
-  // rather than a unique constraint. Populated by the service layer at branch-creation time
-  // (copy parent.gst → child.gst), not enforced by the DB. No uniqueness constraint on gst.
 }
 
 model BusinessPartnerAddress {
@@ -1743,7 +1841,7 @@ model BusinessPartnerAddress {
   zone              String?
   branch            String?
   latitude          Float?
-  longitude          Float?
+  longitude         Float?
   email             String?
   phoneNo           String?
   website           String?
@@ -1751,8 +1849,8 @@ model BusinessPartnerAddress {
   isBillingAddress  Boolean @default(false)
   isShippingAddress Boolean @default(false)
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([businessPartnerId])
 }
@@ -1762,18 +1860,18 @@ model BusinessPartnerContact {
   businessPartnerId String
   businessPartner   BusinessPartner @relation(fields: [businessPartnerId], references: [id], onDelete: Cascade)
 
-  userId            String?
-  user              User?   @relation(fields: [userId], references: [id])
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
 
-  name              String
-  phoneNumber       String?
-  email             String?
-  panNumber         String?
-  isOwner           Boolean @default(false)
-  isMainContact     Boolean @default(false)
+  name          String
+  phoneNumber   String?
+  email         String?
+  panNumber     String?
+  isOwner       Boolean @default(false)
+  isMainContact Boolean @default(false)
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   crfsAsRecipient CRF[]
 
@@ -1782,19 +1880,23 @@ model BusinessPartnerContact {
 }
 
 model Evidence {
-  id          String              @id @default(uuid())
-  subjectType EvidenceSubjectType
-  subjectId   String
-  s3Key       String
-  fileUrl     String
-  uploadedBy  String
-  capturedAt  DateTime @default(now())
-  geoLat      Float?
-  geoLng      Float?
+  id                  String               @id @default(uuid())
+  subjectType         EvidenceSubjectType? // factory audit
+  subjectId           String? // factory audit
+  auditItemResponseId String? // dealer audit
+  s3Key               String
+  fileUrl             String
+  uploadedBy          String
+  capturedAt          DateTime             @default(now())
+  geoLat              Float?
+  geoLng              Float?
+  accuracyMeters      Float?
 
-  uploader User @relation(fields: [uploadedBy], references: [id])
+  uploader          User               @relation(fields: [uploadedBy], references: [id])
+  auditItemResponse AuditItemResponse? @relation(fields: [auditItemResponseId], references: [id], onDelete: Cascade)
 
   @@index([subjectType, subjectId])
+  @@index([auditItemResponseId])
 }
 
 // ─────────────────────────────────────────────
@@ -1803,10 +1905,10 @@ model Evidence {
 // ─────────────────────────────────────────────
 
 model Supplier {
-  id       String  @id @default(uuid())
-  name     String
-  code     String  @unique
-  isActive Boolean @default(true)
+  id                             String    @id @default(uuid())
+  name                           String
+  code                           String    @unique
+  isActive                       Boolean   @default(true)
   currentClassificationBandId    String?
   currentClassificationDecidedAt DateTime?
 
@@ -1814,30 +1916,26 @@ model Supplier {
 
   auditInstances FactoryAuditInstance[]
 }
+
 model ChecklistTemplate {
   id          String                    @id @default(uuid())
   name        String
   description String?
-  officeType  BusinessPartnerOfficeType // facility type: HEAD_OFFICE | BRANCH_OFFICE
+  officeType  BusinessPartnerOfficeType
   version     Int                       @default(1)
   status      TemplateLifecycleStatus   @default(DRAFT)
-  // true only for the one PUBLISHED version audits should pick up.
   isActive    Boolean                   @default(false)
-
-  // Sum of every scored parameter's highest level. Recomputed on every
-  // draft save and on publish.
   totalScore  Float                     @default(0)
+  passPercent Float?
+  gradeBands  Json? // [{ "label": "A", "minPercent": 80 }]
   publishedAt DateTime?
-
-  // Plain ids (no relation) so the User model needs no back-reference.
   createdById String?
   updatedById String?
+  createdAt   DateTime                  @default(now())
+  updatedAt   DateTime                  @updatedAt
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt // also the optimistic-lock token (expectedUpdatedAt)
-
-  items          ChecklistItem[]
-  auditInstances DealerAuditInstance[]
+  items             ChecklistItem[]
+  auditInstances    DealerAuditInstance[]
   dealerAuditCycles DealerAuditCycle[]
 
   @@unique([name, officeType, version])
@@ -1845,60 +1943,42 @@ model ChecklistTemplate {
 }
 
 model ChecklistItem {
-  id         String @id @default(uuid())
-  templateId String
-  order      Int
+  id                 String  @id @default(uuid())
+  templateId         String
+  order              Int
+  functionName       String?
+  categoryName       String?
+  label              String
+  checkPoint         String
+  requiresScore      Boolean @default(true)
+  maxScore           Float?
+  scoreLevels        Json    @default("[]") // [{ "score": 0, "criteria": "" }]
+  allowNotApplicable Boolean @default(false)
+  requiresEvidence   Boolean @default(true)
+  minEvidence        Int?    @default(1)
+  maxEvidence        Int?    @default(4)
+  referencePhotoKey  String?
 
-  functionName String? // e.g. "Common", "Sales", "Service", "Parts"
-  categoryName String? // e.g. "Infra", "Process"
-
-  label      String // the parameter title shown to the auditor
-  checkPoint String // check point / criteria text
-
-  requiresScore    Boolean @default(true)
-  maxScore         Float?  // highest score level, denormalised for reports and totals
-  requiresEvidence Boolean @default(false)
-  minEvidence      Int?
-  maxEvidence      Int?
-  referencePhotoKey String? // S3 key of the optional reference photo
-
-  // ── DEPRECATED: nothing writes these any more. Kept until the old
-  // execution code is migrated, then drop in a follow-up migration.
-  sectionName     String?
-  category        ChecklistItemCategory?
-  scoringGuidance String?
-
-  template    ChecklistTemplate     @relation(fields: [templateId], references: [id], onDelete: Cascade)
-  scoreLevels ChecklistScoreLevel[]
-  responses   AuditItemResponse[]
+  template  ChecklistTemplate   @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  responses AuditItemResponse[]
 
   @@unique([templateId, order])
 }
 
-// Scoring matrix rows: any subset of 0-5, each with its criteria text.
-model ChecklistScoreLevel {
-  id       String @id @default(uuid())
-  itemId   String
-  score    Int // 0..5
-  criteria String
-
-  item ChecklistItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
-
-  @@unique([itemId, score])
-}
 model DealerAuditCycle {
   id                  String   @id @default(uuid())
   name                String
   checklistTemplateId String
-  periodType          String   // QUARTERLY | YEARLY
-  periodYear          Int      // year the fiscal year STARTS (FY 2026-27 -> 2026)
-  periodQuarter       Int?     // 1-4, null for YEARLY
-  periodLabel         String   // e.g. "Q3 FY 2026-27"
+  periodType          String // QUARTERLY | YEARLY
+  periodYear          Int // year the fiscal year STARTS (FY 2026-27 -> 2026)
+  periodQuarter       Int? // 1-4, null for YEARLY
+  periodLabel         String // e.g. "Q3 FY 2026-27"
   dueAt               DateTime
   createdById         String
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  updatedById String?
 
   template  ChecklistTemplate     @relation(fields: [checklistTemplateId], references: [id])
   createdBy User                  @relation("DealerAuditCycleCreator", fields: [createdById], references: [id])
@@ -1909,65 +1989,85 @@ model DealerAuditCycle {
 }
 
 model DealerAuditInstance {
-  id                  String   @id @default(uuid())
+  id                  String                    @id @default(uuid())
   businessPartnerId   String
   workspaceId         String
   officeType          BusinessPartnerOfficeType
   periodLabel         String
   checklistTemplateId String
-  finalScore          Float?
-  maxScore            Float?
-  closedAt            DateTime?
+  cycleId             String?
+  reviewerId          String?
+  status              String                    @default("DRAFT")
 
-  // added for audit cycles
-  cycleId    String?
-  reviewerId String?
-  dueAt      DateTime?
-  status     String    @default("DRAFT") // values live in dealerAudit.constants.ts
+  auditType    String  @default("REGULAR") // REGULAR | RE_AUDIT | SUB_AUDIT
+  sequence     Int     @default(1)
+  parentId     String?
+  scopeItemIds Json? // null = all items
+
+  finalScore Float?
+  maxScore   Float?
+  grade      String?
+
+  dueAt              DateTime?
+  clarificationDueAt DateTime?
+  submittedAt        DateTime?
+  lastReminderAt     DateTime?
+  escalatedAt        DateTime?
+  reportSentAt       DateTime?
+  reAuditRequestedAt DateTime?
+  reAuditReason      String?
+  closedAt           DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  businessPartner BusinessPartner   @relation(fields: [businessPartnerId], references: [id])
-  template        ChecklistTemplate @relation(fields: [checklistTemplateId], references: [id])
-  cycle           DealerAuditCycle? @relation(fields: [cycleId], references: [id])
-  reviewer        User?             @relation("DealerAuditReviewer", fields: [reviewerId], references: [id])
+  businessPartner BusinessPartner       @relation(fields: [businessPartnerId], references: [id])
+  template        ChecklistTemplate     @relation(fields: [checklistTemplateId], references: [id])
+  cycle           DealerAuditCycle?     @relation(fields: [cycleId], references: [id])
+  reviewer        User?                 @relation("DealerAuditReviewer", fields: [reviewerId], references: [id])
+  parent          DealerAuditInstance?  @relation("DealerReAudit", fields: [parentId], references: [id])
+  reAudits        DealerAuditInstance[] @relation("DealerReAudit")
   responses       AuditItemResponse[]
 
-  @@unique([businessPartnerId, officeType, periodLabel])
+  @@unique([businessPartnerId, officeType, periodLabel, sequence])
   @@index([cycleId])
   @@index([reviewerId, status])
   @@index([status, dueAt])
+  @@index([status, clarificationDueAt])
 }
 
 model AuditItemResponse {
-  id             String @id @default(uuid())
-  auditInstanceId String
-  itemId         String
-  iteration      Int    @default(1) 
-  dealerScore    Float?
-  dealerRemark   String?
-  reviewerScore  Float?
-  reviewerRemark String?
-  reviewStatus   DealerReviewStatus @default(PENDING)
+  id                String             @id @default(uuid())
+  auditInstanceId   String
+  itemId            String
+  iteration         Int                @default(1)
+  isNotApplicable   Boolean            @default(false)
+  dealerScore       Float?
+  dealerRemark      String?
+  reviewerScore     Float?
+  reviewerRemark    String?
+  reviewStatus      DealerReviewStatus @default(PENDING)
   respondedByUserId String?
-
-  createdAt DateTime @default(now())
+  dealerRespondedAt DateTime?
+  reviewedAt        DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 
   auditInstance DealerAuditInstance @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
   item          ChecklistItem       @relation(fields: [itemId], references: [id])
   respondedBy   User?               @relation("DealerAuditItemRespondedBy", fields: [respondedByUserId], references: [id])
+  evidence      Evidence[]
 
   @@unique([auditInstanceId, itemId, iteration])
 }
 
 model FactoryAuditTemplate {
-  id             String  @id @default(uuid())
+  id              String                  @id @default(uuid())
   processCategory String // e.g. "Forging", "Machining"
-  name           String
-  version        Int     @default(1)
-  isActive       Boolean @default(true)
-  status         TemplateLifecycleStatus @default(DRAFT)
+  name            String
+  version         Int                     @default(1)
+  isActive        Boolean                 @default(true)
+  status          TemplateLifecycleStatus @default(DRAFT)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1993,7 +2093,7 @@ model FactoryAuditSection {
   // Management" rule. Null means no elevated bar for this section.
   elevatedPassThresholdForCriticalParts Float?
 
-  template    FactoryAuditTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  template    FactoryAuditTemplate     @relation(fields: [templateId], references: [id], onDelete: Cascade)
   checkpoints FactoryAuditCheckpoint[]
 
   @@unique([templateId, order])
@@ -2008,11 +2108,11 @@ model FactoryAuditCheckpoint {
   weight           Float
   requiresEvidence Boolean @default(true)
 
-  section       FactoryAuditSection       @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  rubricLevels  CheckpointRubricLevel[]
-  responses     AuditResponse[]
-  results       AuditCheckpointResult[]
-  roundScopes   AuditRoundCheckpointScope[]
+  section          FactoryAuditSection         @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  rubricLevels     CheckpointRubricLevel[]
+  responses        AuditResponse[]
+  results          AuditCheckpointResult[]
+  roundScopes      AuditRoundCheckpointScope[]
   assignmentScopes AuditAssignmentCheckpoint[]
 
   @@unique([sectionId, order])
@@ -2024,7 +2124,7 @@ model FactoryAuditCheckpoint {
 model CheckpointRubricLevel {
   id           String @id @default(uuid())
   checkpointId String
-  level        Int    // 0–4
+  level        Int // 0–4
   description  String
 
   checkpoint FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id], onDelete: Cascade)
@@ -2034,13 +2134,13 @@ model CheckpointRubricLevel {
 
 // Global, not per-template — identical across all six checksheets checked.
 model FactoryClassificationBand {
-  id      String @id @default(uuid())
-  label   String // e.g. "Very Good", "Good", "Average", "No Approval"
+  id         String @id @default(uuid())
+  label      String // e.g. "Very Good", "Good", "Average", "No Approval"
   minPercent Float
   maxPercent Float
 
   // Which part categories a vendor lands here is qualified to supply.
-  qualifiesFor PartCategory[]
+  qualifiesFor        PartCategory[]
   currentForSuppliers Supplier[]
 
   history VendorClassificationHistory[]
@@ -2049,22 +2149,22 @@ model FactoryClassificationBand {
 }
 
 model FactoryAuditInstance {
-  id                   String   @id @default(uuid())
+  id                   String          @id @default(uuid())
   vendorId             String
-  templateId           String   // snapshotted at creation
+  templateId           String // snapshotted at creation
   evaluationState      EvaluationState @default(NEW)
-  targetPartCategories PartCategory[]  // which categories this audit is being run against
-  reopenUsed           Boolean  @default(false) // enforces the one-time reopen cap
-  createdByUserId      String 
+  targetPartCategories PartCategory[] // which categories this audit is being run against
+  reopenUsed           Boolean         @default(false) // enforces the one-time reopen cap
+  createdByUserId      String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  vendor   Supplier             @relation(fields: [vendorId], references: [id])
-  template FactoryAuditTemplate @relation(fields: [templateId], references: [id])
-  rounds   AuditRound[]
+  vendor                Supplier                      @relation(fields: [vendorId], references: [id])
+  template              FactoryAuditTemplate          @relation(fields: [templateId], references: [id])
+  rounds                AuditRound[]
   classificationHistory VendorClassificationHistory[]
-  createdBy User   @relation("FactoryAuditInstanceCreatedBy", fields: [createdByUserId], references: [id])
+  createdBy             User                          @relation("FactoryAuditInstanceCreatedBy", fields: [createdByUserId], references: [id])
 
   // No stored status field — lifecycle is read off the linked WorkflowInstance(s)
   // via (subjectType: FACTORY_AUDIT_INSTANCE, subjectId: this.id).
@@ -2074,20 +2174,20 @@ model FactoryAuditInstance {
 // uncapped remarks sub-audit. Distinguishing WHY a round exists in one place
 // rather than scattering trigger logic across other tables.
 model AuditRound {
-  id              String   @id @default(uuid())
-  auditInstanceId String
-  roundNumber     Int
-  triggerReason   RoundTriggerReason
+  id                String             @id @default(uuid())
+  auditInstanceId   String
+  roundNumber       Int
+  triggerReason     RoundTriggerReason
   triggeredByUserId String? // null for the initial round (system-scheduled, not human-triggered)
-  openedAt        DateTime @default(now())
-  closedAt        DateTime?
+  openedAt          DateTime           @default(now())
+  closedAt          DateTime?
 
   auditInstance FactoryAuditInstance @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
   triggeredBy   User?                @relation("FactoryAuditRoundTriggeredBy", fields: [triggeredByUserId], references: [id])
 
-  checkpointScope AuditRoundCheckpointScope[]
-  assignments     AuditAssignment[]
-  results         AuditCheckpointResult[]
+  checkpointScope       AuditRoundCheckpointScope[]
+  assignments           AuditAssignment[]
+  results               AuditCheckpointResult[]
   classificationHistory VendorClassificationHistory[]
 
   @@unique([auditInstanceId, roundNumber])
@@ -2107,21 +2207,21 @@ model AuditRoundCheckpointScope {
 }
 
 model AuditAssignment {
-  id         String            @id @default(uuid())
-  roundId    String
-  auditorId  String
-  role       AuditorRole
-  status     AssignmentStatus  @default(ASSIGNED)
+  id        String           @id @default(uuid())
+  roundId   String
+  auditorId String
+  role      AuditorRole
+  status    AssignmentStatus @default(ASSIGNED)
 
   // Self-reference for the reassignment audit trail — the superseded
   // assignment is kept as-is for history, a new row is created for the
   // replacement auditor covering only the checkpoints not yet submitted.
   reassignedFromId String?
 
-  round        AuditRound              @relation(fields: [roundId], references: [id], onDelete: Cascade)
-  auditor      User                    @relation("FactoryAuditAssignmentAuditor", fields: [auditorId], references: [id])
-  reassignedFrom AuditAssignment?      @relation("AssignmentReassignment", fields: [reassignedFromId], references: [id])
-  reassignedTo   AuditAssignment[]     @relation("AssignmentReassignment")
+  round          AuditRound        @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  auditor        User              @relation("FactoryAuditAssignmentAuditor", fields: [auditorId], references: [id])
+  reassignedFrom AuditAssignment?  @relation("AssignmentReassignment", fields: [reassignedFromId], references: [id])
+  reassignedTo   AuditAssignment[] @relation("AssignmentReassignment")
 
   checkpointScope AuditAssignmentCheckpoint[]
   responses       AuditResponse[]
@@ -2144,12 +2244,12 @@ model AuditAssignmentCheckpoint {
 }
 
 model AuditResponse {
-  id             String  @id @default(uuid())
-  assignmentId   String
-  checkpointId   String
-  score          Float?  // 0–4
+  id              String  @id @default(uuid())
+  assignmentId    String
+  checkpointId    String
+  score           Float? // 0–4
   isNotApplicable Boolean @default(false)
-  remark         String?
+  remark          String?
 
   assignment AuditAssignment        @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   checkpoint FactoryAuditCheckpoint @relation(fields: [checkpointId], references: [id])
@@ -2164,7 +2264,7 @@ model AuditCheckpointResult {
   id           String   @id @default(uuid())
   roundId      String
   checkpointId String
-  score        Float?   // averaged, null if every response was NA
+  score        Float? // averaged, null if every response was NA
   computedAt   DateTime @default(now())
 
   reviewerFlaggedForImprovement Boolean   @default(false)
@@ -2184,48 +2284,47 @@ model AuditCheckpointResult {
 // no separate rejected/approved flag needed since that's just which band
 // was achieved.
 model VendorClassificationHistory {
-  id                 String   @id @default(uuid())
-  auditInstanceId    String
-  roundId            String
-  bandId             String
+  id                  String   @id @default(uuid())
+  auditInstanceId     String
+  roundId             String
+  bandId              String
   overallScorePercent Float
-  workflowInstanceId String   // the specific classification WorkflowInstance that produced this entry
-  decidedAt          DateTime @default(now())
+  workflowInstanceId  String // the specific classification WorkflowInstance that produced this entry
+  decidedAt           DateTime @default(now())
 
-  auditInstance FactoryAuditInstance      @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
-  round         AuditRound                @relation(fields: [roundId], references: [id])
-  band          FactoryClassificationBand @relation(fields: [bandId], references: [id])
-  workflowInstance WorkflowInstance       @relation(fields: [workflowInstanceId], references: [id])
+  auditInstance    FactoryAuditInstance      @relation(fields: [auditInstanceId], references: [id], onDelete: Cascade)
+  round            AuditRound                @relation(fields: [roundId], references: [id])
+  band             FactoryClassificationBand @relation(fields: [bandId], references: [id])
+  workflowInstance WorkflowInstance          @relation(fields: [workflowInstanceId], references: [id])
 }
 
-
 model MachineStudy {
-  id                  String    @id @default(uuid())
+  id                  String  @id @default(uuid())
   epcId               String
-  isCompetitorMachine Boolean   @default(false)
+  isCompetitorMachine Boolean @default(false)
 
-  machineModel        String
-  customerName        String
-  startDate           DateTime
-  endDate             DateTime
-  application         String
-  fuelType             FuelType
-  startHmr             Decimal   @db.Decimal(10, 2)
-  endHmr               Decimal   @db.Decimal(10, 2)
-  bucketVolumeCuM      Decimal   @db.Decimal(6, 2)
-  acStatus             String
-  operationMode        String
+  machineModel    String
+  customerName    String
+  startDate       DateTime
+  endDate         DateTime
+  application     String
+  fuelType        FuelType
+  startHmr        Decimal  @db.Decimal(10, 2)
+  endHmr          Decimal  @db.Decimal(10, 2)
+  bucketVolumeCuM Decimal  @db.Decimal(6, 2)
+  acStatus        String
+  operationMode   String
 
   // Fuel-efficiency inputs — exactly one side populated, based on fuelType.
-  dieselTopUpLtr      Decimal?  @db.Decimal(8, 2)   // required when fuelType = DIESEL
-  startKwhReading     Decimal?  @db.Decimal(10, 2)  // required when fuelType = ELECTRIC
-  endKwhReading       Decimal?  @db.Decimal(10, 2)  // required when fuelType = ELECTRIC
+  dieselTopUpLtr  Decimal? @db.Decimal(8, 2) // required when fuelType = DIESEL
+  startKwhReading Decimal? @db.Decimal(10, 2) // required when fuelType = ELECTRIC
+  endKwhReading   Decimal? @db.Decimal(10, 2) // required when fuelType = ELECTRIC
 
   operatorName          String?
   operatorExperience    String?
   priorMachinesOperated String?
 
-  epc    EventProposal        @relation(fields: [epcId], references: [id])
+  epc    EventProposal       @relation(fields: [epcId], references: [id])
   cycles MachineStudyCycle[]
 
   created_at DateTime @default(now())
@@ -2241,33 +2340,34 @@ model MachineStudyCycle {
   id                String   @id @default(uuid())
   studyId           String
   sequenceNo        Int
-  truckNumber       String?           // null for "Material Preparation" rows
-  startSeconds      Int               // elapsed seconds from study start
+  truckNumber       String? // null for "Material Preparation" rows
+  startSeconds      Int // elapsed seconds from study start
   finishSeconds     Int
-  timeTakenSeconds  Int               // provided directly in the source sheet, not derived
+  timeTakenSeconds  Int // provided directly in the source sheet, not derived
   bucketPasses      Int?
   swingAngleDegrees String?
   unladenWeightKg   Decimal? @db.Decimal(8, 2)
   ladenWeightKg     Decimal? @db.Decimal(8, 2)
-  payloadKg         Decimal? @db.Decimal(8, 2)     // provided directly, not derived
+  payloadKg         Decimal? @db.Decimal(8, 2) // provided directly, not derived
   remarks           String?
 
   study MachineStudy @relation(fields: [studyId], references: [id], onDelete: Cascade)
 
   @@index([studyId])
 }
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Machine — master record for one physical machine. serialNumber is both
 // the business key and the primary key — no separate surrogate id.
 // ─────────────────────────────────────────────────────────────────────────────
 model Machine {
-  id                  String    @default(uuid())
-  machineSerialNumber String    @id
+  id                  String  @default(uuid())
+  machineSerialNumber String  @id
   customerId          String?
 
-  custCode            String?   // raw SAP/C4C customer code — kept even if it can't be resolved to a BusinessPartner
-  modelName           String?   // e.g. "ZX490LCH-7G" — not in your screenshot's list, added so this data isn't lost
-  siteLocation        String?   // same
+  custCode     String? // raw SAP/C4C customer code — kept even if it can't be resolved to a BusinessPartner
+  modelName    String? // e.g. "ZX490LCH-7G" — not in your screenshot's list, added so this data isn't lost
+  siteLocation String? // same
 
   // ── Telematics source classification (new) ──────────────────────────────
   // true  = ConSite (bulk API, via Common_Machine_Info_Search)
@@ -2276,7 +2376,7 @@ model Machine {
   // Set purely from the serial number (see
   // modules/machine-telemetry/machineTelematicsClassifier.ts), independent
   // of isKeyAccount below.
-  isConsiteMachine    Boolean?
+  isConsiteMachine Boolean?
 
   // ── Key-account flag (new) ───────────────────────────────────────────────
   // Set from the key-account Excel (scripts/importKeyAccountMachines.ts).
@@ -2285,27 +2385,27 @@ model Machine {
   // BusinessPartner.isKeyAccount (confirmed as a deliberate choice: this
   // Excel is a specific machine list for the telemetry rollout, not a
   // restatement of account-level key-account status).
-  isKeyAccount        Boolean   @default(false)
+  isKeyAccount Boolean @default(false)
 
-  mcDescription       String?
-  mcStatus             String?
-  warrantyStart        DateTime?
-  warrantyEnd          DateTime?
-  masterWarranty       Int?       // assumed: years
-  serviceDealerCode    String?    // assumed name for the truncated "Service_Dealer_"
+  mcDescription     String?
+  mcStatus          String?
+  warrantyStart     DateTime?
+  warrantyEnd       DateTime?
+  masterWarranty    Int? // assumed: years
+  serviceDealerCode String? // assumed name for the truncated "Service_Dealer_"
 
-  purchaseOrderNo      String?
-  purchaseOrderDate    DateTime?
-  goodsReceiptDate     DateTime?
-  goodsReceiptValue    Int?
-  plant                String?
+  purchaseOrderNo   String?
+  purchaseOrderDate DateTime?
+  goodsReceiptDate  DateTime?
+  goodsReceiptValue Int?
+  plant             String?
 
-  invoiceNo            String?
-  invoiceDate          DateTime?
-  invoiceValue         Int?
+  invoiceNo    String?
+  invoiceDate  DateTime?
+  invoiceValue Int?
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   telemetry MachineTelemetry[]
 
@@ -2341,13 +2441,13 @@ model Machine {
 // or a bad reading) — never guessed or backfilled with 0 in that case.
 // ─────────────────────────────────────────────────────────────────────────────
 model MachineTelemetry {
-  id                String   @id @default(uuid())
+  id                  String   @id @default(uuid())
   machineSerialNumber String
-  machine           Machine  @relation(fields: [machineSerialNumber], references: [machineSerialNumber])
-  latitude          Decimal
-  longitude         Decimal
-  hmr               Decimal  @default(0)
-  dailyOperationHrs Decimal?
+  machine             Machine  @relation(fields: [machineSerialNumber], references: [machineSerialNumber])
+  latitude            Decimal
+  longitude           Decimal
+  hmr                 Decimal  @default(0)
+  dailyOperationHrs   Decimal?
 
   // Resolved via point-in-polygon against the "All India Pincode Boundary
   // GeoJSON" dataset (AIKosh / data.gov.in, Open Government License,
@@ -2357,14 +2457,13 @@ model MachineTelemetry {
   // null means this reading's lat/long fell inside no boundary polygon at
   // all (gaps in the dataset, a border/coastal location, or bad GPS data)
   // — never guessed, same philosophy as dailyOperationHrs.
-  pincode           String?
+  pincode String?
 
-  syncedAt          DateTime
-  operationDate     String?
+  syncedAt      DateTime
+  operationDate String?
 
   @@index([machineSerialNumber, syncedAt])
 }
-
 
 // ─────────────────────────────────────────────
 // CPP (CONTRACT PRICE PROCUREMENT)
@@ -2377,11 +2476,11 @@ model MachineTelemetry {
 // ─────────────────────────────────────────────
 
 model CppRequest {
-  id              String    @id @default(uuid())
-  referenceNumber String    @unique
+  id              String @id @default(uuid())
+  referenceNumber String @unique
   workspaceId     String
   initiatedById   String
-  status          String    @default("DRAFT")
+  status          String @default("DRAFT")
 
   // routing — decides the approval workflow
   category  String?
@@ -2416,15 +2515,15 @@ model CppRequest {
 }
 
 model CppAttachment {
-  id           String     @id @default(uuid())
-  requestId    String
-  request      CppRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  type         String // purchasingFile | modelImpact | zbc | ... (see cpp.constants.ts)
-  fileName     String
-  s3Key        String
-  uploadedAt   DateTime   @default(now())
+  id         String     @id @default(uuid())
+  requestId  String
+  request    CppRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  type       String // purchasingFile | modelImpact | zbc | ... (see cpp.constants.ts)
+  fileName   String
+  s3Key      String
+  uploadedAt DateTime   @default(now())
   parsedData Json?
-  
+
   @@unique([requestId, type])
   @@index([requestId])
 }

@@ -150,11 +150,6 @@ export type WorkFlowTemplateUser = Prisma.WorkFlowTemplateUserModel
  */
 export type ActivityLog = Prisma.ActivityLogModel
 /**
- * Model Department
- * 
- */
-export type Department = Prisma.DepartmentModel
-/**
  * Model Vertical
  * 
  */
@@ -219,6 +214,21 @@ export type CrfItem = Prisma.CrfItemModel
  * 
  */
 export type CrfOrder = Prisma.CrfOrderModel
+/**
+ * Model HandoutRequest
+ * 
+ */
+export type HandoutRequest = Prisma.HandoutRequestModel
+/**
+ * Model HandoutItem
+ * 
+ */
+export type HandoutItem = Prisma.HandoutItemModel
+/**
+ * Model HandoutOrder
+ * 
+ */
+export type HandoutOrder = Prisma.HandoutOrderModel
 /**
  * Model LineItem
  * 

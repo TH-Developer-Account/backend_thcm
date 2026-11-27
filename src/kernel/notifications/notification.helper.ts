@@ -135,6 +135,21 @@ const notificationMetaResolvers: Record<
 			link: `/factory-audit/instances/${subjectId}`,
 		};
 	},
+	HANDOUT_REQUEST: async (subjectId) => {
+		const handout = await prisma.handoutRequest.findUnique({
+			where: { id: subjectId },
+			select: { requestNumber: true, requestedById: true },
+		});
+		if (!handout) return null;
+
+		return {
+			ownerId: handout.requestedById,
+			displayLabel: handout.requestNumber
+				? `Handout request ${handout.requestNumber}`
+				: "Handout request",
+			link: `/marketing/activity-planner/handouts/${subjectId}`,
+		};
+	},
 };
 
 export async function getSubjectNotificationMeta(
