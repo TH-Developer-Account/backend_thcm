@@ -29,47 +29,55 @@ export type AggregateEvidence = {
 export type EvidenceAvgAggregateOutputType = {
   geoLat: number | null
   geoLng: number | null
+  accuracyMeters: number | null
 }
 
 export type EvidenceSumAggregateOutputType = {
   geoLat: number | null
   geoLng: number | null
+  accuracyMeters: number | null
 }
 
 export type EvidenceMinAggregateOutputType = {
   id: string | null
   subjectType: $Enums.EvidenceSubjectType | null
   subjectId: string | null
+  auditItemResponseId: string | null
   s3Key: string | null
   fileUrl: string | null
   uploadedBy: string | null
   capturedAt: Date | null
   geoLat: number | null
   geoLng: number | null
+  accuracyMeters: number | null
 }
 
 export type EvidenceMaxAggregateOutputType = {
   id: string | null
   subjectType: $Enums.EvidenceSubjectType | null
   subjectId: string | null
+  auditItemResponseId: string | null
   s3Key: string | null
   fileUrl: string | null
   uploadedBy: string | null
   capturedAt: Date | null
   geoLat: number | null
   geoLng: number | null
+  accuracyMeters: number | null
 }
 
 export type EvidenceCountAggregateOutputType = {
   id: number
   subjectType: number
   subjectId: number
+  auditItemResponseId: number
   s3Key: number
   fileUrl: number
   uploadedBy: number
   capturedAt: number
   geoLat: number
   geoLng: number
+  accuracyMeters: number
   _all: number
 }
 
@@ -77,47 +85,55 @@ export type EvidenceCountAggregateOutputType = {
 export type EvidenceAvgAggregateInputType = {
   geoLat?: true
   geoLng?: true
+  accuracyMeters?: true
 }
 
 export type EvidenceSumAggregateInputType = {
   geoLat?: true
   geoLng?: true
+  accuracyMeters?: true
 }
 
 export type EvidenceMinAggregateInputType = {
   id?: true
   subjectType?: true
   subjectId?: true
+  auditItemResponseId?: true
   s3Key?: true
   fileUrl?: true
   uploadedBy?: true
   capturedAt?: true
   geoLat?: true
   geoLng?: true
+  accuracyMeters?: true
 }
 
 export type EvidenceMaxAggregateInputType = {
   id?: true
   subjectType?: true
   subjectId?: true
+  auditItemResponseId?: true
   s3Key?: true
   fileUrl?: true
   uploadedBy?: true
   capturedAt?: true
   geoLat?: true
   geoLng?: true
+  accuracyMeters?: true
 }
 
 export type EvidenceCountAggregateInputType = {
   id?: true
   subjectType?: true
   subjectId?: true
+  auditItemResponseId?: true
   s3Key?: true
   fileUrl?: true
   uploadedBy?: true
   capturedAt?: true
   geoLat?: true
   geoLng?: true
+  accuracyMeters?: true
   _all?: true
 }
 
@@ -209,14 +225,16 @@ export type EvidenceGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type EvidenceGroupByOutputType = {
   id: string
-  subjectType: $Enums.EvidenceSubjectType
-  subjectId: string
+  subjectType: $Enums.EvidenceSubjectType | null
+  subjectId: string | null
+  auditItemResponseId: string | null
   s3Key: string
   fileUrl: string
   uploadedBy: string
   capturedAt: Date
   geoLat: number | null
   geoLng: number | null
+  accuracyMeters: number | null
   _count: EvidenceCountAggregateOutputType | null
   _avg: EvidenceAvgAggregateOutputType | null
   _sum: EvidenceSumAggregateOutputType | null
@@ -244,28 +262,34 @@ export type EvidenceWhereInput = {
   OR?: Prisma.EvidenceWhereInput[]
   NOT?: Prisma.EvidenceWhereInput | Prisma.EvidenceWhereInput[]
   id?: Prisma.StringFilter<"Evidence"> | string
-  subjectType?: Prisma.EnumEvidenceSubjectTypeFilter<"Evidence"> | $Enums.EvidenceSubjectType
-  subjectId?: Prisma.StringFilter<"Evidence"> | string
+  subjectType?: Prisma.EnumEvidenceSubjectTypeNullableFilter<"Evidence"> | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.StringNullableFilter<"Evidence"> | string | null
+  auditItemResponseId?: Prisma.StringNullableFilter<"Evidence"> | string | null
   s3Key?: Prisma.StringFilter<"Evidence"> | string
   fileUrl?: Prisma.StringFilter<"Evidence"> | string
   uploadedBy?: Prisma.StringFilter<"Evidence"> | string
   capturedAt?: Prisma.DateTimeFilter<"Evidence"> | Date | string
   geoLat?: Prisma.FloatNullableFilter<"Evidence"> | number | null
   geoLng?: Prisma.FloatNullableFilter<"Evidence"> | number | null
+  accuracyMeters?: Prisma.FloatNullableFilter<"Evidence"> | number | null
   uploader?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  auditItemResponse?: Prisma.XOR<Prisma.AuditItemResponseNullableScalarRelationFilter, Prisma.AuditItemResponseWhereInput> | null
 }
 
 export type EvidenceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  subjectType?: Prisma.SortOrder
-  subjectId?: Prisma.SortOrder
+  subjectType?: Prisma.SortOrderInput | Prisma.SortOrder
+  subjectId?: Prisma.SortOrderInput | Prisma.SortOrder
+  auditItemResponseId?: Prisma.SortOrderInput | Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
   uploadedBy?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
   geoLat?: Prisma.SortOrderInput | Prisma.SortOrder
   geoLng?: Prisma.SortOrderInput | Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   uploader?: Prisma.UserOrderByWithRelationInput
+  auditItemResponse?: Prisma.AuditItemResponseOrderByWithRelationInput
 }
 
 export type EvidenceWhereUniqueInput = Prisma.AtLeast<{
@@ -273,27 +297,32 @@ export type EvidenceWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.EvidenceWhereInput | Prisma.EvidenceWhereInput[]
   OR?: Prisma.EvidenceWhereInput[]
   NOT?: Prisma.EvidenceWhereInput | Prisma.EvidenceWhereInput[]
-  subjectType?: Prisma.EnumEvidenceSubjectTypeFilter<"Evidence"> | $Enums.EvidenceSubjectType
-  subjectId?: Prisma.StringFilter<"Evidence"> | string
+  subjectType?: Prisma.EnumEvidenceSubjectTypeNullableFilter<"Evidence"> | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.StringNullableFilter<"Evidence"> | string | null
+  auditItemResponseId?: Prisma.StringNullableFilter<"Evidence"> | string | null
   s3Key?: Prisma.StringFilter<"Evidence"> | string
   fileUrl?: Prisma.StringFilter<"Evidence"> | string
   uploadedBy?: Prisma.StringFilter<"Evidence"> | string
   capturedAt?: Prisma.DateTimeFilter<"Evidence"> | Date | string
   geoLat?: Prisma.FloatNullableFilter<"Evidence"> | number | null
   geoLng?: Prisma.FloatNullableFilter<"Evidence"> | number | null
+  accuracyMeters?: Prisma.FloatNullableFilter<"Evidence"> | number | null
   uploader?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  auditItemResponse?: Prisma.XOR<Prisma.AuditItemResponseNullableScalarRelationFilter, Prisma.AuditItemResponseWhereInput> | null
 }, "id">
 
 export type EvidenceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  subjectType?: Prisma.SortOrder
-  subjectId?: Prisma.SortOrder
+  subjectType?: Prisma.SortOrderInput | Prisma.SortOrder
+  subjectId?: Prisma.SortOrderInput | Prisma.SortOrder
+  auditItemResponseId?: Prisma.SortOrderInput | Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
   uploadedBy?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
   geoLat?: Prisma.SortOrderInput | Prisma.SortOrder
   geoLng?: Prisma.SortOrderInput | Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.EvidenceCountOrderByAggregateInput
   _avg?: Prisma.EvidenceAvgOrderByAggregateInput
   _max?: Prisma.EvidenceMaxOrderByAggregateInput
@@ -306,97 +335,112 @@ export type EvidenceScalarWhereWithAggregatesInput = {
   OR?: Prisma.EvidenceScalarWhereWithAggregatesInput[]
   NOT?: Prisma.EvidenceScalarWhereWithAggregatesInput | Prisma.EvidenceScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Evidence"> | string
-  subjectType?: Prisma.EnumEvidenceSubjectTypeWithAggregatesFilter<"Evidence"> | $Enums.EvidenceSubjectType
-  subjectId?: Prisma.StringWithAggregatesFilter<"Evidence"> | string
+  subjectType?: Prisma.EnumEvidenceSubjectTypeNullableWithAggregatesFilter<"Evidence"> | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.StringNullableWithAggregatesFilter<"Evidence"> | string | null
+  auditItemResponseId?: Prisma.StringNullableWithAggregatesFilter<"Evidence"> | string | null
   s3Key?: Prisma.StringWithAggregatesFilter<"Evidence"> | string
   fileUrl?: Prisma.StringWithAggregatesFilter<"Evidence"> | string
   uploadedBy?: Prisma.StringWithAggregatesFilter<"Evidence"> | string
   capturedAt?: Prisma.DateTimeWithAggregatesFilter<"Evidence"> | Date | string
   geoLat?: Prisma.FloatNullableWithAggregatesFilter<"Evidence"> | number | null
   geoLng?: Prisma.FloatNullableWithAggregatesFilter<"Evidence"> | number | null
+  accuracyMeters?: Prisma.FloatNullableWithAggregatesFilter<"Evidence"> | number | null
 }
 
 export type EvidenceCreateInput = {
   id?: string
-  subjectType: $Enums.EvidenceSubjectType
-  subjectId: string
+  subjectType?: $Enums.EvidenceSubjectType | null
+  subjectId?: string | null
   s3Key: string
   fileUrl: string
   capturedAt?: Date | string
   geoLat?: number | null
   geoLng?: number | null
+  accuracyMeters?: number | null
   uploader: Prisma.UserCreateNestedOneWithoutUploadedEvidenceInput
+  auditItemResponse?: Prisma.AuditItemResponseCreateNestedOneWithoutEvidenceInput
 }
 
 export type EvidenceUncheckedCreateInput = {
   id?: string
-  subjectType: $Enums.EvidenceSubjectType
-  subjectId: string
+  subjectType?: $Enums.EvidenceSubjectType | null
+  subjectId?: string | null
+  auditItemResponseId?: string | null
   s3Key: string
   fileUrl: string
   uploadedBy: string
   capturedAt?: Date | string
   geoLat?: number | null
   geoLng?: number | null
+  accuracyMeters?: number | null
 }
 
 export type EvidenceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  subjectType?: Prisma.EnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType
-  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectType?: Prisma.NullableEnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   geoLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   geoLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   uploader?: Prisma.UserUpdateOneRequiredWithoutUploadedEvidenceNestedInput
+  auditItemResponse?: Prisma.AuditItemResponseUpdateOneWithoutEvidenceNestedInput
 }
 
 export type EvidenceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  subjectType?: Prisma.EnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType
-  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectType?: Prisma.NullableEnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  auditItemResponseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedBy?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   geoLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   geoLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 export type EvidenceCreateManyInput = {
   id?: string
-  subjectType: $Enums.EvidenceSubjectType
-  subjectId: string
+  subjectType?: $Enums.EvidenceSubjectType | null
+  subjectId?: string | null
+  auditItemResponseId?: string | null
   s3Key: string
   fileUrl: string
   uploadedBy: string
   capturedAt?: Date | string
   geoLat?: number | null
   geoLng?: number | null
+  accuracyMeters?: number | null
 }
 
 export type EvidenceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  subjectType?: Prisma.EnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType
-  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectType?: Prisma.NullableEnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   geoLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   geoLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 export type EvidenceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  subjectType?: Prisma.EnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType
-  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectType?: Prisma.NullableEnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  auditItemResponseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedBy?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   geoLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   geoLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 export type EvidenceListRelationFilter = {
@@ -413,46 +457,54 @@ export type EvidenceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   subjectType?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
+  auditItemResponseId?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
   uploadedBy?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
   geoLat?: Prisma.SortOrder
   geoLng?: Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrder
 }
 
 export type EvidenceAvgOrderByAggregateInput = {
   geoLat?: Prisma.SortOrder
   geoLng?: Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrder
 }
 
 export type EvidenceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   subjectType?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
+  auditItemResponseId?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
   uploadedBy?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
   geoLat?: Prisma.SortOrder
   geoLng?: Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrder
 }
 
 export type EvidenceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   subjectType?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
+  auditItemResponseId?: Prisma.SortOrder
   s3Key?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
   uploadedBy?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
   geoLat?: Prisma.SortOrder
   geoLng?: Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrder
 }
 
 export type EvidenceSumOrderByAggregateInput = {
   geoLat?: Prisma.SortOrder
   geoLng?: Prisma.SortOrder
+  accuracyMeters?: Prisma.SortOrder
 }
 
 export type EvidenceCreateNestedManyWithoutUploaderInput = {
@@ -497,30 +549,76 @@ export type EvidenceUncheckedUpdateManyWithoutUploaderNestedInput = {
   deleteMany?: Prisma.EvidenceScalarWhereInput | Prisma.EvidenceScalarWhereInput[]
 }
 
-export type EnumEvidenceSubjectTypeFieldUpdateOperationsInput = {
-  set?: $Enums.EvidenceSubjectType
+export type NullableEnumEvidenceSubjectTypeFieldUpdateOperationsInput = {
+  set?: $Enums.EvidenceSubjectType | null
+}
+
+export type EvidenceCreateNestedManyWithoutAuditItemResponseInput = {
+  create?: Prisma.XOR<Prisma.EvidenceCreateWithoutAuditItemResponseInput, Prisma.EvidenceUncheckedCreateWithoutAuditItemResponseInput> | Prisma.EvidenceCreateWithoutAuditItemResponseInput[] | Prisma.EvidenceUncheckedCreateWithoutAuditItemResponseInput[]
+  connectOrCreate?: Prisma.EvidenceCreateOrConnectWithoutAuditItemResponseInput | Prisma.EvidenceCreateOrConnectWithoutAuditItemResponseInput[]
+  createMany?: Prisma.EvidenceCreateManyAuditItemResponseInputEnvelope
+  connect?: Prisma.EvidenceWhereUniqueInput | Prisma.EvidenceWhereUniqueInput[]
+}
+
+export type EvidenceUncheckedCreateNestedManyWithoutAuditItemResponseInput = {
+  create?: Prisma.XOR<Prisma.EvidenceCreateWithoutAuditItemResponseInput, Prisma.EvidenceUncheckedCreateWithoutAuditItemResponseInput> | Prisma.EvidenceCreateWithoutAuditItemResponseInput[] | Prisma.EvidenceUncheckedCreateWithoutAuditItemResponseInput[]
+  connectOrCreate?: Prisma.EvidenceCreateOrConnectWithoutAuditItemResponseInput | Prisma.EvidenceCreateOrConnectWithoutAuditItemResponseInput[]
+  createMany?: Prisma.EvidenceCreateManyAuditItemResponseInputEnvelope
+  connect?: Prisma.EvidenceWhereUniqueInput | Prisma.EvidenceWhereUniqueInput[]
+}
+
+export type EvidenceUpdateManyWithoutAuditItemResponseNestedInput = {
+  create?: Prisma.XOR<Prisma.EvidenceCreateWithoutAuditItemResponseInput, Prisma.EvidenceUncheckedCreateWithoutAuditItemResponseInput> | Prisma.EvidenceCreateWithoutAuditItemResponseInput[] | Prisma.EvidenceUncheckedCreateWithoutAuditItemResponseInput[]
+  connectOrCreate?: Prisma.EvidenceCreateOrConnectWithoutAuditItemResponseInput | Prisma.EvidenceCreateOrConnectWithoutAuditItemResponseInput[]
+  upsert?: Prisma.EvidenceUpsertWithWhereUniqueWithoutAuditItemResponseInput | Prisma.EvidenceUpsertWithWhereUniqueWithoutAuditItemResponseInput[]
+  createMany?: Prisma.EvidenceCreateManyAuditItemResponseInputEnvelope
+  set?: Prisma.EvidenceWhereUniqueInput | Prisma.EvidenceWhereUniqueInput[]
+  disconnect?: Prisma.EvidenceWhereUniqueInput | Prisma.EvidenceWhereUniqueInput[]
+  delete?: Prisma.EvidenceWhereUniqueInput | Prisma.EvidenceWhereUniqueInput[]
+  connect?: Prisma.EvidenceWhereUniqueInput | Prisma.EvidenceWhereUniqueInput[]
+  update?: Prisma.EvidenceUpdateWithWhereUniqueWithoutAuditItemResponseInput | Prisma.EvidenceUpdateWithWhereUniqueWithoutAuditItemResponseInput[]
+  updateMany?: Prisma.EvidenceUpdateManyWithWhereWithoutAuditItemResponseInput | Prisma.EvidenceUpdateManyWithWhereWithoutAuditItemResponseInput[]
+  deleteMany?: Prisma.EvidenceScalarWhereInput | Prisma.EvidenceScalarWhereInput[]
+}
+
+export type EvidenceUncheckedUpdateManyWithoutAuditItemResponseNestedInput = {
+  create?: Prisma.XOR<Prisma.EvidenceCreateWithoutAuditItemResponseInput, Prisma.EvidenceUncheckedCreateWithoutAuditItemResponseInput> | Prisma.EvidenceCreateWithoutAuditItemResponseInput[] | Prisma.EvidenceUncheckedCreateWithoutAuditItemResponseInput[]
+  connectOrCreate?: Prisma.EvidenceCreateOrConnectWithoutAuditItemResponseInput | Prisma.EvidenceCreateOrConnectWithoutAuditItemResponseInput[]
+  upsert?: Prisma.EvidenceUpsertWithWhereUniqueWithoutAuditItemResponseInput | Prisma.EvidenceUpsertWithWhereUniqueWithoutAuditItemResponseInput[]
+  createMany?: Prisma.EvidenceCreateManyAuditItemResponseInputEnvelope
+  set?: Prisma.EvidenceWhereUniqueInput | Prisma.EvidenceWhereUniqueInput[]
+  disconnect?: Prisma.EvidenceWhereUniqueInput | Prisma.EvidenceWhereUniqueInput[]
+  delete?: Prisma.EvidenceWhereUniqueInput | Prisma.EvidenceWhereUniqueInput[]
+  connect?: Prisma.EvidenceWhereUniqueInput | Prisma.EvidenceWhereUniqueInput[]
+  update?: Prisma.EvidenceUpdateWithWhereUniqueWithoutAuditItemResponseInput | Prisma.EvidenceUpdateWithWhereUniqueWithoutAuditItemResponseInput[]
+  updateMany?: Prisma.EvidenceUpdateManyWithWhereWithoutAuditItemResponseInput | Prisma.EvidenceUpdateManyWithWhereWithoutAuditItemResponseInput[]
+  deleteMany?: Prisma.EvidenceScalarWhereInput | Prisma.EvidenceScalarWhereInput[]
 }
 
 export type EvidenceCreateWithoutUploaderInput = {
   id?: string
-  subjectType: $Enums.EvidenceSubjectType
-  subjectId: string
+  subjectType?: $Enums.EvidenceSubjectType | null
+  subjectId?: string | null
   s3Key: string
   fileUrl: string
   capturedAt?: Date | string
   geoLat?: number | null
   geoLng?: number | null
+  accuracyMeters?: number | null
+  auditItemResponse?: Prisma.AuditItemResponseCreateNestedOneWithoutEvidenceInput
 }
 
 export type EvidenceUncheckedCreateWithoutUploaderInput = {
   id?: string
-  subjectType: $Enums.EvidenceSubjectType
-  subjectId: string
+  subjectType?: $Enums.EvidenceSubjectType | null
+  subjectId?: string | null
+  auditItemResponseId?: string | null
   s3Key: string
   fileUrl: string
   capturedAt?: Date | string
   geoLat?: number | null
   geoLng?: number | null
+  accuracyMeters?: number | null
 }
 
 export type EvidenceCreateOrConnectWithoutUploaderInput = {
@@ -554,58 +652,172 @@ export type EvidenceScalarWhereInput = {
   OR?: Prisma.EvidenceScalarWhereInput[]
   NOT?: Prisma.EvidenceScalarWhereInput | Prisma.EvidenceScalarWhereInput[]
   id?: Prisma.StringFilter<"Evidence"> | string
-  subjectType?: Prisma.EnumEvidenceSubjectTypeFilter<"Evidence"> | $Enums.EvidenceSubjectType
-  subjectId?: Prisma.StringFilter<"Evidence"> | string
+  subjectType?: Prisma.EnumEvidenceSubjectTypeNullableFilter<"Evidence"> | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.StringNullableFilter<"Evidence"> | string | null
+  auditItemResponseId?: Prisma.StringNullableFilter<"Evidence"> | string | null
   s3Key?: Prisma.StringFilter<"Evidence"> | string
   fileUrl?: Prisma.StringFilter<"Evidence"> | string
   uploadedBy?: Prisma.StringFilter<"Evidence"> | string
   capturedAt?: Prisma.DateTimeFilter<"Evidence"> | Date | string
   geoLat?: Prisma.FloatNullableFilter<"Evidence"> | number | null
   geoLng?: Prisma.FloatNullableFilter<"Evidence"> | number | null
+  accuracyMeters?: Prisma.FloatNullableFilter<"Evidence"> | number | null
 }
 
-export type EvidenceCreateManyUploaderInput = {
+export type EvidenceCreateWithoutAuditItemResponseInput = {
   id?: string
-  subjectType: $Enums.EvidenceSubjectType
-  subjectId: string
+  subjectType?: $Enums.EvidenceSubjectType | null
+  subjectId?: string | null
   s3Key: string
   fileUrl: string
   capturedAt?: Date | string
   geoLat?: number | null
   geoLng?: number | null
+  accuracyMeters?: number | null
+  uploader: Prisma.UserCreateNestedOneWithoutUploadedEvidenceInput
+}
+
+export type EvidenceUncheckedCreateWithoutAuditItemResponseInput = {
+  id?: string
+  subjectType?: $Enums.EvidenceSubjectType | null
+  subjectId?: string | null
+  s3Key: string
+  fileUrl: string
+  uploadedBy: string
+  capturedAt?: Date | string
+  geoLat?: number | null
+  geoLng?: number | null
+  accuracyMeters?: number | null
+}
+
+export type EvidenceCreateOrConnectWithoutAuditItemResponseInput = {
+  where: Prisma.EvidenceWhereUniqueInput
+  create: Prisma.XOR<Prisma.EvidenceCreateWithoutAuditItemResponseInput, Prisma.EvidenceUncheckedCreateWithoutAuditItemResponseInput>
+}
+
+export type EvidenceCreateManyAuditItemResponseInputEnvelope = {
+  data: Prisma.EvidenceCreateManyAuditItemResponseInput | Prisma.EvidenceCreateManyAuditItemResponseInput[]
+  skipDuplicates?: boolean
+}
+
+export type EvidenceUpsertWithWhereUniqueWithoutAuditItemResponseInput = {
+  where: Prisma.EvidenceWhereUniqueInput
+  update: Prisma.XOR<Prisma.EvidenceUpdateWithoutAuditItemResponseInput, Prisma.EvidenceUncheckedUpdateWithoutAuditItemResponseInput>
+  create: Prisma.XOR<Prisma.EvidenceCreateWithoutAuditItemResponseInput, Prisma.EvidenceUncheckedCreateWithoutAuditItemResponseInput>
+}
+
+export type EvidenceUpdateWithWhereUniqueWithoutAuditItemResponseInput = {
+  where: Prisma.EvidenceWhereUniqueInput
+  data: Prisma.XOR<Prisma.EvidenceUpdateWithoutAuditItemResponseInput, Prisma.EvidenceUncheckedUpdateWithoutAuditItemResponseInput>
+}
+
+export type EvidenceUpdateManyWithWhereWithoutAuditItemResponseInput = {
+  where: Prisma.EvidenceScalarWhereInput
+  data: Prisma.XOR<Prisma.EvidenceUpdateManyMutationInput, Prisma.EvidenceUncheckedUpdateManyWithoutAuditItemResponseInput>
+}
+
+export type EvidenceCreateManyUploaderInput = {
+  id?: string
+  subjectType?: $Enums.EvidenceSubjectType | null
+  subjectId?: string | null
+  auditItemResponseId?: string | null
+  s3Key: string
+  fileUrl: string
+  capturedAt?: Date | string
+  geoLat?: number | null
+  geoLng?: number | null
+  accuracyMeters?: number | null
 }
 
 export type EvidenceUpdateWithoutUploaderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  subjectType?: Prisma.EnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType
-  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectType?: Prisma.NullableEnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   geoLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   geoLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  auditItemResponse?: Prisma.AuditItemResponseUpdateOneWithoutEvidenceNestedInput
 }
 
 export type EvidenceUncheckedUpdateWithoutUploaderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  subjectType?: Prisma.EnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType
-  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectType?: Prisma.NullableEnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  auditItemResponseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   geoLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   geoLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 export type EvidenceUncheckedUpdateManyWithoutUploaderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  subjectType?: Prisma.EnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType
-  subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectType?: Prisma.NullableEnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  auditItemResponseId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   s3Key?: Prisma.StringFieldUpdateOperationsInput | string
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
   capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   geoLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   geoLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+}
+
+export type EvidenceCreateManyAuditItemResponseInput = {
+  id?: string
+  subjectType?: $Enums.EvidenceSubjectType | null
+  subjectId?: string | null
+  s3Key: string
+  fileUrl: string
+  uploadedBy: string
+  capturedAt?: Date | string
+  geoLat?: number | null
+  geoLng?: number | null
+  accuracyMeters?: number | null
+}
+
+export type EvidenceUpdateWithoutAuditItemResponseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectType?: Prisma.NullableEnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s3Key?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  geoLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  geoLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  uploader?: Prisma.UserUpdateOneRequiredWithoutUploadedEvidenceNestedInput
+}
+
+export type EvidenceUncheckedUpdateWithoutAuditItemResponseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectType?: Prisma.NullableEnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s3Key?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadedBy?: Prisma.StringFieldUpdateOperationsInput | string
+  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  geoLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  geoLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+}
+
+export type EvidenceUncheckedUpdateManyWithoutAuditItemResponseInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  subjectType?: Prisma.NullableEnumEvidenceSubjectTypeFieldUpdateOperationsInput | $Enums.EvidenceSubjectType | null
+  subjectId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  s3Key?: Prisma.StringFieldUpdateOperationsInput | string
+  fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadedBy?: Prisma.StringFieldUpdateOperationsInput | string
+  capturedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  geoLat?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  geoLng?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  accuracyMeters?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
 }
 
 
@@ -614,79 +826,96 @@ export type EvidenceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   subjectType?: boolean
   subjectId?: boolean
+  auditItemResponseId?: boolean
   s3Key?: boolean
   fileUrl?: boolean
   uploadedBy?: boolean
   capturedAt?: boolean
   geoLat?: boolean
   geoLng?: boolean
+  accuracyMeters?: boolean
   uploader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  auditItemResponse?: boolean | Prisma.Evidence$auditItemResponseArgs<ExtArgs>
 }, ExtArgs["result"]["evidence"]>
 
 export type EvidenceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   subjectType?: boolean
   subjectId?: boolean
+  auditItemResponseId?: boolean
   s3Key?: boolean
   fileUrl?: boolean
   uploadedBy?: boolean
   capturedAt?: boolean
   geoLat?: boolean
   geoLng?: boolean
+  accuracyMeters?: boolean
   uploader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  auditItemResponse?: boolean | Prisma.Evidence$auditItemResponseArgs<ExtArgs>
 }, ExtArgs["result"]["evidence"]>
 
 export type EvidenceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   subjectType?: boolean
   subjectId?: boolean
+  auditItemResponseId?: boolean
   s3Key?: boolean
   fileUrl?: boolean
   uploadedBy?: boolean
   capturedAt?: boolean
   geoLat?: boolean
   geoLng?: boolean
+  accuracyMeters?: boolean
   uploader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  auditItemResponse?: boolean | Prisma.Evidence$auditItemResponseArgs<ExtArgs>
 }, ExtArgs["result"]["evidence"]>
 
 export type EvidenceSelectScalar = {
   id?: boolean
   subjectType?: boolean
   subjectId?: boolean
+  auditItemResponseId?: boolean
   s3Key?: boolean
   fileUrl?: boolean
   uploadedBy?: boolean
   capturedAt?: boolean
   geoLat?: boolean
   geoLng?: boolean
+  accuracyMeters?: boolean
 }
 
-export type EvidenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "subjectType" | "subjectId" | "s3Key" | "fileUrl" | "uploadedBy" | "capturedAt" | "geoLat" | "geoLng", ExtArgs["result"]["evidence"]>
+export type EvidenceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "subjectType" | "subjectId" | "auditItemResponseId" | "s3Key" | "fileUrl" | "uploadedBy" | "capturedAt" | "geoLat" | "geoLng" | "accuracyMeters", ExtArgs["result"]["evidence"]>
 export type EvidenceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   uploader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  auditItemResponse?: boolean | Prisma.Evidence$auditItemResponseArgs<ExtArgs>
 }
 export type EvidenceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   uploader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  auditItemResponse?: boolean | Prisma.Evidence$auditItemResponseArgs<ExtArgs>
 }
 export type EvidenceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   uploader?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  auditItemResponse?: boolean | Prisma.Evidence$auditItemResponseArgs<ExtArgs>
 }
 
 export type $EvidencePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Evidence"
   objects: {
     uploader: Prisma.$UserPayload<ExtArgs>
+    auditItemResponse: Prisma.$AuditItemResponsePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    subjectType: $Enums.EvidenceSubjectType
-    subjectId: string
+    subjectType: $Enums.EvidenceSubjectType | null
+    subjectId: string | null
+    auditItemResponseId: string | null
     s3Key: string
     fileUrl: string
     uploadedBy: string
     capturedAt: Date
     geoLat: number | null
     geoLng: number | null
+    accuracyMeters: number | null
   }, ExtArgs["result"]["evidence"]>
   composites: {}
 }
@@ -1082,6 +1311,7 @@ readonly fields: EvidenceFieldRefs;
 export interface Prisma__EvidenceClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   uploader<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  auditItemResponse<T extends Prisma.Evidence$auditItemResponseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Evidence$auditItemResponseArgs<ExtArgs>>): Prisma.Prisma__AuditItemResponseClient<runtime.Types.Result.GetResult<Prisma.$AuditItemResponsePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1114,12 +1344,14 @@ export interface EvidenceFieldRefs {
   readonly id: Prisma.FieldRef<"Evidence", 'String'>
   readonly subjectType: Prisma.FieldRef<"Evidence", 'EvidenceSubjectType'>
   readonly subjectId: Prisma.FieldRef<"Evidence", 'String'>
+  readonly auditItemResponseId: Prisma.FieldRef<"Evidence", 'String'>
   readonly s3Key: Prisma.FieldRef<"Evidence", 'String'>
   readonly fileUrl: Prisma.FieldRef<"Evidence", 'String'>
   readonly uploadedBy: Prisma.FieldRef<"Evidence", 'String'>
   readonly capturedAt: Prisma.FieldRef<"Evidence", 'DateTime'>
   readonly geoLat: Prisma.FieldRef<"Evidence", 'Float'>
   readonly geoLng: Prisma.FieldRef<"Evidence", 'Float'>
+  readonly accuracyMeters: Prisma.FieldRef<"Evidence", 'Float'>
 }
     
 
@@ -1518,6 +1750,25 @@ export type EvidenceDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many Evidences to delete.
    */
   limit?: number
+}
+
+/**
+ * Evidence.auditItemResponse
+ */
+export type Evidence$auditItemResponseArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AuditItemResponse
+   */
+  select?: Prisma.AuditItemResponseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AuditItemResponse
+   */
+  omit?: Prisma.AuditItemResponseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AuditItemResponseInclude<ExtArgs> | null
+  where?: Prisma.AuditItemResponseWhereInput
 }
 
 /**

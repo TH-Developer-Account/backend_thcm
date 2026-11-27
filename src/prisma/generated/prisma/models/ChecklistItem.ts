@@ -50,13 +50,11 @@ export type ChecklistItemMinAggregateOutputType = {
   checkPoint: string | null
   requiresScore: boolean | null
   maxScore: number | null
+  allowNotApplicable: boolean | null
   requiresEvidence: boolean | null
   minEvidence: number | null
   maxEvidence: number | null
   referencePhotoKey: string | null
-  sectionName: string | null
-  category: $Enums.ChecklistItemCategory | null
-  scoringGuidance: string | null
 }
 
 export type ChecklistItemMaxAggregateOutputType = {
@@ -69,13 +67,11 @@ export type ChecklistItemMaxAggregateOutputType = {
   checkPoint: string | null
   requiresScore: boolean | null
   maxScore: number | null
+  allowNotApplicable: boolean | null
   requiresEvidence: boolean | null
   minEvidence: number | null
   maxEvidence: number | null
   referencePhotoKey: string | null
-  sectionName: string | null
-  category: $Enums.ChecklistItemCategory | null
-  scoringGuidance: string | null
 }
 
 export type ChecklistItemCountAggregateOutputType = {
@@ -88,13 +84,12 @@ export type ChecklistItemCountAggregateOutputType = {
   checkPoint: number
   requiresScore: number
   maxScore: number
+  scoreLevels: number
+  allowNotApplicable: number
   requiresEvidence: number
   minEvidence: number
   maxEvidence: number
   referencePhotoKey: number
-  sectionName: number
-  category: number
-  scoringGuidance: number
   _all: number
 }
 
@@ -123,13 +118,11 @@ export type ChecklistItemMinAggregateInputType = {
   checkPoint?: true
   requiresScore?: true
   maxScore?: true
+  allowNotApplicable?: true
   requiresEvidence?: true
   minEvidence?: true
   maxEvidence?: true
   referencePhotoKey?: true
-  sectionName?: true
-  category?: true
-  scoringGuidance?: true
 }
 
 export type ChecklistItemMaxAggregateInputType = {
@@ -142,13 +135,11 @@ export type ChecklistItemMaxAggregateInputType = {
   checkPoint?: true
   requiresScore?: true
   maxScore?: true
+  allowNotApplicable?: true
   requiresEvidence?: true
   minEvidence?: true
   maxEvidence?: true
   referencePhotoKey?: true
-  sectionName?: true
-  category?: true
-  scoringGuidance?: true
 }
 
 export type ChecklistItemCountAggregateInputType = {
@@ -161,13 +152,12 @@ export type ChecklistItemCountAggregateInputType = {
   checkPoint?: true
   requiresScore?: true
   maxScore?: true
+  scoreLevels?: true
+  allowNotApplicable?: true
   requiresEvidence?: true
   minEvidence?: true
   maxEvidence?: true
   referencePhotoKey?: true
-  sectionName?: true
-  category?: true
-  scoringGuidance?: true
   _all?: true
 }
 
@@ -267,13 +257,12 @@ export type ChecklistItemGroupByOutputType = {
   checkPoint: string
   requiresScore: boolean
   maxScore: number | null
+  scoreLevels: runtime.JsonValue
+  allowNotApplicable: boolean
   requiresEvidence: boolean
   minEvidence: number | null
   maxEvidence: number | null
   referencePhotoKey: string | null
-  sectionName: string | null
-  category: $Enums.ChecklistItemCategory | null
-  scoringGuidance: string | null
   _count: ChecklistItemCountAggregateOutputType | null
   _avg: ChecklistItemAvgAggregateOutputType | null
   _sum: ChecklistItemSumAggregateOutputType | null
@@ -309,15 +298,13 @@ export type ChecklistItemWhereInput = {
   checkPoint?: Prisma.StringFilter<"ChecklistItem"> | string
   requiresScore?: Prisma.BoolFilter<"ChecklistItem"> | boolean
   maxScore?: Prisma.FloatNullableFilter<"ChecklistItem"> | number | null
+  scoreLevels?: Prisma.JsonFilter<"ChecklistItem">
+  allowNotApplicable?: Prisma.BoolFilter<"ChecklistItem"> | boolean
   requiresEvidence?: Prisma.BoolFilter<"ChecklistItem"> | boolean
   minEvidence?: Prisma.IntNullableFilter<"ChecklistItem"> | number | null
   maxEvidence?: Prisma.IntNullableFilter<"ChecklistItem"> | number | null
   referencePhotoKey?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
-  sectionName?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
-  category?: Prisma.EnumChecklistItemCategoryNullableFilter<"ChecklistItem"> | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
   template?: Prisma.XOR<Prisma.ChecklistTemplateScalarRelationFilter, Prisma.ChecklistTemplateWhereInput>
-  scoreLevels?: Prisma.ChecklistScoreLevelListRelationFilter
   responses?: Prisma.AuditItemResponseListRelationFilter
 }
 
@@ -331,15 +318,13 @@ export type ChecklistItemOrderByWithRelationInput = {
   checkPoint?: Prisma.SortOrder
   requiresScore?: Prisma.SortOrder
   maxScore?: Prisma.SortOrderInput | Prisma.SortOrder
+  scoreLevels?: Prisma.SortOrder
+  allowNotApplicable?: Prisma.SortOrder
   requiresEvidence?: Prisma.SortOrder
   minEvidence?: Prisma.SortOrderInput | Prisma.SortOrder
   maxEvidence?: Prisma.SortOrderInput | Prisma.SortOrder
   referencePhotoKey?: Prisma.SortOrderInput | Prisma.SortOrder
-  sectionName?: Prisma.SortOrderInput | Prisma.SortOrder
-  category?: Prisma.SortOrderInput | Prisma.SortOrder
-  scoringGuidance?: Prisma.SortOrderInput | Prisma.SortOrder
   template?: Prisma.ChecklistTemplateOrderByWithRelationInput
-  scoreLevels?: Prisma.ChecklistScoreLevelOrderByRelationAggregateInput
   responses?: Prisma.AuditItemResponseOrderByRelationAggregateInput
 }
 
@@ -357,15 +342,13 @@ export type ChecklistItemWhereUniqueInput = Prisma.AtLeast<{
   checkPoint?: Prisma.StringFilter<"ChecklistItem"> | string
   requiresScore?: Prisma.BoolFilter<"ChecklistItem"> | boolean
   maxScore?: Prisma.FloatNullableFilter<"ChecklistItem"> | number | null
+  scoreLevels?: Prisma.JsonFilter<"ChecklistItem">
+  allowNotApplicable?: Prisma.BoolFilter<"ChecklistItem"> | boolean
   requiresEvidence?: Prisma.BoolFilter<"ChecklistItem"> | boolean
   minEvidence?: Prisma.IntNullableFilter<"ChecklistItem"> | number | null
   maxEvidence?: Prisma.IntNullableFilter<"ChecklistItem"> | number | null
   referencePhotoKey?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
-  sectionName?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
-  category?: Prisma.EnumChecklistItemCategoryNullableFilter<"ChecklistItem"> | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
   template?: Prisma.XOR<Prisma.ChecklistTemplateScalarRelationFilter, Prisma.ChecklistTemplateWhereInput>
-  scoreLevels?: Prisma.ChecklistScoreLevelListRelationFilter
   responses?: Prisma.AuditItemResponseListRelationFilter
 }, "id" | "templateId_order">
 
@@ -379,13 +362,12 @@ export type ChecklistItemOrderByWithAggregationInput = {
   checkPoint?: Prisma.SortOrder
   requiresScore?: Prisma.SortOrder
   maxScore?: Prisma.SortOrderInput | Prisma.SortOrder
+  scoreLevels?: Prisma.SortOrder
+  allowNotApplicable?: Prisma.SortOrder
   requiresEvidence?: Prisma.SortOrder
   minEvidence?: Prisma.SortOrderInput | Prisma.SortOrder
   maxEvidence?: Prisma.SortOrderInput | Prisma.SortOrder
   referencePhotoKey?: Prisma.SortOrderInput | Prisma.SortOrder
-  sectionName?: Prisma.SortOrderInput | Prisma.SortOrder
-  category?: Prisma.SortOrderInput | Prisma.SortOrder
-  scoringGuidance?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ChecklistItemCountOrderByAggregateInput
   _avg?: Prisma.ChecklistItemAvgOrderByAggregateInput
   _max?: Prisma.ChecklistItemMaxOrderByAggregateInput
@@ -406,13 +388,12 @@ export type ChecklistItemScalarWhereWithAggregatesInput = {
   checkPoint?: Prisma.StringWithAggregatesFilter<"ChecklistItem"> | string
   requiresScore?: Prisma.BoolWithAggregatesFilter<"ChecklistItem"> | boolean
   maxScore?: Prisma.FloatNullableWithAggregatesFilter<"ChecklistItem"> | number | null
+  scoreLevels?: Prisma.JsonWithAggregatesFilter<"ChecklistItem">
+  allowNotApplicable?: Prisma.BoolWithAggregatesFilter<"ChecklistItem"> | boolean
   requiresEvidence?: Prisma.BoolWithAggregatesFilter<"ChecklistItem"> | boolean
   minEvidence?: Prisma.IntNullableWithAggregatesFilter<"ChecklistItem"> | number | null
   maxEvidence?: Prisma.IntNullableWithAggregatesFilter<"ChecklistItem"> | number | null
   referencePhotoKey?: Prisma.StringNullableWithAggregatesFilter<"ChecklistItem"> | string | null
-  sectionName?: Prisma.StringNullableWithAggregatesFilter<"ChecklistItem"> | string | null
-  category?: Prisma.EnumChecklistItemCategoryNullableWithAggregatesFilter<"ChecklistItem"> | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.StringNullableWithAggregatesFilter<"ChecklistItem"> | string | null
 }
 
 export type ChecklistItemCreateInput = {
@@ -424,15 +405,13 @@ export type ChecklistItemCreateInput = {
   checkPoint: string
   requiresScore?: boolean
   maxScore?: number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: boolean
   requiresEvidence?: boolean
   minEvidence?: number | null
   maxEvidence?: number | null
   referencePhotoKey?: string | null
-  sectionName?: string | null
-  category?: $Enums.ChecklistItemCategory | null
-  scoringGuidance?: string | null
   template: Prisma.ChecklistTemplateCreateNestedOneWithoutItemsInput
-  scoreLevels?: Prisma.ChecklistScoreLevelCreateNestedManyWithoutItemInput
   responses?: Prisma.AuditItemResponseCreateNestedManyWithoutItemInput
 }
 
@@ -446,14 +425,12 @@ export type ChecklistItemUncheckedCreateInput = {
   checkPoint: string
   requiresScore?: boolean
   maxScore?: number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: boolean
   requiresEvidence?: boolean
   minEvidence?: number | null
   maxEvidence?: number | null
   referencePhotoKey?: string | null
-  sectionName?: string | null
-  category?: $Enums.ChecklistItemCategory | null
-  scoringGuidance?: string | null
-  scoreLevels?: Prisma.ChecklistScoreLevelUncheckedCreateNestedManyWithoutItemInput
   responses?: Prisma.AuditItemResponseUncheckedCreateNestedManyWithoutItemInput
 }
 
@@ -466,15 +443,13 @@ export type ChecklistItemUpdateInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   requiresScore?: Prisma.BoolFieldUpdateOperationsInput | boolean
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   referencePhotoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sectionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableEnumChecklistItemCategoryFieldUpdateOperationsInput | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutItemsNestedInput
-  scoreLevels?: Prisma.ChecklistScoreLevelUpdateManyWithoutItemNestedInput
   responses?: Prisma.AuditItemResponseUpdateManyWithoutItemNestedInput
 }
 
@@ -488,14 +463,12 @@ export type ChecklistItemUncheckedUpdateInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   requiresScore?: Prisma.BoolFieldUpdateOperationsInput | boolean
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   referencePhotoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sectionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableEnumChecklistItemCategoryFieldUpdateOperationsInput | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  scoreLevels?: Prisma.ChecklistScoreLevelUncheckedUpdateManyWithoutItemNestedInput
   responses?: Prisma.AuditItemResponseUncheckedUpdateManyWithoutItemNestedInput
 }
 
@@ -509,13 +482,12 @@ export type ChecklistItemCreateManyInput = {
   checkPoint: string
   requiresScore?: boolean
   maxScore?: number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: boolean
   requiresEvidence?: boolean
   minEvidence?: number | null
   maxEvidence?: number | null
   referencePhotoKey?: string | null
-  sectionName?: string | null
-  category?: $Enums.ChecklistItemCategory | null
-  scoringGuidance?: string | null
 }
 
 export type ChecklistItemUpdateManyMutationInput = {
@@ -527,13 +499,12 @@ export type ChecklistItemUpdateManyMutationInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   requiresScore?: Prisma.BoolFieldUpdateOperationsInput | boolean
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   referencePhotoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sectionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableEnumChecklistItemCategoryFieldUpdateOperationsInput | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ChecklistItemUncheckedUpdateManyInput = {
@@ -546,13 +517,12 @@ export type ChecklistItemUncheckedUpdateManyInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   requiresScore?: Prisma.BoolFieldUpdateOperationsInput | boolean
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   referencePhotoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sectionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableEnumChecklistItemCategoryFieldUpdateOperationsInput | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ChecklistItemListRelationFilter = {
@@ -580,13 +550,12 @@ export type ChecklistItemCountOrderByAggregateInput = {
   checkPoint?: Prisma.SortOrder
   requiresScore?: Prisma.SortOrder
   maxScore?: Prisma.SortOrder
+  scoreLevels?: Prisma.SortOrder
+  allowNotApplicable?: Prisma.SortOrder
   requiresEvidence?: Prisma.SortOrder
   minEvidence?: Prisma.SortOrder
   maxEvidence?: Prisma.SortOrder
   referencePhotoKey?: Prisma.SortOrder
-  sectionName?: Prisma.SortOrder
-  category?: Prisma.SortOrder
-  scoringGuidance?: Prisma.SortOrder
 }
 
 export type ChecklistItemAvgOrderByAggregateInput = {
@@ -606,13 +575,11 @@ export type ChecklistItemMaxOrderByAggregateInput = {
   checkPoint?: Prisma.SortOrder
   requiresScore?: Prisma.SortOrder
   maxScore?: Prisma.SortOrder
+  allowNotApplicable?: Prisma.SortOrder
   requiresEvidence?: Prisma.SortOrder
   minEvidence?: Prisma.SortOrder
   maxEvidence?: Prisma.SortOrder
   referencePhotoKey?: Prisma.SortOrder
-  sectionName?: Prisma.SortOrder
-  category?: Prisma.SortOrder
-  scoringGuidance?: Prisma.SortOrder
 }
 
 export type ChecklistItemMinOrderByAggregateInput = {
@@ -625,13 +592,11 @@ export type ChecklistItemMinOrderByAggregateInput = {
   checkPoint?: Prisma.SortOrder
   requiresScore?: Prisma.SortOrder
   maxScore?: Prisma.SortOrder
+  allowNotApplicable?: Prisma.SortOrder
   requiresEvidence?: Prisma.SortOrder
   minEvidence?: Prisma.SortOrder
   maxEvidence?: Prisma.SortOrder
   referencePhotoKey?: Prisma.SortOrder
-  sectionName?: Prisma.SortOrder
-  category?: Prisma.SortOrder
-  scoringGuidance?: Prisma.SortOrder
 }
 
 export type ChecklistItemSumOrderByAggregateInput = {
@@ -688,24 +653,6 @@ export type ChecklistItemUncheckedUpdateManyWithoutTemplateNestedInput = {
   deleteMany?: Prisma.ChecklistItemScalarWhereInput | Prisma.ChecklistItemScalarWhereInput[]
 }
 
-export type NullableEnumChecklistItemCategoryFieldUpdateOperationsInput = {
-  set?: $Enums.ChecklistItemCategory | null
-}
-
-export type ChecklistItemCreateNestedOneWithoutScoreLevelsInput = {
-  create?: Prisma.XOR<Prisma.ChecklistItemCreateWithoutScoreLevelsInput, Prisma.ChecklistItemUncheckedCreateWithoutScoreLevelsInput>
-  connectOrCreate?: Prisma.ChecklistItemCreateOrConnectWithoutScoreLevelsInput
-  connect?: Prisma.ChecklistItemWhereUniqueInput
-}
-
-export type ChecklistItemUpdateOneRequiredWithoutScoreLevelsNestedInput = {
-  create?: Prisma.XOR<Prisma.ChecklistItemCreateWithoutScoreLevelsInput, Prisma.ChecklistItemUncheckedCreateWithoutScoreLevelsInput>
-  connectOrCreate?: Prisma.ChecklistItemCreateOrConnectWithoutScoreLevelsInput
-  upsert?: Prisma.ChecklistItemUpsertWithoutScoreLevelsInput
-  connect?: Prisma.ChecklistItemWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.ChecklistItemUpdateToOneWithWhereWithoutScoreLevelsInput, Prisma.ChecklistItemUpdateWithoutScoreLevelsInput>, Prisma.ChecklistItemUncheckedUpdateWithoutScoreLevelsInput>
-}
-
 export type ChecklistItemCreateNestedOneWithoutResponsesInput = {
   create?: Prisma.XOR<Prisma.ChecklistItemCreateWithoutResponsesInput, Prisma.ChecklistItemUncheckedCreateWithoutResponsesInput>
   connectOrCreate?: Prisma.ChecklistItemCreateOrConnectWithoutResponsesInput
@@ -729,14 +676,12 @@ export type ChecklistItemCreateWithoutTemplateInput = {
   checkPoint: string
   requiresScore?: boolean
   maxScore?: number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: boolean
   requiresEvidence?: boolean
   minEvidence?: number | null
   maxEvidence?: number | null
   referencePhotoKey?: string | null
-  sectionName?: string | null
-  category?: $Enums.ChecklistItemCategory | null
-  scoringGuidance?: string | null
-  scoreLevels?: Prisma.ChecklistScoreLevelCreateNestedManyWithoutItemInput
   responses?: Prisma.AuditItemResponseCreateNestedManyWithoutItemInput
 }
 
@@ -749,14 +694,12 @@ export type ChecklistItemUncheckedCreateWithoutTemplateInput = {
   checkPoint: string
   requiresScore?: boolean
   maxScore?: number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: boolean
   requiresEvidence?: boolean
   minEvidence?: number | null
   maxEvidence?: number | null
   referencePhotoKey?: string | null
-  sectionName?: string | null
-  category?: $Enums.ChecklistItemCategory | null
-  scoringGuidance?: string | null
-  scoreLevels?: Prisma.ChecklistScoreLevelUncheckedCreateNestedManyWithoutItemInput
   responses?: Prisma.AuditItemResponseUncheckedCreateNestedManyWithoutItemInput
 }
 
@@ -799,109 +742,12 @@ export type ChecklistItemScalarWhereInput = {
   checkPoint?: Prisma.StringFilter<"ChecklistItem"> | string
   requiresScore?: Prisma.BoolFilter<"ChecklistItem"> | boolean
   maxScore?: Prisma.FloatNullableFilter<"ChecklistItem"> | number | null
+  scoreLevels?: Prisma.JsonFilter<"ChecklistItem">
+  allowNotApplicable?: Prisma.BoolFilter<"ChecklistItem"> | boolean
   requiresEvidence?: Prisma.BoolFilter<"ChecklistItem"> | boolean
   minEvidence?: Prisma.IntNullableFilter<"ChecklistItem"> | number | null
   maxEvidence?: Prisma.IntNullableFilter<"ChecklistItem"> | number | null
   referencePhotoKey?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
-  sectionName?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
-  category?: Prisma.EnumChecklistItemCategoryNullableFilter<"ChecklistItem"> | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.StringNullableFilter<"ChecklistItem"> | string | null
-}
-
-export type ChecklistItemCreateWithoutScoreLevelsInput = {
-  id?: string
-  order: number
-  functionName?: string | null
-  categoryName?: string | null
-  label: string
-  checkPoint: string
-  requiresScore?: boolean
-  maxScore?: number | null
-  requiresEvidence?: boolean
-  minEvidence?: number | null
-  maxEvidence?: number | null
-  referencePhotoKey?: string | null
-  sectionName?: string | null
-  category?: $Enums.ChecklistItemCategory | null
-  scoringGuidance?: string | null
-  template: Prisma.ChecklistTemplateCreateNestedOneWithoutItemsInput
-  responses?: Prisma.AuditItemResponseCreateNestedManyWithoutItemInput
-}
-
-export type ChecklistItemUncheckedCreateWithoutScoreLevelsInput = {
-  id?: string
-  templateId: string
-  order: number
-  functionName?: string | null
-  categoryName?: string | null
-  label: string
-  checkPoint: string
-  requiresScore?: boolean
-  maxScore?: number | null
-  requiresEvidence?: boolean
-  minEvidence?: number | null
-  maxEvidence?: number | null
-  referencePhotoKey?: string | null
-  sectionName?: string | null
-  category?: $Enums.ChecklistItemCategory | null
-  scoringGuidance?: string | null
-  responses?: Prisma.AuditItemResponseUncheckedCreateNestedManyWithoutItemInput
-}
-
-export type ChecklistItemCreateOrConnectWithoutScoreLevelsInput = {
-  where: Prisma.ChecklistItemWhereUniqueInput
-  create: Prisma.XOR<Prisma.ChecklistItemCreateWithoutScoreLevelsInput, Prisma.ChecklistItemUncheckedCreateWithoutScoreLevelsInput>
-}
-
-export type ChecklistItemUpsertWithoutScoreLevelsInput = {
-  update: Prisma.XOR<Prisma.ChecklistItemUpdateWithoutScoreLevelsInput, Prisma.ChecklistItemUncheckedUpdateWithoutScoreLevelsInput>
-  create: Prisma.XOR<Prisma.ChecklistItemCreateWithoutScoreLevelsInput, Prisma.ChecklistItemUncheckedCreateWithoutScoreLevelsInput>
-  where?: Prisma.ChecklistItemWhereInput
-}
-
-export type ChecklistItemUpdateToOneWithWhereWithoutScoreLevelsInput = {
-  where?: Prisma.ChecklistItemWhereInput
-  data: Prisma.XOR<Prisma.ChecklistItemUpdateWithoutScoreLevelsInput, Prisma.ChecklistItemUncheckedUpdateWithoutScoreLevelsInput>
-}
-
-export type ChecklistItemUpdateWithoutScoreLevelsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  functionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  label?: Prisma.StringFieldUpdateOperationsInput | string
-  checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
-  requiresScore?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  minEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  maxEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  referencePhotoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sectionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableEnumChecklistItemCategoryFieldUpdateOperationsInput | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutItemsNestedInput
-  responses?: Prisma.AuditItemResponseUpdateManyWithoutItemNestedInput
-}
-
-export type ChecklistItemUncheckedUpdateWithoutScoreLevelsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  templateId?: Prisma.StringFieldUpdateOperationsInput | string
-  order?: Prisma.IntFieldUpdateOperationsInput | number
-  functionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  categoryName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  label?: Prisma.StringFieldUpdateOperationsInput | string
-  checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
-  requiresScore?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  minEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  maxEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
-  referencePhotoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sectionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableEnumChecklistItemCategoryFieldUpdateOperationsInput | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  responses?: Prisma.AuditItemResponseUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ChecklistItemCreateWithoutResponsesInput = {
@@ -913,15 +759,13 @@ export type ChecklistItemCreateWithoutResponsesInput = {
   checkPoint: string
   requiresScore?: boolean
   maxScore?: number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: boolean
   requiresEvidence?: boolean
   minEvidence?: number | null
   maxEvidence?: number | null
   referencePhotoKey?: string | null
-  sectionName?: string | null
-  category?: $Enums.ChecklistItemCategory | null
-  scoringGuidance?: string | null
   template: Prisma.ChecklistTemplateCreateNestedOneWithoutItemsInput
-  scoreLevels?: Prisma.ChecklistScoreLevelCreateNestedManyWithoutItemInput
 }
 
 export type ChecklistItemUncheckedCreateWithoutResponsesInput = {
@@ -934,14 +778,12 @@ export type ChecklistItemUncheckedCreateWithoutResponsesInput = {
   checkPoint: string
   requiresScore?: boolean
   maxScore?: number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: boolean
   requiresEvidence?: boolean
   minEvidence?: number | null
   maxEvidence?: number | null
   referencePhotoKey?: string | null
-  sectionName?: string | null
-  category?: $Enums.ChecklistItemCategory | null
-  scoringGuidance?: string | null
-  scoreLevels?: Prisma.ChecklistScoreLevelUncheckedCreateNestedManyWithoutItemInput
 }
 
 export type ChecklistItemCreateOrConnectWithoutResponsesInput = {
@@ -969,15 +811,13 @@ export type ChecklistItemUpdateWithoutResponsesInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   requiresScore?: Prisma.BoolFieldUpdateOperationsInput | boolean
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   referencePhotoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sectionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableEnumChecklistItemCategoryFieldUpdateOperationsInput | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutItemsNestedInput
-  scoreLevels?: Prisma.ChecklistScoreLevelUpdateManyWithoutItemNestedInput
 }
 
 export type ChecklistItemUncheckedUpdateWithoutResponsesInput = {
@@ -990,14 +830,12 @@ export type ChecklistItemUncheckedUpdateWithoutResponsesInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   requiresScore?: Prisma.BoolFieldUpdateOperationsInput | boolean
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   referencePhotoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sectionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableEnumChecklistItemCategoryFieldUpdateOperationsInput | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  scoreLevels?: Prisma.ChecklistScoreLevelUncheckedUpdateManyWithoutItemNestedInput
 }
 
 export type ChecklistItemCreateManyTemplateInput = {
@@ -1009,13 +847,12 @@ export type ChecklistItemCreateManyTemplateInput = {
   checkPoint: string
   requiresScore?: boolean
   maxScore?: number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: boolean
   requiresEvidence?: boolean
   minEvidence?: number | null
   maxEvidence?: number | null
   referencePhotoKey?: string | null
-  sectionName?: string | null
-  category?: $Enums.ChecklistItemCategory | null
-  scoringGuidance?: string | null
 }
 
 export type ChecklistItemUpdateWithoutTemplateInput = {
@@ -1027,14 +864,12 @@ export type ChecklistItemUpdateWithoutTemplateInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   requiresScore?: Prisma.BoolFieldUpdateOperationsInput | boolean
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   referencePhotoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sectionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableEnumChecklistItemCategoryFieldUpdateOperationsInput | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  scoreLevels?: Prisma.ChecklistScoreLevelUpdateManyWithoutItemNestedInput
   responses?: Prisma.AuditItemResponseUpdateManyWithoutItemNestedInput
 }
 
@@ -1047,14 +882,12 @@ export type ChecklistItemUncheckedUpdateWithoutTemplateInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   requiresScore?: Prisma.BoolFieldUpdateOperationsInput | boolean
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   referencePhotoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sectionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableEnumChecklistItemCategoryFieldUpdateOperationsInput | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  scoreLevels?: Prisma.ChecklistScoreLevelUncheckedUpdateManyWithoutItemNestedInput
   responses?: Prisma.AuditItemResponseUncheckedUpdateManyWithoutItemNestedInput
 }
 
@@ -1067,13 +900,12 @@ export type ChecklistItemUncheckedUpdateManyWithoutTemplateInput = {
   checkPoint?: Prisma.StringFieldUpdateOperationsInput | string
   requiresScore?: Prisma.BoolFieldUpdateOperationsInput | boolean
   maxScore?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  scoreLevels?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  allowNotApplicable?: Prisma.BoolFieldUpdateOperationsInput | boolean
   requiresEvidence?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maxEvidence?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   referencePhotoKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sectionName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  category?: Prisma.NullableEnumChecklistItemCategoryFieldUpdateOperationsInput | $Enums.ChecklistItemCategory | null
-  scoringGuidance?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -1082,12 +914,10 @@ export type ChecklistItemUncheckedUpdateManyWithoutTemplateInput = {
  */
 
 export type ChecklistItemCountOutputType = {
-  scoreLevels: number
   responses: number
 }
 
 export type ChecklistItemCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  scoreLevels?: boolean | ChecklistItemCountOutputTypeCountScoreLevelsArgs
   responses?: boolean | ChecklistItemCountOutputTypeCountResponsesArgs
 }
 
@@ -1099,13 +929,6 @@ export type ChecklistItemCountOutputTypeDefaultArgs<ExtArgs extends runtime.Type
    * Select specific fields to fetch from the ChecklistItemCountOutputType
    */
   select?: Prisma.ChecklistItemCountOutputTypeSelect<ExtArgs> | null
-}
-
-/**
- * ChecklistItemCountOutputType without action
- */
-export type ChecklistItemCountOutputTypeCountScoreLevelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ChecklistScoreLevelWhereInput
 }
 
 /**
@@ -1126,15 +949,13 @@ export type ChecklistItemSelect<ExtArgs extends runtime.Types.Extensions.Interna
   checkPoint?: boolean
   requiresScore?: boolean
   maxScore?: boolean
+  scoreLevels?: boolean
+  allowNotApplicable?: boolean
   requiresEvidence?: boolean
   minEvidence?: boolean
   maxEvidence?: boolean
   referencePhotoKey?: boolean
-  sectionName?: boolean
-  category?: boolean
-  scoringGuidance?: boolean
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
-  scoreLevels?: boolean | Prisma.ChecklistItem$scoreLevelsArgs<ExtArgs>
   responses?: boolean | Prisma.ChecklistItem$responsesArgs<ExtArgs>
   _count?: boolean | Prisma.ChecklistItemCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["checklistItem"]>
@@ -1149,13 +970,12 @@ export type ChecklistItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   checkPoint?: boolean
   requiresScore?: boolean
   maxScore?: boolean
+  scoreLevels?: boolean
+  allowNotApplicable?: boolean
   requiresEvidence?: boolean
   minEvidence?: boolean
   maxEvidence?: boolean
   referencePhotoKey?: boolean
-  sectionName?: boolean
-  category?: boolean
-  scoringGuidance?: boolean
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["checklistItem"]>
 
@@ -1169,13 +989,12 @@ export type ChecklistItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   checkPoint?: boolean
   requiresScore?: boolean
   maxScore?: boolean
+  scoreLevels?: boolean
+  allowNotApplicable?: boolean
   requiresEvidence?: boolean
   minEvidence?: boolean
   maxEvidence?: boolean
   referencePhotoKey?: boolean
-  sectionName?: boolean
-  category?: boolean
-  scoringGuidance?: boolean
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["checklistItem"]>
 
@@ -1189,19 +1008,17 @@ export type ChecklistItemSelectScalar = {
   checkPoint?: boolean
   requiresScore?: boolean
   maxScore?: boolean
+  scoreLevels?: boolean
+  allowNotApplicable?: boolean
   requiresEvidence?: boolean
   minEvidence?: boolean
   maxEvidence?: boolean
   referencePhotoKey?: boolean
-  sectionName?: boolean
-  category?: boolean
-  scoringGuidance?: boolean
 }
 
-export type ChecklistItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "templateId" | "order" | "functionName" | "categoryName" | "label" | "checkPoint" | "requiresScore" | "maxScore" | "requiresEvidence" | "minEvidence" | "maxEvidence" | "referencePhotoKey" | "sectionName" | "category" | "scoringGuidance", ExtArgs["result"]["checklistItem"]>
+export type ChecklistItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "templateId" | "order" | "functionName" | "categoryName" | "label" | "checkPoint" | "requiresScore" | "maxScore" | "scoreLevels" | "allowNotApplicable" | "requiresEvidence" | "minEvidence" | "maxEvidence" | "referencePhotoKey", ExtArgs["result"]["checklistItem"]>
 export type ChecklistItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
-  scoreLevels?: boolean | Prisma.ChecklistItem$scoreLevelsArgs<ExtArgs>
   responses?: boolean | Prisma.ChecklistItem$responsesArgs<ExtArgs>
   _count?: boolean | Prisma.ChecklistItemCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1216,7 +1033,6 @@ export type $ChecklistItemPayload<ExtArgs extends runtime.Types.Extensions.Inter
   name: "ChecklistItem"
   objects: {
     template: Prisma.$ChecklistTemplatePayload<ExtArgs>
-    scoreLevels: Prisma.$ChecklistScoreLevelPayload<ExtArgs>[]
     responses: Prisma.$AuditItemResponsePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1229,13 +1045,12 @@ export type $ChecklistItemPayload<ExtArgs extends runtime.Types.Extensions.Inter
     checkPoint: string
     requiresScore: boolean
     maxScore: number | null
+    scoreLevels: runtime.JsonValue
+    allowNotApplicable: boolean
     requiresEvidence: boolean
     minEvidence: number | null
     maxEvidence: number | null
     referencePhotoKey: string | null
-    sectionName: string | null
-    category: $Enums.ChecklistItemCategory | null
-    scoringGuidance: string | null
   }, ExtArgs["result"]["checklistItem"]>
   composites: {}
 }
@@ -1631,7 +1446,6 @@ readonly fields: ChecklistItemFieldRefs;
 export interface Prisma__ChecklistItemClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   template<T extends Prisma.ChecklistTemplateDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChecklistTemplateDefaultArgs<ExtArgs>>): Prisma.Prisma__ChecklistTemplateClient<runtime.Types.Result.GetResult<Prisma.$ChecklistTemplatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  scoreLevels<T extends Prisma.ChecklistItem$scoreLevelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChecklistItem$scoreLevelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChecklistScoreLevelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   responses<T extends Prisma.ChecklistItem$responsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChecklistItem$responsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditItemResponsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1671,13 +1485,12 @@ export interface ChecklistItemFieldRefs {
   readonly checkPoint: Prisma.FieldRef<"ChecklistItem", 'String'>
   readonly requiresScore: Prisma.FieldRef<"ChecklistItem", 'Boolean'>
   readonly maxScore: Prisma.FieldRef<"ChecklistItem", 'Float'>
+  readonly scoreLevels: Prisma.FieldRef<"ChecklistItem", 'Json'>
+  readonly allowNotApplicable: Prisma.FieldRef<"ChecklistItem", 'Boolean'>
   readonly requiresEvidence: Prisma.FieldRef<"ChecklistItem", 'Boolean'>
   readonly minEvidence: Prisma.FieldRef<"ChecklistItem", 'Int'>
   readonly maxEvidence: Prisma.FieldRef<"ChecklistItem", 'Int'>
   readonly referencePhotoKey: Prisma.FieldRef<"ChecklistItem", 'String'>
-  readonly sectionName: Prisma.FieldRef<"ChecklistItem", 'String'>
-  readonly category: Prisma.FieldRef<"ChecklistItem", 'ChecklistItemCategory'>
-  readonly scoringGuidance: Prisma.FieldRef<"ChecklistItem", 'String'>
 }
     
 
@@ -2076,30 +1889,6 @@ export type ChecklistItemDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many ChecklistItems to delete.
    */
   limit?: number
-}
-
-/**
- * ChecklistItem.scoreLevels
- */
-export type ChecklistItem$scoreLevelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ChecklistScoreLevel
-   */
-  select?: Prisma.ChecklistScoreLevelSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the ChecklistScoreLevel
-   */
-  omit?: Prisma.ChecklistScoreLevelOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ChecklistScoreLevelInclude<ExtArgs> | null
-  where?: Prisma.ChecklistScoreLevelWhereInput
-  orderBy?: Prisma.ChecklistScoreLevelOrderByWithRelationInput | Prisma.ChecklistScoreLevelOrderByWithRelationInput[]
-  cursor?: Prisma.ChecklistScoreLevelWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ChecklistScoreLevelScalarFieldEnum | Prisma.ChecklistScoreLevelScalarFieldEnum[]
 }
 
 /**

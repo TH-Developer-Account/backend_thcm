@@ -29,11 +29,13 @@ export type AggregateChecklistTemplate = {
 export type ChecklistTemplateAvgAggregateOutputType = {
   version: number | null
   totalScore: number | null
+  passPercent: number | null
 }
 
 export type ChecklistTemplateSumAggregateOutputType = {
   version: number | null
   totalScore: number | null
+  passPercent: number | null
 }
 
 export type ChecklistTemplateMinAggregateOutputType = {
@@ -45,6 +47,7 @@ export type ChecklistTemplateMinAggregateOutputType = {
   status: $Enums.TemplateLifecycleStatus | null
   isActive: boolean | null
   totalScore: number | null
+  passPercent: number | null
   publishedAt: Date | null
   createdById: string | null
   updatedById: string | null
@@ -61,6 +64,7 @@ export type ChecklistTemplateMaxAggregateOutputType = {
   status: $Enums.TemplateLifecycleStatus | null
   isActive: boolean | null
   totalScore: number | null
+  passPercent: number | null
   publishedAt: Date | null
   createdById: string | null
   updatedById: string | null
@@ -77,6 +81,8 @@ export type ChecklistTemplateCountAggregateOutputType = {
   status: number
   isActive: number
   totalScore: number
+  passPercent: number
+  gradeBands: number
   publishedAt: number
   createdById: number
   updatedById: number
@@ -89,11 +95,13 @@ export type ChecklistTemplateCountAggregateOutputType = {
 export type ChecklistTemplateAvgAggregateInputType = {
   version?: true
   totalScore?: true
+  passPercent?: true
 }
 
 export type ChecklistTemplateSumAggregateInputType = {
   version?: true
   totalScore?: true
+  passPercent?: true
 }
 
 export type ChecklistTemplateMinAggregateInputType = {
@@ -105,6 +113,7 @@ export type ChecklistTemplateMinAggregateInputType = {
   status?: true
   isActive?: true
   totalScore?: true
+  passPercent?: true
   publishedAt?: true
   createdById?: true
   updatedById?: true
@@ -121,6 +130,7 @@ export type ChecklistTemplateMaxAggregateInputType = {
   status?: true
   isActive?: true
   totalScore?: true
+  passPercent?: true
   publishedAt?: true
   createdById?: true
   updatedById?: true
@@ -137,6 +147,8 @@ export type ChecklistTemplateCountAggregateInputType = {
   status?: true
   isActive?: true
   totalScore?: true
+  passPercent?: true
+  gradeBands?: true
   publishedAt?: true
   createdById?: true
   updatedById?: true
@@ -240,6 +252,8 @@ export type ChecklistTemplateGroupByOutputType = {
   status: $Enums.TemplateLifecycleStatus
   isActive: boolean
   totalScore: number
+  passPercent: number | null
+  gradeBands: runtime.JsonValue | null
   publishedAt: Date | null
   createdById: string | null
   updatedById: string | null
@@ -279,6 +293,8 @@ export type ChecklistTemplateWhereInput = {
   status?: Prisma.EnumTemplateLifecycleStatusFilter<"ChecklistTemplate"> | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFilter<"ChecklistTemplate"> | boolean
   totalScore?: Prisma.FloatFilter<"ChecklistTemplate"> | number
+  passPercent?: Prisma.FloatNullableFilter<"ChecklistTemplate"> | number | null
+  gradeBands?: Prisma.JsonNullableFilter<"ChecklistTemplate">
   publishedAt?: Prisma.DateTimeNullableFilter<"ChecklistTemplate"> | Date | string | null
   createdById?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
   updatedById?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
@@ -298,6 +314,8 @@ export type ChecklistTemplateOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   totalScore?: Prisma.SortOrder
+  passPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  gradeBands?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -321,6 +339,8 @@ export type ChecklistTemplateWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.EnumTemplateLifecycleStatusFilter<"ChecklistTemplate"> | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFilter<"ChecklistTemplate"> | boolean
   totalScore?: Prisma.FloatFilter<"ChecklistTemplate"> | number
+  passPercent?: Prisma.FloatNullableFilter<"ChecklistTemplate"> | number | null
+  gradeBands?: Prisma.JsonNullableFilter<"ChecklistTemplate">
   publishedAt?: Prisma.DateTimeNullableFilter<"ChecklistTemplate"> | Date | string | null
   createdById?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
   updatedById?: Prisma.StringNullableFilter<"ChecklistTemplate"> | string | null
@@ -340,6 +360,8 @@ export type ChecklistTemplateOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   totalScore?: Prisma.SortOrder
+  passPercent?: Prisma.SortOrderInput | Prisma.SortOrder
+  gradeBands?: Prisma.SortOrderInput | Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdById?: Prisma.SortOrderInput | Prisma.SortOrder
   updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -364,6 +386,8 @@ export type ChecklistTemplateScalarWhereWithAggregatesInput = {
   status?: Prisma.EnumTemplateLifecycleStatusWithAggregatesFilter<"ChecklistTemplate"> | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolWithAggregatesFilter<"ChecklistTemplate"> | boolean
   totalScore?: Prisma.FloatWithAggregatesFilter<"ChecklistTemplate"> | number
+  passPercent?: Prisma.FloatNullableWithAggregatesFilter<"ChecklistTemplate"> | number | null
+  gradeBands?: Prisma.JsonNullableWithAggregatesFilter<"ChecklistTemplate">
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ChecklistTemplate"> | Date | string | null
   createdById?: Prisma.StringNullableWithAggregatesFilter<"ChecklistTemplate"> | string | null
   updatedById?: Prisma.StringNullableWithAggregatesFilter<"ChecklistTemplate"> | string | null
@@ -380,6 +404,8 @@ export type ChecklistTemplateCreateInput = {
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
   totalScore?: number
+  passPercent?: number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
@@ -399,6 +425,8 @@ export type ChecklistTemplateUncheckedCreateInput = {
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
   totalScore?: number
+  passPercent?: number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
@@ -418,6 +446,8 @@ export type ChecklistTemplateUpdateInput = {
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  passPercent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -437,6 +467,8 @@ export type ChecklistTemplateUncheckedUpdateInput = {
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  passPercent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -456,6 +488,8 @@ export type ChecklistTemplateCreateManyInput = {
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
   totalScore?: number
+  passPercent?: number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
@@ -472,6 +506,8 @@ export type ChecklistTemplateUpdateManyMutationInput = {
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  passPercent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -488,6 +524,8 @@ export type ChecklistTemplateUncheckedUpdateManyInput = {
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  passPercent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -510,6 +548,8 @@ export type ChecklistTemplateCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   totalScore?: Prisma.SortOrder
+  passPercent?: Prisma.SortOrder
+  gradeBands?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   updatedById?: Prisma.SortOrder
@@ -520,6 +560,7 @@ export type ChecklistTemplateCountOrderByAggregateInput = {
 export type ChecklistTemplateAvgOrderByAggregateInput = {
   version?: Prisma.SortOrder
   totalScore?: Prisma.SortOrder
+  passPercent?: Prisma.SortOrder
 }
 
 export type ChecklistTemplateMaxOrderByAggregateInput = {
@@ -531,6 +572,7 @@ export type ChecklistTemplateMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   totalScore?: Prisma.SortOrder
+  passPercent?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   updatedById?: Prisma.SortOrder
@@ -547,6 +589,7 @@ export type ChecklistTemplateMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   totalScore?: Prisma.SortOrder
+  passPercent?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
   createdById?: Prisma.SortOrder
   updatedById?: Prisma.SortOrder
@@ -557,6 +600,7 @@ export type ChecklistTemplateMinOrderByAggregateInput = {
 export type ChecklistTemplateSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
   totalScore?: Prisma.SortOrder
+  passPercent?: Prisma.SortOrder
 }
 
 export type ChecklistTemplateScalarRelationFilter = {
@@ -619,6 +663,8 @@ export type ChecklistTemplateCreateWithoutItemsInput = {
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
   totalScore?: number
+  passPercent?: number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
@@ -637,6 +683,8 @@ export type ChecklistTemplateUncheckedCreateWithoutItemsInput = {
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
   totalScore?: number
+  passPercent?: number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
@@ -671,6 +719,8 @@ export type ChecklistTemplateUpdateWithoutItemsInput = {
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  passPercent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -689,6 +739,8 @@ export type ChecklistTemplateUncheckedUpdateWithoutItemsInput = {
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  passPercent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -707,6 +759,8 @@ export type ChecklistTemplateCreateWithoutDealerAuditCyclesInput = {
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
   totalScore?: number
+  passPercent?: number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
@@ -725,6 +779,8 @@ export type ChecklistTemplateUncheckedCreateWithoutDealerAuditCyclesInput = {
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
   totalScore?: number
+  passPercent?: number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
@@ -759,6 +815,8 @@ export type ChecklistTemplateUpdateWithoutDealerAuditCyclesInput = {
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  passPercent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -777,6 +835,8 @@ export type ChecklistTemplateUncheckedUpdateWithoutDealerAuditCyclesInput = {
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  passPercent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -795,6 +855,8 @@ export type ChecklistTemplateCreateWithoutAuditInstancesInput = {
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
   totalScore?: number
+  passPercent?: number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
@@ -813,6 +875,8 @@ export type ChecklistTemplateUncheckedCreateWithoutAuditInstancesInput = {
   status?: $Enums.TemplateLifecycleStatus
   isActive?: boolean
   totalScore?: number
+  passPercent?: number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Date | string | null
   createdById?: string | null
   updatedById?: string | null
@@ -847,6 +911,8 @@ export type ChecklistTemplateUpdateWithoutAuditInstancesInput = {
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  passPercent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -865,6 +931,8 @@ export type ChecklistTemplateUncheckedUpdateWithoutAuditInstancesInput = {
   status?: Prisma.EnumTemplateLifecycleStatusFieldUpdateOperationsInput | $Enums.TemplateLifecycleStatus
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   totalScore?: Prisma.FloatFieldUpdateOperationsInput | number
+  passPercent?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  gradeBands?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -932,6 +1000,8 @@ export type ChecklistTemplateSelect<ExtArgs extends runtime.Types.Extensions.Int
   status?: boolean
   isActive?: boolean
   totalScore?: boolean
+  passPercent?: boolean
+  gradeBands?: boolean
   publishedAt?: boolean
   createdById?: boolean
   updatedById?: boolean
@@ -952,6 +1022,8 @@ export type ChecklistTemplateSelectCreateManyAndReturn<ExtArgs extends runtime.T
   status?: boolean
   isActive?: boolean
   totalScore?: boolean
+  passPercent?: boolean
+  gradeBands?: boolean
   publishedAt?: boolean
   createdById?: boolean
   updatedById?: boolean
@@ -968,6 +1040,8 @@ export type ChecklistTemplateSelectUpdateManyAndReturn<ExtArgs extends runtime.T
   status?: boolean
   isActive?: boolean
   totalScore?: boolean
+  passPercent?: boolean
+  gradeBands?: boolean
   publishedAt?: boolean
   createdById?: boolean
   updatedById?: boolean
@@ -984,6 +1058,8 @@ export type ChecklistTemplateSelectScalar = {
   status?: boolean
   isActive?: boolean
   totalScore?: boolean
+  passPercent?: boolean
+  gradeBands?: boolean
   publishedAt?: boolean
   createdById?: boolean
   updatedById?: boolean
@@ -991,7 +1067,7 @@ export type ChecklistTemplateSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ChecklistTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "officeType" | "version" | "status" | "isActive" | "totalScore" | "publishedAt" | "createdById" | "updatedById" | "createdAt" | "updatedAt", ExtArgs["result"]["checklistTemplate"]>
+export type ChecklistTemplateOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "officeType" | "version" | "status" | "isActive" | "totalScore" | "passPercent" | "gradeBands" | "publishedAt" | "createdById" | "updatedById" | "createdAt" | "updatedAt", ExtArgs["result"]["checklistTemplate"]>
 export type ChecklistTemplateInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | Prisma.ChecklistTemplate$itemsArgs<ExtArgs>
   auditInstances?: boolean | Prisma.ChecklistTemplate$auditInstancesArgs<ExtArgs>
@@ -1017,6 +1093,8 @@ export type $ChecklistTemplatePayload<ExtArgs extends runtime.Types.Extensions.I
     status: $Enums.TemplateLifecycleStatus
     isActive: boolean
     totalScore: number
+    passPercent: number | null
+    gradeBands: runtime.JsonValue | null
     publishedAt: Date | null
     createdById: string | null
     updatedById: string | null
@@ -1456,6 +1534,8 @@ export interface ChecklistTemplateFieldRefs {
   readonly status: Prisma.FieldRef<"ChecklistTemplate", 'TemplateLifecycleStatus'>
   readonly isActive: Prisma.FieldRef<"ChecklistTemplate", 'Boolean'>
   readonly totalScore: Prisma.FieldRef<"ChecklistTemplate", 'Float'>
+  readonly passPercent: Prisma.FieldRef<"ChecklistTemplate", 'Float'>
+  readonly gradeBands: Prisma.FieldRef<"ChecklistTemplate", 'Json'>
   readonly publishedAt: Prisma.FieldRef<"ChecklistTemplate", 'DateTime'>
   readonly createdById: Prisma.FieldRef<"ChecklistTemplate", 'String'>
   readonly updatedById: Prisma.FieldRef<"ChecklistTemplate", 'String'>

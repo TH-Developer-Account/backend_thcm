@@ -48,6 +48,7 @@ export type DealerAuditCycleMinAggregateOutputType = {
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  updatedById: string | null
 }
 
 export type DealerAuditCycleMaxAggregateOutputType = {
@@ -62,6 +63,7 @@ export type DealerAuditCycleMaxAggregateOutputType = {
   createdById: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  updatedById: string | null
 }
 
 export type DealerAuditCycleCountAggregateOutputType = {
@@ -76,6 +78,7 @@ export type DealerAuditCycleCountAggregateOutputType = {
   createdById: number
   createdAt: number
   updatedAt: number
+  updatedById: number
   _all: number
 }
 
@@ -102,6 +105,7 @@ export type DealerAuditCycleMinAggregateInputType = {
   createdById?: true
   createdAt?: true
   updatedAt?: true
+  updatedById?: true
 }
 
 export type DealerAuditCycleMaxAggregateInputType = {
@@ -116,6 +120,7 @@ export type DealerAuditCycleMaxAggregateInputType = {
   createdById?: true
   createdAt?: true
   updatedAt?: true
+  updatedById?: true
 }
 
 export type DealerAuditCycleCountAggregateInputType = {
@@ -130,6 +135,7 @@ export type DealerAuditCycleCountAggregateInputType = {
   createdById?: true
   createdAt?: true
   updatedAt?: true
+  updatedById?: true
   _all?: true
 }
 
@@ -231,6 +237,7 @@ export type DealerAuditCycleGroupByOutputType = {
   createdById: string
   createdAt: Date
   updatedAt: Date
+  updatedById: string | null
   _count: DealerAuditCycleCountAggregateOutputType | null
   _avg: DealerAuditCycleAvgAggregateOutputType | null
   _sum: DealerAuditCycleSumAggregateOutputType | null
@@ -268,6 +275,7 @@ export type DealerAuditCycleWhereInput = {
   createdById?: Prisma.StringFilter<"DealerAuditCycle"> | string
   createdAt?: Prisma.DateTimeFilter<"DealerAuditCycle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DealerAuditCycle"> | Date | string
+  updatedById?: Prisma.StringNullableFilter<"DealerAuditCycle"> | string | null
   template?: Prisma.XOR<Prisma.ChecklistTemplateScalarRelationFilter, Prisma.ChecklistTemplateWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   instances?: Prisma.DealerAuditInstanceListRelationFilter
@@ -285,6 +293,7 @@ export type DealerAuditCycleOrderByWithRelationInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
   template?: Prisma.ChecklistTemplateOrderByWithRelationInput
   createdBy?: Prisma.UserOrderByWithRelationInput
   instances?: Prisma.DealerAuditInstanceOrderByRelationAggregateInput
@@ -305,6 +314,7 @@ export type DealerAuditCycleWhereUniqueInput = Prisma.AtLeast<{
   createdById?: Prisma.StringFilter<"DealerAuditCycle"> | string
   createdAt?: Prisma.DateTimeFilter<"DealerAuditCycle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DealerAuditCycle"> | Date | string
+  updatedById?: Prisma.StringNullableFilter<"DealerAuditCycle"> | string | null
   template?: Prisma.XOR<Prisma.ChecklistTemplateScalarRelationFilter, Prisma.ChecklistTemplateWhereInput>
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   instances?: Prisma.DealerAuditInstanceListRelationFilter
@@ -322,6 +332,7 @@ export type DealerAuditCycleOrderByWithAggregationInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  updatedById?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.DealerAuditCycleCountOrderByAggregateInput
   _avg?: Prisma.DealerAuditCycleAvgOrderByAggregateInput
   _max?: Prisma.DealerAuditCycleMaxOrderByAggregateInput
@@ -344,6 +355,7 @@ export type DealerAuditCycleScalarWhereWithAggregatesInput = {
   createdById?: Prisma.StringWithAggregatesFilter<"DealerAuditCycle"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DealerAuditCycle"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"DealerAuditCycle"> | Date | string
+  updatedById?: Prisma.StringNullableWithAggregatesFilter<"DealerAuditCycle"> | string | null
 }
 
 export type DealerAuditCycleCreateInput = {
@@ -356,6 +368,7 @@ export type DealerAuditCycleCreateInput = {
   dueAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  updatedById?: string | null
   template: Prisma.ChecklistTemplateCreateNestedOneWithoutDealerAuditCyclesInput
   createdBy: Prisma.UserCreateNestedOneWithoutDealerAuditCyclesCreatedInput
   instances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutCycleInput
@@ -373,6 +386,7 @@ export type DealerAuditCycleUncheckedCreateInput = {
   createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  updatedById?: string | null
   instances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutCycleInput
 }
 
@@ -386,6 +400,7 @@ export type DealerAuditCycleUpdateInput = {
   dueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutDealerAuditCyclesNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutDealerAuditCyclesCreatedNestedInput
   instances?: Prisma.DealerAuditInstanceUpdateManyWithoutCycleNestedInput
@@ -403,6 +418,7 @@ export type DealerAuditCycleUncheckedUpdateInput = {
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutCycleNestedInput
 }
 
@@ -418,6 +434,7 @@ export type DealerAuditCycleCreateManyInput = {
   createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  updatedById?: string | null
 }
 
 export type DealerAuditCycleUpdateManyMutationInput = {
@@ -430,6 +447,7 @@ export type DealerAuditCycleUpdateManyMutationInput = {
   dueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type DealerAuditCycleUncheckedUpdateManyInput = {
@@ -444,6 +462,7 @@ export type DealerAuditCycleUncheckedUpdateManyInput = {
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type DealerAuditCycleListRelationFilter = {
@@ -468,6 +487,7 @@ export type DealerAuditCycleCountOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  updatedById?: Prisma.SortOrder
 }
 
 export type DealerAuditCycleAvgOrderByAggregateInput = {
@@ -487,6 +507,7 @@ export type DealerAuditCycleMaxOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  updatedById?: Prisma.SortOrder
 }
 
 export type DealerAuditCycleMinOrderByAggregateInput = {
@@ -501,6 +522,7 @@ export type DealerAuditCycleMinOrderByAggregateInput = {
   createdById?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  updatedById?: Prisma.SortOrder
 }
 
 export type DealerAuditCycleSumOrderByAggregateInput = {
@@ -623,6 +645,7 @@ export type DealerAuditCycleCreateWithoutCreatedByInput = {
   dueAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  updatedById?: string | null
   template: Prisma.ChecklistTemplateCreateNestedOneWithoutDealerAuditCyclesInput
   instances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutCycleInput
 }
@@ -638,6 +661,7 @@ export type DealerAuditCycleUncheckedCreateWithoutCreatedByInput = {
   dueAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  updatedById?: string | null
   instances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutCycleInput
 }
 
@@ -682,6 +706,7 @@ export type DealerAuditCycleScalarWhereInput = {
   createdById?: Prisma.StringFilter<"DealerAuditCycle"> | string
   createdAt?: Prisma.DateTimeFilter<"DealerAuditCycle"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"DealerAuditCycle"> | Date | string
+  updatedById?: Prisma.StringNullableFilter<"DealerAuditCycle"> | string | null
 }
 
 export type DealerAuditCycleCreateWithoutTemplateInput = {
@@ -694,6 +719,7 @@ export type DealerAuditCycleCreateWithoutTemplateInput = {
   dueAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  updatedById?: string | null
   createdBy: Prisma.UserCreateNestedOneWithoutDealerAuditCyclesCreatedInput
   instances?: Prisma.DealerAuditInstanceCreateNestedManyWithoutCycleInput
 }
@@ -709,6 +735,7 @@ export type DealerAuditCycleUncheckedCreateWithoutTemplateInput = {
   createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  updatedById?: string | null
   instances?: Prisma.DealerAuditInstanceUncheckedCreateNestedManyWithoutCycleInput
 }
 
@@ -748,6 +775,7 @@ export type DealerAuditCycleCreateWithoutInstancesInput = {
   dueAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  updatedById?: string | null
   template: Prisma.ChecklistTemplateCreateNestedOneWithoutDealerAuditCyclesInput
   createdBy: Prisma.UserCreateNestedOneWithoutDealerAuditCyclesCreatedInput
 }
@@ -764,6 +792,7 @@ export type DealerAuditCycleUncheckedCreateWithoutInstancesInput = {
   createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  updatedById?: string | null
 }
 
 export type DealerAuditCycleCreateOrConnectWithoutInstancesInput = {
@@ -792,6 +821,7 @@ export type DealerAuditCycleUpdateWithoutInstancesInput = {
   dueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutDealerAuditCyclesNestedInput
   createdBy?: Prisma.UserUpdateOneRequiredWithoutDealerAuditCyclesCreatedNestedInput
 }
@@ -808,6 +838,7 @@ export type DealerAuditCycleUncheckedUpdateWithoutInstancesInput = {
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type DealerAuditCycleCreateManyCreatedByInput = {
@@ -821,6 +852,7 @@ export type DealerAuditCycleCreateManyCreatedByInput = {
   dueAt: Date | string
   createdAt?: Date | string
   updatedAt?: Date | string
+  updatedById?: string | null
 }
 
 export type DealerAuditCycleUpdateWithoutCreatedByInput = {
@@ -833,6 +865,7 @@ export type DealerAuditCycleUpdateWithoutCreatedByInput = {
   dueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   template?: Prisma.ChecklistTemplateUpdateOneRequiredWithoutDealerAuditCyclesNestedInput
   instances?: Prisma.DealerAuditInstanceUpdateManyWithoutCycleNestedInput
 }
@@ -848,6 +881,7 @@ export type DealerAuditCycleUncheckedUpdateWithoutCreatedByInput = {
   dueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutCycleNestedInput
 }
 
@@ -862,6 +896,7 @@ export type DealerAuditCycleUncheckedUpdateManyWithoutCreatedByInput = {
   dueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type DealerAuditCycleCreateManyTemplateInput = {
@@ -875,6 +910,7 @@ export type DealerAuditCycleCreateManyTemplateInput = {
   createdById: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  updatedById?: string | null
 }
 
 export type DealerAuditCycleUpdateWithoutTemplateInput = {
@@ -887,6 +923,7 @@ export type DealerAuditCycleUpdateWithoutTemplateInput = {
   dueAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdBy?: Prisma.UserUpdateOneRequiredWithoutDealerAuditCyclesCreatedNestedInput
   instances?: Prisma.DealerAuditInstanceUpdateManyWithoutCycleNestedInput
 }
@@ -902,6 +939,7 @@ export type DealerAuditCycleUncheckedUpdateWithoutTemplateInput = {
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   instances?: Prisma.DealerAuditInstanceUncheckedUpdateManyWithoutCycleNestedInput
 }
 
@@ -916,6 +954,7 @@ export type DealerAuditCycleUncheckedUpdateManyWithoutTemplateInput = {
   createdById?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -961,6 +1000,7 @@ export type DealerAuditCycleSelect<ExtArgs extends runtime.Types.Extensions.Inte
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  updatedById?: boolean
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   instances?: boolean | Prisma.DealerAuditCycle$instancesArgs<ExtArgs>
@@ -979,6 +1019,7 @@ export type DealerAuditCycleSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  updatedById?: boolean
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["dealerAuditCycle"]>
@@ -995,6 +1036,7 @@ export type DealerAuditCycleSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  updatedById?: boolean
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["dealerAuditCycle"]>
@@ -1011,9 +1053,10 @@ export type DealerAuditCycleSelectScalar = {
   createdById?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  updatedById?: boolean
 }
 
-export type DealerAuditCycleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "checklistTemplateId" | "periodType" | "periodYear" | "periodQuarter" | "periodLabel" | "dueAt" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["dealerAuditCycle"]>
+export type DealerAuditCycleOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "checklistTemplateId" | "periodType" | "periodYear" | "periodQuarter" | "periodLabel" | "dueAt" | "createdById" | "createdAt" | "updatedAt" | "updatedById", ExtArgs["result"]["dealerAuditCycle"]>
 export type DealerAuditCycleInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   template?: boolean | Prisma.ChecklistTemplateDefaultArgs<ExtArgs>
   createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1048,6 +1091,7 @@ export type $DealerAuditCyclePayload<ExtArgs extends runtime.Types.Extensions.In
     createdById: string
     createdAt: Date
     updatedAt: Date
+    updatedById: string | null
   }, ExtArgs["result"]["dealerAuditCycle"]>
   composites: {}
 }
@@ -1485,6 +1529,7 @@ export interface DealerAuditCycleFieldRefs {
   readonly createdById: Prisma.FieldRef<"DealerAuditCycle", 'String'>
   readonly createdAt: Prisma.FieldRef<"DealerAuditCycle", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"DealerAuditCycle", 'DateTime'>
+  readonly updatedById: Prisma.FieldRef<"DealerAuditCycle", 'String'>
 }
     
 

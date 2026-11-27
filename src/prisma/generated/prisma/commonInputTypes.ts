@@ -850,21 +850,21 @@ export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
 }
 
-export type EnumEvidenceSubjectTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.EvidenceSubjectType | Prisma.EnumEvidenceSubjectTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumEvidenceSubjectTypeFilter<$PrismaModel> | $Enums.EvidenceSubjectType
+export type EnumEvidenceSubjectTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.EvidenceSubjectType | Prisma.EnumEvidenceSubjectTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumEvidenceSubjectTypeNullableFilter<$PrismaModel> | $Enums.EvidenceSubjectType | null
 }
 
-export type EnumEvidenceSubjectTypeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.EvidenceSubjectType | Prisma.EnumEvidenceSubjectTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumEvidenceSubjectTypeWithAggregatesFilter<$PrismaModel> | $Enums.EvidenceSubjectType
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumEvidenceSubjectTypeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumEvidenceSubjectTypeFilter<$PrismaModel>
+export type EnumEvidenceSubjectTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EvidenceSubjectType | Prisma.EnumEvidenceSubjectTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumEvidenceSubjectTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.EvidenceSubjectType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEvidenceSubjectTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEvidenceSubjectTypeNullableFilter<$PrismaModel>
 }
 
 export type EnumTemplateLifecycleStatusFilter<$PrismaModel = never> = {
@@ -882,23 +882,6 @@ export type EnumTemplateLifecycleStatusWithAggregatesFilter<$PrismaModel = never
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTemplateLifecycleStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTemplateLifecycleStatusFilter<$PrismaModel>
-}
-
-export type EnumChecklistItemCategoryNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.ChecklistItemCategory | Prisma.EnumChecklistItemCategoryFieldRefInput<$PrismaModel> | null
-  in?: $Enums.ChecklistItemCategory[] | Prisma.ListEnumChecklistItemCategoryFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.ChecklistItemCategory[] | Prisma.ListEnumChecklistItemCategoryFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumChecklistItemCategoryNullableFilter<$PrismaModel> | $Enums.ChecklistItemCategory | null
-}
-
-export type EnumChecklistItemCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.ChecklistItemCategory | Prisma.EnumChecklistItemCategoryFieldRefInput<$PrismaModel> | null
-  in?: $Enums.ChecklistItemCategory[] | Prisma.ListEnumChecklistItemCategoryFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.ChecklistItemCategory[] | Prisma.ListEnumChecklistItemCategoryFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumChecklistItemCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.ChecklistItemCategory | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumChecklistItemCategoryNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumChecklistItemCategoryNullableFilter<$PrismaModel>
 }
 
 export type EnumDealerReviewStatusFilter<$PrismaModel = never> = {
@@ -1776,21 +1759,21 @@ export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
 }
 
-export type NestedEnumEvidenceSubjectTypeFilter<$PrismaModel = never> = {
-  equals?: $Enums.EvidenceSubjectType | Prisma.EnumEvidenceSubjectTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumEvidenceSubjectTypeFilter<$PrismaModel> | $Enums.EvidenceSubjectType
+export type NestedEnumEvidenceSubjectTypeNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.EvidenceSubjectType | Prisma.EnumEvidenceSubjectTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumEvidenceSubjectTypeNullableFilter<$PrismaModel> | $Enums.EvidenceSubjectType | null
 }
 
-export type NestedEnumEvidenceSubjectTypeWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.EvidenceSubjectType | Prisma.EnumEvidenceSubjectTypeFieldRefInput<$PrismaModel>
-  in?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel>
-  notIn?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumEvidenceSubjectTypeWithAggregatesFilter<$PrismaModel> | $Enums.EvidenceSubjectType
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumEvidenceSubjectTypeFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumEvidenceSubjectTypeFilter<$PrismaModel>
+export type NestedEnumEvidenceSubjectTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.EvidenceSubjectType | Prisma.EnumEvidenceSubjectTypeFieldRefInput<$PrismaModel> | null
+  in?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.EvidenceSubjectType[] | Prisma.ListEnumEvidenceSubjectTypeFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumEvidenceSubjectTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.EvidenceSubjectType | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumEvidenceSubjectTypeNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumEvidenceSubjectTypeNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumTemplateLifecycleStatusFilter<$PrismaModel = never> = {
@@ -1808,23 +1791,6 @@ export type NestedEnumTemplateLifecycleStatusWithAggregatesFilter<$PrismaModel =
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumTemplateLifecycleStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumTemplateLifecycleStatusFilter<$PrismaModel>
-}
-
-export type NestedEnumChecklistItemCategoryNullableFilter<$PrismaModel = never> = {
-  equals?: $Enums.ChecklistItemCategory | Prisma.EnumChecklistItemCategoryFieldRefInput<$PrismaModel> | null
-  in?: $Enums.ChecklistItemCategory[] | Prisma.ListEnumChecklistItemCategoryFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.ChecklistItemCategory[] | Prisma.ListEnumChecklistItemCategoryFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumChecklistItemCategoryNullableFilter<$PrismaModel> | $Enums.ChecklistItemCategory | null
-}
-
-export type NestedEnumChecklistItemCategoryNullableWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.ChecklistItemCategory | Prisma.EnumChecklistItemCategoryFieldRefInput<$PrismaModel> | null
-  in?: $Enums.ChecklistItemCategory[] | Prisma.ListEnumChecklistItemCategoryFieldRefInput<$PrismaModel> | null
-  notIn?: $Enums.ChecklistItemCategory[] | Prisma.ListEnumChecklistItemCategoryFieldRefInput<$PrismaModel> | null
-  not?: Prisma.NestedEnumChecklistItemCategoryNullableWithAggregatesFilter<$PrismaModel> | $Enums.ChecklistItemCategory | null
-  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumChecklistItemCategoryNullableFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumChecklistItemCategoryNullableFilter<$PrismaModel>
 }
 
 export type NestedEnumDealerReviewStatusFilter<$PrismaModel = never> = {

@@ -113,7 +113,6 @@ export const ModelName = {
   Supplier: 'Supplier',
   ChecklistTemplate: 'ChecklistTemplate',
   ChecklistItem: 'ChecklistItem',
-  ChecklistScoreLevel: 'ChecklistScoreLevel',
   DealerAuditCycle: 'DealerAuditCycle',
   DealerAuditInstance: 'DealerAuditInstance',
   AuditItemResponse: 'AuditItemResponse',
@@ -1173,12 +1172,14 @@ export const EvidenceScalarFieldEnum = {
   id: 'id',
   subjectType: 'subjectType',
   subjectId: 'subjectId',
+  auditItemResponseId: 'auditItemResponseId',
   s3Key: 's3Key',
   fileUrl: 'fileUrl',
   uploadedBy: 'uploadedBy',
   capturedAt: 'capturedAt',
   geoLat: 'geoLat',
-  geoLng: 'geoLng'
+  geoLng: 'geoLng',
+  accuracyMeters: 'accuracyMeters'
 } as const
 
 export type EvidenceScalarFieldEnum = (typeof EvidenceScalarFieldEnum)[keyof typeof EvidenceScalarFieldEnum]
@@ -1205,6 +1206,8 @@ export const ChecklistTemplateScalarFieldEnum = {
   status: 'status',
   isActive: 'isActive',
   totalScore: 'totalScore',
+  passPercent: 'passPercent',
+  gradeBands: 'gradeBands',
   publishedAt: 'publishedAt',
   createdById: 'createdById',
   updatedById: 'updatedById',
@@ -1225,26 +1228,15 @@ export const ChecklistItemScalarFieldEnum = {
   checkPoint: 'checkPoint',
   requiresScore: 'requiresScore',
   maxScore: 'maxScore',
+  scoreLevels: 'scoreLevels',
+  allowNotApplicable: 'allowNotApplicable',
   requiresEvidence: 'requiresEvidence',
   minEvidence: 'minEvidence',
   maxEvidence: 'maxEvidence',
-  referencePhotoKey: 'referencePhotoKey',
-  sectionName: 'sectionName',
-  category: 'category',
-  scoringGuidance: 'scoringGuidance'
+  referencePhotoKey: 'referencePhotoKey'
 } as const
 
 export type ChecklistItemScalarFieldEnum = (typeof ChecklistItemScalarFieldEnum)[keyof typeof ChecklistItemScalarFieldEnum]
-
-
-export const ChecklistScoreLevelScalarFieldEnum = {
-  id: 'id',
-  itemId: 'itemId',
-  score: 'score',
-  criteria: 'criteria'
-} as const
-
-export type ChecklistScoreLevelScalarFieldEnum = (typeof ChecklistScoreLevelScalarFieldEnum)[keyof typeof ChecklistScoreLevelScalarFieldEnum]
 
 
 export const DealerAuditCycleScalarFieldEnum = {
@@ -1258,7 +1250,8 @@ export const DealerAuditCycleScalarFieldEnum = {
   dueAt: 'dueAt',
   createdById: 'createdById',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  updatedById: 'updatedById'
 } as const
 
 export type DealerAuditCycleScalarFieldEnum = (typeof DealerAuditCycleScalarFieldEnum)[keyof typeof DealerAuditCycleScalarFieldEnum]
@@ -1271,13 +1264,25 @@ export const DealerAuditInstanceScalarFieldEnum = {
   officeType: 'officeType',
   periodLabel: 'periodLabel',
   checklistTemplateId: 'checklistTemplateId',
-  finalScore: 'finalScore',
-  maxScore: 'maxScore',
-  closedAt: 'closedAt',
   cycleId: 'cycleId',
   reviewerId: 'reviewerId',
-  dueAt: 'dueAt',
   status: 'status',
+  auditType: 'auditType',
+  sequence: 'sequence',
+  parentId: 'parentId',
+  scopeItemIds: 'scopeItemIds',
+  finalScore: 'finalScore',
+  maxScore: 'maxScore',
+  grade: 'grade',
+  dueAt: 'dueAt',
+  clarificationDueAt: 'clarificationDueAt',
+  submittedAt: 'submittedAt',
+  lastReminderAt: 'lastReminderAt',
+  escalatedAt: 'escalatedAt',
+  reportSentAt: 'reportSentAt',
+  reAuditRequestedAt: 'reAuditRequestedAt',
+  reAuditReason: 'reAuditReason',
+  closedAt: 'closedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1290,13 +1295,17 @@ export const AuditItemResponseScalarFieldEnum = {
   auditInstanceId: 'auditInstanceId',
   itemId: 'itemId',
   iteration: 'iteration',
+  isNotApplicable: 'isNotApplicable',
   dealerScore: 'dealerScore',
   dealerRemark: 'dealerRemark',
   reviewerScore: 'reviewerScore',
   reviewerRemark: 'reviewerRemark',
   reviewStatus: 'reviewStatus',
   respondedByUserId: 'respondedByUserId',
-  createdAt: 'createdAt'
+  dealerRespondedAt: 'dealerRespondedAt',
+  reviewedAt: 'reviewedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type AuditItemResponseScalarFieldEnum = (typeof AuditItemResponseScalarFieldEnum)[keyof typeof AuditItemResponseScalarFieldEnum]

@@ -130,10 +130,11 @@ async function findExistingDealerAuditInstance(
 ) {
 	return prisma.dealerAuditInstance.findUnique({
 		where: {
-			businessPartnerId_officeType_periodLabel: {
+			businessPartnerId_officeType_periodLabel_sequence: {
 				businessPartnerId,
 				officeType,
 				periodLabel,
+				sequence: 1,
 			},
 		},
 	});
@@ -937,8 +938,7 @@ export async function uploadMyDealerAuditItemEvidence(
 
 			return prisma.evidence.create({
 				data: {
-					subjectType: "DEALER_ITEM_RESPONSE" as never,
-					subjectId: response.id,
+					auditItemResponseId: response.id,
 					s3Key,
 					fileUrl,
 					uploadedBy: actingUserId,

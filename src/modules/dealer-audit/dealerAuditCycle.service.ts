@@ -7,6 +7,7 @@ import {
 	BusinessPartnerOfficeType,
 	Prisma,
 } from "../../prisma/generated/prisma/client";
+import { readScoreLevels } from "./dealerAuditTemplate.service";
 
 // Dealer Audit instance statuses. The DB column is a plain String (no Prisma
 // enum), so adding a status never needs a migration: add it here only.
@@ -301,6 +302,7 @@ export async function launchDealerAuditCycle(
 				periodLabel,
 				dueAt,
 				createdById: actorId,
+				updatedById: actorId,
 			},
 		});
 
@@ -800,8 +802,6 @@ export async function getTrackerSummary(query: RawQuery) {
 // "not found") and never receive the reviewer's identity, scores or decisions.
 // ─────────────────────────────────────────────
 
-const RESPONSE_EVIDENCE_TYPE = "DEALER_ITEM_RESPONSE";
-
 /** undefined = internal user (no dealership restriction). */
 async function dealerScopeOf(userId: string): Promise<string | undefined> {
 	const user = await prisma.user.findUnique({
@@ -855,14 +855,7 @@ export async function getAuditChecklist(userId: string, auditId: string) {
 			...(scope ? { businessPartnerId: scope } : {}),
 		},
 		include: {
-			template: {
-				include: {
-					items: {
-						orderBy: { order: "asc" },
-						include: { scoreLevels: { orderBy: { score: "desc" } } },
-					},
-				},
-			},
+			template: { include: { items: { orderBy: { order: "asc" } } } },
 			responses: true,
 			businessPartner: {
 				include: { addresses: { orderBy: { isDefault: "desc" }, take: 1 } },
@@ -885,15 +878,14 @@ export async function getAuditChecklist(userId: string, auditId: string) {
 	);
 	const files = await prisma.evidence.findMany({
 		where: {
-			subjectType: RESPONSE_EVIDENCE_TYPE as never,
-			subjectId: { in: [...itemIdByResponse.keys()] },
+			auditItemResponseId: { in: [...itemIdByResponse.keys()] },
 		},
+		orderBy: { capturedAt: "asc" },
 	});
 	const evidenceByItem = new Map<string, object[]>();
 	for (const file of files) {
-		const itemId = itemIdByResponse.get(file.subjectId);
+		const itemId = itemIdByResponse.get(file.auditItemResponseId as string);
 		if (!itemId) continue;
-		const extra = file as unknown as Record<string, unknown>;
 		const url = await getSignedImageUrl(file.s3Key);
 		const list = evidenceByItem.get(itemId) ?? [];
 		list.push({
@@ -903,12 +895,11 @@ export async function getAuditChecklist(userId: string, auditId: string) {
 			file_name: file.s3Key.split("/").pop() ?? file.id,
 			size_bytes: null,
 			mime_type: null,
-			captured_at:
-				isoOrNull(extra.capturedAt ?? extra.createdAt ?? extra.created_at) ??
-				audit.createdAt.toISOString(),
+			captured_at: isoOrNull(file.capturedAt) ?? audit.createdAt.toISOString(),
 			latitude: Number(file.geoLat ?? 0),
 			longitude: Number(file.geoLng ?? 0),
-			accuracy_m: null,
+			accuracy_m:
+				file.accuracyMeters == null ? null : Number(file.accuracyMeters),
 		});
 		evidenceByItem.set(itemId, list);
 	}
@@ -922,7 +913,7 @@ export async function getAuditChecklist(userId: string, auditId: string) {
 	const sections = new Map<string, Section>();
 
 	for (const [index, item] of audit.template.items.entries()) {
-		const name = item.functionName || item.sectionName || "General";
+		const name = item.functionName || item.categoryName || "General";
 		let section = sections.get(name);
 		if (!section) {
 			section = {
@@ -938,10 +929,7 @@ export async function getAuditChecklist(userId: string, auditId: string) {
 		const extra = (response ?? {}) as unknown as Record<string, unknown>;
 		const answeredAt = isoOrNull(extra.updatedAt ?? extra.createdAt);
 		const evidence = evidenceByItem.get(item.id) ?? [];
-		const levels = item.scoreLevels.map((l) => ({
-			score: Number(l.score),
-			criteria: l.criteria,
-		}));
+		const levels = readScoreLevels(item.scoreLevels);
 		const minEvidence = item.requiresEvidence ? (item.minEvidence ?? 1) : 0;
 		const status = response ? String(response.reviewStatus) : "PENDING";
 		const needsClarification = status === "CLARIFICATION_REQUESTED";
@@ -957,7 +945,7 @@ export async function getAuditChecklist(userId: string, auditId: string) {
 			section_id: section.id,
 			section_name: section.name,
 			title: item.label,
-			guidance: item.checkPoint ?? item.scoringGuidance ?? null,
+			guidance: item.checkPoint ?? null,
 			criteria: [],
 			category: item.categoryName ?? null,
 			function_area: item.functionName ?? null,

@@ -74,7 +74,7 @@ export async function assembleDealerAuditPdfData(
       maxScore += item.maxScore;
     }
     return {
-      sectionName: item.sectionName,
+      sectionName: item.functionName ?? item.categoryName ?? "—",
       label: item.label,
       dealerScore: response?.dealerScore ?? null,
       reviewerScore: response?.reviewerScore ?? null,
