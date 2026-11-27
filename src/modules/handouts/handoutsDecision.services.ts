@@ -121,7 +121,7 @@ const executeHandoutOrderPlacement = async (handoutId: string) => {
     name: requesterName,
     email: handout.requestedBy.email,
     phone: handout.contactPhone,
-    channel: "MAP",
+    channel: "HANDOUT",
     // SHIPPED handouts are a real courier shipment (tracking will follow via
     // the webhook); HAND_DELIVERY has nothing for THCM/Shopify to ship or
     // track, so isShipping is false — see ThcmCreateOrderRequest.isShipping
