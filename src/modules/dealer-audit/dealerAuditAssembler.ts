@@ -13,6 +13,12 @@ export interface DealerAuditPdfData {
   periodLabel: string;
   templateName: string;
   closedAt: Date | null;
+  assessmentDate: Date | null;
+  location: string;
+  address: string;
+  facility: string;
+  functions: { name: string; maxScore: number; score: number }[];
+  percent: number;
   items: {
     sectionName: string;
     label: string;
@@ -36,6 +42,11 @@ export async function assembleDealerAuditPdfData(
       businessPartner: {
         select: {
           bpName: true,
+          addresses: {
+            orderBy: { isDefault: "desc" },
+            take: 1,
+            select: { address: true, city: true, state: true, pincode: true },
+          },
           // Same "primary contact" concept as dealerAudit.service.ts's
           // getPrimaryContactUser — duplicated inline rather than
           // imported, matching this file's existing boundary (it stays a
@@ -65,22 +76,54 @@ export async function assembleDealerAuditPdfData(
     }
   }
 
-  let totalScore = 0;
-  let maxScore = 0;
+  // Same rule that produced the stored final score: nothing submitted = 0,
+  // auto-finalised = dealer score, otherwise the reviewer's score.
+  const functions = new Map<
+    string,
+    { name: string; maxScore: number; score: number }
+  >();
   const items = instance.template.items.map((item) => {
     const response = latestByItem.get(item.id);
-    if (response?.reviewerScore != null && item.maxScore != null) {
-      totalScore += response.reviewerScore;
-      maxScore += item.maxScore;
+    const sectionName = item.functionName || "General";
+    if (item.requiresScore) {
+      const row = functions.get(sectionName) ?? {
+        name: sectionName,
+        maxScore: 0,
+        score: 0,
+      };
+      row.maxScore += item.maxScore ?? 0;
+      row.score += !instance.submittedAt
+        ? 0
+        : instance.escalatedAt
+          ? (response?.dealerScore ?? 0)
+          : response?.isNotApplicable
+            ? 0
+            : (response?.reviewerScore ?? response?.dealerScore ?? 0);
+      functions.set(sectionName, row);
     }
     return {
-      sectionName: item.functionName ?? item.categoryName ?? "—",
+      sectionName,
       label: item.label,
       dealerScore: response?.dealerScore ?? null,
       reviewerScore: response?.reviewerScore ?? null,
       reviewerRemark: response?.reviewerRemark ?? null,
     };
   });
+
+  const rows = [...functions.values()];
+  const maxScore =
+    instance.maxScore ?? rows.reduce((sum, row) => sum + row.maxScore, 0);
+  const totalScore =
+    instance.finalScore ?? rows.reduce((sum, row) => sum + row.score, 0);
+
+  const address = instance.businessPartner.addresses[0];
+  const text = instance.template.items
+    .map((i) => `${i.functionName ?? ""} ${i.categoryName ?? ""}`)
+    .join(" ")
+    .toLowerCase();
+  const facility = ["Sales", "Service", "Parts"]
+    .filter((name) => text.includes(name.toLowerCase()))
+    .join(" | ");
 
   return {
     instanceId: instance.id,
@@ -90,6 +133,14 @@ export async function assembleDealerAuditPdfData(
     periodLabel: instance.periodLabel,
     templateName: instance.template.name,
     closedAt: instance.closedAt,
+    assessmentDate: instance.submittedAt ?? instance.closedAt,
+    location: address?.city ?? "",
+    address: [address?.address, address?.city, address?.state, address?.pincode]
+      .filter(Boolean)
+      .join(", "),
+    facility,
+    functions: rows,
+    percent: maxScore > 0 ? Math.round((totalScore / maxScore) * 1000) / 10 : 0,
     items,
     totalScore,
     maxScore,

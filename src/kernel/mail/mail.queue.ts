@@ -9,6 +9,8 @@ import { redisConnectionQueue } from "@shared/config/redis";
 //
 // templateName maps directly to a file in src/kernel/mail/email-templates/
 // templateData is the context injected into that template.
+// attachments are given as URLs (e.g. signed S3 links), never as file bytes,
+// so Redis stays small.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface MailJobPayload {
@@ -17,6 +19,7 @@ export interface MailJobPayload {
   subject: string;
   templateName: string;
   templateData: Record<string, unknown>;
+  attachments?: { filename: string; path: string }[];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -55,7 +58,8 @@ export const mailQueue = new Queue<MailJobPayload>(QUEUE_NAME, {
 const mailWorker = new Worker<MailJobPayload>(
   QUEUE_NAME,
   async (job: Job<MailJobPayload>) => {
-    const { to, cc, subject, templateName, templateData } = job.data;
+    const { to, cc, subject, templateName, templateData, attachments } =
+      job.data;
 
     const html = compileTemplate(templateName, templateData);
 
@@ -65,6 +69,7 @@ const mailWorker = new Worker<MailJobPayload>(
       ...(cc ? { cc } : {}),
       subject,
       html,
+      ...(attachments?.length ? { attachments } : {}),
     });
 
     logger.info(

@@ -37,6 +37,8 @@ import {
 	ApprovalStatus,
 	StageStatus,
 } from "../../prisma/generated/prisma/client";
+import { sendReportMail } from "@dealerAudit/dealerAuditReport.service";
+import logger from "@shared/utils/logger";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // getSubjectOwnerId
@@ -45,10 +47,8 @@ import {
 // ownership/permission guard actually needs. Cheap `select`, no relations.
 //
 // EVENT_PROPOSAL          → EventProposal.created_by_id
-// DEALER_AUDIT_INSTANCE   → the primary contact (isDefaultContact) User of
-//   DealerAuditInstance.businessPartnerId — the instance belongs to the
-//   dealership, not to a single User (a BusinessPartner can have several
-//   linked Users), so there's no owning-user column to read directly.
+// DEALER_AUDIT_INSTANCE   → DealerAuditInstance.reviewerId, who sends the
+//   audit for approval.
 // FACTORY_AUDIT_INSTANCE  → FactoryAuditInstance.createdByUserId — the vendor
 //   (Supplier) being audited has no User/login of its own, so there's no
 //   natural single "owner" the way EVENT_PROPOSAL/VENDOR_ONBOARDING have one.
@@ -86,28 +86,14 @@ const ownerIdResolvers: Record<
 		return claim?.initiatedById ?? null;
 	},
 
+	// The reviewer proposes the approval workflow, so anything an approver
+	// sends back goes to the reviewer.
 	DEALER_AUDIT_INSTANCE: async (subjectId) => {
 		const audit = await prisma.dealerAuditInstance.findUnique({
 			where: { id: subjectId },
-			select: { businessPartnerId: true },
+			select: { reviewerId: true },
 		});
-		if (!audit) return null;
-
-		// DealerAuditInstance belongs to a BusinessPartner, not a single User
-		// (a dealership can have several linked Users) — its "owner" for this
-		// generic guard is the dealership's designated primary contact.
-		// Duplicated inline rather than imported from dealerAudit.service.ts's
-		// getPrimaryContactUser, matching this file's existing boundary of not
-		// depending on app-specific service modules.
-		const primaryContact = await prisma.user.findFirst({
-			where: {
-				businessPartnerId: audit.businessPartnerId,
-				isDefaultContact: true,
-				is_active: true,
-			},
-			select: { id: true },
-		});
-		return primaryContact?.id ?? null;
+		return audit?.reviewerId ?? null;
 	},
 
 	FACTORY_AUDIT_INSTANCE: async (subjectId) => {
@@ -226,10 +212,9 @@ export async function getActiveWorkflowForSubject(
 // and clarifyStage — the only thing that varies per call site is which
 // status string gets passed in.
 //
-// DEALER_AUDIT_INSTANCE and FACTORY_AUDIT_INSTANCE are both deliberate
-// no-ops: neither model has a stored status column — lifecycle for both is
-// read off their linked WorkflowInstance(s), same reasoning documented for
-// the old commented-out AUDIT_INSTANCE branch this replaces.
+// DEALER_AUDIT_INSTANCE maps workflow statuses to audit statuses.
+// FACTORY_AUDIT_INSTANCE is a deliberate no-op: the model has no stored
+// status column, so its lifecycle is read off its linked WorkflowInstance(s).
 // ─────────────────────────────────────────────────────────────────────────────
 
 type Tx = Prisma.TransactionClient;
@@ -247,7 +232,23 @@ const statusUpdaters: Record<
 	MEDICAL_CLAIM: (tx, subjectId, status) =>
 		tx.medicalClaim.update({ where: { id: subjectId }, data: { status } }),
 
-	DEALER_AUDIT_INSTANCE: async () => undefined,
+	DEALER_AUDIT_INSTANCE: (tx, subjectId, status) => {
+		const next: Record<string, string> = {
+			APPROVED: "CLOSED", // approval completes the audit
+			REJECTED: "REJECTED",
+			PENDING: "UNDER_REVIEW", // returned by an approver
+			IN_PROGRESS: "PENDING_APPROVAL", // reviewer resubmitted
+		};
+		return tx.dealerAuditInstance.update({
+			where: { id: subjectId },
+			data: {
+				status: next[status] ?? status,
+				...(status === "APPROVED" || status === "REJECTED"
+					? { closedAt: new Date() }
+					: {}),
+			},
+		});
+	},
 	FACTORY_AUDIT_INSTANCE: async () => undefined,
 
 	CPP_REQUEST: (tx, subjectId, status) =>
@@ -446,6 +447,18 @@ const postFinalApprovalHooks: Partial<
 		return {};
 	},
 	HANDOUT_REQUEST: (subjectId) => runHandoutFinalApprovalHook(subjectId),
+	// Report PDF to the dealer, cc reviewer.
+	DEALER_AUDIT_INSTANCE: async (subjectId) => {
+		try {
+			await sendReportMail(subjectId);
+		} catch (error) {
+			// Approval is already saved. "Email report" on the report page resends.
+			logger.error(
+				`[DealerAudit] Report mail failed for ${subjectId}: ${(error as Error).message}`,
+			);
+		}
+		return {};
+	},
 };
 
 export async function runPostFinalApprovalHook(

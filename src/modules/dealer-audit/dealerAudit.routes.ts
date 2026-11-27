@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
 import multer from "multer";
 import asyncHandler from "@shared/middleware/async.middleware";
 import { requireAuth, authorize } from "@kernel/auth/auth.middleware";
@@ -14,35 +14,47 @@ import {
 	deleteChecklistTemplate,
 	uploadChecklistReferencePhoto,
 
-	// ── Internal staff surface: Admin/Reviewer view any instance, Reviewer acts ──
+	// ── Internal staff surface: Admin views any instance, Reviewer acts ──
 	triggerDealerAuditInstance,
 	listDealerAuditInstances,
 	getDealerAuditInstanceById,
-	setDealerAuditReviewerNotes,
-	setDealerAuditReviewStatus,
 	generateAndSendDealerAuditReport,
-
-	// ── Dealer surface: own instances only ──
-	getMyDealerAuditInstanceById,
-	saveMyDealerAuditResponses,
-	submitMyDealerAuditInstance,
-	resubmitMyDealerAuditInstance,
-	uploadMyDealerAuditItemEvidence,
 } from "./dealerAudit.controller";
 import {
 	// ── Audit cycles (Admin): launch + the option lists its wizard needs ──
 	launchDealerAuditCycle,
 	listReviewerOptions,
 	listDealerOptions,
-	// ── Audit list + tracker ──
-	listAudits,
-	listMyAudits,
-	getTrackerSummary,
-	// ── One audit ──
-	getAudit,
-	getAuditChecklist,
 } from "./dealerAuditCycle.controller";
-import { isDealerUser } from "./dealerAuditCycle.service";
+import {
+	// ── Audit reads, scoped per role inside the service ──
+	listAudits,
+	getAudit,
+	getChecklist,
+	getHistory,
+	getReport,
+	getTrackerSummary,
+	getReviewQueueCounts,
+} from "./dealerAuditRead.service";
+import {
+	saveItem,
+	uploadEvidence,
+	deleteEvidence,
+	submitAudit,
+	respondToClarification,
+	startReview,
+	reviewItem,
+	raiseClarification,
+	submitReview,
+	approveAudit,
+	rejectAudit,
+	generateReport,
+	sendForApproval,
+	remindAudits,
+	resendReport,
+	reassignReviewer,
+	createReAudit,
+} from "./dealerAuditWrite.service";
 
 const router = Router();
 export const APP_KEY = "DEALER_AUDIT";
@@ -52,127 +64,132 @@ const MODULE_DEALER = "DEALER_AUDIT_DEALER";
 
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Lets one URL serve two audiences: a dealer login continues on this route,
-// everyone else skips to the next matching route.
-const dealerOnly = asyncHandler(
-	async (req: Request, _res: Response, next: NextFunction) => {
-		const isDealer = req.user?.id ? await isDealerUser(req.user.id) : false;
-		next(isDealer ? undefined : "route");
-	},
-);
-
-// ── Dealer surface (own instances only) ──
-//
-// Two checks now, not one: authorize() gates "does this user hold Dealer
-// access at all" (revocable independently of any row they happen to own),
-// and the service-layer ownership check (req.user's businessPartnerId
-// against the instance's — see getOwnInstanceOrThrow /
-// getOwnInstanceForEditOrThrow in dealerAudit.service.ts) gates "is this
-// specific instance their dealership's, and are they that dealership's
-// primary contact if the action writes." Neither replaces the other —
-// losing the module grant locks a former dealer out completely regardless
-// of what their dealership still owns; the ownership check stops one
-// dealership from ever reaching another's rows regardless of module access.
-
+// ── Audits (all roles) ──
+// No authorize() here: which module applies depends on the user, and
+// authorize() checks only one. The service resolves the user's scope, returns
+// 403 without a grant and 404 for audits outside that scope.
+router.get("/tracker/summary", requireAuth, asyncHandler(getTrackerSummary));
 router.get(
-	"/mine",
+	"/review-queue/counts",
 	requireAuth,
-	authorize(APP_KEY, MODULE_DEALER, "read"),
-	asyncHandler(listMyAudits),
+	asyncHandler(getReviewQueueCounts),
 );
-router.get(
-	"/mine/:id",
+// Admin (write) or the assigned reviewer; checked in the service.
+router.post("/audits/remind", requireAuth, asyncHandler(remindAudits));
+router.post(
+	"/audits/:id/report/resend",
 	requireAuth,
-	authorize(APP_KEY, MODULE_DEALER, "read"),
-	asyncHandler(getMyDealerAuditInstanceById),
-);
-router.patch(
-	"/mine/:id/responses",
-	requireAuth,
-	authorize(APP_KEY, MODULE_DEALER, "write"),
-	asyncHandler(saveMyDealerAuditResponses),
+	asyncHandler(resendReport),
 );
 router.post(
-	"/mine/:id/submit",
+	"/audits/:id/reassign",
 	requireAuth,
-	authorize(APP_KEY, MODULE_DEALER, "write"),
-	asyncHandler(submitMyDealerAuditInstance),
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	asyncHandler(reassignReviewer),
 );
 router.post(
-	"/mine/:id/resubmit",
+	"/audits/:id/re-audit",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	asyncHandler(createReAudit),
+);
+router.get("/audits", requireAuth, asyncHandler(listAudits));
+router.get("/audits/:id", requireAuth, asyncHandler(getAudit));
+router.get("/audits/:id/checklist", requireAuth, asyncHandler(getChecklist));
+router.get("/audits/:id/history", requireAuth, asyncHandler(getHistory));
+router.get("/audits/:id/report", requireAuth, asyncHandler(getReport));
+
+// ── Audit writes ──
+// Dealer and reviewer routes need the module grant here; the service then
+// checks ownership/assignment. Approve and reject are open to whoever the
+// workflow lists on the current stage.
+router.put(
+	"/audits/:id/items/:itemId",
 	requireAuth,
 	authorize(APP_KEY, MODULE_DEALER, "write"),
-	asyncHandler(resubmitMyDealerAuditInstance),
+	asyncHandler(saveItem),
 );
 router.post(
-	"/mine/:id/items/:itemId/evidence",
+	"/audits/:id/evidence",
 	requireAuth,
 	authorize(APP_KEY, MODULE_DEALER, "write"),
-	upload.array("files"),
-	asyncHandler(uploadMyDealerAuditItemEvidence),
+	upload.single("file"),
+	asyncHandler(uploadEvidence),
+);
+router.delete(
+	"/audits/:id/evidence/:evidenceId",
+	requireAuth,
+	authorize(APP_KEY, MODULE_DEALER, "write"),
+	asyncHandler(deleteEvidence),
+);
+router.post(
+	"/audits/:id/submit",
+	requireAuth,
+	authorize(APP_KEY, MODULE_DEALER, "write"),
+	asyncHandler(submitAudit),
+);
+router.post(
+	"/audits/:id/clarifications/respond",
+	requireAuth,
+	authorize(APP_KEY, MODULE_DEALER, "write"),
+	asyncHandler(respondToClarification),
+);
+router.post(
+	"/audits/:id/review/start",
+	requireAuth,
+	authorize(APP_KEY, MODULE_REVIEW, "write"),
+	asyncHandler(startReview),
+);
+router.put(
+	"/audits/:id/items/:itemId/review",
+	requireAuth,
+	authorize(APP_KEY, MODULE_REVIEW, "write"),
+	asyncHandler(reviewItem),
+);
+router.post(
+	"/audits/:id/clarifications",
+	requireAuth,
+	authorize(APP_KEY, MODULE_REVIEW, "write"),
+	asyncHandler(raiseClarification),
+);
+router.post(
+	"/audits/:id/review/submit",
+	requireAuth,
+	authorize(APP_KEY, MODULE_REVIEW, "write"),
+	asyncHandler(submitReview),
+);
+router.post(
+	"/audits/:id/report/generate",
+	requireAuth,
+	authorize(APP_KEY, MODULE_REVIEW, "write"),
+	asyncHandler(generateReport),
+);
+router.post(
+	"/audits/:id/send-for-approval",
+	requireAuth,
+	authorize(APP_KEY, MODULE_REVIEW, "write"),
+	asyncHandler(sendForApproval),
+);
+router.post(
+	"/audits/:id/approve",
+	requireAuth,
+	asyncHandler(approveAudit),
+);
+router.post(
+	"/audits/:id/reject",
+	requireAuth,
+	asyncHandler(rejectAudit),
 );
 
-// ── Audit list (shared URL) ──
-// Dealer logins only ever get their own dealership's audits, even if their
-// profile was given admin access by mistake. Order matters.
-router.get(
-	"/audits",
-	requireAuth,
-	dealerOnly,
-	authorize(APP_KEY, MODULE_DEALER, "read"),
-	asyncHandler(listMyAudits),
-);
-router.get(
-	"/audits",
-	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "read"),
-	asyncHandler(listAudits),
-);
-router.get(
-	"/audits/:id",
-	requireAuth,
-	dealerOnly,
-	authorize(APP_KEY, MODULE_DEALER, "read"),
-	asyncHandler(getAudit),
-);
-router.get(
-	"/audits/:id",
-	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "read"),
-	asyncHandler(getAudit),
-);
-router.get(
-	"/audits/:id/checklist",
-	requireAuth,
-	dealerOnly,
-	authorize(APP_KEY, MODULE_DEALER, "read"),
-	asyncHandler(getAuditChecklist),
-);
-router.get(
-	"/audits/:id/checklist",
-	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "read"),
-	asyncHandler(getAuditChecklist),
-);
-router.get(
-	"/tracker/summary",
-	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "read"),
-	asyncHandler(getTrackerSummary),
-);
+// ── Admin surface ──
+// Everything below needs the admin WRITE grant. Reviewers hold only the admin
+// read grant, so they cannot reach checklists or unscoped instance lists; they
+// read their audits through /audits above.
 
-// ── Internal staff surface ──
-// Admin: templates, cycles, and instance listing/viewing.
-// Reviewer: the two review-action routes, plus a read grant on
-// DEALER_AUDIT_ADMIN (seeded separately) so they can view the instances
-// they're reviewing — authorize() only checks one module per call, so
-// that cross-need is handled via the Reviewer profile's permissions,
-// not by this route accepting two modules.
-
-// ── Audit cycles (Admin) ──
+// ── Audit cycles ──
 // One POST creates the cycle and every dealer's audit in one transaction.
 // The option lists feed the wizard's "Select dealers" / "Assign reviewers"
-// steps; both are read-only and need the admin read grant.
+// steps.
 router.post(
 	"/cycles",
 	requireAuth,
@@ -182,17 +199,17 @@ router.post(
 router.get(
 	"/options/reviewers",
 	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
 	asyncHandler(listReviewerOptions),
 );
 router.get(
 	"/options/dealers",
 	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
 	asyncHandler(listDealerOptions),
 );
 
-// ── Templates (Admin) ──
+// ── Checklist templates ──
 router.post(
 	"/templates/reference-photos",
 	requireAuth,
@@ -209,13 +226,13 @@ router.post(
 router.get(
 	"/templates",
 	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
 	asyncHandler(listChecklistTemplates),
 );
 router.get(
 	"/templates/:id",
 	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
 	asyncHandler(getChecklistTemplateById),
 );
 router.patch(
@@ -223,6 +240,12 @@ router.patch(
 	requireAuth,
 	authorize(APP_KEY, MODULE_ADMIN, "write"),
 	asyncHandler(updateChecklistTemplateDraft),
+);
+router.delete(
+	"/templates/:id",
+	requireAuth,
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
+	asyncHandler(deleteChecklistTemplate),
 );
 router.post(
 	"/templates/:id/new-draft",
@@ -242,14 +265,8 @@ router.post(
 	authorize(APP_KEY, MODULE_ADMIN, "write"),
 	asyncHandler(archiveChecklistTemplate),
 );
-router.delete(
-	"/templates/:id",
-	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "write"),
-	asyncHandler(deleteChecklistTemplate),
-);
 
-// ── Instances ──
+// ── Older instance routes ──
 router.post(
 	"/instances",
 	requireAuth,
@@ -259,26 +276,14 @@ router.post(
 router.get(
 	"/instances",
 	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
 	asyncHandler(listDealerAuditInstances),
 );
 router.get(
 	"/instances/:id",
 	requireAuth,
-	authorize(APP_KEY, MODULE_ADMIN, "read"),
+	authorize(APP_KEY, MODULE_ADMIN, "write"),
 	asyncHandler(getDealerAuditInstanceById),
-);
-router.patch(
-	"/instances/:id/reviewer-notes",
-	requireAuth,
-	authorize(APP_KEY, MODULE_REVIEW, "write"),
-	asyncHandler(setDealerAuditReviewerNotes),
-);
-router.patch(
-	"/instances/:id/review-status",
-	requireAuth,
-	authorize(APP_KEY, MODULE_REVIEW, "write"),
-	asyncHandler(setDealerAuditReviewStatus),
 );
 router.post(
 	"/instances/:id/report",
@@ -287,8 +292,7 @@ router.post(
 	asyncHandler(generateAndSendDealerAuditReport),
 );
 
-// No approve/reject/clarify routes here — those go through the existing
-// generic workflow routes (mounted at /api/v1/soa) with
-// subjectType: "DEALER_AUDIT_INSTANCE", same as MEDICAL_CLAIM today.
+// Sending an audit back to the reviewer (clarify) uses the generic workflow
+// routes at /api/v1/soa with subjectType "DEALER_AUDIT_INSTANCE".
 
 export default router;

@@ -136,11 +136,8 @@ export const templateMatchResolvers: Record<
 		);
 	},
 
-	DEALER_AUDIT_INSTANCE: (templates, criteria) => {
-		const zone = criteria?.zone;
-		if (!zone) return undefined;
-		return templates.find((t) => t.metaData_1 === zone);
-	},
+	DEALER_AUDIT_INSTANCE: (templates, criteria) =>
+		templates.find((t) => t.id === criteria?.workflowId),
 
 	FACTORY_AUDIT_INSTANCE: (templates) => templates[0],
 
