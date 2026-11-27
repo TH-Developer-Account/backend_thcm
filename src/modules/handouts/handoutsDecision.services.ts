@@ -7,13 +7,15 @@
 // the generic kernel/workflow engine (approveStage/rejectStage) instead of
 // hand-rolling it, now that Handouts has a real WorkflowInstance behind it
 // (see handouts.services.ts's createHandout and handoutsAccess.helper.ts).
-// clarify/cancel/cannot-fulfil/deliver are UNCHANGED — none of them has a
-// generic-engine equivalent (the kernel models approve/reject, not "send
-// back for clarification" as a single-stage no-iteration operation, and
-// has no concept of "delivery" at all), so they stay exactly the
-// Handout-specific side channel they always were, never touching the
-// WorkflowInstance. That boundary is deliberate, not a gap: see the chat
-// history for why clarify/resubmit weren't moved onto
+// cancel now also closes out the WorkflowInstance (see cancelHandout below)
+// — the same `isActive: false` pattern approveHandout already uses for its
+// stock-shortfall path. clarify/cannot-fulfil/deliver are UNCHANGED — none
+// of them has a generic-engine equivalent (the kernel models approve/
+// reject, not "send back for clarification" as a single-stage
+// no-iteration operation, and has no concept of "delivery" at all), so
+// they stay exactly the Handout-specific side channel they always were,
+// never touching the WorkflowInstance. That boundary is deliberate, not a
+// gap: see the chat history for why clarify/resubmit weren't moved onto
 // clarifyStageController/activateFirstStageController (that logic lives in
 // workflow.controller.ts as request/response-coupled controller code, not
 // as a reusable service function, and Handouts' single fixed stage never
@@ -410,8 +412,16 @@ export const clarifyHandout = async (
 };
 
 // ── Cancel (requester, PENDING_APPROVAL or CLARIFICATION_REQUESTED) ────────
-// UNCHANGED — no role check here at all (isOwner only), so nothing about
-// the approver-resolution change touches this function.
+// ✅ CHANGED — now closes out the WorkflowInstance (isActive: false) in the
+// same transaction as the status update, same as approveHandout's
+// stock-shortfall path above. Before this, cancelling left the
+// WorkflowInstance sitting IN_PROGRESS forever: harmless for
+// isApprover/getActiveHandoutStage (both already gate on the
+// HandoutRequest's own status first), but it meant a cancelled request's
+// workflow was indistinguishable, in the WorkflowInstance table alone,
+// from one still genuinely awaiting approval — a trap for any future query
+// written against WorkflowInstance.isActive directly instead of going
+// through HandoutRequest.status.
 export const cancelHandout = async (
   actor: Actor,
   handoutId: string,
@@ -427,10 +437,20 @@ export const cancelHandout = async (
   );
   const comment = requireReason(reason, "cancel this handout");
 
-  await prisma.handoutRequest.update({
-    where: { id: handoutId },
-    data: { status: HANDOUT_STATUS.CANCELLED, cancellationReason: comment },
-  });
+  await prisma.$transaction([
+    prisma.handoutRequest.update({
+      where: { id: handoutId },
+      data: { status: HANDOUT_STATUS.CANCELLED, cancellationReason: comment },
+    }),
+    ...(access.activeWorkflowId
+      ? [
+          prisma.workflowInstance.update({
+            where: { id: access.activeWorkflowId },
+            data: { isActive: false },
+          }),
+        ]
+      : []),
+  ]);
   await prisma.activityLog.create({
     data: {
       subjectType: "HANDOUT_REQUEST",
@@ -454,7 +474,10 @@ export const cancelHandout = async (
 
 // ── Cannot fulfil (manual — delivery team, post-approval) ──────────────────
 // UNCHANGED — isDeliveryTeam stays a fixed identity (see file header), so
-// nothing about the approver-resolution change touches this function.
+// nothing about the approver-resolution change touches this function. Note
+// this path runs post-approval, when the workflow is already closed out by
+// approveHandout — there's nothing left on the WorkflowInstance for this
+// function to close.
 // Distinct entry point from approveHandout()'s automatic transition: this
 // one fires when the delivery team discovers, after approval, that an item
 // can't actually be handed out (damaged stock, discontinued line, etc.).

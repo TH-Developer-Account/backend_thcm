@@ -11,7 +11,7 @@ import {
   HANDOUT_STATUS,
   HANDOUT_FULFILLMENT_TYPE,
   HANDOUT_LIMITS,
-  HANDOUT_APPROVER_USER_ID,
+  HANDOUT_APP,
   HANDOUT_DELIVERY_USER_ID,
   isHandoutFulfillmentType,
   assertValidHandoutTransition,
@@ -22,13 +22,43 @@ import {
   computeHandoutPermissions,
   type Actor,
 } from "./handoutsAccess.helper";
-import { safeNotifyHandoutEvent } from "./handoutsNotify.helper";
+import {
+  safeNotifyHandoutEvent,
+  getOwnerWorkspaceId,
+} from "./handoutsNotify.helper";
+// Same path-alias uncertainty handoutsDecision.services.ts flagged for its
+// own import of this module — every other import in this file is relative,
+// so there's nothing existing to copy the alias from. Adjust to whatever
+// your tsconfig actually maps kernel/workflow to.
+import {
+  assignWorkflow,
+  notifyStageApprovers,
+} from "@kernel/workflow/workflow.service";
+// ✅ NEW — reused (not reimplemented) for getHandoutApprovalWorkflow's
+// approval-stage preview below: the same ADMIN-owned-template match rule
+// assignWorkflow uses when a handout is actually created.
+import { templateMatchResolvers } from "@kernel/workflow/workflow.helper";
 
-// ActivityLog is written directly, the same way every call site in
-// crfOrder.services.ts does it — there is no logActivity() wrapper in this
-// codebase. workflowId/stageId are always null here: Handouts has no
-// WorkflowInstance behind it (see handoutsAccess.helper.ts's note on why
-// isApprover/isDeliveryTeam are plain RBAC checks, not a workflow lookup).
+// ✅ CHANGED — createHandout now actually attaches a real WorkflowInstance
+// (see createHandout below) via the generic kernel engine's assignWorkflow,
+// the same one handoutsAccess.helper.ts's isApprover/getActiveHandoutStage
+// and handoutsDecision.services.ts's approve/reject already assume exists.
+// Before this change, createHandout never called assignWorkflow at all —
+// the handout row was created with no WorkflowInstance/StageInstance/
+// Approval behind it, so isApprover was false for every request, for
+// everyone, forever (the approve/reject/clarify card never had anything to
+// show).
+//
+// ✅ ALSO CHANGED — listHandouts's "approve" view is now scoped to the real,
+// dynamic approver (see getHandoutIdsWithPendingApprover below) instead of
+// a fixed HANDOUT_APPROVER_USER_ID check. "deliver" is UNCHANGED (delivery
+// stays a fixed identity by design — see handoutsAccess.helper.ts's file
+// header, confirmed again in chat: delivery is deliberately NOT being
+// folded into the workflow engine). getHandoutApprovalWorkflow's Approval
+// stage now also resolves from the real WorkflowTemplate (see below);
+// its Delivery stage stays env-var based, unchanged by design.
+// resubmitHandout is still UNCHANGED / a separate follow-up, not covered by
+// this pass.
 
 // ── Request-number generation ───────────────────────────────────────────────
 // Mirrors epcNumber.ts exactly: pure application-code composition of
@@ -139,54 +169,111 @@ const validateCreateInput = (input: CreateHandoutInput): void => {
   }
 };
 
+// Result of one create attempt: the handout plus whatever assignWorkflow
+// resolved for it, so the caller can notify stage-1 approvers and write an
+// ActivityLog entry with a real workflowId/stageId instead of null/null.
+type CreateHandoutAttemptResult = {
+  handoutId: string;
+  workflowId: string;
+  stageId?: string;
+  approverIds: string[];
+};
+
 export const createHandout = async (
   actor: Actor,
   input: CreateHandoutInput,
 ) => {
   validateCreateInput(input);
 
-  const attempt = async (retried: boolean): Promise<string> => {
+  // Resolved once, outside the retry loop below — neither depends on the
+  // generated requestNumber, so there's no reason to redo them on a
+  // unique-constraint retry.
+  const workspaceId = await getOwnerWorkspaceId(actor.id);
+  if (!workspaceId) {
+    throw new ApiError(
+      400,
+      "Could not resolve a workspace for this user — cannot raise a handout request",
+    );
+  }
+
+  const app = await prisma.app.findUnique({
+    where: { key: HANDOUT_APP },
+    select: { id: true },
+  });
+  if (!app) {
+    throw new ApiError(404, `App "${HANDOUT_APP}" not found`);
+  }
+
+  const attempt = async (
+    retried: boolean,
+  ): Promise<CreateHandoutAttemptResult> => {
     const requestNumber = generateHandoutRequestNumber();
     try {
-      const handout = await prisma.handoutRequest.create({
-        data: {
-          requestNumber,
-          purpose: input.purpose.trim(),
-          requiredBy: new Date(input.requiredBy),
-          fulfillmentType: input.fulfillmentType,
-          deliverTo: input.deliverTo.trim(),
-          contactPhone: input.contactPhone.trim(),
-          remarks: input.remarks?.trim() || null,
-          status: HANDOUT_STATUS.PENDING_APPROVAL,
-          requestedById: actor.id,
-          addressLine1: input.shippingAddress?.line1,
-          addressLine2: input.shippingAddress?.line2,
-          addressLandmark: input.shippingAddress?.landmark,
-          addressCity: input.shippingAddress?.city,
-          addressDistrict: input.shippingAddress?.district,
-          addressState: input.shippingAddress?.state,
-          addressPincode: input.shippingAddress?.pincode,
-          addressCountry: input.shippingAddress?.country ?? "India",
-          addressGstin: input.shippingAddress?.gstin,
-          items: {
-            // No `amount` column on HandoutItem — quantity × rate is
-            // computed on read (getHandoutDetail), never stored.
-            create: input.items.map((item) => ({
-              sku: item.sku,
-              quantity: item.quantity,
-              title: item.title ?? item.sku,
-              variantTitle: item.variantTitle ?? null,
-              imageUrl: item.imageUrl ?? null,
-              rate: item.rate,
-            })),
+      // Handout row + workflow attachment in one transaction: if no
+      // matching WorkflowTemplate exists for the HANDOUT app (assignWorkflow
+      // throws 404/400 — see kernel/workflow/workflow.service.ts), the
+      // handout insert rolls back too. That's deliberate — a handout with no
+      // approver attached is not a valid "submitted" state, so raising
+      // should fail loudly rather than silently leaving the request stuck
+      // with nobody able to act on it (the bug this fix replaces).
+      return await prisma.$transaction(async (tx) => {
+        const handout = await tx.handoutRequest.create({
+          data: {
+            requestNumber,
+            purpose: input.purpose.trim(),
+            requiredBy: new Date(input.requiredBy),
+            fulfillmentType: input.fulfillmentType,
+            deliverTo: input.deliverTo.trim(),
+            contactPhone: input.contactPhone.trim(),
+            remarks: input.remarks?.trim() || null,
+            status: HANDOUT_STATUS.PENDING_APPROVAL,
+            requestedById: actor.id,
+            addressLine1: input.shippingAddress?.line1,
+            addressLine2: input.shippingAddress?.line2,
+            addressLandmark: input.shippingAddress?.landmark,
+            addressCity: input.shippingAddress?.city,
+            addressDistrict: input.shippingAddress?.district,
+            addressState: input.shippingAddress?.state,
+            addressPincode: input.shippingAddress?.pincode,
+            addressCountry: input.shippingAddress?.country ?? "India",
+            addressGstin: input.shippingAddress?.gstin,
+            items: {
+              // No `amount` column on HandoutItem — quantity × rate is
+              // computed on read (getHandoutDetail), never stored.
+              create: input.items.map((item) => ({
+                sku: item.sku,
+                quantity: item.quantity,
+                title: item.title ?? item.sku,
+                variantTitle: item.variantTitle ?? null,
+                imageUrl: item.imageUrl ?? null,
+                rate: item.rate,
+              })),
+            },
           },
-        },
+        });
+
+        const { workflowInstance, stageOneApproverIds, stageOneId } =
+          await assignWorkflow(tx, {
+            subjectType: "HANDOUT_REQUEST",
+            subjectId: handout.id,
+            workspaceId,
+            appId: app.id,
+            userId: actor.id,
+          });
+
+        return {
+          handoutId: handout.id,
+          workflowId: workflowInstance.id,
+          stageId: stageOneId,
+          approverIds: stageOneApproverIds,
+        };
       });
-      return handout.id;
     } catch (error: any) {
       // Collision on the requestNumber unique constraint (two requests
       // generated in the same second) — same acceptance EPC makes:
       // retry exactly once with a fresh timestamp, never loop forever.
+      // Rolling back inside $transaction above means a collision retry
+      // never leaves a half-created WorkflowInstance behind either.
       if (!retried && error?.code === PRISMA_UNIQUE_CONSTRAINT_CODE) {
         return attempt(true);
       }
@@ -194,20 +281,37 @@ export const createHandout = async (
     }
   };
 
-  const handoutId = await attempt(false);
+  const { handoutId, workflowId, stageId, approverIds } = await attempt(false);
 
+  // Real workflowId/stageId now, instead of the null/null every other
+  // ActivityLog write in this file still uses for its Handout-specific
+  // (non-engine) actions.
   await prisma.activityLog.create({
     data: {
       subjectType: "HANDOUT_REQUEST",
       subjectId: handoutId,
       actorId: actor.id,
       action: "SUBMITTED",
-      workflowId: null,
-      stageId: null,
+      workflowId,
+      stageId: stageId ?? null,
     },
   });
 
-  await safeNotifyHandoutEvent({ handoutId, event: "SUBMITTED", actor });
+  // Notifies whoever stage 1's real approver(s) are — replaces the old
+  // safeNotifyHandoutEvent("SUBMITTED") call, which (per
+  // handoutsNotify.helper.ts's own header comment) was already superseded:
+  // "SUBMITTED" has no EVENT_COPY/resolveRecipients case left there, so it
+  // was a silent no-op. This is the real notification path now.
+  if (stageId) {
+    await notifyStageApprovers({
+      workflowId,
+      subjectType: "HANDOUT_REQUEST",
+      subjectId: handoutId,
+      appId: app.id,
+      stageId,
+      approverIds,
+    });
+  }
 
   return getHandoutDetail(actor, handoutId);
 };
@@ -222,24 +326,49 @@ export type ListHandoutsInput = {
   pageSize: number;
 };
 
+// ✅ NEW — real dynamic scoping for listHandouts's "approve" view, replacing
+// the old `actor.id === HANDOUT_APPROVER_USER_ID` fixed-identity check.
+// Returns every HandoutRequest id whose active WorkflowInstance has a
+// currently IN_PROGRESS stage on which `approverId` holds a PENDING
+// Approval — i.e. "every request actually waiting on this person right
+// now", the same resolution handoutsAccess.helper.ts's isApprover uses for
+// one handout, just across all of them at once. An empty result means
+// nothing is currently pending on this person, not that they lack
+// permission — HANDOUT_MODULE write access (route-level authorize()) is
+// what gates whether they can call this endpoint at all.
+const getHandoutIdsWithPendingApprover = async (
+  approverId: string,
+): Promise<string[]> => {
+  const stages = await prisma.stageInstance.findMany({
+    where: {
+      isCurrentIteration: true,
+      status: "IN_PROGRESS",
+      approvals: { some: { approverId, status: "PENDING" } },
+      workflow: { subjectType: "HANDOUT_REQUEST", isActive: true },
+    },
+    select: { workflow: { select: { subjectId: true } } },
+  });
+  return stages.map((stage) => stage.workflow.subjectId);
+};
+
 export const listHandouts = async (actor: Actor, params: ListHandoutsInput) => {
   const where: any = {};
 
-  // The view decides the base scope. HANDOUT_MODULE write access (checked
-  // at the route level via authorize()) only gates "can touch the Handouts
-  // API at all" — it says nothing about *which* person the fixed approver
-  // or delivery person is (see handoutsAccess.helper.ts). So "approve" and
-  // "deliver" must also be scoped to the one specific configured user, or
-  // anyone with write access would see every pending/approved request in
-  // the system, not just the ones actually waiting on them.
   if (params.view === "mine") {
     where.requestedById = actor.id;
   } else if (params.view === "approve") {
-    if (actor.id !== HANDOUT_APPROVER_USER_ID) {
-      throw new ApiError(403, "You are not the configured handout approver");
+    // ✅ CHANGED — see getHandoutIdsWithPendingApprover above. No 403 for
+    // "not an approver on anything right now" — same posture as "mine" for
+    // someone with no requests: an empty queue, not an error.
+    const pendingHandoutIds = await getHandoutIdsWithPendingApprover(actor.id);
+    if (pendingHandoutIds.length === 0) {
+      return { items: [], total: 0 };
     }
+    where.id = { in: pendingHandoutIds };
     where.status = HANDOUT_STATUS.PENDING_APPROVAL;
   } else if (params.view === "deliver") {
+    // UNCHANGED — delivery stays a fixed identity by design (see
+    // handoutsAccess.helper.ts's file header, confirmed again in chat).
     if (actor.id !== HANDOUT_DELIVERY_USER_ID) {
       throw new ApiError(
         403,
@@ -391,6 +520,12 @@ export const getHandoutDetail = async (actor: Actor, handoutId: string) => {
 // CLARIFICATION_REQUESTED -> PENDING_APPROVAL. Same body shape as create();
 // a full replace, not a partial patch, since the requester is expected to
 // have addressed whatever the approver asked about.
+//
+// ⚠️ UNCHANGED (separate follow-up, not covered by this pass) — does not
+// reactivate the WorkflowInstance's stage (no call to
+// activateFirstStageForResubmit). See clarifyHandout's own comment in
+// handoutsDecision.services.ts for why clarify never touched the stage in
+// the first place.
 
 export const resubmitHandout = async (
   actor: Actor,
@@ -461,15 +596,26 @@ export const resubmitHandout = async (
 };
 
 // ── Approval workflow (display only) ────────────────────────────────────────
-// Handouts has no WorkflowTemplate/WorkflowInstance behind it — see this
-// file's header. This resolves the two fixed, environment-configured roles
-// (HANDOUT_APPROVER_USER_ID / HANDOUT_DELIVERY_USER_ID) to real User
-// records, purely so the review step can show who they actually are — the
-// same way EPC's review step shows its real matched approvers — without
-// giving Handouts a dynamic approval chain it was deliberately built
-// without. Degrades to a generic role label rather than throwing: an unset
-// or dangling id is a configuration problem already logged at boot (see
-// handoutStatus.constants.ts), not a reason to break this read.
+//
+// GET /handouts/approval-workflow — no handoutId (confirmed: the only route
+// for this, no :id anywhere); used both by NewHandoutPage's pre-submit
+// review step and by HandoutDetailPage's Info tab, both just overlaying
+// their own already-known HandoutRequest.status on top of this "who" data
+// (see handoutApprovalWorkflow.mapper.ts on the frontend) — this function
+// never needs to know which handout, if any, it's being shown for.
+//
+// ✅ CHANGED — the Approval stage now resolves the real, admin-configured
+// WorkflowTemplate (the same ADMIN-owned-template match rule assignWorkflow
+// uses, reused here via templateMatchResolvers rather than reimplemented)
+// instead of the fixed HANDOUT_APPROVER_USER_ID env var — this was the
+// actual staleness: approval itself moved onto the generic workflow engine
+// a few fixes back, but this display endpoint never caught up.
+//
+// Delivery stays exactly as it was — the fixed HANDOUT_DELIVERY_USER_ID env
+// var — by explicit decision (not promoted into the workflow engine; see
+// handoutsAccess.helper.ts's isDeliveryTeam and this file's own header).
+// Wrapped as a one-element `approvers` array purely so both stages share
+// one response shape on the wire.
 
 type FixedRoleUser = {
   first_name: string;
@@ -478,10 +624,16 @@ type FixedRoleUser = {
   designation: { name: string } | null;
 };
 
+type HandoutApprovalWorkflowApprover = {
+  name: string;
+  email: string;
+  designation: string | null;
+};
+
 const describeFixedRoleUser = (
-  user: FixedRoleUser | undefined,
+  user: FixedRoleUser | null | undefined,
   fallbackName: string,
-): { name: string; email: string; designation: string | null } => {
+): HandoutApprovalWorkflowApprover => {
   if (!user) {
     return { name: fallbackName, email: "--", designation: null };
   }
@@ -493,48 +645,117 @@ const describeFixedRoleUser = (
   };
 };
 
-export const getHandoutApprovalWorkflow = async () => {
-  // Both roles resolved in a single round trip rather than one query per
-  // role — the two ids are known up front, so there's nothing to gain from
-  // querying them separately.
-  const roleUserIds = [
-    ...new Set(
-      [HANDOUT_APPROVER_USER_ID, HANDOUT_DELIVERY_USER_ID].filter(Boolean),
-    ),
-  ];
+export const getHandoutApprovalWorkflow = async (actor: Actor) => {
+  const workspaceId = await getOwnerWorkspaceId(actor.id);
+  if (!workspaceId) {
+    throw new ApiError(
+      400,
+      "Could not resolve a workspace for this user — cannot resolve the approval workflow",
+    );
+  }
 
-  const users = roleUserIds.length
-    ? await prisma.user.findMany({
-        where: { id: { in: roleUserIds } },
+  const app = await prisma.app.findUnique({
+    where: { key: HANDOUT_APP },
+    select: { id: true },
+  });
+  if (!app) {
+    throw new ApiError(404, `App "${HANDOUT_APP}" not found`);
+  }
+
+  // Read-only preview — same lookup+match shape assignWorkflow uses
+  // (kernel/workflow/workflow.service.ts), just never writing a
+  // WorkflowInstance. Mirrors how the kernel's own previewWorkflowController
+  // previews other subject types' templates.
+  //
+  // This include is intentionally richer than templateMatchResolvers'
+  // declared `CandidateTemplate` type (kernel/workflow/workflow.helper.ts),
+  // which only asks for `approvers: true` — no nested `user` — because none
+  // of the *other* subject types' resolvers need approver identities, only
+  // this display endpoint does. See the cast below for why that's safe.
+  const templates = await prisma.workflowTemplate.findMany({
+    where: { workspaceId, appId: app.id, isActive: true },
+    include: {
+      stages: {
+        include: {
+          approvers: {
+            include: {
+              user: {
+                select: {
+                  first_name: true,
+                  last_name: true,
+                  email: true,
+                  designation: { select: { name: true } },
+                },
+              },
+            },
+          },
+        },
+        orderBy: { stageOrder: "asc" },
+      },
+    },
+  });
+  type TemplateWithApproverUsers = (typeof templates)[number];
+
+  // templateMatchResolvers' shared function type takes (templates, criteria)
+  // and returns an element of the *declared* `CandidateTemplate[]` shape —
+  // assignWorkflow/previewWorkflowController always pass both arguments,
+  // even when a specific resolver (like HANDOUT_REQUEST's) ignores
+  // criteria entirely, so the explicit `undefined` second argument is
+  // required to satisfy that shared signature.
+  //
+  // The declared return type (CandidateTemplate, approvers without `user`)
+  // is narrower than what we actually queried above — HANDOUT_REQUEST's
+  // resolver body is just `templates.find(...)`, so the value it hands
+  // back is literally one of this file's own richer `templates` entries.
+  // The cast below restores that richer, actually-correct type rather than
+  // reimplementing the match predicate here a second time (which would
+  // just be the same DRY violation in the other direction).
+  const matchedTemplate = templateMatchResolvers.HANDOUT_REQUEST(
+    templates,
+    undefined,
+  ) as TemplateWithApproverUsers | undefined;
+  const approvalStage = matchedTemplate?.stages.find(
+    (stage) => stage.stageOrder === 1,
+  );
+
+  const approvalApprovers: HandoutApprovalWorkflowApprover[] =
+    approvalStage?.approvers.map((approver) =>
+      describeFixedRoleUser(approver.user, "Approver"),
+    ) ?? [];
+
+  const deliveryUser = HANDOUT_DELIVERY_USER_ID
+    ? await prisma.user.findUnique({
+        where: { id: HANDOUT_DELIVERY_USER_ID },
         select: {
-          id: true,
           first_name: true,
           last_name: true,
           email: true,
           designation: { select: { name: true } },
         },
       })
-    : [];
-
-  const usersById = new Map(users.map((user) => [user.id, user]));
+    : null;
 
   return {
     stages: [
       {
         stageOrder: 1,
-        stageName: "Approval",
-        ...describeFixedRoleUser(
-          usersById.get(HANDOUT_APPROVER_USER_ID),
-          "Marketing Head",
-        ),
+        stageName: approvalStage?.name ?? "Approval",
+        strategy: approvalStage?.strategy ?? null,
+        minApprovals: approvalStage?.minApprovals ?? null,
+        // Falls back to a single placeholder entry only if the template
+        // somehow has no approvers configured yet — keeps the display
+        // non-empty rather than showing a blank stage.
+        approvers: approvalApprovers.length
+          ? approvalApprovers
+          : [describeFixedRoleUser(null, "Marketing Head")],
       },
       {
         stageOrder: 2,
         stageName: "Hand delivery",
-        ...describeFixedRoleUser(
-          usersById.get(HANDOUT_DELIVERY_USER_ID),
-          "Delivery Team",
-        ),
+        // Not template-derived — a fixed single identity by design.
+        strategy: null,
+        minApprovals: 1,
+        approvers: [describeFixedRoleUser(deliveryUser, "Delivery Team")],
       },
     ],
   };

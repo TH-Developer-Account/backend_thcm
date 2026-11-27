@@ -14,7 +14,9 @@
 //   - SUBMITTED is removed entirely — notifyStageApprovers (the generic
 //     engine's own "a stage just activated" notify, called from
 //     handouts.services.ts's createHandout) now covers what this event
-//     used to do for the approver.
+//     used to do for the approver. (Previously this type/EVENT_COPY still
+//     carried a dead "SUBMITTED" member with no resolveRecipients case —
+//     that's now actually removed, not just unreachable.)
 //   - REJECTED is removed entirely — rejectStage's own notify covers it.
 //   - APPROVED keeps firing, but ONLY notifies the delivery person now
 //     (requestedById dropped from its recipient list below) — "it's now
@@ -52,8 +54,13 @@ export const getOwnerWorkspaceId = async (
   return user?.workspaceUsers[0]?.workspaceId ?? null;
 };
 
+// ✅ CHANGED — "SUBMITTED" removed from this union (and from EVENT_COPY
+// below). It had no resolveRecipients case left — the file header above
+// already documented it as superseded by createHandout's own
+// notifyStageApprovers call — so every caller passing it was a silent
+// no-op. Leaving it in the type invited a future caller to assume it did
+// something.
 export type HandoutNotifyEvent =
-  | "SUBMITTED"
   | "RESUBMITTED"
   | "APPROVED"
   | "REJECTED"
@@ -67,10 +74,6 @@ const EVENT_COPY: Record<
   HandoutNotifyEvent,
   { title: string; body: (comment?: string) => string }
 > = {
-  SUBMITTED: {
-    title: "New handout request submitted",
-    body: () => "A new handout request is waiting for your approval.",
-  },
   REJECTED: {
     title: "Handout request rejected",
     body: (comment) =>

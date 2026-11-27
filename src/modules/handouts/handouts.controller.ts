@@ -81,18 +81,25 @@ export const getHandouts = async (
 
 // GET /handouts/approval-workflow
 //
-// Resolves the two fixed roles (approver, delivery person) to real users,
-// for the New Handout review step's Approval Workflow display. No
-// actor-specific scoping beyond the route's own HANDOUT read grant: anyone
-// who can open Handouts at all can see who the approver and delivery
-// person are, the same as every other read-only Handouts screen.
+// Resolves the real Approval-stage WorkflowTemplate approvers and the fixed
+// delivery identity to real users, for the New Handout review step's (and
+// HandoutDetailPage's) Approval Workflow display. No actor-specific scoping
+// beyond the route's own HANDOUT read grant: anyone who can open Handouts
+// at all can see who the approver(s) and delivery person are, the same as
+// every other read-only Handouts screen.
+//
+// ✅ CHANGED — now resolves the actor and passes it through:
+// getHandoutApprovalWorkflow needs it to resolve the actor's workspaceId,
+// which is what scopes the real WorkflowTemplate lookup (the Approval stage
+// is no longer a fixed env-var lookup — see handouts.services.ts).
 export const getHandoutApprovalWorkflowMeta = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
   try {
-    const result = await getHandoutApprovalWorkflow();
+    const actor = requireActor(req);
+    const result = await getHandoutApprovalWorkflow(actor);
     res.status(200).json({ success: true, data: result });
   } catch (error) {
     next(error);
